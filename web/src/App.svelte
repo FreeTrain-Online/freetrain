@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
   import { messages, persistLocale, initialLocale, type Locale } from './lib/localization.ts';
   import { createShellModel, catalog } from './lib/shell-model.ts';
@@ -26,6 +27,12 @@
   let launcher: HTMLElement | undefined;
   let gameLauncher = $state<HTMLButtonElement>();
   let scheme = $state<Scheme>(initialScheme());
+  const feedbackCode = $derived(view.feedback);
+  let successExpired = $state(false);
+  $effect(() => {
+    successExpired = false;
+    if (feedbackCode === 'accepted') { const timer = setTimeout(() => { successExpired = true; }, 4000); return () => clearTimeout(timer); }
+  });
   let savedSlot = $state('slot1');
   let navigation = $state<(() => void) | undefined>();
   let previousEpoch: string | undefined;
@@ -96,10 +103,15 @@
   onMount(() => {
     const unsubscribe = model.subscribe(next => { view = next; });
     const pagehide = (event: PageTransitionEvent) => { if (!event.persisted) dispose(); };
-    const viewport = () => { document.documentElement.style.setProperty('--viewport-height', `${window.visualViewport?.height ?? window.innerHeight}px`); };
-    viewport(); window.visualViewport?.addEventListener('resize', viewport);
+    const viewport = () => {
+      const visible = window.visualViewport;
+      // Pinch magnification keeps layout dimensions; keyboard occlusion reduces height.
+      document.documentElement.style.setProperty('--viewport-height', `${visible ? visible.height * visible.scale : window.innerHeight}px`);
+      document.documentElement.style.setProperty('--viewport-top', `${visible?.scale === 1 ? visible.offsetTop : 0}px`);
+    };
+    viewport(); window.addEventListener('resize', viewport); window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport);
     window.addEventListener('pagehide', pagehide); document.addEventListener('focusin', uiFocus);
-    return () => { window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
+    return () => { window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
   });
 </script>
 
@@ -107,12 +119,11 @@
 <svelte:window onkeydown={escape}/>
 <div class="app-shell" class:gated={!live} data-shell="svelte">
   {#if live}
-    <nav class="command-bar" aria-label={text.game}>
+    <div class="command-bar" role="toolbar" aria-label={text.game} aria-describedby="mutation-help" use:toolbar>
       <img class="app-icon" src={icon} width="32" height="32" alt="FreeTrain"/>
-      <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); menu = !menu; if (menu) void tick().then(() => document.querySelector<HTMLButtonElement>('#game-menu button')?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
+      <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); menu = !menu; if (menu) void tick().then(() => [...document.querySelectorAll<HTMLButtonElement>('#game-menu button')].find(button => !button.disabled && button.getClientRects().length)?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
       <div class="transport">
-        <button disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'run' })}>▶ {text.run}</button>
-        <button disabled={disabled || read?.paused} onclick={() => model.send({ kind: 'pause' })}>Ⅱ {text.pause}</button>
+        <button disabled={disabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
         <button class="step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
       </div>
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
@@ -123,13 +134,14 @@
         <button aria-controls="primary-panel" aria-expanded={panel === 'session'} onclick={event => openPanel('session', event.currentTarget)}>{text.session} · <span data-testid="participant-role">{text[view.role!]}</span></button>
         <span class="sr-only" data-testid="connection">{text[view.connection]}</span>
       </div>
-    </nav>
+    </div>
   {/if}
   <main class="map-stage">
     <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
-      <nav id="game-menu" class="game-menu" aria-label={text.game}>
+      <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'}>
+        <button class="overflow-step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>
       </nav>
@@ -138,19 +150,21 @@
       {#snippet stationActions()}
           <button type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
         {#if panel === 'inspector'}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}
             <h3>{train.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{train.cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{train.position.x}, {train.position.y}, {train.position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[train.state]}</dd></div></dl>
+            <p class="hint" id="lease-help">{text.leaseHint}</p>
             <p class="control-holder" data-testid="control-holder">{text.control}: {train.controlLease?.participantId ?? text.unclaimed}</p>
-            <div class="form-actions"><button disabled={disabled} onclick={() => model.acquireControl(train!.id)}>{text.takeControl}</button><button disabled={disabled || train.controlLease?.participantId !== view.participantId} onclick={() => model.releaseControl(train!.id)}>{text.releaseControl}</button></div>
+            <div class="form-actions" aria-describedby="mutation-help lease-help"><button disabled={disabled} onclick={() => model.acquireControl(train!.id)}>{text.takeControl}</button><button disabled={disabled || train.controlLease?.participantId !== view.participantId} onclick={() => model.releaseControl(train!.id)}>{text.releaseControl}</button></div>
             <label class="field">{text.controller}<select disabled={disabled} value={train.controller} onchange={event => { const value = event.currentTarget.value as 'automatic' | 'manual'; const id = train!.id; event.currentTarget.value = train!.controller; void model.controller(value, id, () => mapSelection?.kind === 'train' && mapSelection.id === id); }}><option value="automatic">{text.automatic}</option><option value="manual">{text.manual}</option></select></label>
             <button onclick={() => map.focusTrain(train!.id)}>{text.findTrain}</button><p class="hint">{text.manualHelp}</p>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>
             <form id="station-name-form" onsubmit={event => { event.preventDefault(); if (canApply) void model.rename(); }}>
               <label class="field">{text.stationName}<input value={view.draft} oninput={event => model.setDraft(event.currentTarget.value)} oncompositionstart={() => model.setComposing(true)} oncompositionend={() => model.setComposing(false)} onblur={() => model.setComposing(false)} onkeydown={event => { if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229 || view.composing)) event.preventDefault(); }} maxlength="120" aria-describedby="draft-hint" /></label>
+              {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
               <p class="hint" id="draft-hint">{draftConflict ? text.draftConflict : text.draft}</p>
             </form>
           {:else if building}
@@ -170,7 +184,7 @@
         {:else if panel === 'session'}
           <p>{text[view.connection]} · {view.role ? text[view.role] : ''}</p><p>{text[view.feedback]}</p><button disabled={saveBusy || view.pending} onclick={() => request(model.reconnect)}>{text.reconnect}</button><button disabled={saveBusy} onclick={leave}>{text.leaveGame}</button>
         {:else if panel === 'help'}
-          <p>{text.observerHint}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>
+          <p>{text.observerHint}</p><p>{text.toolbarHelp}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>
         {/if}
       </PanelFrame>
     {/if}
@@ -187,5 +201,5 @@
     </DecisionModal>
   {/if}
   {#if !live}<SessionGate {model} {view} renderFailed={renderState === 'failed'} onleave={leaveNow} {scheme} onscheme={value => { scheme = value; }}/>{/if}
-  {#if live}<p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{text[view.feedback]}</p>{/if}
+  {#if live}<p id="mutation-help" class="sr-only">{text.observerHint}</p><p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{view.feedback === 'idle' || successExpired ? '' : text[view.feedback]}</p>{/if}
 </div>

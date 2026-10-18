@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { toolbar } from './lib/toolbar.ts';
   import { onMount } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
@@ -26,6 +27,7 @@
   let uncertain = $state(false);
   let held = $state('');
   const keys = new Set<string>();
+  let narrow = $state(false);
   let space = false, sendingInput = false, inputDirty = false;
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
@@ -55,8 +57,8 @@
     clearInput();
   }
   function key(event: KeyboardEvent, down: boolean) {
-    if (!live || inputSuspended || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
-    if (event.code === 'Space') { event.preventDefault(); space = down; return; }
+    if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
+    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat) space = down; return; }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
     event.preventDefault();
@@ -146,6 +148,8 @@
   $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
+    const compact = matchMedia('(max-width: 639px)');
+    const density = () => { narrow = compact.matches; }; density(); compact.addEventListener('change', density);
     const resize = new ResizeObserver(entries => { width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
     loadImages().then(images => {
       if (!active) return;
@@ -172,7 +176,7 @@
     const visibility = () => { blur(); dirty = true; };
     const wheel = (event: WheelEvent) => { if (!live || inputSuspended) return; event.preventDefault(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
-    return () => { active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
+    return () => { compact.removeEventListener('change', density); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
@@ -180,14 +184,14 @@
   <canvas bind:this={canvas} class="world-canvas" tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={() => { drag = undefined; }} onpointerleave={() => { if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={clearInput}></canvas>
 </div>
 {#if live}
-  <nav class="tool-strip" aria-label={text.mapTools}>
+  <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
     {#each tools as item}<button aria-label={text[item.label]} title={text[item.label]} aria-pressed={tool === item.id} disabled={item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
-  </nav>
+  </div>
   <div class="map-navigation" class:beside-panel={!!panel}>
     <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
   </div>
   {#if panel === 'view'}
-    <PanelFrame title={text.view} closeLabel={text.close} {onclose}>
+    <PanelFrame locale={view.locale} title={text.view} closeLabel={text.close} {onclose}>
       <div class="map-options">
         <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max="15" bind:value={heightCut}/><span>{heightCut}</span></label>
         <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
@@ -204,10 +208,11 @@
       </div>
       <p data-testid="preview-position">{selectedPosition ? `${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}` : text[panel ? 'closePanelToTarget' : 'pickTile']}</p>
       <p class="hint">{text.unvalidatedPreview}</p>
+      {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
       {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
       <div class="form-actions"><button class="primary" disabled={blocked || !!panel || uncertain || !selectedPosition || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
-  <div class="selection-feedback" data-testid="map-selection">{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
+  <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
   <span id="manual-help" class="sr-only">{text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
 {/if}

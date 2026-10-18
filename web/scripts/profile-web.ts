@@ -1,10 +1,13 @@
 import { chromium } from '@playwright/test';
 import { resolve } from 'node:path';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 
 // Run from web/. Build release and profiling artifacts first. Uses only local servers.
-const root=resolve('..'), saves=await mkdtemp(`${tmpdir()}/freetrain-profile-`);
+const root=resolve('..');
+const evidence=resolve(Deno.env.get('FREETRAIN_PROFILE_EVIDENCE') ?? `${root}/tmp`);
+await mkdir(evidence,{recursive:true});
+const saves=await mkdtemp(`${tmpdir()}/freetrain-profile-`);
 function freePort(){const listener=Deno.listen({hostname:'127.0.0.1',port:0});const port=(listener.addr as Deno.NetAddr).port;listener.close();return port;}
 const servicePort=freePort();let fixturePort=freePort();while(fixturePort===servicePort)fixturePort=freePort();
 const serviceUrl=`http://127.0.0.1:${servicePort}`, fixtureUrl=`http://127.0.0.1:${fixturePort}`;
@@ -15,12 +18,17 @@ const browser=await chromium.launch({headless:true});
 try {
   for(const port of [servicePort,fixturePort])for(let i=0;i<100;i++){try{if((await fetch(`http://127.0.0.1:${port}/`)).ok)break;}catch{}if(i===99)throw new Error(`Server ${port} unavailable`);await new Promise(r=>setTimeout(r,100));}
   const page=await browser.newPage({viewport:{width:1920,height:1080},deviceScaleFactor:1});
+  await page.addInitScript(()=>{
+    const decode=HTMLImageElement.prototype.decode;
+    (window as any).profileDecodes=0;
+    HTMLImageElement.prototype.decode=function(){(window as any).profileDecodes++;return decode.call(this);};
+  });
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   const cdp=await page.context().newCDPSession(page);await cdp.send('Performance.enable');
   await page.goto(fixtureUrl+'/profiling/renderer.html');
   await page.waitForFunction(()=>typeof (window as any).profileRenderer==='function');
   const synthetic=await page.evaluate(()=>(window as any).profileRenderer());
-  await page.screenshot({path:`${root}/tmp/web-prototype-profile-large-scene.png`});
+  await page.screenshot({path:`${evidence}/web-prototype-profile-large-scene.png`});
   const distribution=(values:number[])=>{const s=[...values].sort((a,b)=>a-b);return {count:s.length,p50:s[Math.ceil(.5*s.length)-1],p95:s[Math.ceil(.95*s.length)-1],p99:s[Math.ceil(.99*s.length)-1],max:s.at(-1)};};
   let totalBytes=0,deltas=0;const intervals:number[]=[];let last=0;
   page.on('websocket',socket=>socket.on('framereceived',frame=>{totalBytes+=new TextEncoder().encode(String(frame.payload)).length;const m=JSON.parse(String(frame.payload));if(m.type==='delta'){const now=performance.now();if(last)intervals.push(now-last);last=now;deltas++;}}));
@@ -56,6 +64,24 @@ try {
   await page.getByRole('button',{name:'Build track',exact:true}).click();
   const previewFeedback=distribution(await feedback());
   await page.getByRole('button',{name:'Inspect / drive',exact:true}).click();
+  const panelTimes:number[]=[];
+  const original=await page.locator('canvas').evaluate(el=>{
+    (window as any).profileCanvas=el;
+    return {camera:(el as HTMLElement).dataset.camera,zoom:(el as HTMLElement).dataset.zoom,decodes:(window as any).profileDecodes,bounds:el.getBoundingClientRect().toJSON()};
+  });
+  for(let i=0;i<30;i++){
+    await page.getByRole('button',{name:'Game ▾',exact:true}).click();
+    panelTimes.push(await page.locator('#game-menu').getByRole('button',{name:'Settings',exact:true}).evaluate(async el=>{
+      const start=performance.now();(el as HTMLButtonElement).click();
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      if(!document.querySelector('.primary-panel'))throw new Error('Panel did not open');
+      return performance.now()-start;
+    }));
+    await page.getByRole('button',{name:'Close panel',exact:true}).click();
+  }
+  const preserved=await page.locator('canvas').evaluate(el=>({same:el===(window as any).profileCanvas,camera:(el as HTMLElement).dataset.camera,zoom:(el as HTMLElement).dataset.zoom,decodes:(window as any).profileDecodes,bounds:el.getBoundingClientRect().toJSON()}));
+  if(!preserved.same||JSON.stringify(original)!==JSON.stringify({camera:preserved.camera,zoom:preserved.zoom,decodes:preserved.decodes,bounds:preserved.bounds}))throw new Error('Panels changed canvas lifecycle/camera/bounds/decodes');
+  const panels={openToTwoFramesMs:distribution(panelTimes),original,preserved};
   // Inject 50 ms each direction through a same-origin WebSocket forwarding route.
   await page.goto('about:blank');await page.waitForTimeout(200);
   const timers:Set<ReturnType<typeof setTimeout>>=new Set();
@@ -77,13 +103,13 @@ try {
       return performance.now()-start;
     });latencies.push(time);
   }
-  await page.screenshot({path:`${root}/tmp/web-prototype-profile-reference.png`,fullPage:true});
+  await page.screenshot({path:`${evidence}/web-prototype-profile-reference.png`,fullPage:true});
   for(const timer of timers)clearTimeout(timer);
   if(latencies.some(value=>value<90))throw new Error('Latency sample bypassed the injected 100ms round trip');
   if(errors.length)throw new Error(errors.join('\n'));
   const report={recordedAt:new Date().toISOString(),browser:browser.version(),os:Deno.build,synthetic,
-    reference:{map:state.snapshot.map,tracks:state.snapshot.tracks.length,trains:state.snapshot.trains.length,cars:state.snapshot.trains[0].cars,stations:state.snapshot.stations.length,buildings:state.snapshot.buildings.length,paused,active,traffic,cameraFeedbackMs:cameraFeedback,previewFeedbackMs:previewFeedback,authoritativeFeedback100msRtt:distribution(latencies)},errors};
-  await writeFile(`${root}/tmp/web-prototype-performance.json`,JSON.stringify(report,null,2)+'\n');
+    reference:{map:state.snapshot.map,tracks:state.snapshot.tracks.length,trains:state.snapshot.trains.length,cars:state.snapshot.trains[0].cars,stations:state.snapshot.stations.length,buildings:state.snapshot.buildings.length,paused,active,traffic,cameraFeedbackMs:cameraFeedback,previewFeedbackMs:previewFeedback,panels,authoritativeFeedback100msRtt:distribution(latencies)},errors};
+  await writeFile(`${evidence}/web-prototype-performance.json`,JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify(report,null,2));
 } finally {
   await browser.close();

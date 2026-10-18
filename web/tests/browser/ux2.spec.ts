@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { at, bootstrap, clickSprite, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
-const evidence = '../tmp/ux2-2026-10-18';
+const evidence = process.env.FREETRAIN_UX2_EVIDENCE ?? '../tmp/ux2-2026-10-18';
 test.beforeEach(async ({ page }) => {
   await mkdir(evidence, { recursive: true });
   await page.goto('/'); await ready(page);
@@ -14,7 +14,7 @@ test('UX2 dirty close traps focus, consumes Escape once, and supports Keep, Disc
   const confirmed = await page.getByTestId('confirmed-name').textContent();
   await input.fill('UX2 編集中');
   // Escape in a native field retains the editor; Escape from the panel opens the decision.
-  await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.keyboard.press('Escape'); await expect(page.locator('.decision-dialog')).toHaveCount(0);
   await page.getByRole('button', { name: 'Close panel', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Unsaved station name', exact: true });
   await expect(dialog).toBeVisible(); await page.locator('canvas').evaluate(el => (el as HTMLElement).focus());
@@ -47,7 +47,7 @@ test('UX2 dirty retarget keeps the original entity and stale revisions require R
   await selectStation(page); const station = (await bootstrap(page)).stations[0];
   await page.getByLabel('Station name', { exact: true }).fill('Original draft');
   await clickSprite(page, { x: 16, y: 16, z: 0 }, 'pier');
-  const dialog = page.getByRole('dialog'); await expect(dialog).toBeVisible();
+  const dialog = page.locator('.decision-dialog'); await expect(dialog).toBeVisible();
   await expect(page.getByTestId('selected-object')).toContainText(station.id);
   await dialog.getByRole('button', { name: 'Keep editing', exact: true }).click();
   const context = await browser.newContext(); const other = await context.newPage();
@@ -77,7 +77,7 @@ test('UX2 replacement modal blocks the game, cancels without changes and preserv
   await expect(page.getByLabel('Slot', { exact: true })).toHaveValue('slot2');
   const before = await bootstrap(page), camera = await page.locator('canvas').getAttribute('data-camera');
   await page.getByRole('button', { name: 'Load slot', exact: true }).click();
-  const dialog = page.getByRole('dialog'); await expect(dialog).toContainText('every participant');
+  const dialog = page.locator('.decision-dialog'); await expect(dialog).toContainText('every participant');
   await page.screenshot({ path: `${evidence}/shared-replacement.png` });
   await page.mouse.click(600, 450); await page.mouse.wheel(0, -250); await page.keyboard.press('ArrowUp');
   await expect(dialog).toBeVisible(); await expect(page.locator('canvas')).toHaveAttribute('data-camera', camera!);
@@ -175,7 +175,7 @@ test('UX2 disconnect cancels dirty decisions without replaying a name', async ({
   await page.reload(); await ready(page); await selectStation(page);
   const before = (await bootstrap(page)).stations[0].name;
   await page.getByLabel('Station name', { exact: true }).fill('Interrupted draft');
-  await page.getByRole('button', { name: 'Close panel', exact: true }).click(); await expect(page.getByRole('dialog')).toContainText('Interrupted draft');
+  await page.getByRole('button', { name: 'Close panel', exact: true }).click(); await expect(page.locator('.decision-dialog')).toContainText('Interrupted draft');
   drop(); await expect(page.getByRole('heading', { name: 'Connection lost', exact: true })).toBeVisible();
   await expect(page.locator('.decision-dialog')).toHaveCount(0);
   offline = false; await ready(page); await selectStation(page);

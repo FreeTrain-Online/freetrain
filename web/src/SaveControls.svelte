@@ -26,8 +26,8 @@
   }
 </script>
 <div class="save-controls">
-  <p class="hint">{text.loadHint}</p>
-  <div class="form-actions">
+  <p class="hint">{text.loadHint}</p><p class="hint" id="saves-help">{text.savesHint}</p>
+  <div class="form-actions" aria-describedby="saves-help">
     <label>{text.saveSlot}<select aria-label={text.saveSlot} bind:value={slot} disabled={busy || disabled} onchange={() => { confirmLoad = false; upload = undefined; }}>
       {#each ['slot1','slot2','slot3','checkpoint'] as id}<option value={id}>{id === 'checkpoint' ? text.checkpoint : `${text.saveSlot} ${id.slice(-1)}`}{slots.find(item => item.id === id)?.exists ? '' : ` (${text.emptySlot})`}</option>{/each}
     </select></label>

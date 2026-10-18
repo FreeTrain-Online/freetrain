@@ -86,18 +86,46 @@ Selection updates semantic root colors immediately; only the allowlisted ID in
 obsolete or invalid preferences use Evergreen. The preference is applied before
 mounting the app and survives demo/live, refresh and Leave. Language retains its
 existing storage path. No credentials, leases or world drafts are persisted.
-Run and Pause remain separate controls enabled from confirmed clock state.
+Run/Pause uses one stable button derived from confirmed clock state; keyboard
+focus stays on that button when its action changes. Narrow Game overflow retains Step.
 
-Verification lives in [UX2 Chromium journeys](../web/tests/browser/ux2.spec.ts),
-[UX1 Chromium journeys](../web/tests/browser/ux1.spec.ts), the existing
-shell/map/persistence/multiplayer journeys and
-[shell-model tests](../web/tests/shell-model.test.ts). UX3 still owns the full
-acceptance matrix, comprehensive accessibility/device/zoom checks, all-preset
-contrast review and comparison against the UX0 performance baseline. The
-regression gate passes 129 backend and 55 frontend tests; all 38 Chromium
-release journeys and 12 final focused overlay/save checks pass. Native Japanese
-IME, touch and virtual keyboards require device checks; no other-engine
-coverage is claimed.
+UX3 adds explicit Expand/Reduce controls to narrow portrait sheets. Initial sheets
+are capped at 52% of the stage; short windows use side sheets. Primary controls
+have at least 32 px desktop and 44 px coarse-pointer targets, including square
+icon buttons. Nonmodal panels expose named dialog semantics. Command/tool
+bars have one Tab stop each, arrow/Home/End navigation and visible focus; Game
+supports Up/Down/Home/End. Native fields, composition and browser modifier
+shortcuts retain their own behavior. Meaningful tool/selection/driving state is
+announced to screen readers without a visible map label; command results remain
+separate, and ticks and pointer movement are silent.
+Compact feedback sits clear of navigation and stays empty while idle. A success notification expires after
+four seconds; failures stay visible and also appear beside station/tool edits.
+Role, save and lease explanations are available as readable text, including for
+keyboard users whose disabled controls cannot receive focus.
+
+The shell follows the visible viewport's height/offset for keyboard occlusion.
+Pinch magnification preserves layout dimensions instead of shrinking the game
+again. Safe insets remain part of the shell padding. Panels and gates scroll
+internally, and sheet expansion never changes the canvas camera or bounds.
+Only the existing locale preference and versioned allowlisted scheme ID are
+persisted; appearance and audio intent stay local to the running app.
+
+Verification lives in `../web/tests/browser/*.ts`,
+the shell/map/persistence/multiplayer journeys and shell-model tests. Integrated
+evidence covers six required viewport sizes, English/Japanese, DPR 1/2 and live
+DPR changes, doubled text, coarse-pointer and reduced-height emulation, preset
+contrast, focus/cancellation, authority and independent local UI. The profile
+runner supports `FREETRAIN_PROFILE_EVIDENCE` so new evidence does not overwrite
+the UX0 baseline; it also measures 30 panel opens and verifies canvas identity,
+camera, bounds and unchanged image decode count.
+
+Native desktop browser zoom, Japanese IME, physical touch/virtual keyboards,
+safe-area devices and assistive technology still need recorded checks. Chromium
+emulation does not establish those results; no other-engine coverage is claimed.
+UX3's implementation and automated evidence do not close the remaining device
+acceptance gate or establish game parity. Neither the adaptation/input work nor
+the regression closure requires additional game logic. Roads, terrain, building
+placement and other deferred gameplay retain their parity-plan prerequisites.
 
 ## Current operations and destinations
 
@@ -118,7 +146,7 @@ policy, including list/download, even if service permissions are broader.
 | `confirm`, `cancel-draft` / MapView | Tool card footer, immediate actions | Confirm needs a target; removal needs a current track/revision; pending prevents duplicate submission; Cancel sends nothing |
 | `inspector` / map pick and App details | Selected train/station/building/track panel | Stable ID; track identity is coordinate tuple + world epoch, revision is an edit precondition; never fall back to first entity |
 | `controller`, `take-control`, `release-control` / App → model | Selected-train inspector; confirmed controller select, holder and handoff buttons | Mutation; controller change retains lease acquisition path; Release only own lease; selection never acquires control |
-| `manual-input` / MapView → model.input | Focused map, Inspect, selected manual train, matching local lease; compact Driving label | Shift pass, Up depart, Down reverse, Left/Right junction; 150 ms renewal path and server expiry retained; no automatic reacquisition from held keys |
+| `manual-input` / MapView → model.input | Focused map, Inspect, selected manual train, matching local lease; accessible driving status | Shift pass, Up depart, Down reverse, Left/Right junction; 150 ms renewal path and server expiry retained; no automatic reacquisition from held keys |
 | `rename-station`, `reset-name` / App → model.rename/resetDraft | Selected-station inspector: confirmed name, draft, Apply, Reset | Mutation for Apply, trim/nonempty, max 120, target ID/revision captured with draft; preserve compositionstart/end, isComposing/keyCode 229 safeguards |
 | `catalog`, `catalog-choice` / App → model.selectBuilding | Game → Buildings panel; thumbnails/details for pier variant 1 height 1 and condo variant 1 heights 2–5 | Local browsing; five entries; no Place button, price, rotation or legality claims; inspection must stop overwriting catalog choice |
 | `view`, `height-cut` / MapView | View panel; cut range 0–15 | All live roles; distinct from construction level; hidden target offers explicit Raise height cut action |
@@ -359,7 +387,7 @@ Desktop ≥1024 px: 40 px bar + strip, right panel 8 px inset. At 1280×720 the
 resting canvas is 1240×680 = 91.49% of viewport (surface, before overlays).
 Compact 640–1023: grouped overflow, bounded right sheet; suspend tool targeting
 while a primary sheet is open. Portrait <640 with height >600: 44 px targets,
-52 px bar plus 52 px tool row; initial bottom sheet ≤58% of stage, Expand control
+52 px bar plus 52 px tool row; initial bottom sheet ≤52% of stage, Expand/Reduce controls
 permits larger content, header/footer always reachable. At height ≤600 use a
 side sheet, regardless of portrait breakpoint. The initial narrow rail card is
 a bottom sheet too; map remains visible above it. Sheet body scrolls; document
@@ -369,37 +397,3 @@ Use `100vh` then `100dvh`, bounded grid `minmax(0,1fr)`, zero min sizes and
 logical properties; account for safe areas and visualViewport/keyboard height.
 Never solve overflow by clipping controls. Move summaries to menus under text
 zoom; preserve native zoom. Panel/map navigation avoids occluded regions.
-
-## Review and implementation handoff
-
-Review artifacts cover resting map, unvalidated rail target, selected train,
-shared-world replacement, welcome/sign-in and disconnected recovery for desktop,
-Japanese compact and Japanese narrow sizes.
-
-Decisions reconciled against the local foundation plan:
-
-- Game overflow includes Buildings, Saves, Settings and Help; View/Session move
-  there only on narrow layouts, leaving tools and confirmed pause discoverable.
-- Current time is displayed as tick, with no invented date/rate/speed control.
-- Catalog selection is independent of map selection; no unsupported Place action.
-- Shape/level live in the rail card, height cut in View; a selected tool survives
-  a panel, its geometry does not. A panel suspends targeting, not inspection/pan.
-- Uncertainty locks the submitted draft against replay. Known construction rates
-  can appear as explanatory rules (100 per changed tile; buffer extension 200;
-  removal no refund), never as a validated quote for an arbitrary preview.
-- Leave-failed cannot expose ordinary reconnect; render readiness is separate
-  from transport readiness. UX1 enforces both boundaries.
-- Selected-entity forms require explicit target/revision parameters in the model;
-  preserving `[0]` while changing the visuals would fail the inspector requirement.
-
-UX2 completes the current-operation workflows specified above. The approved direction
-includes the color-scheme extension; dimensions and preset values can be refined
-from measured usability. Native Japanese IME, touch, virtual keyboard and other browser engines
-are not established by mockup screenshots. There are no roads, terrain tools,
-building placement, Undo/Redo, speed modes or speculative parity buttons.
-
-UX1 delivers Inspect → selected inspector and Rail → explicit Confirm/Cancel
-alongside clock and mandatory session gates. Saves and session controls are
-accessible through their panels; UX2 adds reusable modal decisions and focus restoration. UX3 must measure panel lifecycle,
-renderer performance and all acceptance rows against the fresh UX0 baseline;
-mockup screenshots do not check any UX1–UX3 implementation box.

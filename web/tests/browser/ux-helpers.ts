@@ -8,7 +8,7 @@ export async function ready(page: Page, language = 'en') {
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'live');
 }
 export async function closePanel(page: Page) {
-  const close = page.locator('.primary-panel .panel-title button');
+  const close = page.locator('.primary-panel .panel-title button:last-child');
   if (await close.count()) await close.click();
 }
 export async function openPanel(page: Page, id: string, language = 'en') {

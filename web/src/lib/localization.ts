@@ -1,5 +1,9 @@
 export const messages = {
   en: {
+    expandPanel: 'Expand panel', collapsePanel: 'Reduce panel', driving: 'Driving',
+    savesHint: 'Saves require Owner access. Empty slots cannot load; the automatic checkpoint is read only.',
+    leaseHint: 'Take control before driving. Release is available only for your own lease.',
+    toolbarHelp: 'Toolbars: use arrow keys, Home and End to move; Enter or Space activates. Tab moves to the next group.',
     closeMenu: 'Close menu', colorScheme: 'UI color scheme', evergreen: 'Evergreen', 'classic-blue': 'Classic blue', slate: 'Slate', plum: 'Plum',
     dirtyTitle: 'Unsaved station name', dirtyHint: 'Apply this name before continuing, discard the draft, or keep editing.',
     discard: 'Discard draft', keepEditing: 'Keep editing', draftConflict: 'This station changed. Reset the draft to review its current name before applying.',
@@ -72,6 +76,10 @@ export const messages = {
     selectedBuilding: 'Building details', variant: 'Variant', height: 'Height',
   },
   ja: {
+    expandPanel: 'パネルを拡大', collapsePanel: 'パネルを縮小', driving: '運転中',
+    savesHint: '保存操作には所有者の権限が必要です。空のスロットは読込できません。自動保存は読込専用です。',
+    leaseHint: '運転する前に操作権を取得してください。自分の操作権のみ解放できます。',
+    toolbarHelp: 'ツールバー：矢印、Home、Endで移動し、EnterまたはSpaceで実行します。Tabで次のグループに移動します。',
     closeMenu: 'メニューを閉じる', colorScheme: 'UI配色', evergreen: 'エバーグリーン', 'classic-blue': 'クラシックブルー', slate: 'スレート', plum: 'プラム',
     dirtyTitle: '未保存の駅名', dirtyHint: '駅名を適用して続けるか、下書きを破棄するか、編集を続けてください。',
     discard: '下書きを破棄', keepEditing: '編集を続ける', draftConflict: '駅が変更されました。適用する前に下書きを戻し、現在の駅名を確認してください。',
