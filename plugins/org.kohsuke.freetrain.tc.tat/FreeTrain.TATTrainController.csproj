@@ -120,7 +120,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="res\Straight.bmp" />
+    <Content Include="res\Straight.gif" />
+    <Content Include="res\Curve.gif" />
     <Compile Include="src\AdvancedStationHandler.cs">
       <SubType>Code</SubType>
     </Compile>
