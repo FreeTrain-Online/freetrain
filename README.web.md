@@ -101,6 +101,8 @@ permission to create local sockets.
 
 ## Playing the map
 
+For the next shell implementation, see the [game UX interaction contract](doc/web-game-ux.md).
+
 Click an object to inspect, drag the map to pan, and use the wheel or zoom buttons.
 Height cut hides raised rails and replaces cut buildings with selectable footprints.
 Night uses the source palette transformation; winter ground and recoloring are
