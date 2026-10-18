@@ -104,11 +104,16 @@ permission to create local sockets.
 The game fills the browser viewport. Use the left tool strip to inspect, build
 or remove track; secondary controls open bounded panels over the map. See the
 [game UX interaction contract](doc/web-game-ux.md) for implemented behavior and
-remaining UX2/UX3 work. Before joining or while disconnected, the session dialog
+remaining UX3 acceptance work. Before joining or while disconnected, the session dialog
 appears over a local, noninteractive demo map. A failed Leave offers Retry leave
 until sign-out is confirmed.
 
 Click an object to inspect, drag the map to pan, and use the wheel or zoom buttons.
+Middle drag or Space + drag pans in every tool. A dirty station name offers
+Apply / Discard / Keep editing before closing or changing targets; revised
+stations require Reset before applying. Game → Settings and session dialogs offer
+four locally persisted UI color schemes. Save load/upload requires a modal
+confirmation that names the shared-world replacement; Cancel sends nothing.
 Open **View** for height cut, appearance and camera actions. Height cut hides raised rails and replaces cut buildings with selectable footprints.
 Night uses the source palette transformation; winter ground and recoloring are
 local display options. The water/fence/slope sample by the pier is decorative.

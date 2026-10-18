@@ -1,6 +1,6 @@
 /* Semantic surface roles. Presets contain colors only; components own layout,
  * typography, focus, disabled/pressed semantics, and notice meaning.
- * Preset selection and safe preference persistence are wired in UX2.
+ * Preset selection persists an allowlisted ID through ui-preferences.ts.
  */
 :root {
   --ui-menu-bar: #d4d4cc;

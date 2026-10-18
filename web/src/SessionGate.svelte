@@ -1,10 +1,12 @@
 <script lang="ts">
+  import SchemeSelect from './SchemeSelect.svelte';
+  import type { Scheme } from './lib/ui-preferences.ts';
   import { onMount, tick } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages, type Locale } from './lib/localization.ts';
   import { authorize } from './lib/remote-session-client.ts';
   const icon = '/assets/FTicon.png';
-  let { model, view, renderFailed, onleave }: { model: ShellModel; view: ShellState; renderFailed: boolean; onleave: () => void } = $props();
+  let { model, view, renderFailed, onleave, scheme, onscheme }: { model: ShellModel; view: ShellState; renderFailed: boolean; onleave: () => void; scheme: Scheme; onscheme: (value: Scheme) => void } = $props();
   const text = $derived(messages[view.locale]);
   const signingIn = $derived(view.connection === 'accessRequired');
   let secret = $state(''), accessFailed = $state(false), authorizing = $state(false);
@@ -52,6 +54,7 @@
     <div class="panel-title"><strong class="brand"><img src={icon} width="32" height="32" alt=""/>FreeTrain</strong></div>
     <div class="panel-body">
       <label class="field">{text.language}<select aria-label={text.language} value={view.locale} onchange={event => model.setLocale(event.currentTarget.value as Locale)}><option value="en">English</option><option value="ja">日本語</option></select></label>
+      <SchemeSelect locale={view.locale} {scheme} onchange={onscheme}/>
       <h1 id="session-title">{title}</h1>
       <p data-testid="connection">{text[view.connection]}</p>
       {#if signingIn}

@@ -270,3 +270,30 @@ Deno.test('same-socket synchronization preserves one pending mutation until ackn
     complete({ type: 'accepted', requestId: 'old', worldEpoch: '1', sequence: '1', revision: '1', tick: '1' }); await pending;
   } finally { model.dispose(); }
 });
+
+Deno.test('dirty metadata retains target/revision across conflict and deletion until explicit Reset', async () => {
+  const { service, model } = setup();
+  try {
+    await until(() => model.state.connection === 'ready');
+    const station = model.state.read!.stations[0]; model.selectStation(station.id); model.setDraft('編集を保持');
+    const next = structuredClone(model.state.read) as Snapshot;
+    next.stations[0].revision = String(BigInt(station.revision) + 1n); next.stations[0].name = '別の編集'; service.publish(next);
+    assert(model.state.draftDirty && model.state.draftStationId === station.id && model.state.draftRevision === station.revision);
+    assert(model.state.draft === '編集を保持');
+    next.stations = []; service.publish(next);
+    assert(model.state.draftDirty && model.state.draftStationId === station.id && model.state.draft === '編集を保持');
+    assert(model.rename() === undefined);
+    model.resetDraft(); assert(!model.state.draftDirty && model.state.draft === '');
+  } finally { model.dispose(); }
+});
+
+Deno.test('epoch replacement discards station drafts with an interruption notice and no replay', async () => {
+  const { service, model } = setup();
+  try {
+    await until(() => model.state.connection === 'ready');
+    model.selectStation(model.state.read!.stations[0].id); model.setDraft('旧ワールドの編集');
+    const next = structuredClone(model.state.read) as Snapshot; next.worldEpoch = '2'; service.publish(next);
+    assert(!model.state.draftDirty && model.state.draftInterrupted && !model.state.draftStationId);
+    assert(model.state.read!.stations[0].name === '中央駅');
+  } finally { model.dispose(); }
+});

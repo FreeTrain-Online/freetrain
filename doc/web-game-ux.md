@@ -44,28 +44,60 @@ menu and derived gate), [MapView.svelte](../web/src/MapView.svelte) (persistent
 canvas, separate demo/live cameras, readiness and tools),
 [PanelFrame.svelte](../web/src/PanelFrame.svelte) (bounded nonmodal frame),
 [SessionGate.svelte](../web/src/SessionGate.svelte) (mandatory dialog/focus), and
-[game-ui.ts](../web/src/lib/game-ui.ts) (typed tool/panel metadata).
+[game-ui.ts](../web/src/lib/game-ui.ts) (typed delivered-operation registry).
+[DecisionModal.svelte](../web/src/DecisionModal.svelte) uses the browser modal
+top layer for dirty-edit and shared-world replacement decisions; it traps focus,
+makes background controls inert and consumes dismissal gestures.
+[ui-preferences.ts](../web/src/lib/ui-preferences.ts) and
+[SchemeSelect.svelte](../web/src/SchemeSelect.svelte) own scheme validation and selection.
 [schemes.css](../web/src/schemes.css) carries the curated surface roles from UX0.
 Existing shell-model, save-transfer and remote-session-client remain the command
 and authority boundaries; no simulation/protocol/save-format change is introduced.
 
-UX2 remains open: complete dirty-edit decisions, reusable overlay/focus behavior,
-world-replacement modal semantics, saved panel state, action-registry expansion,
-and preset dropdown/persistence. Existing save replacement confirmation remains
-an explicit inline decision in the Saves panel during this first slice. Run and
-Pause remain separate controls enabled from confirmed clock state. Only the
-Evergreen preset is selected by the app; the other bundled role presets await
-UX2's selector. UX3 still owns comprehensive accessibility/device/zoom acceptance,
-all-preset contrast review and comparison against the UX0 performance baseline.
-The contract below includes these remaining requirements; it does not imply
-that their phase gates have passed.
+UX2 completes the current workflows. A station draft blocks panel close/switch,
+retargeting, tool changes and explicit session navigation with Apply / Discard /
+Keep editing. Apply navigates only after a successful authoritative result for
+the original draft; rejection retains the decision. Revised/deleted targets keep
+the original draft visible and disable Apply until explicit Reset/Discard.
+Disconnect and epoch replacement override the decision, discard the interrupted
+draft with feedback and submit nothing. Native input/IME Escape remains local;
+Escape from other panel controls opens the dirty decision or closes one layer.
 
-Verification lives in [UX1 Chromium journeys](../web/tests/browser/ux1.spec.ts),
-the migrated shell/map/persistence/multiplayer journeys and
-[shell-model tests](../web/tests/shell-model.test.ts). The backend regression gate
-passes 129 tests; frontend checks/build and Chromium release journeys pass.
-Native Japanese IME and touch/virtual keyboards remain device checks for UX3;
-no other-engine coverage is claimed.
+Save load/upload now opens a modal naming the consequence for every participant,
+with captured epoch and slot/file, explicit Confirm load and Cancel. A pending
+save excludes other local world mutations, panel transitions and Leave; it is
+never replayed. Slot choice, catalog choice, construction parameters and local
+view options survive panel switches. Closing a panel restores its launcher (the
+Game button when a menu item has gone); picked inspectors restore the canvas.
+Panel headings receive initial focus, and station actions stay in a fixed footer.
+
+A primary panel clears construction geometry while preserving tool/options.
+The full tool card resumes after Close with a fresh target required; while a
+panel occupies the map, the context line explains suspended targeting. This
+avoids overlapping Confirm and panel actions in compact layouts. Middle and
+Space drag consume their entire gesture even when Space is released first.
+Toolbar zoom and Find train use the measured unobscured map region; a zoom
+percentage is shown without live announcements. Target revision changes cancel
+stale construction geometry, and late acknowledgements cannot clear a newer draft.
+
+Settings and every session gate offer Evergreen, Classic blue, Slate and Plum.
+Selection updates semantic root colors immediately; only the allowlisted ID in
+`{version: 1, scheme}` is stored under `freetrain.ui.v1`. Missing, corrupt,
+obsolete or invalid preferences use Evergreen. The preference is applied before
+mounting the app and survives demo/live, refresh and Leave. Language retains its
+existing storage path. No credentials, leases or world drafts are persisted.
+Run and Pause remain separate controls enabled from confirmed clock state.
+
+Verification lives in [UX2 Chromium journeys](../web/tests/browser/ux2.spec.ts),
+[UX1 Chromium journeys](../web/tests/browser/ux1.spec.ts), the existing
+shell/map/persistence/multiplayer journeys and
+[shell-model tests](../web/tests/shell-model.test.ts). UX3 still owns the full
+acceptance matrix, comprehensive accessibility/device/zoom checks, all-preset
+contrast review and comparison against the UX0 performance baseline. The
+regression gate passes 129 backend and 55 frontend tests; all 38 Chromium
+release journeys and 12 final focused overlay/save checks pass. Native Japanese
+IME, touch and virtual keyboards require device checks; no other-engine
+coverage is claimed.
 
 ## Current operations and destinations
 
@@ -297,7 +329,7 @@ such as `:root[data-ui-scheme="classic-blue"]` makes stylesheet overrides simple
 
 One bundled file or one local file per preset is fine; the public contract is
 the semantic property names and allowlisted scheme IDs. No arbitrary user CSS
-or remote stylesheet loading is in scope. Production will keep the root scheme
+or remote stylesheet loading is in scope. Production keeps the root scheme
 attribute as local UI state, set before first paint from a versioned preference;
 invalid/missing/obsolete IDs fall back to Evergreen. Persist only the ID, not raw
 colors/CSS, in safe local preferences, never in world saves or session secrets.
@@ -317,7 +349,7 @@ remounting canvas/panels, decoding assets again, resetting camera, losing form
 drafts, changing tool selection or sending commands. Scheme selection itself is
 not a dirty form requiring Apply. Keep the same scheme across demo/live and
 reconnect/leave; changing settings still follows ordinary held-input focus rules.
-UX1 supplies roles/styles; UX2 wires dropdown/persistence; UX3 checks every
+UX1 supplies roles/styles; UX2 delivers dropdown/persistence; UX3 checks every
 preset's text, focus/pressed/disabled states, notices, English/Japanese layouts,
 refresh/fallback behavior and unchanged renderer/session state.
 
@@ -360,7 +392,7 @@ Decisions reconciled against the local foundation plan:
 - Selected-entity forms require explicit target/revision parameters in the model;
   preserving `[0]` while changing the visuals would fail the inspector requirement.
 
-No unresolved specification blocker remains for the next UX2 slice. The approved direction
+UX2 completes the current-operation workflows specified above. The approved direction
 includes the color-scheme extension; dimensions and preset values can be refined
 from measured usability. Native Japanese IME, touch, virtual keyboard and other browser engines
 are not established by mockup screenshots. There are no roads, terrain tools,
@@ -368,6 +400,6 @@ building placement, Undo/Redo, speed modes or speculative parity buttons.
 
 UX1 delivers Inspect → selected inspector and Rail → explicit Confirm/Cancel
 alongside clock and mandatory session gates. Saves and session controls are
-accessible through their panels; their deeper overlay refinements remain UX2. UX3 must measure panel lifecycle,
+accessible through their panels; UX2 adds reusable modal decisions and focus restoration. UX3 must measure panel lifecycle,
 renderer performance and all acceptance rows against the fresh UX0 baseline;
 mockup screenshots do not check any UX1–UX3 implementation box.

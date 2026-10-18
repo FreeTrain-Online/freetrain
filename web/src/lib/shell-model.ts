@@ -19,6 +19,10 @@ export interface ShellState {
   role?: 'owner' | 'operator' | 'observer';
   locale: Locale;
   draft: string;
+  draftDirty: boolean;
+  draftRevision?: string;
+  draftStationId?: string;
+  draftInterrupted?: boolean;
   composing: boolean;
   pending: boolean;
   connection: ConnectionStatus;
@@ -28,7 +32,7 @@ export interface ShellState {
 }
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
   let inputSequence = BigInt(Date.now()) * 1000n;
-  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id };
+  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id };
   let client: SessionClient | undefined;
   let unsubscribe: (() => void) | undefined;
   let unsubscribeStatus: (() => void) | undefined;
@@ -42,7 +46,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   let draftRevision: string | undefined;
   const listeners = new Set<(state: ShellState) => void>();
   const update = (patch: Partial<ShellState>) => {
-    state = { ...state, ...patch };
+    state = { ...state, ...patch, draftDirty: dirty, draftRevision, draftStationId: stationId };
     for (const listener of listeners) listener(state);
   };
   const release = () => {
@@ -65,7 +69,10 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
         unsubscribe = client.subscribe(read => {
           if (disposed || current !== generation || leaveRequested) return;
           if (state.signedOut) { update({ connection: 'accessRequired', anonymousAccess: activeClient.anonymousAccess ?? false }); return; }
-          if (state.read && state.read.worldEpoch !== read.worldEpoch) { dirty = false; stationId = undefined; draftRevision = undefined; }
+          if (state.read && state.read.worldEpoch !== read.worldEpoch) {
+            const interrupted = dirty; dirty = false; stationId = undefined; draftRevision = undefined;
+            update({ draftInterrupted: state.draftInterrupted || interrupted });
+          }
           authorizedBefore = true;
           const station = read.stations.find(item => item.id === stationId) ?? (!stationId ? read.stations[0] : undefined);
           if (!dirty) draftRevision = station?.revision;
@@ -74,7 +81,10 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
         unsubscribeStatus = client.subscribeStatus?.(connection => {
           if (disposed || current !== generation || leaveRequested) return;
           if (state.signedOut && connection === 'ready') return;
-          if (connection === 'accessRequired') dirty = false;
+          if (connection !== 'ready' && !(connection === 'loading' && activeClient.connectionStage === 'synchronizing')) {
+            const interrupted = dirty; dirty = false; draftRevision = undefined; stationId = undefined;
+            update({ draft: '', composing: false, draftInterrupted: state.draftInterrupted || interrupted });
+          }
           update({ connection, retryAt: activeClient.retryAt, connectionStage: activeClient.connectionStage, authRequiredAgain: activeClient.authRequiredAgain || (connection === 'accessRequired' && authorizedBefore && !state.signedOut), anonymousAccess: client?.anonymousAccess ?? false,
             ...(connection !== 'ready' && !(connection === 'loading' && activeClient.connectionStage === 'synchronizing') ? { pending: false } : {}),
             ...(connection === 'accessRequired' ? { read: undefined, role: undefined, participantId: undefined, draft: '', composing: false } : {}),
@@ -94,7 +104,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       const result = await client.send({ type: 'command', requestId: crypto.randomUUID(), expectedWorldEpoch: state.read!.worldEpoch, payload });
       if (disposed || current !== generation) return;
       if (result.type === 'accepted') {
-        if (payload.kind === 'renameStation' && submittedDraft === state.draft) {
+        if (payload.kind === 'renameStation' && submittedDraft === state.draft && (!stationId || stationId === payload.stationId)) {
           dirty = false;
           const station = state.read!.stations.find(item => item.id === payload.stationId);
           draftRevision = station?.revision;
@@ -124,11 +134,11 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     get state() { return state; },
     subscribe(listener: (state: ShellState) => void) { listeners.add(listener); listener(state); return () => { listeners.delete(listener); }; },
     setLocale(locale: Locale) { update({ locale }); },
-    setDraft(draft: string) { dirty = true; update({ draft }); },
+    setDraft(draft: string) { dirty = true; update({ draft, draftInterrupted: false }); },
     setComposing(composing: boolean) { update({ composing }); },
     setBehavior(behavior: FixtureBehavior) { update({ behavior }); },
     selectBuilding(selectedBuilding: string) { update({ selectedBuilding }); },
-    selectStation(id: string) { stationId = id; dirty = false; const station = state.read?.stations.find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false }); },
+    selectStation(id: string) { stationId = id; dirty = false; const station = state.read?.stations.find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false, draftInterrupted: false }); },
     resetDraft() { dirty = false; const station = state.read?.stations.find(item => item.id === stationId) ?? (!stationId ? state.read?.stations[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },
     rename() {
       if (state.composing || !state.draft.trim() || !state.read) return;

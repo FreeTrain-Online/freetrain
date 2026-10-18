@@ -91,3 +91,12 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
   .primary-panel { inset-block-start: 8px; inset-block-end: auto; width: min(352px, calc(100% - var(--strip) - 16px)); max-height: calc(100% - 16px); }
   .tool-card { max-height: calc(100% - 76px); }
 }
+/* Transient overlays consume the complete gesture; native modal dialogs make
+   the remaining document inert, including canvas and portalled controls. */
+.menu-dismiss { position: fixed; inset: var(--bar) 0 0; width: 100%; border: 0; padding: 0; background: transparent; box-shadow: none; z-index: 39; cursor: default; }
+.panel-footer { padding: 8px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--ui-window-background); }
+.decision-dialog { padding: 0; width: min(440px, calc(100% - 24px)); max-height: calc(var(--viewport-height, 100dvh) - 24px); color: var(--ink); background: var(--ui-window-background); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: visible; }
+.decision-dialog[open] { display: flex; flex-direction: column; }
+.decision-dialog::backdrop { background: #17241e55; }
+.map-navigation .zoom-level { align-self: center; padding: 2px 4px; font-variant-numeric: tabular-nums; background: var(--ui-window-background); }
+.tool-card > .form-actions:last-child { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
