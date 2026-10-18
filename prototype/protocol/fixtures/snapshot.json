@@ -40,7 +40,8 @@
           "y": 8,
           "z": 1
         }
-      ]
+      ],
+      "controlLease": null
     }
   ],
   "stations": [

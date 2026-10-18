@@ -1,5 +1,11 @@
 export const messages = {
   en: {
+    leaveGame: 'Leave game', leavingGame: 'Leaving game…',
+    leaveFailed: 'Leaving could not be confirmed. Retry Leave game to sign out.',
+    localAccessHint: 'Leave the key blank to join locally as Owner.',
+
+    owner: 'Owner', operator: 'Operator', observer: 'Observer', control: 'Train control', unclaimed: 'Available', takeControl: 'Take control', releaseControl: 'Release control',
+    controlBusy: 'Another participant controls this train.', leaseRequired: 'Train control expired or changed. Take control again.',
     cancel: 'Cancel', saves: 'Save and restore', saveSlot: 'Slot', checkpoint: 'Automatic checkpoint', emptySlot: 'empty',
     saveGame: 'Save slot', loadGame: 'Load slot', downloadSave: 'Download save', uploadSave: 'Upload save',
     loadHint: 'Loading replaces the current game and starts paused. Download a backup first if needed.',
@@ -14,7 +20,7 @@ export const messages = {
     heightCut: 'Height cut', buildLevel: 'Track level', trackShape: 'Track shape',
     night: 'Night', winter: 'Winter ground', recolor: 'Recolor',
     mapHelp: 'Click an object to inspect. Drag to pan; use the wheel or buttons to zoom.',
-    constructionHelp: 'Select a tile, then confirm. Tools pause the game and leave it paused. 100 per changed tile; buffer extension costs 200. Removal has no refund.',
+    constructionHelp: 'Select a tile, then confirm. Tools keep shared time running; use Pause when needed. 100 per changed tile; buffer extension costs 200. Removal has no refund.',
     mapCanvas: 'Interactive world map', assetsFailed: 'Map images could not load. Reload to retry.',
     pickTile: 'Select a tile on the map', confirmTrack: 'Confirm track change', cancelPreview: 'Cancel preview',
     pickObject: 'Select a map object to inspect',
@@ -51,6 +57,12 @@ export const messages = {
     selectedBuilding: 'Building details', variant: 'Variant', height: 'Height',
   },
   ja: {
+    leaveGame: 'ゲームから退出', leavingGame: '退出中…',
+    leaveFailed: '退出を確認できませんでした。「ゲームから退出」で再試行してください。',
+    localAccessHint: 'ローカルで所有者として参加するには、キーを空欄にしてください。',
+
+    owner: '所有者', operator: '操作者', observer: '観覧者', control: '列車の操作権', unclaimed: '空き', takeControl: '操作権を取得', releaseControl: '操作権を解放',
+    controlBusy: '別の参加者がこの列車を操作中です。', leaseRequired: '操作権が失効または変更されました。再取得してください。',
     cancel: 'キャンセル', saves: '保存と復元', saveSlot: 'スロット', checkpoint: '自動保存', emptySlot: '空',
     saveGame: 'スロットに保存', loadGame: 'スロットを読込', downloadSave: '保存ファイルをダウンロード', uploadSave: '保存ファイルをアップロード',
     loadHint: '読込は現在のゲームを置き換え、一時停止で開始します。必要なら先にバックアップを保存してください。',
@@ -65,7 +77,7 @@ export const messages = {
     heightCut: '高さ表示', buildLevel: '線路の高さ', trackShape: '線路の形',
     night: '夜景', winter: '冬の地面', recolor: '色変更',
     mapHelp: 'クリックで対象を確認。ドラッグで移動、ホイールやボタンで拡大・縮小。',
-    constructionHelp: 'マスを選び、確定してください。ツールで一時停止し、終了後も停止を保ちます。変更1マス100、車止め延長200。撤去の返金はありません。',
+    constructionHelp: 'マスを選び、確定してください。時間は共有されます。必要なら一時停止ボタンを使ってください。変更1マス100、車止め延長200。撤去の返金はありません。',
     mapCanvas: '操作マップ', assetsFailed: '画像を読み込めませんでした。再読み込みしてください。',
     pickTile: 'マップのマスを選択', confirmTrack: '線路の変更を確定', cancelPreview: 'プレビューを取消',
     pickObject: 'マップの対象を選択',

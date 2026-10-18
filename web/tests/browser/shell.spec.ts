@@ -120,7 +120,7 @@ test('dropped connection recovers confirmed state and reports ambiguous command 
   expect(commandCount).toBe(1);
 });
 
-test('competing browser cannot join and recovers after the owner disconnects', async ({ page, context }) => {
+test('second tab sharing one participant waits until its first socket disconnects', async ({ page, context }) => {
   await page.goto('/'); await ready(page);
   const competing = await context.newPage(); await competing.goto('/');
   await expect(competing.getByTestId('connection')).not.toHaveText('Connected to game');
@@ -129,7 +129,7 @@ test('competing browser cannot join and recovers after the owner disconnects', a
   await ready(competing); await expect(step(competing)).toBeEnabled();
 });
 
-test('Japanese labels fit narrow doubled-density layouts and hidden tab pauses game', async ({ browser }) => {
+test('Japanese labels fit narrow doubled-density layouts and hidden tab keeps shared time running', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 640, height: 450 }, deviceScaleFactor: 2, locale: 'ja-JP' });
   const page = await context.newPage(); await page.goto('/');
   await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
@@ -137,6 +137,9 @@ test('Japanese labels fit narrow doubled-density layouts and hidden tab pauses g
   await page.getByRole('navigation').getByRole('button', { name: '運転', exact: false }).click();
   await expect(page.getByTestId('clock-state')).toHaveText('運転中');
   await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await expect(page.getByTestId('clock-state')).toHaveText('運転中');
+  await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: false }); document.dispatchEvent(new Event('visibilitychange')); });
+  await page.getByRole('button', { name: '一時停止', exact: false }).click();
   await expect(page.getByTestId('clock-state')).toHaveText('一時停止中');
   const input = page.getByLabel('駅名', { exact: true }); await input.focus(); await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: '駅名を適用', exact: true })).toBeFocused();

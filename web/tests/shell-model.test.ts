@@ -124,3 +124,53 @@ Deno.test('fixture snapshots are immutable; stale revisions reject without publi
     unsubscribe(); assert(service.diagnostics.subscriptions === 0);
   } finally { client.dispose(); }
 });
+
+Deno.test('controller changes acquire a lease and use the newly confirmed revision and token', async () => {
+  const { model } = setup();
+  try {
+    await until(() => model.state.connection === 'ready');
+    await model.controller('manual');
+    assert(model.state.read?.trains[0].controller === 'manual');
+    assert(model.state.read.trains[0].controlLease?.participantId === model.state.participantId);
+    assert(model.state.read.trains[0].controlLease?.leaseId === 'fixture-lease');
+    await model.releaseControl();
+    assert(model.state.read.trains[0].controlLease === null);
+  } finally { model.dispose(); }
+});
+
+Deno.test('leave cancels pending work and clears client state before returning to sign-in', async () => {
+  const service = createFixtureService({ normal: 2, delayed: 100 });
+  let signedOut = false;
+  const model = createShellModel((): SessionClient => signedOut ? {
+    mode: 'remote', subscribe: () => () => {},
+    subscribeStatus(listener) { listener('accessRequired'); return () => {}; },
+    send: () => Promise.reject(new Error('Signed out')), dispose() {},
+  } : service.connect(), 'en', 1);
+  try {
+    await until(() => model.state.connection === 'ready');
+    service.setBehavior('delayed'); model.setDraft('Local draft');
+    const pending = model.send({ kind: 'step' });
+    await model.leave(async () => { signedOut = true; }); await pending;
+    await until(() => model.state.connection === 'accessRequired');
+    assert(service.diagnostics.connections === 0 && service.diagnostics.subscriptions === 0);
+    assert(!model.state.read && !model.state.role && !model.state.participantId);
+    assert(!model.state.pending && !model.state.leaving && model.state.draft === '');
+  } finally { model.dispose(); }
+});
+
+Deno.test('failed leave stays disconnected and can be retried without reconnecting mid-request', async () => {
+  const { service, model } = setup();
+  let finish: () => void = () => {};
+  try {
+    await until(() => model.state.connection === 'ready');
+    await model.leave(() => Promise.reject(new Error('Network failure')));
+    assert(model.state.feedback === 'leaveFailed' && model.state.connection === 'disconnected');
+    assert(!model.state.read && service.diagnostics.connections === 0);
+    const retry = model.leave(() => new Promise(resolve => { finish = resolve; }));
+    model.reconnect();
+    assert(model.state.leaving && service.diagnostics.connections === 0);
+    finish(); await retry;
+    await until(() => model.state.connection === 'ready');
+    assert(!model.state.leaving && model.state.feedback === 'idle');
+  } finally { model.dispose(); }
+});

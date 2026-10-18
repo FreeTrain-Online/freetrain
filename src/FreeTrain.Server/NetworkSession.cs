@@ -8,6 +8,7 @@ namespace FreeTrain.Server;
 
 public sealed class NetworkOptions
 {
+    public int MaximumPeers { get; init; } = 32;
     public int OutputCapacity { get; init; } = 32;
     public int ReceiptCapacity { get; init; } = 1024;
     public TimeSpan ReceiptRetention { get; init; } = TimeSpan.FromMinutes(2);
@@ -17,7 +18,7 @@ public sealed class NetworkOptions
     public TimeSpan IdleRetention { get; init; } = TimeSpan.FromMinutes(5);
     public void Validate()
     {
-        if (OutputCapacity is < 2 or > 1024 || ReceiptCapacity is < 1 or > 65536 ||
+        if (MaximumPeers is < 2 or > 256 || OutputCapacity is < 2 or > 1024 || ReceiptCapacity is < 1 or > 65536 ||
             ReceiptRetention < TimeSpan.FromSeconds(10) || InputExpiry <= TimeSpan.Zero ||
             DisconnectGrace < TimeSpan.Zero || SocketIdle <= InputExpiry || IdleRetention <= ReceiptRetention)
             throw new InvalidOperationException("Invalid FreeTrain:Network limits.");
@@ -31,7 +32,9 @@ public sealed class NetworkSession
     private readonly SaveStorage? storage;
     public NetworkSession(NetworkOptions options, SaveStorage? storage = null)
     {
+        options.Validate();
         this.options = options; this.storage = storage;
+        host = SessionComposition.CreateReferenceHost(inputExpiry: options.InputExpiry);
         if (storage?.Exists("checkpoint") == true)
         {
             var load = host.LoadSave(storage.Read("checkpoint")); host.Pump(); load.GetAwaiter().GetResult();
@@ -39,30 +42,30 @@ public sealed class NetworkSession
     }
     private bool disconnectCheckpoint;
     public bool TakeCheckpointRequest() { lock (gate) { var requested = disconnectCheckpoint; disconnectCheckpoint = false; return requested; } }
-    public Task<SaveDocument> CaptureSave(long? epoch = null) { lock (gate) return host.CaptureSave(epoch); }
-    public async Task Checkpoint(string id = "checkpoint", long? epoch = null)
+    public Task<SaveDocument> CaptureSave(long? epoch = null, ParticipantContext? participant = null) { lock (gate) return host.CaptureSave(epoch, participant); }
+    public async Task Checkpoint(string id = "checkpoint", long? epoch = null, ParticipantContext? participant = null)
     {
         if (storage == null) return;
-        await storage.Write(id, await CaptureSave(epoch));
+        await storage.Write(id, await CaptureSave(epoch, participant));
     }
-    public async Task LoadSave(SaveDocument document, long epoch)
+    public async Task LoadSave(SaveDocument document, long epoch, ParticipantContext? participant = null)
     {
         Task<SnapshotMessage> loaded;
-        lock (gate) loaded = host.LoadSave(document, epoch);
+        lock (gate) loaded = host.LoadSave(document, epoch, participant);
         await loaded;
         lock (gate)
         {
-            lastInput = null; disconnectCheckpoint = true;
-            if (active != null) Publish(active);
+            disconnectCheckpoint = true;
+            foreach (var peer in peers.Values.ToArray()) Publish(peer);
         }
     }
-    public Task LoadSlot(string id, long epoch) => LoadSave(storage?.Read(id) ?? throw new InvalidOperationException("unavailable"), epoch);
+    public Task LoadSlot(string id, long epoch, ParticipantContext? participant = null) => LoadSave(storage?.Read(id) ?? throw new InvalidOperationException("unavailable"), epoch, participant);
     public object[] SaveSlots() => SaveStorage.Slots.Select(id => (object)new { id, exists = storage?.Exists(id) == true }).ToArray();
     public void PrepareShutdown()
     {
         lock (gate)
         {
-            if (active != null) Disconnect(active, DateTimeOffset.UtcNow);
+            foreach (var peer in peers.Values.ToArray()) Disconnect(peer, DateTimeOffset.UtcNow);
             host.RequestInputReset(true); host.Pump();
         }
     }
@@ -77,8 +80,10 @@ public sealed class NetworkSession
     public const string ContentVersion = "prototype-content-1";
     public static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
     private sealed record Receipt(string Payload, DateTimeOffset Expires, Task<WireMessage> Result);
-    public sealed class Peer(int capacity, DateTimeOffset now)
+    public sealed class Peer(int capacity, DateTimeOffset now, ParticipantContext participant, string? accessCredential = null)
     {
+        internal string? AccessCredential { get; } = accessCredential;
+        public ParticipantContext Participant { get; } = participant;
         public Channel<WireMessage> Output { get; } = Channel.CreateBounded<WireMessage>(new BoundedChannelOptions(capacity)
         { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
         public CancellationTokenSource Stop { get; } = new();
@@ -88,48 +93,94 @@ public sealed class NetworkSession
         internal int Messages;
     }
     private readonly object gate = new();
-    private readonly Dictionary<string, Receipt> receipts = new(StringComparer.Ordinal);
-    private SessionHost host = SessionComposition.CreateReferenceHost();
-    private Peer? active;
+    private readonly Dictionary<(string ParticipantId, string RequestId), Receipt> receipts = new();
+    private SessionHost host;
+    private readonly Dictionary<string, Peer> peers = new(StringComparer.Ordinal);
+    private bool IsActive(Peer peer) => peers.TryGetValue(peer.Participant.ParticipantId, out var current) && current == peer;
+    private bool HasOperators => peers.Values.Any(p => p.Participant.Role != ParticipantRole.Observer);
     private DateTimeOffset? disconnectedAt;
-    private DateTimeOffset? lastInput;
     private long lastPublicationSlot;
     private bool checkpointedDisconnect;
     public string Incarnation { get; } = Guid.NewGuid().ToString("N");
-    public string AccessCookie { get; } = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32));
-    public JoinMessage Bootstrap() { lock (gate) return Join(); }
-    private JoinMessage Join() => new(1, ContentVersion, Incarnation, "reference-v1", "operator-1", host.WorldEpoch, host.Snapshot());
-    public Peer? Connect(DateTimeOffset now)
+    public const int MaximumAccessCredentials = 1024;
+    private sealed record AccessCredential(ParticipantContext Participant, DateTimeOffset Expires);
+    private readonly Dictionary<string, AccessCredential> accessCredentials = new(StringComparer.Ordinal);
+    // Opaque, incarnation-local login credentials can be revoked independently of
+    // configured access keys. Keep the registry bounded and prune expired logins.
+    public string? IssueAccess(ParticipantContext participant, DateTimeOffset? now = null)
     {
         lock (gate)
         {
-            if (active != null) return null;
-            active = new(options.OutputCapacity, now);
-            var join = Join();
-            active.LastSnapshot = join.Snapshot;
-            Write(active, join);
-            disconnectedAt = null; checkpointedDisconnect = false;
-            return active;
+            var issuedAt = now ?? DateTimeOffset.UtcNow;
+            PruneAccess(issuedAt);
+            if (accessCredentials.Count >= MaximumAccessCredentials) return null;
+            var credential = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32));
+            accessCredentials.Add(credential, new(participant, issuedAt.AddHours(8)));
+            return credential;
+        }
+    }
+    public ParticipantContext? ResolveAccess(string? credential, DateTimeOffset? now = null)
+    {
+        lock (gate)
+            return credential != null && credential.Length == 64 && accessCredentials.TryGetValue(credential, out var access)
+                && access.Expires > (now ?? DateTimeOffset.UtcNow) ? access.Participant : null;
+    }
+    public void RevokeAccess(string? credential, DateTimeOffset? now = null)
+    {
+        lock (gate)
+        {
+            if (credential == null || !accessCredentials.Remove(credential)) return;
+            foreach (var peer in peers.Values.Where(p => p.AccessCredential == credential).ToArray())
+                Disconnect(peer, now ?? DateTimeOffset.UtcNow);
+        }
+    }
+    private void PruneAccess(DateTimeOffset now)
+    {
+        foreach (var credential in accessCredentials.Where(x => x.Value.Expires <= now).Select(x => x.Key).ToArray())
+            RevokeAccess(credential, now);
+    }
+    public JoinMessage Bootstrap(ParticipantContext? participant = null) { lock (gate) return Join(participant ?? new("operator-1")); }
+    private JoinMessage Join(ParticipantContext participant) => new(2, ContentVersion, Incarnation, "reference-v1", participant.ParticipantId,
+        participant.Role.ToString().ToLowerInvariant(), host.WorldEpoch, host.Snapshot());
+    public Peer? Connect(DateTimeOffset now, ParticipantContext? participant = null, string? accessCredential = null)
+    {
+        lock (gate)
+        {
+            if (accessCredential != null)
+            {
+                var authenticated = ResolveAccess(accessCredential, now);
+                if (authenticated == null || authenticated != participant) return null;
+            }
+            participant ??= new("operator-1");
+            if (peers.ContainsKey(participant.ParticipantId) || peers.Count >= options.MaximumPeers) return null;
+            participant = participant with { ConnectionId = Guid.NewGuid().ToString("N") };
+            var peer = new Peer(options.OutputCapacity, now, participant, accessCredential);
+            peers.Add(participant.ParticipantId, peer);
+            host.RegisterParticipant(participant);
+            var join = Join(participant);
+            peer.LastSnapshot = join.Snapshot;
+            Write(peer, join);
+            if (HasOperators) { disconnectedAt = null; checkpointedDisconnect = false; }
+            return peer;
         }
     }
     public void Disconnect(Peer peer, DateTimeOffset now)
     {
         lock (gate)
         {
-            if (active != peer) return;
-            active = null;
+            if (!IsActive(peer)) return;
+            peers.Remove(peer.Participant.ParticipantId);
             peer.Output.Writer.TryComplete();
             peer.Stop.Cancel();
-            host.RequestInputReset(false);
-            lastInput = null;
-            disconnectedAt = now;
+            host.DisconnectParticipant(peer.Participant);
+            if (!HasOperators) disconnectedAt ??= now;
         }
     }
     public bool Touch(Peer peer, DateTimeOffset now)
     {
         lock (gate)
         {
-            if (peer != active) return false;
+            if (!IsActive(peer)) return false;
             if (now - peer.Window >= TimeSpan.FromSeconds(1)) { peer.Window = now; peer.Messages = 0; }
             if (++peer.Messages > 64) { Disconnect(peer, now); return false; }
             peer.LastSeen = now;
@@ -141,31 +192,25 @@ public sealed class NetworkSession
         lock (gate)
         {
             Task<WireMessage> Reject(string code) => Task.FromResult<WireMessage>(new RejectedMessage(command.RequestId, code, new()));
-            if (active != peer) return Reject("notAuthorized");
+            if (!IsActive(peer)) return Reject("notAuthorized");
+            if (peer.Participant.Role == ParticipantRole.Observer) return Reject("notAuthorized");
             if (command.ExpectedWorldEpoch != host.WorldEpoch) return Reject("staleEpoch");
             foreach (var key in receipts.Where(x => x.Value.Expires <= now && x.Value.Result.IsCompleted).Select(x => x.Key).ToArray()) receipts.Remove(key);
             var payload = JsonSerializer.Serialize<WireMessage>(command, Json);
-            if (receipts.TryGetValue(command.RequestId, out var receipt))
+            if (receipts.TryGetValue((peer.Participant.ParticipantId, command.RequestId), out var receipt))
                 return receipt.Payload == payload ? receipt.Result : Reject("requestConflict");
             if (receipts.Count >= options.ReceiptCapacity) return Reject("retryWindowFull");
-            var result = host.Enqueue(new("operator-1"), command);
-            if (command.Payload is ControllerInputCommand input) result = ObserveInput(result, peer, now, input.Reset);
-            receipts.Add(command.RequestId, new(payload, now + options.ReceiptRetention, result));
+            var result = host.Enqueue(peer.Participant, command);
+            receipts.Add((peer.Participant.ParticipantId, command.RequestId), new(payload, now + options.ReceiptRetention, result));
             return result;
         }
-    }
-    private async Task<WireMessage> ObserveInput(Task<WireMessage> pending, Peer peer, DateTimeOffset now, bool reset)
-    {
-        var result = await pending;
-        lock (gate) { if (result is AcceptedMessage && peer == active) lastInput = reset ? null : now; }
-        return result;
     }
     public void Reply(Peer peer, WireMessage result)
     {
         lock (gate)
         {
-            if (peer != active) return;
-            Publish(peer); // Confirmed state precedes its committed acknowledgement.
+            if (!IsActive(peer)) return;
+            foreach (var other in peers.Values.ToArray()) Publish(other); // Broadcast committed state before acknowledging.
             Write(peer, result);
         }
     }
@@ -173,23 +218,22 @@ public sealed class NetworkSession
     {
         lock (gate)
         {
-            if (peer != active) return;
+            if (!IsActive(peer)) return;
             peer.LastSnapshot = host.Snapshot();
             Write(peer, peer.LastSnapshot);
         }
     }
-    public void ResetInput(Peer peer, bool pause)
+    public void ResetInput(Peer peer)
     {
-        lock (gate) { if (peer == active) { host.RequestInputReset(pause); lastInput = null; } }
+        lock (gate) { if (IsActive(peer)) host.ResetParticipantInput(peer.Participant); } // Focus loss never pauses a shared world.
     }
     public void Tick(DateTimeOffset now)
     {
         lock (gate)
         {
-            disconnectedAt ??= active == null ? now : null;
-            if (active != null && now - active.LastSeen >= options.SocketIdle) Disconnect(active, now);
-            if (lastInput is { } inputAt && now - inputAt >= options.InputExpiry)
-            { host.RequestInputReset(false); lastInput = null; }
+            PruneAccess(now);
+            disconnectedAt ??= !HasOperators ? now : null;
+            foreach (var peer in peers.Values.Where(p => now - p.LastSeen >= options.SocketIdle).ToArray()) Disconnect(peer, now);
             if (disconnectedAt is { } lostAt && now - lostAt >= options.DisconnectGrace)
             {
                 host.RequestInputReset(true);
@@ -197,18 +241,19 @@ public sealed class NetworkSession
             }
             if (storage == null && disconnectedAt is { } idleAt && now - idleAt >= options.IdleRetention)
             {
-                host = SessionComposition.CreateReferenceHost(host.WorldEpoch + 1);
+                host = SessionComposition.CreateReferenceHost(host.WorldEpoch + 1, options.InputExpiry);
+                foreach (var peer in peers.Values) host.RegisterParticipant(peer.Participant);
                 receipts.Clear(); disconnectedAt = now;
             }
-            var pump = host.Pump(1); // 20Hz, no unbounded catch-up after a stalled process.
+            var pump = host.Pump(1, now); // 20Hz, no unbounded catch-up after a stalled process.
             // Fixed 100ms slots avoid accumulating 50ms timer jitter into a slower rate.
             // Skip missed slots after a stall; never burst an unbounded catch-up batch.
             var slot = now.UtcTicks / TimeSpan.TicksPerMillisecond / 100;
-            if (active != null && slot > lastPublicationSlot)
-            { Publish(active); lastPublicationSlot = slot; }
-            if (active != null)
+            if (slot > lastPublicationSlot)
+            { foreach (var peer in peers.Values.ToArray()) Publish(peer); lastPublicationSlot = slot; }
+            foreach (var peer in peers.Values.ToArray())
                 foreach (var sound in pump.Events.Where(e => e.Kind == "stationArrived"))
-                    Write(active, new SoundEventMessage($"{Incarnation}:{host.WorldEpoch}:{sound.Tick}:{sound.SubjectId}:{sound.Kind}", host.WorldEpoch, sound.Kind));
+                    Write(peer, new SoundEventMessage($"{Incarnation}:{host.WorldEpoch}:{sound.Tick}:{sound.SubjectId}:{sound.Kind}", host.WorldEpoch, sound.Kind));
         }
     }
     private void Publish(Peer peer)

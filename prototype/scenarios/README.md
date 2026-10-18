@@ -17,7 +17,7 @@ three-layer member of the 2–5-layer condominium family at (34,22,0) supply
 representative inspectors. Construction prices below are deliberately proposed
 prototype rules, not imported legacy accounting.
 
-Stage 2 behavior cases (implemented; see `../../doc/web-prototype-headless.md`):
+Stage 2 behavior cases (implemented):
 
 - Start paused with cash 1,000,000, tick/revision zero and a move event at tick 1.
   Run moves one connected tile per tick; first arrival at the station is tick 8.

@@ -10,7 +10,7 @@ const read: Snapshot = {
   map: { width: 128, height: 128, levels: 16 },
   tracks: Array.from({ length: 4096 }, (_, i) => ({ position: { x: i % 128, y: Math.floor(i / 128) * 4, z: 1 }, shape: 'eastWest', revision: '0' })),
   buildings: Array.from({ length: 1024 }, (_, i) => ({ id: `building-${i}`, definitionId: 'profile-condo', position: { x: (i % 32) * 4, y: Math.floor(i / 32) * 4 + 2, z: 0 }, height: 4 })),
-  trains: Array.from({ length: 128 }, (_, i) => ({ id: `train-${i}`, revision: '0', name: 'Profile', cars: 3, controller: 'automatic', direction: 'east', state: 'moving',
+  trains: Array.from({ length: 128 }, (_, i) => ({ id: `train-${i}`, revision: '0', name: 'Profile', controlLease: null, cars: 3, controller: 'automatic', direction: 'east', state: 'moving',
     position: { x: 3 + (i % 16) * 7, y: Math.floor(i / 16) * 16, z: 1 },
     carPositions: [0, 1, 2].map(offset => ({ x: 3 + (i % 16) * 7 - offset, y: Math.floor(i / 16) * 16, z: 1 })) as [{x:number;y:number;z:number}, ...{x:number;y:number;z:number}[]] })),
   stations: Array.from({ length: 16 }, (_, i) => ({ id: `station-${i}`, name: 'Profile', revision: '0', position: { x: i * 8, y: 64, z: 1 } })),

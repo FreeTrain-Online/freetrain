@@ -52,10 +52,10 @@ public abstract record WireMessage;
 public sealed record SoundEventMessage(string EventId, long WorldEpoch, string Kind) : WireMessage;
 public sealed record ResyncMessage : WireMessage;
 public sealed record HeartbeatMessage : WireMessage;
-public sealed record InputResetMessage(bool Pause) : WireMessage;
+public sealed record InputResetMessage : WireMessage;
 
 public sealed record JoinMessage(int ProtocolVersion, string ContentVersion, string ServerIncarnation,
-    string SessionId, string ParticipantId, long WorldEpoch, [property: JsonConverter(typeof(NestedSnapshotConverter))] SnapshotMessage Snapshot) : WireMessage;
+    string SessionId, string ParticipantId, string Role, long WorldEpoch, [property: JsonConverter(typeof(NestedSnapshotConverter))] SnapshotMessage Snapshot) : WireMessage;
 public sealed record CommandMessage(string RequestId, long ExpectedWorldEpoch, CommandPayload Payload) : WireMessage;
 public sealed record AcceptedMessage(string RequestId, long WorldEpoch, long Sequence, long Tick, long Revision) : WireMessage;
 public sealed record RejectedMessage(string RequestId, string Code, Dictionary<string, string> Arguments) : WireMessage;
@@ -69,11 +69,14 @@ public sealed record MapRead(int Width, int Height, int Levels);
 public sealed record PositionRead(int X, int Y, int Z);
 public sealed record TrackRead(PositionRead Position, string Shape, long Revision);
 public sealed record TrainRead(string Id, long Revision, string Name, PositionRead Position, int Cars, string Controller,
-    string Direction, PositionRead[] CarPositions, string State);
+    string Direction, PositionRead[] CarPositions, string State, ControlLeaseRead? ControlLease);
+public sealed record ControlLeaseRead(string ParticipantId, string LeaseId, long ExpiresAt);
 public sealed record StationRead(string Id, long Revision, string Name, PositionRead Position);
 public sealed record BuildingRead(string Id, string DefinitionId, PositionRead Position, int Height);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
+[JsonDerivedType(typeof(AcquireControlCommand), "acquireControl")]
+[JsonDerivedType(typeof(ReleaseControlCommand), "releaseControl")]
 [JsonDerivedType(typeof(RunCommand), "run")]
 [JsonDerivedType(typeof(PauseCommand), "pause")]
 [JsonDerivedType(typeof(StepCommand), "step")]
@@ -83,15 +86,17 @@ public sealed record BuildingRead(string Id, string DefinitionId, PositionRead P
 [JsonDerivedType(typeof(SetControllerCommand), "setController")]
 [JsonDerivedType(typeof(ControllerInputCommand), "controllerInput")]
 public abstract record CommandPayload;
+public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
+public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
 public sealed record RunCommand : CommandPayload;
 public sealed record PauseCommand : CommandPayload;
 public sealed record StepCommand : CommandPayload;
 public sealed record RenameStationCommand(string StationId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record BuildTrackCommand(PositionRead Position, string Shape) : CommandPayload;
 public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevision) : CommandPayload;
-public sealed record SetControllerCommand(string TrainId, long ExpectedRevision, string Controller) : CommandPayload;
+public sealed record SetControllerCommand(string TrainId, long ExpectedRevision, string Controller, string LeaseId) : CommandPayload;
 public sealed record ControllerInputCommand(string TrainId, long InputSequence, bool Pass, bool Depart,
-    bool Reverse, bool Left, bool Right, bool Reset) : CommandPayload;
+    bool Reverse, bool Left, bool Right, bool Reset, string LeaseId) : CommandPayload;
 
 // Nested snapshots retain the same discriminator as standalone snapshots.
 public sealed class NestedSnapshotConverter : JsonConverter<SnapshotMessage>

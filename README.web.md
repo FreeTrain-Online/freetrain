@@ -8,13 +8,8 @@ height cuts, object picking, track previews and confirmed construction/removal,
 with focus-scoped manual keyboard control. Versioned saves, server checkpoints, browser
 download/upload and an optional station sound are available.
 
-See the [persistence/audio report and backup/restore instructions](tmp/web-prototype-persistence.md),
-[deployment/recovery runbook](doc/web-deployment.md),
-[release validation and performance findings](tmp/web-prototype-validation.md),
-[playable map report and asset provenance](tmp/web-prototype-map.md),
-[network slice report and protocol/limits](tmp/web-prototype-network.md),
-[Stage 2 implementation](tmp/web-prototype-headless.md), and
-[UI comparison decision](tmp/web-prototype-ui-comparison.md).
+Multiple participants can now share that world with owner/operator/observer roles,
+conflict checks, independent reconnects and timed train-control leases.
 
 ## Prerequisites and checks
 
@@ -70,16 +65,27 @@ Open the Vite loopback URL printed in the second terminal. The server binds to
 `GET /health` reports persistence-stage health and any automatic-checkpoint error. Commands and train positions now come
 from the real headless game. The map renders imported pier/condo/FT train images
 and the catalog contains the fixed pier and condo heights 2–5.
-Only one operator socket can control the game at a time.
+Independent browser sessions can control the same game. Each participant has one
+active socket; tabs sharing cookies share that identity. Local browsers receive
+independent owner identities. Train control requires a lease, visible in the inspector.
 
 For a remote binding, configure `FreeTrain__OperatorSecret` on the server. The
 browser exchanges the access key for an HttpOnly, SameSite cookie. Keep the static
 client and service behind one HTTPS origin. The release container serves both;
-Caddy provides HTTPS/WSS. No secret belongs in frontend configuration. Optional explicit
+Caddy provides HTTPS/WSS. Additional remote participants use separate `FreeTrain__Participants__0__Id`,
+`__Role` (`owner`, `operator`, `observer`) and `__Secret` settings.
+Save/load mutations require an owner. **Leave game** revokes this login and returns
+to sign-in, allowing you to connect with another participant key.
+For a complete local setup with Owner, Operator and Observer clients, see
+[multiplayer operation guide](doc/web-multiplayer-operation.md).
+No secret belongs in frontend configuration. Optional explicit
 origins use `FreeTrain__AllowedOrigins__0`; lifecycle and queue settings use
-`FreeTrain__Network__<Property>`. See the network report for defaults and limits.
+`FreeTrain__Network__<Property>`. See
+[NetworkOptions](src/FreeTrain.Server/NetworkSession.cs) for defaults and limits.
 
-The game clears held input on disconnect and pauses/checkpoints after one second.
+Disconnect clears that participant’s held input and releases their train leases.
+The game pauses/checkpoints one second after the last owner/operator disconnects;
+observers do not keep unattended time running. Hidden tabs clear only their own inputs.
 Idle games retain their state. Restart restores the latest checkpoint, starts paused,
 and changes the server incarnation. Automatic checkpoints run every 30 seconds;
 an abrupt crash can lose changes since the most recent successful checkpoint.
@@ -100,12 +106,15 @@ Height cut hides raised rails and replaces cut buildings with selectable footpri
 Night uses the source palette transformation; winter ground and recoloring are
 local display options. The water/fence/slope sample by the pier is decorative.
 
-Choose Build track to pause, select a tile on level 1, then confirm. Extend the
+Choose Build track, select a tile on level 1, then confirm. Tools keep shared time
+running; use Pause when needed. Extend the
 siding with a buffer at `(37,16,1)`; the host converts the old buffer and charges
 200 total. Preview/cancel costs nothing. Removal has no refund and rejects occupied
-or station track. Leaving a construction tool keeps the game paused.
+or station track. Leaving a construction tool does not change shared time.
 
-Select Manual in the train inspector, run, and focus the map. Shift passes the
+Select Manual in the train inspector to acquire control, run, and focus the map.
+Another participant must release control, disconnect or let the five-second lease
+expire before you can take over. Take control / Release control allow explicit handoff. Shift passes the
 station, Up departs, Down reverses at a station, and Left/Right choose a junction.
 Focus loss, hidden tabs, disconnect and server expiry clear held input. Text fields
 and IME composition do not capture controller keys.
@@ -142,7 +151,8 @@ FreeTrain__Saves__Directory="$PWD/data/saves" dotnet run --project src/FreeTrain
 `FreeTrain__Saves__Interval=00:00:30` configures the checkpoint interval
 (allowed range: one second to five minutes). Only one server can hold a save
 directory at a time. A corrupt checkpoint prevents startup and is left intact;
-restore an independent download/backup using the linked report's procedure.
+restore an independent download/backup using the
+[recovery procedure](doc/web-deployment.md#restore-and-rollback).
 Health reports `checkpointError: "checkpointFailed"` if an automatic write fails.
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
@@ -172,8 +182,8 @@ Release image/static archives and checksums go into `tmp/release/`. Deployment
 checks use a disposable Compose project, Linux x64 runtime, one HTTPS/WSS origin,
 and persistent test volumes. The [runbook](doc/web-deployment.md)
 covers configuration, local certificates, controlled public hosting, health,
-updates, shutdown and independent backup restoration. All plan/report Markdown
-and performance evidence live in `tmp/`.
+updates, shutdown and independent backup restoration. Performance evidence lives
+in `tmp/`.
 
 If a development server already uses browser-test ports, set
 `FREETRAIN_TEST_SERVER_PORT=5182 FREETRAIN_TEST_WEB_PORT=4182` when running
@@ -189,9 +199,8 @@ dotnet run --project src/FreeTrain.Server -c Release --no-build --no-restore -- 
 ```
 
 Append an output path to write full per-tick state/event NDJSON. The command
-prints counts and a SHA-256; the expected result and rule decisions are in
-[the headless extraction notes](tmp/web-prototype-headless.md). The .NET test
-suite compares two complete 10,000-tick traces and checks movement legality,
+prints counts and a SHA-256. The .NET test suite compares two complete
+10,000-tick traces and checks movement legality,
 station timing, manual control, accounting atomicity and host isolation.
 
 ## Contract changes

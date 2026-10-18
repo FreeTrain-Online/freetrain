@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain.invalid/prototype/contracts-v1.schema.json",
+  "$id": "https://freetrain.invalid/prototype/contracts-v2.schema.json",
   "title": "PrototypeDocument",
   "oneOf": [
     {
@@ -124,6 +124,16 @@
             "buffer",
             "blocked"
           ]
+        },
+        "controlLease": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ControlLease"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -135,7 +145,8 @@
         "controller",
         "direction",
         "carPositions",
-        "state"
+        "state",
+        "controlLease"
       ]
     },
     "Station": {
@@ -496,13 +507,18 @@
                 "automatic",
                 "manual"
               ]
+            },
+            "leaseId": {
+              "type": "string",
+              "minLength": 1
             }
           },
           "required": [
             "kind",
             "trainId",
             "expectedRevision",
-            "controller"
+            "controller",
+            "leaseId"
           ]
         },
         {
@@ -536,6 +552,10 @@
             },
             "reset": {
               "type": "boolean"
+            },
+            "leaseId": {
+              "type": "string",
+              "minLength": 1
             }
           },
           "required": [
@@ -547,7 +567,47 @@
             "reverse",
             "left",
             "right",
-            "reset"
+            "reset",
+            "leaseId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "acquireControl"
+            },
+            "trainId": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "trainId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "releaseControl"
+            },
+            "trainId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "leaseId": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "trainId",
+            "leaseId"
           ]
         }
       ]
@@ -632,7 +692,9 @@
             "queueFull",
             "invalidInput",
             "requestConflict",
-            "retryWindowFull"
+            "retryWindowFull",
+            "leaseRequired",
+            "controlBusy"
           ]
         },
         "arguments": {
@@ -657,7 +719,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 1
+          "const": 2
         },
         "contentVersion": {
           "type": "string",
@@ -680,6 +742,13 @@
         },
         "snapshot": {
           "$ref": "#/$defs/Snapshot"
+        },
+        "role": {
+          "enum": [
+            "owner",
+            "operator",
+            "observer"
+          ]
         }
       },
       "required": [
@@ -690,7 +759,8 @@
         "sessionId",
         "participantId",
         "worldEpoch",
-        "snapshot"
+        "snapshot",
+        "role"
       ]
     },
     "SavedTrack": {
@@ -1076,14 +1146,10 @@
       "properties": {
         "type": {
           "const": "inputReset"
-        },
-        "pause": {
-          "type": "boolean"
         }
       },
       "required": [
-        "type",
-        "pause"
+        "type"
       ]
     },
     "SoundEvent": {
@@ -1109,6 +1175,28 @@
         "eventId",
         "worldEpoch",
         "kind"
+      ]
+    },
+    "ControlLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "participantId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "leaseId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "participantId",
+        "leaseId",
+        "expiresAt"
       ]
     }
   }

@@ -1,0 +1,10 @@
+{
+  "type": "command",
+  "requestId": "fixture-releaseControl",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "releaseControl",
+    "trainId": "train-1",
+    "leaseId": "1"
+  }
+}

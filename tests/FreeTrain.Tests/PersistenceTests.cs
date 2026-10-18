@@ -156,8 +156,8 @@ public class PersistenceTests
     [Fact]
     public async Task Controller_state_survives_load_while_held_input_is_cleared()
     {
-        var host = Host(); Apply(host, new SetControllerCommand("train-1", 0, "manual"));
-        Apply(host, new ControllerInputCommand("train-1", 1, true, true, true, true, true, false));
+        var host = Host(); Apply(host, new AcquireControlCommand("train-1")); Apply(host, new SetControllerCommand("train-1", 1, "manual", "1"));
+        Apply(host, new ControllerInputCommand("train-1", 1, true, true, true, true, true, false, "1"));
         var save = Capture(host); var load = host.LoadSave(save); host.Pump(); await load;
         var train = Assert.Single(host.ReadState().Trains);
         Assert.Equal("manual", train.Controller); Assert.Equal(default, train.Input); Assert.Null(train.InputExpiresAt);

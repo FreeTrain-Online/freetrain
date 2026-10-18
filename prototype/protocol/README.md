@@ -9,22 +9,31 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol `1`, content `prototype-content-1`, save `1`.
-Join conveys server incarnation, participant/session identity, epoch, and initial
-snapshot. Identity on a command will come from the trusted server context;
-commands cannot choose their own participant. A join fixture is not an access
-mechanism.
+Versions are independent: protocol **2**, content `prototype-content-1`, save `1`.
+Join conveys server incarnation, participant/session identity, server-assigned role,
+epoch and initial snapshot. Commands cannot choose participant identity or authority.
 
 Commands carry request ID and expected epoch; rename/controller/removal carry
 expected revision. `accepted` means committed and includes application sequence,
-tick, and revision. `rejected` carries a stable code and string arguments, to be
-localized at presentation. Deltas include base/new revision and explicit removal
-IDs. The live client waits for committed results and applies only matching-base deltas.
+tick and revision. `rejected` carries a stable code and string arguments. Deltas
+include base/new revision and explicit removals, independently tracked per peer.
+Request receipts are scoped to participant and server incarnation; connection loss
+never causes automatic replay. Reusing a request ID for another payload is rejected.
 
-The initial save contains explicit tracks, train/controller/next-move data,
-station/dwell data, buildings, clock, cash, random state, and ordered event
-records. It excludes credentials, connections, UI, delegates, and assembly names.
-It is a draft contract fixture; no current game can load it yet.
+Train DTOs include nullable `controlLease` with participant ID, lease ID and server
+UTC Unix-millisecond expiry (decimal string). `acquireControl` acquires/renews a
+five-second train lease; `releaseControl` relinquishes it. `setController` and
+`controllerInput` require the current lease ID. Other holders receive `controlBusy`;
+stale/unowned tokens receive `leaseRequired`. Input renews a lease. Disconnect,
+release, expiry or load clear input; a new lease resets input sequence ordering.
+`inputReset` clears only the sender's inputs and carries no global pause flag.
+
+Protocol 1 is rejected with HTTP 426; deploy matching static and server artifacts.
+
+The versioned save contains explicit tracks, complete train/controller/body/stop
+state, station dwell state, buildings, clock, cash, deterministic random state and
+ordered scheduled events. It supports validation and continuation. It excludes
+credentials, connections, control leases, held input, UI, delegates and assembly names.
 
 Run from the repo root:
 
@@ -38,29 +47,15 @@ Commit generated TypeScript alongside schema changes. C# records in Contracts
 and Persistence must round-trip the same fixtures without dropping/adding fields
 or changing numeric values. The C# JSON reader enforces required constructor
 arguments and disallows unmapped fields; the server additionally validates command kinds, counters and input at its boundary.
-Complete save validation remains Stage 6 work. TypeScript
+Complete saves are validated before replacement. TypeScript
 compile-time types alone do not validate messages from a server.
 
-Stage 4 implements bootstrap, operator-cookie exchange and an exclusive WebSocket
-with compatibility query checks. Deltas now include paused/cash values, track
-upserts and track-position removals. Resync requests obtain a fresh snapshot;
-heartbeats bound idle connections; input-reset messages clear held input and can
-request the single-player pause policy. All lifecycle mutations are drained by
-the host. Runtime browser validation uses this schema; server DTO validation and
-domain checks reject malformed messages and invalid/stale commands.
+Existing bounded queues, receipt retention, resync,
+compatibility/access checks and persistence behavior remain the foundation.
 
-The [network report](../../tmp/web-prototype-network.md) specifies endpoints,
-origin/access policy, message/queue limits, two-minute bounded in-memory receipts,
-resend restrictions, input expiry, disconnect grace and idle world retention.
-Request IDs are unique per participant/server incarnation. Reusing an ID with a
-different command is rejected; capacity exhaustion preserves existing receipts.
-No exactly-once guarantee survives restart or receipt expiry.
-
-Stage 2 snapshots now contain complete `tracks` (position, shape, revision) and
-train direction, ordered `carPositions`, and state (`moving`, `station`, `buffer`,
-`blocked`). Initial snapshot/join/numeric-boundary fixtures and generated types
-were updated together; the headless initial snapshot equals the shared fixture.
-Track order is stable by z/y/x. Runtime scheduler/held-input diagnostics are
-immutable domain read data, not a save format; complete save conversion is Stage 6.
-The draft save fixture still lacks full train bodies, stop state, input sequence
-and next scheduler-order counter and cannot support continuation as it stands.
+`POST /api/leave` revokes the caller's login credential and disconnects its socket.
+It is idempotent and uses the same origin protections as other API operations.
+The configured access key remains usable through `POST /api/access`. Bootstrap
+returns HTTP 401 after leaving, including in local mode; the response indicates
+whether an empty key can deliberately rejoin as a local Owner. Login credentials
+are opaque random values retained in a bounded, eight-hour server registry.

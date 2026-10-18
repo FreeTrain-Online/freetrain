@@ -6,6 +6,7 @@
     "kind": "setController",
     "trainId": "train-1",
     "expectedRevision": "0",
-    "controller": "manual"
+    "controller": "manual",
+    "leaseId": "1"
   }
 }

@@ -20,7 +20,7 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parent.parent
 DLL = ROOT / 'src/FreeTrain.Server/bin/Release/net10.0/FreeTrain.Server.dll'
-BOOTSTRAP = '/api/bootstrap?protocolVersion=1&contentVersion=prototype-content-1'
+BOOTSTRAP = '/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1'
 
 class Server:
     def __init__(self, directory):
@@ -70,7 +70,7 @@ class Server:
         stream = connection.makefile('rb')
         key = __import__('base64').b64encode(secrets.token_bytes(16)).decode()
         cookie = '; '.join(f'{item.name}={item.value}' for item in self.cookies)
-        path = '/api/session?protocolVersion=1&contentVersion=prototype-content-1'
+        path = '/api/session?protocolVersion=2&contentVersion=prototype-content-1'
         request = (f'GET {path} HTTP/1.1\r\nHost: {address.netloc}\r\nUpgrade: websocket\r\n'
                    f'Connection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\nCookie: {cookie}\r\n\r\n')
         connection.sendall(request.encode())

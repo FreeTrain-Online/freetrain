@@ -5,6 +5,9 @@ type DeepReadonly<T> = T extends object ? { readonly [K in keyof T]: DeepReadonl
 export type ReadState = DeepReadonly<Snapshot>;
 export type ConnectionStatus = 'loading' | 'ready' | 'disconnected' | 'accessRequired' | 'incompatible';
 export interface SessionClient {
+  readonly anonymousAccess?: boolean;
+  readonly participantId?: string;
+  readonly role?: 'owner' | 'operator' | 'observer';
   readonly mode: 'fixture' | 'remote';
   subscribe(listener: (state: ReadState) => void): () => void;
   subscribeStatus?(listener: (status: ConnectionStatus) => void): () => void;
@@ -40,7 +43,7 @@ export function createFixtureService(delays = { normal: 180, delayed: 900 }) {
       let disposed = false;
       connections.add(listeners);
       return {
-        mode: 'fixture',
+        mode: 'fixture', participantId: 'fixture-owner', role: 'owner',
         subscribe(listener) {
           if (disposed) throw new Error('Connection disposed');
           listeners.add(listener);
@@ -62,6 +65,20 @@ export function createFixtureService(delays = { normal: 180, delayed: 900 }) {
                 case 'run': next.paused = false; break;
                 case 'pause': next.paused = true; break;
                 case 'step': next.tick = String(BigInt(next.tick) + 1n); break;
+                case 'acquireControl': {
+                  const train = next.trains.find(t => t.id === payload.trainId);
+                  if (!train) return resolve(reject('invalidInput'));
+                  train.controlLease = { participantId: 'fixture-owner', leaseId: 'fixture-lease', expiresAt: String(Date.now() + 5000) };
+                  train.revision = String(BigInt(train.revision) + 1n);
+                  break;
+                }
+                case 'releaseControl': {
+                  const train = next.trains.find(t => t.id === payload.trainId);
+                  if (!train) return resolve(reject('invalidInput'));
+                  train.controlLease = null;
+                  train.revision = String(BigInt(train.revision) + 1n);
+                  break;
+                }
                 case 'setController': {
                   const train = next.trains.find(t => t.id === payload.trainId);
                   if (!train) return resolve(reject('invalidInput'));

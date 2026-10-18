@@ -5,7 +5,7 @@ commands with a trusted `ParticipantContext`; commands do not select authority.
 `Enqueue` is bounded (256 by default) and returns a task completed only after
 `Pump` commits or rejects it. Unauthorized submissions cannot fill the queue.
 
-The adapter calls `Pump(tickBudget)`; there is no background timer or wall-clock
+The adapter calls `Pump(tickBudget, boundaryTime)`; there is no background timer or wall-clock
 catch-up inside this library. All callers serialize through one lock. A pump
 drains up to 64 FIFO commands before each automatic tick; `Pump(0)` also drains
 one prefix while paused. Arrivals beyond that prefix wait for the next boundary.
@@ -16,9 +16,9 @@ asynchronously, outside simulation callback execution.
 
 Commands validate epoch, participant and relevant entity/track revisions before
 mutation. Successful commands receive an application sequence; rejected commands
-leave world state and revisions unchanged. Request receipt deduplication and
-transport retry guarantees remain Stage 4 work. Do not automatically retry based
-only on a request ID in this headless API.
+leave world state and revisions unchanged. Participant-scoped request receipt
+deduplication lives in NetworkSession. Do not automatically retry based only on a
+request ID in this headless API.
 
 `ReadState` returns immutable domain values including train bodies, held input,
 clock/scheduler counters and pending value actions. `Snapshot` returns detached
@@ -27,7 +27,20 @@ world. Events are returned per pump and are not retained in a growing log.
 Per-host controller factories instantiate the explicitly registered strategies;
 mutable input, random, clock, money and entity state belong to the world.
 
-Input reset clears held keys. Simulation-tick expiry is five ticks, processed
-before events at the expiry tick. Stage 4 must add monotonic wall-time expiry and
-immediate disconnect/focus lifecycle reset so paused time cannot retain lost
-connection input indefinitely. Persistence orchestration belongs to Stage 6.
+Trusted adapters register a `ParticipantContext` with owner/operator/observer role
+and a connection generation. Enqueue and application validate the registered context;
+replacing or disconnecting it fences queued commands. Observer commands cannot mutate
+the world. Save mutations require owner authority; service checkpoint operations are
+trusted internal calls.
+
+Train leases live here, independently of human/agent implementation and of simulation
+controllers. Acquiring a free train gives a five-second fenced lease. Controller/input
+commands require its ID; accepted input renews it. Disconnect/release/expiry/load clear
+held input, and a new lease resets input sequence ordering. Reset/expiry affect only the
+relevant participant/train. Lease changes advance train/world revisions. Wall-time
+maintenance runs at each pump, including `Pump(0)` while paused. Boundary time can be
+injected for deterministic tests and is clamped against backwards movement. Simulation
+also expires input after five ticks, before due events.
+
+Future agents use the same contexts, commands, reads and leases. No decision engine or
+provider is part of this library.

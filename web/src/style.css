@@ -48,6 +48,7 @@ input { min-width: 0; width: 100%; padding: 10px; border: 1px solid #bacbbf; bor
 .fixture-controls { padding-top: 16px; font-size: 12px; }
 .command-feedback { margin: 0 0 18px; min-height: 20px; font-size: 13px; }
 .controller-field, form { margin-top: 16px; }
+.control-holder { overflow-wrap: anywhere; font-size: 12px; }
 .details dd { overflow-wrap: anywhere; min-width: 0; }
 .card { min-width: 0; }
 .building-icon { width: 40px; height: 40px; border-radius: 6px; background: #eef2e9; display: grid; place-items: center; font-size: 26px; color: #718464; }

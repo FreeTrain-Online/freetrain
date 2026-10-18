@@ -39,10 +39,14 @@ public class SimulationTests
         return events.ToImmutable();
     }
     private static TrainState Train(SessionHost host) => Assert.Single(host.ReadState().Trains);
-    private static void Manual(SessionHost host) => Accept(host, new SetControllerCommand("train-1", Train(host).Revision, "manual"));
+    private static void Manual(SessionHost host)
+    {
+        if (host.Snapshot().Trains[0].ControlLease == null) Accept(host, new AcquireControlCommand("train-1"));
+        Accept(host, new SetControllerCommand("train-1", Train(host).Revision, "manual", "1"));
+    }
     private static void Input(SessionHost host, long sequence = 0, bool pass = false, bool depart = false, bool reverse = false,
         bool left = false, bool right = false, bool reset = false) => Accept(host,
-            new ControllerInputCommand("train-1", sequence, pass, depart, reverse, left, right, reset));
+            new ControllerInputCommand("train-1", sequence, pass, depart, reverse, left, right, reset, "1"));
     private static string Frame(SessionHost host, ImmutableArray<SimulationEvent> events) => JsonSerializer.Serialize(
         new { state = host.ReadState(), events }, WireJson.CreateOptions());
 
@@ -190,8 +194,8 @@ public class SimulationTests
             new BuildTrackCommand(new(2, 2, 1), "eastWest"), new RemoveTrackCommand(new(10, 8, 1), 0),
             new RemoveTrackCommand(new(20, 8, 1), 0), new RemoveTrackCommand(new(36, 16, 1), 1),
             new RenameStationCommand("station-1", 1, "new"), new RenameStationCommand("station-1", 0, " \n"),
-            new SetControllerCommand("train-1", 1, "manual"), new SetControllerCommand("train-1", 0, "dll"),
-            new ControllerInputCommand("train-1", 0, true, false, false, false, false, false)
+            new SetControllerCommand("train-1", 1, "manual", "1"), new SetControllerCommand("train-1", 0, "dll", "1"),
+            new ControllerInputCommand("train-1", 0, true, false, false, false, false, false, "1")
         ];
         var before = Frame(host, []);
         foreach (var command in invalid)
@@ -251,7 +255,7 @@ public class SimulationTests
         Assert.Equal(new GridPosition(12, 8, 1), Train(host).Cars[0]);
         Assert.Equal(TrainStatus.Blocked, Train(host).Status);
         Manual(host); Input(host, left: true);
-        Accept(host, new SetControllerCommand("train-1", Train(host).Revision, "automatic"));
+        Accept(host, new SetControllerCommand("train-1", Train(host).Revision, "automatic", "1"));
         Assert.Equal(default, Train(host).Input);
         Assert.Null(Train(host).InputExpiresAt);
     }
@@ -326,7 +330,7 @@ public class SimulationTests
         Assert.Equal(default, Train(host).Input);
         Assert.Null(Train(host).InputExpiresAt);
         var before = Frame(host, []);
-        Assert.IsType<RejectedMessage>(Send(host, new ControllerInputCommand("train-1", 0, true, false, false, false, false, false)));
+        Assert.IsType<RejectedMessage>(Send(host, new ControllerInputCommand("train-1", 0, true, false, false, false, false, false, "1")));
         Assert.Equal(before, Frame(host, []));
         Advance(host, 1);
         Assert.Equal(TrainStatus.Station, Train(host).Status);

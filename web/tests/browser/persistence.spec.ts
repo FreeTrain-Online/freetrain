@@ -1,12 +1,17 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 const ready = (page: Page) => expect(page.getByTestId('connection')).toHaveText('Connected to game');
-const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=1&contentVersion=prototype-content-1')).json()).snapshot;
+const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1')).json()).snapshot;
 const step = (page: Page) => page.getByRole('button', { name: 'Single step', exact: false });
+const pause = async (page: Page) => {
+  if (await page.getByTestId('clock-state').textContent() === 'Running')
+    await page.getByRole('button', { name: 'Pause', exact: false }).click();
+  await expect(page.getByTestId('clock-state')).toHaveText('Paused');
+};
 
 test('save slot, download, upload and epoch reset restore confirmed Japanese state after refresh', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/'); await ready(page);
+  await page.goto('/'); await ready(page); await pause(page);
   await page.getByLabel('Station name', { exact: true }).fill('音と保存の駅');
   await page.getByRole('button', { name: 'Apply name', exact: true }).click();
   await expect(page.getByTestId('confirmed-name')).toHaveText('音と保存の駅');
@@ -46,7 +51,7 @@ test('save slot, download, upload and epoch reset restore confirmed Japanese sta
 });
 
 test('malformed, unsupported and oversized uploads preserve world and epoch; cancel never loads', async ({ page }) => {
-  await page.goto('/'); await ready(page); const before = await bootstrap(page);
+  await page.goto('/'); await ready(page); await pause(page); const before = await bootstrap(page);
   for (const buffer of [Buffer.from('{broken'), Buffer.from('{"saveVersion":999}'), Buffer.alloc(1024 * 1024 + 1, 'x')]) {
     await page.getByLabel('Upload save', { exact: true }).setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer });
     await page.getByRole('button', { name: 'Confirm load', exact: true }).click();

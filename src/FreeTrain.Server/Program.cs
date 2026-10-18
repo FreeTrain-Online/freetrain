@@ -27,7 +27,7 @@ builder.Services.AddSingleton<SessionDriver>();
 builder.Services.AddHostedService(services => services.GetRequiredService<SessionDriver>());
 var app = builder.Build();
 app.UseDeployment();
-app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = 1, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
+app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = 2, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
 app.MapNetwork();
 app.Run();
 

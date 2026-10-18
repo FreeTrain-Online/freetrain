@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using FreeTrain.Contracts;
 using FreeTrain.Persistence;
+using FreeTrain.Session;
 
 namespace FreeTrain.Server;
 
@@ -18,6 +19,13 @@ public static class NetworkEndpoints
         app.Lifetime.ApplicationStopping.Register(session.PrepareShutdown);
         var secret = app.Configuration["FreeTrain:OperatorSecret"];
         if (string.IsNullOrEmpty(secret)) secret = null;
+        var configured = app.Configuration.GetSection("FreeTrain:Participants").Get<ParticipantAccess[]>() ?? [];
+        if (configured.Length > 32 || configured.Any(p => string.IsNullOrWhiteSpace(p.Id) || p.Id.Length > 64 ||
+            p.Id.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '-') || p.Id == "operator-1" ||
+            string.IsNullOrWhiteSpace(p.Secret) || !Enum.TryParse<ParticipantRole>(p.Role, true, out var role) || !Enum.IsDefined(role)) ||
+            configured.Select(p => p.Id).Distinct(StringComparer.Ordinal).Count() != configured.Length ||
+            configured.Select(p => p.Secret).Append(secret ?? "").Distinct(StringComparer.Ordinal).Count() != configured.Length + 1)
+            throw new InvalidOperationException("Invalid FreeTrain:Participants credentials.");
         var attempts = 0;
         var attemptWindow = DateTimeOffset.UtcNow;
         var accessGate = new object();
@@ -29,10 +37,19 @@ public static class NetworkEndpoints
             if (!Permitted(context, app.Configuration, secret)) { context.Response.StatusCode = 403; return; }
             await next(context);
         });
-        void Cookie(HttpContext context) => context.Response.Cookies.Append(CookieName, session.AccessCookie,
-            new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = context.Request.IsHttps, Path = "/api", MaxAge = TimeSpan.FromHours(8) });
-        bool Authorized(HttpContext context) => Equal(context.Request.Cookies[CookieName], session.AccessCookie);
-        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == "1" && context.Request.Query["contentVersion"] == NetworkSession.ContentVersion;
+        CookieOptions AccessCookieOptions(HttpContext context) => new()
+        { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = context.Request.IsHttps, Path = "/api", MaxAge = TimeSpan.FromHours(8) };
+        bool Cookie(HttpContext context, ParticipantContext participant)
+        {
+            var credential = session.IssueAccess(participant);
+            if (credential == null) return false;
+            session.RevokeAccess(context.Request.Cookies[CookieName]);
+            context.Response.Cookies.Append(CookieName, credential, AccessCookieOptions(context));
+            return true;
+        }
+        ParticipantContext? Identity(HttpContext context) => session.ResolveAccess(context.Request.Cookies[CookieName]);
+        bool Authorized(HttpContext context) => Identity(context) != null;
+        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == "2" && context.Request.Query["contentVersion"] == NetworkSession.ContentVersion;
         app.MapPost("/api/access", async (HttpContext context) =>
         {
             lock (accessGate)
@@ -40,25 +57,40 @@ public static class NetworkEndpoints
                 if (DateTimeOffset.UtcNow - attemptWindow >= TimeSpan.FromMinutes(1)) { attemptWindow = DateTimeOffset.UtcNow; attempts = 0; }
                 if (++attempts > 10) { context.Response.StatusCode = 429; return; }
             }
-            if (secret == null) { context.Response.StatusCode = 404; return; }
             if (context.Request.ContentLength is > MaximumMessageBytes) { context.Response.StatusCode = 413; return; }
             try
             {
                 var login = await JsonSerializer.DeserializeAsync<AccessRequest>(context.Request.Body, NetworkSession.Json, context.RequestAborted);
-                if (login == null || !Equal(login.Secret, secret)) { context.Response.StatusCode = 401; return; }
-                Cookie(context); context.Response.StatusCode = 204;
+                if (login == null) { context.Response.StatusCode = 401; return; }
+                ParticipantContext? participant = Equal(login.Secret, secret) ? new("operator-1")
+                    : secret == null && login.Secret.Length == 0 ? new("local-" + Guid.NewGuid().ToString("N")) : null;
+                foreach (var access in configured)
+                    if (Equal(login.Secret, access.Secret)) participant = new(access.Id, Enum.Parse<ParticipantRole>(access.Role, true));
+                if (participant == null) { context.Response.StatusCode = 401; return; }
+                context.Response.StatusCode = Cookie(context, participant) ? 204 : 503;
             }
             catch (JsonException) { context.Response.StatusCode = 400; }
         });
+        app.MapPost("/api/leave", (HttpContext context) =>
+        {
+            session.RevokeAccess(context.Request.Cookies[CookieName]);
+            // A non-credential cookie prevents anonymous bootstrap from auto-joining
+            // immediately after leaving, including after a browser refresh.
+            context.Response.Cookies.Append(CookieName, "signed-out", AccessCookieOptions(context));
+            return Results.NoContent();
+        });
         app.MapGet("/api/bootstrap", (HttpContext context) =>
         {
-            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = 1, contentVersion = NetworkSession.ContentVersion }, statusCode: 426);
-            if (!Authorized(context))
+            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = 2, contentVersion = NetworkSession.ContentVersion }, statusCode: 426);
+            var participant = Identity(context);
+            if (participant == null)
             {
-                if (secret != null) return Results.Unauthorized();
-                Cookie(context); // Anonymous access is limited to explicit loopback hosts.
+                if (secret != null || context.Request.Cookies.ContainsKey(CookieName))
+                    return Results.Json(new { code = "accessRequired", anonymousAccess = secret == null }, statusCode: 401);
+                participant = new("local-" + Guid.NewGuid().ToString("N"));
+                if (!Cookie(context, participant)) return Results.StatusCode(503); // Independent loopback identities.
             }
-            return Results.Json<WireMessage>(session.Bootstrap(), NetworkSession.Json);
+            return Results.Json<WireMessage>(session.Bootstrap(participant), NetworkSession.Json);
         });
         // Save HTTP requests use the same trusted owner credential and host FIFO as socket commands.
         app.MapGet("/api/saves", (HttpContext context) => Authorized(context)
@@ -69,19 +101,21 @@ public static class NetworkEndpoints
             try { return Results.File(SaveCodec.Encode(await session.CaptureSave()), "application/json", "freetrain-save.json"); }
             catch (InvalidOperationException) { return Results.Json(new { code = "queueFull" }, statusCode: 503); }
         });
-        async Task<IResult> SaveOperation(HttpContext context, Func<long, Task> action)
+        async Task<IResult> SaveOperation(HttpContext context, Func<long, ParticipantContext, Task> action)
         {
-            if (!Authorized(context)) return Results.Unauthorized();
+            var participant = Identity(context);
+            if (participant == null) return Results.Unauthorized();
+            if (participant.Role != ParticipantRole.Owner) return Results.StatusCode(403);
             if (!long.TryParse(context.Request.Query["expectedWorldEpoch"], out var epoch) || epoch < 0)
                 return Results.BadRequest(new { code = "invalidInput" });
-            try { await action(epoch); return Results.Ok(new { status = "confirmed" }); }
+            try { await action(epoch, participant); return Results.Ok(new { status = "confirmed" }); }
             catch (InvalidDataException ex) { return Results.Json(new { code = ex.Message == "saveTooLarge" ? "saveTooLarge" : "invalidSave" }, statusCode: ex.Message == "saveTooLarge" ? 413 : 400); }
             catch (FileNotFoundException) { return Results.NotFound(new { code = "missingSave" }); }
             catch (InvalidOperationException ex) { return Results.Json(new { code = ex.Message == "staleEpoch" ? "staleEpoch" : "queueFull" }, statusCode: 409); }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             { return Results.Json(new { code = "saveFailed" }, statusCode: 503); }
         }
-        app.MapPost("/api/saves/upload", async Task<IResult> (HttpContext context) => await SaveOperation(context, async epoch =>
+        app.MapPost("/api/saves/upload", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
         {
             if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
             using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
@@ -90,21 +124,21 @@ public static class NetworkEndpoints
                 if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
                 buffer.Write(chunk, 0, count);
             }
-            await session.LoadSave(SaveCodec.Decode(buffer.ToArray()), epoch);
+            await session.LoadSave(SaveCodec.Decode(buffer.ToArray()), epoch, participant);
         }));
-        app.MapPost("/api/saves/{id}/save", (HttpContext context, string id) => SaveOperation(context, async epoch =>
+        app.MapPost("/api/saves/{id}/save", (HttpContext context, string id) => SaveOperation(context, async (epoch, participant) =>
         {
             if (session.Bootstrap().WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
             if (!SaveStorage.Slots.Contains(id)) throw new InvalidDataException("invalidSlot");
-            await session.Checkpoint(id, epoch);
+            await session.Checkpoint(id, epoch, participant);
         }));
-        app.MapPost("/api/saves/{id}/load", (HttpContext context, string id) => SaveOperation(context, epoch => session.LoadSlot(id, epoch)));
+        app.MapPost("/api/saves/{id}/load", (HttpContext context, string id) => SaveOperation(context, (epoch, participant) => session.LoadSlot(id, epoch, participant)));
         app.MapGet("/api/session", async (HttpContext context) =>
         {
             if (!Authorized(context)) { context.Response.StatusCode = 401; return; }
             if (!Compatible(context)) { context.Response.StatusCode = 426; return; }
             if (!context.WebSockets.IsWebSocketRequest) { context.Response.StatusCode = 400; return; }
-            var peer = session.Connect(DateTimeOffset.UtcNow);
+            var peer = session.Connect(DateTimeOffset.UtcNow, Identity(context), context.Request.Cookies[CookieName]);
             if (peer == null) { context.Response.StatusCode = 409; return; }
             try
             {
@@ -120,6 +154,7 @@ public static class NetworkEndpoints
             finally { session.Disconnect(peer, DateTimeOffset.UtcNow); }
         });
     }
+    private sealed record ParticipantAccess(string Id, string Role, string Secret);
     private sealed record AccessRequest(string Secret);
     private static bool Equal(string? left, string? right) => left != null && right != null &&
         CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(left), Encoding.UTF8.GetBytes(right));
@@ -167,18 +202,20 @@ public static class NetworkEndpoints
                     session.Reply(peer, result); break;
                 case ResyncMessage: session.Resync(peer); break;
                 case HeartbeatMessage: break;
-                case InputResetMessage reset: session.ResetInput(peer, reset.Pause); break;
+                case InputResetMessage: session.ResetInput(peer); break;
                 default: throw new InvalidDataException("Unexpected message.");
             }
         }
     }
     private static bool Valid(CommandMessage command) => !string.IsNullOrWhiteSpace(command.RequestId) && command.RequestId.Length <= 128 && command.ExpectedWorldEpoch >= 0 && command.Payload switch
     {
+        AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),
+        ReleaseControlCommand release => !string.IsNullOrWhiteSpace(release.TrainId) && !string.IsNullOrWhiteSpace(release.LeaseId),
         RenameStationCommand rename => rename.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(rename.StationId) && rename.Name != null,
         RemoveTrackCommand remove => remove.ExpectedRevision >= 0 && remove.Position != null,
         BuildTrackCommand build => build.Position != null && build.Shape != null,
-        SetControllerCommand controller => controller.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(controller.TrainId) && controller.Controller is "manual" or "automatic",
-        ControllerInputCommand input => input.InputSequence >= 0 && !string.IsNullOrWhiteSpace(input.TrainId),
+        SetControllerCommand controller => controller.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(controller.TrainId) && !string.IsNullOrWhiteSpace(controller.LeaseId) && controller.Controller is "manual" or "automatic",
+        ControllerInputCommand input => input.InputSequence >= 0 && !string.IsNullOrWhiteSpace(input.TrainId) && !string.IsNullOrWhiteSpace(input.LeaseId),
         RunCommand or PauseCommand or StepCommand => true,
         _ => false
     };

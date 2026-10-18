@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json','utf8')) as {sprites: Record<string,{width:number;height:number;offset:number;mask:string[]}>};
 const ready=async(page:Page)=>{await expect(page.getByTestId('connection')).toHaveText('Connected to game');await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');};
-const bootstrap=async(page:Page)=>(await (await page.request.get('/api/bootstrap?protocolVersion=1&contentVersion=prototype-content-1')).json()).snapshot;
+const bootstrap=async(page:Page)=>(await (await page.request.get('/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1')).json()).snapshot;
 async function at(page:Page,p:{x:number;y:number;z:number},offset={x:0,y:0}) {
   await page.locator('canvas').scrollIntoViewIfNeeded();
   return page.locator('canvas').evaluate((el,args)=>{
@@ -57,7 +57,8 @@ test('preview and cancel never charge; buffer extension confirms once, removal a
   try {
     await page.goto('/');await ready(page);
     await page.getByRole('button',{name:'Run',exact:false}).click();await expect(page.getByTestId('clock-state')).toHaveText('Running');
-    await page.getByRole('button',{name:'Build track',exact:true}).click();await expect(page.getByTestId('clock-state')).toHaveText('Paused');
+    await page.getByRole('button',{name:'Build track',exact:true}).click();await expect(page.getByTestId('clock-state')).toHaveText('Running');
+    await page.getByRole('button',{name:'Pause',exact:false}).click();await expect(page.getByTestId('clock-state')).toHaveText('Paused');
     const before=await bootstrap(page);
     await clickTile(page,{x:37,y:16,z:1});await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
     expect((await bootstrap(page)).cash).toBe(before.cash);

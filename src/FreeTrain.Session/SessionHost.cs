@@ -6,20 +6,95 @@ using FreeTrain.Simulation;
 namespace FreeTrain.Session;
 
 // Constructed by a trusted adapter, never deserialized from a command's payload.
-public sealed record ParticipantContext(string ParticipantId);
+public enum ParticipantRole { Owner, Operator, Observer }
+public sealed record ParticipantContext(string ParticipantId, ParticipantRole Role = ParticipantRole.Owner, string ConnectionId = "headless");
 public sealed record PumpResult(int AdvancedTicks, int AppliedCommands, ImmutableArray<SimulationEvent> Events);
 
 public sealed class SessionHost
 {
     private abstract record Work;
     private sealed record Boundary(Action Apply) : Work;
-    private sealed record Queued(ParticipantContext Participant, CommandMessage Command, TaskCompletionSource<WireMessage> Completion) : Work;
+    private sealed record Queued(ParticipantContext Participant, CommandMessage Command, TaskCompletionSource<WireMessage> Completion) : Work
+    {
+        public bool InputInvalidated { get; set; }
+    }
     private readonly object gate = new();
     private readonly Queue<Work> commands = new();
     private World world;
     private readonly ScenarioDefinition scenario;
     private readonly Func<ITrainController>[] controllerFactories;
-    private readonly string ownerId;
+    private readonly Dictionary<string, ParticipantContext> participants = new(StringComparer.Ordinal);
+    private sealed record Lease(ParticipantContext Participant, string Id, DateTimeOffset Expires, DateTimeOffset? InputAt);
+    private readonly Dictionary<string, Lease> leases = new(StringComparer.Ordinal);
+    private readonly HashSet<ParticipantContext> lostParticipants = new();
+    private readonly HashSet<ParticipantContext> resetParticipants = new();
+    public static readonly TimeSpan ControlLeaseDuration = TimeSpan.FromSeconds(5);
+    public TimeSpan InputExpiry { get; init; } = TimeSpan.FromMilliseconds(500);
+    private DateTimeOffset boundaryTime;
+    private long nextLease;
+    // Only trusted adapters register contexts. Connection generations fence queued work
+    // from a disconnected/replaced transport, even for the same participant ID.
+    public void RegisterParticipant(ParticipantContext participant)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(participant.ParticipantId);
+        if (!Enum.IsDefined(participant.Role)) throw new ArgumentOutOfRangeException(nameof(participant));
+        lock (gate)
+        {
+            if (participants.TryGetValue(participant.ParticipantId, out var previous) && previous != participant) lostParticipants.Add(previous);
+            participants[participant.ParticipantId] = participant;
+        }
+    }
+    public void DisconnectParticipant(ParticipantContext participant)
+    {
+        lock (gate)
+        {
+            if (!Current(participant)) return;
+            participants.Remove(participant.ParticipantId);
+            lostParticipants.Add(participant);
+        }
+    }
+    public void ResetParticipantInput(ParticipantContext participant)
+    {
+        lock (gate)
+        {
+            if (!Current(participant)) return;
+            resetParticipants.Add(participant);
+            // A pre-reset input waiting in the FIFO must not restore held keys.
+            // New inputs queued after this lifecycle event remain valid.
+            foreach (var work in commands.OfType<Queued>())
+                if (work.Participant == participant && work.Command.Payload is ControllerInputCommand) work.InputInvalidated = true;
+        }
+    }
+    private bool Current(ParticipantContext participant) => participants.TryGetValue(participant.ParticipantId, out var current) && current == participant;
+    private void ReleaseLease(string trainId)
+    {
+        leases.Remove(trainId); world.ResetTrainControl(trainId, true);
+    }
+    private void MaintainControl()
+    {
+        foreach (var (id, lease) in leases.ToArray())
+        {
+            if (lostParticipants.Contains(lease.Participant) || boundaryTime >= lease.Expires) ReleaseLease(id);
+            else if (resetParticipants.Contains(lease.Participant) || lease.InputAt is {} at && boundaryTime - at >= InputExpiry)
+            { world.ResetTrainControl(id); leases[id] = lease with { InputAt = null }; }
+        }
+        lostParticipants.Clear(); resetParticipants.Clear();
+    }
+    private string? RequireLease(ParticipantContext participant, string trainId, string leaseId)
+        => leases.TryGetValue(trainId, out var lease) && lease.Participant == participant && lease.Id == leaseId ? null : "leaseRequired";
+    private string? Acquire(ParticipantContext participant, string trainId)
+    {
+        if (!world.Read().Trains.Any(t => t.Id == trainId)) return "invalidInput";
+        if (leases.TryGetValue(trainId, out var lease) && lease.Participant != participant) return "controlBusy";
+        if (lease == null)
+        {
+            world.ResetTrainControl(trainId, true);
+            lease = new(participant, (++nextLease).ToString(System.Globalization.CultureInfo.InvariantCulture), boundaryTime, null);
+        }
+        else world.ResetTrainControl(trainId); // Renewals publish a new expiry; held keys must be resent.
+        leases[trainId] = lease with { Expires = boundaryTime + ControlLeaseDuration, InputAt = null };
+        return null;
+    }
     private readonly int queueCapacity;
     private long sequence;
     private bool resetInput;
@@ -34,7 +109,7 @@ public sealed class SessionHost
         if (queueCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
         this.scenario = scenario;
         this.controllerFactories = controllerFactories.ToArray();
-        this.ownerId = ownerId;
+        participants.Add(ownerId, new(ownerId));
         this.queueCapacity = queueCapacity;
         WorldEpoch = worldEpoch;
         world = new(scenario, this.controllerFactories.Select(factory => factory()));
@@ -51,17 +126,19 @@ public sealed class SessionHost
             return completion.Task;
         }
     }
-    public Task<SaveDocument> CaptureSave(long? expectedEpoch = null) => AtBoundary(() =>
+    public Task<SaveDocument> CaptureSave(long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary(() =>
     {
+        if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         return SaveCodec.Capture(scenario, world.Read());
     });
-    public Task<SnapshotMessage> LoadSave(SaveDocument save, long? expectedEpoch = null) => AtBoundary(() =>
+    public Task<SnapshotMessage> LoadSave(SaveDocument save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary(() =>
     {
+        if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         var candidate = SaveCodec.Restore(save, scenario, controllerFactories.Select(factory => factory()));
         candidate.SetPaused(true);
-        world = candidate; WorldEpoch++; sequence = 0; resetInput = false; safetyPause = false;
+        world = candidate; leases.Clear(); lostParticipants.Clear(); resetParticipants.Clear(); WorldEpoch++; sequence = 0; resetInput = false; safetyPause = false;
         return Snapshot();
     });
 
@@ -76,7 +153,7 @@ public sealed class SessionHost
     {
         lock (gate)
         {
-            if (participant.ParticipantId != ownerId) return Task.FromResult<WireMessage>(Reject(command, "notAuthorized"));
+            if (!Current(participant) || participant.Role == ParticipantRole.Observer) return Task.FromResult<WireMessage>(Reject(command, "notAuthorized"));
             if (string.IsNullOrWhiteSpace(command.RequestId)) return Task.FromResult<WireMessage>(Reject(command, "invalidInput"));
             if (commands.Count >= queueCapacity) return Task.FromResult<WireMessage>(Reject(command, "queueFull"));
             var completion = new TaskCompletionSource<WireMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -87,11 +164,14 @@ public sealed class SessionHost
 
     // The adapter supplies elapsed tick allowance. Even Pump(0) drains a bounded
     // FIFO prefix while paused. Locking serializes all callers; no timer callback reentry.
-    public PumpResult Pump(int tickBudget = 0)
+    public PumpResult Pump(int tickBudget = 0, DateTimeOffset? now = null)
     {
         if (tickBudget < 0 || tickBudget > MaximumTicksPerPump) throw new ArgumentOutOfRangeException(nameof(tickBudget));
         lock (gate)
         {
+            var observedTime = now ?? DateTimeOffset.UtcNow;
+            if (observedTime > boundaryTime) boundaryTime = observedTime;
+            MaintainControl();
             var events = ImmutableArray.CreateBuilder<SimulationEvent>();
             var advanced = 0;
             var applied = 0;
@@ -128,11 +208,17 @@ public sealed class SessionHost
     private WireMessage Apply(Queued queued, ImmutableArray<SimulationEvent>.Builder events)
     {
         var command = queued.Command;
-        if (queued.Participant.ParticipantId != ownerId) return Reject(command, "notAuthorized");
+        if (!Current(queued.Participant) || queued.Participant.Role == ParticipantRole.Observer) return Reject(command, "notAuthorized");
         if (command.ExpectedWorldEpoch != WorldEpoch) return Reject(command, "staleEpoch");
+        if (queued.InputInvalidated) return Reject(command, "invalidInput");
         string? error;
         switch (command.Payload)
         {
+            case AcquireControlCommand acquire: error = Acquire(queued.Participant, acquire.TrainId); break;
+            case ReleaseControlCommand release:
+                error = RequireLease(queued.Participant, release.TrainId, release.LeaseId);
+                if (error == null) ReleaseLease(release.TrainId);
+                break;
             case RunCommand: world.SetPaused(false); error = null; break;
             case PauseCommand: world.SetPaused(true); error = null; break;
             case StepCommand:
@@ -142,10 +228,16 @@ public sealed class SessionHost
             case BuildTrackCommand build:
                 error = TryShape(build.Shape, out var shape) ? world.BuildTrack(Position(build.Position), shape) : "invalidPlacement"; break;
             case RemoveTrackCommand remove: error = world.RemoveTrack(Position(remove.Position), remove.ExpectedRevision); break;
-            case SetControllerCommand controller: error = world.SetController(controller.TrainId, controller.ExpectedRevision, controller.Controller); break;
+            case SetControllerCommand controller:
+                error = RequireLease(queued.Participant, controller.TrainId, controller.LeaseId)
+                    ?? world.SetController(controller.TrainId, controller.ExpectedRevision, controller.Controller); break;
             case ControllerInputCommand input:
-                error = world.SetInput(input.TrainId, input.InputSequence,
-                    new(input.Pass, input.Depart, input.Reverse, input.Left, input.Right), input.Reset); break;
+                error = RequireLease(queued.Participant, input.TrainId, input.LeaseId)
+                    ?? world.SetInput(input.TrainId, input.InputSequence,
+                        new(input.Pass, input.Depart, input.Reverse, input.Left, input.Right), input.Reset);
+                if (error == null) leases[input.TrainId] = leases[input.TrainId] with
+                    { Expires = boundaryTime + ControlLeaseDuration, InputAt = input.Reset ? null : boundaryTime };
+                break;
             default: error = "invalidInput"; break;
         }
         return error == null ? new AcceptedMessage(command.RequestId, WorldEpoch, ++sequence, world.Tick, world.Revision) : Reject(command, error);
@@ -170,7 +262,8 @@ public sealed class SessionHost
             return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
                 new(state.Map.Width, state.Map.Height, state.Map.Levels),
                 state.Trains.Select(x => new TrainRead(x.Id, x.Revision, x.Name, Position(x.Cars[0]), x.Cars.Length,
-                    x.Controller, Camel(x.Direction.ToString()), x.Cars.Select(Position).ToArray(), Camel(x.Status.ToString()))).ToArray(),
+                    x.Controller, Camel(x.Direction.ToString()), x.Cars.Select(Position).ToArray(), Camel(x.Status.ToString()), leases.TryGetValue(x.Id, out var lease)
+                        ? new(lease.Participant.ParticipantId, lease.Id, lease.Expires.ToUnixTimeMilliseconds()) : null)).ToArray(),
                 state.Stations.Select(x => new StationRead(x.Id, x.Revision, x.Name, Position(x.Position))).ToArray(),
                 state.Buildings.Select(x => new BuildingRead(x.Id, x.DefinitionId, Position(x.Position), x.Height)).ToArray(),
                 state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray());

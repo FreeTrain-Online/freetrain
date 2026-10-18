@@ -1,6 +1,9 @@
 # FreeTrain web deployment and recovery
 
-Deploy one authoritative world with one operator and one save-directory writer.
+Deploy one authoritative world with multiple participants and one save-directory writer.
+See the [multiplayer operation guide](web-multiplayer-operation.md) for participant
+credentials, owner/operator/observer permissions and train leases.
+The original deployment measurements below predate this multiplayer milestone.
 The [Compose configuration](../deploy/compose.yaml) runs a Linux x64 .NET service
 serving the release static client, Caddy for one HTTPS/WSS origin, and named
 persistent save and TLS volumes. Production runs neither Deno nor Node.

@@ -103,6 +103,15 @@ public sealed class World
             Revision++;
         }
     }
+    // Session control changes share the read-model revision and reset input ordering
+    // when a new controller takes over. Authority and leases stay outside Simulation.
+    public void ResetTrainControl(string id, bool resetSequence = false)
+    {
+        var train = trains[id];
+        train.Input = default; train.InputExpiresAt = null;
+        if (resetSequence) train.InputSequence = -1;
+        train.Revision++; Revision++;
+    }
     public string? RenameStation(string id, long expectedRevision, string name)
     {
         if (!stations.TryGetValue(id, out var station) || string.IsNullOrWhiteSpace(name) || name.Length > 120 || name.Any(char.IsControl)) return "invalidInput";

@@ -1,6 +1,6 @@
 {
   "type": "join",
-  "protocolVersion": 1,
+  "protocolVersion": 2,
   "contentVersion": "prototype-content-1",
   "serverIncarnation": "fixture-incarnation",
   "sessionId": "reference",
@@ -48,7 +48,8 @@
             "y": 8,
             "z": 1
           }
-        ]
+        ],
+        "controlLease": null
       }
     ],
     "stations": [
@@ -807,5 +808,6 @@
         "revision": "0"
       }
     ]
-  }
+  },
+  "role": "owner"
 }

@@ -41,6 +41,7 @@ public class NetworkTests
     private static CommandMessage Command(string id, CommandPayload payload, long epoch = 1) => new(id, epoch, payload);
     private static async Task<WireMessage> Apply(NetworkSession session, NetworkSession.Peer peer, CommandMessage command, DateTimeOffset? now = null)
     {
+        session.Touch(peer, now ?? Now);
         var task = session.Submit(peer, command, now ?? Now);
         session.Tick(now ?? Now);
         return await task;
@@ -95,8 +96,9 @@ public class NetworkTests
     public async Task Wall_time_input_expiry_works_while_paused_and_disconnect_grace_pauses_running_game()
     {
         var session = new NetworkSession(new()); var peer = session.Connect(Now)!;
-        await Apply(session, peer, Command("manual", new SetControllerCommand("train-1", 0, "manual")));
-        await Apply(session, peer, Command("input", new ControllerInputCommand("train-1", 1, false, true, false, false, false, false)));
+        await Apply(session, peer, Command("acquire", new AcquireControlCommand("train-1")));
+        await Apply(session, peer, Command("manual", new SetControllerCommand("train-1", 1, "manual", "1")));
+        await Apply(session, peer, Command("input", new ControllerInputCommand("train-1", 1, false, true, false, false, false, false, "1")));
         var before = session.Bootstrap().Snapshot;
         session.Tick(Now.AddMilliseconds(600));
         var expired = session.Bootstrap().Snapshot;
@@ -174,8 +176,8 @@ public class NetworkTests
         Assert.Equal(HttpStatusCode.NoContent, login.StatusCode);
         var cookie = Assert.Single(login.Headers.GetValues("Set-Cookie"));
         Assert.Contains("httponly", cookie); Assert.Contains("samesite=strict", cookie);
-        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1")).StatusCode);
-        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=1&contentVersion=bad")).StatusCode);
+        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=99&contentVersion=prototype-content-1")).StatusCode);
+        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=2&contentVersion=bad")).StatusCode);
         var join = await server.Bootstrap(); Assert.Equal("operator-1", join.ParticipantId);
         using var socket = await server.Connect(); Assert.IsType<JoinMessage>(await Read(socket));
         using var competitor = new ClientWebSocket(); competitor.Options.Cookies = server.Cookies;
@@ -209,7 +211,7 @@ public class NetworkTests
         await Send(recovered, step); Assert.Equal(accepted, await Read(recovered));
         await Send(recovered, Command("run", new RunCommand()));
         await Until(recovered, x => x is AcceptedMessage a && a.RequestId == "run");
-        await Send(recovered, new InputResetMessage(true));
+        await Send(recovered, Command("explicit-pause", new PauseCommand()));
         var paused = Assert.IsType<DeltaMessage>(await Until(recovered, x => x is DeltaMessage d && d.Paused));
         Assert.True(paused.Paused);
     }
@@ -228,7 +230,7 @@ public class NetworkTests
         await socket.SendAsync(new ArraySegment<byte>(data, 10, data.Length - 10), WebSocketMessageType.Text, true, CancellationToken.None);
         var rejected = Assert.IsType<RejectedMessage>(await Until(socket, x => x is RejectedMessage));
         Assert.Equal("invalidInput", rejected.Code);
-        await Send(socket, new InputResetMessage(true));
+        await Send(socket, Command("explicit-pause", new PauseCommand()));
         Assert.IsType<DeltaMessage>(await Until(socket, x => x is DeltaMessage d && d.Paused));
     }
     [Theory]
@@ -286,9 +288,9 @@ public class NetworkTests
         finally { Directory.Delete(directory, true); }
     }
 
-    private static Task Send(ClientWebSocket socket, WireMessage message) => socket.SendAsync(
+    internal static Task Send(ClientWebSocket socket, WireMessage message) => socket.SendAsync(
         new ArraySegment<byte>(JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json)), WebSocketMessageType.Text, true, CancellationToken.None);
-    private static async Task<WireMessage> Read(ClientWebSocket socket)
+    internal static async Task<WireMessage> Read(ClientWebSocket socket)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(4));
         using var output = new MemoryStream(); var buffer = new byte[4096]; WebSocketReceiveResult frame;
@@ -300,21 +302,22 @@ public class NetworkTests
         } while (!frame.EndOfMessage);
         return JsonSerializer.Deserialize<WireMessage>(output.ToArray(), NetworkSession.Json)!;
     }
-    private static async Task<WireMessage> Until(ClientWebSocket socket, Func<WireMessage, bool> predicate)
+    internal static async Task<WireMessage> Until(ClientWebSocket socket, Func<WireMessage, bool> predicate)
     {
         for (var count = 0; count < 40; count++) { var message = await Read(socket); if (predicate(message)) return message; }
         throw new InvalidOperationException("Expected message not received");
     }
-    private sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies) : IAsyncDisposable
+    internal sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies) : IAsyncDisposable
     {
-        public const string BootstrapPath = "/api/bootstrap?protocolVersion=1&contentVersion=prototype-content-1";
+        public const string BootstrapPath = "/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1";
         public HttpClient Http => http;
         public CookieContainer Cookies => cookies;
-        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=1&contentVersion=prototype-content-1");
-        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null)
+        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=2&contentVersion=prototype-content-1");
+        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null)
         {
             var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");
             builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["FreeTrain:OperatorSecret"] = secret, ["FreeTrain:TrustedProxy"] = trustedProxy });
+            if (participants != null) builder.Configuration.AddInMemoryCollection(participants);
             if (saveDirectory != null) builder.Services.AddSingleton(new SaveStorage(saveDirectory));
             builder.Services.AddSingleton(new NetworkOptions()); builder.Services.AddSingleton<NetworkSession>(); builder.Services.AddHostedService<SessionDriver>();
             builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = SaveCodec.MaximumBytes);
@@ -323,14 +326,14 @@ public class NetworkTests
             return new(app, new(new HttpClientHandler { CookieContainer = cookies }) { BaseAddress = new(app.Urls.Single()) }, cookies);
         }
         public async Task<JoinMessage> Bootstrap() => JsonSerializer.Deserialize<WireMessage>(await http.GetStringAsync(BootstrapPath), NetworkSession.Json) as JoinMessage ?? throw new InvalidDataException();
-        public async Task<ClientWebSocket> Connect()
+        public async Task<ClientWebSocket> Connect(CookieContainer? participantCookies = null)
         {
-            var socket = new ClientWebSocket(); socket.Options.Cookies = cookies;
+            var socket = new ClientWebSocket(); socket.Options.Cookies = participantCookies ?? cookies;
             try { await socket.ConnectAsync(SocketUri, CancellationToken.None); return socket; } catch { socket.Dispose(); throw; }
         }
-        public async Task<ClientWebSocket> ConnectEventually()
+        public async Task<ClientWebSocket> ConnectEventually(CookieContainer? participantCookies = null)
         {
-            for (var count = 0; count < 50; count++) { try { return await Connect(); } catch (WebSocketException) { await Task.Delay(20); } }
+            for (var count = 0; count < 50; count++) { try { return await Connect(participantCookies); } catch (WebSocketException) { await Task.Delay(20); } }
             throw new InvalidOperationException("Lease never released");
         }
         public async ValueTask DisposeAsync() { http.Dispose(); await app.StopAsync(); await app.DisposeAsync(); }

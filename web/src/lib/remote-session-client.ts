@@ -2,10 +2,14 @@ import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
 import { applyDelta, immutable, parseMessage } from './protocol.ts';
 
-const compatibility = 'protocolVersion=1&contentVersion=prototype-content-1';
+const compatibility = 'protocolVersion=2&contentVersion=prototype-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
+}
+export async function leaveGame(): Promise<void> {
+  const response = await fetch('/api/leave', { method: 'POST', credentials: 'same-origin', signal: AbortSignal.timeout(5000) });
+  if (!response.ok) throw new Error('Leave game could not be confirmed');
 }
 // A retry is automatic only on the same open socket, with the same request ID,
 // within the server's advertised/documented two-minute in-memory receipt window.
@@ -20,6 +24,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   let join: Join | undefined;
   let status: ConnectionStatus = 'loading';
   let disposed = false;
+  let anonymousAccess = false;
   let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
   let heartbeat: ReturnType<typeof setInterval> | undefined;
   let connectionTimer: ReturnType<typeof setTimeout> | undefined;
@@ -42,9 +47,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     clearTimeout(reconnectTimer);
     reconnectTimer = setTimeout(connect, Math.min(5000, 250 * 2 ** Math.min(attempts++, 5)));
   };
-  const suspend = (pause: boolean) => { if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'inputReset', pause })); };
-  const visibility = () => { if (document.hidden) suspend(true); };
-  const blur = () => suspend(false);
+  const suspend = () => { if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'inputReset' })); };
+  const visibility = () => { if (document.hidden) suspend(); };
+  const blur = () => suspend();
   document.addEventListener('visibilitychange', visibility);
   window.addEventListener('blur', blur);
   const connect = async () => {
@@ -53,7 +58,12 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     try {
       const response = await fetch(`/api/bootstrap?${compatibility}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5000)]), credentials: 'same-origin' });
       if (disposed) return;
-      if (response.status === 401) return setStatus('accessRequired');
+      if (response.status === 401) {
+        const access = await response.json().catch(() => ({}));
+        if (disposed) return;
+        anonymousAccess = access.anonymousAccess === true;
+        return setStatus('accessRequired');
+      }
       if (response.status === 426) return setStatus('incompatible');
       if (!response.ok) throw new Error('Bootstrap failed');
       const bootstrap = parseMessage(await response.text());
@@ -68,10 +78,10 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           const message = parseMessage(event.data);
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 1 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 2 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0;
               publish(message.snapshot); setStatus('ready');
-              if (document.hidden) suspend(true);
+              if (document.hidden) suspend();
               break;
             case 'snapshot':
               if (!join) throw new Error('Snapshot before join');
@@ -109,6 +119,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   void connect();
   return {
     mode: 'remote',
+    get anonymousAccess() { return anonymousAccess; },
+    get participantId() { return join?.participantId; },
+    get role() { return join?.role; },
     get unresolved() { return unresolved; },
     subscribe(listener) { listeners.add(listener); if (read) listener(read); return () => { listeners.delete(listener); }; },
     subscribeStatus(listener) { statuses.add(listener); listener(status); return () => { statuses.delete(listener); }; },

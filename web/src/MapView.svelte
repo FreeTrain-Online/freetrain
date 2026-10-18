@@ -26,7 +26,7 @@
   let sendingInput=false, inputDirty=false;
   let epoch:string|undefined;
   let drag: {x:number;y:number;camera:Camera;moved:boolean} | undefined;
-  const blocked=$derived(view.pending || view.connection!=='ready' || entering);
+  const blocked=$derived(view.pending || view.connection!=='ready' || view.role==='observer' || entering);
   const shapes: Track['shape'][]=['buffer','eastWest','northSouth','curveSE','curveSW','curveNE','curveNW','junctionE'];
   async function flushInput() {
     inputDirty=true;
@@ -48,10 +48,8 @@
   async function chooseTool(next:typeof tool) {
     if(blocked)return;
     clearInput(); entering=true;
-    // Tools remain local; entering construction explicitly pauses through the host.
-    // Leaving never resumes, preserving a pause from before tool entry.
+    // Tool selection stays local. Shared time changes only through explicit clock commands.
     try {
-      if(next!=='inspect' && view.read?.paused===false && !await model.send({kind:'pause'}))return;
       tool=next;preview=undefined;selectedPosition=undefined;
     } finally {entering=false;dirty=true;}
   }
@@ -75,7 +73,7 @@
     dirty=true;
   }
   async function commit(){
-    if(blocked||!selectedPosition||!view.read?.paused)return;
+    if(blocked||!selectedPosition||!view.read)return;
     const position={...selectedPosition};
     if(tool==='build')await model.send({kind:'buildTrack',position,shape});
     else if(tool==='remove') {
@@ -87,7 +85,7 @@
   function zoom(factor:number){camera=zoomAt(camera,factor,{x:width/2,y:height/2},width,height);dirty=true;}
   function home(){camera={...project({x:22,y:16,z:0}),zoom:Math.min(1.5,Math.max(.5,width/850))};dirty=true;}
   function focusTrain(){const train=view.read?.trains[0];if(train){camera={...project(train.position),zoom:camera.zoom};dirty=true;canvas.focus();}}
-  $effect(()=>{if(view.read){if(epoch!==view.read.worldEpoch){epoch=view.read.worldEpoch;clearInput();selection=undefined;preview=undefined;selectedPosition=undefined;tool='inspect';}renderer?.setRead(view.read);dirty=true;}if(view.connection!=='ready'){preview=undefined;selectedPosition=undefined;}if(view.connection!=='ready'||view.read?.trains[0].controller!=='manual')clearInput();});
+  $effect(()=>{if(view.read){if(epoch!==view.read.worldEpoch){epoch=view.read.worldEpoch;clearInput();selection=undefined;preview=undefined;selectedPosition=undefined;tool='inspect';}renderer?.setRead(view.read);dirty=true;}if(view.connection!=='ready'){preview=undefined;selectedPosition=undefined;}if(view.connection!=='ready'||view.read?.trains[0].controller!=='manual'||view.read?.trains[0].controlLease?.participantId!==view.participantId)clearInput();});
   $effect(()=>{void heightCut;void level;void night;void winter;void recolor;void selection;void preview;void shape;void tool;dirty=true;});
   onMount(()=>{
     let active=true, frame=0;
@@ -124,7 +122,7 @@
 <div class="map-action">
   {#if tool!=='inspect'}
     <span data-testid="preview-position">{selectedPosition?`${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}`:text.pickTile}</span>
-    <button disabled={blocked||!selectedPosition||!view.read?.paused||(tool==='remove'&&!view.read?.tracks.some(t=>same(t.position,selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button>
+    <button disabled={blocked||!selectedPosition||!view.read||(tool==='remove'&&!view.read?.tracks.some(t=>same(t.position,selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button>
     <button onclick={()=>{preview=undefined;selectedPosition=undefined;dirty=true;}}>{text.cancelPreview}</button>
   {:else}<span data-testid="map-selection">{selection?`${text[selection.kind]} · ${selection.id}`:text.pickObject}</span>{/if}
 </div>

@@ -36,6 +36,7 @@ export type CommandPayload =
       trainId: string;
       expectedRevision: Counter;
       controller: "automatic" | "manual";
+      leaseId: string;
     }
   | {
       kind: "controllerInput";
@@ -47,17 +48,28 @@ export type CommandPayload =
       left: boolean;
       right: boolean;
       reset: boolean;
+      leaseId: string;
+    }
+  | {
+      kind: "acquireControl";
+      trainId: string;
+    }
+  | {
+      kind: "releaseControl";
+      trainId: string;
+      leaseId: string;
     };
 
 export interface Join {
   type: "join";
-  protocolVersion: 1;
+  protocolVersion: 2;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
   participantId: string;
   worldEpoch: Counter;
   snapshot: Snapshot;
+  role: "owner" | "operator" | "observer";
 }
 export interface Snapshot {
   type: "snapshot";
@@ -90,11 +102,17 @@ export interface Train {
    */
   carPositions: [Position, ...Position[]];
   state: "moving" | "station" | "buffer" | "blocked";
+  controlLease: ControlLease | null;
 }
 export interface Position {
   x: number;
   y: number;
   z: number;
+}
+export interface ControlLease {
+  participantId: string;
+  leaseId: string;
+  expiresAt: Counter;
 }
 export interface Station {
   id: string;
@@ -139,7 +157,9 @@ export interface Rejected {
     | "queueFull"
     | "invalidInput"
     | "requestConflict"
-    | "retryWindowFull";
+    | "retryWindowFull"
+    | "leaseRequired"
+    | "controlBusy";
   arguments: {
     [k: string]: string;
   };
@@ -172,7 +192,6 @@ export interface Heartbeat {
 }
 export interface InputReset {
   type: "inputReset";
-  pause: boolean;
 }
 export interface SoundEvent {
   type: "soundEvent";

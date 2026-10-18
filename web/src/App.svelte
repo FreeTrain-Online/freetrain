@@ -3,7 +3,7 @@
   import { messages, persistLocale, type Locale } from './lib/localization.ts';
   import { initialLocale } from './lib/localization.ts';
   import { createShellModel } from './lib/shell-model.ts';
-  import { authorize, createRemoteSessionClient } from './lib/remote-session-client.ts';
+  import { authorize, createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
   import { catalog } from './lib/shell-model.ts';
   import SaveControls from './SaveControls.svelte';
   import { createBrowserAudio } from './lib/browser-audio.ts';
@@ -25,7 +25,7 @@
   const mapObjectPosition = $derived(mapSelection?.kind === 'train'
     ? read?.trains.find(train => train.id === mapSelection?.id)?.position
     : mapSelection?.position);
-  const disabled = $derived(saveBusy || view.pending || view.connection !== 'ready');
+  const disabled = $derived(saveBusy || view.pending || view.connection !== 'ready' || view.role === 'observer');
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   onMount(() => {
@@ -45,11 +45,16 @@
   </header>
   <div class="fixture-notice"><strong>{text.network}</strong><span>{text.networkNotice}</span></div>
   <div class="fixture-controls">
-    <button onclick={model.reconnect}>{text.reconnect}</button><span data-testid="connection">{text[view.connection]}</span>
+    <button disabled={view.leaving} onclick={model.reconnect}>{text.reconnect}</button>
+    {#if view.role || view.leaving || view.feedback === 'leaveFailed'}<button disabled={saveBusy || view.leaving} onclick={() => {
+      audio.disable(); soundEnabled = false; secret = ''; accessFailed = false;
+      void model.leave(leaveGame);
+    }}>{view.leaving ? text.leavingGame : text.leaveGame}</button>{/if}<span data-testid="connection">{text[view.connection]}</span>{#if view.role}<span data-testid="participant-role">{text[view.role]}</span>{/if}
   </div>
   {#if view.connection === 'accessRequired'}
     <form class="card" onsubmit={async event => { event.preventDefault(); accessFailed = !await authorize(secret).catch(() => false); secret = ''; if (!accessFailed) model.reconnect(); }}>
-      <label class="field">{text.operatorSecret}<input type="password" autocomplete="current-password" bind:value={secret} required /></label>
+      <label class="field">{text.operatorSecret}<input type="password" autocomplete="current-password" bind:value={secret} required={!view.anonymousAccess} /></label>
+      {#if view.anonymousAccess}<p class="hint">{text.localAccessHint}</p>{/if}
       <button type="submit">{text.connect}</button>{#if accessFailed}<p role="alert">{text.accessFailed}</p>{/if}
     </form>
   {/if}
@@ -59,7 +64,7 @@
   </nav>
   <p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{text[view.feedback === 'idle' && view.connection === 'loading' ? 'loading' : view.feedback]}</p>
   <div class="fixture-controls"><button onclick={async () => { if (soundEnabled) { audio.disable(); soundEnabled = false; } else { soundEnabled = await audio.enable(); soundFailed = !soundEnabled; } }}>{soundEnabled ? text.disableSound : text.enableSound}</button><span data-testid="sound-feedback">{soundFailed ? text.soundFailed : soundEnabled ? text.soundOn : text.soundOff}</span></div>
-  <SaveControls locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready'} onbusy={value => { saveBusy = value; }} />
+  <SaveControls locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner'} onbusy={value => { saveBusy = value; }} />
   {#if read}
     <main>
       <section class="world-panel" aria-labelledby="world-title">
@@ -76,7 +81,7 @@
         <dl class="world-stats"><div><dt>{text.cash}</dt><dd>{new Intl.NumberFormat(view.locale).format(BigInt(read.cash))}</dd></div><div><dt>{text.tick}</dt><dd data-testid="tick">{new Intl.NumberFormat(view.locale).format(BigInt(read.tick))}</dd></div></dl>
       </section>
       <aside>
-        <section class="card" aria-labelledby="train-title"><h2 id="train-title">{text.inspector}</h2><dl class="details"><div><dt>{text.train}</dt><dd>{read.trains[0].name}</dd></div><div><dt>{text.cars}</dt><dd>{read.trains[0].cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{read.trains[0].position.x}, {read.trains[0].position.y}, {read.trains[0].position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[read.trains[0].state]}</dd></div></dl><label class="field controller-field">{text.controller}<select disabled={disabled} value={read.trains[0].controller} onchange={event => { const value = event.currentTarget.value as 'automatic' | 'manual'; event.currentTarget.value = read.trains[0].controller; void model.controller(value); }}><option value="automatic">{text.automatic}</option><option value="manual">{text.manual}</option></select></label></section>
+        <section class="card" aria-labelledby="train-title"><h2 id="train-title">{text.inspector}</h2><dl class="details"><div><dt>{text.train}</dt><dd>{read.trains[0].name}</dd></div><div><dt>{text.cars}</dt><dd>{read.trains[0].cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{read.trains[0].position.x}, {read.trains[0].position.y}, {read.trains[0].position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[read.trains[0].state]}</dd></div></dl><p class="control-holder" data-testid="control-holder">{text.control}: {read.trains[0].controlLease?.participantId ?? text.unclaimed}</p><div class="form-actions"><button disabled={disabled} onclick={() => model.acquireControl()}>{text.takeControl}</button><button disabled={disabled || read.trains[0].controlLease?.participantId !== view.participantId} onclick={() => model.releaseControl()}>{text.releaseControl}</button></div><label class="field controller-field">{text.controller}<select disabled={disabled} value={read.trains[0].controller} onchange={event => { const value = event.currentTarget.value as 'automatic' | 'manual'; event.currentTarget.value = read.trains[0].controller; void model.controller(value); }}><option value="automatic">{text.automatic}</option><option value="manual">{text.manual}</option></select></label></section>
         <section class="card" aria-labelledby="station-title"><h2 id="station-title">{text.station}</h2><dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{read.stations[0].name}</dd></div><div><dt>{text.position}</dt><dd>{read.stations[0].position.x}, {read.stations[0].position.y}, {read.stations[0].position.z}</dd></div></dl>
           <form onsubmit={event => { event.preventDefault(); void model.rename(); }}>
             <label class="field">{text.stationName}<input value={view.draft} oninput={event => model.setDraft(event.currentTarget.value)} oncompositionstart={() => model.setComposing(true)} oncompositionend={() => model.setComposing(false)} onblur={() => model.setComposing(false)} onkeydown={event => { if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229 || view.composing)) event.preventDefault(); }} maxlength="120" aria-describedby="draft-hint" /></label>
