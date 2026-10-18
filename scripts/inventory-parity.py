@@ -215,7 +215,9 @@ def direction_aliases(sprites):
     for index, sprite in enumerate(sprites):
         tokens = [token for node in sprite.findall('direction')
                   for token in node.get('front', '').upper().split('|')]
-        if not tokens:
+        # parseDirection counts every split token, even unknown/empty names.
+        # Only a node with no direction elements can become the fallback.
+        if not sprite.findall('direction'):
             default = min(default, index)
         for token in tokens:
             for direction in named.values() if token == 'ALL' else [named[token]] if token in named else []:

@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 1,
+  "baselineRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "evidenceKind": "source-derived",
+  "rules": [
+    {
+      "id": "registration",
+      "sources": [
+        "core/framework/plugin/Plugin.cs",
+        "core/framework/plugin/PluginManager.cs",
+        "core/framework/plugin/PluginUtil.cs",
+        "core/framework/plugin/FixedClassContributionFactory.cs",
+        "core/framework/plugin/DynamicContributionFactory.cs"
+      ],
+      "behavior": "Factories load first, then dependency-ordered plugin declarations, then onInitComplete. Fixed factories use implementation; dynamic factories require class; absent codebase means FreeTrain.Core. Contributions and Pictures have separate registries. No runtime DLL loading in the port. Preserve declaration order and original IDs; no replacement ID normalization.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "bitmap-surface",
+      "sources": [
+        "core/framework/graphics/SurfaceLoaders.cs",
+        "core/framework/graphics/Picture.cs",
+        "core/framework/graphics/ColorMap.cs",
+        "lib/DirectDraw.AlphaBlend/nightImageBuilder.cpp"
+      ],
+      "behavior": "BitmapSurfaceLoader uses System.Drawing.Bitmap at native pixel size; upper-left RGB is the source color key. Picture chooses four seasons and day/night. A season day override without night builds its own night; an unspecified season inherits spring day and spring night. getNightOverride checks only the FIRST override child; do not silently reinterpret later night siblings. Automatic night divides RGB components by 4, except (8,0,0)->(255,8,8), (0,8,0)->(252,243,148), (0,0,8)->(255,227,99), also transforming the key. Native RGB555/565 quantization differs from RGB888: retain as fidelity decision, not arbitrary browser recoloring.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "sprite-anchor",
+      "sources": [
+        "core/framework/graphics/SimpleSprite.cs",
+        "core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs",
+        "core/framework/plugin/PluginUtil.cs"
+      ],
+      "behavior": "Source rectangle origin/size and destination anchor offset are distinct. draw places top-left at projected voxel point minus offset; preserve transparent margins. Default loader 0D uses offset=(0,h), origin attribute, size default 32x32. 2D cell x,y: origin=(originX+16*(x+y),originY), offset=(0,h+8*(y-x)), size=(32,min(maxHeight,h+16+8*(y-x))); h is supplied height unless offset overrides, maxHeight is sprite height attribute or Int32.MaxValue. Zero height produces NullSprite. 3D splits roof/front/edge slices, clips negative roof origins, fills invisible cells with NullSprite; use pinned load3D body as the complete algorithm. Invisible sprite does not mean unoccupied voxel. Default loader ID spriteLoader:default.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "sprite-effects",
+      "sources": [
+        "core/framework/graphics/SpriteFactory.cs",
+        "core/framework/graphics/ColorMappedSprite.cs",
+        "core/framework/graphics/HueTransformSprite.cs",
+        "lib/DirectDraw.AlphaBlend/BltColorTransform.cpp",
+        "lib/DirectDraw.AlphaBlend/bltHueTransform.cpp"
+      ],
+      "behavior": "First spriteType wins, otherwise first colorVariation, otherwise SimpleSprite. name selects spriteFactory:{name}. ColorMap uses exact from/to pairs and both authored/quarter-darkened palettes at night; source documents incomplete collision behavior. HueTransform masks R/G/B or * channel and passes target colors to native transform; preserve integer/quantization behavior from the native source before accepting pixel parity. Effects do not add registered contribution IDs.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "structure-fixed",
+      "sources": [
+        "core/contributions/common/FixedSizeStructureContribution.cs",
+        "core/contributions/structs/CommercialStructureContribution.cs",
+        "core/contributions/rail/StationContribution.cs",
+        "core/contributions/rail/RailStationaryContribution.cs"
+      ],
+      "behavior": "Fixed structures use size x,y, height z and default load3D; opposite=true swaps x/y for generated primitives. Preserve population, price and ownership data with structure recipe. Station and rail-stationary contributions use their own builder/occupancy semantics, not only dimensions. Full nested declaration is retained for every contribution.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "structure-variable",
+      "sources": [
+        "core/contributions/structs/VarHeightBuildingContribution.cs"
+      ],
+      "behavior": "Height is an instance parameter, not a new ID. Top and bottom sprite lists retain XML order; middle repeats, and overlay=true on generated middle draws bottom with middle/top at overlap. Direct constructor middle uses load2D height=16; generated constructor middle and top/bottom use size.x*8. Default minimum for generic family is 2, direct min/max required. Direct createBuilder/createRemover are stubs; generic selectors call their own placement controllers.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "structure-generic",
+      "sources": [
+        "plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib.generic/GenericLandContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib.generic/StructCategory.cs"
+      ],
+      "behavior": "GenericStructure registers primitive ID parent-color:direction for each color x sprite node, not for each height. The parent remains a registered selector; children are CommercialStructure or VarHeightBuilding. No color children means one fallback color from first child; color cloned into sprite(s). BASIC picture/sprite and VARHEIGHT pictures/sprites may not be mixed. parseDirection uses pipe-separated uppercase cardinal names, ALL assigns cardinals only; count includes unknown tokens, so an unrecognized direction still prevents default selection. Unassigned slots default to first node with zero direction tokens, or direction count sentinel if none exists: report invalid fallback rather than clamping. GenericLand inherits this generator and substitutes land primitives. CategoryTree.xml/icons.bmp load implicitly.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "half-voxel",
+      "sources": [
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel/HueShiftSprite.cs",
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel/HVStructure.cs"
+      ],
+      "behavior": "No generated registered IDs: side, cardinal face, color index and six highlight phases are recipe/state selections. Pattern crop size is 24 x (8+height*16), origin from pattern; fore offsets by N/E/S/W are (0,-8),(-8,-8),(0,-8),(-8,-8), back (-8,-4),(0,-4),(-8,-4),(0,-4), adding height*16 to Y. map to refers to a ColorLibrary ID, not RGB; its elements supply hue variants. highlight picture ID uses parent#HL; per-pattern highlight enables hue-shift sprites. ContributionReference persists contribution, pattern/color/highlight index, side and face; UI current selection is NonSerialized.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "train-recipe",
+      "sources": [
+        "core/contributions/train/TrainContributionFactory.cs",
+        "core/contributions/train/ParamTrainImpl.cs",
+        "core/contributions/train/SymTrainCarImpl.cs",
+        "core/contributions/train/AsymTrainCarImpl.cs",
+        "core/contributions/train/ReverseTrainCarImpl.cs",
+        "core/contributions/train/ColoredTrainCarImpl.cs"
+      ],
+      "behavior": "Train without class uses ParamTrainImpl. Composition fills body, then overrides first head and last tail (tail wins length=1). Sym car: 8 level frames at origin+(32*i,0), 4 slope at origin+(32*i,32), each 32x32 anchor(0,0); level angle&7, descending flips direction. Asym: 16 level at (32*(i%8),32*(i/8)), 8 slope at (32*i,64), added origin; level angle includes reversal bit; slope index=direction+(climb?0:1). Reverse car aliases base carRef, capacity copied after init, level angle XOR 8, slope direction opposite and climb inverted. Color train has four RGB colors plus shadows *180/255, 8+4 frames; map picture is a contribution ID, base/line values are RGB.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "land",
+      "sources": [
+        "core/contributions/land/StaticLandBuilder.cs",
+        "core/contributions/land/RandomLandBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestVoxel.cs",
+        "plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "behavior": "Static land uses default load2D(1,1,0); RandomLand lands text is whitespace-separated contribution IDs, RNG selection occurs per legal placement and in preview. Forest sheet size/count defines frame width; anchor is half-width/full-height, optional ground is 32x16; scattered instance patterns persist. Rice uses nine authored crop positions with offset anchor; vinyl-house uses three 32x24 rows anchored (0,8) and sheet offset. Creek uses its retained source builder rules; random/seasonal/adjacency states must survive save, never expand them into fake catalog IDs.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "roads",
+      "sources": [
+        "core/contributions/road/StandardRoadContribution.cs",
+        "core/contributions/road/A3RoadContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/RoadAccessoryContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib/src/DummyCars/DummyCarContribution.cs"
+      ],
+      "behavior": "StandardRoad has indices 1..15 with source locations table [2,4,1,4,1,1,1,3,0,1,2,0,0,2,2,3,2,1,0,0,0,3,1,0,2,2,1,2,0,4], cell size and vertical anchor from picture. A3Road: three 32x32 frames at (32*i,0), anchor(0,16), masks 2/8/10 horizontal, 1/4/5 vertical, otherwise crossing. RoadAccessory: four 32x32 at (32*(2*y+x),0), anchor(0,16). Dummy cars: two direction frames, crop 32x(16+offset), per-color factories, explicit color/direction instance state.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "rail-accessories",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs"
+      ],
+      "behavior": "ElectricPole four 32x32 frames at (32*(2*y+x),0) anchor(0,16). Signal four 32x24 at (32*i,0), anchor(0,8), direction.index/2; side controls before/after train drawing. Fence uses its authored connection table, 32x32 and vertical offset; fence instances store attachment state. Garage loads garage.bmp implicitly. Bridge, steel-supported rail and tunnel load system pictures indirectly and compose foreground/background; recipe sources preserve exact draw passes and crops.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "audio-segment",
+      "sources": [
+        "core/contributions/sound/BGMContribution.cs",
+        "core/contributions/sound/BGMFactoryContribution.cs",
+        "core/contributions/rail/DepartureBellContribution.cs",
+        "core/framework/ResourceUtil.cs",
+        "core/framework/BGMManager.cs"
+      ],
+      "behavior": "Bundled BGM uses href element text; departure bells use sound/@href, resolved relative to manifest; original DirectAudio Segment consumes MIDI/WAV files. Retain source bytes, IDs, order and playback role; browser audio adaptation belongs in P2/P9. A4 factory probes registry install directory and emits nine plugin-local BGM objects, never global PluginManager.addContribution entries. External files, user-file substitute and A4 workflow remain explicitly excluded. Null/user-supplied BGM handling is not a bundled content alias.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "ui-image",
+      "sources": [
+        "core/framework/ResourceUtil.cs",
+        "core/framework/MainWindow.cs"
+      ],
+      "behavior": "Native form icons/toolbars/help images use their declared format and embedded resource names, not universal BMP sprite color-keying. UI chrome can be replaced; content/commands and notices remain in scope. Preserve resx names/value hashes without activating serialized CLR objects; inspect actual embedded imagery in P2 if needed.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "code-contribution",
+      "sources": [
+        "core/framework/plugin/Contribution.cs",
+        "core/framework/plugin/PluginSerializationBinder.cs"
+      ],
+      "behavior": "Code contribution behavior is mapped through its exact type and declaring project. Manifest config/child elements are retained verbatim as ordered trees; ordinary Contribution serializes only ReferenceImpl.id and reloads immutable recipe data from catalog. Inherited recipe fields are not automatically save fields. World entities, plugin otherObjects, controller instances, callbacks and mutable contribution selections have separate stateRules; no binary compatibility claim.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    },
+    {
+      "id": "derived-overlays",
+      "sources": [
+        "core/framework/graphics/AlphaBlendSpriteSet.cs",
+        "core/framework/graphics/DirectSprite.cs",
+        "lib/DirectDraw.AlphaBlend/bltAlphaFast.cpp",
+        "lib/DirectDraw.AlphaBlend/BltShape.cpp"
+      ],
+      "behavior": "AlphaBlendSpriteSet draws each source sprite into a magenta-keyed surface at its existing offset, then masks occlusion by cells xx<=x, yy>=y, zz>=z (excluding itself), with projected displacement (16*(dx+dy),8*(-dx+dy-2*dz)). It wraps the result in DirectSprite with the original anchor. Preserve masking order so translucent placement previews do not double-blend overlapping voxels. DirectSprite offset getter recursively returns itself in the baseline: a port fix must be an explicit defect correction, never an undocumented literal implementation.",
+      "evidenceKind": "source-derived; no original-runtime comparison"
+    }
+  ],
+  "typeRules": {
+    "ColorLibrary": [
+      "registration",
+      "code-contribution"
+    ],
+    "GenericStructure": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-anchor",
+      "sprite-effects",
+      "structure-generic",
+      "structure-fixed",
+      "structure-variable",
+      "derived-overlays"
+    ],
+    "HalfVoxelStructure": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "half-voxel"
+    ],
+    "accountGenre": [
+      "registration",
+      "code-contribution"
+    ],
+    "anonymous": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-anchor",
+      "sprite-effects",
+      "structure-fixed",
+      "derived-overlays"
+    ],
+    "bgm": [
+      "registration",
+      "code-contribution",
+      "audio-segment"
+    ],
+    "bgmFactory": [
+      "registration",
+      "code-contribution",
+      "audio-segment"
+    ],
+    "colorMapTrainPicture": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface"
+    ],
+    "contribution": [
+      "registration",
+      "code-contribution"
+    ],
+    "dockingContent": [
+      "registration",
+      "code-contribution"
+    ],
+    "electricPole": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "rail-accessories"
+    ],
+    "land": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-anchor",
+      "sprite-effects",
+      "land",
+      "rail-accessories",
+      "derived-overlays"
+    ],
+    "menu": [
+      "registration",
+      "code-contribution"
+    ],
+    "newGame": [
+      "registration",
+      "code-contribution"
+    ],
+    "picture": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface"
+    ],
+    "railSignal": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "rail-accessories"
+    ],
+    "railStationary": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-anchor",
+      "sprite-effects",
+      "structure-fixed",
+      "derived-overlays"
+    ],
+    "road": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "roads"
+    ],
+    "specialRail": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "rail-accessories"
+    ],
+    "specialStructure": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "rail-accessories"
+    ],
+    "spriteFactory": [
+      "registration",
+      "code-contribution"
+    ],
+    "spriteLoader": [
+      "registration",
+      "code-contribution"
+    ],
+    "station": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-anchor",
+      "sprite-effects",
+      "structure-fixed",
+      "derived-overlays"
+    ],
+    "train": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "train-recipe"
+    ],
+    "trainCar": [
+      "registration",
+      "code-contribution",
+      "bitmap-surface",
+      "sprite-effects",
+      "train-recipe"
+    ],
+    "trainController": [
+      "registration",
+      "code-contribution"
+    ],
+    "trainDepartureBell": [
+      "registration",
+      "code-contribution",
+      "audio-segment"
+    ]
+  },
+  "stateRules": [
+    {
+      "id": "references",
+      "sources": [
+        "core/framework/plugin/Contribution.cs",
+        "core/framework/graphics/Picture.cs",
+        "core/framework/plugin/PluginSerializationBinder.cs",
+        "core/contributions/population/PersistentPopulation.cs"
+      ],
+      "behavior": "Contribution.ReferenceImpl serializes id string, resolves global catalog or throws. Picture.ReferenceImpl resolves separate PictureManager; picture identity is not necessarily contribution identity. PersistentPopulation serializes a resolver, not computed population snapshots. Historical binder ignores supplied assemblyName while trying core and public contribution assemblies. Port uses bounded explicit mappings; complete historical nested graph/type reader is P0-05/P10, not this content inventory."
+    },
+    {
+      "id": "structures-land",
+      "sources": [
+        "core/world/structs/Commercial.cs",
+        "core/world/structs/VarHeightBuilding.cs",
+        "core/world/land/StaticLandVoxel.cs",
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs",
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel/HVStructure.cs",
+        "plugins/jp.co.tripod.chiname.lib.generic/GenericLandContribution.cs"
+      ],
+      "behavior": "Persist generated primitive contribution ID plus world locator/ownership/construction/height state; not merely generic parent. Half-voxel instance has fore/back ContributionReference values including color/highlight/direction/side and derives sprites from contribution. Generic selector colorIndex/dirIndex are mutable catalog UI selection and are not written by inherited Contribution.GetObjectData. Full instance fields are indexed in sourceTypes with source hashes; P10 must map nested object identity/cycles."
+    },
+    {
+      "id": "plugin-world-state",
+      "sources": [
+        "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+        "plugins/jp.co.tripod.chiname.financial.bank/FloatingAssets.cs",
+        "plugins/jp.co.tripod.chiname.financial.stockmarket/StockCompanyModule.cs",
+        "plugins/jp.co.tripod.chiname.financial.stockmarket/Economy.cs",
+        "plugins/jp.co.tripod.chiname.financial.stockmarket/StockPrice.cs",
+        "plugins/jp.co.tripod.chiname.financial.stockmarket/Company.cs"
+      ],
+      "behavior": "Bank world.otherObjects key {227E053A-6667-43fe-8CE1-26EB55CE6A56}: debt/deposit sets, totals, floating-asset due dates/amount/interest/status and scheduled callbacks; rebind listeners after world load. Stock module key {227E053A-6667-43fe-8CE2-26EB55CE6A56}; Economy key {227E053A-6667-43fe-8CE4-26EB55CE6A56} plus suffix rand persists RandomEx. Company ownership/prices/history/economy/events persist; NonSerialized retains/listeners/static indexes are rebuilt by onWorldLoaded/rebuildRetainSet/restoreData/runEconomy. Do not serialize form controls. Default config is manifest data; no implicit mutation into a save."
+    },
+    {
+      "id": "controllers",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "core/world/rail/SimpleTrainControllerImpl.cs",
+        "core/world/rail/DelegationTrainControllerImpl.cs"
+      ],
+      "behavior": "Manual/TAT controller instances have state beyond contribution ID; retain timetable/harbor/junction configuration and source defaults. Simple/Delegation controllers serialize singleton references. Manual held keyboard state and UI are not durable port state; explicitly adapt input while preserving controller outcomes. Indexed fields/methods are evidence, not executable delegate deserialization."
+    },
+    {
+      "id": "color-test",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+        "core/contributions/train/ColoredTrainCarImpl.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs"
+      ],
+      "behavior": "ColorTestTrainCar changes picture and colors on singleton contribution through UI. Inherited GetObjectData writes only ID, so those edits are not saved as independent car data by original contribution serialization. Record this baseline limitation; any durable port customization is an explicit difference, never claim it was saved by original. Car identity/composition still reference contribution IDs."
+    },
+    {
+      "id": "placed-plugin-entities",
+      "sources": [
+        "plugins/jp.co.tripod.chiname.lib/src/DummyCars/DummyCar.cs",
+        "plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/RoadAccessory.cs",
+        "plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.477/src/VinylHouseVoxel.cs",
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekVoxel.cs",
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestVoxel.cs",
+        "plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldVoxel.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPole.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumStructure.cs",
+        "plugins/org.kohsuke.freetrain.soccerStadium/src/Game.cs",
+        "plugins/org.kohsuke.freetrain.soccerStadium/src/OpponentTeam.cs",
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceVoxel.cs"
+      ],
+      "behavior": "Placed DummyCar stores contribution, color and index; RoadAccessory/ElectricPole store contribution and index; GarageRail pictureIndex derives authored frame. SignalRailRoad stores direction and contribution type in addition to inherited traffic/rail identity. FenceBuilder.DummyVoxel retains inherited voxel/fence references. VinylHouseVoxel contribution/index and station listener; RiceFieldVoxel contribution/xIndex/yIndex and station listener; ForestVoxel contribution and byte[] scattered patterns; CreekVoxel contribution/direction/sprite; TerraceVoxel byte[] heights. Soccer StadiumStructure has strength/popularity, stadium/team names and past/future games; each Game links opponent/date/stadium and score/audience, opponents carry name/strength. Include inherited base location/ownership/subsidiary/population and callbacks, not only these declared fields. Exact field/type tokens and nested types are indexed by path and hash; type graph conversion and continuation validation remain P0-05/P10."
+    },
+    {
+      "id": "temporary-bgm",
+      "sources": [
+        "core/framework/BGMManager.cs",
+        "core/world/World.cs"
+      ],
+      "behavior": "TempBGMContribution overrides GetObjectData: substitutes its own ReferenceImpl with fileName, not Contribution.ReferenceImpl with id. World saves a nullable BGMContribution[] root before World. Arbitrary user-file selection is a separate legacy action from excluded A4 discovery; P0-03 must map its UX. Preserve unresolved external-file diagnostics and never bundle local user music as base content."
+    }
+  ],
+  "unreferencedAssets": {
+    "core/res/PrivateHouse.bmp": "retained unused artwork; no source/manifest/project load found",
+    "core/res/SignalN.bmp": "retained unused artwork; no source/manifest/project load found",
+    "core/res/caution.gif": "retained GIF alternative; Platform loads caution.bmp",
+    "core/res/ex.png": "retained unused image; no source/manifest/project load found",
+    "plugins/jp.co.tripod.chiname.lib.fence/hedge2.bmp": "retained unused hedge sheet; manifest selects other hedge pictures",
+    "plugins/org.kohsuke.freetrain.land.forest/trees_sakura.SPR.bmp": "retained alternate source sheet; manifest selects trees_sakura.bmp",
+    "plugins/org.kohsuke.freetrain.rail.electricPole/original.bmp": "retained original artwork; manifest selects authored pole sheets",
+    "plugins/org.kohsuke.freetrain.structure.c477/bldg_s01.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.structure.c477/bldg_s02.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.structure.c477/bldg_s03.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.structure.c477/bldg_s03.n.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.structure.pcb/drug.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.structure.pcb/super.bmp": "retained unused building sheet; active manifest does not reference it",
+    "plugins/org.kohsuke.freetrain.tc.tat/res/Curve.gif": "no direct file load; visible pixels and alpha exactly match JunctionConfigDialog embedded ImageList index 1",
+    "plugins/org.kohsuke.freetrain.tc.tat/res/Straight.gif": "no direct file load; visible pixels and alpha exactly match JunctionConfigDialog embedded ImageList index 0"
+  },
+  "differences": [
+    {
+      "id": "CONTENT-001",
+      "finding": "The pinned baseline TAT project lists missing res/Straight.bmp. Its runtime junction dialog uses embedded ImageList images: index 0 visually matches Straight.gif and index 1 visually matches Curve.gif exactly at 48x48, including alpha; only hidden RGB of fully transparent pixels differs.",
+      "disposition": "Corrected in current source: replace the stale res/Straight.bmp Content item with res/Straight.gif and res/Curve.gif. Embedded resources and images are unchanged. The pinned baseline keeps its original missing-file diagnostic; P2/P9 can preserve the verified artwork without reconstructing a BMP.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.csproj",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionConfigDialog.resx",
+        "plugins/org.kohsuke.freetrain.tc.tat/res/Straight.gif",
+        "plugins/org.kohsuke.freetrain.tc.tat/res/Curve.gif"
+      ],
+      "embeddedImageComparison": {
+        "baselineRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "resxSha256": "00131684fd0dbc1a12b8ffbb2034927e1e8ec6992a4cdedfc6b326c1d97a3749",
+        "resourceName": "imageList.ImageStream",
+        "width": 48,
+        "height": 48,
+        "method": "Extract byte array without object activation; MSFt RLE; IL 0x0101 color and transparency mask; compare RGBA with transparent RGB normalized to zero.",
+        "matches": [
+          {
+            "gif": "Straight.gif",
+            "gifFileSha256": "a7e60a81332011424cccd04ae07e05db1471f624be898fea8f1387d304f5a75b",
+            "embeddedIndex": 0,
+            "differingAlphaPixels": 0,
+            "differingVisibleRgbPixels": 0,
+            "differingVisualPixels": 0,
+            "differingRawRgbaPixels": 1982,
+            "normalizedGifRgbaSha256": "428fbfbdef45176180b33035eb8b90a2cb2f3dbe2418c8bdd18f193a897116af",
+            "normalizedEmbeddedRgbaSha256": "428fbfbdef45176180b33035eb8b90a2cb2f3dbe2418c8bdd18f193a897116af",
+            "gifOpaquePixels": 322,
+            "embeddedOpaquePixels": 322
+          },
+          {
+            "gif": "Curve.gif",
+            "gifFileSha256": "20606cc23bfb5aec7b6e8adf3349f11ac6ff1c0aeae1900dc7c5a0381d9f5809",
+            "embeddedIndex": 1,
+            "differingAlphaPixels": 0,
+            "differingVisibleRgbPixels": 0,
+            "differingVisualPixels": 0,
+            "differingRawRgbaPixels": 1983,
+            "normalizedGifRgbaSha256": "6c00e5c8bc47eb3f425bd5af42aec58609ec648f5dc0e1899a0517bd490a10de",
+            "normalizedEmbeddedRgbaSha256": "6c00e5c8bc47eb3f425bd5af42aec58609ec648f5dc0e1899a0517bd490a10de",
+            "gifOpaquePixels": 321,
+            "embeddedOpaquePixels": 321
+          }
+        ]
+      },
+      "currentSourceCorrection": {
+        "path": "plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.csproj",
+        "removedContent": [
+          "res/Straight.bmp"
+        ],
+        "addedContent": [
+          "res/Straight.gif",
+          "res/Curve.gif"
+        ],
+        "classification": "legacy project metadata cleanup; no runtime or artwork change"
+      }
+    },
+    {
+      "id": "CONTENT-002",
+      "finding": "Night/effect native code supports multiple pixel formats, and ColorMappedSprite documents incomplete night-palette collision handling.",
+      "disposition": "Preserve exact source rules and authored overrides. P2 must select and verify the browser pixel contract; inventory closure is not rendered fidelity.",
+      "sources": [
+        "core/framework/graphics/ColorMappedSprite.cs",
+        "lib/DirectDraw.AlphaBlend/nightImageBuilder.cpp",
+        "lib/DirectDraw.AlphaBlend/bltHueTransform.cpp"
+      ]
+    },
+    {
+      "id": "CONTENT-003",
+      "finding": "Contribution.GetObjectData persists catalog identity only, including mutable ColorTest colors/picture and generic selector selections.",
+      "disposition": "Do not infer durable customizations from instance fields; any port persistence improvement needs an explicit difference. Complete historical object graph and importer acceptance remain P0-05/P10.",
+      "sources": [
+        "core/framework/plugin/Contribution.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs"
+      ]
+    },
+    {
+      "id": "CONTENT-004",
+      "finding": "No original runtime was loaded for this reconciliation, and neither artwork nor code was converted.",
+      "disposition": "Counts, aliases and recipe/state rules are source-derived. P2, P5-P10 and the full-content gallery retain their implementation and comparison gates.",
+      "sources": [
+        "core/framework/plugin/Plugin.cs"
+      ]
+    },
+    {
+      "id": "CONTENT-005",
+      "finding": "DirectSprite.offset returns offset recursively, although its drawing methods use _offset.",
+      "disposition": "Recorded baseline defect; P2 must use the stored anchor explicitly and verify derived alpha previews, retaining the correction as a difference.",
+      "sources": [
+        "core/framework/graphics/DirectSprite.cs",
+        "core/framework/graphics/AlphaBlendSpriteSet.cs"
+      ]
+    }
+  ],
+  "sourceLoadRoots": {
+    "core/world/rail/BridgeRail.cs": "plugins/org.kohsuke.freetrain.rail",
+    "core/world/rail/StealSupportedRailContributionImpl.cs": "plugins/org.kohsuke.freetrain.rail",
+    "core/world/rail/TunnelRail.cs": "plugins/org.kohsuke.freetrain.rail"
+  },
+  "expectedResourceDiagnostics": [
+    {
+      "owner": "plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.csproj",
+      "reference": "res\\Straight.bmp",
+      "resolution": "project-content-missing"
+    }
+  ]
+}

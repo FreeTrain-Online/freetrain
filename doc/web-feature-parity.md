@@ -11,6 +11,9 @@ The maintained inputs and outputs are:
 | --- | --- |
 | [baseline.json](parity/baseline.json) | Revisions, expected manifest counts and root dispositions |
 | [base-ledger.json](parity/base-ledger.json) | All 54 manifests, declarations/generated children, resources, source files, UI bindings and serialization candidates |
+| [base-content-review.json](parity/base-content-review.json) | P0-02 source reconciliation: complete recipes, build mappings, aliases, resource graph, notices and contribution/instance state evidence |
+| [content-rules.json](parity/content-rules.json) | Maintained decoding/crop/anchor/effect/state rules and explicit difference dispositions |
+| [Base content reconciliation](web-parity-content.md) | P0-02 accounting, source findings and boundaries of the evidence |
 | [extra-suite-ledger.json](parity/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
 | [action-map.json](parity/action-map.json) | Reviewed main-window operation mappings and remaining differences |
 | [geometry.json](parity/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
@@ -23,6 +26,7 @@ Run from the repository root with Python 3.9 or newer:
 # Base generation/checks never discover or read a sibling checkout.
 python3 scripts/inventory-parity.py
 python3 scripts/inventory-parity.py --check
+python3 scripts/reconcile-parity-content.py --check
 python3 scripts/parity-rail-gallery.py --check
 python3 -m unittest discover -s scripts/tests -v
 
@@ -32,6 +36,7 @@ python3 scripts/inventory-parity.py --extra-root /path/to/freetrain_plugins --ch
 
 # Temporary review outputs, never release assets.
 python3 scripts/inventory-parity.py --report tmp/parity-p0/inventory.md
+python3 scripts/reconcile-parity-content.py --report tmp/parity-p0/content-reconciliation.md
 python3 scripts/parity-rail-gallery.py --gallery tmp/parity-p0/rail-gallery
 ```
 
@@ -59,10 +64,11 @@ Declarations of type `contribution` register factories, not catalog items.
 color × sprite-direction pair using `{parent}-{color}:{direction}`. Children
 have their own records. Its eight-entry direction fallback table is preserved;
 height variations are recipes rather than additional registered IDs. Enumeration
-does not prove that every recipe constructs successfully. Half-voxel combinations,
-train compositions/reversal/recolors, implicit resource loads and crop/anchor/effect
-interpretations still need individual source review. The scanner retains recipe
-attributes without claiming a complete importer.
+does not prove that every recipe constructs successfully. P0-02's separate content
+review now specifies half-voxel combinations, train composition/reversal/recolors,
+implicit resources and crop/anchor/effect rules, retaining complete ordered
+declaration trees and source hashes. Conversion and runtime fidelity remain open;
+neither scanner is a complete importer.
 
 Source and UI scanning is lexical. It finds class/interface/enum names, serialization
 markers, selected event subscriptions and `Command` registrations. It is not a C#
@@ -76,8 +82,11 @@ Resource edges distinguish exact/case-folded matches, missing resources and exte
 references. Missing DLL paths frequently describe historical build outputs whose
 source remains present; these are review diagnostics, not evidence of missing art.
 Do not suppress the diagnostics or count them as resolved solely because a source
-file has a similar name. SHA-256/notices identify source provenance; copyright and
-author records still require per-file review.
+file has a similar name. The content review maps all 76 base DLL edges by exact
+qualified type and project compile membership, keeping discovery diagnostics
+intact. Per-resource manifest credits, notice hashes and unused/alternative file
+dispositions are retained there. No individual image authorship is inferred from
+a plugin credit. The extra suite's resource/permission review remains separate.
 
 The extra suite is optional, separately inventoried and non-free under its authors'
 permissions. Its collection README is permission/attribution evidence, not an LGPL
