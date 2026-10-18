@@ -6,6 +6,9 @@ export type ReadState = DeepReadonly<Snapshot>;
 export type ConnectionStatus = 'loading' | 'ready' | 'disconnected' | 'accessRequired' | 'incompatible';
 export interface SessionClient {
   readonly anonymousAccess?: boolean;
+  readonly connectionStage?: 'bootstrap' | 'joining' | 'synchronizing';
+  readonly retryAt?: number;
+  readonly authRequiredAgain?: boolean;
   readonly participantId?: string;
   readonly role?: 'owner' | 'operator' | 'observer';
   readonly mode: 'fixture' | 'remote';

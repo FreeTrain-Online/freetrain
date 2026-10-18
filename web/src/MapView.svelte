@@ -5,126 +5,189 @@
   import { MapRenderer, loadImages, type Selection } from './lib/map-renderer.ts';
   import { project, same, tileAt, zoomAt, type Camera } from './lib/map-geometry.ts';
   import type { Position, Track } from './generated/contracts.ts';
-  let { model, view, onselect }: { model: ShellModel; view: ShellState; onselect: (selection: Selection | undefined) => void } = $props();
-  const text=$derived(messages[view.locale]);
+  import { demoScene } from './lib/demo-scene.ts';
+  import { tools, type Tool, type Panel } from './lib/game-ui.ts';
+  import PanelFrame from './PanelFrame.svelte';
+  let { model, view, live, panel, tool = $bindable('inspect'), renderState = $bindable('loading'), onselect, onclose }:
+    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; onselect: (selection: Selection | undefined) => void; onclose: () => void } = $props();
+  const text = $derived(messages[view.locale]);
+  const liveScene = $derived(view.connection === 'ready' && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
   let renderer: MapRenderer | undefined;
-  let camera: Camera={...project({x:22,y:16,z:0}),zoom:1};
-  let width=0, height=0, dirty=true;
-  let tool=$state<'inspect'|'build'|'remove'>('inspect');
-  let entering=$state(false);
-  let level=$state(1), heightCut=$state(15);
-  let shape=$state<Track['shape']>('buffer');
-  let night=$state(false), winter=$state(false), recolor=$state(false);
-  let preview=$state<Position>();
-  let selection=$state<Selection>();
-  let selectedPosition=$state<Position>();
-  let assetsFailed=$state(false);
-  let manualActive=$state(false);
-  let held=$state('');
-  const keys=new Set<string>();
-  let sendingInput=false, inputDirty=false;
-  let epoch:string|undefined;
-  let drag: {x:number;y:number;camera:Camera;moved:boolean} | undefined;
-  const blocked=$derived(view.pending || view.connection!=='ready' || view.role==='observer' || entering);
-  const shapes: Track['shape'][]=['buffer','eastWest','northSouth','curveSE','curveSW','curveNE','curveNW','junctionE'];
+  let camera: Camera = { ...project({ x: 22, y: 16, z: 0 }), zoom: 1 };
+  let width = 0, height = 0, dirty = true, lastDpr = 0;
+  let level = $state(1), heightCut = $state(15);
+  let shape = $state<Track['shape']>('buffer');
+  let night = $state(false), winter = $state(false), recolor = $state(false);
+  let preview = $state<Position>(), selectedPosition = $state<Position>();
+  let selection = $state<Selection>();
+  let uncertain = $state(false);
+  let held = $state('');
+  const keys = new Set<string>();
+  let space = false, sendingInput = false, inputDirty = false;
+  let inputTrainId: string | undefined;
+  let epoch: string | undefined;
+  let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; pointerId: number } | undefined;
+  const blocked = $derived(view.pending || !live || view.role === 'observer');
+  const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(item => item.id === selection?.id) : undefined);
+  const shapes: Track['shape'][] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
   async function flushInput() {
-    inputDirty=true;
-    if(sendingInput)return;
-    sendingInput=true;
-    try { while(inputDirty){inputDirty=false;await model.input(new Set(keys));} }
-    finally {sendingInput=false;}
+    inputDirty = true;
+    if (sendingInput) return;
+    sendingInput = true;
+    try { while (inputDirty) { inputDirty = false; await model.input(new Set(keys), inputTrainId); } }
+    finally { sendingInput = false; }
   }
-  function clearInput(){const had=keys.size>0;keys.clear();held='';manualActive=false;if(had)void flushInput();}
-  function key(event:KeyboardEvent,down:boolean) {
-    if(event.key==='Escape'){event.preventDefault();preview=undefined;selectedPosition=undefined;clearInput();if(tool!=='inspect')void chooseTool('inspect');return;}
-    if(event.isComposing || event.keyCode===229 || event.target!==canvas || tool!=='inspect' || view.connection!=='ready' || view.read?.trains[0].controller!=='manual')return;
-    if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Shift'].includes(event.key))return;
+  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; space = false; if (had) void flushInput(); }
+  function cancelGesture() {
+    if (drag && canvas.hasPointerCapture(drag.pointerId)) canvas.releasePointerCapture(drag.pointerId);
+    drag = undefined;
+  }
+  function cancelDraft() { selectedPosition = undefined; preview = undefined; uncertain = false; dirty = true; }
+  export function suspendInput() { clearInput(); cancelGesture(); }
+  export function resetInteraction() { clearInput(); cancelGesture(); cancelDraft(); }
+  export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
+  export function escape() {
+    if (selectedPosition) cancelDraft();
+    else if (tool !== 'inspect') chooseTool('inspect');
+    clearInput();
+  }
+  function key(event: KeyboardEvent, down: boolean) {
+    if (!live || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
+    if (event.code === 'Space') { event.preventDefault(); space = down; return; }
+    if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
     event.preventDefault();
-    if(event.repeat)return;
-    if(down)keys.add(event.key);else keys.delete(event.key);
-    manualActive=true;held=[...keys].join(' + ');void flushInput();
+    if (event.repeat) return;
+    inputTrainId = selectedTrain.id;
+    if (down) keys.add(event.key); else keys.delete(event.key);
+    held = [...keys].join(' + '); void flushInput();
   }
-  async function chooseTool(next:typeof tool) {
-    if(blocked)return;
-    clearInput(); entering=true;
-    // Tool selection stays local. Shared time changes only through explicit clock commands.
-    try {
-      tool=next;preview=undefined;selectedPosition=undefined;
-    } finally {entering=false;dirty=true;}
+  function chooseTool(next: Tool) {
+    if (!live || (next !== 'inspect' && blocked)) return;
+    resetInteraction(); tool = next === tool && next !== 'inspect' ? 'inspect' : next;
+    onclose(); focusMap();
   }
-  function point(event:MouseEvent){const r=canvas.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top};}
-  function move(event:PointerEvent){
-    const p=point(event);
-    if(drag && (event.buttons&1 || event.buttons&4)) {
-      if(Math.hypot(p.x-drag.x,p.y-drag.y)>3)drag.moved=true;
-      if(drag.moved){camera={...drag.camera,x:drag.camera.x-(p.x-drag.x)/camera.zoom,y:drag.camera.y-(p.y-drag.y)/camera.zoom};preview=undefined;dirty=true;return;}
+  function point(event: MouseEvent) { const r = canvas.getBoundingClientRect(); return { x: event.clientX - r.left, y: event.clientY - r.top }; }
+  function move(event: PointerEvent) {
+    if (!live) return;
+    const p = point(event);
+    if (drag) {
+      if (Math.hypot(p.x - drag.x, p.y - drag.y) > 3) drag.moved = true;
+      if (drag.moved) {
+        if (drag.pan) camera = { ...drag.camera, x: drag.camera.x - (p.x - drag.x) / camera.zoom, y: drag.camera.y - (p.y - drag.y) / camera.zoom };
+        preview = undefined; dirty = true; return;
+      }
     }
-    if(tool!=='inspect'){preview=tileAt(p,level,camera,width,height);dirty=true;}
+    if (tool !== 'inspect' && !panel && !view.pending && !uncertain) { preview = selectedPosition ?? tileAt(p, level, camera, width, height); dirty = true; }
   }
-  function down(event:PointerEvent){if(event.button!==0&&event.button!==1)return;event.preventDefault();canvas.focus({preventScroll:true});const p=point(event);drag={...p,camera:{...camera},moved:false};canvas.setPointerCapture(event.pointerId);}
-  function up(event:PointerEvent){
-    const was=drag;drag=undefined;
-    if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
-    if(!was||was.moved||event.button!==0)return;
-    const p=point(event);
-    if(tool==='inspect') { selection=renderer?.pick(p,camera.zoom);onselect(selection); }
-    else { selectedPosition=tileAt(p,level,camera,width,height);preview=selectedPosition; }
-    dirty=true;
+  function down(event: PointerEvent) {
+    if (!live || (event.button !== 0 && event.button !== 1)) return;
+    event.preventDefault(); focusMap();
+    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || space, pointerId: event.pointerId };
+    canvas.setPointerCapture(event.pointerId);
   }
-  async function commit(){
-    if(blocked||!selectedPosition||!view.read)return;
-    const position={...selectedPosition};
-    if(tool==='build')await model.send({kind:'buildTrack',position,shape});
-    else if(tool==='remove') {
-      const track=view.read.tracks.find(t=>same(t.position,position));
-      if(track)await model.send({kind:'removeTrack',position,expectedRevision:track.revision});
+  function up(event: PointerEvent) {
+    const was = drag; cancelGesture();
+    if (!live || !was || was.moved || event.button !== 0 || space) return;
+    const p = point(event);
+    if (tool === 'inspect') { clearInput(); selection = renderer?.pick(p, camera.zoom); onselect(selection); }
+    else if (!blocked && !panel && !uncertain) { selectedPosition = tileAt(p, level, camera, width, height); preview = selectedPosition; }
+    dirty = true;
+  }
+  async function commit() {
+    if (blocked || panel || uncertain || !selectedPosition || !view.read) return;
+    const position = { ...selectedPosition }, submittedEpoch = epoch;
+    let accepted;
+    if (tool === 'build') accepted = await model.send({ kind: 'buildTrack', position, shape });
+    else if (tool === 'remove') {
+      const track = view.read.tracks.find(t => same(t.position, position));
+      if (track) accepted = await model.send({ kind: 'removeTrack', position, expectedRevision: track.revision });
     }
-    // Keep rejected previews for correction; authoritative state alone changes the map/cash.
+    if (epoch !== submittedEpoch) return;
+    if (accepted) cancelDraft();
+    else if (view.feedback === 'unresolved') uncertain = true;
   }
-  function zoom(factor:number){camera=zoomAt(camera,factor,{x:width/2,y:height/2},width,height);dirty=true;}
-  function home(){camera={...project({x:22,y:16,z:0}),zoom:Math.min(1.5,Math.max(.5,width/850))};dirty=true;}
-  function focusTrain(){const train=view.read?.trains[0];if(train){camera={...project(train.position),zoom:camera.zoom};dirty=true;canvas.focus();}}
-  $effect(()=>{if(view.read){if(epoch!==view.read.worldEpoch){epoch=view.read.worldEpoch;clearInput();selection=undefined;preview=undefined;selectedPosition=undefined;tool='inspect';}renderer?.setRead(view.read);dirty=true;}if(view.connection!=='ready'){preview=undefined;selectedPosition=undefined;}if(view.connection!=='ready'||view.read?.trains[0].controller!=='manual'||view.read?.trains[0].controlLease?.participantId!==view.participantId)clearInput();});
-  $effect(()=>{void heightCut;void level;void night;void winter;void recolor;void selection;void preview;void shape;void tool;dirty=true;});
-  onMount(()=>{
-    let active=true, frame=0;
-    const resize=new ResizeObserver(entries=>{width=entries[0].contentRect.width;height=entries[0].contentRect.height;if(!camera.zoom)camera.zoom=1;dirty=true;});resize.observe(canvas);
-    loadImages().then(images=>{if(!active)return;renderer=new MapRenderer(canvas,images);if(view.read)renderer.setRead(view.read);home();}).catch(()=>{assetsFailed=true;});
-    const paint=()=>{if(active){if(dirty&&renderer&&width&&height&&!document.hidden){renderer.draw(camera,width,height,devicePixelRatio,{heightCut,level,night,winter,recolor,selection,preview,shape,remove:tool==='remove'});dirty=false;}frame=requestAnimationFrame(paint);}};frame=requestAnimationFrame(paint);
-    const renew=setInterval(()=>{if(keys.size)void flushInput();},150);
-    const blur=()=>clearInput();
-    const visibility=()=>{clearInput();dirty=true;};
-    const wheel=(event:WheelEvent)=>{event.preventDefault();camera=zoomAt(camera,event.deltaY<0?1.15:1/1.15,point(event),width,height);dirty=true;};
-    canvas.addEventListener('wheel',wheel,{passive:false});window.addEventListener('blur',blur);document.addEventListener('visibilitychange',visibility);
-    return()=>{active=false;clearInput();clearInterval(renew);cancelAnimationFrame(frame);resize.disconnect();canvas.removeEventListener('wheel',wheel);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',visibility);};
+  export function zoom(factor: number) { if (!live) return; camera = zoomAt(camera, factor, { x: (width - (panel && width >= 640 ? 360 : 0)) / 2, y: height / 2 }, width, height); dirty = true; }
+  export function home() { camera = { ...project({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true; }
+  export function focusTrain(id = selectedTrain?.id) { const train = view.read?.trains.find(t => t.id === id); if (train && live) { const position = project(train.position); camera = { x: position.x + (panel && width >= 640 ? 180 / camera.zoom : 0), y: position.y, zoom: camera.zoom }; dirty = true; focusMap(); } }
+  $effect(() => {
+    const read = view.read;
+    if (liveScene && read) {
+      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; resetInteraction(); selection = undefined; tool = 'inspect'; onselect(undefined); home(); }
+      renderer?.setRead(read); dirty = true;
+    } else {
+      renderer?.setRead(demoScene); resetInteraction(); selection = undefined; tool = 'inspect';
+      renderState = renderState === 'failed' ? 'failed' : 'loading'; dirty = true;
+    }
+  });
+  $effect(() => { if (!live || tool !== 'inspect' || selectedTrain?.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) clearInput(); });
+  $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
+  $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void tool; dirty = true; });
+  onMount(() => {
+    let active = true, frame = 0;
+    const resize = new ResizeObserver(entries => { width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
+    loadImages().then(images => {
+      if (!active) return;
+      renderer = new MapRenderer(canvas, images); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
+    }).catch(() => { if (active) renderState = 'failed'; });
+    const paint = () => {
+      if (!active) return;
+      if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; dirty = true; }
+      if (dirty && renderer && width && height && !document.hidden) {
+        const demoCamera = { ...project({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.8, width / 850)) };
+        try {
+          renderer.draw(liveScene ? camera : demoCamera, width, height, devicePixelRatio, liveScene
+            ? { heightCut, level, night, winter, recolor, selection, preview, shape, remove: tool === 'remove' }
+            : { heightCut: 15, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false });
+          canvas.dataset.scene = liveScene ? 'live' : 'demo';
+          if (liveScene) renderState = 'ready';
+        } catch { renderState = 'failed'; }
+        dirty = false;
+      }
+      frame = requestAnimationFrame(paint);
+    }; frame = requestAnimationFrame(paint);
+    const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
+    const blur = () => { clearInput(); cancelGesture(); };
+    const visibility = () => { blur(); dirty = true; };
+    const wheel = (event: WheelEvent) => { if (!live) return; event.preventDefault(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
+    canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
+    return () => { active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
-<div class="map-tools" aria-label={text.mapTools}>
-  <button aria-pressed={tool==='inspect'} disabled={blocked} onclick={()=>chooseTool('inspect')}>{text.inspectTool}</button>
-  <button aria-pressed={tool==='build'} disabled={blocked} onclick={()=>chooseTool('build')}>{text.buildTool}</button>
-  <button aria-pressed={tool==='remove'} disabled={blocked} onclick={()=>chooseTool('remove')}>{text.removeTool}</button>
-  <button aria-label={text.zoomIn} onclick={()=>zoom(1.25)}>＋</button><button aria-label={text.zoomOut} onclick={()=>zoom(.8)}>−</button>
-  <button onclick={home}>{text.homeMap}</button><button onclick={focusTrain}>{text.findTrain}</button>
+<div class="map-viewport" class:demo={!live} inert={!live} aria-hidden={!live}>
+  <canvas bind:this={canvas} class="world-canvas" tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={() => { drag = undefined; }} onpointerleave={() => { if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={clearInput}></canvas>
 </div>
-<div class="map-options">
-  <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max="15" bind:value={heightCut}/><span>{heightCut}</span></label>
-  {#if tool!=='inspect'}
-    <label>{text.buildLevel}<select bind:value={level} onchange={()=>{selectedPosition=undefined;preview=undefined;}}><option value={0}>0</option><option value={1}>1</option></select></label>
-    {#if tool==='build'}<label>{text.trackShape}<select bind:value={shape}>{#each shapes as s}<option value={s}>{text[s]}</option>{/each}</select></label>{/if}
+{#if live}
+  <nav class="tool-strip" aria-label={text.mapTools}>
+    {#each tools as item}<button aria-label={text[item.label]} title={text[item.label]} aria-pressed={tool === item.id} disabled={item.id !== 'inspect' && blocked} onclick={() => chooseTool(item.id)}>{item.icon}</button>{/each}
+  </nav>
+  <div class="map-navigation" class:beside-panel={!!panel}>
+    <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
+  </div>
+  {#if panel === 'view'}
+    <PanelFrame title={text.view} closeLabel={text.close} {onclose}>
+      <div class="map-options">
+        <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max="15" bind:value={heightCut}/><span>{heightCut}</span></label>
+        <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
+        <button disabled={!selectedTrain} onclick={() => focusTrain()}>{text.findTrain}</button><button onclick={home}>{text.homeMap}</button>
+      </div>
+    </PanelFrame>
   {/if}
-  <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
-</div>
-<p class="map-help">{tool==='inspect'?text.mapHelp:text.constructionHelp}</p>
-<canvas bind:this={canvas} class="world-canvas" tabindex="0" aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={()=>{drag=undefined;}} onpointerleave={()=>{if(!drag){preview=selectedPosition;dirty=true;}}} onkeydown={event=>key(event,true)} onkeyup={event=>key(event,false)} onblur={clearInput}></canvas>
-{#if assetsFailed}<p role="alert">{text.assetsFailed}</p>{/if}
-<div class="map-action">
-  {#if tool!=='inspect'}
-    <span data-testid="preview-position">{selectedPosition?`${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}`:text.pickTile}</span>
-    <button disabled={blocked||!selectedPosition||!view.read||(tool==='remove'&&!view.read?.tracks.some(t=>same(t.position,selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button>
-    <button onclick={()=>{preview=undefined;selectedPosition=undefined;dirty=true;}}>{text.cancelPreview}</button>
-  {:else}<span data-testid="map-selection">{selection?`${text[selection.kind]} · ${selection.id}`:text.pickObject}</span>{/if}
-</div>
-<p id="manual-help" class="map-help">{text.manualHelp} <strong data-testid="manual-input">{held|| (manualActive?text.keysReleased:text.mapFocus)}</strong></p>
-<p class="map-help">{text.visualSample}</p>
+  {#if tool !== 'inspect'}
+    <section class="tool-card" aria-label={text[tool === 'build' ? 'buildTool' : 'removeTool']}>
+      <h2>{text[tool === 'build' ? 'buildTool' : 'removeTool']}</h2>
+      <div class="form-actions">
+        <label>{text.buildLevel}<select bind:value={level} disabled={view.pending}><option value={0}>0</option><option value={1}>1</option></select></label>
+        {#if tool === 'build'}<label>{text.trackShape}<select bind:value={shape} disabled={view.pending}>{#each shapes as s}<option value={s}>{text[s]}</option>{/each}</select></label>{/if}
+      </div>
+      <p data-testid="preview-position">{selectedPosition ? `${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}` : text[panel ? 'closePanelToTarget' : 'pickTile']}</p>
+      <p class="hint">{text.unvalidatedPreview}</p>
+      {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
+      <div class="form-actions"><button class="primary" disabled={blocked || !!panel || uncertain || !selectedPosition || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+    </section>
+  {/if}
+  <div class="selection-feedback" data-testid="map-selection">{selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
+  <span id="manual-help" class="sr-only">{text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
+{/if}

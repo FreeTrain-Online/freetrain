@@ -25,6 +25,10 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   let status: ConnectionStatus = 'loading';
   let disposed = false;
   let anonymousAccess = false;
+  let connectionStage: 'bootstrap' | 'joining' | 'synchronizing' = 'bootstrap';
+  let retryAt: number | undefined;
+  let authorizedBefore = false;
+  let authRequiredAgain = false;
   let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
   let heartbeat: ReturnType<typeof setInterval> | undefined;
   let connectionTimer: ReturnType<typeof setTimeout> | undefined;
@@ -43,9 +47,11 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     if (socket) { socket.onclose = null; socket.close(); socket = undefined; }
     join = undefined;
     if (disposed) return;
+    const delay = Math.min(5000, 250 * 2 ** Math.min(attempts++, 5));
+    retryAt = Date.now() + delay;
     setStatus('disconnected');
     clearTimeout(reconnectTimer);
-    reconnectTimer = setTimeout(connect, Math.min(5000, 250 * 2 ** Math.min(attempts++, 5)));
+    reconnectTimer = setTimeout(connect, delay);
   };
   const suspend = () => { if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'inputReset' })); };
   const visibility = () => { if (document.hidden) suspend(); };
@@ -54,6 +60,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   window.addEventListener('blur', blur);
   const connect = async () => {
     if (disposed) return;
+    retryAt = undefined; connectionStage = 'bootstrap';
     setStatus('loading');
     try {
       const response = await fetch(`/api/bootstrap?${compatibility}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5000)]), credentials: 'same-origin' });
@@ -62,12 +69,14 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
         const access = await response.json().catch(() => ({}));
         if (disposed) return;
         anonymousAccess = access.anonymousAccess === true;
+        authRequiredAgain = authorizedBefore; read = undefined;
         return setStatus('accessRequired');
       }
       if (response.status === 426) return setStatus('incompatible');
       if (!response.ok) throw new Error('Bootstrap failed');
       const bootstrap = parseMessage(await response.text());
       if (bootstrap.type !== 'join') throw new Error('Expected join');
+      connectionStage = 'joining'; setStatus('loading');
       const url = new URL(`/api/session?${compatibility}`, location.href);
       url.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const current = socket = new WebSocket(url);
@@ -79,7 +88,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           switch (message.type) {
             case 'join':
               if (message.protocolVersion !== 2 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
-              clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0;
+              clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               publish(message.snapshot); setStatus('ready');
               if (document.hidden) suspend();
               break;
@@ -93,7 +102,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               const next = read && applyDelta(read, message);
               if (next) publish(next);
               else {
-                resyncing = true; setStatus('loading'); current.send(JSON.stringify({ type: 'resync' }));
+                resyncing = true; connectionStage = 'synchronizing'; setStatus('loading'); current.send(JSON.stringify({ type: 'resync' }));
                 connectionTimer = setTimeout(fail, 5000);
               }
               break;
@@ -119,6 +128,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   void connect();
   return {
     mode: 'remote',
+    get connectionStage() { return connectionStage; },
+    get retryAt() { return retryAt; },
+    get authRequiredAgain() { return authRequiredAgain; },
     get anonymousAccess() { return anonymousAccess; },
     get participantId() { return join?.participantId; },
     get role() { return join?.role; },

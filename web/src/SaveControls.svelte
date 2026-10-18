@@ -20,8 +20,8 @@
     finally { busy = false; onbusy(false); upload = undefined; }
   }
 </script>
-<section class="card save-controls" aria-label={text.saves}>
-  <h2>{text.saves}</h2><p class="hint">{text.loadHint}</p>
+<div class="save-controls">
+  <p class="hint">{text.loadHint}</p>
   <div class="form-actions">
     <label>{text.saveSlot}<select bind:value={slot} disabled={busy || disabled} onchange={() => { confirmLoad = false; upload = undefined; }}>
       {#each ['slot1','slot2','slot3','checkpoint'] as id}<option value={id}>{id === 'checkpoint' ? text.checkpoint : `${text.saveSlot} ${id.slice(-1)}`}{slots.find(item => item.id === id)?.exists ? '' : ` (${text.emptySlot})`}</option>{/each}
@@ -35,4 +35,4 @@
   </div>
   {#if confirmLoad}<div class="form-actions"><span>{text.replaceWorld}</span><button disabled={busy || disabled} onclick={() => act(() => saveRequest(upload ? 'upload' : `${slot}/load`, epoch!, upload), 'loaded')}>{text.confirmLoad}</button><button onclick={() => { confirmLoad = false; upload = undefined; }}>{text.cancel}</button></div>{/if}
   <p data-testid="save-feedback" aria-live="polite">{feedback === 'idle' ? '' : text[feedback]}</p>
-</section>
+</div>

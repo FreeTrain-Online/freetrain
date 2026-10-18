@@ -1,0 +1,42 @@
+import { expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
+export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1')).json()).snapshot;
+export async function ready(page: Page, language = 'en') {
+  await expect(page.locator('.command-bar')).toBeVisible();
+  await expect(page.getByTestId('connection')).toHaveText(language === 'ja' ? 'ゲームに接続済み' : 'Connected to game');
+  await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'live');
+}
+export async function closePanel(page: Page) {
+  const close = page.locator('.primary-panel .panel-title button');
+  if (await close.count()) await close.click();
+}
+export async function openPanel(page: Page, id: string, language = 'en') {
+  const labels: Record<string, string[]> = { inspector: ['Selected object', '選択した対象'], catalog: ['Building catalog', '建物一覧'], saves: ['Save and restore', '保存と復元'], view: ['View', '表示'], settings: ['Settings', '設定'], session: ['Session', '接続情報'], help: ['Help / Diagnostics', 'ヘルプ・診断'] };
+  await closePanel(page);
+  await page.locator('.command-bar').getByRole('button', { name: language === 'ja' ? 'ゲーム ▾' : 'Game ▾', exact: true }).click();
+  await page.locator('#game-menu').getByRole('button', { name: labels[id][language === 'ja' ? 1 : 0], exact: true }).click();
+}
+export async function at(page: Page, p: { x: number; y: number; z: number }, offset = { x: 0, y: 0 }) {
+  return page.locator('canvas').evaluate((el, args) => {
+    const canvas = el as HTMLCanvasElement, [cx, cy] = canvas.dataset.camera!.split(',').map(Number), zoom = Number(canvas.dataset.zoom), r = canvas.getBoundingClientRect();
+    return { x: r.x + r.width / 2 + (16 * (args.p.x + args.p.y) - cx + args.offset.x) * zoom, y: r.y + r.height / 2 + (8 * (args.p.y - args.p.x) - 16 * args.p.z - cy + args.offset.y) * zoom };
+  }, { p, offset });
+}
+export async function clickTile(page: Page, p: { x: number; y: number; z: number }) { const q = await at(page, p); await page.mouse.click(q.x, q.y); }
+export async function clickSprite(page: Page, p: { x: number; y: number; z: number }, name: string) {
+  const s = sprites[name]; let pixel = { x: 16, y: Math.floor(s.height / 2) };
+  if (s.mask[pixel.y][pixel.x] !== '1') { const y = s.mask.findIndex(row => row.includes('1')); pixel = { x: s.mask[y].indexOf('1'), y }; }
+  const q = await at(page, p, { x: pixel.x - 16 + .5, y: pixel.y - s.offset - 8 + .5 }); await page.mouse.click(q.x, q.y);
+}
+export async function selectTrain(page: Page) {
+  await closePanel(page);
+  const train = (await bootstrap(page)).trains[0];
+  await clickSprite(page, train.position, `train-${train.direction}`);
+  await expect(page.getByTestId('train-position')).toBeVisible();
+}
+export async function selectStation(page: Page) {
+  await closePanel(page);
+  const station = (await bootstrap(page)).stations[0], q = await at(page, station.position, { x: 0, y: -12 });
+  await page.mouse.click(q.x, q.y); await expect(page.getByTestId('confirmed-name')).toBeVisible();
+}

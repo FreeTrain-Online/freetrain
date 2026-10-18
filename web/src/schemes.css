@@ -1,0 +1,36 @@
+/* Semantic surface roles. Presets contain colors only; components own layout,
+ * typography, focus, disabled/pressed semantics, and notice meaning.
+ * Preset selection and safe preference persistence are wired in UX2.
+ */
+:root {
+  --ui-menu-bar: #d4d4cc;
+  --ui-window-background: #d4d4cc;
+  --ui-button-primary: #184f45;
+  --ui-button-alternative: #eeeee8;
+  --ui-button-inactive: #d0d2cb;
+  --ui-title-bar: var(--ui-button-primary);
+}
+
+:root[data-ui-scheme="classic-blue"] {
+  --ui-menu-bar: #c0c0c0;
+  --ui-window-background: #c0c0c0;
+  --ui-button-primary: #000080;
+  --ui-button-alternative: #ececec;
+  --ui-button-inactive: #bdbdbd;
+}
+
+:root[data-ui-scheme="slate"] {
+  --ui-menu-bar: #cbd2d8;
+  --ui-window-background: #d3d9de;
+  --ui-button-primary: #37495a;
+  --ui-button-alternative: #edf1f4;
+  --ui-button-inactive: #c7cfd6;
+}
+
+:root[data-ui-scheme="plum"] {
+  --ui-menu-bar: #d7ced6;
+  --ui-window-background: #ded5dc;
+  --ui-button-primary: #663b62;
+  --ui-button-alternative: #f3edf2;
+  --ui-button-inactive: #d1c7cf;
+}

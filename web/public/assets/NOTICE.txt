@@ -16,6 +16,9 @@ Tint variants are an authored red/green channel swap, not historical variants.
 Sources, hashes and alpha masks: web/src/generated/sprites.json.
 Reproduce: deno task --cwd web import:content (Python 3 standard library).
 
+FTicon.png: core/res/FTicon.gif, converted to PNG with original pixels and alpha.
+Reproduce: magick core/res/FTicon.gif web/public/assets/FTicon.png
+
 station.wav: plugins/system/station.wav, copied without modification from main
 at 1f755ca; registered as the station sound in plugins/system/plugin.xml:304.
 FreeTrain copyright 2002 Kohsuke Kawaguchi et al., LGPL 2.1 or later.

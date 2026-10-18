@@ -4,6 +4,69 @@ This is the implementation contract for the FreeTrain web game UX.
 The simulation, protocol, saves and canvas projection stay unchanged.
 English and Japanese are acceptance languages.
 
+## Implementation status
+
+The production app now uses the approved visual foundation:
+a fixed viewport, a 40 px desktop command bar and tool strip, square
+controls, semantic surface colors and overlay panels. At 1280×720 the canvas
+measures 1240×680 (91.49% of the viewport). Panels preserve its element, bounds,
+image decodes and live camera. Narrow layouts use a tool row and bounded sheets;
+long content scrolls inside the panel or session dialog.
+
+The first playable slice includes picked train/station/building/track inspectors,
+clock controls, explicit rail/removal Confirm and Cancel, and access to every
+previous operation through Game, View and Session. Train operations capture the
+selected ID; station edits retain the selected ID and original revision through
+confirmation. Catalog choice is independent of map selection. Manual input
+requires deliberate canvas focus, Inspect, a selected manual train and its owned
+lease. Panel/menu focus and session transitions release held input.
+
+Before a session is usable, a mandatory localized dialog covers a separate,
+immutable bundled demo scene. Bootstrap, joining/synchronizing, sign-in,
+connection loss, renewed authentication, incompatibility, leaving/failed leave
+and render failure have distinct presentations. Authorized discovery/join remains
+automatic. Chrome appears only after a coherent live read, decoded images and a
+successful first live draw. The demo never enters the session model or save and
+command paths. If its images fail, session controls remain available over a
+plain background.
+
+The remote client exposes observational connection stage, retry time and
+reauthentication metadata. It still owns transport and backoff. A failed Leave
+latches revocation intent and offers only Retry leave; late reads/results cannot
+reopen the old game. Confirmed leave discovers access policy while retaining the
+signed-out gate until explicit authorization. Same-world reconnect restores the
+live camera after synchronization; a different epoch clears selection/geometry
+and uses initial framing. Uncertain commands are not replayed. A same-socket
+resync retains the pending mutation until its acknowledgement or disconnect.
+
+Production owners are [App.svelte](../web/src/App.svelte) (composition, panels,
+menu and derived gate), [MapView.svelte](../web/src/MapView.svelte) (persistent
+canvas, separate demo/live cameras, readiness and tools),
+[PanelFrame.svelte](../web/src/PanelFrame.svelte) (bounded nonmodal frame),
+[SessionGate.svelte](../web/src/SessionGate.svelte) (mandatory dialog/focus), and
+[game-ui.ts](../web/src/lib/game-ui.ts) (typed tool/panel metadata).
+[schemes.css](../web/src/schemes.css) carries the curated surface roles from UX0.
+Existing shell-model, save-transfer and remote-session-client remain the command
+and authority boundaries; no simulation/protocol/save-format change is introduced.
+
+UX2 remains open: complete dirty-edit decisions, reusable overlay/focus behavior,
+world-replacement modal semantics, saved panel state, action-registry expansion,
+and preset dropdown/persistence. Existing save replacement confirmation remains
+an explicit inline decision in the Saves panel during this first slice. Run and
+Pause remain separate controls enabled from confirmed clock state. Only the
+Evergreen preset is selected by the app; the other bundled role presets await
+UX2's selector. UX3 still owns comprehensive accessibility/device/zoom acceptance,
+all-preset contrast review and comparison against the UX0 performance baseline.
+The contract below includes these remaining requirements; it does not imply
+that their phase gates have passed.
+
+Verification lives in [UX1 Chromium journeys](../web/tests/browser/ux1.spec.ts),
+the migrated shell/map/persistence/multiplayer journeys and
+[shell-model tests](../web/tests/shell-model.test.ts). The backend regression gate
+passes 129 tests; frontend checks/build and Chromium release journeys pass.
+Native Japanese IME and touch/virtual keyboards remain device checks for UX3;
+no other-engine coverage is claimed.
+
 ## Current operations and destinations
 
 Every row describes a delivered baseline operation. IDs refer to registry
@@ -96,11 +159,11 @@ select/input arrow keys win. Assign no new global letter shortcuts in UX1.
 ## Session gate state machine
 
 UI presentation derives from existing client/model state plus asset readiness;
-it must not be encoded as a second transport or simulation. `loading` alone
-currently covers bootstrap/join/resync, and the client does not expose retry
-timing or auth-expiry cause. Add small observational status metadata as needed
-(stage, attempt-in-flight, next retry, auth cause), keeping transport ownership
-in remote-session-client. Do not infer those causes from guessed timers.
+it must not be encoded as a second transport or simulation. `loading` covers bootstrap/join/resync; UX1 adds observational stage and retry-time
+metadata while keeping transport ownership in remote-session-client. A 401 after
+authorized use is presented as authentication required again, without guessing
+expiry versus revocation. Loading denotes an attempt in flight; Retry now is
+available only during disconnected backoff. Do not infer causes from guessed timers.
 
 | State | Entry / displayed scene | Actions / next state |
 | --- | --- | --- |
@@ -118,10 +181,10 @@ in remote-session-client. Do not infer those causes from guessed timers.
 
 Existing model `generation`/client disposed guards reject late command/read
 callbacks; extend that discipline to asset/scene completions. The leave latch
-must survive failure until revocation is confirmed; current reconnect is allowed
-after leave failure and must be blocked in UX1. Successful leave currently
-reconnects to discover `anonymousAccess`; keep that discovery but preserve
-deliberately signed-out presentation, never auto-enter using the old cookie.
+survives failure until revocation is confirmed; UX1 blocks ordinary reconnect
+after leave failure. Successful leave reconnects to discover `anonymousAccess`
+while preserving deliberately signed-out presentation; it cannot reveal an old
+world without explicit authorization.
 
 Store live camera in memory separately before showing demo. Same-epoch reconnect
 uses a fresh authoritative read then restores camera; different epoch resets
@@ -158,10 +221,10 @@ shared world. Existing last-operator disconnect policy remains server-owned.
 Implement a small typed registry in the frontend using the stable operation IDs
 and behavior kinds described above. Keep entries limited to delivered operations
 and shell destinations; handlers continue through the model/transfer modules.
-Extend model methods to accept a selected train/station identity and revision
-(today they use `[0]`). Capture the
-target across async lease acquisition and recheck epoch/selection before the
-controller command. Keep one pending world mutation; held-input reset/renewal
+The UX1 model accepts selected train/station identities and captures station
+revision with its draft. Compatibility defaults remain for existing model clients;
+the production inspector passes picked IDs. Capture the target across async lease
+acquisition and recheck generation, epoch and target before the controller command. Keep one pending world mutation; held-input reset/renewal
 retains its existing transport path and must not be accidentally queued behind
 an open panel. Do not build a generic command bus/plugin framework.
 
@@ -175,7 +238,7 @@ entities, pending commands, destructive tools or drafts.
 ## Visual and responsive tokens
 
 CSS px / initial values; mockup CSS is a review fixture, tokens become shared
-production CSS during UX1. Maintain focus contrast and readable Japanese text.
+production CSS in UX1. Maintain focus contrast and readable Japanese text.
 
 | Token | Value / rule |
 | --- | --- |
@@ -254,7 +317,7 @@ remounting canvas/panels, decoding assets again, resetting camera, losing form
 drafts, changing tool selection or sending commands. Scheme selection itself is
 not a dirty form requiring Apply. Keep the same scheme across demo/live and
 reconnect/leave; changing settings still follows ordinary held-input focus rules.
-UX1 introduces roles/styles; UX2 wires dropdown/persistence; UX3 checks every
+UX1 supplies roles/styles; UX2 wires dropdown/persistence; UX3 checks every
 preset's text, focus/pressed/disabled states, notices, English/Japanese layouts,
 refresh/fallback behavior and unchanged renderer/session state.
 
@@ -293,18 +356,18 @@ Decisions reconciled against the local foundation plan:
   can appear as explanatory rules (100 per changed tile; buffer extension 200;
   removal no refund), never as a validated quote for an arbitrary preview.
 - Leave-failed cannot expose ordinary reconnect; render readiness is separate
-  from transport readiness. Both require UX1 behavior beyond current model state.
+  from transport readiness. UX1 enforces both boundaries.
 - Selected-entity forms require explicit target/revision parameters in the model;
   preserving `[0]` while changing the visuals would fail the inspector requirement.
 
-No unresolved specification blocker remains for UX1. The approved direction
+No unresolved specification blocker remains for the next UX2 slice. The approved direction
 includes the color-scheme extension; dimensions and preset values can be refined
 from measured usability. Native Japanese IME, touch, virtual keyboard and other browser engines
 are not established by mockup screenshots. There are no roads, terrain tools,
 building placement, Undo/Redo, speed modes or speculative parity buttons.
 
-UX1's first slice must deliver Inspect → selected inspector and Rail → explicit
-Confirm/Cancel alongside clock and mandatory session gates. Migrate saves and
-session controls before retiring their old UI. UX3 must measure panel lifecycle,
+UX1 delivers Inspect → selected inspector and Rail → explicit Confirm/Cancel
+alongside clock and mandatory session gates. Saves and session controls are
+accessible through their panels; their deeper overlay refinements remain UX2. UX3 must measure panel lifecycle,
 renderer performance and all acceptance rows against the fresh UX0 baseline;
 mockup screenshots do not check any UX1–UX3 implementation box.

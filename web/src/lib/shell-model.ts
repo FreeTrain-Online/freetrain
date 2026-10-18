@@ -10,6 +10,10 @@ export const catalog = Array.from({ length: 5 }, (_, index) => ({
 export interface ShellState {
   read?: ReadState;
   leaving: boolean;
+  signedOut: boolean;
+  retryAt?: number;
+  connectionStage?: 'bootstrap' | 'joining' | 'synchronizing';
+  authRequiredAgain?: boolean;
   anonymousAccess: boolean;
   participantId?: string;
   role?: 'owner' | 'operator' | 'observer';
@@ -24,7 +28,7 @@ export interface ShellState {
 }
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
   let inputSequence = BigInt(Date.now()) * 1000n;
-  let state: ShellState = { locale, leaving: false, anonymousAccess: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id };
+  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id };
   let client: SessionClient | undefined;
   let unsubscribe: (() => void) | undefined;
   let unsubscribeStatus: (() => void) | undefined;
@@ -32,6 +36,10 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   let generation = 0;
   let disposed = false;
   let dirty = false;
+  let leaveRequested = false;
+  let authorizedBefore = false;
+  let stationId: string | undefined;
+  let draftRevision: string | undefined;
   const listeners = new Set<(state: ShellState) => void>();
   const update = (patch: Partial<ShellState>) => {
     state = { ...state, ...patch };
@@ -45,21 +53,30 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     client?.dispose(); client = undefined;
   };
   const reconnect = () => {
-    if (disposed || state.leaving) return;
+    if (disposed || state.leaving || leaveRequested) return;
     const ambiguous = (state.pending && client?.mode === 'remote') || state.feedback === 'unresolved';
     release();
-    update({ connection: 'loading', pending: false, feedback: ambiguous ? 'unresolved' : 'idle' });
+    update({ connection: 'loading', retryAt: undefined, connectionStage: 'bootstrap', pending: false, feedback: ambiguous ? 'unresolved' : 'idle' });
     timer = setTimeout(() => {
       try {
         client = connect();
+        const current = generation;
+        const activeClient = client;
         unsubscribe = client.subscribe(read => {
-          if (state.read && state.read.worldEpoch !== read.worldEpoch) dirty = false;
-          update({ read, participantId: client?.participantId, role: client?.role, connection: 'ready', ...(!dirty ? { draft: read.stations[0]?.name ?? '' } : {}) });
+          if (disposed || current !== generation || leaveRequested) return;
+          if (state.signedOut) { update({ connection: 'accessRequired', anonymousAccess: activeClient.anonymousAccess ?? false }); return; }
+          if (state.read && state.read.worldEpoch !== read.worldEpoch) { dirty = false; stationId = undefined; draftRevision = undefined; }
+          authorizedBefore = true;
+          const station = read.stations.find(item => item.id === stationId) ?? (!stationId ? read.stations[0] : undefined);
+          if (!dirty) draftRevision = station?.revision;
+          update({ read, participantId: client?.participantId, role: client?.role, connection: 'ready', ...(!dirty ? { draft: station?.name ?? '' } : {}) });
         });
         unsubscribeStatus = client.subscribeStatus?.(connection => {
+          if (disposed || current !== generation || leaveRequested) return;
+          if (state.signedOut && connection === 'ready') return;
           if (connection === 'accessRequired') dirty = false;
-          update({ connection, anonymousAccess: client?.anonymousAccess ?? false,
-            ...(connection !== 'ready' ? { pending: false } : {}),
+          update({ connection, retryAt: activeClient.retryAt, connectionStage: activeClient.connectionStage, authRequiredAgain: activeClient.authRequiredAgain || (connection === 'accessRequired' && authorizedBefore && !state.signedOut), anonymousAccess: client?.anonymousAccess ?? false,
+            ...(connection !== 'ready' && !(connection === 'loading' && activeClient.connectionStage === 'synchronizing') ? { pending: false } : {}),
             ...(connection === 'accessRequired' ? { read: undefined, role: undefined, participantId: undefined, draft: '', composing: false } : {}),
             ...(client?.unresolved ? { feedback: 'unresolved' } : connection === 'disconnected' ? { feedback: 'unavailable' }
               : connection === 'ready' && state.feedback === 'unavailable' ? { feedback: 'idle' } : {}),
@@ -79,7 +96,9 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if (result.type === 'accepted') {
         if (payload.kind === 'renameStation' && submittedDraft === state.draft) {
           dirty = false;
-          update({ draft: state.read!.stations[0].name });
+          const station = state.read!.stations.find(item => item.id === payload.stationId);
+          draftRevision = station?.revision;
+          update({ draft: station?.name ?? '' });
         }
         update({ pending: false, feedback: 'accepted' });
         return true;
@@ -93,8 +112,8 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     }
   };
   let acquiring: Promise<boolean | undefined> | undefined;
-  const ensureControl = async () => {
-    const train = state.read?.trains[0];
+  const ensureControl = async (trainId?: string) => {
+    const train = trainId ? state.read?.trains.find(item => item.id === trainId) : state.read?.trains[0];
     if (!train || !client || state.role === 'observer') return false;
     if (train.controlLease && train.controlLease.participantId === client.participantId) return true;
     if (!acquiring) acquiring = send({ kind: 'acquireControl', trainId: train.id }).finally(() => { acquiring = undefined; });
@@ -109,28 +128,32 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     setComposing(composing: boolean) { update({ composing }); },
     setBehavior(behavior: FixtureBehavior) { update({ behavior }); },
     selectBuilding(selectedBuilding: string) { update({ selectedBuilding }); },
-    resetDraft() { dirty = false; update({ draft: state.read?.stations[0].name ?? '' }); },
+    selectStation(id: string) { stationId = id; dirty = false; const station = state.read?.stations.find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false }); },
+    resetDraft() { dirty = false; const station = state.read?.stations.find(item => item.id === stationId) ?? (!stationId ? state.read?.stations[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },
     rename() {
       if (state.composing || !state.draft.trim() || !state.read) return;
-      return send({ kind: 'renameStation', stationId: state.read.stations[0].id, expectedRevision: state.read.stations[0].revision, name: state.draft });
+      const station = state.read.stations.find(item => item.id === stationId) ?? (!stationId ? state.read.stations[0] : undefined);
+      if (station) return send({ kind: 'renameStation', stationId: station.id, expectedRevision: draftRevision ?? station.revision, name: state.draft });
     },
-    async controller(controller: 'automatic' | 'manual') {
-      if (!await ensureControl()) return false;
-      const train = state.read?.trains[0];
+    async controller(controller: 'automatic' | 'manual', trainId = state.read?.trains[0]?.id, isCurrent: () => boolean = () => true) {
+      const current = generation, epoch = state.read?.worldEpoch;
+      if (!trainId || !await ensureControl(trainId) || current !== generation || epoch !== state.read?.worldEpoch || !isCurrent()) return false;
+      const train = state.read?.trains.find(item => item.id === trainId);
       if (train?.controlLease) return send({ kind: 'setController', trainId: train.id, expectedRevision: train.revision, controller, leaseId: train.controlLease.leaseId });
     },
-    acquireControl() { const train = state.read?.trains[0]; if (train) return send({ kind: 'acquireControl', trainId: train.id }); },
-    releaseControl() {
-      const train = state.read?.trains[0];
+    acquireControl(trainId = state.read?.trains[0]?.id) { const train = state.read?.trains.find(item => item.id === trainId); if (train) return send({ kind: 'acquireControl', trainId: train.id }); },
+    releaseControl(trainId = state.read?.trains[0]?.id) {
+      const train = state.read?.trains.find(item => item.id === trainId);
       if (train?.controlLease) return send({ kind: 'releaseControl', trainId: train.id, leaseId: train.controlLease.leaseId });
     },
-    async input(keys: ReadonlySet<string>) {
-      if (!client || state.connection !== 'ready' || state.read?.trains[0]?.controller !== 'manual') return;
-      if (keys.size === 0 && state.read.trains[0].controlLease?.participantId !== client.participantId) return;
+    async input(keys: ReadonlySet<string>, trainId = state.read?.trains[0]?.id) {
+      const selectedTrain = state.read?.trains.find(item => item.id === trainId);
+      if (!client || state.connection !== 'ready' || selectedTrain?.controller !== 'manual') return;
+      if (selectedTrain.controlLease?.participantId !== client.participantId) return;
       const current = generation;
-      if (!await ensureControl() || current !== generation || !client || state.connection !== 'ready') return;
-      const train = state.read!.trains[0];
-      if (!train.controlLease) return;
+      if (!await ensureControl(trainId) || current !== generation || !client || state.connection !== 'ready') return;
+      const train = state.read!.trains.find(item => item.id === trainId);
+      if (!train?.controlLease) return;
       const payload: CommandPayload = { kind: 'controllerInput', trainId: train.id, leaseId: train.controlLease.leaseId,
         inputSequence: String(++inputSequence), pass: keys.has('Shift'), depart: keys.has('ArrowUp'), reverse: keys.has('ArrowDown'),
         left: keys.has('ArrowLeft'), right: keys.has('ArrowRight'), reset: keys.size === 0 };
@@ -142,20 +165,24 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     },
     async leave(revoke: () => Promise<void>) {
       if (disposed || state.leaving) return;
+      leaveRequested = true;
       release();
       const current = generation;
-      dirty = false;
+      const unresolved = state.feedback === 'unresolved' || state.pending;
+      dirty = false; stationId = undefined; draftRevision = undefined;
       update({ leaving: true, read: undefined, participantId: undefined, role: undefined, anonymousAccess: false,
-        draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle' });
+        draft: '', composing: false, pending: false, connection: 'loading', retryAt: undefined, feedback: unresolved ? 'unresolved' : 'idle' });
       try {
         await revoke();
         if (disposed || current !== generation) return;
-        update({ leaving: false });
+        leaveRequested = false;
+        update({ leaving: false, signedOut: true });
         reconnect();
       } catch {
         if (!disposed && current === generation) update({ leaving: false, connection: 'disconnected', feedback: 'leaveFailed' });
       }
     },
+    connectAuthorized() { if (leaveRequested || state.leaving) return; update({ signedOut: false }); reconnect(); },
     send, reconnect,
     dispose() { disposed = true; release(); listeners.clear(); },
   };

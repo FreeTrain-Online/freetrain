@@ -1,12 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const ready = (page: Page) => expect(page.getByTestId('connection')).toHaveText('Connected to game');
+import { ready, openPanel, closePanel, selectTrain, selectStation } from './ux-helpers.ts';
 const step = (page: Page) => page.getByRole('button', { name: 'Single step', exact: false });
 
 test('real game runs, steps, renames Japanese station and recovers on refresh', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/'); await ready(page);
-  await expect(page.getByRole('heading', { name: 'Reference world' })).toBeVisible();
+  await selectTrain(page);
   const initial = await page.getByTestId('tick').textContent();
   const initialPosition = await page.getByTestId('train-position').textContent();
   await step(page).click();
@@ -19,19 +19,25 @@ test('real game runs, steps, renames Japanese station and recovers on refresh', 
   await expect(page.getByTestId('clock-state')).toHaveText('Paused');
   await page.getByRole('combobox', { name: 'Controller', exact: true }).selectOption('manual');
   await expect(page.getByRole('combobox', { name: 'Controller', exact: true })).toHaveValue('manual');
+  await selectStation(page);
   await page.getByLabel('Station name', { exact: true }).fill('新宿駅');
   await page.getByRole('button', { name: 'Apply name', exact: true }).click();
   await expect(page.getByTestId('confirmed-name')).toHaveText('新宿駅');
   const tick = await page.getByTestId('tick').textContent();
+  await openPanel(page, 'session');
   await page.getByRole('button', { name: 'Reconnect', exact: true }).click();
   await ready(page); await expect(page.getByTestId('tick')).toHaveText(tick!);
+  await selectStation(page);
   await expect(page.getByTestId('confirmed-name')).toHaveText('新宿駅');
+  await openPanel(page, 'settings');
   await page.getByLabel('Language').selectOption('ja');
-  await expect(page.getByRole('heading', { name: '列車情報' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '設定' })).toBeVisible();
   await page.screenshot({ path: 'test-results/network-ja.png', fullPage: true });
   await page.reload();
   await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
+  await selectStation(page);
   await expect(page.getByLabel('駅名', { exact: true })).toHaveValue('新宿駅');
+  await openPanel(page, 'settings', 'ja');
   await page.getByLabel('言語').selectOption('en');
   await page.screenshot({ path: 'test-results/network-en.png', fullPage: true });
   expect(errors).toEqual([]);
@@ -50,13 +56,19 @@ test('delayed real result preserves drafts, composition, focus and catalog scrol
   try {
     await page.goto('/'); await ready(page);
     const before = await page.getByTestId('tick').textContent();
+    await openPanel(page, 'catalog');
     const catalog = page.getByRole('list', { name: 'Building catalog' });
     await expect(catalog.getByRole('button')).toHaveCount(5);
     await catalog.getByRole('button').last().focus(); await page.keyboard.press('Enter');
     const scroll = await catalog.evaluate(el => el.scrollTop);
     await step(page).click();
+    await expect(page.getByTestId('tick')).not.toHaveText(before!);
+    expect(await catalog.evaluate(el => el.scrollTop)).toBe(scroll);
+    await selectStation(page);
+    const renameTick = await page.getByTestId('tick').textContent();
+    await step(page).click();
     await expect(page.getByRole('status')).toHaveText('Waiting for server confirmation…');
-    await expect(page.getByTestId('tick')).toHaveText(before!);
+    await expect(page.getByTestId('tick')).toHaveText(renameTick!);
     const draft = page.getByLabel('Station name', { exact: true }); await draft.fill('東京駅'); await draft.focus();
     await draft.evaluate((el: HTMLInputElement) => { el.setSelectionRange(1, 2); el.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true })); });
     const prevented = await draft.evaluate(el => !el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', isComposing: true, bubbles: true, cancelable: true })));
@@ -65,7 +77,6 @@ test('delayed real result preserves drafts, composition, focus and catalog scrol
     await expect(page.getByRole('status')).toHaveText('Confirmed by server');
     await expect(draft).toBeFocused(); await expect(draft).toHaveValue('東京駅');
     expect(await draft.evaluate((el: HTMLInputElement) => [el.selectionStart, el.selectionEnd])).toEqual([1, 2]);
-    expect(await catalog.evaluate(el => el.scrollTop)).toBe(scroll);
     await expect(page.getByRole('button', { name: 'Apply name', exact: true })).toBeDisabled();
     await draft.dispatchEvent('compositionend');
     await page.keyboard.press('Enter'); await expect(page.getByTestId('confirmed-name')).toHaveText('東京駅');
@@ -124,7 +135,8 @@ test('second tab sharing one participant waits until its first socket disconnect
   await page.goto('/'); await ready(page);
   const competing = await context.newPage(); await competing.goto('/');
   await expect(competing.getByTestId('connection')).not.toHaveText('Connected to game');
-  await expect(step(competing)).toBeDisabled();
+  await expect(competing.getByRole('dialog')).toBeVisible();
+  await expect(step(competing)).toHaveCount(0);
   await page.close();
   await ready(competing); await expect(step(competing)).toBeEnabled();
 });
@@ -134,13 +146,14 @@ test('Japanese labels fit narrow doubled-density layouts and hidden tab keeps sh
   const page = await context.newPage(); await page.goto('/');
   await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
   for (const width of [720, 640, 360]) { await page.setViewportSize({ width, height: 900 }); expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true); }
-  await page.getByRole('navigation').getByRole('button', { name: '運転', exact: false }).click();
+  await page.locator('.command-bar').getByRole('button', { name: '運転', exact: false }).click();
   await expect(page.getByTestId('clock-state')).toHaveText('運転中');
   await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: true }); document.dispatchEvent(new Event('visibilitychange')); });
   await expect(page.getByTestId('clock-state')).toHaveText('運転中');
   await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: false }); document.dispatchEvent(new Event('visibilitychange')); });
   await page.getByRole('button', { name: '一時停止', exact: false }).click();
   await expect(page.getByTestId('clock-state')).toHaveText('一時停止中');
+  await selectStation(page);
   const input = page.getByLabel('駅名', { exact: true }); await input.focus(); await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: '駅名を適用', exact: true })).toBeFocused();
   await page.screenshot({ path: 'test-results/network-ja-narrow-2x.png', fullPage: true });
@@ -159,6 +172,7 @@ test('real stale station edit is rejected without losing the Japanese draft', as
     });
   });
   await page.goto('/'); await ready(page);
+  await selectStation(page);
   const confirmed = await page.getByTestId('confirmed-name').textContent();
   const draft = page.getByLabel('Station name', { exact: true }); await draft.fill('下書きの駅');
   await page.getByRole('button', { name: 'Apply name', exact: true }).click();

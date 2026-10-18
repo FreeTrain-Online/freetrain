@@ -166,11 +166,107 @@ Deno.test('failed leave stays disconnected and can be retried without reconnecti
     await model.leave(() => Promise.reject(new Error('Network failure')));
     assert(model.state.feedback === 'leaveFailed' && model.state.connection === 'disconnected');
     assert(!model.state.read && service.diagnostics.connections === 0);
+    model.reconnect();
+    await new Promise(resolve => setTimeout(resolve, 10));
+    assert(model.state.feedback === 'leaveFailed' && service.diagnostics.connections === 0);
     const retry = model.leave(() => new Promise(resolve => { finish = resolve; }));
     model.reconnect();
     assert(model.state.leaving && service.diagnostics.connections === 0);
     finish(); await retry;
+    await until(() => model.state.connection === 'accessRequired');
+    assert(!model.state.leaving && model.state.signedOut && !model.state.read);
+    model.connectAuthorized();
     await until(() => model.state.connection === 'ready');
-    assert(!model.state.leaving && model.state.feedback === 'idle');
+    assert(!model.state.signedOut);
+  } finally { model.dispose(); }
+});
+
+Deno.test('selected station retains its original revision and never renames another station', async () => {
+  const { service, model } = setup();
+  try {
+    await until(() => model.state.connection === 'ready');
+    const snapshot = structuredClone(model.state.read) as Snapshot;
+    snapshot.stations.push({ ...snapshot.stations[0], id: 'station-2', name: 'Second station' });
+    service.publish(snapshot);
+    model.selectStation('station-2'); model.setDraft('下書き');
+    snapshot.stations[1].revision = '1'; snapshot.stations[1].name = 'Changed by peer'; service.publish(snapshot);
+    await model.rename();
+    assert(model.state.feedback === 'staleRevision' && model.state.draft === '下書き');
+    assert(model.state.read!.stations[0].name === '中央駅');
+    model.resetDraft(); model.setDraft('二番目'); await model.rename();
+    assert(model.state.read!.stations[1].name === '二番目');
+    model.selectStation('missing'); model.setDraft('Never retarget');
+    assert(model.rename() === undefined && model.state.read!.stations[0].name === '中央駅');
+  } finally { model.dispose(); }
+});
+
+Deno.test('controller lease acquisition remains bound to the selected train across async completion', async () => {
+  const { service, model } = setup();
+  try {
+    await until(() => model.state.connection === 'ready');
+    const snapshot = structuredClone(model.state.read) as Snapshot;
+    snapshot.trains.push({ ...snapshot.trains[0], id: 'train-2', name: 'Second train' }); service.publish(snapshot);
+    await model.controller('manual', 'train-2');
+    assert(model.state.read!.trains[0].controller === 'automatic');
+    assert(model.state.read!.trains[1].controller === 'manual');
+    service.setBehavior('delayed');
+    let selected = true;
+    const switched = model.controller('manual', 'train-1', () => selected);
+    selected = false; await switched;
+    assert(model.state.read!.trains[0].controller === 'automatic');
+    await model.releaseControl('train-1');
+    const pending = model.controller('manual', 'train-1');
+    model.reconnect(); await pending;
+    await until(() => model.state.connection === 'ready');
+    assert(model.state.read!.trains[0].controller === 'automatic');
+  } finally { model.dispose(); }
+});
+
+Deno.test('late reads and statuses cannot reopen a leaving or deliberately signed-out world', async () => {
+  const service = createFixtureService();
+  let lateRead: ((read: ReadState) => void) | undefined;
+  let lateStatus: ((status: 'ready') => void) | undefined;
+  const model = createShellModel(() => {
+    const client = service.connect();
+    return { ...client,
+      subscribe(listener: (read: ReadState) => void) { lateRead ??= listener; return client.subscribe(listener); },
+      subscribeStatus(listener: (status: 'ready') => void) { lateStatus ??= listener; listener('ready'); return () => {}; },
+    };
+  }, 'en', 1);
+  let finish: () => void = () => {};
+  try {
+    await until(() => model.state.connection === 'ready');
+    const read = model.state.read!;
+    const leaving = model.leave(() => new Promise(resolve => { finish = resolve; }));
+    lateRead!(read); lateStatus!('ready');
+    assert(model.state.leaving && !model.state.read && !model.state.role);
+    finish(); await leaving;
+    await until(() => model.state.connection === 'accessRequired');
+    lateRead!(read); lateStatus!('ready');
+    assert(model.state.signedOut && !model.state.read && model.state.connection === 'accessRequired');
+  } finally { finish(); model.dispose(); }
+});
+
+Deno.test('same-socket synchronization preserves one pending mutation until acknowledgement or disconnect', async () => {
+  const service = createFixtureService();
+  let stage: 'bootstrap' | 'synchronizing' = 'bootstrap';
+  let status: ((status: 'ready' | 'loading' | 'disconnected') => void) | undefined;
+  let complete: (value: Accepted) => void = () => {};
+  const model = createShellModel(() => {
+    const client = service.connect();
+    return { ...client, get connectionStage() { return stage; },
+      subscribeStatus(listener: typeof status) { status = listener; listener!('ready'); return () => {}; },
+      send: () => new Promise<Accepted>(resolve => { complete = resolve; }),
+    };
+  }, 'en', 1);
+  try {
+    await until(() => model.state.connection === 'ready');
+    const pending = model.send({ kind: 'step' });
+    stage = 'synchronizing'; status!('loading');
+    assert(model.state.pending && model.state.connection === 'loading');
+    status!('ready');
+    assert(await model.send({ kind: 'step' }) === false && model.state.pending);
+    status!('disconnected'); assert(!model.state.pending);
+    complete({ type: 'accepted', requestId: 'old', worldEpoch: '1', sequence: '1', revision: '1', tick: '1' }); await pending;
   } finally { model.dispose(); }
 });

@@ -101,10 +101,15 @@ permission to create local sockets.
 
 ## Playing the map
 
-For the next shell implementation, see the [game UX interaction contract](doc/web-game-ux.md).
+The game fills the browser viewport. Use the left tool strip to inspect, build
+or remove track; secondary controls open bounded panels over the map. See the
+[game UX interaction contract](doc/web-game-ux.md) for implemented behavior and
+remaining UX2/UX3 work. Before joining or while disconnected, the session dialog
+appears over a local, noninteractive demo map. A failed Leave offers Retry leave
+until sign-out is confirmed.
 
 Click an object to inspect, drag the map to pan, and use the wheel or zoom buttons.
-Height cut hides raised rails and replaces cut buildings with selectable footprints.
+Open **View** for height cut, appearance and camera actions. Height cut hides raised rails and replaces cut buildings with selectable footprints.
 Night uses the source palette transformation; winter ground and recoloring are
 local display options. The water/fence/slope sample by the pier is decorative.
 
@@ -114,7 +119,7 @@ siding with a buffer at `(37,16,1)`; the host converts the old buffer and charge
 200 total. Preview/cancel costs nothing. Removal has no refund and rejects occupied
 or station track. Leaving a construction tool does not change shared time.
 
-Select Manual in the train inspector to acquire control, run, and focus the map.
+Click a train to open its inspector. Select Manual there to acquire control, run, and focus the map.
 Another participant must release control, disconnect or let the five-second lease
 expire before you can take over. Take control / Release control allow explicit handoff. Shift passes the
 station, Up departs, Down reverses at a station, and Left/Right choose a junction.
@@ -135,7 +140,10 @@ outside the paint loop. Asset notices ship in `web/public/assets/NOTICE.txt` and
 
 ## Saves and sound
 
-Use **Save slot** / **Load slot** for three server slots, or **Download save** /
+**Game → Settings** contains language and gesture-enabled sound.
+**Session** (also in Game on narrow screens) contains reconnect and Leave game.
+
+Open **Game → Save and restore**, then use **Save slot** / **Load slot** for three server slots, or **Download save** /
 **Upload save** for an independent JSON backup. Loading asks for confirmation,
 validates the complete file, replaces the game under a new epoch, clears held input,
 and starts paused. Invalid/incompatible files preserve the current world. Uploads

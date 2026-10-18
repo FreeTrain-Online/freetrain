@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-const ready = (page: Page) => expect(page.getByTestId('connection')).toHaveText('Connected to game');
+import { ready, openPanel, selectStation, selectTrain } from './ux-helpers.ts';
 
 test('independent browsers share edits and leases; reconnect and hidden tabs preserve the shared world', async ({ browser }) => {
   const first = await browser.newContext({ locale: 'en-US' });
@@ -16,6 +16,7 @@ test('independent browsers share edits and leases; reconnect and hidden tabs pre
     await expect(a.getByTestId('participant-role')).toHaveText('Owner');
     if (!alice.snapshot.paused) await a.getByRole('button', { name: 'Pause', exact: false }).click();
     await expect(b.getByTestId('clock-state')).toHaveText('Paused');
+    await selectTrain(a); await selectTrain(b);
     await a.getByRole('button', { name: 'Take control', exact: true }).click();
     await expect(b.getByTestId('control-holder')).toContainText(alice.participantId);
     await b.getByRole('button', { name: 'Take control', exact: true }).click();
@@ -26,12 +27,13 @@ test('independent browsers share edits and leases; reconnect and hidden tabs pre
     await b.getByRole('button', { name: 'Take control', exact: true }).click();
     await expect(a.getByTestId('control-holder')).toContainText(bob.participantId);
     await b.getByRole('button', { name: 'Release control', exact: true }).click();
+    await selectStation(a); await selectStation(b);
     await b.getByLabel('Station name', { exact: true }).fill('Unsubmitted draft');
     await a.getByLabel('Station name', { exact: true }).fill('共有する駅');
     await a.getByRole('button', { name: 'Apply name', exact: true }).click();
     await expect(b.getByTestId('confirmed-name')).toHaveText('共有する駅');
     await expect(b.getByLabel('Station name', { exact: true })).toHaveValue('Unsubmitted draft');
-    await b.reload(); await ready(b);
+    await b.reload(); await ready(b); await selectStation(b);
     expect((await bootstrap(b)).participantId).toBe(bob.participantId);
     await expect(b.getByTestId('confirmed-name')).toHaveText('共有する駅');
     await a.getByRole('button', { name: 'Run', exact: false }).click();
@@ -61,25 +63,31 @@ test('Leave game signs out, releases control and allows changing roles or rejoin
     await Promise.all([a.goto('/'), b.goto('/')]); await ready(a); await ready(b);
     const snapshot = (await (await a.request.get('/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1')).json()).snapshot;
     if (!snapshot.paused) await a.getByRole('button', { name: 'Pause', exact: false }).click();
+    await selectTrain(a); await selectTrain(b);
     await a.getByRole('button', { name: 'Take control', exact: true }).click();
     await expect(a.getByRole('status')).toHaveText('Confirmed by server');
     await b.getByRole('button', { name: 'Run', exact: false }).click();
     await expect(a.getByTestId('clock-state')).toHaveText('Running');
+    await openPanel(a, 'session');
     await a.getByRole('button', { name: 'Leave game', exact: true }).click();
     await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
-    await expect(a.getByTestId('participant-role')).toHaveCount(0); await expect(a.locator('canvas')).toHaveCount(0);
+    await expect(a.getByTestId('participant-role')).toHaveCount(0); await expect(a.locator('canvas')).toHaveAttribute('data-scene', 'demo');
     await expect(b.getByTestId('control-holder')).toContainText('Available');
     await expect(b.getByTestId('clock-state')).toHaveText('Running');
     const tick = await b.getByTestId('tick').textContent(); await expect(b.getByTestId('tick')).not.toHaveText(tick!);
     await a.reload(); await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
     await expect(a.getByTestId('connection')).toHaveText('Operator access required');
     await login('operator-test', 'Operator');
+    await openPanel(a, 'saves');
     await expect(a.getByRole('button', { name: 'Save slot', exact: true })).toBeDisabled();
+    await openPanel(a, 'session');
     await a.getByRole('button', { name: 'Leave game', exact: true }).click();
     await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
     await login('observer-test', 'Observer');
     await expect(a.getByRole('button', { name: 'Pause', exact: false })).toBeDisabled();
+    await openPanel(a, 'settings');
     await a.getByLabel('Language').selectOption('ja');
+    await openPanel(a, 'session', 'ja');
     await a.getByRole('button', { name: 'ゲームから退出', exact: true }).click();
     await expect(a.getByLabel('操作キー', { exact: true })).toBeVisible();
     await a.getByLabel('言語').selectOption('en');
@@ -100,10 +108,11 @@ test('a failed Leave game request offers a retry and clears the displayed world'
     if (++attempts === 1) await route.fulfill({ status: 503 });
     else await route.continue();
   });
+  await openPanel(page, 'session');
   await page.getByRole('button', { name: 'Leave game', exact: true }).click();
   await expect(page.getByRole('status')).toHaveText('Leaving could not be confirmed. Retry Leave game to sign out.');
-  await expect(page.locator('canvas')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Leave game', exact: true }).click();
+  await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
+  await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
   await expect(page.getByLabel('Operator access key', { exact: true })).toBeVisible();
   expect(attempts).toBe(2);
 });
