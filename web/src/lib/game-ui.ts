@@ -12,7 +12,7 @@ type Descriptor = { labelKey: keyof typeof messages.en; icon: 'pointer' | 'rail'
   | { kind: 'tool'; tool: Tool }
   | { kind: 'panel'; panel: Panel }
   | { kind: 'menu'; menu: 'game' }
-  | { kind: 'action'; destination: 'clock' | 'map' | 'tool-card' | Panel | 'session-gate' | 'replace-modal' }
+  | { kind: 'action'; destination: 'clock' | 'map' | 'tool-card' | Panel | 'session-gate' | 'replace-modal' | 'credits-modal' | 'license-modal' }
   | { kind: 'switch'; destination: 'view' | 'settings' }
   | { kind: 'field'; destination: 'tool-card' | Panel | 'session-gate' }
 );
@@ -32,6 +32,8 @@ export const registry = {
   settings: { kind: 'panel', panel: 'settings', labelKey: 'settings', icon: 'window', availability: 'live' },
   session: { kind: 'panel', panel: 'session', labelKey: 'session', icon: 'window', availability: 'live' },
   help: { kind: 'panel', panel: 'help', labelKey: 'help', icon: 'window', availability: 'live' },
+  credits: action('credits', 'credits-modal', 'local'), // Also available in the session gate.
+  license: action('license', 'license-modal', 'local'), // Also available in the session gate.
   run: action('run', 'clock', 'mutation'),
   pause: action('pause', 'clock', 'mutation'),
   step: action('step', 'clock', 'mutation'),

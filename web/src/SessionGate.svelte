@@ -1,5 +1,7 @@
 <script lang="ts">
   import SchemeSelect from './SchemeSelect.svelte';
+  import CreditsDialog from './CreditsDialog.svelte';
+  import LicenseDialog from './LicenseDialog.svelte';
   import type { Scheme } from './lib/ui-preferences.ts';
   import { onMount, tick } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
@@ -10,6 +12,8 @@
   const text = $derived(messages[view.locale]);
   const signingIn = $derived(view.connection === 'accessRequired');
   let secret = $state(''), accessFailed = $state(false), authorizing = $state(false);
+  let creditsOpen = $state(false);
+  let licenseOpen = $state(false);
   let dialog: HTMLElement;
   let active = true;
   const title = $derived(view.leaving ? text.leavingGame : view.feedback === 'leaveFailed' ? text.leaveFailedTitle
@@ -79,6 +83,12 @@
       {#if renderFailed}<p role="alert">{text.assetsFailed}</p><button onclick={() => location.reload()}>{text.reload}</button>{/if}
       <p role="status" aria-live="polite" aria-atomic="true">{text[view.feedback === 'idle' && view.connection === 'loading' ? 'loading' : view.feedback]}</p>
       {#if !view.leaving && view.feedback !== 'leaveFailed' && (view.role || view.authRequiredAgain)}<button disabled={authorizing} onclick={onleave}>{text.leaveGame}</button>{/if}
+      <div class="form-actions">
+        <button aria-haspopup="dialog" onclick={() => { creditsOpen = true; }}>{text.credits}</button>
+        <button aria-haspopup="dialog" onclick={() => { licenseOpen = true; }}>{text.license}</button>
+      </div>
     </div>
+    {#if creditsOpen}<CreditsDialog locale={view.locale} onclose={() => { creditsOpen = false; }}/>{/if}
+    {#if licenseOpen}<LicenseDialog locale={view.locale} onclose={() => { licenseOpen = false; }}/>{/if}
   </div>
 </div>

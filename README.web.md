@@ -154,6 +154,10 @@ outside the paint loop. Asset notices ship in `web/public/assets/NOTICE.txt` and
 
 **Game → Settings** contains language and gesture-enabled sound.
 **Session** (also in Game on narrow screens) contains reconnect and Leave game.
+**Credits**, available in the Game menu and the connect dialog, acknowledges the
+original author and contributors, and the English version.
+**License**, beside Credits in both places, displays the full LGPL 2.1 text and
+links to the source code on GitHub.
 
 Open **Game → Save and restore**, then use **Save slot** / **Load slot** for three server slots, or **Download save** /
 **Upload save** for an independent JSON backup. Loading asks for confirmation,

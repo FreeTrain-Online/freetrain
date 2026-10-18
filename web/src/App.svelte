@@ -6,6 +6,8 @@
   import { createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
   import { createBrowserAudio } from './lib/browser-audio.ts';
   import DecisionModal from './DecisionModal.svelte';
+  import CreditsDialog from './CreditsDialog.svelte';
+  import LicenseDialog from './LicenseDialog.svelte';
   import SchemeSelect from './SchemeSelect.svelte';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import SaveControls from './SaveControls.svelte';
@@ -23,6 +25,8 @@
   let mapSelection = $state<Selection>();
   let map: MapView;
   let panel = $state<Panel>(), menu = $state(false), tool = $state<Tool>('inspect');
+  let creditsOpen = $state(false);
+  let licenseOpen = $state(false);
   let renderState = $state<'loading' | 'ready' | 'failed'>('loading');
   let launcher: HTMLElement | undefined;
   let gameLauncher = $state<HTMLButtonElement>();
@@ -51,7 +55,7 @@
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   $effect(() => applyScheme(scheme));
-  $effect(() => { if (!live) { panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; } });
+  $effect(() => { if (!live) { panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; licenseOpen = false; } });
   $effect(() => {
     if (read) {
       if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; }
@@ -137,12 +141,14 @@
     </div>
   {/if}
   <main class="map-stage">
-    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
+    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation || creditsOpen || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'}>
         <button class="overflow-step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
+        <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
+        <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); licenseOpen = true; }}>{text.license}</button>
         <p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>
       </nav>
     {/if}
@@ -201,5 +207,7 @@
     </DecisionModal>
   {/if}
   {#if !live}<SessionGate {model} {view} renderFailed={renderState === 'failed'} onleave={leaveNow} {scheme} onscheme={value => { scheme = value; }}/>{/if}
+  {#if live && creditsOpen}<CreditsDialog locale={view.locale} onclose={() => { creditsOpen = false; }}/>{/if}
+  {#if live && licenseOpen}<LicenseDialog locale={view.locale} onclose={() => { licenseOpen = false; }}/>{/if}
   {#if live}<p id="mutation-help" class="sr-only">{text.observerHint}</p><p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{view.feedback === 'idle' || successExpired ? '' : text[view.feedback]}</p>{/if}
 </div>
