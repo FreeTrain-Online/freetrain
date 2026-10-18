@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-const evidence = process.env.FREETRAIN_UX1_EVIDENCE ?? '../tmp/ux1-2026-10-18';
+const evidence = process.env.FREETRAIN_UX1_EVIDENCE!;
 
 test('UX1 fixed viewport, persistent canvas and overlay-independent camera at target sizes', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));

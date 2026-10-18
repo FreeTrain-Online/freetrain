@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "baseRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "implementationRevision": "a48e8fa5e88907299f568e3164b823d9af101c06",
+  "extraRevision": "6886a0fa74245e621cf627bb045b70598ec30760",
+  "expectedBaseManifests": 54,
+  "expectedExtraManifests": 228,
+  "roots": {
+    "core": "canonical game, UI, resources and serialization",
+    "plugins": "canonical bundled contributions, including explicit exclusions",
+    "lib": "semantic/native dependency references; port behavior rather than Windows APIs",
+    "bin": "historical launch/release inputs; inspect reachability",
+    "doc": "historical player documentation",
+    "devdoc": "historical developer documentation",
+    "NeoFT": "supplemental reference; unique additions excluded from baseline scope",
+    "experiments": "source-only reference; not an implemented baseline capability",
+    "tools": "content/developer tools; inspect generated content dependencies",
+    "extlib": "historical external dependencies; retain notices",
+    "report": "historical issue reports"
+  }
+}

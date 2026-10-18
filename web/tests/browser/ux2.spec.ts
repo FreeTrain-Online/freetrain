@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { at, bootstrap, clickSprite, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
-const evidence = process.env.FREETRAIN_UX2_EVIDENCE ?? '../tmp/ux2-2026-10-18';
+const evidence = process.env.FREETRAIN_UX2_EVIDENCE!;
 test.beforeEach(async ({ page }) => {
   await mkdir(evidence, { recursive: true });
   await page.goto('/'); await ready(page);

@@ -1,0 +1,1668 @@
+{
+  "schemaVersion": 1,
+  "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "evidence": "source-derived; not original-runtime comparison",
+  "sourceHashes": {
+    "core/world/rail/RailPattern.cs": "f9d39347c42aa14ffab34f196134116afcd0efd087f27ec79b91afa5975a079b",
+    "core/world/Direction.cs": "07b57bf48c579626f7f4b035c97d1e82dd94ae83467504036baaedfcf29006fe",
+    "core/world/Traffic.cs": "c1c142987b5f6a233f053fc6adc67682b3a3bf2b5f06020493e5aff6a28cf023",
+    "core/world/Clock.cs": "90325d39d4c469b6ecffbc9c8a8d5c0a7e2d7d2f875472100c1be75d3de05119",
+    "core/util/PriorityQueue.cs": "5e7eec4cb81fc4bc5313d321ca4d7fdc8b07173c84c82308790a3bed66fa2a50",
+    "core/world/rail/Train.cs": "98719dbd111b8fc3de047f711ec8c7224e90a847b86365a0d38774803b5dadbd",
+    "core/views/QuarterViewDrawer.cs": "5e2ca4cadd052cc8a86954beee1d22dd89dde14835f0bae32665eb919566ee98"
+  },
+  "directions": [
+    {
+      "index": 0,
+      "name": "North",
+      "offset": [
+        0,
+        -1
+      ]
+    },
+    {
+      "index": 1,
+      "name": "Northeast",
+      "offset": [
+        1,
+        -1
+      ]
+    },
+    {
+      "index": 2,
+      "name": "East",
+      "offset": [
+        1,
+        0
+      ]
+    },
+    {
+      "index": 3,
+      "name": "Southeast",
+      "offset": [
+        1,
+        1
+      ]
+    },
+    {
+      "index": 4,
+      "name": "South",
+      "offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "index": 5,
+      "name": "Southwest",
+      "offset": [
+        -1,
+        1
+      ]
+    },
+    {
+      "index": 6,
+      "name": "West",
+      "offset": [
+        -1,
+        0
+      ]
+    },
+    {
+      "index": 7,
+      "name": "Northwest",
+      "offset": [
+        -1,
+        -1
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": 0,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        0,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": 1,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        32,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        64,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        1,
+        6
+      ]
+    },
+    {
+      "id": 3,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        96,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": 4,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        128,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        2,
+        6
+      ]
+    },
+    {
+      "id": 5,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        160,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        2,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        192,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        3,
+        6
+      ]
+    },
+    {
+      "id": 7,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        224,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        3,
+        7
+      ]
+    },
+    {
+      "id": 8,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        256,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        3,
+        0
+      ]
+    },
+    {
+      "id": 9,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        288,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        4,
+        7
+      ]
+    },
+    {
+      "id": 10,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        320,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        4,
+        0
+      ]
+    },
+    {
+      "id": 11,
+      "family": "normal",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        352,
+        0,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        5,
+        0
+      ]
+    },
+    {
+      "id": 12,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        0,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        1,
+        5,
+        4
+      ]
+    },
+    {
+      "id": 13,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        32,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        1,
+        5,
+        6
+      ]
+    },
+    {
+      "id": 14,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        64,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        2,
+        6,
+        5
+      ]
+    },
+    {
+      "id": 15,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        96,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        2,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 16,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        128,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        3,
+        7,
+        6
+      ]
+    },
+    {
+      "id": 17,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        160,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        3,
+        7,
+        0
+      ]
+    },
+    {
+      "id": 18,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        192,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        4,
+        0,
+        7
+      ]
+    },
+    {
+      "id": 19,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        224,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        4,
+        0,
+        1
+      ]
+    },
+    {
+      "id": 20,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        256,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        5,
+        1,
+        0
+      ]
+    },
+    {
+      "id": 21,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        288,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        5,
+        1,
+        2
+      ]
+    },
+    {
+      "id": 22,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        320,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        6,
+        2,
+        1
+      ]
+    },
+    {
+      "id": 23,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        352,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        6,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 24,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        7,
+        3,
+        2
+      ]
+    },
+    {
+      "id": 25,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        416,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        7,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 26,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        448,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        0,
+        4,
+        3
+      ]
+    },
+    {
+      "id": 27,
+      "family": "junction",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        480,
+        16,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "connections": [
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 28,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 0,
+      "visible": true
+    },
+    {
+      "id": 29,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 0,
+      "visible": true
+    },
+    {
+      "id": 30,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 4,
+      "visible": false
+    },
+    {
+      "id": 31,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 0,
+      "visible": false
+    },
+    {
+      "id": 32,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 2,
+      "visible": true
+    },
+    {
+      "id": 33,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 2,
+      "visible": true
+    },
+    {
+      "id": 34,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 6,
+      "visible": false
+    },
+    {
+      "id": 35,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 2,
+      "visible": false
+    },
+    {
+      "id": 36,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        256,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 4,
+      "visible": true
+    },
+    {
+      "id": 37,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        288,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 4,
+      "visible": true
+    },
+    {
+      "id": 38,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 0,
+      "visible": false
+    },
+    {
+      "id": 39,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 4,
+      "visible": false
+    },
+    {
+      "id": 40,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 6,
+      "visible": true
+    },
+    {
+      "id": 41,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        416,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 6,
+      "visible": true
+    },
+    {
+      "id": 42,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 2,
+      "visible": false
+    },
+    {
+      "id": 43,
+      "family": "slope",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 6,
+      "visible": false
+    },
+    {
+      "id": 44,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 0,
+      "visible": true
+    },
+    {
+      "id": 45,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 0,
+      "visible": true
+    },
+    {
+      "id": 46,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 4,
+      "visible": false
+    },
+    {
+      "id": 47,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        0,
+        4
+      ],
+      "climb": 0,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 0,
+      "visible": false
+    },
+    {
+      "id": 48,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 2,
+      "visible": true
+    },
+    {
+      "id": 49,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 2,
+      "visible": true
+    },
+    {
+      "id": 50,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 6,
+      "visible": false
+    },
+    {
+      "id": 51,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        2,
+        6
+      ],
+      "climb": 2,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 2,
+      "visible": false
+    },
+    {
+      "id": 52,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        256,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 4,
+      "visible": true
+    },
+    {
+      "id": 53,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        288,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 4,
+      "visible": true
+    },
+    {
+      "id": 54,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 0,
+      "visible": false
+    },
+    {
+      "id": 55,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        4,
+        0
+      ],
+      "climb": 4,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 4,
+      "visible": false
+    },
+    {
+      "id": 56,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 0,
+      "zdiff": 0,
+      "zangle": 6,
+      "visible": true
+    },
+    {
+      "id": 57,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        416,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 1,
+      "zdiff": 1,
+      "zangle": 6,
+      "visible": true
+    },
+    {
+      "id": 58,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 2,
+      "zdiff": -1,
+      "zangle": 2,
+      "visible": false
+    },
+    {
+      "id": 59,
+      "family": "underground-slope",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        384,
+        0,
+        1,
+        1
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": [
+        6,
+        2
+      ],
+      "climb": 6,
+      "level": 3,
+      "zdiff": 0,
+      "zangle": 6,
+      "visible": false
+    },
+    {
+      "id": "underground-slope-support-2",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-3",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-6",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-7",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-10",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        320,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-11",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        352,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-14",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        448,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "underground-slope-support-15",
+      "family": "underground-slope-support",
+      "sheet": "ugslope.bmp",
+      "rectangle": [
+        480,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-2",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-3",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-6",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-7",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-10",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        320,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-11",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        352,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-14",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        448,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    },
+    {
+      "id": "slope-support-15",
+      "family": "slope-support",
+      "sheet": "RailRoads.bmp",
+      "rectangle": [
+        480,
+        32,
+        32,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "connections": []
+    }
+  ],
+  "trafficDrawOrder": [
+    "road.before",
+    "accessory.before",
+    "rail.before",
+    "car",
+    "rail.after",
+    "accessory.after"
+  ],
+  "openCases": [
+    "Full route/attachment/detachment legality fixtures",
+    "Train pose/pixel offsets and height-cut scenes",
+    "Original-runtime visual comparison",
+    "Slope support placement legality and half-voxel picking"
+  ]
+}

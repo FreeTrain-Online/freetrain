@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "source-derived expectations; no modern parity execution or original-runtime comparison",
+  "scenarios": [
+    {
+      "id": "GEO-001",
+      "source": "core/world/Direction.cs",
+      "case": "Eight directions and wraparound",
+      "input": {"direction": 0},
+      "expected": {"offset": [0, -1], "left": 7, "right": 1, "opposite": 4},
+      "phase": "P1",
+      "status": "specified"
+    },
+    {
+      "id": "RAIL-001",
+      "source": "core/world/rail/RailPattern.cs",
+      "case": "Cardinal right-angle bend has no normal pattern",
+      "input": {"directions": [0, 2]},
+      "expected": {"legalNormalPattern": false, "reason": "angle=2, source requires angle>=3"},
+      "phase": "P1/P4",
+      "status": "specified"
+    },
+    {
+      "id": "CLOCK-001",
+      "source": "core/world/Clock.cs; core/util/PriorityQueue.cs",
+      "case": "Ordinary equal-time one-shot callbacks preserve insertion order",
+      "input": {"currentMinute": 130080, "registrations": [{"id": "A", "afterMinutes": 2}, {"id": "B", "afterMinutes": 2}]},
+      "expected": {"afterFirstTick": [], "afterSecondTick": ["A", "B"]},
+      "phase": "P1",
+      "status": "specified"
+    },
+    {
+      "id": "MOVE-001",
+      "source": "core/world/rail/Train.cs: reverse",
+      "case": "Reversal preserves physical car locations and reverses logical head order",
+      "input": {"cars": [{"id": "A", "direction": 2, "location": [5, 5, 0]}, {"id": "B", "direction": 2, "location": [4, 5, 0]}]},
+      "expected": {"cars": [{"id": "B", "direction": 6, "location": [4, 5, 0]}, {"id": "A", "direction": 6, "location": [5, 5, 0]}], "isReversedToggled": true},
+      "phase": "P5",
+      "status": "specified"
+    },
+    {
+      "id": "PASS-001",
+      "source": "core/world/rail/Train.cs: unloadPassengers; core/world/Location.cs: getDistanceTo",
+      "case": "Integer-distance fare and passenger reset",
+      "input": {"passengers": 100, "fare": 500, "source": [2, 2, 0], "destination": [5, 6, 0]},
+      "expected": {"distance": 5, "railServiceRevenue": 50, "passengersAfterUnload": 0, "passengerSourceCleared": true},
+      "phase": "P6",
+      "status": "specified"
+    },
+    {
+      "id": "POP-001",
+      "source": "core/contributions/population/ConstantPopulation.cs",
+      "case": "Constant population remains invariant across schedule boundaries",
+      "input": {"basePopulation": 125, "times": [130080, 131040, 525600]},
+      "expected": {"residents": 125, "populationAtTimes": [125, 125, 125]},
+      "phase": "P6/P7",
+      "status": "specified"
+    },
+    {
+      "id": "DEV-001",
+      "source": "core/world/development/ULV.cs: create",
+      "case": "A player-owned entity makes a development surface unavailable",
+      "input": {"surfaceSize": [2, 2, 0], "uniformGroundLevel": 1, "waterLevel": 0, "playerOwnedEntityCount": 1},
+      "expected": {"unusedLandValue": null, "developmentAllowed": false},
+      "phase": "P7",
+      "status": "specified",
+      "remaining": "Seeded complete development scheduling/build outcomes need random-stream and SearchPlan review."
+    },
+    {
+      "id": "ECON-001",
+      "source": "core/world/rail/Train.cs: move",
+      "case": "Movement cost starts on the first move and repeats on move 17",
+      "input": {"cars": 3, "passengers": 39, "initialMoveCount": 0, "moves": 17},
+      "expected": {"chargedMoveNumbers": [1, 17], "costPerCharge": 61, "totalCost": 122},
+      "phase": "P5/P8",
+      "status": "specified"
+    },
+    {
+      "id": "ECON-002",
+      "source": "core/world/accounting/Debt.cs: onDue",
+      "case": "Debt settlement spends the principal and removes the debt",
+      "input": {"cashBefore": "10000", "amount": "1500", "debtCountBefore": 1},
+      "expected": {"cashAfter": "8500", "debtCountAfter": 0},
+      "phase": "P8",
+      "status": "specified",
+      "remaining": "Bank interest/deposits/loans and stock scenarios need independent source calculations."
+    },
+    {
+      "id": "DRAW-001",
+      "source": "core/world/Traffic.cs: draw",
+      "case": "Bridge or tunnel foreground appears after its car",
+      "expected": {"order": ["road.before", "accessory.before", "rail.before", "car", "rail.after", "accessory.after"]},
+      "phase": "P2/P4/P5",
+      "status": "specified",
+      "remaining": "Compose live before/after train scenes, height cuts and picking expectations."
+    }
+  ],
+  "capacityFixtures": {
+    "status": "proposed fixture budgets, not supported runtime limits or measured capacity",
+    "small": {"dimensions": [64, 64, 16], "trains": 8, "cars": 32, "structures": 200},
+    "medium": {"dimensions": [128, 128, 32], "trains": 32, "cars": 256, "structures": 2000},
+    "large": {"dimensions": [256, 256, 64], "trains": 128, "cars": 1024, "structures": 10000},
+    "requirements": "Generate connected legal eight-direction networks with slopes/supports, stations, passenger activity, development, economic events and persisted continuation. Inspect terrain/occupancy legality before measuring.",
+    "fullContentGallery": "Every in-scope registered recipe and variant, raw pixel checks plus native-size/day/night/season/zoom/height-cut review; optional suite in separate artifacts.",
+    "initialTargets": {"viewport": [1920, 1080], "fpsMinimum": 30, "localFeedbackP95Ms": 100, "authoritativeFeedbackP95Ms": 250, "injectedRttMs": 100},
+    "environment": "MacBookPro18,2, Apple M1 Max, 64 GiB RAM, macOS 26.7.1 arm64. Pinned Playwright Chromium, with synthetic viewport/DPR settings; physical display/scaling observations remain unverified. These fixture budgets have not been measured. Other-engine execution remains deferred."
+  }
+}

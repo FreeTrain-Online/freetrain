@@ -210,5 +210,5 @@ test('measure live running publication rate and JSON payload volume', async ({ p
   await testInfo.attach('network-publication-measurement', { body, contentType: 'application/json' });
   const { writeFile } = await import('node:fs/promises');
   const { resolve } = await import('node:path');
-  await writeFile(resolve(testInfo.config.rootDir, '../../../tmp/web-prototype-network-measurements.json'), body + '\n');
+  await writeFile(resolve(process.env.FREETRAIN_BROWSER_EVIDENCE!, 'network-publication-measurement.json'), body + '\n');
 });
