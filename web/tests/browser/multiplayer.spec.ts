@@ -55,7 +55,7 @@ test('Leave game signs out, releases control and allows changing roles or rejoin
   const errors: string[] = [];
   for (const page of [a, b]) page.on('pageerror', error => errors.push(error.message));
   const login = async (key: string, role: string) => {
-    await a.getByLabel('Operator access key', { exact: true }).fill(key);
+    await a.getByLabel('Enter access key to join game', { exact: true }).fill(key);
     await a.getByRole('button', { name: 'Connect', exact: true }).click();
     await ready(a); await expect(a.getByTestId('participant-role')).toHaveText(role);
   };
@@ -70,19 +70,19 @@ test('Leave game signs out, releases control and allows changing roles or rejoin
     await expect(a.getByTestId('clock-state')).toHaveText('Running');
     await openPanel(a, 'session');
     await a.getByRole('button', { name: 'Leave game', exact: true }).click();
-    await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
+    await expect(a.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
     await expect(a.getByTestId('participant-role')).toHaveCount(0); await expect(a.locator('canvas')).toHaveAttribute('data-scene', 'demo');
     await expect(b.getByTestId('control-holder')).toContainText('Available');
     await expect(b.getByTestId('clock-state')).toHaveText('Running');
     const tick = await b.getByTestId('tick').textContent(); await expect(b.getByTestId('tick')).not.toHaveText(tick!);
-    await a.reload(); await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
-    await expect(a.getByTestId('connection')).toHaveText('Operator access required');
+    await a.reload(); await expect(a.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
+    await expect(a.getByTestId('connection')).toHaveCount(0);
     await login('operator-test', 'Operator');
     await openPanel(a, 'saves');
     await expect(a.getByRole('button', { name: 'Save slot', exact: true })).toBeDisabled();
     await openPanel(a, 'session');
     await a.getByRole('button', { name: 'Leave game', exact: true }).click();
-    await expect(a.getByLabel('Operator access key', { exact: true })).toBeVisible();
+    await expect(a.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
     await login('observer-test', 'Observer');
     await expect(a.getByRole('button', { name: 'Pause', exact: false })).toBeDisabled();
     await openPanel(a, 'settings');
@@ -113,6 +113,6 @@ test('a failed Leave game request offers a retry and clears the displayed world'
   await expect(page.getByRole('status')).toHaveText('Leaving could not be confirmed. Retry Leave game to sign out.');
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
-  await expect(page.getByLabel('Operator access key', { exact: true })).toBeVisible();
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
   expect(attempts).toBe(2);
 });

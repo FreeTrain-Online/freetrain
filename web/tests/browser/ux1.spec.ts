@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { appName } from '../../src/lib/localization.ts';
 import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const evidence = process.env.FREETRAIN_UX1_EVIDENCE!;
@@ -84,10 +85,13 @@ test('UX1 offline demo gate is local, inert, bounded and traps focus without a s
   const requests: string[] = [];
   await page.route('**/api/**', route => { requests.push(route.request().url()); return route.fulfill({ status: 503 }); });
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Cannot reach game', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Retry now', exact: true })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: appName, exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Cannot reach game', exact: true })).toHaveCount(0);
+  await expect(page.getByTestId('connection')).toHaveCount(0);
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   await expect(page.locator('.command-bar')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Retry now', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeDisabled();
   const dialog = page.getByRole('dialog');
   await page.keyboard.press('Escape'); await page.mouse.click(4, 4); await expect(dialog).toBeVisible();
   await page.locator('canvas').evaluate(el => (el as HTMLElement).focus());
@@ -120,7 +124,7 @@ test('UX1 asset failure keeps sign-in available on a plain backdrop', async ({ p
   await page.route('**/assets/*.png', route => route.abort());
   await page.route('**/api/bootstrap?*', route => route.fulfill({ status: 401, json: { anonymousAccess: true } }));
   await page.goto('/'); await expect(page.getByRole('alert')).toHaveText('Map images could not load. Reload to retry.');
-  await expect(page.getByLabel('Operator access key', { exact: true })).toBeEditable();
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeEditable();
   await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Reload', exact: true })).toBeEnabled();
   await expect(page.locator('.command-bar')).toHaveCount(0);
@@ -160,7 +164,7 @@ test('UX1 failed leave latches until revocation, then requires explicit empty-ke
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   const count = bootstraps; await page.waitForTimeout(600); expect(bootstraps).toBe(count);
   await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
-  await expect(page.getByLabel('Operator access key', { exact: true })).toBeVisible(); await expect(page.locator('.command-bar')).toHaveCount(0);
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible(); await expect(page.locator('.command-bar')).toHaveCount(0);
   await page.screenshot({ path: `${evidence}/signed-out.png` });
   await page.getByRole('button', { name: 'Connect', exact: true }).click(); await ready(page); expect(attempts).toBe(2);
 });
@@ -169,11 +173,15 @@ test('UX1 rejected sign-in stays inline and version mismatch offers reload', asy
   let incompatible = false, attempts = 0;
   await page.route('**/api/bootstrap?*', route => route.fulfill({ status: incompatible ? 426 : 401, json: { anonymousAccess: false } }));
   await page.route('**/api/access', route => { attempts++; return route.fulfill({ status: 401 }); });
-  await page.goto('/'); await expect(page.getByRole('heading', { name: 'Welcome to FreeTrain Online', exact: true })).toBeVisible();
-  await page.getByLabel('Operator access key', { exact: true }).fill('invalid-test-key');
+  await page.goto('/'); await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: appName, exact: true })).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('heading')).toHaveCount(0);
+  await expect(page.getByText('Operator access required', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('Ready', { exact: true })).toBeHidden();
+  await page.getByLabel('Enter access key to join game', { exact: true }).fill('invalid-test-key');
   await page.getByRole('button', { name: 'Connect', exact: true }).click();
   await expect(page.getByRole('alert')).toHaveText('Access failed. Check the key and try again.');
-  await expect(page.getByLabel('Operator access key', { exact: true })).toHaveValue(''); expect(attempts).toBe(1);
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toHaveValue(''); expect(attempts).toBe(1);
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   incompatible = true; await page.reload();
   await expect(page.getByRole('heading', { name: 'Update required', exact: true })).toBeVisible();
@@ -191,7 +199,7 @@ test('UX1 lost authentication clears live identity and requires sign-in again', 
   await expect(page.getByRole('heading', { name: 'Sign in again', exact: true })).toBeVisible();
   await expect(page.getByTestId('participant-role')).toHaveCount(0); await expect(page.getByTestId('selected-object')).toHaveCount(0);
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
-  await expect(page.getByLabel('Operator access key', { exact: true })).toBeEditable();
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeEditable();
   await page.getByLabel('Language', { exact: true }).selectOption('ja');
   await page.setViewportSize({ width: 360, height: 800 });
   await page.screenshot({ path: `${evidence}/auth-required-ja.png` });

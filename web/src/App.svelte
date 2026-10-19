@@ -1,7 +1,7 @@
 <script lang="ts">
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
-  import { messages, persistLocale, initialLocale, type Locale } from './lib/localization.ts';
+  import { appName, messages, persistLocale, initialLocale, type Locale } from './lib/localization.ts';
   import { createShellModel, catalog } from './lib/shell-model.ts';
   import { createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
   import { createBrowserAudio } from './lib/browser-audio.ts';
@@ -119,7 +119,7 @@
   });
 </script>
 
-<svelte:head><title>FreeTrain Online</title></svelte:head>
+<svelte:head><title>{appName}</title></svelte:head>
 <svelte:window onkeydown={escape}/>
 <div class="app-shell" class:gated={!live} data-shell="svelte">
   {#if live}

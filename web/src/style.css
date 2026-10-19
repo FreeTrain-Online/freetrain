@@ -69,6 +69,8 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .game-menu button { text-align: start; }
 .session-scrim { position: absolute; inset: 0; background: #17241e55; display: grid; place-items: center; padding: 8px; z-index: 50; }
 .session-dialog { display: flex; flex-direction: column; width: min(440px, 100%); max-height: calc(100% - 8px); min-height: 0; }
+.session-logo { display: block; max-width: 100%; height: auto; margin: 0 auto 8px; }
+.session-connect:disabled { box-shadow: inset 1px 1px #7d877f, inset -1px -1px #fff; text-shadow: 1px 1px #fff; }
 .brand img { image-rendering: pixelated; }
 .gated .command-feedback { z-index: 51; inset-inline-start: 8px; inset-block-end: 4px; max-width: calc(100% - 16px); }
 .save-controls { padding: 0; }

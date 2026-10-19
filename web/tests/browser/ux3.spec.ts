@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { appName } from '../../src/lib/localization.ts';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { bootstrap, clickSprite, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
 const evidence = process.env.FREETRAIN_UX3_EVIDENCE!;
@@ -122,10 +123,10 @@ test('UX3 coarse pointer targets, enlarged text and reduced visible height retai
     await page.getByLabel('UI color scheme',{exact:true}).selectOption('plum');
     await page.getByRole('button',{name:'Close panel',exact:true}).click();
     await openPanel(page,'session'); await page.getByRole('button',{name:'Leave game',exact:true}).click();
-    await expect(page.getByRole('dialog',{name:'Welcome to FreeTrain Online',exact:true})).toBeVisible();
+    await expect(page.getByRole('dialog',{name:appName,exact:true})).toBeVisible();
     const gateScheme = page.getByLabel('UI color scheme',{exact:true}); await gateScheme.focus();
     await page.keyboard.press('c'); await page.keyboard.press('Enter'); await expect(gateScheme).toHaveValue('classic-blue');
-    const key = page.getByLabel('Operator access key',{exact:true}); await key.fill('');
+    const key = page.getByLabel('Enter access key to join game',{exact:true}); await key.fill('');
     await page.setViewportSize({width:360,height:320}); await fit(page);
     await key.scrollIntoViewIfNeeded(); await expect(key).toBeInViewport();
     const connect = page.getByRole('button',{name:'Connect',exact:true}); await connect.scrollIntoViewIfNeeded(); await expect(connect).toBeInViewport();
@@ -197,7 +198,7 @@ test('UX3 independent UI state and observer explanations retain shared clock and
     await expect(b.locator('canvas')).toHaveAttribute('data-camera',bCamera!); await expect(b.locator('.primary-panel')).toHaveCount(0);
     const tick=await b.getByTestId('tick').textContent(); await expect(b.getByTestId('tick')).not.toHaveText(tick!);
     await openPanel(a,'session'); await a.getByRole('button',{name:'Leave game',exact:true}).click();
-    await a.getByLabel('Operator access key',{exact:true}).fill('observer-test'); await a.getByRole('button',{name:'Connect',exact:true}).click(); await ready(a);
+    await a.getByLabel('Enter access key to join game',{exact:true}).fill('observer-test'); await a.getByRole('button',{name:'Connect',exact:true}).click(); await ready(a);
     await expect(a.getByTestId('participant-role')).toHaveText('Observer');
     await expect(a.getByRole('button',{name:'Build track',exact:true})).toBeDisabled();
     await a.getByRole('button',{name:'Inspect / drive',exact:true}).focus();

@@ -1,6 +1,6 @@
 <script lang="ts">
   import DecisionModal from './DecisionModal.svelte';
-  import { messages, type Locale } from './lib/localization.ts';
+  import { appName, messages, type Locale } from './lib/localization.ts';
   let { locale, onclose }: { locale: Locale; onclose: () => void } = $props();
   const text = $derived(messages[locale]);
 </script>
@@ -16,7 +16,7 @@
   <h3>{text.englishVersion}</h3>
   <p>{text.englishContributorNames}</p>
   <p><a href="https://sourceforge.net/projects/freetrain/" target="_blank" rel="noopener noreferrer">FreeTrain — SourceForge</a></p>
-  <h3>FreeTrain Online</h3>
+  <h3>{appName}</h3>
   <p>{text.onlineContributorNames}</p>
   {#snippet actions()}
     <button onclick={onclose}>{text.closeDialog}</button>

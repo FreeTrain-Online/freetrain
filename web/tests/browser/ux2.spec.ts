@@ -150,7 +150,7 @@ test('UX2 schemes persist across refresh and gates without changing camera, canv
   await selectStation(page); await page.getByLabel('Station name', { exact: true }).fill('Preserve my draft');
   await page.getByRole('button', { name: 'Reset draft', exact: true }).click();
   await openPanel(page, 'session'); await page.getByRole('button', { name: 'Leave game', exact: true }).click();
-  await expect(page.getByLabel('Operator access key', { exact: true })).toBeVisible(); await expect(page.getByLabel('UI color scheme', { exact: true })).toHaveValue('plum');
+  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible(); await expect(page.getByLabel('UI color scheme', { exact: true })).toHaveValue('plum');
   await page.getByLabel('UI color scheme', { exact: true }).selectOption('classic-blue');
   await page.getByLabel('Language', { exact: true }).selectOption('ja'); await page.setViewportSize({ width: 360, height: 800 });
   await expect(page.getByLabel('操作キー', { exact: true })).toBeVisible();
