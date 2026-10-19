@@ -5,6 +5,15 @@ The canonical game/content baseline is legacy `main` at the commit pinned in
 separately at `a48e8fa` (including Credits and License). Inventory is P0 work;
 it does not establish legacy behavior parity or close native/device UX acceptance.
 
+The owner's original Windows manual, **chapters 2–4**, and the
+[later online-manual comparison](web-parity-online-manual.md) are the player-facing
+oracle for baseline workflows and toolbar/task-window structure. The maintained
+[manual requirements and browser mapping](web-parity-manual.md) records provenance,
+all documented menu families, focused windows, stable `MAN-*` requirements,
+acceptance obligations and explicit source/prose differences. Use it alongside
+the pinned source; it does not replace the source ledger, exclude later bundled
+features or close the complete P0-03 action-map gate.
+
 The maintained inputs and outputs are:
 
 | File | Meaning |
@@ -16,6 +25,8 @@ The maintained inputs and outputs are:
 | [Base content reconciliation](web-parity-content.md) | P0-02 accounting, source findings and boundaries of the evidence |
 | [extra-suite-ledger.json](parity/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
 | [action-map.json](parity/action-map.json) | Reviewed main-window operation mappings and remaining differences |
+| [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
+| [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
 | [geometry.json](parity/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
 | [scenarios.json](parity/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |

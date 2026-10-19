@@ -4,6 +4,16 @@ This is the implementation contract for the FreeTrain web game UX.
 The simulation, protocol, saves and canvas projection stay unchanged.
 English and Japanese are acceptance languages.
 
+Future parity slices use the original manual's chapters 2–4 as the player-workflow
+oracle. The [manual mapping and browser adaptation contract](web-parity-manual.md)
+specify toolbar shortcuts, focused construction windows, station/platform tabs,
+purchase versus owned-train placement, and independent timetable management.
+The [online-manual supplement](web-parity-online-manual.md) adds group timetable
+inheritance/reparenting, terrain modifiers, revised creation routes and recovery
+guidance, subject to its explicit source gaps and coverage dispositions.
+Those are planned subsystem requirements; the operation table below continues to
+describe delivered behavior only.
+
 ## Implementation status
 
 The production app now uses the approved visual foundation:

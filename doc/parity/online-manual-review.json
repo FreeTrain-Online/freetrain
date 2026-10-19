@@ -1,0 +1,662 @@
+{
+  "schemaVersion": 1,
+  "reviewedDate": "2026-10-19",
+  "evidenceKind": "Owner-supplied local archived HTML and source comparison; no original-runtime execution or complete source parity.",
+  "baseRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "wordManual": {
+    "path": "tmp/FreeTrain.doc.md",
+    "publishedLastUpdate": "2003-02-02",
+    "sha256": "f200f03f6bd49682bb31f7686c2a197e00c415533710a16c6aef92b991ba5634"
+  },
+  "pages": [
+    {
+      "title": "FreeTrain用語集",
+      "path": "tmp/online-manual/FreeTrain - FreeTrain用語集.html",
+      "sha256": "ba1dca9442b75fff70b3396e6d752d3fe8d7c7572578b3a1d1eb4da8dd3c4edb",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?FreeTrain%CD%D1%B8%EC%BD%B8",
+      "captureTimestamp": "20130118070828",
+      "archiveUrl": "https://web.archive.org/web/20130118070828/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?FreeTrain%CD%D1%B8%EC%BD%B8",
+      "lastModified": "Tue, 29 Jan 2008 18:17:02 PST",
+      "bodyTextSha256": "166f77ec3fe758206223ba61e8d7bbe294a1a7cf76b5a049b8fa4eb12eaf5b04",
+      "id": "ONLINE-P01",
+      "missingImagePlaceholders": 0,
+      "images": []
+    },
+    {
+      "title": "よくある質問（ＦＡＱ）",
+      "path": "tmp/online-manual/FreeTrain - よくある質問（ＦＡＱ）.html",
+      "sha256": "9038d5280eb258883d183e414db10b4f8c243b563181e12f99c92d3b1eaac385",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A4%E8%A4%AF%A4%A2%A4%EB%BC%C1%CC%E4%A1%CA%A3%C6%A3%C1%A3%D1%A1%CB",
+      "captureTimestamp": "20130118070550",
+      "archiveUrl": "https://web.archive.org/web/20130118070550/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A4%E8%A4%AF%A4%A2%A4%EB%BC%C1%CC%E4%A1%CA%A3%C6%A3%C1%A3%D1%A1%CB",
+      "lastModified": "Sat, 09 Feb 2008 03:14:50 PST",
+      "bodyTextSha256": "d1e7085a33ddb1f39c79d2be91af9ad9bd235b2fc3f08359a3bb5572a2a98ea5",
+      "id": "ONLINE-P02",
+      "missingImagePlaceholders": 0,
+      "images": []
+    },
+    {
+      "title": "ダイヤグラム",
+      "path": "tmp/online-manual/FreeTrain - ダイヤグラム.html",
+      "sha256": "595340eee0960ccf6c8f9012dca27e74ae650404a18f738ce7595b8377720640",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C0%A5%A4%A5%E4%A5%B0%A5%E9%A5%E0",
+      "captureTimestamp": "20130118070416",
+      "archiveUrl": "https://web.archive.org/web/20130118070416/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C0%A5%A4%A5%E4%A5%B0%A5%E9%A5%E0",
+      "lastModified": "Sun, 16 Mar 2008 03:08:01 PDT",
+      "bodyTextSha256": "305e999cb027c89f05fd65f7ad24517963224388b68ab2099b97582c3245b454",
+      "id": "ONLINE-P03",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "diagram01.jpg",
+          "path": "tmp/online-manual/FreeTrain - ダイヤグラム_files/A5C0A5A4A5E4A5B0A5E9A5E0_6469616772616D30312E6A7067_VD96",
+          "sha256": "0447a33dbb9308bb8e8eb41a9645c35b55fb99229881a0c0fc94d8fe0346d126",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "ツールバー",
+      "path": "tmp/online-manual/FreeTrain - ツールバー.html",
+      "sha256": "1e4c228db56972e09d39869d45deea737daaaca134b2c2696eeea2f057cea428",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C4%A1%BC%A5%EB%A5%D0%A1%BC",
+      "captureTimestamp": "20130118070452",
+      "archiveUrl": "https://web.archive.org/web/20130118070452/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C4%A1%BC%A5%EB%A5%D0%A1%BC",
+      "lastModified": "Fri, 15 Feb 2008 07:00:06 PST",
+      "bodyTextSha256": "c466d375185651201122a33190e30122424bd018227e965f4a32a5881119e9b6",
+      "id": "ONLINE-P04",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "toolbar.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261722E6A7067_z0Df",
+          "sha256": "240fd5f72768ac5efb555b1812b4cfb66a5e86f562fb5530ec795da4c612d251",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon01.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30312E6A7067_z0Df",
+          "sha256": "92972ce758c2e6f767982adfc39ca8a9e61ea32d932ee72c3fa20dc3788ab55a",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon02.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30322E6A7067_z0Df",
+          "sha256": "658fbd60947b0962f6b0d9122e860594aececccbaafd8107f5cb39b32d1a16d3",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon03.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30332E6A7067_z0Df",
+          "sha256": "5188cb80ee8d75f10e6c310b234982fa0836f8c2ccdb9d062fefcdac1b402ec2",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon04.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30342E6A7067_z0Df",
+          "sha256": "db8a6a9d44bdaaff3083d6b7c4952b396ce0b28a2d22606b30ac2c45d42bd777",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon05.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30352E6A7067_z0Df",
+          "sha256": "1c5460fecbd926db08b9d4004086898877db5d96724d12d763e475c0787c18b0",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon06.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30362E6A7067_z0Df",
+          "sha256": "32f21d83fca02c5b317125c8cb7a23bcc8b7deaad497fe2d2b945af4e1a75a0e",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon07.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30372E6A7067_z0Df",
+          "sha256": "f40bd07b8ab281be39f92495d006588d523b4d33249e03b51980419a34bc1ce2",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon08.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30382E6A7067_z0Df",
+          "sha256": "7fe4ac5a40c8d984c7d0e39caa191e5f7d91d99f09a198967f65d8a71718bd90",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon09.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E30392E6A7067_z0Df",
+          "sha256": "fd899b6bd8b61b0188bc161a21f39f65e56592925c803f0848e9610d309854f0",
+          "status": "local-file"
+        },
+        {
+          "alt": "toolbar_icon10.jpg",
+          "path": "tmp/online-manual/FreeTrain - ツールバー_files/A5C4A1BCA5EBA5D0A1BC_746F6F6C6261725F69636F6E31302E6A7067_z0Df",
+          "sha256": "41fa11231a20adcaf8217860c793d542106419832f3452c868c1649ad0d1cd02",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "トラブルシューティング",
+      "path": "tmp/online-manual/FreeTrain - トラブルシューティング.html",
+      "sha256": "8c42f08ce0f59915e915f7f08c09e9299a76a031e1e42bd45ec0ff6d4385cef5",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C8%A5%E9%A5%D6%A5%EB%A5%B7%A5%E5%A1%BC%A5%C6%A5%A3%A5%F3%A5%B0",
+      "captureTimestamp": "20130118070841",
+      "archiveUrl": "https://web.archive.org/web/20130118070841/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%C8%A5%E9%A5%D6%A5%EB%A5%B7%A5%E5%A1%BC%A5%C6%A5%A3%A5%F3%A5%B0",
+      "lastModified": "Mon, 21 Sep 2009 21:28:05 PDT",
+      "bodyTextSha256": "a40a14dcc6af227ea0831c92169935345525a33e1b43fcf79df62898085bca2a",
+      "id": "ONLINE-P05",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "image.jpg",
+          "path": "tmp/online-manual/FreeTrain - トラブルシューティング_files/A5C8A5E9A5D6A5EBA5B7A5E5A1BCA5C6A5A3A5F3A5B0_696D6167652E6A__NVk",
+          "sha256": "0fd986e4475e63cb2695809133eeb7d9ffe13b119c1f17c68828eddb8fa68bab",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "バグ報告の手順",
+      "path": "tmp/online-manual/FreeTrain - バグ報告の手順.html",
+      "sha256": "8341020f6676d7dd36263fc1d937927a9eba42c2c499f7da860a1c96be368ca3",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%D0%A5%B0%CA%F3%B9%F0%A4%CE%BC%EA%BD%E7",
+      "captureTimestamp": "20130118070406",
+      "archiveUrl": "https://web.archive.org/web/20130118070406/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%D0%A5%B0%CA%F3%B9%F0%A4%CE%BC%EA%BD%E7",
+      "lastModified": "Sun, 16 Mar 2008 03:11:14 PDT",
+      "bodyTextSha256": "ff40f6268db44d706eb0b5f0bebb1746897c04b36a21af3bb7818f9b2e9cfc2b",
+      "id": "ONLINE-P06",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "dialog1.png",
+          "path": "tmp/online-manual/FreeTrain - バグ報告の手順_files/A5D0A5B0CAF3B9F0A4CEBCEABDE7_6469616C6F67312E706E67_zF9W",
+          "sha256": "0f7c5d23ca01361b6e94703996c4b493a4c524a1883611939bcc3f521806607e",
+          "status": "local-file"
+        },
+        {
+          "alt": "dialog2.png",
+          "path": "tmp/online-manual/FreeTrain - バグ報告の手順_files/A5D0A5B0CAF3B9F0A4CEBCEABDE7_6469616C6F67322E706E67_zF9W",
+          "sha256": "4b64e9d696b284715d7c66e62720ad7bff9b6dfdbb33dd59ad40d4eb098ae545",
+          "status": "local-file"
+        },
+        {
+          "alt": "dialog3.png",
+          "path": "tmp/online-manual/FreeTrain - バグ報告の手順_files/A5D0A5B0CAF3B9F0A4CEBCEABDE7_6469616C6F67332E706E67_zF9W",
+          "sha256": "38eec84b04f5d7e55b3d4d95a8207cf85d0da7229fa5974431e194f388fdf1f2",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "マニュアル",
+      "path": "tmp/online-manual/FreeTrain - マニュアル.html",
+      "sha256": "85b6e35c513dc6097f8cac499b9f0f782c7310152acc28d225fd0e8e7ac41a5c",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%DE%A5%CB%A5%E5%A5%A2%A5%EB",
+      "captureTimestamp": "20130115004225",
+      "archiveUrl": "https://web.archive.org/web/20130115004225/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%DE%A5%CB%A5%E5%A5%A2%A5%EB",
+      "lastModified": "Fri, 15 Feb 2008 07:17:00 PST",
+      "bodyTextSha256": "8a1a71e0510d0d509e01aa3f9f3a80c94321cf4bd22700eb5668ee7aabf5c3fd",
+      "id": "ONLINE-P07",
+      "missingImagePlaceholders": 0,
+      "images": []
+    },
+    {
+      "title": "メインメニュー",
+      "path": "tmp/online-manual/FreeTrain - メインメニュー.html",
+      "sha256": "a0954a60e50dd9f6e2e2bc0e162d20a5ff7e75a4e20fe936b5966b3d4af0dd2f",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%E1%A5%A4%A5%F3%A5%E1%A5%CB%A5%E5%A1%BC",
+      "captureTimestamp": "20130118070847",
+      "archiveUrl": "https://web.archive.org/web/20130118070847/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%E1%A5%A4%A5%F3%A5%E1%A5%CB%A5%E5%A1%BC",
+      "lastModified": "Sun, 17 Feb 2008 05:48:14 PST",
+      "bodyTextSha256": "f740671a2a51714a26cd096c63acadbd0a08926f77220f59fc6196ac026c370d",
+      "id": "ONLINE-P08",
+      "missingImagePlaceholders": 0,
+      "images": []
+    },
+    {
+      "title": "リンク集",
+      "path": "tmp/online-manual/FreeTrain - リンク集.html",
+      "sha256": "1f5faa1304f5205e869bad1bd0049e6bbf4b4e5a6b6cdc564e8dbe87c9f73529",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%EA%A5%F3%A5%AF%BD%B8",
+      "captureTimestamp": "20130118070642",
+      "archiveUrl": "https://web.archive.org/web/20130118070642/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%A5%EA%A5%F3%A5%AF%BD%B8",
+      "lastModified": "Sun, 31 Jan 2010 00:08:33 PST",
+      "bodyTextSha256": "967a604c283cedc35a6656fc89eb47869874512860065adfcf1ed17a7a330b66",
+      "id": "ONLINE-P09",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "",
+          "path": "tmp/online-manual/FreeTrain - リンク集_files/459_yxGo.gif",
+          "sha256": "adc01b529fef3da39d3d90815df556fbfe9ff93a5a95ee50280841d5a396212b",
+          "status": "local-file"
+        },
+        {
+          "alt": "",
+          "path": "tmp/online-manual/FreeTrain - リンク集_files/458_yxGo.gif",
+          "sha256": "d9471a5d4a207329dd201dda6717a0963bb95510cbebca184a4ea6b508ac5106",
+          "status": "local-file"
+        },
+        {
+          "alt": "",
+          "path": "tmp/online-manual/FreeTrain - リンク集_files/594_yxGo.png",
+          "sha256": "2b29c9291d4062d8dd625dc94401c47663ced96971800ea4754999e0eeef525b",
+          "status": "local-file"
+        },
+        {
+          "alt": "",
+          "path": "tmp/online-manual/FreeTrain - リンク集_files/593_yxGo.png",
+          "sha256": "b2070ddfab292dad1c935aae78348af7732eb111c84551f85ce9ac9e554e7074",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "地形操作",
+      "path": "tmp/online-manual/FreeTrain - 地形操作.html",
+      "sha256": "0a11811f811ad9d580aa52637b6310387bb9c5186fa100fef875ee8711510748",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%C3%CF%B7%C1%C1%E0%BA%EE",
+      "captureTimestamp": "20130118070613",
+      "archiveUrl": "https://web.archive.org/web/20130118070613/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%C3%CF%B7%C1%C1%E0%BA%EE",
+      "lastModified": "Sun, 16 Mar 2008 03:01:17 PDT",
+      "bodyTextSha256": "818221d983094383200ea730ef91c4adf15ee196d982a999df4fe16c2da44383",
+      "id": "ONLINE-P10",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "toolbar_icon09.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F6F6C6261725F69636F6E30392E676966_E16M",
+          "sha256": "1964486bcc09db5dc58a8e357606c78936a2ed370155fbc1201ea1bcb5e71e5b",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-01.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30312E676966_E16M",
+          "sha256": "cff901bb8f05efaa91389f32b2791699e6a140b41dbdaafc2a6047e4b676a489",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-05.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30352E676966_E16M",
+          "sha256": "4787396e1b81157b1385af79940365f19656fea5c1edfdb1845ec96389881f71",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-02.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30322E676966_E16M",
+          "sha256": "144dff152be83bf6ade6de0630c0a916f6a9eb64ee3a660853b7fdd817dcf50d",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-03.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30332E676966_E16M",
+          "sha256": "a5002662c061851acf8fd9121681a74b0707c771d1dc25db69f44107ab3d7002",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-05.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30352E676966_E16M",
+          "sha256": "4787396e1b81157b1385af79940365f19656fea5c1edfdb1845ec96389881f71",
+          "status": "local-file"
+        },
+        {
+          "alt": "topography-04.gif",
+          "path": "tmp/online-manual/FreeTrain - 地形操作_files/C3CFB7C1C1E0BAEE_746F706F6772617068792D30342E676966_E16M",
+          "sha256": "4548e6209187777e3851522b3b198c948cc4364a152884547004b80f2eec0275",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "線路工事",
+      "path": "tmp/online-manual/FreeTrain - 線路工事.html",
+      "sha256": "b9199b26f4c87be0655a698f13cd099245fc9c9af501ae90972031dba9d7174c",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%C0%FE%CF%A9%B9%A9%BB%F6",
+      "captureTimestamp": "20130118070656",
+      "archiveUrl": "https://web.archive.org/web/20130118070656/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%C0%FE%CF%A9%B9%A9%BB%F6",
+      "lastModified": "Sun, 16 Mar 2008 02:55:58 PDT",
+      "bodyTextSha256": "da8286fbd5c8bb0415c09c1693b55eea32b1df81483a959e49b066a671d026e5",
+      "id": "ONLINE-P11",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "rail01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C30312E6A7067_0JI3",
+          "sha256": "9980fe994da53e8c6f73b46508cf749c8fb029e65e72d617913a984d5eac8229",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail021.gif",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C3032312E676966_0JI3",
+          "sha256": "6ad7b5ede5e9f1fccc9ce367087fd3abd67ab4c355bd3bae991d443af7ce7041",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail022.gif",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C3032322E676966_0JI3",
+          "sha256": "995a29c56b425569d0ac3b22769051b214d62ab49ae1a25773fe6c1572aeb68d",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail023.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C3032332E6A7067_0JI3",
+          "sha256": "274559b2b9957c72f862b19c26175a2f38535c6e7a2f9288d9831af32e01d66c",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail03.gif",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C30332E676966_0JI3",
+          "sha256": "9970d37140b7f146a6c0ebb8f3cb6cf3731efa6d548f87b1a4ff019e5240f97b",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_point.gif",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F706F696E742E676966_0JI3",
+          "sha256": "b92028e692331c1798c71d6b45ff35b795df049c2fae03ef5c1e4c8fcf8df14d",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_slope01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F736C6F706530312E6A7067_0JI3",
+          "sha256": "22f97e9d1f7e648a3863ebfb6bebbbd4fdc3167d2b81212f0c785b3931fdf5e7",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_slope02.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F736C6F706530322E6A7067_0JI3",
+          "sha256": "8bb27914699224c0517fef29489956a87532b87bf71d6cccc3598c9d237a256e",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_slope03.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F736C6F706530332E6A7067_0JI3",
+          "sha256": "d890f9fef016c7ed5eb83efb91a40e9cd8e72a5e5dcb674b456218c26f1bfaae",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_slope04.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F736C6F706530342E6A7067_0JI3",
+          "sha256": "7286391eb09fdbb4acbf31566e92a9d3f6a0efee580035c596ce321d5ec49157",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_overhead01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F6F7665726865616430312E6A7067_0JI3",
+          "sha256": "852d3f2024f33ab4a26a4a8fb009c27628e5e77146ce61cb65d74482ec126ad5",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_overhead020.gif",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F6F766572686561643032302E676966_0JI3",
+          "sha256": "3b00735c7aa66f39944df8bdb7ddf491b5ccd28550141ae8ad6769572d9263e0",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_overhead021.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F6F766572686561643032312E6A7067_0JI3",
+          "sha256": "d37127e1a0018c64e0c06b8c0422f87ddd269a13149c7e2c85f2aaf5033db201",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_overhead030.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F6F766572686561643033302E6A7067_0JI3",
+          "sha256": "663a65157313ed3d13281b4cd3b73313efa6caa54954c67148090faff3bfb246",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_overhead031.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F6F766572686561643033312E6A7067_0JI3",
+          "sha256": "ead3f64e01ee136bd5ba4575204e91dd292a8f2c4f74453cb3682353fbf2b5b8",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_tunnel01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F74756E6E656C30312E6A7067_0JI3",
+          "sha256": "3f6f7a8f7863d7d4e384053a17402a32dbc350a7d75a79dfd0ff734e1d29be1a",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_tunnel02.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F74756E6E656C30322E6A7067_0JI3",
+          "sha256": "045856b5d34470cf4235c04d74e56c53e24277d8ef8c90a93c883835a261e56f",
+          "status": "local-file"
+        },
+        {
+          "alt": "rail_tunnel03.jpg",
+          "path": "tmp/online-manual/FreeTrain - 線路工事_files/C0FECFA9B9A9BBF6_7261696C5F74756E6E656C30332E6A7067_0JI3",
+          "sha256": "6b1b85cea587d6cc97674106fbeef7b93e401a50bb602be4da74e63b4d8923b8",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "跨線橋",
+      "path": "tmp/online-manual/FreeTrain - 跨線橋.html",
+      "sha256": "796c00e5c001ad9980b4a1cb14d69e4888d294a8d76c553761bacc67028dc220",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org:80/freetrain/wiki/pukiwiki.php?%B8%D9%C0%FE%B6%B6",
+      "captureTimestamp": "20070806020429",
+      "archiveUrl": "https://web.archive.org/web/20070806020429/http://www.kohsuke.org:80/freetrain/wiki/pukiwiki.php?%B8%D9%C0%FE%B6%B6",
+      "lastModified": "Thu, 08 Jan 2004 03:26:02 MST",
+      "bodyTextSha256": "96f4d852d408eb279c7d1bf8574bff72feeae1ca3684f4aada56c1c65790c70e",
+      "id": "ONLINE-P12",
+      "missingImagePlaceholders": 1,
+      "images": [
+        {
+          "alt": "station_overpass02.jpg",
+          "path": "tmp/online-manual/FreeTrain - 跨線橋_files/B8D9C0FEB6B6_73746174696F6E5F6F7665727061737330322E6A7067__Rlt",
+          "sha256": "ae9b75eb28136d92bf2dcbbc5778b7c9b82185ceda434a245ec798cf14fdada9",
+          "status": "local-file"
+        },
+        {
+          "alt": "station_overpass03.jpg",
+          "path": "tmp/online-manual/FreeTrain - 跨線橋_files/B8D9C0FEB6B6_73746174696F6E5F6F7665727061737330332E6A7067__Rlt",
+          "sha256": "3e5a8008b35d9120ff330976a9c28ea8dbb8c4185ebb4e00e07bb96b580a7729",
+          "status": "local-file"
+        },
+        {
+          "alt": "station_overpass04.jpg",
+          "path": "tmp/online-manual/FreeTrain - 跨線橋_files/B8D9C0FEB6B6_73746174696F6E5F6F7665727061737330342E6A7067__Rlt",
+          "sha256": "27167f0fe366fa35490f276e1f4380115ddd9867751fd63707cf1472e93b0207",
+          "status": "local-file"
+        },
+        {
+          "alt": "station_overpass05.jpg",
+          "path": "tmp/online-manual/FreeTrain - 跨線橋_files/B8D9C0FEB6B6_73746174696F6E5F6F7665727061737330352E6A7067__Rlt",
+          "sha256": "698114bcc961072b7387a173a30bb63bb8a5ab5f1abf9136dce3a85404220291",
+          "status": "local-file"
+        },
+        {
+          "alt": "station_overpass06.jpg",
+          "path": "tmp/online-manual/FreeTrain - 跨線橋_files/B8D9C0FEB6B6_73746174696F6E5F6F7665727061737330362E6A7067__Rlt",
+          "sha256": "8dd4d0849f35a5d7d64d754763e986202677639fe75017ff0c63452e109085f7",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "車両購入",
+      "path": "tmp/online-manual/FreeTrain - 車両購入.html",
+      "sha256": "163bf9b4b28bbceb7cef7c6cc332bcfa641ca0fb763badee85c6cde1dce0dde0",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%BC%D6%CE%BE%B9%D8%C6%FE",
+      "captureTimestamp": "20130118070725",
+      "archiveUrl": "https://web.archive.org/web/20130118070725/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%BC%D6%CE%BE%B9%D8%C6%FE",
+      "lastModified": "Sat, 16 Feb 2008 04:28:49 PST",
+      "bodyTextSha256": "0c3d803573223b3c9430785e281729ab160c714f20067d29e89f5157b9128fe2",
+      "id": "ONLINE-P13",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "train_buy01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両購入_files/BCD6CEBEB9D8C6FE_747261696E5F62757930312E6A7067_Xm4n",
+          "sha256": "e05921efb13e661fc972b453427a1a71c34b6d00d4e2325a0793d3e6c7ed156c",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "車両配置",
+      "path": "tmp/online-manual/FreeTrain - 車両配置.html",
+      "sha256": "2477f1292d53e6a217741f2e79daf4a1c7130f63e99236ee32e247ae3ad78d3a",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%BC%D6%CE%BE%C7%DB%C3%D6",
+      "captureTimestamp": "20130118070517",
+      "archiveUrl": "https://web.archive.org/web/20130118070517/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%BC%D6%CE%BE%C7%DB%C3%D6",
+      "lastModified": "Sat, 16 Feb 2008 04:39:26 PST",
+      "bodyTextSha256": "b2abd951ecf407ae320edef60d1da9de9f3bf38f999e8dc1cce43ce978e43aa2",
+      "id": "ONLINE-P14",
+      "missingImagePlaceholders": 0,
+      "images": [
+        {
+          "alt": "train_position01.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両配置_files/BCD6CEBEC7DBC3D6_747261696E5F706F736974696F6E30312E6A7067_SOJZ",
+          "sha256": "d737254710688be81990e27068dbfa9317ede09cebaccd16a77ffcbb4e4abcb7",
+          "status": "local-file"
+        },
+        {
+          "alt": "train_position02.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両配置_files/BCD6CEBEC7DBC3D6_747261696E5F706F736974696F6E30322E6A7067_SOJZ",
+          "sha256": "c2d56ab78efef1841da78ff7bf4cb58412ec177439ffb5d6861ea519d230ab36",
+          "status": "local-file"
+        },
+        {
+          "alt": "train_position03.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両配置_files/BCD6CEBEC7DBC3D6_747261696E5F706F736974696F6E30332E6A7067_SOJZ",
+          "sha256": "7d576c58fd5b0d0edf7162de07e7171d2da727cc6766d3c740b4e632af8f4cac",
+          "status": "local-file"
+        },
+        {
+          "alt": "train_position04.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両配置_files/BCD6CEBEC7DBC3D6_747261696E5F706F736974696F6E30342E6A7067_SOJZ",
+          "sha256": "09f320dd2b0d64ea692edecafda45ca04a9f27a7d3e8522d94f506ffc2be1352",
+          "status": "local-file"
+        },
+        {
+          "alt": "group.jpg",
+          "path": "tmp/online-manual/FreeTrain - 車両配置_files/BCD6CEBEC7DBC3D6_67726F75702E6A7067_SOJZ",
+          "sha256": "0447a33dbb9308bb8e8eb41a9645c35b55fb99229881a0c0fc94d8fe0346d126",
+          "status": "local-file"
+        }
+      ]
+    },
+    {
+      "title": "開発チーム",
+      "path": "tmp/online-manual/FreeTrain - 開発チーム.html",
+      "sha256": "3013070c816ccbebf1d68998d1f4f300d6a8f07b4907b9bab33ec4bc45d6e2b0",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%B3%AB%C8%AF%A5%C1%A1%BC%A5%E0",
+      "captureTimestamp": "20130118070808",
+      "archiveUrl": "https://web.archive.org/web/20130118070808/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%B3%AB%C8%AF%A5%C1%A1%BC%A5%E0",
+      "lastModified": "Tue, 26 May 2009 07:42:00 PDT",
+      "bodyTextSha256": "31b4b5a2742066873e36039b40f02ba16eb4fee1ec82e839ea98530d7c6b7be4",
+      "id": "ONLINE-P15",
+      "missingImagePlaceholders": 0,
+      "images": []
+    },
+    {
+      "title": "駅工事",
+      "path": "tmp/online-manual/FreeTrain - 駅工事.html",
+      "sha256": "9489e695bca3eb74c31bd86737e374ef8609d3df28d13b853d6f1adc37566157",
+      "encoding": "EUC-JP",
+      "originalUrl": "http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%B1%D8%B9%A9%BB%F6",
+      "captureTimestamp": "20130118070651",
+      "archiveUrl": "https://web.archive.org/web/20130118070651/http://www.kohsuke.org/freetrain/wiki/pukiwiki.php?%B1%D8%B9%A9%BB%F6",
+      "lastModified": "Tue, 29 Jan 2008 18:45:37 PST",
+      "bodyTextSha256": "abc8eecb2038ace228e642530f60e3e65903a35f28bdf1286b89112380cab85d",
+      "id": "ONLINE-P16",
+      "missingImagePlaceholders": 9,
+      "images": []
+    }
+  ],
+  "sourceChecks": [
+    {
+      "path": "core/controllers/terrain/MountainController.cs",
+      "sha256": "7056cdaf849e3c170e50880a14b2ec9150e633e8041b0839da406068ca14157f",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/terrain/MountainVoxel.cs",
+      "sha256": "5704efaffe45d374a73af50ca0bb9219bd7f1c3ceb9117dee5ab5cc0bdf4bf28",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "e078557026555210818a2899b88ead0d328863884e7623d9c9a220b09069f021",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/controllers/rail/TrainPlacementController.cs",
+      "sha256": "03b88361e47e7edd0298dafd1dd85d183557c2f958a820de5e63ed39a2999239",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/controllers/rail/StationPropertyDialog.cs",
+      "sha256": "6eaf4e422a1034cc1a4544ef8409f925d401ba04914fe861bc053cf48625067a",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/rail/TrainItem.cs",
+      "sha256": "86d6bce710b6ff818aa93005d12b44b887cf104d7b83bac0c304ef12789c322e",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/rail/TrainGroup.cs",
+      "sha256": "0f6191c069771b7a59d6aeea1ab9d5bebac58f9273d201160b99cc4141a071ef",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+      "sha256": "bd0732f24d72504d4233e840988cd57544926c594f1f1de832d812104d668b98",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/world/rail/YardRailRoad.cs",
+      "sha256": "546b84e58b51c6f7c495e883aba59546432b1ddebed1634db6458974956e05d1",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/contributions/others/NewGameContribution.cs",
+      "sha256": "33d49fca3afafebbb78719570e11e45e060a919d415921144270814d60f34ed7",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainOnlyNewGameContribution.cs",
+      "sha256": "f8a52c20bf1f8faed2e39bcd7df843f7edc4e476f27d06241ad8b89cf84f93fd",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "core/contributions/road/StandardRoadContribution.cs",
+      "sha256": "a1267185f6aed2eb3b8d704bdcbd2c14a45b988d86504c5dfa8a6dac01527cca",
+      "status": "current-bytes-match-pinned-source"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sha256": "0a1f879977c21fe081860eeb5e8960e7de6019865ab6c2da03686dd717355c14",
+      "status": "current-bytes-match-pinned-source"
+    }
+  ],
+  "knownMissingChapters": [
+    "手動運転ダイヤグラム",
+    "A列車で行こう式ダイヤグラム",
+    "プレイガイド/初級"
+  ],
+  "boundaries": [
+    "Capture timestamp, page Last-modified and sidebar RecentChanges are separate evidence.",
+    "Local archive includes 2004, 2008, 2009 and 2010 page edits; it is not a uniform 2008 edition.",
+    "Word download date differs between original download listing and archived wiki index; same archive identity is not established.",
+    "Missing screenshot placeholders and absent linked chapters are retained gaps; no remote pages fetched.",
+    "All archive scripts, analytics, wiki navigation and support links are data only, not application assets or instructions."
+  ]
+}
