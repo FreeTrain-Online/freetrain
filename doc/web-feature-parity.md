@@ -34,6 +34,8 @@ The maintained inputs and outputs are:
 | [Geometry/clock/train specification](web-parity-geometry.md), [behavior tables](parity/geometry-behavior.json) | P0-04: 45 pinned dependency reviews, level/slope poses, attachment decisions, pass/cut compositions and explicit source differences; runtime acceptance remains open |
 | [scenarios.json](parity/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |
+| [Contract/content/persistence specification](web-parity-persistence.md), [transition decisions](parity/domain-transition.json), [source evidence](parity/domain-transition-review.json) | P0-05: eight-direction/version boundaries, explicit prototype compatibility mode/reference disposition, pack requirements and authority/draft/readiness obligations; implementation remains P1/P2/P10 |
+| [Serializer type/field inventory](parity/serialization-review.json) | P0-05: all 186 candidate files, 359 declarations, 903 fields, nested identities/inheritance, custom serializers/callbacks and explicit exclusions; not a compiler, importer or runtime compatibility verdict |
 
 Run from the repository root with Python 3.9 or newer:
 
@@ -43,6 +45,7 @@ python3 scripts/inventory-parity.py
 python3 scripts/inventory-parity.py --check
 python3 scripts/reconcile-parity-content.py --check
 python3 scripts/parity-rail-gallery.py --check
+python3 scripts/review-parity-persistence.py --check
 python3 -m unittest discover -s scripts/tests -v
 
 # Explicit optional metadata inventory; source directory is configurable.
@@ -96,6 +99,15 @@ source-only/excluded dispositions remain distinct from implementation status.
 All 45 manual requirement families have reciprocal source/workflow links. No
 implemented Undo/Redo binding was found in the reviewed baseline core/lib C# source;
 do not add it to scope without a reachable implementation.
+
+P0-05's separate serializer inventory now expands every candidate file into
+nested declarations/fields and resolved source inheritance, retaining custom
+writer keys/type substitutions, excluded fields, callbacks and unresolved
+framework bases. Its explicit [mapping rules](web-parity-persistence.md) and
+opt-in local ExAV record review supersede the initial file-only state scan.
+They do not establish compiler reachability, exact CLR wire layouts, safe service
+import or historical continuation. The owner sample remains outside base CI and
+runtime assets; default generation does not search local saves or optional packs.
 
 Resource edges distinguish exact/case-folded matches, missing resources and external
 references. Missing DLL paths frequently describe historical build outputs whose

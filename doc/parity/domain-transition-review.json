@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "baseRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "implementationRevision": "4ddb808a337e805f519451bad92b71ec02f67ae2",
+  "normalizedPlanSha256": "86ae192ac6ffc4eaf4e081acc4db3436aa252cc0271dffcec824e7e8cfeaae51",
+  "status": "design-input; no runtime migration or compatibility mode implemented",
+  "implementationSourceReviews": [
+    {
+      "path": "src/FreeTrain.Simulation/Definitions.cs",
+      "sha256": "af61e49d66bbff6a0fd6997502ccbcbfe625a538e13ec3c2f041b6e990a36bd0",
+      "review": "Four-direction ordinals, eight prototype shapes, fixed definitions and Park-Miller random stream"
+    },
+    {
+      "path": "src/FreeTrain.Simulation/GridPosition.cs",
+      "sha256": "1e743d471499990d2cb3b0d1229e1825fbada22925082f5bab62b9bd4c657a8f",
+      "review": "Prototype rectangular coordinates"
+    },
+    {
+      "path": "src/FreeTrain.Simulation/SimulationClock.cs",
+      "sha256": "1a3c2de883cf19440da689548bc6a5a9de75d6d3e1b7379a232d45235a227d94",
+      "review": "Prototype DateTime/tick origin and semantic move events"
+    },
+    {
+      "path": "src/FreeTrain.Simulation/World.cs",
+      "sha256": "38134d6ecc835aae875943e47def0bf823eab1b7a8e844def67e3eda538130b1",
+      "review": "Prototype track/car/station state and validation"
+    },
+    {
+      "path": "src/FreeTrain.Content/ReferenceScenario.cs",
+      "sha256": "9dd9715c9fce6d69e3339a8861381c82350f4194ead47ecec12841a5d74b4e38",
+      "review": "reference-v1 identities, geometry, content and initial state"
+    },
+    {
+      "path": "src/FreeTrain.Contracts/WireContracts.cs",
+      "sha256": "ea601fe9fe15fcf54b43ea43fa4ca7c8a44a678f2e163e32a900625126ca4d5b",
+      "review": "Protocol DTOs, roles/epochs/revisions, leases, exact Int64 JSON"
+    },
+    {
+      "path": "src/FreeTrain.Persistence/SaveDocument.cs",
+      "sha256": "acdaa2f8f3ea96c7c07788b2c4766de493fab9289ec38d89a89a14809d8b01a1",
+      "review": "Save 1 triple, strict decode/restore, 1 MiB and entity/event validation"
+    },
+    {
+      "path": "src/FreeTrain.Persistence/SaveStorage.cs",
+      "sha256": "8eee7f015c2a61351674a05a15d4cf1defb6ef33ebd7a4145788b7b92f74273b",
+      "review": "Atomic writes and single writer; path allowlist"
+    },
+    {
+      "path": "src/FreeTrain.Session/SessionHost.cs",
+      "sha256": "fb30f08c57af3c2f1c70c7f26ce08fd4ea78ab4d645f90dbb1472513eeaa667c",
+      "review": "Authority, leases, wall-time expiry and validated candidate replacement"
+    },
+    {
+      "path": "src/FreeTrain.Server/NetworkEndpoints.cs",
+      "sha256": "2d9c29334f457d3e8aed2e0e6e86713801f3c9162ffed002c0b1eb86a80d1b81",
+      "review": "Owner/epoch save-transfer gates and protocol/content compatibility"
+    },
+    {
+      "path": "src/FreeTrain.Server/NetworkSession.cs",
+      "sha256": "59e71bcf2bc4b3c36ae96a3b55aca845b094bb615b40a62e2e978884491149ce",
+      "review": "Participant lifecycle, coherent snapshots/deltas and bounded transfer"
+    },
+    {
+      "path": "prototype/protocol/schema.json",
+      "sha256": "6339db004eddd808a46cd00652ea641b61e2f09efaf93d3179cf444cf4058998",
+      "review": "Canonical schema: wire strings, exact counters and independent versions"
+    },
+    {
+      "path": "prototype/protocol/fixtures/save-reference.json",
+      "sha256": "9db587ef9588a28cbbce547e92392f288a0f0e0e714ed6420e4a7c7ee47fe3a0",
+      "review": "Prototype save fixture"
+    },
+    {
+      "path": "web/src/lib/protocol.ts",
+      "sha256": "eed76643a0f8a57254d8ace099e928c544c4f18ee911acf6ae63f6b6f0983fb3",
+      "review": "Generated wire/save types; regenerate atomically with schema"
+    },
+    {
+      "path": "web/src/lib/session-client.ts",
+      "sha256": "0ce309d444ac55ea19c209ddc0d464ef1a7d1903a4a40b039a0152057a3dffbb",
+      "review": "Read-store revision/coherence and command boundary"
+    },
+    {
+      "path": "web/src/lib/remote-session-client.ts",
+      "sha256": "e2ea5d9994cbe3e5a82cd1b0eb7ee4e09568925dd2c0bb9fddc9be28adf1c0b5",
+      "review": "Transport generation, epoch, receipts/reconnect and no automatic replay"
+    },
+    {
+      "path": "web/src/lib/shell-model.ts",
+      "sha256": "24a73903098af1f7956f09bd54cc8b0fcdaf824d63ae4817a0c77b72d98da366",
+      "review": "Picked IDs, authority/controller lease and request generations"
+    },
+    {
+      "path": "web/src/lib/save-transfer.ts",
+      "sha256": "49bedaf4e613f0be83c742fb8bdcb96dc8990a0569e0d94a75374352817655c9",
+      "review": "1 MiB upload, captured expected epoch and failure codes"
+    },
+    {
+      "path": "web/src/lib/demo-scene.ts",
+      "sha256": "87dfd74f05fb0852ac80ebb699cef818af4a1d6cc72b82000c5680b8cff91f03",
+      "review": "Separate prototype demo identities/data"
+    },
+    {
+      "path": "web/src/App.svelte",
+      "sha256": "f91127c07346a3d95b380091711c6811a82919a5a1fca576f46b2c799c7e237b",
+      "review": "Draft/conflict/load confirmation, demo/live gates and selected stable IDs"
+    },
+    {
+      "path": "web/src/MapView.svelte",
+      "sha256": "48723683e529bc0d1ce66b7b03c8a6add3c25b51677b59246448a6fbff4120f5",
+      "review": "Persistent canvas/camera, decoded assets/first draw and draft generations"
+    },
+    {
+      "path": "web/src/lib/map-renderer.ts",
+      "sha256": "90acde5f83ba01f139efa3ab0f08dcac36d848c17109f3e0e256e22428a43862",
+      "review": "Prototype geometry/assets and renderer content boundary"
+    },
+    {
+      "path": "tests/FreeTrain.Tests/PersistenceTests.cs",
+      "sha256": "4d2793efc2c0cd960aa10a0813ef4d8e89d617033c57ebec8e6cf20a0c0dd244",
+      "review": "Current strict Save 1 round-trip/rejection/continuation obligations"
+    },
+    {
+      "path": "tests/FreeTrain.Tests/MultiplayerTests.cs",
+      "sha256": "eb3bf9adbe70059eba1851fd7783148e2f9419d1260abaf91210616235016352",
+      "review": "Authority, lease and epoch regression obligations"
+    }
+  ],
+  "decisionIds": [
+    "TRANS-001",
+    "TRANS-002",
+    "TRANS-003",
+    "TRANS-004",
+    "TRANS-005",
+    "TRANS-006",
+    "TRANS-007",
+    "TRANS-008",
+    "TRANS-009",
+    "TRANS-010",
+    "TRANS-011",
+    "TRANS-012"
+  ],
+  "differenceIds": [
+    "SAVE-001",
+    "SAVE-002",
+    "SAVE-003",
+    "SAVE-004",
+    "SAVE-005",
+    "SAVE-006"
+  ],
+  "acceptanceIds": [
+    "MIG-01",
+    "MIG-02",
+    "MIG-03",
+    "MIG-04",
+    "MIG-05",
+    "MIG-06",
+    "MIG-07",
+    "MIG-08"
+  ]
+}

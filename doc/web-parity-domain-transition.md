@@ -1,7 +1,11 @@
 # Parity domain transition design
 
 Status: P0 source specification and P1 design input, with P0-04 detail in the
-[geometry/clock/train review](web-parity-geometry.md). No runtime contract or
+[geometry/clock/train review](web-parity-geometry.md) and the completed P0-05
+[contract/content/persistence specification](web-parity-persistence.md).
+The latter supplies the detailed version/compatibility decisions and serializer
+inventory; its explicit rules supersede the initial persistence draft below.
+No runtime contract or
 save format changes are implemented by this document. Sources are pinned by the
 [coverage inventory](web-feature-parity.md); examples are source-derived, without
 an original Windows runtime comparison.
@@ -75,7 +79,9 @@ documented algorithm/state contract during P1.
 ## Contract and persistence boundaries
 
 Keep current protocol **2**, content `prototype-content-1`, and JSON Save **1**
-unchanged while P0 discovery proceeds. The proposed next protocol must explicitly
+unchanged while P0 discovery proceeds. P0-05 reserves protocol 3, base content
+`legacy-base-1` and parity Save 2, with explicit ruleset/pack metadata; these
+versions are not implemented. The proposed next protocol must explicitly
 carry eight-direction indices; sparse terrain/ownership and bounded world
 dimensions; rail pattern/topology and slope/support metadata; stable per-car
 identity/state; contribution/recipe IDs; and semantic scheduled actions. Add
@@ -122,9 +128,12 @@ reference implementations, and Train recreates its nonserialized state calculato
 after loading. Preserve reference identity and required callback outcomes as
 explicit data transformations, not object activation.
 
-The generated ledger lists 186 lexical serialization candidate files; nested
-types, fields, assembly names/version aliases, lists and cycles still require a
-complete mapping. The initial search found no historical examples. On 19 October
+The initial ledger lists 186 lexical serialization candidate files. P0-05's
+[expanded inventory](parity/serialization-review.json) now records 359 declarations,
+903 fields, source inheritance/field slots, custom writer/resolver families,
+callback outcomes and target phases for all of them. Compiler reachability,
+exact runtime wire signatures/aliases and implemented conversion remain P10
+gates. The initial search found no historical examples. On 19 October
 2026 the owner supplied `tmp/000-001-sample-save/`: a 23,584,925-byte `.ftgd`
 whose recovered title is `データ０１`, SHA-256
 `35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313`.
@@ -132,11 +141,14 @@ Its readme requires FreeTrainExAV 0.4 and several external plugin sets; classify
 it as an ExAV reference, with canonical-baseline compatibility unverified. The
 [text recovery report](../tmp/parity-p0/p0-04-save-recovery.md) records CP932-to-UTF-8
 readme recovery, filename evidence, unchanged save bytes and selected intact UTF-8
-string records. The `UC` wrapper and NRBF headers at offsets 2/167 match the
-two-root design at the envelope level only. No full graph or runtime load was
-verified, and no `.ftgt` example has been supplied. Controlled fixtures must be
-labeled as such; historical compatibility stays open until graph mappings and
-continuation are reviewed.
+string records. Subsequent P0-05 [offline record inspection](../tmp/parity-p0/p0-05-sample-review.json)
+walks both streams at offsets 2/167 to exact EOF, retaining 33,367 total nodes and
+resolving record references without activation. Serialized size is 1500×1090×45;
+150 contribution references include 12 exact base IDs and 138 unresolved
+pack/alias requirements. Three field-name differences establish a separate ExAV
+profile, not canonical compatibility. No runtime load/continuation or `.ftgt`
+example is established. Controlled fixtures must be labeled as such; historical
+compatibility stays open until domain mappings and continuation are reviewed.
 Build a bounded record/type reader outside the live world, with allowlisted
 mappings, limits and precise unsupported-type diagnostics. Never call the old
 deserializers inside the web service. Missing content, malformed input or an

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "status": "P0-05 design; no runtime version change",
+  "baseRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "implementationRevision": "4ddb808a337e805f519451bad92b71ec02f67ae2",
+  "current": {"protocol": 2, "content": "prototype-content-1", "save": 1, "scenario": "reference-v1"},
+  "reservedDesign": {"protocol": 3, "baseContent": "legacy-base-1", "save": 2, "parityRuleset": "legacy-main-1f755ca-v1", "compatibilityRuleset": "prototype-reference-1"},
+  "directions": [
+    {"index": 0, "name": "north", "offset": [0, -1]},
+    {"index": 1, "name": "northEast", "offset": [1, -1]},
+    {"index": 2, "name": "east", "offset": [1, 0]},
+    {"index": 3, "name": "southEast", "offset": [1, 1]},
+    {"index": 4, "name": "south", "offset": [0, 1]},
+    {"index": 5, "name": "southWest", "offset": [-1, 1]},
+    {"index": 6, "name": "west", "offset": [-1, 0]},
+    {"index": 7, "name": "northWest", "offset": [-1, -1]}
+  ],
+  "prototypeDirections": [
+    {"oldOrdinal": 0, "oldWireName": "north", "newIndex": 0},
+    {"oldOrdinal": 1, "oldWireName": "east", "newIndex": 2},
+    {"oldOrdinal": 2, "oldWireName": "south", "newIndex": 4},
+    {"oldOrdinal": 3, "oldWireName": "west", "newIndex": 6}
+  ],
+  "prototypeTracks": [
+    {"shape": "eastWest", "ports": [2, 6], "sourcePatternId": 4, "disposition": "port correspondence only; world conversion not authorized"},
+    {"shape": "northSouth", "ports": [0, 4], "sourcePatternId": 10, "disposition": "port correspondence only; world conversion not authorized"},
+    {"shape": "curveSE", "ports": [4, 2], "sourcePatternId": null, "disposition": "cardinal right-angle bend; retain prototype rules"},
+    {"shape": "curveSW", "ports": [4, 6], "sourcePatternId": null, "disposition": "cardinal right-angle bend; retain prototype rules"},
+    {"shape": "curveNE", "ports": [0, 2], "sourcePatternId": null, "disposition": "cardinal right-angle bend; retain prototype rules"},
+    {"shape": "curveNW", "ports": [0, 6], "sourcePatternId": null, "disposition": "cardinal right-angle bend; retain prototype rules"},
+    {"shape": "junctionE", "ports": [0, 4, 2], "sourcePatternId": null, "disposition": "no source junction has these ports; retain prototype rules"},
+    {"shape": "buffer", "ports": [6], "sourcePatternId": null, "disposition": "no single-port RailPattern; retain prototype rules"}
+  ],
+  "decisions": [
+    {"id": "TRANS-001", "phase": "P1", "decision": "Change protocol, content and save versions independently and atomically deploy matching generated schema, C# DTOs, validators, read stores, renderer and service. Protocol 3 rejects old protocol peers, retaining the existing HTTP 426 mismatch behavior."},
+    {"id": "TRANS-002", "phase": "P1/P2", "decision": "Wire/save parity headings are integer source indices 0..7. Compatibility adapters translate cardinal strings explicitly. Never cast old ordinal values. Rail data is tagged by ruleset and preserves source pattern IDs and slope/support/entity relationships."},
+    {"id": "TRANS-003", "phase": "P1/P3", "decision": "World dimensions are source H,V,Z with terrain keyed by H,V and voxel storage by H,V,Z; entity/car locations retain source X,Y,Z. Do not equate prototype rectangular XY bounds with source world bounds. Preserve signed coordinates and source conversion arithmetic."},
+    {"id": "TRANS-004", "phase": "P1/P10", "decision": "Parity time uses absolute source integer minutes; ordered semantic events carry dueMinute, order, kind, subjectId and versioned payload. Keep prototype DateTime/tick origin and Park-Miller state within compatibility mode. Random algorithm/stream selection and width/overflow decisions must be frozen and tested in P1 before emitting save 2."},
+    {"id": "TRANS-005", "phase": "P1/P5/P6", "decision": "Save/snapshot per-car IDs, contribution/recipe references and tagged inside/outside/unplaced states; train state, group/controller identity, stop/move counters and passenger source state are independent. Outside state includes last location, heading and return countdown. Reverse changes order/headings without replacing car identities."},
+    {"id": "TRANS-006", "phase": "P1/P10", "decision": "Dispatch the exact validated Save 1/prototype-content-1/reference-v1 triple to prototype-reference-1. Retain its rules, original input and Save 1 writer. Show compatibility mode in join/read/UI and do not count it as parity. No automatic topology or economy/time/random conversion; unsupported triples fail before replacement."},
+    {"id": "TRANS-007", "phase": "P1/P2/P9", "decision": "Keep reference-v1 and the current demo as labeled prototype regression/compatibility fixtures. Create a separate source-valid parity scenario and later a parity demo; never overwrite the reference ID, change its entity/contribution identities or use its loop as a legacy fixture."},
+    {"id": "TRANS-008", "phase": "P1/P2/P10", "decision": "Join/snapshot/save 2 identify ruleset and required packs by id, version and canonical catalog hash; contributions/recipes are pack-qualified. Server startup selects packs. Compare client readiness and save requirements against the same pack set, reject collisions and missing/mismatched definitions before replacement, and exclude local paths/binary assets."},
+    {"id": "TRANS-009", "phase": "P1/P3-P10", "decision": "Preserve roles, Owner-only replace/save gates, participant-scoped receipts, epoch/revision conflicts, timed leases and wall-time held-input expiry. New placement previews are read-only; commit revalidates revision, occupancy, cost and authority. Loading clears leases/inputs and advances epoch only after full candidate validation."},
+    {"id": "TRANS-010", "phase": "P1/P2/P9", "decision": "Keep picked entity ID plus epoch/revision, request/draft generations, demo/live isolation and coherent snapshot/required-asset/first-draw readiness. Same-epoch reconnect preserves camera; world/content/mode change resets stale targets. Late acknowledgements cannot clear a newer draft. Uncertain commands are never replayed."},
+    {"id": "TRANS-011", "phase": "P0/P10", "decision": "Historical readers retain record identity, array rank/lower bounds, ordered duplicate fields and container cycles. Custom contribution/picture/population/singleton serializers override default fields. Recognized callbacks/delegates become explicit semantic state/rebuilt relationships, never CLR activation."},
+    {"id": "TRANS-012", "phase": "P10", "decision": "Historical baseline and ExAV are distinct source-format profiles. Match assembly/type/field signatures explicitly; do not inherit the old binder's assembly-name ignoring behavior. ExAV samples are evidence, not proof of baseline compatibility. Unknown reachable types or contribution IDs fail with precise diagnostics and preserve world/input."}
+  ],
+  "differences": [
+    {"id": "SAVE-001", "phase": "P10", "finding": "Legacy loading consumes two arbitrary leading bytes unless they are BZ.", "disposition": "Recognize wrappers explicitly and reject ambiguous headers."},
+    {"id": "SAVE-002", "phase": "P10", "finding": "Legacy binder ignores assemblyName and activates available CLR types.", "disposition": "Use reviewed inert assembly/type/field mappings; no activation."},
+    {"id": "SAVE-003", "phase": "P10", "finding": "Owner sample is ExAV-era with three extra field names and external contribution requirements.", "disposition": "Keep a separate unverified source-format profile; require explicit version/pack mappings."},
+    {"id": "SAVE-004", "phase": "P1/P10", "finding": "Static random streams and nonserialized callbacks can leave legacy continuation underdetermined.", "disposition": "Declare reconstruction boundaries and require original-runtime evidence; do not promise stochastic continuation from absent state."},
+    {"id": "SAVE-005", "phase": "P1", "finding": "Six prototype shapes lack direct legacy-pattern correspondence; time/economy/random also differ.", "disposition": "Retain labeled prototype compatibility rules; implement dispatch before replacing the model."},
+    {"id": "SAVE-006", "phase": "P9/P10", "finding": "Historical saves include world view options/BGM roots, while browser presentation and playback include local state.", "disposition": "Retain catalog BGM selection and source art behavior; adapt local presentation/playback explicitly without silently expanding persisted preferences."}
+  ],
+  "acceptance": [
+    {"id": "MIG-01", "phase": "P1", "expected": "Every heading 0..7 and rotation/vector case matches geometry tables. Old east/west strings map to 2/6; old ordinal 1 never becomes NE by cast. Out-of-range headings and old protocol peers are rejected."},
+    {"id": "MIG-02", "phase": "P1", "expected": "Save 1 reference and edited-rail saves load and continue under prototype rules, retain IDs/cash/tick/random/event order and export Save 1. All six noncorresponding track shapes remain labeled prototype geometry. A forged content/scenario/version triple leaves the running world unchanged."},
+    {"id": "MIG-03", "phase": "P1/P10", "expected": "Parity state round-trips all tagged car states, train/group/controller links, absolute time, exact Int64 strings, semantic action payloads and equal-time order. No connection secrets, leases, held input or browser UI state are durable."},
+    {"id": "MIG-04", "phase": "P1/P9", "expected": "Observer cannot mutate; Operator cannot replace world. Lease ownership/expiry and stale revision/epoch checks survive mode changes; late acks, disconnects and load cannot retarget/submit drafts or replay uncertain commands."},
+    {"id": "MIG-05", "phase": "P2/P9", "expected": "Delayed old-generation assets/snapshots/first draw cannot reveal a new live world or authorize demo commands/saves. Same-epoch reconnect preserves canvas/camera/decodes; changed content waits for matching assets. Mode change requires Owner confirmation and epoch replacement for all peers."},
+    {"id": "MIG-06", "phase": "P2/P10", "expected": "Base saves need no extra pack. Missing/mismatched pack, contribution collision or recipe mismatch names requirements and preserves original input/current world, supporting retry after installation and restart."},
+    {"id": "MIG-07", "phase": "P10", "expected": "Two-root UC/BZ binary and SOAP fixtures validate bounded structure, rank/lower bounds, forward/shared/cyclic references, field ordinals and known delegate mappings; corrupt/oversized/unknown data cannot replace the running world."},
+    {"id": "MIG-08", "phase": "P10", "expected": "Obtain a canonical-runtime historical binary and SOAP save, plus reviewed ExAV mapping if supported; compare imported graph and before/after scheduled continuation with original runtime. Controlled fixtures and offline record inspection alone do not satisfy this gate."}
+  ]
+}
