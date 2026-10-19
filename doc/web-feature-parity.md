@@ -4,6 +4,8 @@ The canonical game/content baseline is legacy `main` at the commit pinned in
 [baseline.json](parity/baseline.json). The implementation comparison is pinned
 separately at `a48e8fa` (including Credits and License). Inventory is P0 work;
 it does not establish legacy behavior parity or close native/device UX acceptance.
+P0-03's action review separately pins the delivered registry at `8e4c6d4`;
+the earlier content/path comparison retains its original revision.
 
 The owner's original Windows manual, **chapters 2–4**, and the
 [later online-manual comparison](web-parity-online-manual.md) are the player-facing
@@ -24,7 +26,8 @@ The maintained inputs and outputs are:
 | [content-rules.json](parity/content-rules.json) | Maintained decoding/crop/anchor/effect/state rules and explicit difference dispositions |
 | [Base content reconciliation](web-parity-content.md) | P0-02 accounting, source findings and boundaries of the evidence |
 | [extra-suite-ledger.json](parity/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
-| [action-map.json](parity/action-map.json) | Reviewed main-window operation mappings and remaining differences |
+| [action-map.json](parity/action-map.json), [action-review.json](parity/action-review.json) | Complete P0-03 source mappings and generated control/contribution/manual evidence; missing gameplay stays explicit |
+| [Player action reconciliation](web-parity-actions.md) | Workflow destinations, dynamic registration routes, configuration/gesture review and source-only dispositions |
 | [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
 | [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
 | [geometry.json](parity/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
@@ -47,6 +50,7 @@ python3 scripts/inventory-parity.py --extra-root /path/to/freetrain_plugins --ch
 
 # Temporary review outputs, never release assets.
 python3 scripts/inventory-parity.py --report tmp/parity-p0/inventory.md
+python3 scripts/inventory-parity.py --action-report tmp/parity-p0/action-reconciliation.md
 python3 scripts/reconcile-parity-content.py --report tmp/parity-p0/content-reconciliation.md
 python3 scripts/parity-rail-gallery.py --gallery tmp/parity-p0/rail-gallery
 ```
@@ -83,11 +87,14 @@ neither scanner is a complete importer.
 
 Source and UI scanning is lexical. It finds class/interface/enum names, serialization
 markers, selected event subscriptions and `Command` registrations. It is not a C#
-semantic parser, complete nested-type graph or proof of reachability. Designer
-bindings, dynamic menu/toolbar construction, manifest-driven actions and plugin
-forms must be reconciled before the complete action-map gate closes. No implemented
-Undo/Redo binding was found in the reviewed baseline core/lib C# source; do not
-add it to scope without a reachable implementation.
+semantic parser, complete nested-type graph or proof of reachability. P0-03's
+[separate source reconciliation](web-parity-actions.md) now reviews all 248 bindings,
+985 additional surfaces across 180 source reviews, and dynamic declaration/generated
+routes. Explicit reviewed reachability, missing destinations, adaptations and
+source-only/excluded dispositions remain distinct from implementation status.
+All 45 manual requirement families have reciprocal source/workflow links. No
+implemented Undo/Redo binding was found in the reviewed baseline core/lib C# source;
+do not add it to scope without a reachable implementation.
 
 Resource edges distinguish exact/case-folded matches, missing resources and external
 references. Missing DLL paths frequently describe historical build outputs whose

@@ -37,16 +37,20 @@ apply. A manual omission does not exclude source-implemented bank, stocks,
 development, other plugins or the owner's optional content suite.
 
 The `MAN-*` IDs below are stable requirement references for P0-03's action map
-and later acceptance fixtures. All are **documented expectations**, pending full
-source/UI reconciliation and implementation verification. They are not new runtime
-operation IDs. Record each eventual source binding, web destination, scope/difference
-disposition and fixture evidence in the coverage work; do not count this reference
-as completion of P0-03 or P0-06.
+and later acceptance fixtures. All are **documented expectations**; the [P0-03 source/action reconciliation](web-parity-actions.md)
+now links all 45 toolbar/menu/window/online families to source and destinations/dispositions.
+Implementation verification and acceptance fixtures remain pending. They are not
+new runtime operation IDs. Source bindings, destinations and scope/difference
+dispositions now live in the action map; add fixture evidence as implementation
+proceeds. This manual reference alone is not P0-03 or P0-06 completion evidence.
 
 ## Post-manual release history
 
 Reviewed 19 October 2026: [post-cutoff releases](https://www.kohsuke.org/freetrain/downloads.html).
 All 26 release groups follow; individual-fix reconciliation remains open.
+P0-03 now assigns each group's UI/action consequences to reviewed source workflows
+in `action-map.json#releaseActionLinks`. Numeric/fix/save regression verification
+remains P0-04/P0-05/P0-06 work.
 
 | 2003 date | Change areas |
 | --- | --- |
@@ -241,6 +245,7 @@ source-derived scenarios keep their existing evidence classification.
 | MAN-A21 | Load with missing, incompatible or updated content definitions; diagnose required identities before replacing the world, preserve the file/current state, then recover with the matching content set. Help explains why removing a required plugin breaks saves; historical stock-plugin deletion advice is not the browser recovery path. | P0-05/P9/P10 |
 | MAN-A22 | Review chapter-tabbed Help against both manual versions and resolved source differences, including group inheritance, terrain modifiers, station no-stop diagnosis, appearance modes and pack compatibility. Verify localized narrow/desktop chapter/section navigation and replace absent wiki chapters/images with reviewed browser content. | P9-HELP/P11 |
 
-Keep P0-03 (complete action/configuration/dynamic registration map), P0-04
-(numeric/source boundaries) and P0-06 (independent executable cases) open.
+P0-03 source/action/configuration mapping is complete; see the
+[action reconciliation](web-parity-actions.md). Keep P0-04 (numeric/source
+boundaries) and P0-06 (independent executable cases) open.
 Native/device UX acceptance and gameplay handoff remain separate prerequisites.

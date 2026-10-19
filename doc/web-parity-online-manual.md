@@ -109,3 +109,9 @@ expanded credits independently of the source/asset license ledger.
 Verification for this review is document/source inspection and hash/link accounting.
 Application tests, browser journeys, deployment, performance and native/device
 acceptance were not run; no P0–P11 gate is closed by this comparison.
+
+Subsequent P0-03 source reconciliation is now recorded in [the action review](web-parity-actions.md):
+all `MAN-O*` requirements have source/workflow links. Group inheritance, road
+membership, the static balance-sheet template and gesture differences have explicit
+dispositions. This updates the action-map status, not this comparison's runtime
+evidence or later acceptance gates.

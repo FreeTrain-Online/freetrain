@@ -7,6 +7,7 @@ in ledgers are repository-relative; generated metadata contains no asset binarie
 import argparse
 import collections
 import hashlib
+import importlib.util
 import json
 import posixpath
 import re
@@ -18,6 +19,9 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / 'doc/parity/baseline.json'
 OUT = ROOT / 'doc/parity'
+ACTION_SPEC = importlib.util.spec_from_file_location('parity_actions', Path(__file__).with_name('parity_actions.py'))
+action_review = importlib.util.module_from_spec(ACTION_SPEC)
+ACTION_SPEC.loader.exec_module(action_review)
 XML_LIMIT = 4 * 1024 * 1024
 EXPANDED_LIMIT = 32 * 1024 * 1024
 ASSETS = {'.bmp', '.png', '.wav', '.mid', '.midi', '.ico', '.cur', '.gif', '.jpg', '.jpeg'}
@@ -469,9 +473,12 @@ def main():
     parser.add_argument('--check', action='store_true', help='Check maintained inventories without rewriting them')
     parser.add_argument('--extra-root', type=Path, help='Explicit separate repository root (parent of PluginsExtra)')
     parser.add_argument('--report', type=Path, help='Temporary human-readable report path under tmp/')
+    parser.add_argument('--action-report', type=Path, help='Temporary P0-03 workflow/difference report under tmp/')
     args = parser.parse_args()
     if args.report and not args.report.resolve().is_relative_to((ROOT / 'tmp').resolve()):
         parser.error('--report must be under this checkout\'s tmp/')
+    if args.action_report and not args.action_report.resolve().is_relative_to((ROOT / 'tmp').resolve()):
+        parser.error('--action-report must be under this checkout\'s tmp/')
     config = json.loads(CONFIG.read_text())
     tree = Tree(ROOT, config['baseRevision'])
     current = collections.defaultdict(list)
@@ -490,17 +497,18 @@ def main():
                        for root in sorted({p.split('/')[0] for p in tree.entries})],
                 historicalSaveExamples=[p for p in sorted(tree.entries) if p.lower().endswith(('.ftgd', '.ftgt'))])
     reviews = json.loads((OUT / 'action-map.json').read_text())
+    implementation_revision = git(ROOT, 'rev-parse', reviews['implementationRevision'] + '^{commit}').decode().strip()
+    if implementation_revision != reviews['implementationRevision']:
+        raise ValueError('Action review implementation revision must be a full pinned commit')
+    for path, expected_hash in reviews['implementationSources'].items():
+        if digest(git(ROOT, 'show', implementation_revision + ':' + path)) != expected_hash:
+            raise ValueError('Action review implementation source hash drift: ' + path)
     for action in actions:
         defaults = common(action['coverageId'], action['baselinePath'], action['handler'])
         for key, value in defaults.items():
             action.setdefault(key, value)
-        action['behavior'] = 'Legacy event/command binding; follow handler and caller before parity acceptance.'
-        control = action['control'].removeprefix('this.')
-        if action['baselinePath'] == 'core/framework/MainWindow.cs' and control in reviews['mainWindow']:
-            review = reviews['mainWindow'][control]
-            action.update(modernOperations=review['operations'], differences=[review['difference']],
-                          modernDestinations=['web/src/lib/game-ui.ts#registry.' + operation for operation in review['operations']],
-                          mappingStatus=review['status'], evidence=['core/framework/MainWindow.cs', 'web/src/lib/game-ui.ts'])
+    ui_review = action_review.apply_reviews(tree, base, reviews, strip_comments, digest,
+                                          (ROOT / 'web/src/lib/game-ui.ts').read_text())
     extra = None
     if args.extra_root:
         extra_tree = Tree(args.extra_root, config['extraRevision'])
@@ -513,10 +521,13 @@ def main():
                      binaries=[dict(path=p, sha256=digest(extra_tree.read(p)), status='binary-only behavior review pending')
                                for p in sorted(extra_tree.entries) if p.lower().endswith('.dll')])
     write(OUT / 'base-ledger.json', dump_ledger(base), args.check)
+    write(OUT / 'action-review.json', dump_ledger(ui_review), args.check)
     if extra:
         write(OUT / 'extra-suite-ledger.json', dump_ledger(extra), args.check)
     if args.report:
         write(args.report, report(base, extra))
+    if args.action_report:
+        write(args.action_report, action_review.report(ui_review, reviews['workflows']))
     print(f'Base: {base["counts"]["manifests"]} manifests, {base["counts"]["declared"]} declarations, {base["counts"]["generated"]} children, {len(source)} source files, {len(actions)} UI bindings, {len(serializers)} serializer candidates')
     if extra:
         print(f'Extra: {extra["counts"]["manifests"]} manifests, {extra["counts"]["declared"]} declarations, {extra["counts"]["generated"]} children')
