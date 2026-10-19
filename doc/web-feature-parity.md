@@ -31,6 +31,7 @@ The maintained inputs and outputs are:
 | [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
 | [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
 | [geometry.json](parity/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
+| [Geometry/clock/train specification](web-parity-geometry.md), [behavior tables](parity/geometry-behavior.json) | P0-04: 45 pinned dependency reviews, level/slope poses, attachment decisions, pass/cut compositions and explicit source differences; runtime acceptance remains open |
 | [scenarios.json](parity/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |
 

@@ -19,6 +19,7 @@ def load(name, path):
 HERE = Path(__file__).resolve().parent
 inventory = load('parity_inventory', HERE / 'inventory-parity.py')
 images = load('content_bitmap', HERE / 'import-web-content.py')
+semantics = load('parity_geometry', HERE / 'parity_geometry.py')
 
 
 def extract(tree):
@@ -61,8 +62,10 @@ def extract(tree):
                                'core/views/QuarterViewDrawer.cs')},
                 directions=directions, patterns=records,
                 trafficDrawOrder=['road.before', 'accessory.before', 'rail.before', 'car', 'rail.after', 'accessory.after'],
-                openCases=['Full route/attachment/detachment legality fixtures', 'Train pose/pixel offsets and height-cut scenes',
-                           'Original-runtime visual comparison', 'Slope support placement legality and half-voxel picking'])
+                sourceSpecification='doc/web-parity-geometry.md',
+                behaviorTable='doc/parity/geometry-behavior.json',
+                openCases=['Original-runtime visual comparison', 'Runtime route/attachment/slope/support acceptance',
+                           'Runtime train composition, terrain/water height cuts and picking acceptance'])
 
 
 def gallery(tree, geometry, out):
@@ -89,7 +92,7 @@ def gallery(tree, geometry, out):
         cards.append(f'<article><h2>{record["family"]} {record["id"]}</h2><div>{"".join(paths)}</div><pre>{text}</pre></article>')
     (out / 'index.html').write_text('''<!doctype html><meta charset="utf-8"><title>Source rail patterns</title>
 <style>body{font:14px system-ui;background:#ddd;margin:24px}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:12px}article{background:white;padding:12px;min-width:0}h2{font-size:16px}article div{display:flex;gap:8px}figure{margin:0}img{image-rendering:pixelated;background:#aac}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}</style>
-<h1>Source rail patterns</h1><p>All 60 RailPattern IDs and 16 support slices. Explicit day/night crops; upper-left color key. Invisible 1×1 slope samples are retained. Source-derived review aid; this does not establish live train composition or original-runtime fidelity.</p><main>''' + ''.join(cards) + '</main>')
+<h1>Source rail patterns</h1><p>All 60 RailPattern IDs and 16 support slices. Explicit day/night crops; upper-left color key. Invisible 1×1 slope samples are retained. <a href="compositions.html">Train poses, bridge/tunnel passes and ramp/cut compositions</a>. Source-derived review aid; this does not establish live train composition or original-runtime fidelity.</p><main>''' + ''.join(cards) + '</main>')
 
 
 def main():
@@ -102,9 +105,13 @@ def main():
     config = json.loads(inventory.CONFIG.read_text())
     tree = inventory.Tree(inventory.ROOT, config['baseRevision'])
     geometry = extract(tree)
+    behavior = semantics.extract(tree, geometry, inventory.digest)
     inventory.write(inventory.OUT / 'geometry.json', inventory.dump(geometry), args.check)
+    inventory.write(inventory.OUT / 'geometry-behavior.json', inventory.dump_ledger(behavior), args.check)
     if args.gallery:
         gallery(tree, geometry, args.gallery)
+        count = semantics.gallery(tree, geometry, behavior, args.gallery, images)
+        print(f'Rendered {count} source-derived composition scenes')
     print(f'Extracted {len(geometry["directions"])} directions and {len(geometry["patterns"])} rail/support records')
 
 

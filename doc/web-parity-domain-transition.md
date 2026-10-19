@@ -1,6 +1,7 @@
 # Parity domain transition design
 
-Status: initial P0 source specification and P1 design input. No runtime contract or
+Status: P0 source specification and P1 design input, with P0-04 detail in the
+[geometry/clock/train review](web-parity-geometry.md). No runtime contract or
 save format changes are implemented by this document. Sources are pinned by the
 [coverage inventory](web-feature-parity.md); examples are source-derived, without
 an original Windows runtime comparison.
@@ -23,14 +24,16 @@ anchors, climb/level/zdiff/zangle and visibility. Use authored `RailRoads_n.bmp`
 for explicit night art. Neither visibility nor sprite size establishes occupancy.
 
 `SingleRailRoad.guide` tries current heading, then left, then right. Its attach
-logic distinguishes already-connected track from open endpoints. Removal,
-junction switching and slope legality need additional fixtures before replacement.
+logic distinguishes already-connected track from open endpoints. The P0-04 review
+now specifies removal, junction switching, route/slope legality and source quirks;
+192 normal-attachment decisions are in the maintained behavior tables. Runtime
+fixtures must verify these expectations before replacement.
 The voxel draw order in `TrafficVoxel.draw` is road before, accessory before,
 rail before, car, rail after, accessory after. Bridge/tunnel foregrounds therefore
 cover cars after their backgrounds. `QuarterViewDrawer` traverses view rows,
 columns and height, with terrain/water and cut-plane decisions; a global sprite
-sort is not an equivalent specification. Live before/after train and cutaway
-gallery scenes remain outstanding.
+sort is not an equivalent specification. P0-04 adds source-derived offline
+train/pass/ramp/cut compositions; live full-world/runtime comparison remains open.
 
 `Time` uses integer minutes, 60 per hour, 1,440 per day and 365 days per year.
 Start is April 1 at 08:00: `(31+28+31)*1440+480 = 130080` internal minutes.
@@ -54,10 +57,11 @@ Unplaced/Moving/StoppingAtStation/StoppingAtSignal/EmergencyStopping. The enum's
 existence is not proof each label is reached: positive stop spans currently set
 StoppingAtStation, including a TODO about identifying the actual stop cause.
 The car chain shifts old states from head toward tail. Reversal flips each car's
-heading and swaps the car array; preserve car/contribution identity and reversed
-art. A border exit starts an outside countdown of 100; nonzero counters decrement
+heading using `guide().opposite` and swaps the car array; preserve car/contribution
+identity and reversed art. A border exit starts an outside countdown of 100; nonzero counters decrement
 per movement callback, zero attempts return, and a failed return resets to 10.
-Full station/controller/blocking/return calculations remain P0/P5 review work.
+The P0-04 review specifies central blocking/return and yard/default-controller
+boundaries; full timetable/station subsystem acceptance remains P5/P6 work.
 
 `Train.move` charges `length*20 + passenger/20` on the first move and every 16
 moves thereafter; passenger division is integer division. Fares are
@@ -120,9 +124,19 @@ explicit data transformations, not object activation.
 
 The generated ledger lists 186 lexical serialization candidate files; nested
 types, fields, assembly names/version aliases, lists and cycles still require a
-complete mapping. No `.ftgd`/`.ftgt` examples were found in the pinned baseline or
-current workspace search. Controlled fixtures must be labeled as such; historical
-compatibility stays open until representative files and continuation are reviewed.
+complete mapping. The initial search found no historical examples. On 19 October
+2026 the owner supplied `tmp/000-001-sample-save/`: a 23,584,925-byte `.ftgd`
+whose recovered title is `データ０１`, SHA-256
+`35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313`.
+Its readme requires FreeTrainExAV 0.4 and several external plugin sets; classify
+it as an ExAV reference, with canonical-baseline compatibility unverified. The
+[text recovery report](../tmp/parity-p0/p0-04-save-recovery.md) records CP932-to-UTF-8
+readme recovery, filename evidence, unchanged save bytes and selected intact UTF-8
+string records. The `UC` wrapper and NRBF headers at offsets 2/167 match the
+two-root design at the envelope level only. No full graph or runtime load was
+verified, and no `.ftgt` example has been supplied. Controlled fixtures must be
+labeled as such; historical compatibility stays open until graph mappings and
+continuation are reviewed.
 Build a bounded record/type reader outside the live world, with allowlisted
 mappings, limits and precise unsupported-type diagnostics. Never call the old
 deserializers inside the web service. Missing content, malformed input or an

@@ -1659,10 +1659,11 @@
     "rail.after",
     "accessory.after"
   ],
+  "sourceSpecification": "doc/web-parity-geometry.md",
+  "behaviorTable": "doc/parity/geometry-behavior.json",
   "openCases": [
-    "Full route/attachment/detachment legality fixtures",
-    "Train pose/pixel offsets and height-cut scenes",
     "Original-runtime visual comparison",
-    "Slope support placement legality and half-voxel picking"
+    "Runtime route/attachment/slope/support acceptance",
+    "Runtime train composition, terrain/water height cuts and picking acceptance"
   ]
 }
