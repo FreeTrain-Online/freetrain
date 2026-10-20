@@ -1,0 +1,2048 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "engineVersion": "2.1.1.12",
+  "reviewedOn": "2026-10-21",
+  "status": "P0-06 source-scenario specification complete; fixture implementation/execution pending",
+  "evidenceKind": "pinned Git source derivation; no ExAV runtime capture, modern parity run or capacity result",
+  "sourceReviews": [
+    {
+      "path": "core/contributions/population/HourlyPopulation.cs",
+      "sha256": "51fff24281a0ae9224763e3b7771eb2c8bd29a9f3bfa03e2661e9c2af9c5d635",
+      "symbols": [
+        "currentTime.isWeekend"
+      ]
+    },
+    {
+      "path": "core/contributions/population/HourlyWeeklyPopulation.cs",
+      "sha256": "33b8ea03f9867cd256d9d1fb2a49eb303abbae6ddeb030ed5e7af381318f2caa",
+      "symbols": [
+        "currentTime.isHoliday"
+      ]
+    },
+    {
+      "path": "core/contributions/population/MultiplierPopulation.cs",
+      "sha256": "795c6582ad80141dc8cd6a61c3ba9365a8550967c78beb0674b32b027c145b09",
+      "symbols": [
+        "calcPopulation"
+      ]
+    },
+    {
+      "path": "core/contributions/population/ResidentialPopulation.cs",
+      "sha256": "b009d7ac70a63b394dde2ed37a704bcfce9a48654adbe5bf85b7c726cf8e286c",
+      "symbols": [
+        "weekdayDistribution"
+      ]
+    },
+    {
+      "path": "core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "symbols": [
+        "id - rhs.id"
+      ]
+    },
+    {
+      "path": "core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "symbols": [
+        "public ClockHandler registerRepeated",
+        "public void tick()"
+      ]
+    },
+    {
+      "path": "core/world/Direction.cs",
+      "sha256": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "symbols": [
+        "opposite"
+      ]
+    },
+    {
+      "path": "core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "symbols": [
+        "getDistanceTo",
+        "distanceTo"
+      ]
+    },
+    {
+      "path": "core/world/Time.cs",
+      "sha256": "35895f60a90ddd3bc99b42294b6b1caa57be60a8e1aab5ca024d237d2c8fcdf7",
+      "symbols": [
+        "public bool isHoliday",
+        "daysOfMonth",
+        "public bool isVacation"
+      ]
+    },
+    {
+      "path": "core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33",
+      "symbols": [
+        "untilTomorrow"
+      ]
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "symbols": [
+        "public override void draw"
+      ]
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "symbols": [
+        "public void toHV",
+        "public Location toXYZ",
+        "public bool isBorderOfWorld"
+      ]
+    },
+    {
+      "path": "core/world/accounting/AccountManager.cs",
+      "sha256": "402292886da4fa0464dc28639aef67ff98c578519e74e978e7ee49d2e2a6936a",
+      "symbols": [
+        "public void spend"
+      ]
+    },
+    {
+      "path": "core/world/accounting/Debt.cs",
+      "sha256": "26c31685b8fe994012ba77c1c5fd04fbc4a97f9535fa30747108a8e8175e04b4",
+      "symbols": [
+        "public virtual void onDue()"
+      ]
+    },
+    {
+      "path": "core/world/accounting/TransactionHistory.cs",
+      "sha256": "c713d556e5ba0faf54862698a7a11fe3efdf52629b805dc3a34fec7b4025ebdb",
+      "symbols": [
+        "public void onClock()"
+      ]
+    },
+    {
+      "path": "core/world/development/CommercialStructurePlan.cs",
+      "sha256": "8e669132658765aa5269f8856d489b630fe7136b14a0d3f56aaa347683be9023",
+      "symbols": [
+        "public override void build()"
+      ]
+    },
+    {
+      "path": "core/world/development/DevelopmentAlgorithm.cs",
+      "sha256": "98c38e82547c344f74dedaee54f6c822333e669c8c04e381eba532751b9e8cd1",
+      "symbols": [
+        "public void Update()",
+        "case Phase.SelectStruct1",
+        "protected bool IsReplaceable",
+        "case Phase.FitPlace"
+      ]
+    },
+    {
+      "path": "core/world/development/ULV.cs",
+      "sha256": "3e9d640c712ad62fe20e0a8ebc6efc28d1d577d09e4603e80ab76e49bc4d935e",
+      "symbols": [
+        "public static ULV create"
+      ]
+    },
+    {
+      "path": "core/world/rail/Platform.cs",
+      "sha256": "cfb81d8b8af5835ce8fecf9fda4001216edac31de3bf8c646e87fdd3aab98b57",
+      "symbols": [
+        "180000"
+      ]
+    },
+    {
+      "path": "core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "symbols": [
+        "angle"
+      ]
+    },
+    {
+      "path": "core/world/rail/SingleRailRoad.cs",
+      "sha256": "999171a080e821cd9d6aa3a839171eb898440acb1fca18783877c79d562a5937",
+      "symbols": [
+        "comupteRoute",
+        "calcRailRoadCost"
+      ]
+    },
+    {
+      "path": "core/world/rail/SpecialStationListenerImpl.cs",
+      "sha256": "e5824ac4ea95d201e6e20ee55c58245b9d4e60434f7905ff303232e4e67e698d",
+      "symbols": [
+        "attachToStation",
+        "public int getPopulation"
+      ]
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "symbols": [
+        "LowSpeedLimit"
+      ]
+    },
+    {
+      "path": "core/world/rail/Station.cs",
+      "sha256": "583af2748ca5ebdbaa1a850010d5bea09cad7f74eef353177385a96ef172c1fb",
+      "symbols": [
+        "public void loadPassengers( Train tr )",
+        "clockHandlerHourJust",
+        "clockHandlerDayJust",
+        "repeatHandler1just",
+        "public bool withinReach",
+        "public bool withinSpecialReach",
+        "public void DailyReset()",
+        "public double LastWeekPerDay"
+      ]
+    },
+    {
+      "path": "core/world/rail/StationListenerImpl.cs",
+      "sha256": "1228d711afe0395d5f3916d7122788b90e41dcbb89f5eeafa7fc305a1994f124",
+      "symbols": [
+        "attachToStation",
+        "public int getPopulation"
+      ]
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "symbols": [
+        "public void reverse()",
+        "reverseCarState",
+        "public void clockHandler()",
+        "private class IsBlocked",
+        "private void registerTimer(Location loc)",
+        "public object onOutside( CarState.Outside state )",
+        "OUTSIDE_COUNTER_INITIAL_VALUE",
+        "time.totalMinutes == -999",
+        "public int passengerSeatedCapacity",
+        "public int passengerPackingCapacity",
+        "public int unloadPassengers()",
+        "moveCount++",
+        "public void sell()"
+      ]
+    },
+    {
+      "path": "core/world/rail/YardRailRoad.cs",
+      "sha256": "7db261e01be0c6c0dd0e7bbb95ed970161378f28c0963482e718e8eb8c15a798",
+      "symbols": [
+        "ts.totalMinutes == -999"
+      ]
+    },
+    {
+      "path": "core/world/structs/ConstructionSite.cs",
+      "sha256": "01ca68c326b92a636a2993df016b549afec2a2bb4ee1b1a36d2cb50f1a88fab8",
+      "symbols": [
+        "private bool canProceed()",
+        "private void registerClockHandler()"
+      ]
+    },
+    {
+      "path": "core/world/structs/VarHeightBuilding.cs",
+      "sha256": "e87d03b9b270f6958e671482fc8da16eb8741a31f7ee156252335a1cb90995d5",
+      "symbols": [
+        "new MultiplierPopulation"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+      "sha256": "21c5726fe206d1159420791ff40c5e1757b3a68a5483e48a7133c6521e96ad52",
+      "symbols": [
+        "GetDepositInterest",
+        "public void recalcTotalAssets()"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/DebtEx.cs",
+      "sha256": "2e0b9168a7dfae516436b294f792a1ef05e81044b777af467896ca97f4c6069b",
+      "symbols": [
+        "public override void onDue()"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/FixedDeposit.cs",
+      "sha256": "c7ccc1fc3441e1e4dc1bb33315a5e9434caf123a27db9a9c595d5685bd719001",
+      "symbols": [
+        "public override void onDue()"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/FloatingAssets.cs",
+      "sha256": "7026b5dd9f1e449d5154d67183d9084785c58693bf46355e69e557cc71e6997f",
+      "symbols": [
+        "public virtual long interestDue"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/StockCompanyModule.cs",
+      "sha256": "aebfeecde9f9a7a3e4562d3d050a04a1233daf0f3a54dcf60c071edfd757eadd",
+      "symbols": [
+        "calcCommition"
+      ]
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/StockData.cs",
+      "sha256": "c9b34f2db79885f04195528eec79b310e1250c00fdf09df3715dba260e00f9d4",
+      "symbols": [
+        "internal bool buy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+      "sha256": "0534a69e85abd3b6032b6c6d7979c8065dd1f2ad5c7760a1e581af3aeb858d04",
+      "symbols": [
+        "MIN_STOP_TIME",
+        "checkTurn"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+      "sha256": "8221bb823a5b476658268817feadaa3ab6af805e6ce895764db58993bb1ebb46",
+      "symbols": [
+        "readDiagram"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+      "sha256": "5b519ce58cc02b6007ad300e514c73bc97cd3ec8aca9771db98f5e94f21d6332",
+      "symbols": [
+        "OnceADayStationHandler"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "EXAV-SCN-001",
+      "title": "Eight directions and illegal cardinal corner",
+      "phase": "P1/P4",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/Direction.cs",
+          "symbol": "opposite"
+        },
+        {
+          "path": "core/world/rail/RailPattern.cs",
+          "symbol": "angle"
+        }
+      ],
+      "input": {
+        "direction": 0,
+        "cornerDirections": [
+          0,
+          2
+        ]
+      },
+      "expected": {
+        "offset": [
+          0,
+          -1
+        ],
+        "left": 7,
+        "right": 1,
+        "opposite": 4,
+        "cornerNormalPattern": false
+      },
+      "derivation": "Direction indices wrap modulo eight; normal connection requires angle >= 3. Consume all 60 pattern IDs and support cases from exav-geometry.json as the expanded matrix.",
+      "historicalDisposition": "GEO-001/RAIL-001 rederived; expanded P0-04 matrices retain their own IDs"
+    },
+    {
+      "id": "EXAV-SCN-002",
+      "title": "Route preview and construction booking",
+      "phase": "P4/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/SingleRailRoad.cs",
+          "symbol": "comupteRoute"
+        }
+      ],
+      "input": {
+        "from": [
+          8,
+          8,
+          2
+        ],
+        "to": [
+          10,
+          8,
+          2
+        ],
+        "groundLevel": 2,
+        "waterLevel": 0,
+        "occupancy": "empty"
+      },
+      "expected": {
+        "cells": [
+          [
+            8,
+            8,
+            2
+          ],
+          [
+            9,
+            8,
+            2
+          ],
+          [
+            10,
+            8,
+            2
+          ]
+        ],
+        "previewCost": 18000000,
+        "previewCashDelta": 0,
+        "commitRailServiceExpenditure": 18000000
+      },
+      "derivation": "Inclusive three-cell route, each 6000000*(height+1)=6000000; preview only calculates, build charges after placement. Revalidate in server commit; stale/conflicting commit must preserve world under the modern authority contract."
+    },
+    {
+      "id": "EXAV-SCN-003",
+      "title": "Raised, buried and underwater route cost boundaries",
+      "phase": "P4/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/SingleRailRoad.cs",
+          "symbol": "calcRailRoadCost"
+        }
+      ],
+      "input": {
+        "groundLevel": 4,
+        "waterLevel": 0,
+        "emptyCellZ": [
+          4,
+          6,
+          3,
+          2
+        ],
+        "submergedCase": {
+          "ground": 0,
+          "water": 2,
+          "z": 1
+        }
+      },
+      "expected": {
+        "costs": [
+          6000000,
+          18000000,
+          12000000,
+          24000000
+        ],
+        "submergedCost": 0,
+        "submergedRoute": null
+      },
+      "derivation": "height=z-ground; multiplier=height+1 above ground, -2*height below. Zero rejects the route; test cost lookup separately from support/hole placement legality."
+    },
+    {
+      "id": "EXAV-SCN-004",
+      "title": "Unchanged reversal identities",
+      "phase": "P5",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public void reverse()"
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "reverseCarState"
+        }
+      ],
+      "input": {
+        "cars": [
+          {
+            "id": "A",
+            "direction": 2,
+            "location": [
+              5,
+              5,
+              2
+            ]
+          },
+          {
+            "id": "B",
+            "direction": 2,
+            "location": [
+              4,
+              5,
+              2
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "cars": [
+          {
+            "id": "B",
+            "direction": 6,
+            "location": [
+              4,
+              5,
+              2
+            ]
+          },
+          {
+            "id": "A",
+            "direction": 6,
+            "location": [
+              5,
+              5,
+              2
+            ]
+          }
+        ],
+        "isReversedToggled": true
+      },
+      "derivation": "Reverse each car, then swap sequence. No spatial movement or new entity IDs; historical MOVE-001 rederived against ExAV."
+    },
+    {
+      "id": "EXAV-SCN-005",
+      "title": "Blocked head and dead end branches",
+      "phase": "P5",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public void clockHandler()"
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "private class IsBlocked"
+        }
+      ],
+      "input": {
+        "caseA": "valid connected next voxel occupied by another car",
+        "caseB": "no forward connection, free connected reverse path"
+      },
+      "expected": {
+        "caseA": {
+          "state": "EmergencyStopping",
+          "moves": 0,
+          "moveCountDelta": 0,
+          "positionsChanged": false
+        },
+        "caseB": {
+          "reversals": 1,
+          "moves": 1,
+          "state": "Moving"
+        }
+      },
+      "derivation": "Occupancy blocks movement. Null forward state reverses before retry. Include separate both-directions-disconnected diagnostic: source dereferences next.isOutside after next stays null; do not claim a successful source continuation.",
+      "difference": "EXAV-SCN-D03"
+    },
+    {
+      "id": "EXAV-SCN-006",
+      "title": "Speed restrictions use previous inside location",
+      "phase": "P4/P5",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "private void registerTimer(Location loc)"
+        },
+        {
+          "path": "core/world/rail/SpeedLimit.cs",
+          "symbol": "LowSpeedLimit"
+        }
+      ],
+      "input": {
+        "baseMinutesPerVoxel": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "categories": [
+          "none",
+          "fast",
+          "medium",
+          "low",
+          "all-overlap"
+        ]
+      },
+      "expected": {
+        "minutesByCategory": {
+          "none": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "fast": [
+            2,
+            2,
+            3,
+            4,
+            2
+          ],
+          "medium": [
+            3,
+            3,
+            3,
+            4,
+            3
+          ],
+          "low": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "all-overlap": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        "initialPlacementUsesBaseSpeed": true
+      },
+      "derivation": "Low > medium > fast precedence; clockHandler uses ins captured before movement. Outside and first returning step use base speed. Do not apply a destination restriction one cell early. Base speed 5 is not protected by medium/fast checks, so a restriction can accelerate it; preserve this source result separately from any approved normalization."
+    },
+    {
+      "id": "EXAV-SCN-007",
+      "title": "Outside passenger exchange and failed return",
+      "phase": "P5/P6",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public object onOutside( CarState.Outside state )"
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "OUTSIDE_COUNTER_INITIAL_VALUE"
+        }
+      ],
+      "input": {
+        "currentOutsideCounter": 51,
+        "normalCapacity": 160,
+        "forwardingCases": [
+          false,
+          true
+        ],
+        "returnConnections": "none"
+      },
+      "expected": {
+        "nextCounter": 50,
+        "oldPassengersUnloaded": true,
+        "reloadedPassengers": [
+          100,
+          0
+        ],
+        "forwardingFlagClearedAtExchange": false,
+        "failedReturnAtCounterZeroNextCounter": 10
+      },
+      "derivation": "move sees next counter 50 before moving cars; reload min(100,normal capacity) only for ordinary service. Counter zero searches five return candidates; failure retries with counter 10. Return geometry matrix remains in P0-04 specification."
+    },
+    {
+      "id": "EXAV-SCN-008",
+      "title": "Timetable dwell, forwarding and ordinary reversal",
+      "phase": "P5/P6",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+          "symbol": "OnceADayStationHandler"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+          "symbol": "MIN_STOP_TIME"
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "time.totalMinutes == -999"
+        },
+        {
+          "path": "core/world/rail/YardRailRoad.cs",
+          "symbol": "ts.totalMinutes == -999"
+        }
+      ],
+      "input": {
+        "dailyDepartureMinute": 480,
+        "arrivalMinutes": [
+          479,
+          480,
+          481
+        ],
+        "advancedFirstCall": "no pass override",
+        "laterActionMinutes": [
+          0,
+          -1,
+          -999,
+          -1000
+        ]
+      },
+      "expected": {
+        "dailyWaitMinutes": [
+          1,
+          1440,
+          1439
+        ],
+        "advancedMinimumStop": 10,
+        "laterActions": [
+          "go",
+          "reverse",
+          "forwarding",
+          "reverse-and-forwarding"
+        ],
+        "boardingForLaterActions": [
+          true,
+          true,
+          false,
+          false
+        ],
+        "departureBellForLaterActions": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "derivation": "Once-a-day departure uses strictly greater comparison. Yard unloads on initial stopping call; nonpositive later calls board except forwarding sentinels. Train clears forwarding before evaluating each nonpositive inside result."
+    },
+    {
+      "id": "EXAV-SCN-009",
+      "title": "TURNING and diagram data are separate acceptance paths",
+      "phase": "P5/P9/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+          "symbol": "checkTurn"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+          "symbol": "readDiagram"
+        }
+      ],
+      "input": {
+        "turningMatrix": [
+          "one-car diagonal",
+          "multi-car straight cardinal both orientations",
+          "curve/junction fallback"
+        ],
+        "diagramExistingRules": [
+          "A"
+        ],
+        "diagramReadRules": [
+          "B",
+          "C"
+        ]
+      },
+      "expected": {
+        "readRuleOrder": [
+          "A",
+          "B",
+          "C"
+        ],
+        "diagramRoot": "AdvancedStationHandler.RuleCollection",
+        "diagramEncoding": "BinaryFormatter",
+        "soapReadActive": false,
+        "turningMustPreserveCarIds": true,
+        "turningMustAvoidDuplicateTrainTimer": true
+      },
+      "derivation": "Read appends rules; SOAP formatter is commented. checkTurn temporarily reverses and may re-place individual cars rather than remove/place the train. Compare head/tail identities and orientations through each early return; do not substitute plain Train.reverse for TURNING.",
+      "acceptance": "Expand spatial pose vectors with P0-04 tables before implementing TURNING; .ftdd uses bounded inert conversion with malformed/type/size failures preserving input and current rules."
+    },
+    {
+      "id": "EXAV-SCN-010",
+      "title": "Packed and seated capacities",
+      "phase": "P5/P6",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public int passengerSeatedCapacity"
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public int passengerPackingCapacity"
+        }
+      ],
+      "input": {
+        "carCapacity": 100,
+        "seatedCases": [
+          40,
+          -1,
+          101,
+          0
+        ]
+      },
+      "expected": {
+        "seatedCapacity": [
+          40,
+          100,
+          100,
+          0
+        ],
+        "packedCapacity": [
+          160,
+          100,
+          100,
+          200
+        ]
+      },
+      "derivation": "Invalid per-car seating falls back to normal capacity. Packed = seated + 2*(normal-seated), after summing the composition; never double all seats."
+    },
+    {
+      "id": "EXAV-SCN-011",
+      "title": "Amenity boarding and hourly recovery trace",
+      "phase": "P6/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public void loadPassengers( Train tr )"
+        },
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "clockHandlerHourJust"
+        }
+      ],
+      "input": {
+        "population": 1000,
+        "gone": 0,
+        "packedCapacity": 160,
+        "amenity": 100,
+        "sequence": [
+          "depart A",
+          "depart B",
+          "hourly decay",
+          "depart C"
+        ]
+      },
+      "expected": {
+        "boarded": [
+          160,
+          160,
+          160
+        ],
+        "goneAfterEachEvent": [
+          160,
+          320,
+          256,
+          416
+        ],
+        "waitingAfterEachEvent": [
+          840,
+          680,
+          744,
+          584
+        ],
+        "exportToday": 480,
+        "trainEvents": 3,
+        "loadedAccumulatorBeforeDecay": 320,
+        "loadedAccumulatorAfterDecay": 319
+      },
+      "derivation": "Each departure takes min(160,int(available*100*0.01f*0.3f)); gone decays by 0.8f and loaded accumulator by 0.9996f, each truncated. Historical 30%-of-normal-capacity expectation is superseded."
+    },
+    {
+      "id": "EXAV-SCN-012",
+      "title": "Amenity cap and zero population",
+      "phase": "P6",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public void loadPassengers( Train tr )"
+        }
+      ],
+      "input": {
+        "available": 1000,
+        "packedCapacity": 400,
+        "amenities": [
+          0,
+          50,
+          100,
+          200
+        ],
+        "zeroPopulationInitialPassenger": 0
+      },
+      "expected": {
+        "boarded": [
+          0,
+          150,
+          300,
+          400
+        ],
+        "zeroPopulation": {
+          "trainEventsAdded": 1,
+          "loadPassengersCalled": false,
+          "passengers": 0
+        }
+      },
+      "derivation": "Apply amenity to available population before packed cap. Zero total returns after recording train event; do not divide by zero or invent boarding."
+    },
+    {
+      "id": "EXAV-SCN-013",
+      "title": "Fare uses integer 3D distance and configured fare",
+      "phase": "P6/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public int unloadPassengers()"
+        },
+        {
+          "path": "core/world/Location.cs",
+          "symbol": "getDistanceTo"
+        }
+      ],
+      "input": {
+        "passengers": 100,
+        "fare": 500,
+        "source": [
+          2,
+          2,
+          0
+        ],
+        "destination": [
+          5,
+          6,
+          0
+        ],
+        "repeatUnload": true
+      },
+      "expected": {
+        "distance": 5,
+        "revenue": 500000,
+        "passengersAfter": 0,
+        "sourceCleared": true,
+        "secondUnloadRevenue": 0
+      },
+      "derivation": "floor(sqrt(3^2+4^2))*100*500*2 = 500000. This replaces historical PASS-001 revenue 50. Additional distance vectors (0,0,3)->3 and (1,1,0)->1 distinguish z and truncation; source multiplies ints before earn(long), so overflow boundaries need an explicit P1/P8 decision.",
+      "difference": "EXAV-SCN-D04"
+    },
+    {
+      "id": "EXAV-SCN-014",
+      "title": "Movement cost cadence and integrated cash trace",
+      "phase": "P5/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "moveCount++"
+        },
+        {
+          "path": "core/world/accounting/AccountManager.cs",
+          "symbol": "public void spend"
+        }
+      ],
+      "input": {
+        "cars": 3,
+        "passengers": 39,
+        "initialMoveCount": 0,
+        "moves": 17,
+        "cashBefore": 10000000,
+        "fareReceiptAfterMoves": 500000
+      },
+      "expected": {
+        "chargedMoveNumbers": [
+          1,
+          5,
+          9,
+          13,
+          17
+        ],
+        "costPerCharge": 122000,
+        "operatingExpenditure": 610000,
+        "sales": 500000,
+        "balance": -110000,
+        "cashAfter": 9890000
+      },
+      "derivation": "(3*20 + floor(39/20))*2000 = 122000; five charges. Only successful move calls increment moveCount. Historical ECON-001 used a 16-move interval and cost 61; both are superseded. Adequate cash avoids bankruptcy-option side effects."
+    },
+    {
+      "id": "EXAV-SCN-015",
+      "title": "Station and platform upkeep at midnight",
+      "phase": "P6/P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "clockHandlerDayJust"
+        },
+        {
+          "path": "core/world/rail/Platform.cs",
+          "symbol": "180000"
+        }
+      ],
+      "input": {
+        "stationOperationCost": 600000,
+        "platformLength": 4
+      },
+      "expected": {
+        "dailyStationExpenditure": 600000,
+        "dailyPlatformExpenditure": 720000,
+        "totalDailyRailExpenditure": 1320000
+      },
+      "derivation": "Station uses its contribution operationCost; platform costs 180000*length. Include these charges separately from passenger/movement trace, with callback registration order pinned at midnight."
+    },
+    {
+      "id": "EXAV-SCN-016",
+      "title": "Station timers align, migrate and cancel",
+      "phase": "P1/P6/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "repeatHandler1just"
+        },
+        {
+          "path": "core/world/Clock.cs",
+          "symbol": "public ClockHandler registerRepeated"
+        },
+        {
+          "path": "core/world/TimeLength.cs",
+          "symbol": "untilTomorrow"
+        }
+      ],
+      "input": {
+        "creationTime": "08:37",
+        "removeTime": "09:01",
+        "oldTimerProfile": "pre-2.1.1.4"
+      },
+      "expected": {
+        "firstHourly": "09:00",
+        "firstDaily": "next 00:00",
+        "futureCallbacksAfterRemoval": 0,
+        "legacyFirstHourlyMigration": "decay once, register aligned timers, unregister old handles, clear old fields"
+      },
+      "derivation": "First hourly delay is 60-minutes=23 and daily delay is untilTomorrow. Cancel returned wrapper handles. Use controlled callbacks for legacy migration and compare uninterrupted vs save/reload across 08:59, 23:59 and removal."
+    },
+    {
+      "id": "EXAV-SCN-017",
+      "title": "Integer station reach and creation order",
+      "phase": "P6/P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public bool withinReach"
+        },
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public bool withinSpecialReach"
+        },
+        {
+          "path": "core/world/rail/StationListenerImpl.cs",
+          "symbol": "attachToStation"
+        },
+        {
+          "path": "core/world/rail/SpecialStationListenerImpl.cs",
+          "symbol": "attachToStation"
+        },
+        {
+          "path": "core/world/Location.cs",
+          "symbol": "distanceTo"
+        }
+      ],
+      "input": {
+        "ordinaryOffsets": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            10,
+            0,
+            0
+          ],
+          [
+            9,
+            4,
+            0
+          ],
+          [
+            9,
+            5,
+            0
+          ]
+        ],
+        "specialOffsets": [
+          [
+            19,
+            0,
+            0
+          ],
+          [
+            20,
+            0,
+            0
+          ]
+        ],
+        "order": "listener attaches after stations exist"
+      },
+      "expected": {
+        "ordinaryReach": [
+          true,
+          false,
+          true,
+          false
+        ],
+        "specialReach": [
+          true,
+          false
+        ]
+      },
+      "derivation": "Integer Euclidean distance <10/<20; floor(sqrt(97))=9 but floor(sqrt(106))=10. Creating station after listener instead advertises an inclusive axis-aligned cube without a reach filter in advertiseStation; boundary/corner membership can differ.",
+      "difference": "EXAV-SCN-D01"
+    },
+    {
+      "id": "EXAV-SCN-018",
+      "title": "Catchment population scales by footprint and height",
+      "phase": "P6/P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/StationListenerImpl.cs",
+          "symbol": "public int getPopulation"
+        },
+        {
+          "path": "core/world/rail/SpecialStationListenerImpl.cs",
+          "symbol": "public int getPopulation"
+        },
+        {
+          "path": "core/world/structs/VarHeightBuilding.cs",
+          "symbol": "new MultiplierPopulation"
+        },
+        {
+          "path": "core/contributions/population/MultiplierPopulation.cs",
+          "symbol": "calcPopulation"
+        }
+      ],
+      "input": {
+        "patternPopulation": 1000,
+        "attachedStations": 2,
+        "landValue": 3,
+        "xySize": 6,
+        "zSizeCases": [
+          3,
+          4,
+          8
+        ]
+      },
+      "expected": {
+        "ordinaryPopulationPerStation": [
+          28,
+          28,
+          46
+        ],
+        "specialPopulationPerStation": 500,
+        "heightMultiplierExample": {
+          "patternBase": 125,
+          "height": 8,
+          "rawPopulation": 1000
+        }
+      },
+      "derivation": "p=1000/2=500; ordinary cap is v*XYSize*max(1,ZSize/4)+10. Special listener returns divided population directly. Variable-height structures first multiply pattern population by height. Use consistent one-to-four attachments; fifth-station replacement requires separate bug disposition.",
+      "difference": "EXAV-SCN-D01"
+    },
+    {
+      "id": "EXAV-SCN-019",
+      "title": "Residential weekday, weekend and holiday schedules",
+      "phase": "P6/P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/contributions/population/ResidentialPopulation.cs",
+          "symbol": "weekdayDistribution"
+        },
+        {
+          "path": "core/contributions/population/HourlyPopulation.cs",
+          "symbol": "currentTime.isWeekend"
+        },
+        {
+          "path": "core/contributions/population/HourlyWeeklyPopulation.cs",
+          "symbol": "currentTime.isHoliday"
+        },
+        {
+          "path": "core/world/Time.cs",
+          "symbol": "public bool isHoliday"
+        }
+      ],
+      "input": {
+        "base": 125,
+        "hour": 7,
+        "days": [
+          "ordinary weekday",
+          "Saturday",
+          "weekday holiday"
+        ]
+      },
+      "expected": {
+        "residents": 125,
+        "population": [
+          125,
+          62,
+          62
+        ],
+        "entering": [
+          12,
+          12,
+          12
+        ],
+        "weeklyPatternHolidayTable": "Sunday"
+      },
+      "derivation": "Residential rates at 07:00 are 100%/50% and entering 10%; integer divisions truncate. HourlyWeeklyPopulation holiday uses Sunday even on weekdays. Source fixed holidays, not host calendar; no substitute-holiday rule is active."
+    },
+    {
+      "id": "EXAV-SCN-020",
+      "title": "Calendar and construction working hours",
+      "phase": "P1/P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/Time.cs",
+          "symbol": "daysOfMonth"
+        },
+        {
+          "path": "core/world/Time.cs",
+          "symbol": "public bool isVacation"
+        },
+        {
+          "path": "core/world/structs/ConstructionSite.cs",
+          "symbol": "private bool canProceed()"
+        }
+      ],
+      "input": {
+        "absoluteMinuteCases": [
+          0,
+          84960,
+          525600
+        ],
+        "constructionTimes": [
+          "weekday 08:59",
+          "weekday 09:00",
+          "weekday 17:59",
+          "weekday 18:00",
+          "Saturday 10:00",
+          "weekday holiday 10:00"
+        ]
+      },
+      "expected": {
+        "dates": [
+          "year 1 Jan 1 Sunday",
+          "year 1 Mar 1 Wednesday",
+          "year 2 Jan 1 Monday"
+        ],
+        "constructionTimeGate": [
+          false,
+          true,
+          true,
+          false,
+          false,
+          true
+        ]
+      },
+      "derivation": "365-day year, no leap day; 59 days=84960 minutes. Construction rejects weekends and hours outside 9..17 inclusive, but does not test isHoliday. Floor dependencies may still prevent progress."
+    },
+    {
+      "id": "EXAV-SCN-021",
+      "title": "Stable equal-time ordering and cancellation",
+      "phase": "P1/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/Clock.cs",
+          "symbol": "public void tick()"
+        },
+        {
+          "path": "core/util/PriorityQueue.cs",
+          "symbol": "id - rhs.id"
+        }
+      ],
+      "input": {
+        "oneShots": [
+          {
+            "id": "A",
+            "delay": 2
+          },
+          {
+            "id": "B",
+            "delay": 2
+          }
+        ],
+        "repeated": {
+          "id": "R",
+          "first": 3,
+          "interval": 4
+        },
+        "cancelRepeatedAtElapsedMinute": 6
+      },
+      "expected": {
+        "callbacksByMinute": {
+          "1": [],
+          "2": [
+            "A",
+            "B"
+          ],
+          "3": [
+            "R"
+          ],
+          "7": []
+        }
+      },
+      "derivation": "Queue key ties use insertion id. Cancel R using returned wrapper outside its callback. Self-cancellation during callback is not assumed to work because wrapper re-registers afterward. Desktop active-controller pause is an explicit browser adaptation: local panels do not pause shared time."
+    },
+    {
+      "id": "EXAV-SCN-022",
+      "title": "ULV ownership and entity deduplication",
+      "phase": "P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/development/ULV.cs",
+          "symbol": "public static ULV create"
+        }
+      ],
+      "input": {
+        "surface": [
+          2,
+          2,
+          0
+        ],
+        "allCellsOnGround": true,
+        "waterBelowSurface": true,
+        "perCellLandValue": 10,
+        "sameEntityAcrossCellsValue": 50,
+        "ownedVariants": [
+          false,
+          true
+        ]
+      },
+      "expected": {
+        "unowned": {
+          "landValue": 40,
+          "entityValue": 50
+        },
+        "owned": null
+      },
+      "derivation": "Sum all four land values but entity value once; any owned voxel, below-water surface or mismatched ground level rejects. Historical DEV-001 is retained only through this fresh derivation."
+    },
+    {
+      "id": "EXAV-SCN-023",
+      "title": "Growth strength, budget and V2 price window",
+      "phase": "P7",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/development/DevelopmentAlgorithm.cs",
+          "symbol": "public void Update()"
+        },
+        {
+          "path": "core/world/development/DevelopmentAlgorithm.cs",
+          "symbol": "case Phase.SelectStruct1"
+        },
+        {
+          "path": "core/world/development/DevelopmentAlgorithm.cs",
+          "symbol": "protected bool IsReplaceable"
+        }
+      ],
+      "input": {
+        "scoreImported": 100,
+        "scoreExported": 200,
+        "scoreTrains": 7.9,
+        "landValue": 20,
+        "ownedEntity": true
+      },
+      "expected": {
+        "strength": 24,
+        "vie": 7,
+        "priceWindow": [
+          200000,
+          350000
+        ],
+        "ownedReplaceable": false
+      },
+      "derivation": "(100+200*0.1)*0.2=24; truncate trains to 7. min=20, max=max(35,24)=35; multiply both by 10000 for V2. Midnight creates/updates plans, later hours process. ConstructionSite is also protected."
+    },
+    {
+      "id": "EXAV-SCN-024",
+      "title": "Controlled growth and construction completion",
+      "phase": "P7/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/development/DevelopmentAlgorithm.cs",
+          "symbol": "case Phase.FitPlace"
+        },
+        {
+          "path": "core/world/development/CommercialStructurePlan.cs",
+          "symbol": "public override void build()"
+        },
+        {
+          "path": "core/world/structs/ConstructionSite.cs",
+          "symbol": "private void registerClockHandler()"
+        }
+      ],
+      "input": {
+        "world": "flat legal unowned on-ground site; no interfering callbacks",
+        "singleVoxelState": "empty",
+        "controlledDelayDraws": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "controlledGroundBranch": "skip decorative ground branch",
+        "clock": "ordinary weekday 09:00"
+      },
+      "expected": {
+        "callbackMinutes": [
+          "09:40",
+          "10:20",
+          "11:00",
+          "11:40"
+        ],
+        "states": [
+          "bone1",
+          "bone2",
+          "bone3",
+          "walled"
+        ],
+        "completionCount": 1,
+        "siteVoxelsAfterCompletion": 0,
+        "abandonedCompletionCount": 0
+      },
+      "derivation": "Each delay=40+Next(80); choose draw 0 and Next(2)=1 whenever tested. One voxel has no above/below constraints. onFinished removes site before creating structure. SearchPlan selection and all constructor/door draws must be separately recorded by the implementing deterministic adapter; no seeded stable-runtime equivalence is claimed.",
+      "acceptance": "Trace named random draws with bounds and values, phase/cube/price/ownership and callback due times. Save in each phase; compare semantic continuation with recorded random adapter. Stable static Random is unsaved; identical post-save random continuation is a port decision, not a source guarantee."
+    },
+    {
+      "id": "EXAV-SCN-025",
+      "title": "Debt due and report fiscal rollover",
+      "phase": "P8/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/accounting/Debt.cs",
+          "symbol": "public virtual void onDue()"
+        },
+        {
+          "path": "core/world/accounting/TransactionHistory.cs",
+          "symbol": "public void onClock()"
+        }
+      ],
+      "input": {
+        "cash": 10000,
+        "debt": 1500,
+        "debtCount": 1,
+        "recorderBeforeApril1": {
+          "day": 30,
+          "monthCompletedDays": 70,
+          "completedMonths": 900,
+          "dayAgo0": 9,
+          "monthAgo0": 80
+        }
+      },
+      "expected": {
+        "cashAfterDebt": 8500,
+        "debtCount": 0,
+        "recorderAfterApril1": {
+          "day": 0,
+          "month": 0,
+          "year": 0,
+          "yesterday": 30,
+          "lastmonth": 100,
+          "lastyear": 1000,
+          "dayAgo0": 30,
+          "dayAgo1": 9,
+          "monthAgo0": 100,
+          "monthAgo1": 80
+        }
+      },
+      "derivation": "Debt spends then removes itself. Recorder moves day into month, month into year on day 1, and resets fiscal year on April 1. Run sales and expenditures recorders independently; historical ECON-002 rederived."
+    },
+    {
+      "id": "EXAV-SCN-026",
+      "title": "Resale uses completed years and purchase-time presence",
+      "phase": "P5/P8/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbol": "public void sell()"
+        }
+      ],
+      "input": {
+        "compositionPrice": 1000001,
+        "ageDays": [
+          0,
+          364,
+          365,
+          730
+        ],
+        "missingPurchaseTime": true
+      },
+      "expected": {
+        "resaleRailServiceRevenue": [
+          500000,
+          500000,
+          333333,
+          250000
+        ],
+        "missingPurchaseTimeRevenue": 0,
+        "placedTrainRemoved": true,
+        "groupItemRemoved": true
+      },
+      "derivation": "price/(floor(ageDays/365)+2), integer division. Null purchase time skips reimbursement. Remove train timer and detach listeners; do not invent purchase dates when importing older saves."
+    },
+    {
+      "id": "EXAV-SCN-027",
+      "title": "Bank term truncation and deposit due",
+      "phase": "P8/P10",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+          "symbol": "GetDepositInterest"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/FloatingAssets.cs",
+          "symbol": "public virtual long interestDue"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/FixedDeposit.cs",
+          "symbol": "public override void onDue()"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/DebtEx.cs",
+          "symbol": "public override void onDue()"
+        }
+      ],
+      "input": {
+        "principal": 100000,
+        "termDays": [
+          364,
+          365,
+          730
+        ],
+        "depositCancelAtDue": true
+      },
+      "expected": {
+        "depositRate": [
+          0,
+          0.0025,
+          0.005
+        ],
+        "debtRate": [
+          0.045,
+          0.05,
+          0.055
+        ],
+        "depositInterestDue": [
+          0,
+          250,
+          1000
+        ],
+        "debtInterestDue": [
+          0,
+          5000,
+          11000
+        ],
+        "oneYearDepositCashDeltaAtOpen": -100000,
+        "oneYearDepositCashDeltaAtMaturity": 100250
+      },
+      "derivation": "Term years use integer division before conversion to double; interestDue also truncates years. Two-year interest=100000*0.005*2=1000. Explicit CancelAtDue prevents default renewal. Debt principal is earned on opening, principal+interest spent on due; ordinary debt and bank assets use different ledgers."
+    },
+    {
+      "id": "EXAV-SCN-028",
+      "title": "Bank recalculation exposes source defect",
+      "phase": "P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+          "symbol": "public void recalcTotalAssets()"
+        }
+      ],
+      "input": {
+        "debtsAmountDue": [
+          105000
+        ],
+        "depositsAmountDue": [
+          100250
+        ]
+      },
+      "expected": {
+        "totalDebt": 105000,
+        "totalDepositAfterRecalc": 105000
+      },
+      "derivation": "Both enumerators use debts, so reported deposit total follows debts. Record source observation separately from desired correction; no correction is authorized by this scenario review.",
+      "difference": "EXAV-SCN-D02"
+    },
+    {
+      "id": "EXAV-SCN-029",
+      "title": "Stock buy/sell cash, fees and price impact",
+      "phase": "P8",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/StockData.cs",
+          "symbol": "internal bool buy"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/StockCompanyModule.cs",
+          "symbol": "calcCommition"
+        }
+      ],
+      "input": {
+        "currentPriceU": 10000,
+        "numTotal": 1000,
+        "marketUnits": 100,
+        "owned": 0,
+        "cash": 1000000,
+        "buy": 10,
+        "sell": 4
+      },
+      "expected": {
+        "buyFee": 1000,
+        "buySpend": 101000,
+        "priceAfterBuy": 10100,
+        "sellFee": 404,
+        "sellEarn": 39996,
+        "priceAfterSell": 10060,
+        "ownedAfter": 6,
+        "marketAfter": 94,
+        "moneySpendAfter": 60600,
+        "cashAfter": 938996
+      },
+      "derivation": "Fee is 1% truncated; buy raises price by 10000*10/1000=100; sale lowers it by floor(10100*4/1000)=40. Sale resets remaining book cost to prior averageBoughtPriceU*remaining units. No stochastic price event occurs between these transactions."
+    },
+    {
+      "id": "EXAV-SCN-030",
+      "title": "Transport daily/weekly reports feed development",
+      "phase": "P6/P7/P9",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public void DailyReset()"
+        },
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public double LastWeekPerDay"
+        }
+      ],
+      "input": {
+        "dailyTotals": [
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ],
+        "lastResetDayOfWeek": 6
+      },
+      "expected": {
+        "todayAfterReset": 0,
+        "yesterday": 32,
+        "lastWeekPerDay": 32,
+        "thisWeekAccumulatorAfterSaturdayReset": 0
+      },
+      "derivation": "Seventh reset on source Saturday: each fifth root is 2, so pow((7*2)/7,5)=32. Compare doubles with tolerance 1e-9. Departure and initial unloading both add train events; ScoreTrains is not a unique-train count."
+    },
+    {
+      "id": "EXAV-SCN-031",
+      "title": "Traffic rendering order remains independently scoped",
+      "phase": "P2/P4/P5",
+      "status": "specified",
+      "evidenceKind": "independent source derivation; runtime unverified",
+      "sources": [
+        {
+          "path": "core/world/Traffic.cs",
+          "symbol": "public override void draw"
+        }
+      ],
+      "input": {
+        "bridgeCarScene": "one car with road/accessory/rail layers"
+      },
+      "expected": {
+        "order": [
+          "road.before",
+          "accessory.before",
+          "rail.before",
+          "car",
+          "rail.after",
+          "accessory.after"
+        ]
+      },
+      "derivation": "Historical DRAW-001 rederived. Expand cuts, slopes, alpha, seasons and car poses using P0-04 gallery outputs. EXAV-GAL-001 invalid crop remains diagnostic, not a replacement image."
+    }
+  ],
+  "relatedArtifacts": [
+    "doc/parity/exav-geometry.json",
+    "doc/parity/exav-geometry-behavior.json",
+    "doc/parity/exav-geometry-dependency-review.json",
+    "doc/parity/exav-geometry-gallery.json",
+    "doc/parity/exav-content-review.json",
+    "doc/parity/exav-action-review.json",
+    "doc/parity/exav-domain-transition.json",
+    "doc/parity/exav-serialization-review.json"
+  ],
+  "historicalDisposition": "doc/parity/historical/scenarios.json and prototype/scenarios remain original/prototype regression evidence; no automatic transfer of IDs, numbers or trace hashes",
+  "differences": [
+    {
+      "id": "EXAV-SCN-D01",
+      "owner": "P6/P7",
+      "status": "source-observation; port decision required",
+      "finding": "Reach is integer sphere when listener attaches, inclusive clipped cube when station advertises; advertiseStation has no reach filter. Fifth-station replacement updates local list/removes old listener but does not register new station listener.",
+      "acceptance": "Run both creation orders, exact/diagonal/z boundaries, one to five stations, remove/re-add and save continuation; record source behavior before approving normalization."
+    },
+    {
+      "id": "EXAV-SCN-D02",
+      "owner": "P8",
+      "status": "source-observation; port decision required",
+      "finding": "BankModule.recalcTotalAssets iterates debts for totalDeposit; debt CANCELING recalculates before removal, deposit cancellation removes first.",
+      "acceptance": "Separate source outputs from approved fixes; inspect totals and bankbook across repayment, cancel, due and reload."
+    },
+    {
+      "id": "EXAV-SCN-D03",
+      "owner": "P5",
+      "status": "source-observation; port decision required",
+      "finding": "Train.clockHandler can leave next null when neither direction connects, then dereferences next.isOutside while scheduling.",
+      "acceptance": "Isolate disconnected rail case; define explicit diagnostic/portable behavior before claiming continuation."
+    },
+    {
+      "id": "EXAV-SCN-D04",
+      "owner": "P1/P8",
+      "status": "source-observation; port decision required",
+      "finding": "Fare and some costs/trading expressions multiply ints before conversion to long; bank year fractions truncate.",
+      "acceptance": "Preserve normal-range numeric vectors; specify boundary/overflow and money display units rather than silently widening or applying fractional interest."
+    }
+  ],
+  "capacityProfiles": {
+    "status": "specified fixture recipes; not generated worlds, supported limits or measurements",
+    "pack": "exav-stable-bundled only; optional profiles await P0-08 and remain separate",
+    "profiles": [
+      {
+        "id": "EXAV-CITY-S",
+        "dimensions": [
+          64,
+          64,
+          16
+        ],
+        "trains": 8,
+        "cars": 32,
+        "structureBudget": 200,
+        "stationBudget": 8
+      },
+      {
+        "id": "EXAV-CITY-M",
+        "dimensions": [
+          128,
+          128,
+          32
+        ],
+        "trains": 32,
+        "cars": 256,
+        "structureBudget": 2000,
+        "stationBudget": 32
+      },
+      {
+        "id": "EXAV-CITY-L",
+        "dimensions": [
+          256,
+          256,
+          64
+        ],
+        "trains": 128,
+        "cars": 1024,
+        "structureBudget": 10000,
+        "stationBudget": 128
+      }
+    ],
+    "railRecipe": {
+      "moduleSize": [
+        16,
+        32
+      ],
+      "groundLevel": 2,
+      "waterLevel": 0,
+      "octagonVerticesXY": [
+        [
+          4,
+          2
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          13,
+          11
+        ],
+        [
+          11,
+          13
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "elevation": 2,
+      "edges": "inclusive sign-vector straight segments, union shared endpoints; 36 distinct rail cells per ring",
+      "turns": "45 degrees; each joined normal pattern has angle 3 or 4, never angle 2",
+      "modules": "row-major 16x32 H,V modules in the non-border region; two formations per occupied ring, starting 18 rail cells apart; small has four cars per formation, others eight. Preserve separation/occupancy; record each car position and direction.",
+      "constructionOrder": "terrain, rail, station/platform, population structures, placed formations, timers; then save fixture. Bind one station/platform per ring first; stationBudget is a target for additional legal hosts, not an automatic two-platform placement.",
+      "contentBinding": "resolve exact bundled contribution IDs and lengths from exav-content-review before generation; record recipe/asset hashes and full instantiated footprint; no prototype catalog fallback Bind actual X,Y positions through World.toXYZ/toHV; require 2*z <= v < size.v - 2*(size.z-z) for moving trains as well as storage and z bounds.",
+      "moduleCoordinateSystem": "H,V storage grid; ring vertices are local X,Y offsets from toXYZ(16*column,16+32*row,2). World dimensions are H,V,Z, never an X,Y box."
+    },
+    "populationRecipe": "Reserve station footprint and a straight platform run on each occupied ring; platform length at least formation length. Resolve host before enabling stops. Place eligible population footprints off rail/support/road cells inside verified reach. Place further structures in remaining module cells using actual contribution bounds; budget is a target, never permission to overlap or silently drop records.",
+    "integrationCompanions": [
+      {
+        "id": "EXAV-CITY-NET",
+        "phase": "P4/P5/P6",
+        "recipe": "Separate connected multi-train network with a legal three-way junction, signal holding section, eight-voxel slope/support chain, elevated platform, bridge/tunnel, dead end and world exit. Use P0-04 attachment, slope, stop-position and return matrices; topology/placement legality must pass before measuring. Verify contention, reversal, forwarding, passenger exchange and speed limits with SCN-004..018."
+      },
+      {
+        "id": "EXAV-CITY-GROW",
+        "phase": "P7/P8/P10",
+        "recipe": "Unowned flat spare development parcels, service reports with ScoreTrains>0, named random draw stream, construction callbacks, debt/bank/stock and fiscal rollover. Replay SCN-022..030, save immediately before due events and compare semantic traces after continuation."
+      }
+    ],
+    "legalityGate": [
+      "Inside world and actual voxel bounds; on-ground/water and source placement checks pass for every instantiated footprint.",
+      "Reciprocal eight-direction rail connectivity, valid pattern IDs, support/hole/slope occupancy and no illegal 90-degree joins.",
+      "Stable unique entity IDs; exact composition lengths/capacities; no occupied placement; platform host and stop index valid from both directions.",
+      "Population listener count/creation order and cap recorded; source defects are explicit differences, not hidden normalization.",
+      "Every requested count reconciles to placed, rejected-with-reason or revised-budget records; only a fully accepted fixture may produce a capacity claim.",
+      "Record content profile/hash, world hash, random draw provenance and continuation event trace; preserve prototype renderer stress as a separate result."
+    ],
+    "measurement": {
+      "referenceEnvironment": "UX3 historical reference: MacBookPro18,2, Apple M1 Max, 64 GiB, macOS 26.7.1 arm64; not freshly measured or re-detected by P0-06.",
+      "requiredRunMetadata": [
+        "implementation commit and clean/dirty diff hash",
+        "fixture, topology, catalog/pack, asset and random-stream hashes",
+        "hardware/OS; browser name/version and Playwright lock/tool version",
+        "physical display/scale status or explicit emulation; viewport/DPR/canvas bounds/zoom/camera",
+        "participants/roles/network RTT; server/client host split; seed/draw log and clock speed",
+        "fresh FREETRAIN_ONLINE_PROFILE_EVIDENCE directory; sample count/window, raw samples and p50/p95/max"
+      ],
+      "viewports": {
+        "production": [
+          1920,
+          1080
+        ],
+        "historicalMatchedCanvas": [
+          1106,
+          470
+        ],
+        "historicalProductionCanvas": [
+          1880,
+          1040
+        ]
+      },
+      "provisionalTargets": {
+        "fpsMinimum": 30,
+        "localFeedbackP95MsLessThan": 100,
+        "authoritativeFeedbackP95MsLessThan": 250,
+        "injectedRttMs": 100
+      },
+      "procedure": "Three cold load/decode runs and five 60-second warmed samples per profile/locale; 30 pan, preview, panel-open and authoritative operations per sample. Measure paused and active simulation; separate cold decode, frame paint/interval, input latency, tick latency/backlog, bytes/deltas, decoded memory, client/server RSS and save/reload time. Then 24 simulated hours plus fiscal/year event companions; seven simulated days for transport/development and an extended soak in P11. Preserve raw distributions and rejected fixture logs.",
+      "limits": "Proposed budgets require P2/P4 measurements and supported-limit decisions before release. Browser engines/devices/native Linux remain untested unless explicitly evidenced; physical display/scaling and UX native handoff remain open. Historical stress 29.67 fps does not meet >=30 and proves no ExAV city capacity."
+    }
+  },
+  "galleryProfile": {
+    "id": "EXAV-GALLERY-BASE",
+    "phase": "P2/P6/P7/P9",
+    "status": "specified expanded runtime fixture; P0-04 offline studies already exist",
+    "denominator": "All 483 declaration/generated-child records in exav-content-review, including 33 factory declarations and support wrappers with explicit disposition; this is not 483 placeable or visually distinct entities. Reconcile all 56 manifests and 238 media without treating every media file as drawable.",
+    "recipe": "Enumerate every reachable visual recipe/frame/composition/direction/height/color/day-night/season/alpha effect under stable IDs; support/factory and audio entries get their own outcome rather than an invented sprite. Paginate isolated legal cells by actual footprint/camera extent so full content need not fit one world. Record variant keys and source/output crop/hash, decoded dimensions, draw anchor, picking and occlusion.",
+    "checks": [
+      "Raw pixels and native-size composition; 16 car look directions, eight movement directions, slopes/diagonal attachments, cut-boundaries and selected/picking overlays.",
+      "Every seasonal/night/color state and invalid crop retains a named record; EXAV-GAL-001 stays diagnostic pending its P2/P6 decision.",
+      "Cold full-catalog decoding separated from steady render and active city capacity; count failed/missing decodes and decoded-image bytes.",
+      "Optional content, notices and all generated/visual outputs remain separate and disabled in base profile."
+    ]
+  },
+  "bilingualWorkflows": [
+    {
+      "id": "EXAV-LOCALE-01",
+      "title": "Purchase, deploy and resale",
+      "phase": "P5/P8",
+      "manualRequirements": [
+        "MAN-A10",
+        "MAN-A11"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-010",
+        "EXAV-SCN-014",
+        "EXAV-SCN-026"
+      ],
+      "destination": "Train inventory and purchase form",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Use Japanese source catalog identity, English donor label, seated/normal/packed capacity, amenity and fare labels. Buy then deploy/withdraw/sell once; distinguish formations from cars and current cash from resale receipt.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    },
+    {
+      "id": "EXAV-LOCALE-02",
+      "title": "Station construction and passengers",
+      "phase": "P6/P7",
+      "manualRequirements": [
+        "MAN-A05",
+        "MAN-A06",
+        "MAN-A07",
+        "MAN-A08"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-011",
+        "EXAV-SCN-015",
+        "EXAV-SCN-017",
+        "EXAV-SCN-018"
+      ],
+      "destination": "Station/platform tools and inspector",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Set long Japanese station name 東京中央駅・新幹線ホーム and long English station name Central International Interchange; inspect waiting, normal/seated/packed capacity and daily reports; retain same station ID when switching locale. Exercise missing host and both approach directions.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    },
+    {
+      "id": "EXAV-LOCALE-03",
+      "title": "Timetable, forwarding and diagram import",
+      "phase": "P5/P9/P10",
+      "manualRequirements": [
+        "MAN-A12",
+        "MAN-A17"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-008",
+        "EXAV-SCN-009"
+      ],
+      "destination": "Timetable/group editor",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Distinguish 回送 (empty stock/forwarding), ordinary reversal and TURNING. Edit 08:00 and wildcard rules, append diagram rules, cancel and retry malformed import; shared controller/group identity remains exact across locale and save/reload.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    },
+    {
+      "id": "EXAV-LOCALE-04",
+      "title": "Economy and fiscal reports",
+      "phase": "P8/P9",
+      "manualRequirements": [
+        "MAN-A13",
+        "MAN-A20"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-014",
+        "EXAV-SCN-025",
+        "EXAV-SCN-027",
+        "EXAV-SCN-029",
+        "EXAV-SCN-030"
+      ],
+      "destination": "Reports, bank and stock panels",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Display cash 15,000,000,000, negative balance -110,000, rates and year/month/day without unit rescaling. Compare English/Japanese today/yesterday/dayAgo/last month/fiscal year fields to the same raw numbers; test singular/plural, 0/1/many and long interpolated entity names. Do not copy historical prototype yen wording without reviewed ExAV unit mapping.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    },
+    {
+      "id": "EXAV-LOCALE-05",
+      "title": "Authority and recovery during localized workflows",
+      "phase": "P1..P10",
+      "manualRequirements": [
+        "MAN-A16",
+        "MAN-A21"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-002",
+        "EXAV-SCN-016",
+        "EXAV-SCN-025"
+      ],
+      "destination": "Existing shell, decisions and recovery",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Run Observer/Operator/Owner with two independent clients, stale draft/revision and ambiguous outcome, then content-mismatch and before-due save replacement. Localize names/errors without changing IDs or replaying commands. Escape, Cancel, focus loss and locale switch preserve authority/dirty decisions and held-input resets.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    },
+    {
+      "id": "EXAV-LOCALE-06",
+      "title": "Catalog, gallery and help at narrow widths",
+      "phase": "P2/P9/P11",
+      "manualRequirements": [
+        "MAN-A01",
+        "MAN-A14",
+        "MAN-A15",
+        "MAN-A22"
+      ],
+      "scenarioIds": [
+        "EXAV-SCN-031"
+      ],
+      "destination": "Catalog, settings and chapter help",
+      "status": "specified; browser/native acceptance pending",
+      "locales": [
+        "en",
+        "ja"
+      ],
+      "steps": "Search Japanese names plus reviewed English metadata, select a variant, inspect clipped/seasonal visuals, enable bundled music/bell after gesture and reach matching manual chapter. No numeric or source ID translation. Check 390x844 coarse viewport and 1920x1080 desktop with keyboard, 200% text and long translated error/name strings.",
+      "acceptance": "Repeat in both locales and switch locale with an open draft; no unreachable fields, clipped action text or canvas remount; values, selection, identities and authoritative receipts remain the same. Every delivered string gets source path/symbol or resource key/contribution ID, original Japanese text/hash, English donor/proposal and review status with that slice."
+    }
+  ]
+}

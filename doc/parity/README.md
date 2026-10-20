@@ -16,6 +16,7 @@
 | [exav-domain-transition.json](exav-domain-transition.json), [exav-persistence-rules.json](exav-persistence-rules.json) | P0-05 ExAV source specification: version/pack/prototype design, 26 stable dependencies and 24 implementation files; runtime migrations remain open |
 | [exav-serialization-review.json](exav-serialization-review.json) | All 195 serialization candidates, 377 declarations / 1,048 fields, inheritance/custom writers, supplemental serialization attributes and historical comparison |
 | [exav-save-samples.json](exav-save-samples.json) | Inert structural evidence for supplied ExAV 0.4 and owner-reported 0.6.2 saves against stable source; no compatibility/continuation verdict |
+| [exav-scenarios.json](exav-scenarios.json), [scenario review](../web-parity-scenarios.md) | P0-06 source-scenario specification: 31 cases, 38 hashed files, six bilingual workflows, three proposed city profiles and gallery/integration recipes; runtime, instantiated legality and measured capacity pending |
 | [historical/](historical/README.md) | Superseded original-FreeTrain parity artifacts, earlier optional-suite inventory and historical manual evidence |
 
 The historical files were relocated on **20 October 2026** to distinguish them

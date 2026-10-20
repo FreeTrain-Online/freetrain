@@ -413,8 +413,9 @@ Seated capacity falls back to each car's capacity when outside `[0,capacity]`;
 packing capacity is seated plus twice standing capacity. Reverse-tail wrappers
 copy seated capacity. Sale reimbursement is `price(length)/(wholeYearsUsed+2)`
 when boughtTime exists. Calendar adds fixed holiday and vacation predicates;
-these are game rules, not today's Japanese holiday calendar. P0-06/P6 must derive
-boundary fixtures directly from `Time.isHoliday/isVacation`. Clock.Clone is shallow;
+these are game rules, not today's Japanese holiday calendar. The
+[P0-06 scenarios](web-parity-scenarios.md) derive representative calendar and
+construction boundaries; P1/P6/P7 expand holiday/vacation vectors with each feature. Clock.Clone is shallow;
 PriorityQueue now correctly assigns its provided value comparer, while the queued
 callback/cancellation ordering issue remains.
 
@@ -443,8 +444,9 @@ they are not claimed native pixels or an approved correction. The discrepancy
 has a P2/P6 implementation owner and does not block source-specification closure.
 
 Generated tables now include native-speed 1–5, both-direction platform length
-boundaries, optional roofs and movement charge cadence. P0-06 still owns independent
-scenarios. Runtime/native/browser comparison, full terrain/water scenes and P10
+boundaries, optional roofs and movement charge cadence.
+[P0-06 independent scenario specification](web-parity-scenarios.md) completed on
+21 October, including source speed-5 branch behavior and distinct TURNING acceptance. Runtime/native/browser comparison, full terrain/water scenes and P10
 save continuation remain their later gates. Prototype protocol/save values are
 unchanged. English donors remain presentation inputs; Japanese ExAV meanings,
 IDs and numeric rules remain authoritative.

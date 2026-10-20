@@ -19,7 +19,9 @@ The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 [https://github.com/rdmark/freetrain-exav-archive].
 The running reference slice and its asset importer still retain their recorded
 prototype provenance; they are not yet complete ExAV implementations. P0-01 ExAV
-discovery and P0-02 content source reconciliation are complete; P0-03–09 remain open. See
+discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
+specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
+complete; P0-07–09 and runtime/native acceptance remain open. See
 [the source inventory](doc/web-parity-exav-inventory.md) and
 [maintained source policy](doc/web-feature-parity.md).
 

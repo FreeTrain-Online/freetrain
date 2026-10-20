@@ -17,7 +17,8 @@ P0-01 discovery was reassessed and completed on **20 October 2026** against
 P0-02 [content source reconciliation](web-parity-content.md) subsequently completed on
 20 October 2026; revised P0-03 scope reconciliation is also complete.
 P0-04 source specification and expanded visual review subsequently completed.
-P0-06–P0-09, the overall P0 gate, implementation and runtime
+P0-06 [source-scenario specification](web-parity-scenarios.md) completed on 21 October 2026.
+P0-07–P0-09, the overall P0 gate, implementation and runtime
 acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.
@@ -172,5 +173,5 @@ specification/runtime acceptance handed to the named slices. The subsequent
 distinct reviewed files overall, 332 raw records, 1,176 expanded composition
 records and 28 inspected contacts. Explicit invalid-crop diagnostics retain
 EXAV-GAL-001 and its P2/P6 decision boundary. P0-04 is closed at source level;
-P0-06–09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
+P0-07–09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.

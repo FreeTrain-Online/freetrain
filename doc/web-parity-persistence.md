@@ -17,6 +17,8 @@ mode. P1/P2 implement contracts/catalogs; P3–P9 supply subsystem state; P10
 owns conversions, stable-runtime fixtures and continuation. Overall P0 and native/
 device acceptance remain open. [P0-02](web-parity-content.md) and
 [P0-04](web-parity-geometry.md) supply the content and geometry dependencies.
+[P0-06 scenarios](web-parity-scenarios.md) now specify timer/removal, accounting,
+resale and before/after-due continuation cases; executing them remains with each slice/P10.
 
 ## Version and ruleset dispatch
 
@@ -175,7 +177,7 @@ confirmation; it is not a per-client UI toggle.
 The current 1 MiB save limit, three manual slots and message/transfer bounds stay
 in force until coordinated implementation. The supplied 23.6 MB historical sample
 already exceeds that limit; an offline inspection limit does not raise service
-limits. P0-06/P2/P4/P10 must measure legal worlds and update upload/snapshot/read
+limits. P2/P4/P10 must implement the P0-06 scene specifications, measure legal worlds and update upload/snapshot/read
 store/storage/checkpoint bounds together. No full-city supported limit is claimed.
 
 ## Authority, drafts and readiness that must survive
@@ -395,8 +397,8 @@ P0-05 is closed at **ExAV source-specification level**. Serializer and transitio
 reviews cover the stable source and both supplied older samples. P1 implements contract/model/compatibility changes; P2
 implements catalog/pack changes; each gameplay phase adds durable subsystem state;
 P10 closes actual conversions/continuation/recovery. `MIG-*` are future acceptance
-obligations, not tests claimed to have run. P0-06 scenarios/capacity work and
-P0-07/P0-08 remain open. No gameplay, original-runtime comparison, browser/native
+obligations, not tests claimed to have run. P0-06 [scenario specification](web-parity-scenarios.md) is complete; fixture
+implementation/capacity measurements, P0-07/P0-08/P0-09 remain open. No gameplay, original-runtime comparison, browser/native
 acceptance or optional-suite compatibility is established here.
 
 Validation on 20 October: **93 Python tests**, fresh ExAV serializer/transition
