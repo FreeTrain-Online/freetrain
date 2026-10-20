@@ -13,7 +13,39 @@ inv = rail.inventory
 OUT = inv.PARITY_ROOT
 
 
-def build(tree, historical, rules):
+def validate_dependencies(tree, rules, dependencies):
+    if dependencies is None or any(dependencies[key] != rules[key]
+                                   for key in ('sourceId', 'revision', 'subtree')):
+        raise ValueError('Geometry dependency review does not match baseline')
+    rows = dependencies['sourceReviews']
+    paths = {row['path'] for row in rows}
+    if len(paths) != len(rows):
+        raise ValueError('Duplicate dependency source review')
+    for row in rows:
+        if inv.digest(tree.read(row['path'])) != row['sha256']:
+            raise ValueError('Dependency source review hash drift: ' + row['path'])
+    chains = dependencies['chains']
+    if {chain['id'] for chain in chains} != {
+            'EXAV-DEP-DRAW', 'EXAV-DEP-TERRAIN', 'EXAV-DEP-HOST', 'EXAV-DEP-TIMING'} or len(chains) != 4:
+        raise ValueError('Missing geometry dependency chain')
+    seen, covered = set(), set()
+    for chain in chains:
+        files = set(chain['files'])
+        if not files <= paths or not chain['steps'] or not chain['handoffs']:
+            raise ValueError('Incomplete dependency chain: ' + chain['id'])
+        covered.update(files)
+        for step in chain['steps']:
+            if step['id'] in seen or not step['acceptanceCases'] or not step['phase']:
+                raise ValueError('Invalid dependency step: ' + step['id'])
+            seen.add(step['id'])
+            for endpoint in ('caller', 'dependency'):
+                if step[endpoint]['path'] not in files or not step[endpoint]['symbol']:
+                    raise ValueError('Unreviewed dependency endpoint: ' + step['id'])
+    if covered != paths:
+        raise ValueError('Dependency sources lack chain dispositions')
+
+
+def build(tree, historical, rules, dependencies=None):
     if tree.revision != rules['revision']:
         raise ValueError('ExAV geometry requires a fresh source review')
     paths = [r['path'] for r in rules['sourceReviews']]
@@ -22,6 +54,7 @@ def build(tree, historical, rules):
     for row in rules['sourceReviews']:
         if inv.digest(tree.read(row['path'])) != row['sha256']:
             raise ValueError('ExAV source review hash drift: ' + row['path'])
+    validate_dependencies(tree, rules, dependencies)
     geometry = rail.extract(tree)
     geometry['behaviorTable'] = 'doc/parity/exav-geometry-behavior.json'
     geometry['sourceId'] = rules['sourceId']
@@ -30,9 +63,11 @@ def build(tree, historical, rules):
     behavior.update(sourceId=rules['sourceId'], subtree=rules['subtree'],
                     reviewStatus=rules['status'], sourceReviews=rules['sourceReviews'],
                     exavDifferences=rules['differences'], openWork=rules['openWork'])
+    behavior['dependencyReview'] = dependencies
     behavior['reviewInputs'] = {
         path: inv.digest((inv.ROOT / path).read_bytes()) for path in (
             'doc/parity/exav-geometry-rules.json', 'doc/parity/exav-baseline.json',
+            'doc/parity/exav-geometry-dependency-review.json',
             'scripts/review-exav-geometry.py', 'scripts/parity-rail-gallery.py',
             'scripts/parity_geometry.py', 'scripts/import-web-content.py')}
     # Compare formulas and raw bytes separately: matching art does not validate
@@ -46,7 +81,7 @@ def build(tree, historical, rules):
         p.startswith('plugins/SpeedLimit/') or
         p.startswith('plugins/system/renraku') or
         p.startswith('plugins/system/ThinPlatform'))]
-    for path in sorted(set(paths + assets)):
+    for path in sorted(set(paths + assets + [r['path'] for r in dependencies['sourceReviews']])):
         current = inv.digest(tree.read(path))
         previous = inv.digest(historical.read(path)) if path in historical.entries else None
         comparisons.append(dict(path='trunk/' + path, exavSha256=current,
@@ -85,12 +120,13 @@ def main():
         parser.error('--gallery must be under this checkout\'s tmp/')
     config = json.loads((OUT / 'exav-baseline.json').read_text())
     rules = json.loads((OUT / 'exav-geometry-rules.json').read_text())
+    dependencies = json.loads((OUT / 'exav-geometry-dependency-review.json').read_text())
     if (rules['sourceId'], rules['revision'], rules['subtree']) != (
             config['sourceId'], config['revision'], config['subtree']):
         raise ValueError('ExAV geometry rules do not match baseline')
     tree = inv.Tree(args.source_root, config['revision'], config['subtree'])
     historical = inv.Tree(inv.ROOT, config['historicalComparisonRevision'])
-    geometry, behavior = build(tree, historical, rules)
+    geometry, behavior = build(tree, historical, rules, dependencies)
     for name, value in [('exav-geometry.json', geometry), ('exav-geometry-behavior.json', behavior)]:
         inv.write(OUT / name, inv.dump_ledger(value), args.check)
     if args.gallery:

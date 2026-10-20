@@ -4,7 +4,7 @@
   "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
   "subtree": "trunk",
   "reviewedOn": "2026-10-20",
-  "status": "source-reassessment; P0-04 closure pending dependency and expanded visual review",
+  "status": "source and four-chain dependency reassessment complete; P0-04 closure pending expanded visual review",
   "sourceReviews": [
     {
       "path": "core/world/Direction.cs",
@@ -356,8 +356,8 @@
     }
   ],
   "openWork": [
-    "Complete transitive dependency semantics for drawing wrappers/native color-key/night/alpha behavior, terrain/water and platform host/state consumers; P0-02 content review and ExAV ledger are the starting graph, not automatic equivalence evidence.",
     "Expand offline gallery to changed girder artwork and three platform/passageway styles, both roofs/widths/stairs and cuts. The regenerated 152 rail/car scenes do not cover these additions.",
     "P0-06 must derive independent movement/boarding/calendar/cost cases; P1-P5 implement and verify runtime routes, timers, train state, picking and full-world rendering. Native/runtime captures and P10 save continuation remain unverified."
-  ]
+  ],
+  "dependencyReview": "doc/parity/exav-geometry-dependency-review.json"
 }

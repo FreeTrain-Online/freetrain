@@ -161,6 +161,9 @@ and links separate `exav-geometry*` inputs/outputs. Its 56 reviewed source/manif
 files and hashed artwork comparisons retain the eight-direction/pattern/frame
 formulas while recording changed money, speed limits, forwarding, platforms and
 labels. The 152 regenerated rail/car compositions use pinned Git objects.
-P0-04 remains open for complete semantic dependency closure and the expanded
-platform/girder visual review. Discovery hashes and lexical project membership
+The [four-chain dependency review](web-parity-geometry-dependencies.md) now pins
+63 files, 14 findings and 33 case descriptions; 97 distinct files combine both
+reviews. This closes the agreed source dependency review, with full feature
+specification/runtime acceptance handed to the named slices. P0-04 remains open
+for the expanded platform/girder visual review. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.

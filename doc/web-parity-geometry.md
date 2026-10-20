@@ -4,11 +4,15 @@
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`, stable **2.1.1.12**.
 This review reads pinned Git objects, including the original manifest encodings;
 working-tree corrections do not alter the evidence. **P0-04 remains open** for
-complete dependency semantics and the expanded platform/girder visual review
-listed below. No gameplay or runtime parity is claimed.
+the expanded platform/girder visual review listed below. The four agreed
+dependency chains are now source-reviewed; see the
+[dependency report](web-parity-geometry-dependencies.md). No gameplay or runtime parity is claimed.
 
 [Reviewed inputs](parity/exav-geometry-rules.json) pin **56 source/manifest files**
-and **11 ExAV differences**. [Geometry metadata](parity/exav-geometry.json) and
+and **11 ExAV differences**. The separate
+[dependency evidence](parity/exav-geometry-dependency-review.json) pins **63 files**,
+**14 caller/dependency findings** and **33 case descriptions**; the union is
+**97 distinct files**. [Geometry metadata](parity/exav-geometry.json) and
 [behavior/comparison tables](parity/exav-geometry-behavior.json) regenerate eight
 directions, 60 serialized patterns, 16 support slices, 48 level poses, 64 slope
 poses and 192 attachment decisions. Source paths in tables are relative to
@@ -236,7 +240,10 @@ guide plus heading-dependent zdiff. A border exit produces Outside counter 100
 before testing reciprocal track; otherwise the destination must have the opposite
 edge. An occupied destination yields EmergencyStopping with no movement. Missing
 track reverses and tries once from the new head; failure/blocking yields an
-emergency stop. Retry uses the speed-limit rule below. A blocked car does not trigger the
+emergency stop. For a nonnull candidate, retry uses the speed-limit rule below.
+If both direction attempts return null, ExAV instead dereferences `next.isOutside`
+before scheduling: `EXAV-DEP-013` records this source defect and the required P5
+port decision. A blocked car does not trigger the
 missing-track reversal, and occupancy includes cars of the same train.
 
 Moving passes each car's old state to the next car from head to tail. The first
@@ -280,7 +287,9 @@ platform direction the same lengths produce index 3, also accepted. At lengths
 4/6 both directions reject. Preserve these formulas rather than the source
 comment’s general “longer than platform” claim. Default
 controller: junction straight, 30-minute first station wait, then zero; nonstation
-harbors ignored. Delegating controllers search ancestors and fall back to default.
+harbors ignored. Delegating controllers search ancestors; they fall back to
+default only after an all-delegating chain reaches its end. A null ancestor
+controller is returned as null instead of defaulted (`EXAV-DEP-014`).
 Detailed manual/TAT timetable, station population and signal/garage semantics
 remain P5/P6 source-derived acceptance work; these are the call boundaries used
 by the central state machine, not substitutes for those subsystem specifications.
@@ -405,16 +414,20 @@ boundary fixtures directly from `Time.isHoliday/isVacation`. Clock.Clone is shal
 PriorityQueue now correctly assigns its provided value comparer, while the queued
 callback/cancellation ordering issue remains.
 
-**P0-04 closure still requires:**
+**Dependency source review completed — 20 October 2026.** The
+[dependency report](web-parity-geometry-dependencies.md) closes the four described
+chains for drawing, terrain/cuts/picking, platform hosts and train timing. It
+records source findings, call boundaries and implementation owners; full subsystem
+semantics and runtime verification remain with the named feature slices. New
+findings include native key-equality HitTest, recursive DirectSprite.offset,
+conditional picture fallback/cache invalidation, unordered host selection and
+recursive disconnection, speed-limit startup coupling, mutating TAT reversal and
+the null next-state scheduling fault. These supersede broader equivalence/retry/
+defaulting assumptions; no source defect is silently approved or fixed.
 
-- Complete semantic dependency review of native drawing wrappers, picture/night/
-  alpha handling, terrain/water and platform host/state consumers. P0-01 hashes
-  and P0-02 content bindings identify these dependencies; they do not prove them
-  equivalent. The 56 reviewed files are an explicit review set, not a claim of
-  complete transitive closure.
-- Expand the offline visual review for changed girder art and all three passage/
-  stair styles, roofs, widths and cuts. Keep the existing 152-study denominator
-  separate. No old screenshot proves these new cases.
+**P0-04 closure still requires** the expanded offline visual review for changed
+girder art and all three passage/stair styles, roofs, widths and cuts. Keep the
+existing 152-study denominator separate. No old screenshot proves these cases.
 
 Generated tables now include native-speed 1–5, both-direction platform length
 boundaries, optional roofs and movement charge cadence. P0-06 still owns independent
@@ -423,8 +436,14 @@ save continuation remain their later gates. Prototype protocol/save values are
 unchanged. English donors remain presentation inputs; Japanese ExAV meanings,
 IDs and numeric rules remain authoritative.
 
-Validation on 20 October 2026: **81 Python tests pass**, including four ExAV
+Initial reassessment validation on 20 October 2026: **81 Python tests passed**, including four ExAV
 review/edge-case checks. ExAV generation followed by `--check`, historical gallery
 `--check` and `git diff --check` pass. The ExAV gallery regenerated 152 scenes;
 the level-pose contact sheet was inspected. No application/browser/native run or
 original-game runtime comparison was performed in this reassessment.
+
+Dependency follow-up validation on 20 October 2026: **83 Python tests pass**,
+including six ExAV geometry review/guard checks. ExAV generation followed by
+`--check`, historical geometry `--check` and `git diff --check` pass. The dependency artifact
+contains source hashes and endpoint/case validation; its 33 descriptions are
+pending feature acceptance scenarios, not 33 executed runtime tests.

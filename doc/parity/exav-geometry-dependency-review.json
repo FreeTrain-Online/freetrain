@@ -1,0 +1,706 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "reviewedOn": "2026-10-20",
+  "status": "source dependency review complete for the four named geometry chains",
+  "evidence": "Read-only pinned Git objects; source/call-site reasoning, no Windows runtime execution.",
+  "sourceReviews": [
+    {
+      "path": "core/framework/graphics/Picture.cs",
+      "sha256": "0e800db191ac4b167c5f1e2fcb69d361658555b8ada8506e77f5521fe69a8d9c",
+      "review": "Constructors/getNightOverride/init/surface: 4x2 loader fallback, first nested override rule, lazy reload and color-key installation."
+    },
+    {
+      "path": "core/framework/graphics/PictureManager.cs",
+      "sha256": "7d02b98ba2afb261f2946f69dc674259351735f38fdb9e002c036348435c0662",
+      "review": "ID registration, world-change/reset/surface-loss dirtying and release."
+    },
+    {
+      "path": "core/framework/graphics/SurfaceLoaders.cs",
+      "sha256": "4caef4b02bb40d910f89893bcc41f9b9289847cd5d15e5d47f06c9721f81e447",
+      "review": "Bitmap DrawImage at explicit native size, top-left key, native night conversion and transformed key."
+    },
+    {
+      "path": "core/framework/graphics/ColorMap.cs",
+      "sha256": "56dd2ecdbf1ed70514f02518bf82d0ea72dc58bbc7eb9016c2dbd227562a4c49",
+      "review": "Quarter-channel night colors and three light markers."
+    },
+    {
+      "path": "core/framework/graphics/SimpleSprite.cs",
+      "sha256": "5c39ae5d8e2bcaf58bfb1fdc48e1faec93cfe76fa01a71d0b90fcd099aba3f61",
+      "review": "Subtract offset then pass crop origin and _size; HitTest delegates unadjusted sheet coordinates."
+    },
+    {
+      "path": "core/framework/graphics/DirectSprite.cs",
+      "sha256": "6f7195878f7fefcae4817b75be276909284a2b051e27cb6d9d1cf8443b40bf8d",
+      "review": "Direct surface crops; recursive offset getter and unadjusted HitTest delegation."
+    },
+    {
+      "path": "core/framework/graphics/ColorMappedSprite.cs",
+      "sha256": "5b314df6864c58a1d9d6417e7183fcbb50583105ef4ab3cf878bf9cebaaf94a3",
+      "review": "Draw-only override; doubled night mapping tables; shape/alpha inherited from SimpleSprite."
+    },
+    {
+      "path": "core/framework/graphics/HueTransformSprite.cs",
+      "sha256": "9f3a0787eec9d9204a6671806a0a56139b1e1789411859bfaf4f66a6dc94cb0f",
+      "review": "Draw-only hue override; night index computed but unused; shape/alpha inherited."
+    },
+    {
+      "path": "core/framework/graphics/AlphaBlendSpriteSet.cs",
+      "sha256": "892a82db0c18367e55351926446dbccd4440d303b23f21a02c13d475b2b16179",
+      "review": "Precompose source cells, mask later cells to magenta and wrap DirectSprites; original offset accessed."
+    },
+    {
+      "path": "core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs",
+      "sha256": "624fa9c09309717c32c74968017302e0e278519e011c290c0000c8f4cfb4f7a8",
+      "review": "2D/3D crops and anchors; NullSprite for invisible cells."
+    },
+    {
+      "path": "core/framework/graphics/SpriteFactory.cs",
+      "sha256": "1388740bd0b50497a8c120c2687c3eda41ec2f5cbd995b319fde7a333f79ebf5",
+      "review": "spriteType then colorVariation then SimpleSpriteFactory; explicit factory contribution resolution."
+    },
+    {
+      "path": "core/framework/graphics/SpriteLoaderContribution.cs",
+      "sha256": "b1687c09aabad50ccc33a3b94e682a98251f907f2ec00635860489c077639a5b",
+      "review": "Loader API, unsupported dimensions throw."
+    },
+    {
+      "path": "core/framework/plugin/Contribution.cs",
+      "sha256": "caa7bba70deaf8ef3fcaf3a86c4a630a4c420aa267657e5b65eb4e28051a2e93",
+      "review": "loadPicture contribution-ID + filename identity, local URI path and picture ref resolution."
+    },
+    {
+      "path": "core/contributions/common/PictureContribution.cs",
+      "sha256": "9ca9ca5576c97f2b13d60581ae361d4ede975030090c6654909b8281fd297cc0",
+      "review": "Picture declared with contribution ID; manager self-registration."
+    },
+    {
+      "path": "core/framework/ResourceUtil.cs",
+      "sha256": "67e0322ab6e81baa0251e2bdfef6fa655bc0d6a19aaf7583456e8587a19c2f60",
+      "review": "System resource search, first-loaded day-name picture identity and ground/underwater/underground crops."
+    },
+    {
+      "path": "core/world/DrawContext.cs",
+      "sha256": "724600b24ad0e740717d3a77745a73091966bfcbd3f4500c7a69a5d274f90d14",
+      "review": "GDI lifetime released before native surface access."
+    },
+    {
+      "path": "core/views/GlobalViewOptions.cs",
+      "sha256": "c9604d943e07c8bc7ea825a4d1bf727f90f44eba6b8b0ffbdd00572a4c79ca99",
+      "review": "Clock/forced day/night selection and picture/global invalidation."
+    },
+    {
+      "path": "core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "review": "Handler invocation before queue removal and repeated scheduling after callback."
+    },
+    {
+      "path": "lib/DirectXWraper/DirectDraw.cpp",
+      "sha256": "9288914128c00e106c617274342852d476f6d98c10caffca805cfa774bc7065b",
+      "review": "Surface crop/clip/Vflip, color format conversion, native blit, HitTest and GDIGraphics binding."
+    },
+    {
+      "path": "lib/DirectXWraper/AlphaBlender.cpp",
+      "sha256": "191fbc501117d718833692d6132037baa49d3c45f50eb2ec3d625e6d895fbafb",
+      "review": "Native keyed half blend, shape/color/hue transforms and format-dependent night conversion."
+    },
+    {
+      "path": "lib/DirectXWraper/DirectXWrapper.h",
+      "sha256": "d08ba354a5d1c794a304420be58f7b46f96d0b86524bb9a954dd2c598e79b293",
+      "review": "Native effect signatures and RGB helpers."
+    },
+    {
+      "path": "core/views/QuarterViewDrawer.cs",
+      "sha256": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb",
+      "review": "Traversal and ground/water/cut ordering; controller-dependent top-down disambiguation."
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "review": "setWorld publishes static current world before onNewWorld; named root TrainGroup."
+    },
+    {
+      "path": "core/world/Voxel.cs",
+      "sha256": "ae234706b9f1afe305afdb7ca498c0bfab062001d80626fc9d0d2ad843f912cd",
+      "review": "Fence wrapper order and HoleVoxel surface contract."
+    },
+    {
+      "path": "core/world/EmptyVoxel.cs",
+      "sha256": "078a4156c901cdb6c0489294a96a09d1bacc7b1362f4b4fedf752dcca08a3ed3",
+      "review": "Transparent but occupied paired slope cells."
+    },
+    {
+      "path": "core/world/terrain/MountainVoxel.cs",
+      "sha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "review": "Corner heights, transparency, cut decrement/flat cap, seasonal palette and cliff/tree draws."
+    },
+    {
+      "path": "core/res/mountainPalette.xml",
+      "sha256": "383674ff6b712c377762c597b0bdd17638efcbb6269dadb0815a32bb24c3a0e6",
+      "review": "Four seasonal and underwater palette inputs."
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "review": "Eight cells, stored HoleVoxel flags, per-position ground comparison and paired invalidation."
+    },
+    {
+      "path": "core/world/rail/BridgePierVoxel.cs",
+      "sha256": "20caa79eda8e465c7f4bbf1f70bc724226af2f7433ae72ac7b2cd09d20e8fa26",
+      "review": "Transparent supports and unreachable alpha-at-zero caller case."
+    },
+    {
+      "path": "core/world/rail/TunnelRail.cs",
+      "sha256": "df1eb9b225a260f95dfa32bc24ada420c33f0e25d29bc28ddc1a9ab4d13afbd7",
+      "review": "Mountain corner capture/restoration, foreground/background and concealed-car invalidation."
+    },
+    {
+      "path": "core/controllers/LocationDisambiguator.cs",
+      "sha256": "6281bcf6180ed6fb81cb878fc3fb27c43aef4bdae1a011da925f0161162022d1",
+      "review": "Voxel selection predicate boundary."
+    },
+    {
+      "path": "core/controllers/Disambiguators.cs",
+      "sha256": "2e570aef234c098cd35cf8a19e862f81ec21d3ec709c5439bf0d3ba054e52296",
+      "review": "Rail-or-ground, exact-ground and same-height predicates."
+    },
+    {
+      "path": "core/controllers/rail/TrainPlacementController.cs",
+      "sha256": "a16274994ea5f41f37ba092a45b1c67083994999f0825e268be55d228ef40cc4",
+      "review": "Train placement picks eligible rail occupancy; own train allowed for reversal."
+    },
+    {
+      "path": "core/world/structs/PThreeDimStructure.cs",
+      "sha256": "128d7b082620e5035aae34853131ef19ab4caf7283ebb7ddba7e941f6e2942a5",
+      "review": "Structure occupancy and height-cut silhouette; station lookup dependency."
+    },
+    {
+      "path": "core/world/structs/Structure.cs",
+      "sha256": "439cc862d31b5c1bf7553d43708f5d0541536b7865548361348bc8487fa3abd4",
+      "review": "Entity/voxel lookup base and construction bounds."
+    },
+    {
+      "path": "core/world/Cube.cs",
+      "sha256": "9b3dc4fa50ddd111112faecd1a52e6095e7084a5b15c293261075a7fa1301d20",
+      "review": "Inclusive/exclusive structure bounds and voxel enumeration."
+    },
+    {
+      "path": "core/world/rail/Platform.cs",
+      "sha256": "cfb81d8b8af5835ce8fecf9fda4001216edac31de3bf8c646e87fdd3aab98b57",
+      "review": "Host candidate search, constructor selection, parent/child mutation and upkeep cancellation."
+    },
+    {
+      "path": "core/world/rail/PlatformHost.cs",
+      "sha256": "00ba8bfcac47631cbd63b32efd9a6c0d1bf991caed8278181c2736baf0f21720",
+      "review": "Parent node notification interface."
+    },
+    {
+      "path": "core/world/rail/Station.cs",
+      "sha256": "583af2748ca5ebdbaa1a850010d5bea09cad7f74eef353177385a96ef172c1fb",
+      "review": "Voxel-based station lookup, host identity, node removal before structure teardown and boarding call boundaries."
+    },
+    {
+      "path": "core/world/rail/FatPlatform.cs",
+      "sha256": "a5e8943923a567f9a69bd80c11aa356e01955a7e115b5b5de6c04ab1cc578b74",
+      "review": "Lane occupancy, conversion, removal preconditions and range 8."
+    },
+    {
+      "path": "core/world/rail/ThinPlatform.cs",
+      "sha256": "e21e713eb3e5697c2722fdbef3c1daf048a023398992bdd741aef4cc1b54f412",
+      "review": "Occupied track conversion, lookup, connected host and restored normal rails."
+    },
+    {
+      "path": "core/controllers/rail/PlatformPropertyDialog.cs",
+      "sha256": "44506d9cafcf27e98678e4896fb9d01274de873a27fbc4e9ba40687acb959d7a",
+      "review": "Host candidate choices applied by OK; source removal flow."
+    },
+    {
+      "path": "core/util/Set.cs",
+      "sha256": "752efa2ee93f5b2d3048dde28179ab9c3bacf89feedc45a829ed06a523538e8b",
+      "review": "Hashtable-backed unordered candidate/node set and copied arrays."
+    },
+    {
+      "path": "core/world/rail/YardRailRoad.cs",
+      "sha256": "7db261e01be0c6c0dd0e7bbb95ed970161378f28c0963482e718e8eb8c15a798",
+      "review": "Station stop only when hostStation resolves, then unload/board/bell dispatch."
+    },
+    {
+      "path": "plugins/SpeedLimit/plugin.xml",
+      "sha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "review": "Menu constructor registration and declared binary codebase; deployment mapping already P0-02/P0-03."
+    },
+    {
+      "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+      "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "review": "Constructor subscribes SpeedLimit.init; menu merge is not initialization trigger."
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "review": "World event restores/creates dictionary-rooted singleton; getInstance has no lazy construction."
+    },
+    {
+      "path": "core/framework/MainWindow.cs",
+      "sha256": "9e65046d7c1c8407662b810b99b255074f18ac2246b6f8f7166cea650e0004b2",
+      "review": "Framework/plugin init precedes initial world selection; world replacement closes old views and detaches controllers."
+    },
+    {
+      "path": "core/framework/Core.cs",
+      "sha256": "7d1e993d20bf897258678e2ffdfe873e4c7431d7d6d5df8064e5f3f27bec3dbd",
+      "review": "Plugin manager initialization before world startup."
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "review": "Capture old head; stop result; next candidate/reversal/occupancy; unguarded next.isOutside; pre-move limit location."
+    },
+    {
+      "path": "core/world/CarState.cs",
+      "sha256": "c68ad252be432207df5f59b551b5dced074fc80d07ea9cd526e30f5c3787999e",
+      "review": "Immutable placed state; Inside.voxel resolves current world at stored location."
+    },
+    {
+      "path": "core/world/rail/TrainController.cs",
+      "sha256": "769ac432c72c813b372321c41d6ab0351218670f06545184cb53b170db96d36e",
+      "review": "Stop/junction API; comments predate forwarding sentinels."
+    },
+    {
+      "path": "core/world/rail/TrainItem.cs",
+      "sha256": "8820be8ce5c188a0137d26a8de1096a2c13b54d42a215293f5f36dca594d9e1b",
+      "review": "Controller field may be null; moveUnder changes group links."
+    },
+    {
+      "path": "core/world/rail/TrainGroup.cs",
+      "sha256": "97ad5bee15ea7b535fbdad0665806f070211d719c46cb38ec395624a539098b8",
+      "review": "Named constructor leaves controller unset; unnamed constructor selects delegation."
+    },
+    {
+      "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+      "sha256": "8f092209729a8b885660a9610e18f05e1654bf6cb537dbfa5d17727d31db0e9f",
+      "review": "First controller unequal to delegation is returned, including null; fallback only on reaching null item."
+    },
+    {
+      "path": "core/world/rail/SimpleTrainControllerImpl.cs",
+      "sha256": "436ef3578c8f972175572970701d388f2e17fa8b1e14f78180e1bc9961aaafbc",
+      "review": "Station-only 30 minute first wait then zero."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs",
+      "sha256": "8e7fbfcb4c3f998d7e447caaf716562f6c61e27d057a30a95a9e1e57cf04fcc8",
+      "review": "5-minute polling stop; Shift pass, Up go, Down reverse; platform-specific key host adaptation."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+      "sha256": "fe78353f887c684dd135fe67036e1409cb866471a0b1f3e756217a0bc9e7fcb9",
+      "review": "Harbor-location station handler lookup and junction default."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+      "sha256": "5b519ce58cc02b6007ad300e514c73bc97cd3ec8aca9771db98f5e94f21d6332",
+      "review": "10-minute default, fixed duration and once-daily strictly-future wait."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+      "sha256": "0534a69e85abd3b6032b6c6d7979c8065dd1f2ad5c7760a1e581af3aeb858d04",
+      "review": "Ordered rules, 10-minute polling, sentinel production and mutating checkTurn."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs",
+      "sha256": "29accc14be3d45086c8e629f077c10951341beaba01b87cc43ef8fd375d6a0a4",
+      "review": "Wildcard exact match; nextMatch unimplemented and unused by handler."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+      "sha256": "3fc01860ee3a39db70c59271ec3a3eb616f2b39dbae6b29659ecdd87d3768ab7",
+      "review": "First matching route in stored rule order, otherwise configured default."
+    },
+    {
+      "path": "core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "review": "Equal-time insertion ID and delegate removal semantics."
+    }
+  ],
+  "chains": [
+    {
+      "id": "EXAV-DEP-DRAW",
+      "title": "Picture loading, sprite anchors, native blit and effects",
+      "status": "source-reviewed",
+      "files": [
+        "core/framework/graphics/Picture.cs",
+        "core/framework/graphics/PictureManager.cs",
+        "core/framework/graphics/SurfaceLoaders.cs",
+        "core/framework/graphics/ColorMap.cs",
+        "core/framework/graphics/SimpleSprite.cs",
+        "core/framework/graphics/DirectSprite.cs",
+        "core/framework/graphics/ColorMappedSprite.cs",
+        "core/framework/graphics/HueTransformSprite.cs",
+        "core/framework/graphics/AlphaBlendSpriteSet.cs",
+        "core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs",
+        "core/framework/graphics/SpriteFactory.cs",
+        "core/framework/graphics/SpriteLoaderContribution.cs",
+        "core/framework/plugin/Contribution.cs",
+        "core/contributions/common/PictureContribution.cs",
+        "core/framework/ResourceUtil.cs",
+        "core/world/DrawContext.cs",
+        "core/views/GlobalViewOptions.cs",
+        "core/world/Clock.cs",
+        "lib/DirectXWraper/DirectDraw.cpp",
+        "lib/DirectXWraper/AlphaBlender.cpp",
+        "lib/DirectXWraper/DirectXWrapper.h"
+      ],
+      "steps": [
+        {
+          "id": "EXAV-DEP-001",
+          "caller": {
+            "path": "core/framework/graphics/Picture.cs",
+            "symbol": "init / getNightOverride / surface"
+          },
+          "dependency": {
+            "path": "core/framework/graphics/SurfaceLoaders.cs",
+            "symbol": "BitmapSurfaceLoader.load / NightSurfaceLoader.load"
+          },
+          "finding": "Missing seasonal day uses spring day. Missing seasonal night uses that season's automatic night only when its day was explicitly supplied, otherwise spring night. getNightOverride inspects only the first nested override; authored night bypasses automatic darkening. Surface reload is lazy, and the loader returns the color key.",
+          "phase": "P2",
+          "acceptanceCases": [
+            "PIC-01: explicit summer day without summer night -> generated summer night; absent summer day/night -> spring pair.",
+            "PIC-02: first nested override is summer, later sibling is night -> base getNightOverride returns null; do not treat every later night as effective."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-002",
+          "caller": {
+            "path": "core/framework/graphics/SurfaceLoaders.cs",
+            "symbol": "NightSurfaceLoader.load"
+          },
+          "dependency": {
+            "path": "lib/DirectXWraper/AlphaBlender.cpp",
+            "symbol": "buildNightImage / darken16"
+          },
+          "finding": "Automatic night is channel /4, with (8,0,0)->(255,8,8), (0,8,0)->(252,243,148), (0,0,8)->(255,227,99). Native 555/565 quantization differs from 24/32-bit; unknown 16-bit returns E_NOTIMPL. Managed loader ignores returned status. Raw night crops and day compositions do not verify this conversion.",
+          "phase": "P2",
+          "acceptanceCases": [
+            "PIC-03: compare ordinary colors, marker lights and transformed color key in a named pixel format.",
+            "PIC-04: verify clock 05:59->06:00,17:59->18:00, forced mode and surface-loss reload. A season boundary alone does not dirty pictures until another reset."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-003",
+          "caller": {
+            "path": "core/framework/graphics/SimpleSprite.cs",
+            "symbol": "draw / drawShape / drawAlpha"
+          },
+          "dependency": {
+            "path": "lib/DirectXWraper/DirectDraw.cpp",
+            "symbol": "Surface.blt / bltShape / bltAlpha / Util.clip"
+          },
+          "finding": "Crop and anchor survive wrapper migration: destination=point-offset, source=origin..origin+size, matching destination/source clipping. Shape uses keyed silhouette; alpha uses native keyed approximately-half blend, not bitmap alpha. 24/32-bit channels compute floor(dst/2)+floor(src/2). ColorMappedSprite/HueTransformSprite override draw only, so inherited shape/alpha bypass their color transforms.",
+          "phase": "P2",
+          "acceptanceCases": [
+            "BLIT-01: clipped 32x32 sprite with nonzero anchor must shift the source rectangle by the same clip amount.",
+            "BLIT-02: non-key source channel 3 over destination 5 -> 1+2=3 in 24/32-bit half blend; source key leaves destination unchanged.",
+            "BLIT-03: transformed normal draw versus inherited untransformed alpha/shape must have distinct expectations."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-004",
+          "caller": {
+            "path": "core/framework/graphics/AlphaBlendSpriteSet.cs",
+            "symbol": "constructor"
+          },
+          "dependency": {
+            "path": "core/framework/graphics/DirectSprite.cs",
+            "symbol": "offset / draw / HitTest"
+          },
+          "finding": "Alpha set masks portions occluded by cells xx<=x, yy>=y, zz>=z using projected offsets to avoid double blending. DirectSprite.offset recursively returns offset instead of _offset. Native Surface.HitTest returns equality with key, allows x==Width/y==Height, and SimpleSprite ignores crop/anchor in its HitTest. These are observed defects; no core/plugin C# HitTest consumer was found beyond implementations/interfaces. Ordinary voxel picking uses disambiguators.",
+          "phase": "P2/P3",
+          "acceptanceCases": [
+            "BLIT-04: overlapping cells blend once after masking, with empty cells retained as NullSprite.",
+            "PICK-01: never infer browser opaque-pixel selection from this native HitTest; record a corrected coordinate/key policy when implementing it."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        }
+      ],
+      "handoffs": [
+        "Full catalog conversion/effect acceptance stays P2; this review establishes dispatch, loader fallback and native math boundaries, without claiming executed Windows pixel equivalence.",
+        "OS DirectDraw/GDI allocation and pixel-format behavior are host boundaries; port sprite behavior through browser rendering, not native DLL execution."
+      ]
+    },
+    {
+      "id": "EXAV-DEP-TERRAIN",
+      "title": "Terrain, water, holes, cuts and picking",
+      "status": "source-reviewed",
+      "files": [
+        "core/views/QuarterViewDrawer.cs",
+        "core/world/World.cs",
+        "core/world/Voxel.cs",
+        "core/world/EmptyVoxel.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "core/res/mountainPalette.xml",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/BridgePierVoxel.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/controllers/LocationDisambiguator.cs",
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/TrainPlacementController.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs",
+        "core/world/Cube.cs"
+      ],
+      "steps": [
+        {
+          "id": "EXAV-DEP-005",
+          "caller": {
+            "path": "core/views/QuarterViewDrawer.cs",
+            "symbol": "draw / shouldDrawGround"
+          },
+          "dependency": {
+            "path": "core/world/rail/SlopeRailRoad.cs",
+            "symbol": "SlopeFillerVoxel.drawGround / SlopeSupportVoxel.drawGround"
+          },
+          "finding": "Full height starts at water level, cuts at zero; suppressing the initial ground surface may start one lower. At surface z, shouldDrawGround queries voxel z with false and z-1 with true (skipping current at topmost world z). Slope flags are fixed at creation from local ground; later ground edits do not recompute these stored flags. Per-cell baseZ<ground chooses underground art independently.",
+          "phase": "P2/P3/P4",
+          "acceptanceCases": [
+            "CUT-01: paired rail/filler/support occupancy at mixed above/below-ground ramp; verify ground at both boundaries.",
+            "CUT-02: terrain changes after slope creation must explicitly address stored flags; topmost/zero-z boundaries retain caller guards."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-006",
+          "caller": {
+            "path": "core/views/QuarterViewDrawer.cs",
+            "symbol": "draw voxel with cutZ-z+1"
+          },
+          "dependency": {
+            "path": "core/world/terrain/MountainVoxel.cs",
+            "symbol": "draw / drawGround"
+          },
+          "finding": "Drawer top cut diff is 1; MountainVoxel decrements it to 0 and draws a flat cap, unlike BridgePierVoxel whose alpha-at-zero branch stays unreachable. Mountain transparent iff heightData==0; trees still draw after ground without using cut diff internally. PThreeDimStructure uses strict zdiff<heightCutDiff, otherwise base-layer silhouette. Ground selection uses winter crop only in winter; water full-surface color is night-mapped separately.",
+          "phase": "P2/P3",
+          "acceptanceCases": [
+            "CUT-03: top-cut mountain -> flat palette cap; same-level pier -> ordinary draw; do not globally subtract one for all voxel kinds.",
+            "CUT-04: cut within station footprint -> Gray base silhouette; full/top-above structure -> authored sprite.",
+            "CUT-05: full-height water shape, underwater ground chip and underground cut chip remain separate branches."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-007",
+          "caller": {
+            "path": "core/views/QuarterViewDrawer.cs",
+            "symbol": "fromABToXYZ"
+          },
+          "dependency": {
+            "path": "core/controllers/Disambiguators.cs",
+            "symbol": "isSelectable"
+          },
+          "finding": "Picking scans cut down to zero over projected candidates; rail disambiguator accepts any rail or z<=ground, ground accepts equality, same-level accepts only its anchor z. No alpha test is involved. Tunnel removal reconstructs corner heights only, not removed trees/ownership; tunnel invalidate skips a concealed cell when another tunnel exists on its S/W side.",
+          "phase": "P3/P4/P5",
+          "acceptanceCases": [
+            "PICK-02: identical screen coordinate with rail/ground/same-level tools can resolve to different z.",
+            "TUNNEL-01: restore four heights after removal without asserting restoration of vegetation or ownership; existing endpoint exclusion remains GEO-006."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        }
+      ],
+      "handoffs": [
+        "Terrain editing/growth algorithm and complete structure/catalog rules remain P3/P7. Reviewed here only where they affect occupancy, ground visibility, cut or picking expectations.",
+        "Full-world renderer comparisons remain implementation/runtime acceptance, separate from source review."
+      ]
+    },
+    {
+      "id": "EXAV-DEP-HOST",
+      "title": "Platform discovery, station ownership and disconnection",
+      "status": "source-reviewed",
+      "files": [
+        "core/world/rail/Platform.cs",
+        "core/world/rail/PlatformHost.cs",
+        "core/world/rail/Station.cs",
+        "core/world/rail/FatPlatform.cs",
+        "core/world/rail/ThinPlatform.cs",
+        "core/controllers/rail/PlatformPropertyDialog.cs",
+        "core/util/Set.cs",
+        "core/world/rail/YardRailRoad.cs"
+      ],
+      "steps": [
+        {
+          "id": "EXAV-DEP-008",
+          "caller": {
+            "path": "core/world/rail/Platform.cs",
+            "symbol": "constructor / listHosts"
+          },
+          "dependency": {
+            "path": "core/util/Set.cs",
+            "symbol": "GetEnumerator / toArray"
+          },
+          "finding": "Range 8 means an inclusive rectangle around location and otherEnd plus z +/-1, and full-height scans along actual length cells. Station.get identifies station through occupied structure voxels, not distance from station origin. Candidates are deduplicated by unordered Hashtable set. Constructor auto-selects only the first Station candidate, never a platform candidate; it does not guarantee nearest station. Properties can explicitly select a connected platform.",
+          "phase": "P4/P6",
+          "acceptanceCases": [
+            "HOST-01: base (10,10,2), E length4 -> otherEnd(14,10,2), local rectangle x=2..22,y=2..18,z=1..3; full-height columns x=10..13,y=10.",
+            "HOST-02: two stations in range -> do not assert nearest or stable ordering; no direct station but connected platform -> constructor remains disconnected until explicit host choice."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-009",
+          "caller": {
+            "path": "core/world/rail/Platform.cs",
+            "symbol": "host setter / onHostDisconnected"
+          },
+          "dependency": {
+            "path": "core/world/rail/Station.cs",
+            "symbol": "remove / addNode / removeNode"
+          },
+          "finding": "Changing a host removes this node from the previous parent, clears its host, recursively disconnects copied child nodes, then accepts the new parent only if it resolves a station. It does not auto-reattach children or seek another nearby host. Station removal first removes station-list entry, notifies listeners, disconnects children, then removes structure voxels. No cycle validation in host setter: properties can offer a connected descendant, then cascade clears its station and prevents adoption.",
+          "phase": "P4/P6",
+          "acceptanceCases": [
+            "HOST-03: S->A->B->C; remove S or detach A -> all descendants disconnected; no implicit nearest-station recovery.",
+            "HOST-04: switch A from S1 to S2 -> A resolves S2, B/C remain disconnected until explicitly reattached.",
+            "HOST-05: attempt parent A -> its descendant B: clearing A disconnects B before value.hostStation check; B is not adopted."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-010",
+          "caller": {
+            "path": "core/world/rail/FatPlatform.cs",
+            "symbol": "remove / canRemove"
+          },
+          "dependency": {
+            "path": "core/world/rail/ThinPlatform.cs",
+            "symbol": "remove / canRemove"
+          },
+          "finding": "Removal restores normal rails and disconnects host tree; fat also removes dedicated platform voxels and restores attached lanes. canRemove guards cars but domain remove relies on callers (fat only asserts). Base removal unregisters daily upkeep and emits entity removal. Yard returns zero without a resolved host station, so loss of host immediately removes station stop/boarding/bell behavior.",
+          "phase": "P4/P5/P6",
+          "acceptanceCases": [
+            "HOST-06: occupied platform removal must be revalidated authoritatively; source caller assumptions do not provide service safety.",
+            "HOST-07: disconnected yard returns zero even at valid stop index; no station board/unload/bell callbacks."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        }
+      ],
+      "handoffs": [
+        "Station population/catchment, packed boarding formula, accounting/listeners and save graph are P6/P0-05 handoffs; no whole-station simulation fidelity claimed."
+      ]
+    },
+    {
+      "id": "EXAV-DEP-TIMING",
+      "title": "Speed-limit lifecycle, controllers, callbacks and outside return",
+      "status": "source-reviewed",
+      "files": [
+        "plugins/SpeedLimit/plugin.xml",
+        "plugins/SpeedLimit/MenuContributionImpl.cs",
+        "core/world/rail/SpeedLimit.cs",
+        "core/world/World.cs",
+        "core/framework/MainWindow.cs",
+        "core/framework/Core.cs",
+        "core/world/rail/Train.cs",
+        "core/world/CarState.cs",
+        "core/world/rail/TrainController.cs",
+        "core/world/rail/TrainItem.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/world/rail/DelegationTrainControllerImpl.cs",
+        "core/world/rail/SimpleTrainControllerImpl.cs",
+        "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+        "core/world/Clock.cs",
+        "core/util/PriorityQueue.cs",
+        "core/world/rail/YardRailRoad.cs"
+      ],
+      "steps": [
+        {
+          "id": "EXAV-DEP-011",
+          "caller": {
+            "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+            "symbol": "constructor"
+          },
+          "dependency": {
+            "path": "core/world/rail/SpeedLimit.cs",
+            "symbol": "init / onNewWorld / getInstance"
+          },
+          "finding": "Menu contribution construction subscribes world change; World.setWorld assigns current world then invokes event, which loads or creates the dictionary entry. getInstance is not lazy; missing contribution or late init leaves null until another world-change event. Retain bundled startup dependency explicitly; do not move semantic initialization behind opening the speed-limit UI.",
+          "phase": "P1/P5/P10",
+          "acceptanceCases": [
+            "TIME-01: contributions initialized -> select world A -> current-world speed lists; select B -> its lists, never A's singleton.",
+            "TIME-02: init after world selection without a new event -> null singleton in source; port must define safe lifecycle independent of menu opening."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-012",
+          "caller": {
+            "path": "core/world/rail/YardRailRoad.cs",
+            "symbol": "getStopTimeSpan"
+          },
+          "dependency": {
+            "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+            "symbol": "getStopTimeSpan / checkTurn"
+          },
+          "finding": "Controller result is not pure in every case. TAT reverse2/rforwarding2 call checkTurn, which reverses immediately, can return early without restoring, and can remove/re-place individual cars without timer unregister. Train then processes returned negative value again. First call checks only pass/stop and waits 10 by default; later calls scan stored rule order for go/reverse/stop/forwarding and poll next ten-minute boundary. TimeMask.nextMatch is not used.",
+          "phase": "P5",
+          "acceptanceCases": [
+            "TIME-03: preserve distinct 30-minute simple, 5-minute manual and 10-minute TAT defaults.",
+            "TIME-04: positive wait bypasses speed limits; -999/-1000 skip boarding but bell after a previous wait; zero first call passes without boarding.",
+            "TIME-05: reverse2/rforwarding2 on curve, diagonal one-car and straight consist: account for handler-side mutation before central reversal and stale captured head; explicit port decision required."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-013",
+          "caller": {
+            "path": "core/world/rail/Train.cs",
+            "symbol": "clockHandler"
+          },
+          "dependency": {
+            "path": "core/world/rail/SpeedLimit.cs",
+            "symbol": "getInstance / location lists"
+          },
+          "finding": "If both forward and reversed calcNextTrainCarState return null, state becomes emergency stop but next.isOutside then throws before scheduling retry. A nonnull blocked candidate does schedule using captured old Inside location; after reversal that still denotes original head, not new head. Outside countdown/failure/return bypass local limits until a subsequent callback starting Inside. Forwarding resets only in nonpositive Inside branch, so any non-yard zero-stop rail clears it; do not assume forwarding lasts to next station.",
+          "phase": "P5",
+          "acceptanceCases": [
+            "TIME-06: no connected track either way -> null candidate fault in source; safe service behavior must be specified explicitly.",
+            "TIME-07: blocked nonnull candidate retains occupancy, no move charge, limit from captured old location; post-reversal location stays old head for limit lookup.",
+            "TIME-08: Outside100->...->50 unload/reload unless forwarding; zero attempts return next callback, failure resets10; first connected candidate occupied blocks without trying later candidates."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        },
+        {
+          "id": "EXAV-DEP-014",
+          "caller": {
+            "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+            "symbol": "findController"
+          },
+          "dependency": {
+            "path": "core/world/rail/TrainGroup.cs",
+            "symbol": "constructors"
+          },
+          "finding": "Delegation returns first non-singleton controller including null. Named group constructor (used by World root) leaves controller null; unconditional default fallback is false for this chain unless a controller is assigned. TrainItem.moveUnder has no domain cycle guard; malformed groups can loop. Preserve these as source gaps, not guaranteed defaulting.",
+          "phase": "P5/P9",
+          "acceptanceCases": [
+            "TIME-09: explicitly configured ancestor resolves; all-delegating finite chain reaches default; null ancestor returns null in source and consumer fails.",
+            "TIME-10: validate group parent/controller references before authoritative mutation; imported malformed graphs belong to P0-05/P10."
+          ],
+          "disposition": "Source expectation; implement and verify in the named slice. Defects require an explicit port decision, not implicit fidelity."
+        }
+      ],
+      "handoffs": [
+        "Full timetable configuration/import and manual input UX remain P5/P9; source producers and mutation boundaries reviewed here, not all UI controls.",
+        "Queue cancellation remains GEO-002; zero/past intervals and callback exceptions need P1 decisions. Save schema/callback restoration remains P0-05/P10."
+      ]
+    }
+  ],
+  "boundaries": [
+    "This closes the four explicitly described dependency reviews, not all ExAV subsystem specifications or runtime fidelity.",
+    "Expanded platform/girder visual review remains P0-04 work. Feature-level cases/port decisions stay with the named P1-P10 owners."
+  ]
+}

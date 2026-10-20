@@ -20,8 +20,9 @@ an original Windows runtime comparison.
 [ExAV geometry/clock/train specification](web-parity-geometry.md) now supersedes
 this document's historical geometry/train rule examples, including train cost
 cadence, forwarding, speed-limit and platform behavior. Its separate generated
-ExAV tables preserve source provenance. Complete dependency/expanded visual review
-remains open; persistence and reserved profile decisions below still require
+ExAV tables preserve source provenance. The
+[four dependency chains](web-parity-geometry-dependencies.md) are source-reviewed;
+expanded visual review remains open; persistence and reserved profile decisions below still require
 P0-05 ExAV reassessment.
 
 ## Geometry, clock and train state
