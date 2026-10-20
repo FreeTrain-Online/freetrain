@@ -1,10 +1,12 @@
 # Stable ExAV source and coverage inventory
 
-**P0-03 follow-through — 20 October 2026:** the [current action reassessment](web-parity-actions.md)
+**P0-03 workflow/scope closure — 20 October 2026:** the [current action reassessment](web-parity-actions.md)
 now accounts for every discovered binding/surface and contribution, adds source/resource
-text candidates and records 14 reviewed ExAV differences. Discovery records retain
-`inventoried` status; candidate maps, field/dependency closure and runtime parity
-are distinct. Registered development tuning and information/list windows supersede
+text candidates and records 15 reviewed ExAV differences. All 87 workflow families,
+483 contribution consumers/support dispositions and 56 bundled dependency sets are
+assigned. Discovery records retain `inventoried` status; granular controls/dependencies,
+MAN/DEV links and translation classification are required within each implementing slice. Registered delegation, development tuning and information/list windows
+supersede
 the corresponding original-source reachability claims.
 
 P0-01 discovery was reassessed and completed on **20 October 2026** against
@@ -13,7 +15,8 @@ P0-01 discovery was reassessed and completed on **20 October 2026** against
 [Source selection and dispositions](parity/exav-baseline.json) and the separate
 [generated ledger](parity/exav-ledger.json) are maintained in this repository.
 P0-02 [content source reconciliation](web-parity-content.md) subsequently completed on
-20 October 2026. P0-03–P0-09, the overall P0 gate, implementation and runtime
+20 October 2026; revised P0-03 scope reconciliation is also complete.
+P0-04–P0-09, the overall P0 gate, implementation and runtime
 acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.

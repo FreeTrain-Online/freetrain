@@ -31,15 +31,83 @@ class ExavActions(unittest.TestCase):
             self.assertEqual(sha, actions.inv.digest((actions.inv.ROOT / path).read_bytes()), path)
 
     def test_candidate_matches_never_approve_historical_behavior(self):
-        self.assertIn('closure pending', self.review['status'])
+        self.assertIn('feature detail deferred', self.review['status'])
         for row in self.review['actions']:
             self.assertEqual('inventoried', row['implementationStatus'])
-            self.assertTrue(row['candidateWorkflow'] or row['scope'] in (
+            self.assertTrue(row['workflow'] or row['scope'] in (
                 'excluded', 'source-only-reference', 'authoring-reference'))
-            if row['scope'] == 'review-required':
+            if row['scope'] == 'in-scope':
                 self.assertIn('pending', row['status'])
         for row in self.review['contributions']:
-            self.assertIn('review pending', row['status'])
+            self.assertIn('runtime unverified', row['status'])
+            self.assertEqual('inventoried', row['implementationStatus'])
+        self.assertTrue(self.review['sliceCompletionRequirements'])
+        self.assertFalse(self.review['remainingClosure'])
+
+    def test_every_workflow_and_declaration_has_current_consumer_and_phase(self):
+        workflows = self.review['workflows']
+        for name, row in workflows.items():
+            self.assertTrue(row['destination'], name)
+            self.assertTrue(row['phases'], name)
+            self.assertIn(row['route'], self.review['consumerRoutes'])
+        for row in self.review['contributions']:
+            self.assertIn(row['workflow'], workflows)
+            self.assertEqual(workflows[row['workflow']]['destination'], row['destination'])
+            if row['role'] == 'factory/support':
+                self.assertTrue(row['supportConsumer'], row['coverageId'])
+            if row['implementationBinding']:
+                self.assertEqual('source-and-project', row['implementationBinding']['resolution'])
+        for route in self.review['consumerRoutes'].values():
+            self.assertTrue(route['consumer'])
+            for evidence in route['evidence']:
+                self.assertEqual(self.files['trunk/' + evidence['path']], evidence['sha256'])
+
+    def test_reachable_defects_and_empty_extensions_are_not_silently_excluded(self):
+        workflows, routes = self.review['workflows'], self.review['consumerRoutes']
+        disposition = lambda w: routes[workflows[w]['route']]['disposition']
+        self.assertEqual('reachable-with-source-defect', disposition('delegation'))
+        self.assertEqual('reachable', disposition('development-tuning'))
+        self.assertEqual('reachable-empty-extension', disposition('dummy-cars'))
+        self.assertEqual('development-consumer; direct-entry-adaptation', disposition('direct-buildings'))
+        self.assertEqual('source-only', disposition('dummy-copy'))
+        sources = {r['path']: r for r in self.review['sourceReviews']}
+        spare = 'trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationListPlugIn.cs'
+        self.assertEqual('source-only', sources[spare]['scope'])
+
+    def test_dependency_closure_rejects_missing_targets_and_cycles(self):
+        rows = [dict(pluginId='selector', dependencies=['factory']),
+                dict(pluginId='factory', dependencies=['system']),
+                dict(pluginId='system', dependencies=[])]
+        self.assertEqual(['factory', 'system'], actions.dependency_closure(rows)['selector'])
+        with self.assertRaisesRegex(ValueError, 'Missing bundled'):
+            actions.dependency_closure(rows[:-1])
+        rows[-1]['dependencies'] = ['selector']
+        with self.assertRaisesRegex(ValueError, 'Cyclic bundled'):
+            actions.dependency_closure(rows)
+
+    def test_new_declaration_or_changed_implementation_requires_a_decision(self):
+        class Tree:
+            def text(self, path):
+                return 'consume()', 'utf-8'
+
+            def read(self, path):
+                return b'consume()'
+
+        row = dict(coverageId='c1', sourceSha256='manifest', contributionType='menu')
+        rules = dict(schemaVersion=2, workflowDecisions={'tool': dict(
+            destination='missing:tool', phases=['P9'], route='menu')},
+            routes={'menu': dict(consumer='menu -> tool', disposition='reachable', evidence=[dict(
+                path='core/tool.cs', symbol='consume()', sha256=actions.inv.digest(b'consume()'))])},
+            runtimeRegistrations=[], supportConsumers={}, contributionRoutes={'c1': dict(
+                workflow='tool', manifestSha256='manifest', contributionType='menu', implementationName='Tool')})
+        recipes = {'c1': dict(effectiveImplementation=dict(name='Tool'))}
+        actions.validate_topology(Tree(), rules, dict(contributions=[row]), ['tool'], recipes)
+        with self.assertRaisesRegex(ValueError, 'Contribution consumer decisions'):
+            actions.validate_topology(Tree(), rules, dict(contributions=[row, dict(row, coverageId='c2')]),
+                                      ['tool'], recipes)
+        recipes['c1']['effectiveImplementation']['name'] = 'DifferentTool'
+        with self.assertRaisesRegex(ValueError, 'implementation drift'):
+            actions.validate_topology(Tree(), rules, dict(contributions=[row]), ['tool'], recipes)
 
     def test_manual_links_use_existing_requirement_identities(self):
         text = '\n'.join((actions.inv.ROOT / 'doc' / path).read_text() for path in (

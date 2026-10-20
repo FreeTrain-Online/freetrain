@@ -1,15 +1,17 @@
 # ExAV player action reassessment
 
-**P0-03 reassessment executed — 20 October 2026; closure remains open.** Current
+**P0-03 workflow/scope reconciliation complete — 20 October 2026.** Current
 source is stable ExAV **2.1.1.12**, archive commit
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, subtree `trunk/`.
-The source-reviewed differences below replace the corresponding historical
-conclusions. The remaining original-FreeTrain workflows are donor candidates,
-not approved ExAV behavior. No application behavior changed in this batch.
+The owner accepted workflow/consumer scope closure now, with detailed review
+inside each implementation slice. Current source routes and phase ownership are
+reviewed; historical per-control effects remain donors until reviewed with their
+feature. This closes the revised P0-03 task, not P0 or gameplay parity.
+No application behavior changed in this batch.
 
 [Maintained findings](parity/exav-action-rules.json) and the separate
 [generated review](parity/exav-action-review.json) preserve source hashes,
-registry evidence, candidate destinations, contribution bindings and text.
+registry evidence, reviewed scope destinations, contribution consumers and text.
 The [discovery ledger](parity/exav-ledger.json) remains discovery evidence;
 this review does not rewrite it or promote its implementation statuses.
 
@@ -17,21 +19,62 @@ this review does not rewrite it or promote its implementation statuses.
 
 | Evidence | Count / meaning |
 | --- | --- |
-| UI source files | 166; 158 require player-action field/dependency closure; 8 have explicit excluded, experiment or authoring scope |
+| UI source files | 166; 154 retain feature-detail obligations; 12 have explicit support, source-only, excluded, experiment or authoring dispositions |
 | Event/command bindings | All 298 accounted for, retaining namespaced discovery IDs |
 | Additional surfaces | All 1,108 accounted for, including controls, delegates, shortcuts, custom input and dialog results |
-| Contributions | All 482 direct declarations plus one generated child; current P0-02 type/project/source bindings joined, historical routes retained only as donors |
-| Reviewed ExAV differences | 14 findings, `EXAV-ACTION-001`–`014`, with pinned source tokens/hashes and phase/destination obligations |
+| Contributions | All 482 direct declarations plus one generated child have explicit maintained consumer/support/scope decisions; P0-02 implementation/project bindings retained |
+| Workflows and consumer groups | 87 workflow families assigned to 46 source-backed route groups, each with destination/disposition and phase owner; these are not 87 delivered features |
+| Bundled plugin dependencies | All 56 manifests have resolved direct/transitive bundled dependency IDs; no missing target or cycle |
+| Reviewed ExAV differences | 15 findings, `EXAV-ACTION-001`–`015`, with pinned source tokens/hashes and phase/destination obligations |
 | C#/resx/HTML text candidates | 3,671; 997 contain Japanese; 2,543 have an ASCII English donor candidate |
 | Unclassified C# literals | 2,345 of the 3,671; include IDs, paths, formats and non-presentation values, not 2,345 missing translations |
 | XML presentation inventory | Separate P0-02 inventory: 977 entries / 641 English donor candidates; do not add these counts as unique strings |
 
-Counts are lexical records, not distinct player capabilities or approved
-translations. Every action has a source-file candidate workflow or explicit
-scope disposition. Exact historical surface-expression matches retain the old
-per-control effect as a **donor**, with field/dependency review still pending.
-Contribution identity matching similarly does not prove a consumer. No default
-mapping is called implemented, verified or semantically unchanged.
+Counts are review records, not distinct player capabilities or approved
+translations. Every binding/surface has a workflow assignment or explicit scope
+disposition. Exact historical expression matches retain their old effects only
+as donors: scope assignment does not approve those semantics. All contribution
+consumer assignments are explicit maintained records; matching an old ID no longer
+supplies the decision. Implementation status remains `inventoried`.
+
+## Registration, consumer and dependency decisions
+
+The maintained rules assign every declaration by coverage ID, manifest hash,
+contribution type and expected implementation name. The generator rejects missing,
+stale or unknown assignments. Source tokens and file hashes bind each route;
+P0-02 class/project/recipe bindings remain attached to the same identities.
+
+| Source route | Scope and phase decision |
+| --- | --- |
+| Plugin.loadContributions → factory.load → PluginManager | Factory definitions register types; pictures, sprite factories/loaders, palettes, car definitions and templates are support to owning recipes, not separate commands. P2/P5/P7. |
+| MainWindow.menus → mergeMenu | Speed limits, bank/stocks, generic/half-voxel tools, road extension shells, poles/signals, land-value/color tools and development tuning each have assigned workflows. No registration is inferred from a surviving class alone. |
+| DockingContribution → manifest class/window creator | Nine declarations, including excluded debug, retain manifest-directed routes. StationList, TrainInformationWindow, reports, controller management, categories, bankbook, holdings and subsidiaries are explicitly accounted for. Native docking adapts to the existing browser panels. |
+| MainWindow.specialRails / specialStructures | Four special rails and three special structures route to their handlers/providers: bridge/girder/tunnel/garage and Mountain2/terrace/stadium. P3/P4/P5/P7/P8. |
+| NewWorldDialog / controller manager | Exactly two declared new-game providers and two declared train-controller providers. Engine simple/delegation singletons are accounted separately; they are not extra manifest providers. P3/P5. |
+| Construction/property selectors | Land/fence/random wrappers, roads, rail accessories, station buildings, poles/signals, half-voxels, departure bells and report genres remain options within their owning workflows. P3–P8. |
+| Commercial / variable-height definitions | Development consumes 66 + 55 direct definitions; removed direct menu bindings and builder stubs have a planned P7 direct-placement/catalog adaptation. Required content is retained. |
+| Generic catalog | Registered picker is reachable, but bundled generic content consists of null-contrib and its one generated child. Do not treat the direct building families as generic picker options. P7 owns the populated catalog adaptation. |
+| Road accessory / dummy-car shells | Registered menus, zero bundled instance definitions: retain empty-extension/API disposition. No working bus requirement follows. The obsolete DummyCarController is uncompiled/source-only. |
+| StationListPlugIn | Compiled spare menu class has no selected manifest/production instantiation; classify its duplicate route source-only. The actual StationList docking route stays in scope. |
+| Music and exclusions | Bundled BGM/silence/effects/bells required. A4 factory's nine local children and temporary user-file BGM stay excluded. Debug is excluded; video is absent from stable trunk. |
+| Static/unsupported surfaces | Balance sheet is a reachable placeholder with planned computed P8 report; profile parsing remains incomplete; no implemented Undo/Redo binding was found. These dispositions do not cancel the owner's separate optional-pack support. |
+
+The generated dependency closure resolves all 56 manifest dependency sets within
+bundled content, including generic → structure.c477 and forest → farmland. This is
+source/load topology, not proof that the Windows build or runtime succeeds.
+`EXAV-UI-DEP-01`–`05` assign remaining build/interface/state obligations:
+
+- Preserve P0-02's source/project bindings and five resource-project diagnostics,
+  including TAT's missing Straight.bmp; old core Compile omissions remain visible.
+- EntityBuilderContribution and TwoDimStructure lack selected-project membership.
+  Required behavior/recipes stay in scope; portable interfaces/rendering are
+  resolved in P1/P2/P4/P7 rather than silently assuming desktop buildability.
+- Windows docking, DirectXWrapper, global keyboard polling, fonts/allocation and
+  embedded browser controls require portable adaptations within the delivered
+  shell, authority, focus, draft/readiness and lease contracts.
+- Delegation defects, building entry/stubs, empty extensions, development Apply,
+  timetable serialization and the static balance sheet have named phase owners.
+  Detailed rule/save/transaction closure follows P0-04–06 and owning slices.
 
 ## Findings that change the action specification
 
@@ -55,12 +98,14 @@ findings supply exact tokens, hashes and destinations. `missing:` and
 | 012 — Save UI | ExAV warns for `.ftgd` and changes filters; BZ detection survives while the BZip2InputStream wrapping line is removed. Recognized extensions do not prove import support. P0-05/P10 must reconcile formats, compression and continuation. |
 | 013 — External music | Temporary user-file BGM/fileName remains source evidence under the owner's external-music exclusion. Bundled BGM, silence, effects and departure bells remain required. No automatic optional-pack inclusion or external music redistribution. |
 | 014 — Development tuning | `system/plugin.xml` **registers `{develop-config}`** and DevelopConfigurePlugin merges its menu. Historical ACTION-007's source-only classification is superseded. Apply, Cancel, Save settings and Load settings operate development/land-value parameters; source preferences are separate from the world and require explicit reload. P7/P9/P10 must define shared authority, validation and continuation policy. Source Apply can partially mutate before parse failure; use validated atomic commands. |
+| 015 — Group delegation | Non-temporary World registers DelegationTrainControllerImpl, and TrainPlacementController binds World.trainControllers. Historical ACTION-001's unregistered/source-only disposition is superseded. The defect warning remains: resolve null/root fallback, assignment/reparenting, cycles and continuation in P5/P10. |
 
 ## MAN-* and DEV-* reconciliation
 
 The historical map's 45 MAN-T/M/W/O family links are preserved under
 `historicalManualWorkflowCandidates`, without silently approving them. Findings
-link affected families; reciprocal per-action links remain a P0-03 closure task.
+link affected families; granular reciprocal action/source links are mandatory
+within the implementing slice, rather than a prerequisite for P0-03 closure.
 Read [Word/manual](web-parity-manual.md) and [online/manual](web-parity-online-manual.md)
 through this current overlay:
 
@@ -74,11 +119,13 @@ through this current overlay:
 - MAN-M06 needs ExAV bankruptcy options; the View/settings families also need
   registered development tuning. MAN-A20's accounting/menu exercise includes all
   six report periods and both history windows (MAN-M02/MAN-W10/MAN-O03).
-  These are pending feature cases, not executed journeys.
+  These are pending feature cases, not executed journeys. MAN-O08/MAN-A17 must
+  use EXAV-ACTION-015's registered delegation route and retain its defect cases.
 - DEV-P02–22/P25–27 and DEV-A01 join the P0-02 factory/type bindings to actual
   consumers; the current review retains all declarations, including support-only
-  factories/art and the one generated child. Dynamic consumer decisions are still
-  pending per declaration; same-ID historical routes are not closure evidence.
+  factories/art and the one generated child. All declarations now have current
+  consumer/support decisions; detailed authoring-format and per-control links
+  follow the relevant slice. Same-ID historical routes are not semantic evidence.
 - DEV-D01–03's original passenger/fare/cost findings must **not** supply ExAV
   expected numbers: packed/seated capacity, configurable fare/amenities, calendar
   and changed costs need P0-04–06 derivation. DEV-D04/05's rendering rules remain
@@ -111,7 +158,31 @@ rail type/height context controls, searchable catalog and option groups;
 references are in the rules/review. These inform browser workflow and wording;
 they do not define ExAV gameplay or authorize replacing the delivered web shell.
 
-## Reproduction, validation and remaining work
+## Incremental feature completion
+
+**Owner-approved staging — 20 October 2026:** P0-03 establishes what is in scope,
+how it is registered/consumed, its browser destination or disposition, and phase
+ownership. The 154 remaining source-detail records and conservative text candidates
+are feature work, not abandoned reviews. Every implementing slice must:
+
+1. Resolve its controls/actions, defaults, validation and configuration scope
+   against ExAV, and complete the detailed dependency review needed by that behavior.
+2. Attach reciprocal MAN/DEV requirement/source/workflow links for that feature,
+   recording prose/source differences, exclusions and proposal/authoring scope.
+3. Classify relevant C#/resx/HTML/XML strings as presentation or non-presentation
+   with reasons, review English donor meaning, and deliver English/Japanese text,
+   interpolation and layout checks while preserving IDs and source data.
+4. Record authority/draft/atomicity adaptations and source defects, then verify
+   relevant functional/content/save/recovery cases with independent expectations.
+5. Update review and implementation evidence separately. Deferred details cannot
+   be counted complete because P0 scope closed; P9/P11 reconcile all residual work.
+
+These requirements are also machine-readable in `sliceCompletionRequirements`.
+P0-04–09 and the overall P0 gate stay open, as do native/device and runtime gates.
+No grand per-control specification or full translation pass is required before
+starting feature implementation.
+
+## Reproduction and validation
 
 ```sh
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
@@ -125,23 +196,18 @@ not HEAD or corrected working files. It checks the discovery file hashes, findin
 tokens and delivered operation IDs, and hashes current inputs/registry/localization.
 The separate output is byte reproducible. Ordinary tests do not discover siblings.
 
-Fresh validation for this batch: **73 Python tests passed**, including six new
-action-review checks. ExAV discovery, content and action `--check` commands passed,
-as did `git diff --check`. No desktop/browser/runtime acceptance was run.
-
-**P0-03 remains open** until the 158 player-source reviews have per-control effects
-and dependency/registration closure, all dynamic routes and reciprocal MAN/DEV
-links have dispositions, and conservative text candidates have presentation/donor
-classification. Wording delivery, executable scenarios, gameplay, browser and
-native/device acceptance remain with their respective feature phases. P0-04–09
-and the overall P0 gate also remain open. The explicit remaining-closure list in
-the rules/review is the next-work queue, not an automatic completion assignment.
+Fresh validation: **77 Python tests passed**, including ten action-review checks.
+ExAV discovery, content and action `--check` commands and `git diff --check` passed.
+No desktop/browser/runtime acceptance is claimed. The generator also rejects
+unassigned contribution consumers, changed implementations and unresolved/cyclic
+bundled dependency IDs. Granular detail is tracked by the slice requirements above;
+`remainingClosure` is empty for the revised P0-03 scope task.
 
 ## Historical original-FreeTrain review
 
 The rest of this document preserves the 19 October original-source review.
 Its counts, reachability claims, ACTION-* differences and verification refer to
-that source only. In particular, its development-tuning, passage-selector,
+that source only. In particular, its group-delegation, development-tuning, passage-selector,
 English-menu-label and undeclared-drawer findings are superseded above for ExAV.
 
 Historical P0-03 source mapping completed 19 October 2026 against original FreeTrain `1f755ca` and the

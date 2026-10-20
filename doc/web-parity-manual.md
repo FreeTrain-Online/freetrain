@@ -3,17 +3,22 @@
 **ExAV P0-03 overlay — 20 October 2026:** [the current action reassessment](web-parity-actions.md#man--and-dev--reconciliation)
 records the source-reviewed changes to information/list windows, continuous tracking,
 platform roofs and consumed passage materials, speed limits, Mountain2, timetable
-copy/rule files, financial histories and registered development tuning/options.
+copy/rule files, financial histories, registered development tuning/options and
+registered group delegation (with its source defect warning).
 Read all completion/reachability statements below as historical original-FreeTrain
-evidence. ExAV candidate links now exist, but reciprocal per-action/dependency
-closure and all MAN-A* acceptance cases remain open.
+evidence. ExAV workflow/consumer scope is reconciled. Granular reciprocal
+MAN/DEV links and per-control/dependency review are mandatory during each feature
+slice; all MAN-A* acceptance cases remain open.
 
-
-**ExAV reassessment pending — 20 October 2026:** this original manual mapping records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+**Historical source boundary:** the detailed comparison below retains original-FreeTrain
+source/documentation, revisions and evidence. Stable ExAV `trunk/` supplies current
+behavior under [the source policy](web-feature-parity.md). Current workflow scope
+is reconciled above; retained field/numeric claims and wording require review
+with the relevant implementation slice and P0-04–06 foundations.
 
 P0-01's [stable ExAV discovery ledger](web-parity-exav-inventory.md) now provides
 the separate pinned source paths/hashes for reconciliation. The MAN-* behavior
-claims and source comparisons below still require ExAV P0-03/P0-04 review.
+claims and source comparisons below require ExAV feature-detail/P0-04 review.
 
 Added 19 October 2026 during P0, after source/content reconciliation P0-02.
 Use chapters **2–4** of the [user manual](http://www.kohsuke.org/freetrain/wordDoc.lzh) (Word format)
@@ -254,7 +259,7 @@ revalidate them against ExAV before carrying their expectations forward.
 | MAN-A14 | Exercise cut slider/gesture, inclusive boundary, underground picking and tall-building/construction constraints; test documented pan modifiers or record their portable gesture dispositions. Terrain repeat and mountain-only terrace cases are covered. | P3/P4/P7/P9 |
 | MAN-A15 | Map station-name visibility/error options; choose bundled MIDI/effects and per-platform bells with browser gesture handling; help explains implemented systems and incompatible saves, and exposes useful error/version details. | P2/P6/P9/P10 |
 | MAN-A16 | Run purchase/deploy/connect/timetable workflows through authority, stale revision, dirty draft, disconnect and world-replacement cases; observer browsing remains available, no old draft replays and local navigation never pauses another player. Verify keyboard/touch and English/Japanese field access. | Every relevant slice |
-| MAN-A17 | Create and name nested train groups, assign group timetables, choose parent inheritance or a per-train override, move trains between groups, change the group timetable and save/reload effective controller identity. Resolve MAN-O08's source reachability/null/root/cycle cases first; offer keyboard/touch Move to group alongside any drag/drop. | P0-03/P5/P10 |
+| MAN-A17 | Create and name nested train groups, assign group timetables, choose parent inheritance or a per-train override, move trains between groups, change the group timetable and save/reload effective controller identity. ExAV registers delegation (EXAV-ACTION-015); resolve null/root/cycle/defect cases during P5; offer keyboard/touch Move to group alongside any drag/drop. | P5/P10 |
 | MAN-A18 | Target terrain corners in Raise and Dig, temporarily reverse with Ctrl, repeat with Shift plus mouse movement, release modifiers/focus without further mutations, and verify legal elevation, obstruction and water-level boundaries. Do not derive a timer-repeat or flooding algorithm from the wiki prose. | P3/P9 |
 | MAN-A19 | Reach empty-world and terrain-loader creation through their reconciled New workflow; verify name/dimensions and terrain height/water-level settings, cancel without replacement, then save/reload. Account for terrain import without requiring the old duplicate File-menu entry. | P3/P10 |
 | MAN-A20 | Map balance sheet, land trading, six documented road choices and automatic/Always day/Always night to actual source contributions, pack membership and browser destinations or explicit dispositions. Keep missing road definitions, placeholder descriptions and archived recorder/debug exclusions visible. | P0-03/P2/P7/P8/P9 |

@@ -75,6 +75,75 @@ def validate_findings(tree, rules):
                                  + ': ' + evidence['symbol'])
 
 
+def dependency_closure(plugins):
+    """Resolve manifest dependencies without treating load order as runtime proof."""
+    by_id = {p['pluginId']: p for p in plugins}
+    if len(by_id) != len(plugins):
+        raise ValueError('Duplicate plugin dependency identity')
+    resolved = {}
+
+    def visit(identity, stack):
+        if identity not in by_id:
+            raise ValueError('Missing bundled plugin dependency: ' + identity)
+        if identity in stack:
+            raise ValueError('Cyclic bundled plugin dependency: ' + identity)
+        if identity not in resolved:
+            targets = set()
+            for target in by_id[identity]['dependencies']:
+                targets.add(target)
+                targets.update(visit(target, stack | {identity}))
+            resolved[identity] = sorted(targets)
+        return resolved[identity]
+
+    for identity in sorted(by_id):
+        visit(identity, set())
+    return resolved
+
+
+def validate_topology(tree, rules, ledger, expected_workflows, recipes):
+    if rules.get('schemaVersion') != 2:
+        raise ValueError('Scope review requires action-rules schemaVersion 2')
+    inv.action_review.same_keys(expected_workflows, rules['workflowDecisions'], 'Workflow scope decisions')
+    for name, workflow in rules['workflowDecisions'].items():
+        if not workflow['destination'] or not workflow['phases'] or workflow['route'] not in rules['routes']:
+            raise ValueError('Incomplete workflow scope: ' + name)
+    for name, route in rules['routes'].items():
+        if not route['consumer'] or not route['disposition'] or not route['evidence']:
+            raise ValueError('Incomplete consumer route: ' + name)
+        for evidence in route['evidence']:
+            path = evidence['path']
+            if (inv.digest(tree.read(path)) != evidence['sha256']
+                    or evidence['symbol'] not in tree.text(path)[0]):
+                raise ValueError('Consumer route source drift: ' + name + ': ' + path)
+    for row in rules['runtimeRegistrations']:
+        if row['workflow'] not in rules['workflowDecisions'] or not row['decision']:
+            raise ValueError('Incomplete runtime registration: ' + row['id'])
+        for evidence in row['evidence']:
+            path = evidence['path'].removeprefix('trunk/')
+            if (inv.digest(tree.read(path)) != evidence['sha256']
+                    or evidence['symbol'] not in tree.text(path)[0]):
+                raise ValueError('Runtime registration source drift: ' + row['id'])
+    for kind, row in rules['supportConsumers'].items():
+        for evidence in row['evidence']:
+            path = evidence['path'].removeprefix('trunk/')
+            if (inv.digest(tree.read(path)) != evidence['sha256']
+                    or evidence['symbol'] not in tree.text(path)[0]):
+                raise ValueError('Support consumer source drift: ' + kind)
+    selections = rules['contributionRoutes']
+    inv.action_review.same_keys([r['coverageId'] for r in ledger['contributions']], selections,
+                               'Contribution consumer decisions')
+    for row in ledger['contributions']:
+        decision = selections[row['coverageId']]
+        if (decision['workflow'] not in rules['workflowDecisions']
+                or decision['manifestSha256'] != row['sourceSha256']
+                or decision['contributionType'] != row['contributionType']):
+            raise ValueError('Contribution consumer decision drift: ' + row['coverageId'])
+        recipe = recipes.get(row['coverageId'])
+        implementation = recipe['effectiveImplementation']['name'] if recipe else None
+        if decision['implementationName'] != implementation:
+            raise ValueError('Contribution implementation drift: ' + row['coverageId'])
+
+
 def build(tree, historical, config, ledger, previous, rules):
     if ledger['revision'] != tree.revision or ledger['sourceId'] != config['sourceId']:
         raise ValueError('ExAV ledger/source selection differs')
@@ -97,6 +166,13 @@ def build(tree, historical, config, ledger, previous, rules):
         workflows.setdefault(row['workflow'], {}).update(
             candidateDestination=row['destination'], phases=row['phases'],
             status='ExAV finding; per-action closure pending', finding=row['id'])
+    content = json.loads((inv.PARITY_ROOT / 'exav-content-review.json').read_text())
+    recipes = {r['coverageId']: r for r in content['recipes']}
+    validate_topology(tree, rules, ledger, workflows, recipes)
+    workflows = rules['workflowDecisions']
+    for name, workflow in workflows.items():
+        if set(workflow['operations']) - operations:
+            raise ValueError('Unknown delivered operation in scope decision: ' + name)
     old_sources = previous['sourceReviews']
     paths = sorted({r['baselinePath'] for r in ledger['uiBindings'] + ledger['uiSurfaces']})
     sources = {}
@@ -107,21 +183,26 @@ def build(tree, historical, config, ledger, previous, rules):
         workflow = rules['newSourceWorkflows'].get(path, old['workflow'] if old else None)
         scope = ('excluded' if path.startswith('plugins/') and path.split('/')[1] in inv.EXCLUDED
                  else 'source-only-reference' if path.startswith('experiments/')
-                 else 'authoring-reference' if path.startswith('tools/') else 'review-required')
-        if workflow is None and scope == 'review-required':
+                 else 'authoring-reference' if path.startswith('tools/') else 'in-scope')
+        override = rules['sourceScopeOverrides'].get(path)
+        if override:
+            scope = override['scope']
+        if workflow is None and scope == 'in-scope':
             raise ValueError('Unassigned ExAV UI source: ' + path)
+        if workflow and workflow not in workflows:
+            raise ValueError('Unknown source workflow: ' + workflow)
         findings = [r['id'] for r in rules['findings']
                     if any(e['path'] == path for e in r['evidence'])]
         sources[qualified] = dict(path=qualified, sha256=inv.digest(tree.read(path)),
-            candidateWorkflow=workflow, scope=scope, findings=findings,
+            workflow=workflow, scope=scope, findings=findings,
+            scopeReason=override['reason'] if override else
+                rules['routes'][workflows[workflow]['route']]['consumer'] if workflow else scope,
             historicalDonor=dict(path=donor_path, revision=historical.revision,
                 sha256=inv.digest(historical.read(donor_path)),
                 comparison='identical-bytes; dependency closure pending'
                 if historical.read(donor_path) == tree.read(path) else 'changed; no automatic review transfer')
             if donor_path in historical.entries else None,
-            status='explicit scope disposition' if scope != 'review-required'
-            else 'ExAV delta reviewed; field/dependency closure pending' if findings
-            else 'candidate mapping; ExAV field/dependency review pending')
+            status='scope-assigned; slice detail pending' if workflow else 'explicit scope disposition')
 
     actions = []
     old_surfaces = {r['surfaceId'].removeprefix('base:surface:'): r for r in previous['surfaces']}
@@ -136,7 +217,7 @@ def build(tree, historical, config, ledger, previous, rules):
                 kind=kind, path=row['baselinePath'], sourceSha256=source['sha256'],
                 expression=row.get('expression', row.get('handler')),
                 sourceProperties=row.get('sourceProperties', []),
-                candidateWorkflow=donor['workflow'] if donor else source['candidateWorkflow'],
+                workflow=donor['workflow'] if donor else source['workflow'],
                 historicalExactExpressionDonor=donor, scope=source['scope'],
                 findings=source['findings'], status=source['status'], implementationStatus='inventoried'))
 
@@ -152,7 +233,7 @@ def build(tree, historical, config, ledger, previous, rules):
             english = donor if donor and donor['originalText'].isascii() and re.search('[A-Za-z]', donor['originalText']) else None
             translations.append(dict(row, path='trunk/' + path, sourceSha256=inv.digest(tree.read(path)),
                 originalTextSha256=inv.digest(value.encode()),
-                candidateWorkflow=sources.get('trunk/' + path, {}).get('candidateWorkflow'),
+                workflow=sources.get('trunk/' + path, {}).get('workflow'),
                 scope=next((r['scope'] for r in ledger['fileInventory'] if r['baselinePath'] == 'trunk/' + path), None),
                 englishDonor=dict(path=donor_path, revision=historical.revision,
                     sourceSha256=inv.digest(historical.read(donor_path)), **english) if english else None,
@@ -160,7 +241,6 @@ def build(tree, historical, config, ledger, previous, rules):
                 'changed-text; meaning-review-required' if donor else 'new-text; classification/translation-required',
                 proposedEnglish=None, reviewStatus='inventoried; classification and wording review pending'))
     contributions = []
-    content = json.loads((inv.PARITY_ROOT / 'exav-content-review.json').read_text())
     type_bindings = collections.defaultdict(list)
     for binding in content['typeBindings']:
         type_bindings[binding['owner']].append(binding)
@@ -168,27 +248,41 @@ def build(tree, historical, config, ledger, previous, rules):
                   for r in previous['contributions']}
     for row in ledger['contributions']:
         donor = old_routes.get((row['pluginId'], row['contributionId']))
+        decision = rules['contributionRoutes'][row['coverageId']]
+        workflow = workflows[decision['workflow']]
         contributions.append(dict(coverageId=row['coverageId'], path=row['baselinePath'],
             sourceSha256=row['sourceSha256'], contributionId=row['contributionId'],
             contributionType=row['contributionType'], generatedFrom=row.get('generatedFrom'),
             currentTypeBindings=type_bindings[row['coverageId']],
+            implementationBinding=recipes[row['coverageId']]['effectiveImplementation']
+                if row['coverageId'] in recipes else None,
             scope=row['scope'], historicalRouteDonor=donor,
-            candidateWorkflow=donor['workflow'] if donor else None,
-            status='registration/consumer review pending; matching ID is not reachability'))
+            workflow=decision['workflow'], consumerRoute=workflow['route'],
+            destination=workflow['destination'], phases=workflow['phases'], role=decision['role'],
+            supportConsumer=rules['supportConsumers'].get(row['contributionType']),
+            status=decision['status'], implementationStatus='inventoried'))
     findings = json.loads(json.dumps(rules['findings']))
     for row in findings:
         for evidence in row['evidence']:
             evidence['sha256'] = inv.digest(tree.read(evidence['path']))
             evidence['path'] = 'trunk/' + evidence['path']
-    return dict(schemaVersion=1, source=ledger['source'], sourceId=config['sourceId'],
+    dependencies = dependency_closure(ledger['plugins'])
+    return dict(schemaVersion=2, source=ledger['source'], sourceId=config['sourceId'],
         status=rules['status'], metadataOnly=True, boundaries=rules['boundaries'],
+        scopeDecision=rules['scopeDecision'], scopeApprovedOn=rules['scopeApprovedOn'],
         inputs={p: inv.digest((inv.ROOT / p).read_bytes()) for p in (
             'doc/parity/exav-baseline.json', 'doc/parity/exav-ledger.json',
             'doc/parity/exav-content-review.json', 'doc/parity/exav-action-rules.json',
             'doc/parity/historical/action-map.json', 'scripts/reconcile-exav-actions.py',
             'web/src/lib/game-ui.ts', 'web/src/lib/localization.ts')},
-        workflows=workflows, sourceReviews=list(sources.values()), actions=actions,
+        workflows=workflows, consumerRoutes=rules['routes'], sourceReviews=list(sources.values()), actions=actions,
         contributions=contributions, findings=findings,
+        pluginDependencies=[dict(pluginId=p['pluginId'], path=p['baselinePath'],
+            sourceSha256=p['sourceSha256'], direct=p['dependencies'], transitive=dependencies[p['pluginId']],
+            status='bundled dependency IDs resolved; runtime load unverified') for p in ledger['plugins']],
+        dependencyDecisions=rules['dependencyDecisions'],
+        runtimeRegistrations=rules['runtimeRegistrations'],
+        sliceCompletionRequirements=rules['sliceCompletionRequirements'],
         historicalManualWorkflowCandidates=previous['manualRequirements'],
         workflowReferences=rules['workflowReferences'],
         glossary=rules['glossary'], translationEntries=translations,
@@ -198,8 +292,10 @@ def build(tree, historical, config, ledger, previous, rules):
             japaneseTextCandidates=sum(bool(JAPANESE.search(r['originalText'])) for r in translations),
             englishDonorCandidates=sum(r['englishDonor'] is not None for r in translations),
             unclassifiedLiterals=sum(r['classification'].startswith('unclassified') for r in translations),
-            scopeDispositionSources=sum(r['scope'] != 'review-required' for r in sources.values()),
-            pendingPlayerSourceReviews=sum(r['scope'] == 'review-required' for r in sources.values())))
+            scopeDispositionSources=sum(r['scope'] != 'in-scope' for r in sources.values()),
+            workflows=len(workflows), consumerRoutes=len(rules['routes']),
+            bundledDependencyClosures=len(dependencies),
+            deferredPlayerSourceDetails=sum(r['scope'] == 'in-scope' for r in sources.values())))
 
 
 def main():

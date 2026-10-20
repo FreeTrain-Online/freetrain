@@ -6,7 +6,8 @@ ExAV **2.1.1.12 / V2**, archive Git
 The [review](parity/exav-content-review.json) and
 [maintained rules](parity/exav-content-rules.json) are separate from the
 [discovery ledger](parity/exav-ledger.json) and superseded original-source review.
-This closes the content inventory/specification task. P0-03–09, the overall P0
+This closes the content inventory/specification task. Revised P0-03 workflow/scope
+reconciliation is also complete; P0-04–09, the overall P0
 gate, content conversion, gameplay, visual fidelity and save continuation remain
 open. No desktop assemblies or serialized objects were activated.
 
@@ -91,7 +92,7 @@ to pinned source hashes:
   state rules retain those sources; complete nested save graphs and continuation
   belong to **P0-05/P10**. Mutable ColorTest/catalog selections are not automatically
   durable merely because fields exist. Temporary BGM `fileName` serialization is
-  separate from global catalog identity; **P0-03** must retain its action/scope disposition.
+  separate from global catalog identity; **P0-03** retains its external-music exclusion; detailed state handling follows the owning slice.
 - **Project gaps:** five embedded/content edges remain missing: three in the old
   core project and `res/Straight.bmp` in both TAT projects. The discovery ledger
   also retains two missing old-core Compile entries, making seven project gaps
@@ -119,8 +120,8 @@ historical English donor where found, text-comparison classification, proposed
 wording and review status. A same-ID donor is not an approved translation.
 Proposals remain explicitly unassigned until the implementing feature reviews
 meaning; source code, form/resource strings, validation, reports and help now have a
-separate [P0-03 candidate inventory](web-parity-actions.md), with classification
-and donor/wording review still open. The rule file begins a glossary for total/seated capacity, price,
+separate [P0-03 inventory](web-parity-actions.md), with classification and
+donor/wording review required within each implementing slice. The rule file begins a glossary for total/seated capacity, price,
 footprint price and hundred-share units. Japanese text, numeric data and stable IDs
 remain unchanged. Each feature slice must supply English/Japanese wording and
 layout evidence; P0-06 supplies scenarios and P11 reconciles remaining translations.
@@ -309,7 +310,7 @@ Two source distinctions require explicit treatment:
   a recorded behavior difference.
 - `BGMManager.TempBGMContribution` overrides serialization and stores `fileName`
   through its own reference helper. This user-file action is separate from A4
-  discovery and must be mapped during P0-03. Do not bundle user music or equate the
+  discovery and has an explicit exclusion in current P0-03; feature detail follows its owning slice. Do not bundle user music or equate the
   temporary BGM helper with a global catalog alias.
 
 ## Reproduction
