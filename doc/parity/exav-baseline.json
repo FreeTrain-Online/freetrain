@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "repository": "freetrain-exav-archive",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "svnRevision": 115,
+  "engineVersion": "2.1.1.12",
+  "pluginFamily": "V2",
+  "solution": "FreeTrain.2008.sln",
+  "expectedManifests": 56,
+  "expectedDeclarations": 482,
+  "historicalComparisonRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "generatedRegistration": {
+    "path": "plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs",
+    "sha256": "978c938267a06309118096dbb6ee768b2e03c2003610c939123dea7fb205792d",
+    "symbol": "loadSprites / parseDirection",
+    "southToken": "SOURTH",
+    "review": "ExAV registers color x sprite children as parent-color:direction, then fills an eight-entry direction table. parseDirection recognizes SOURTH (sic), not SOUTH; ALL assigns the four cardinal entries. No direction elements selects the fallback; heights do not register extra IDs. Full factory/resource/instance review remains P0-02.",
+    "portDecision": {
+      "id": "EXAV-DIR-001",
+      "status": "owner-approved-correction",
+      "decidedOn": "2026-10-20",
+      "sourceToken": "SOURTH",
+      "portToken": "SOUTH",
+      "behavior": "Treat SOURTH as a source typo. Use SOUTH for the south direction when porting the parser and content. The source inventory preserves SOURTH and its original behavior at the pinned archive commit as historical evidence.",
+      "workingTreeCorrection": {
+        "repository": "freetrain-exav-archive",
+        "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs",
+        "status": "applied-to-working-tree; not committed or repinned",
+        "sha256": "e2a0f148d982afefc843f0b7efb10560ec56928bb5f41a7503dad9aba3bc75f6",
+        "change": "dirs[i].Equals(\"SOURTH\") -> dirs[i].Equals(\"SOUTH\"); original encoding and line endings preserved"
+      }
+    }
+  },
+  "manifestEncodingDecision": {
+    "id": "EXAV-ENC-001",
+    "status": "owner-approved; applied-to-working-tree; not committed or repinned",
+    "decidedOn": "2026-10-20",
+    "fromEncoding": "Shift_JIS (Windows CP932)",
+    "toEncoding": "UTF-8",
+    "bom": false,
+    "manifests": 56,
+    "reviewPath": "doc/parity/exav-manifest-encoding-review.json",
+    "reviewSha256": "d3592017c8e0d9af05f8176b4f67f6d61448bfba3d9aef4943c85902de972bff",
+    "behavior": "All stable trunk/plugin manifests now use UTF-8 XML declarations and bytes, preserving decoded text, entities, IDs/data and line endings. Plugin.loadFailSafe now reads UTF-8 metadata. The pinned archive commit and discovery evidence retain their original encodings; corrected source hashes are recorded separately."
+  },
+  "roots": {
+    "core": {"scope": "in-scope", "disposition": "Stable game/UI/save/resource authority; lexical discovery, behavior and dependency closure require P0-02 through P0-05 review.", "reviewOwners": ["P0-02", "P0-03", "P0-04", "P0-05"]},
+    "plugins": {"scope": "in-scope", "disposition": "Stable bundled V2 declarations and source authority, retaining explicit owner exclusions; distinct from optional non-LGPL packs.", "reviewOwners": ["P0-02", "P0-03", "P0-05"]},
+    "lib": {"scope": "dependency-reference", "disposition": "Managed semantic/UI dependencies and native host references; retain source/build gaps. Port required behavior, not Windows APIs.", "reviewOwners": ["P0-02", "P0-03", "P0-04", "P0-05"]},
+    "doc": {"scope": "documentation-reference", "disposition": "Bundled stable release/help/notice evidence; prose must be reconciled against stable code.", "reviewOwners": ["P0-03", "P0-07", "P0-09"]},
+    "experiments": {"scope": "source-only-reference", "disposition": "Experimental/developer source retained in the denominator; not a stable playable capability without a proven production consumer.", "reviewOwners": ["P0-09"]},
+    "extlib": {"scope": "dependency-reference", "disposition": "Third-party/native dependency and notice evidence; not an instruction to execute or port host APIs.", "reviewOwners": ["P0-02", "P0-05"]},
+    "report": {"scope": "authoring-reference", "disposition": "Content report tools; preserve authoring/dependency evidence without treating tools as player features.", "reviewOwners": ["P0-02"]},
+    "tools": {"scope": "authoring-reference", "disposition": "Build/content/developer tools, including solution-listed tools; build membership alone does not make them game workflows.", "reviewOwners": ["P0-02", "P0-03"]}
+  },
+  "rootFilesDisposition": "Stable solution, copy/exclusion scripts and IDE state retained with hashes; build/launch evidence, not additional player features.",
+  "absentHistoricalExclusions": {
+    "org.kohsuke.freetrain.tools.vcr": "Not bundled in stable trunk; retain historical owner exclusion without adding a missing ExAV content requirement."
+  },
+  "boundaries": [
+    "Read only pinned trunk Git objects; beta/alpha/Release1.0 siblings are outside this ledger.",
+    "No original action/content/geometry/serializer decisions transfer automatically, including byte-identical files with changed dependencies.",
+    "Source/build membership is lexical evidence, not compiler/runtime reachability. Conditions and unresolved paths remain explicit.",
+    "Modern destinations, fixture/evidence acceptance and English/Japanese per-string review remain assigned by P0-02 through P0-06.",
+    "No source import, asset conversion, runtime rules/protocol/save change or optional pack inclusion occurs in P0-01."
+  ]
+}

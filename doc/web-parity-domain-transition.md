@@ -1,5 +1,11 @@
 # Parity domain transition design
 
+**ExAV reassessment pending — 20 October 2026:** this domain transition design records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01's [stable ExAV discovery](web-parity-exav-inventory.md) is complete. The
+domain/geometry/save design below remains historical input for P0-04/P0-05;
+source discovery does not accept its numeric rules or reserved profile names.
+
 Status: P0 source specification and P1 design input, with P0-04 detail in the
 [geometry/clock/train review](web-parity-geometry.md) and the completed P0-05
 [contract/content/persistence specification](web-parity-persistence.md).
@@ -23,7 +29,7 @@ the three-dimensional Euclidean square root to an integer.
 12 normal and 16 junction patterns cannot represent cardinal right-angle bends.
 The 16 surface and 16 underground slope patterns include invisible 1×1 samples
 with meaningful z transitions. Supports are eight slices per sheet. The generated
-[geometry table](parity/geometry.json) retains IDs, connections, exact rectangles,
+[geometry table](parity/historical/geometry.json) retains IDs, connections, exact rectangles,
 anchors, climb/level/zdiff/zangle and visibility. Use authored `RailRoads_n.bmp`
 for explicit night art. Neither visibility nor sprite size establishes occupancy.
 
@@ -129,7 +135,7 @@ after loading. Preserve reference identity and required callback outcomes as
 explicit data transformations, not object activation.
 
 The initial ledger lists 186 lexical serialization candidate files. P0-05's
-[expanded inventory](parity/serialization-review.json) now records 359 declarations,
+[expanded inventory](parity/historical/serialization-review.json) now records 359 declarations,
 903 fields, source inheritance/field slots, custom writer/resolver families,
 callback outcomes and target phases for all of them. Compiler reachability,
 exact runtime wire signatures/aliases and implemented conversion remain P10

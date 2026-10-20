@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "EXAV-ENC-001",
+  "decidedOn": "2026-10-20",
+  "repository": "freetrain-exav-archive",
+  "originalRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "status": "applied-to-working-tree; not committed or repinned",
+  "fromEncoding": "Shift_JIS (Windows CP932)",
+  "toEncoding": "UTF-8",
+  "bom": false,
+  "manifests": 56,
+  "declarations": 482,
+  "validation": "Strict decoding; text differs only in XML encoding declaration; expanded XML trees, entity diagnostics, contribution IDs/data and line endings preserved.",
+  "files": [
+    {
+      "path": "trunk/plugins/SpeedLimit/plugin.xml",
+      "originalSha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "utf8Sha256": "1621da508885ce53578f9531de64454edbf8a65029cfd63937239796615ccbac",
+      "decodedContentSha256": "1621da508885ce53578f9531de64454edbf8a65029cfd63937239796615ccbac",
+      "declarations": 4,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+      "originalSha256": "1c0e98394951472b44cd553049061a6c38c01704c950c3df69bd18257a35e77f",
+      "utf8Sha256": "65b616ddbad1a14df75a5c5922fe32d4a6755b4aba016ed13875ab0cdf4d74c6",
+      "decodedContentSha256": "65b616ddbad1a14df75a5c5922fe32d4a6755b4aba016ed13875ab0cdf4d74c6",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "originalSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "utf8Sha256": "802560d86d4feac05b9be2d29cd4865ae62dcf49a0244c0179839311a097da51",
+      "decodedContentSha256": "802560d86d4feac05b9be2d29cd4865ae62dcf49a0244c0179839311a097da51",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "originalSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "utf8Sha256": "471de94d97050615e01a9f83427a061b84fe9d86eb28d80c12a918d008bf75e9",
+      "decodedContentSha256": "471de94d97050615e01a9f83427a061b84fe9d86eb28d80c12a918d008bf75e9",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "originalSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "utf8Sha256": "e53c61ce7d7ebc6e440ee432cb2e260ff0217151554070fbfe8ab43d32a50660",
+      "decodedContentSha256": "e53c61ce7d7ebc6e440ee432cb2e260ff0217151554070fbfe8ab43d32a50660",
+      "declarations": 4,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "originalSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "utf8Sha256": "f0fc3d1e741d87e3fb561df0b09b4e72d05ec0cddc926ce58b4001a5911a52db",
+      "decodedContentSha256": "f0fc3d1e741d87e3fb561df0b09b4e72d05ec0cddc926ce58b4001a5911a52db",
+      "declarations": 32,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/plugin.xml",
+      "originalSha256": "a8c452a9ad8c92148babaaaba74207d153831101df5ca67a471b08816322a513",
+      "utf8Sha256": "f74ab80cb7b82b7baf5eec98718f9270601acce9adb605bd2074c319476592d2",
+      "decodedContentSha256": "f74ab80cb7b82b7baf5eec98718f9270601acce9adb605bd2074c319476592d2",
+      "declarations": 6,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "originalSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "utf8Sha256": "873be4fa3b1f87861ae025c53691191849044696e3d0848e69dd510e75e2a3cd",
+      "decodedContentSha256": "873be4fa3b1f87861ae025c53691191849044696e3d0848e69dd510e75e2a3cd",
+      "declarations": 4,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "originalSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "utf8Sha256": "0678fc3a8a76c1f7a1adb73ed8c98428864414f0d4463bdce0782dd4c375f283",
+      "decodedContentSha256": "0678fc3a8a76c1f7a1adb73ed8c98428864414f0d4463bdce0782dd4c375f283",
+      "declarations": 9,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "originalSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "utf8Sha256": "5bf151d48204d986ec034ca24677b027406d324b411e4e5718eb47b3cbe80545",
+      "decodedContentSha256": "5bf151d48204d986ec034ca24677b027406d324b411e4e5718eb47b3cbe80545",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "originalSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "utf8Sha256": "6a128cf935ba60008a459c15b5a0c3dbd7240b4a93fbbec2090e86c8d67813ae",
+      "decodedContentSha256": "6a128cf935ba60008a459c15b5a0c3dbd7240b4a93fbbec2090e86c8d67813ae",
+      "declarations": 19,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "originalSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "utf8Sha256": "79e0bc916c845e8c77c31258c0909bee97fc18a420e0c01dff2ac519baff4e1a",
+      "decodedContentSha256": "79e0bc916c845e8c77c31258c0909bee97fc18a420e0c01dff2ac519baff4e1a",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "originalSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "utf8Sha256": "901ad078314b2f7f2cd0c50b42d221044a611b51a96adcb188d9025f161ce478",
+      "decodedContentSha256": "901ad078314b2f7f2cd0c50b42d221044a611b51a96adcb188d9025f161ce478",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "originalSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "utf8Sha256": "9dded38a9f85fd0e2bccae46bd8f6662c510b12fc13cc3ae5618f5480fa2599e",
+      "decodedContentSha256": "9dded38a9f85fd0e2bccae46bd8f6662c510b12fc13cc3ae5618f5480fa2599e",
+      "declarations": 26,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "originalSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "utf8Sha256": "92cdd6e023e731f9e43df44e5fc48114bfb9af048fee326a629f4cec4c0f684c",
+      "decodedContentSha256": "92cdd6e023e731f9e43df44e5fc48114bfb9af048fee326a629f4cec4c0f684c",
+      "declarations": 19,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "originalSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "utf8Sha256": "248f02043535d4f6d955bb8e9b50c5456977a99f382b003dabc3c71e71e3a908",
+      "decodedContentSha256": "248f02043535d4f6d955bb8e9b50c5456977a99f382b003dabc3c71e71e3a908",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "originalSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "utf8Sha256": "c46842389cdfa3d16e2c7a46437ad4e507e72c7284c4fde163cfad39807b0214",
+      "decodedContentSha256": "c46842389cdfa3d16e2c7a46437ad4e507e72c7284c4fde163cfad39807b0214",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.a4mem/plugin.xml",
+      "originalSha256": "5235a1397a0c306b57d1c443986f2117214adebbdf57684fc046a830f3a90eab",
+      "utf8Sha256": "80c0c4547233504dfd1bbaae1597cedd6fa950ea798a9e3a843d8a995f8b6416",
+      "decodedContentSha256": "80c0c4547233504dfd1bbaae1597cedd6fa950ea798a9e3a843d8a995f8b6416",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "originalSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "utf8Sha256": "f4179b8585ff15eb3f9118cc67639fd1c2fe1195ea67543f0630430427eb1935",
+      "decodedContentSha256": "f4179b8585ff15eb3f9118cc67639fd1c2fe1195ea67543f0630430427eb1935",
+      "declarations": 4,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "originalSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "utf8Sha256": "be3f2e698c24ec63d734353eb8cde59a4747da8ee990f3986b7677f2088d8cd2",
+      "decodedContentSha256": "be3f2e698c24ec63d734353eb8cde59a4747da8ee990f3986b7677f2088d8cd2",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "originalSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "utf8Sha256": "e3cb9fd8c9296d27684fe316cebe92760e2f04591c11ee98febcff33b07b97f6",
+      "decodedContentSha256": "e3cb9fd8c9296d27684fe316cebe92760e2f04591c11ee98febcff33b07b97f6",
+      "declarations": 6,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "originalSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "utf8Sha256": "499e1794632e07b82b3489f4a37e83af0bfd00bc9affa256128f9eca0e64decc",
+      "decodedContentSha256": "499e1794632e07b82b3489f4a37e83af0bfd00bc9affa256128f9eca0e64decc",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "originalSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "utf8Sha256": "0f43257507a30ba210da431eeb43beab3b3a7e91da78d1dc0a1694dac75230e8",
+      "decodedContentSha256": "0f43257507a30ba210da431eeb43beab3b3a7e91da78d1dc0a1694dac75230e8",
+      "declarations": 4,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "originalSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "utf8Sha256": "8e3d4508041a8316a379ef1cfd484f7b4a6b780272be71aacc806aea5509659b",
+      "decodedContentSha256": "8e3d4508041a8316a379ef1cfd484f7b4a6b780272be71aacc806aea5509659b",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "originalSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "utf8Sha256": "d091adbead9484a02782cf90a6af135662e27ca249bd0f821d8a4c7b902ffbb1",
+      "decodedContentSha256": "d091adbead9484a02782cf90a6af135662e27ca249bd0f821d8a4c7b902ffbb1",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.syosei/plugin.xml",
+      "originalSha256": "d78e335239b86a848d3506e9b55b748019e5537d66792ab7289f30447d765ab2",
+      "utf8Sha256": "b8d959325122462978fa1db98023bb1477f6b223a16532c6a44d8fa13b93214e",
+      "decodedContentSha256": "b8d959325122462978fa1db98023bb1477f6b223a16532c6a44d8fa13b93214e",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "originalSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "utf8Sha256": "9f5d81926b5bdfd470e349c34abd19c6f6e4da9b3ce5d1ff37d90ea5d4d28d60",
+      "decodedContentSha256": "9f5d81926b5bdfd470e349c34abd19c6f6e4da9b3ce5d1ff37d90ea5d4d28d60",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "originalSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "utf8Sha256": "f83bc6f1abc7afb8f6a9552898e0bc334efc6c1ffd450eba7979faed80af576e",
+      "decodedContentSha256": "f83bc6f1abc7afb8f6a9552898e0bc334efc6c1ffd450eba7979faed80af576e",
+      "declarations": 9,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "originalSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "utf8Sha256": "1b0fa13fe0d3c3e0ec25a6c79eceaec5717efdb5d949527131269a0a698a9f09",
+      "decodedContentSha256": "1b0fa13fe0d3c3e0ec25a6c79eceaec5717efdb5d949527131269a0a698a9f09",
+      "declarations": 21,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "originalSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "utf8Sha256": "514f282f06252f53addb925e5ddcd442466a6a55294b60feb0f3560c34d1e5ab",
+      "decodedContentSha256": "514f282f06252f53addb925e5ddcd442466a6a55294b60feb0f3560c34d1e5ab",
+      "declarations": 5,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "originalSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "utf8Sha256": "3d859379c87f0bae80e2edf71448d75d56fd3fa201139b031bd103549b2559dc",
+      "decodedContentSha256": "3d859379c87f0bae80e2edf71448d75d56fd3fa201139b031bd103549b2559dc",
+      "declarations": 55,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "originalSha256": "1a53d45e25704b8667ed02160e41fcd62f29f040b6d2ba8555c8c0beccd4e236",
+      "utf8Sha256": "8144d18b2d3286c2d7ac924025b80b0f93b25c3ff6d56ee989b4de4371751a62",
+      "decodedContentSha256": "8144d18b2d3286c2d7ac924025b80b0f93b25c3ff6d56ee989b4de4371751a62",
+      "declarations": 6,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "originalSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "utf8Sha256": "79bceadb9294f9c19730bb5c8774725ce275a3776654aeef1b1ddec9f1eb51c4",
+      "decodedContentSha256": "79bceadb9294f9c19730bb5c8774725ce275a3776654aeef1b1ddec9f1eb51c4",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "originalSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "utf8Sha256": "01e12386abc5a74efba2682e2648331602aceda5e4a2a07021cfa861cc40bd90",
+      "decodedContentSha256": "01e12386abc5a74efba2682e2648331602aceda5e4a2a07021cfa861cc40bd90",
+      "declarations": 15,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "originalSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "utf8Sha256": "eb31a2f18d38bdb18e58e52e3b901fa6b0d6556c0c771723ecca3ec91d5db316",
+      "decodedContentSha256": "eb31a2f18d38bdb18e58e52e3b901fa6b0d6556c0c771723ecca3ec91d5db316",
+      "declarations": 56,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "originalSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "utf8Sha256": "9c9bb1dfbad25ad906ebd22215f1898ece0d31648bf886a2754641f2e253fd33",
+      "decodedContentSha256": "9c9bb1dfbad25ad906ebd22215f1898ece0d31648bf886a2754641f2e253fd33",
+      "declarations": 29,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "originalSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "utf8Sha256": "c84508f4e2703d3e70457abfddf66df51d462ee2bf80a8770b80fe4ad433ef0f",
+      "decodedContentSha256": "c84508f4e2703d3e70457abfddf66df51d462ee2bf80a8770b80fe4ad433ef0f",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "originalSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "utf8Sha256": "e9cd9df3690b90cf0248491b646d2311cfd5e0ba801bbc39c453043d2dd82ce9",
+      "decodedContentSha256": "e9cd9df3690b90cf0248491b646d2311cfd5e0ba801bbc39c453043d2dd82ce9",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "originalSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "utf8Sha256": "050c548175421165bd6771d33c5e80913cfebf938b4fab2bd3ad1a169ceaae9e",
+      "decodedContentSha256": "050c548175421165bd6771d33c5e80913cfebf938b4fab2bd3ad1a169ceaae9e",
+      "declarations": 5,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "originalSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "utf8Sha256": "94165f5e82da8dd9dbcf29e15a86ba3a7159a59a5d4382374e724fdfc3d3f773",
+      "decodedContentSha256": "94165f5e82da8dd9dbcf29e15a86ba3a7159a59a5d4382374e724fdfc3d3f773",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.miha/plugin.xml",
+      "originalSha256": "29a7e8424ebac3c220fb7ac6642e8b078ea8f5fd886bb7a6a542801eba85650b",
+      "utf8Sha256": "dde5db467316a0262bb57baa592afa49b5533d9d1096e3efc4c23160f5e94de4",
+      "decodedContentSha256": "dde5db467316a0262bb57baa592afa49b5533d9d1096e3efc4c23160f5e94de4",
+      "declarations": 13,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "originalSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "utf8Sha256": "56710531ef7ec82cbfe40b52993a83ecbf2422173b6dc14d63109a2e095652b2",
+      "decodedContentSha256": "56710531ef7ec82cbfe40b52993a83ecbf2422173b6dc14d63109a2e095652b2",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "originalSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "utf8Sha256": "a4f31edea7c8f6f535c9f8e686f8eef8a5961e3aa09b75515285d4e41b5c0500",
+      "decodedContentSha256": "a4f31edea7c8f6f535c9f8e686f8eef8a5961e3aa09b75515285d4e41b5c0500",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+      "originalSha256": "021c2d677d403b1c6bb16e50a6705211dae5fa4b4abe53f6fab80a1ab700c79f",
+      "utf8Sha256": "2dabcfe2a86225b70b2529cc61657ef1b30eec05363663b0e609a2b6d515325c",
+      "decodedContentSha256": "2dabcfe2a86225b70b2529cc61657ef1b30eec05363663b0e609a2b6d515325c",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "originalSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "utf8Sha256": "534eb5d59509c4a40ea6d4f335e8fb4465a4381cf117d244f46a5e3837879397",
+      "decodedContentSha256": "534eb5d59509c4a40ea6d4f335e8fb4465a4381cf117d244f46a5e3837879397",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "originalSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "utf8Sha256": "60ed229ec9c15ca82062632252a09f267c38b006c20747180e8534b845a9a59a",
+      "decodedContentSha256": "60ed229ec9c15ca82062632252a09f267c38b006c20747180e8534b845a9a59a",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "originalSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "utf8Sha256": "6c837b00c9b0a88fbcc30f3c69a884a04a96f4ef9079341d880c38259bb8a86e",
+      "decodedContentSha256": "6c837b00c9b0a88fbcc30f3c69a884a04a96f4ef9079341d880c38259bb8a86e",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "originalSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "utf8Sha256": "8b9231242d889cb39d86c9bc575b4e2dd33ce39c47138fa2379a8e4212935f59",
+      "decodedContentSha256": "8b9231242d889cb39d86c9bc575b4e2dd33ce39c47138fa2379a8e4212935f59",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "originalSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "utf8Sha256": "c03536f8713df404a770672a7045f0bcb4acd006c251b985b297b9a43ce4f9fc",
+      "decodedContentSha256": "c03536f8713df404a770672a7045f0bcb4acd006c251b985b297b9a43ce4f9fc",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "originalSha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "utf8Sha256": "ecf4ab4dc3bffa92e489c66aef7f0eecff0c09a608e558346bf807395ecd57d3",
+      "decodedContentSha256": "ecf4ab4dc3bffa92e489c66aef7f0eecff0c09a608e558346bf807395ecd57d3",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.dbgwnd/plugin.xml",
+      "originalSha256": "e6e7bfaf45af36cdfd30ae174d242c834169062f79f13116dea174ca510e45c4",
+      "utf8Sha256": "16210ceb71da043aea6fb34e7fabb01f190f10044a8c99ef858ea3413c950052",
+      "decodedContentSha256": "16210ceb71da043aea6fb34e7fabb01f190f10044a8c99ef858ea3413c950052",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "originalSha256": "95a8ad070f9994f057c193b552e9c3ae4dbd636c88e01fe2889b3445f8ab590b",
+      "utf8Sha256": "ec35c21db40f88957b83ef785642591b76333afacb4f14111df78ae075ab7307",
+      "decodedContentSha256": "ec35c21db40f88957b83ef785642591b76333afacb4f14111df78ae075ab7307",
+      "declarations": 1,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "originalSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "utf8Sha256": "f50c2e3637618e199187b3d1ae88fdf7f631349be0f5459135b5078dd94ae655",
+      "decodedContentSha256": "f50c2e3637618e199187b3d1ae88fdf7f631349be0f5459135b5078dd94ae655",
+      "declarations": 2,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "originalSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "utf8Sha256": "97103df13dacce89191e792a208e8cf656e7c8a129c5492dbd6a78a22cc1344a",
+      "decodedContentSha256": "97103df13dacce89191e792a208e8cf656e7c8a129c5492dbd6a78a22cc1344a",
+      "declarations": 12,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "originalSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "utf8Sha256": "64196547a47f1e6987718aa126fc92e2017b2490b65412bbb8be2e9a88a3fcad",
+      "decodedContentSha256": "64196547a47f1e6987718aa126fc92e2017b2490b65412bbb8be2e9a88a3fcad",
+      "declarations": 3,
+      "lineEndings": "preserved"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "originalSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "utf8Sha256": "a009abb3c20d5c121a7d826e88836fb1dfb08b35308d4eb4b11a3ddd815d3a86",
+      "decodedContentSha256": "a009abb3c20d5c121a7d826e88836fb1dfb08b35308d4eb4b11a3ddd815d3a86",
+      "declarations": 63,
+      "lineEndings": "preserved"
+    }
+  ],
+  "fallbackReader": {
+    "path": "trunk/core/framework/plugin/Plugin.cs",
+    "originalSha256": "185bae62217159077953195407b3308256b70b444342bd75b38bb3d70dc7ef77",
+    "utf8Sha256": "e4871e5384f91d23d6446ed7c211fee802201fc7243ce02bfd21fb64dd447f0b",
+    "change": "loadFailSafe: StreamReader default encoding changed from Shift-JIS to UTF-8; source encoding and line endings preserved"
+  }
+}

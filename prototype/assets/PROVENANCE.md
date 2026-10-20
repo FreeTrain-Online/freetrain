@@ -1,5 +1,7 @@
 # Prototype source and asset provenance
 
+**Historical prototype provenance:** the source pins and asset derivations below remain accurate for the delivered prototype. Current full-game parity authority is ExAV stable archive `trunk/`, not the old source retained here; see [the source policy](../../doc/web-feature-parity.md). Preserve this record when migrating assets rather than relabeling old derivations as ExAV output.
+
 Baseline: `main` at `1f755ca`. Optional reference branches: SDL `e8a7e0f`, c477
 `498eebd`. These revisions exist locally. Stage 1 copied **no** historical code
 or binary assets; its schemas, fixture data, shell, and CSS are newly authored.

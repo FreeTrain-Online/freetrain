@@ -2,7 +2,7 @@
 """Reconcile base content against pinned source; never load legacy assemblies.
 
 This is a source specification, not an importer or a historical-save reader.
-Reviewed rules live in doc/parity/content-rules.json. Review artifacts go in tmp/.
+Historical rules live in doc/parity/historical/content-rules.json. Review artifacts go in tmp/.
 """
 import argparse
 import collections

@@ -1,10 +1,28 @@
 # P0-04 geometry, clock, train state and drawing expectations
 
-Status: source extraction complete against `1f755ca6f291253b8cd5024ef53402b85d467170`.
+**ExAV reassessment pending — 20 October 2026:** this P0-04 geometry/clock/train review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01 now supplies [stable ExAV source/dependency hashes](web-parity-exav-inventory.md)
+and project membership, including the generic loader's `SOURTH` token difference.
+These are inputs to P0-04 source/dependency reconciliation; the historical numeric
+tables and galleries below have not been rederived or accepted against ExAV.
+
+**EXAV-DIR-001 — owner-approved correction, 20 October 2026:** `SOURTH` in
+ExAV's `GenericStructureContribution.parseDirection` is a typo. Use **`SOUTH`**
+for the south direction when porting the parser and content. Preserve `SOURTH`
+in pinned source evidence and source-derived inventory; the port intentionally
+corrects this behavior. The decision is recorded in
+[the ExAV baseline](parity/exav-baseline.json).
+
+The stable ExAV checkout's `trunk/plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs`
+now uses `SOUTH` (working-tree correction, 20 October 2026). The archive commit
+pin remains unchanged, so its generated source evidence still records `SOURTH`.
+
+Historical status: original-FreeTrain source extraction complete against `1f755ca6f291253b8cd5024ef53402b85d467170`.
 This is a specification for P1–P5, not delivered gameplay or an original-runtime
-comparison. [Geometry metadata](parity/geometry.json) pins all eight directions,
+comparison. [Geometry metadata](parity/historical/geometry.json) pins all eight directions,
 60 serialized RailPattern IDs and 16 support slices.
-[Behavior tables](parity/geometry-behavior.json) pin the reviewed dependency files,
+[Behavior tables](parity/historical/geometry-behavior.json) pin the reviewed dependency files,
 48 level poses, 64 slope poses, 192 attachment decisions and `GEO-*` differences.
 The source review descriptions name the symbols owning each expectation below.
 

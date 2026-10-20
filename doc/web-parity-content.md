@@ -1,14 +1,36 @@
 # Base content reconciliation
 
-P0-02 is complete as a **source inventory and specification**, against legacy
+**ExAV reassessment pending — 20 October 2026:** this P0-02 bundled-content review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01 now supplies a separate [stable ExAV discovery ledger](web-parity-exav-inventory.md):
+56 manifests / 482 direct declarations, one discovered generic child and 238 loose
+media files. These replace the historical discovery denominator for the next
+P0-02 review; factory/resource/alias/state reconciliation below has not transferred.
+
+**EXAV-DIR-001 — owner-approved correction, 20 October 2026:** treat the generic
+loader's `SOURTH` token as a source typo. Use **`SOUTH`** for the south direction
+in ported content and its parser. The source inventory retains the original
+spelling/behavior; see [the recorded decision](parity/exav-baseline.json).
+The stable ExAV checkout's generic loader has now been corrected to `SOUTH` in
+the working tree; the pinned archive commit and its evidence remain unchanged.
+
+**EXAV-ENC-001 — owner-approved conversion, 20 October 2026:** all 56 stable
+ExAV checkout manifests now contain UTF-8 bytes and XML declarations, without BOM.
+Decoded Japanese text, entities, all 482 direct declarations and line endings are
+preserved. `Plugin.loadFailSafe` now reads UTF-8 metadata. Use UTF-8 for ported
+manifests; the pinned archive evidence retains its original CP932 encoding.
+The working-tree conversion is uncommitted; [per-file hashes and verification](parity/exav-manifest-encoding-review.json)
+are separate from the pinned source ledger.
+
+Historical P0-02 completed a **source inventory and specification**, against original FreeTrain
 `1f755ca6f291253b8cd5024ef53402b85d467170`. This does not establish playable
 content, rendered fidelity, historical-save compatibility or original-runtime
 comparison. Those acceptance gates remain with their implementation phases.
 
-The [discovery ledger](parity/base-ledger.json) retains original discovery
+The [discovery ledger](parity/historical/base-ledger.json) retains original discovery
 diagnostics and `inventoried` implementation status. The separate
-[content review](parity/base-content-review.json) reconciles those records using
-[maintained source rules](parity/content-rules.json). No legacy DLLs or serialized
+[content review](parity/historical/base-content-review.json) reconciles those records using
+[maintained source rules](parity/historical/content-rules.json). No legacy DLLs or serialized
 objects are activated. The optional non-free suite has a separate ledger and is
 outside this base review.
 

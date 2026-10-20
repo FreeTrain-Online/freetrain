@@ -1,5 +1,11 @@
 # Archived online manual comparison
 
+**ExAV reassessment pending — 20 October 2026:** this archived online manual comparison records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01's [stable ExAV discovery ledger](web-parity-exav-inventory.md) supplies
+current source paths/hashes; it does not validate the MAN-O*/MAN-A* behavior
+claims or transfer the historical workflow mappings below.
+
 Reviewed 19 October 2026 using the owner's local `tmp/online-manual/` collection,
 the February 2003 Word export and pinned legacy source at `1f755ca`.
 This supplements the [manual workflow oracle](web-parity-manual.md); it does not
@@ -10,7 +16,7 @@ fetched and no archived scripts were executed.
 
 All **16 saved HTML pages** were decoded as EUC-JP and their main article bodies
 read, excluding Wayback scripts, wiki navigation, recent-change sidebars and
-footers. The [review inventory](parity/online-manual-review.json) records raw HTML
+footers. The [review inventory](parity/historical/online-manual-review.json) records raw HTML
 SHA-256, original/archive URLs, capture timestamps, each page's `Last-modified`,
 extracted-body hashes, 56 local image references and 13 pinned source checks.
 The raw archive and extracted review text remain in ignored `tmp/`; neither the

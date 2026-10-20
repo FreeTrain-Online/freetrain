@@ -1,43 +1,55 @@
 # Web parity coverage inventory
 
-The canonical game/content baseline is legacy `main` at the commit pinned in
-[baseline.json](parity/baseline.json). The implementation comparison is pinned
-separately at `a48e8fa` (including Credits and License). Inventory is P0 work;
-it does not establish legacy behavior parity or close native/device UX acceptance.
-P0-03's action review separately pins the delivered registry at `8e4c6d4`;
-the earlier content/path comparison retains its original revision.
+**Authority replaced — 20 October 2026:** the current parity source is **FreeTrain ExAV 2.1.1.12**, repository `/Users/dmark/dev/freetrain-exav-archive` at **`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`** (SVN r115), **subtree `trunk/`**, including its bundled `plugins/`. This repository's old `core/`, `plugins/`, archived desktop source and original-FreeTrain `1f755ca` are historical comparison and English-translation donors only. They do not define current game behavior, bundled coverage or a second parity target.
 
-The owner's original Windows manual, **chapters 2–4**, and the
-[later online-manual comparison](web-parity-online-manual.md) are the player-facing
-oracle for baseline workflows and toolbar/task-window structure. The maintained
-[manual requirements and browser mapping](web-parity-manual.md) records provenance,
-all documented menu families, focused windows, stable `MAN-*` requirements,
-acceptance obligations and explicit source/prose differences. Use it alongside
-the pinned source; it does not replace the source ledger, exclude later bundled
-features or close the complete P0-03 action-map gate.
+**P0-01 ExAV discovery completed — 20 October 2026; P0-02–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. Discovery does not transfer historical behavior reviews or establish implementation/runtime parity.
 
-The maintained inputs and outputs are:
+The existing `parity/historical/baseline.json`, `base-ledger.json`, action/content reviews, geometry/scenarios and serialization/transition reports below still pin the original-FreeTrain source and earlier implementation revisions. They retain their historical provenance and have **not** been repinned. Passing their historical `--check` commands verifies historical reproducibility, not ExAV coverage. Reuse reviewed results only after checking ExAV symbols and their dependencies. See the [complete P0 reassessment](../tmp/web-feature-parity-checklist.md#p0-reassessment-and-repository-recommendation--20-october-2026) and [ExAV source assessment](../tmp/web-feature-parity-exav-delta.md).
+
+The original Windows manual, online manual and developer wiki remain historical workflow/authoring evidence. Reconcile their claims and `MAN-*` requirements with stable ExAV source and owner decisions before treating them as current behavior. The delivered browser UX/multiplayer contracts remain implementation requirements, independently of historical game-source authority. `freetrain-modern/main` remains a useful modern Avalonia reference for its full toolbar, building catalog, rail laying and other implemented UI actions.
+
+ExAV is Japanese-only. Carry existing English translations over during each feature slice, keyed to ExAV symbols/resource keys or contribution IDs with Japanese source text/hash and English donor/review status. Keep rules/numeric data and stable identities from ExAV. Existing bilingual shell text remains reusable; changed/new catalog, controls, errors, reports and help need explicit English/Japanese coverage. Translation donors are not gameplay or plugin-definition authorities.
+
+Keep LGPL bundled ExAV content separate from the non-LGPL V2 additional set, canonical `/Users/dmark/dev/freetrain_online_extra_plugins` at observed **`c8ec62e47a7f5089b666e57072164a0e14934466`**, plugin root `plugins/`. Preserve separate inventories, generated outputs, pack identities, notices and packages. Prior V2-copy counts/hashes remain historical until reconciled against this canonical repository. Default builds must not discover/include optional sibling content automatically.
+
+The current ExAV discovery outputs are:
 
 | File | Meaning |
 | --- | --- |
-| [baseline.json](parity/baseline.json) | Revisions, expected manifest counts and root dispositions |
-| [base-ledger.json](parity/base-ledger.json) | All 54 manifests, declarations/generated children, resources, source files, UI bindings and serialization candidates |
-| [base-content-review.json](parity/base-content-review.json) | P0-02 source reconciliation: complete recipes, build mappings, aliases, resource graph, notices and contribution/instance state evidence |
-| [content-rules.json](parity/content-rules.json) | Maintained decoding/crop/anchor/effect/state rules and explicit difference dispositions |
+| [exav-baseline.json](parity/exav-baseline.json) | Archive commit/subtree, stable engine/V2 identity, root/scope dispositions and generated-registration source review |
+| [exav-ledger.json](parity/exav-ledger.json) | Separate namespaced source/content/UI/save discovery, hashes, project memberships/dependencies, translation references and open review fields |
+| [ExAV discovery report](web-parity-exav-inventory.md) | Fresh accounting, source differences, build gaps, limits and explicit-source reproduction commands |
+| [Manifest encoding conversion](parity/exav-manifest-encoding-review.json) | EXAV-ENC-001: separate working-tree evidence for 56 Shift-JIS → UTF-8 manifests and the UTF-8 fallback metadata reader; pinned archive provenance remains unchanged |
+
+Superseded original-FreeTrain artifacts and supplemental historical evidence now
+live under [parity/historical/](parity/historical/README.md). Their source pins,
+IDs and review status retain their original meaning. The
+[artifact index](parity/README.md) distinguishes them from current ExAV outputs.
+The historical inputs and outputs, pending semantic ExAV reassessment, are:
+
+| File | Meaning |
+| --- | --- |
+| [baseline.json](parity/historical/baseline.json) | Historical original-FreeTrain revisions/counts/root dispositions; its old “canonical” labels do not select the current ExAV authority |
+| [base-ledger.json](parity/historical/base-ledger.json) | All 54 manifests, declarations/generated children, resources, source files, UI bindings and serialization candidates |
+| [base-content-review.json](parity/historical/base-content-review.json) | P0-02 source reconciliation: complete recipes, build mappings, aliases, resource graph, notices and contribution/instance state evidence |
+| [content-rules.json](parity/historical/content-rules.json) | Maintained decoding/crop/anchor/effect/state rules and explicit difference dispositions |
 | [Base content reconciliation](web-parity-content.md) | P0-02 accounting, source findings and boundaries of the evidence |
-| [extra-suite-ledger.json](parity/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
-| [action-map.json](parity/action-map.json), [action-review.json](parity/action-review.json) | Complete P0-03 source mappings and generated control/contribution/manual evidence; missing gameplay stays explicit |
+| [extra-suite-ledger.json](parity/historical/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
+| [action-map.json](parity/historical/action-map.json), [action-review.json](parity/historical/action-review.json) | Complete P0-03 source mappings and generated control/contribution/manual evidence; missing gameplay stays explicit |
 | [Player action reconciliation](web-parity-actions.md) | Workflow destinations, dynamic registration routes, configuration/gesture review and source-only dispositions |
 | [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
-| [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
-| [geometry.json](parity/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
-| [Geometry/clock/train specification](web-parity-geometry.md), [behavior tables](parity/geometry-behavior.json) | P0-04: 45 pinned dependency reviews, level/slope poses, attachment decisions, pass/cut compositions and explicit source differences; runtime acceptance remains open |
-| [scenarios.json](parity/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
+| [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/historical/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
+| [geometry.json](parity/historical/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
+| [Geometry/clock/train specification](web-parity-geometry.md), [behavior tables](parity/historical/geometry-behavior.json) | P0-04: 45 pinned dependency reviews, level/slope poses, attachment decisions, pass/cut compositions and explicit source differences; runtime acceptance remains open |
+| [scenarios.json](parity/historical/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |
-| [Contract/content/persistence specification](web-parity-persistence.md), [transition decisions](parity/domain-transition.json), [source evidence](parity/domain-transition-review.json) | P0-05: eight-direction/version boundaries, explicit prototype compatibility mode/reference disposition, pack requirements and authority/draft/readiness obligations; implementation remains P1/P2/P10 |
-| [Serializer type/field inventory](parity/serialization-review.json) | P0-05: all 186 candidate files, 359 declarations, 903 fields, nested identities/inheritance, custom serializers/callbacks and explicit exclusions; not a compiler, importer or runtime compatibility verdict |
+| [Contract/content/persistence specification](web-parity-persistence.md), [transition decisions](parity/historical/domain-transition.json), [source evidence](parity/historical/domain-transition-review.json) | P0-05: eight-direction/version boundaries, explicit prototype compatibility mode/reference disposition, pack requirements and authority/draft/readiness obligations; implementation remains P1/P2/P10 |
+| [Serializer type/field inventory](parity/historical/serialization-review.json) | P0-05: all 186 candidate files, 359 declarations, 903 fields, nested identities/inheritance, custom serializers/callbacks and explicit exclusions; not a compiler, importer or runtime compatibility verdict |
 
-Run from the repository root with Python 3.9 or newer:
+The following details and reproduction commands describe the historical review
+family. Use the [separate ExAV commands](web-parity-exav-inventory.md#reproduction-and-checks)
+for current-source discovery. Run historical commands from the repository root
+with Python 3.9 or newer; they do not validate ExAV behavior:
 
 ```sh
 # Base generation/checks never discover or read a sibling checkout.

@@ -63,7 +63,7 @@ def extract(tree):
                 directions=directions, patterns=records,
                 trafficDrawOrder=['road.before', 'accessory.before', 'rail.before', 'car', 'rail.after', 'accessory.after'],
                 sourceSpecification='doc/web-parity-geometry.md',
-                behaviorTable='doc/parity/geometry-behavior.json',
+                behaviorTable='doc/parity/historical/geometry-behavior.json',
                 openCases=['Original-runtime visual comparison', 'Runtime route/attachment/slope/support acceptance',
                            'Runtime train composition, terrain/water height cuts and picking acceptance'])
 

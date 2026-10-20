@@ -1,9 +1,15 @@
 # Original manual: player workflow oracle
 
+**ExAV reassessment pending — 20 October 2026:** this original manual mapping records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01's [stable ExAV discovery ledger](web-parity-exav-inventory.md) now provides
+the separate pinned source paths/hashes for reconciliation. The MAN-* behavior
+claims and source comparisons below still require ExAV P0-03/P0-04 review.
+
 Added 19 October 2026 during P0, after source/content reconciliation P0-02.
 Use chapters **2–4** of the [user manual](http://www.kohsuke.org/freetrain/wordDoc.lzh) (Word format)
 together with the [later archived online manual comparison](web-parity-online-manual.md)
-as the player-facing oracle for the original game's structure, baseline features,
+as historical player-workflow evidence for the original game's structure, features,
 and toolbar/dialog workflows. Chapter 1's installation and platform requirements
 are outside this review. This is a specification input, not delivered web behavior
 or evidence of running the Windows application.
@@ -24,13 +30,13 @@ pages were edited in 2008, with older footbridge and later support pages; preser
 each page's modification and capture dates separately. The [detailed comparison](web-parity-online-manual.md)
 adds `MAN-O01`–`MAN-O16`, records missing images/chapters and the conflicting wiki
 Word-download date, and extends acceptance with `MAN-A17`–`MAN-A22`. Its
-[hash/provenance inventory](parity/online-manual-review.json) preserves the exact
+[hash/provenance inventory](parity/historical/online-manual-review.json) preserves the exact
 local inputs. The tables below retain the Word requirements; read them together
 with the online supplements rather than treating the early menu list as final.
 
 The manual supplies expected player outcomes and information architecture. The
-pinned legacy source supplies exact algorithms, geometry, state and later bundled
-features the manual does not cover. Reconcile disagreements explicitly; do not
+current pinned ExAV source supplies exact algorithms, geometry, state and bundled
+features; the original-source comparisons below require ExAV reconciliation. Reconcile disagreements explicitly; do not
 silently replace either with the current prototype. Existing scope decisions
 (archived debug/video tools and external A4/user-file music exclusions) still
 apply. A manual omission does not exclude source-implemented bank, stocks,
@@ -216,9 +222,10 @@ semantic question through the plan's difference register before declaring parity
 ## Acceptance cases to add with the relevant slices
 
 These are fixture obligations, **not executed tests**. Derive precise numeric
-expectations from pinned source and the difference decisions above. Reuse the IDs
-in `doc/parity/scenarios.json` when adding executable fixtures; its current
-source-derived scenarios keep their existing evidence classification.
+expectations from pinned source and the difference decisions above. Reuse these
+MAN-* IDs in the ExAV scenario ledger as P0-06 adds executable fixtures.
+`doc/parity/historical/scenarios.json` retains the earlier source-derived seeds;
+revalidate them against ExAV before carrying their expectations forward.
 
 | ID | Player journey and observable acceptance | Phase |
 | --- | --- | --- |

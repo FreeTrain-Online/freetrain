@@ -1660,7 +1660,7 @@
     "accessory.after"
   ],
   "sourceSpecification": "doc/web-parity-geometry.md",
-  "behaviorTable": "doc/parity/geometry-behavior.json",
+  "behaviorTable": "doc/parity/historical/geometry-behavior.json",
   "openCases": [
     "Original-runtime visual comparison",
     "Runtime route/attachment/slope/support acceptance",

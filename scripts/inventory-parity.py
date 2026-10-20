@@ -17,8 +17,9 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / 'doc/parity/baseline.json'
-OUT = ROOT / 'doc/parity'
+PARITY_ROOT = ROOT / 'doc/parity'
+OUT = PARITY_ROOT / 'historical'
+CONFIG = OUT / 'baseline.json'
 ACTION_SPEC = importlib.util.spec_from_file_location('parity_actions', Path(__file__).with_name('parity_actions.py'))
 action_review = importlib.util.module_from_spec(ACTION_SPEC)
 ACTION_SPEC.loader.exec_module(action_review)
@@ -64,10 +65,11 @@ def dump_ledger(value):
 
 class Tree:
     """Read only the pinned Git objects; dirty working files cannot taint a baseline."""
-    def __init__(self, repo, revision):
+    def __init__(self, repo, revision, subtree=None):
         self.revision = git(repo, 'rev-parse', revision + '^{commit}').decode().strip()
+        target = self.revision + ':' + subtree if subtree else self.revision
         self.entries = {}
-        for entry in git(repo, 'ls-tree', '-rz', '--full-tree', self.revision).split(b'\0'):
+        for entry in git(repo, 'ls-tree', '-rz', '--full-tree', target).split(b'\0'):
             if not entry:
                 continue
             info, path = entry.split(b'\t', 1)
@@ -101,13 +103,17 @@ class Tree:
         raise ValueError('Unknown text encoding: ' + path)
 
 
-def manifest(data):
+def manifest(data, allow_cp932=False):
     """Bounded internal general entities, both quote forms; no external entities."""
     if len(data) > XML_LIMIT:
         raise ValueError('Manifest exceeds 4 MiB')
-    text = data.decode('utf-8-sig')
+    encoding = 'utf-8-sig'
+    declaration_bytes = re.search(br'<\?xml[^>]*encoding=[\'\"]([^\'\"]+)', data)
+    if allow_cp932 and declaration_bytes and declaration_bytes[1].lower() in (b'shift_jis', b'cp932'):
+        encoding = 'cp932'
+    text = data.decode(encoding)
     declaration = re.search(r'<\?xml[^>]*encoding=[\'"]([^\'"]+)', text)
-    if declaration and declaration[1].lower() not in ('utf-8', 'utf8'):
+    if declaration and declaration[1].lower() not in (('utf-8', 'utf8', 'shift_jis', 'cp932') if allow_cp932 else ('utf-8', 'utf8')):
         raise ValueError('Unsupported manifest encoding: ' + declaration[1])
     text = re.sub(r'<!--.*?-->', '', text, flags=re.S)
     if re.search(r'<!DOCTYPE\s+[^\s>]+\s+(?:SYSTEM|PUBLIC)\b', text, re.I):
@@ -212,10 +218,10 @@ def child_recipe(node):
     return max(1, len(colors)), sprites
 
 
-def direction_aliases(sprites):
+def direction_aliases(sprites, south_token='SOUTH'):
     table = [-1] * 8
     default = len(sprites)
-    named = {'NORTH': 0, 'EAST': 2, 'SOUTH': 4, 'WEST': 6}
+    named = {'NORTH': 0, 'EAST': 2, south_token: 4, 'WEST': 6}
     for index, sprite in enumerate(sprites):
         tokens = [token for node in sprite.findall('direction')
                   for token in node.get('front', '').upper().split('|')]
@@ -229,7 +235,7 @@ def direction_aliases(sprites):
     return [default if value == -1 else value for value in table]
 
 
-def build_pack(tree, pack_id, prefix, current=None, base=None, base_tree=None):
+def build_pack(tree, pack_id, prefix, current=None, base=None, base_tree=None, south_token='SOUTH', allow_cp932=False):
     # Historical Git inventory, not runtime discovery: the pinned extra revision
     # predates the owner's plugin.XML -> plugin.xml source correction.
     paths = sorted(p for p in tree.entries if p.startswith(prefix) and p.lower().endswith('/plugin.xml'))
@@ -244,7 +250,7 @@ def build_pack(tree, pack_id, prefix, current=None, base=None, base_tree=None):
     for path in paths:
         plugin = posixpath.basename(posixpath.dirname(path))
         try:
-            root, entity_info = manifest(tree.read(path))
+            root, entity_info = manifest(tree.read(path), allow_cp932=allow_cp932)
         except (ValueError, ET.ParseError) as error:
             raise ValueError(f'{path}: {error}') from error
         parsed[path] = root
@@ -321,7 +327,7 @@ def build_pack(tree, pack_id, prefix, current=None, base=None, base_tree=None):
                 color_count, sprites = child_recipe(node)
                 record['generatedRecipe'] = dict(source='plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs',
                     symbol='loadSprites', colors=color_count, directions=len(sprites), idFormat='{parent}-{color}:{direction}',
-                    directionAliases=direction_aliases(sprites), aliasesStatus='source-derived; runtime comparison pending',
+                    directionAliases=direction_aliases(sprites, south_token), aliasesStatus='source-derived; runtime comparison pending',
                     heightStatus='height variants are not registered child IDs')
                 for color in range(color_count):
                     for direction, sprite in enumerate(sprites):
@@ -381,10 +387,10 @@ def strip_comments(text):
     return re.sub(pattern, lambda m: '' if m[0].startswith(('//', '/*')) else m[0], text, flags=re.S)
 
 
-def source_inventory(tree, current):
+def source_inventory(tree, current, all_sources=False):
     records, bindings, serializers, resources = [], [], [], []
     for path in sorted(tree.entries):
-        if not path.startswith(('core/', 'plugins/', 'lib/')) or not path.endswith('.cs'):
+        if not path.endswith('.cs') or not all_sources and not path.startswith(('core/', 'plugins/', 'lib/')):
             continue
         text, encoding = tree.text(path)
         code = strip_comments(text)
@@ -470,11 +476,24 @@ def write(path, data, check=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', choices=('historical', 'exav'), default='historical',
+                        help='Separate evidence families; default preserves historical outputs')
+    parser.add_argument('--source-root', type=Path, help='Explicit ExAV archive Git repository; required for --source exav')
     parser.add_argument('--check', action='store_true', help='Check maintained inventories without rewriting them')
     parser.add_argument('--extra-root', type=Path, help='Explicit separate repository root (parent of PluginsExtra)')
     parser.add_argument('--report', type=Path, help='Temporary human-readable report path under tmp/')
     parser.add_argument('--action-report', type=Path, help='Temporary P0-03 workflow/difference report under tmp/')
     args = parser.parse_args()
+    if args.source == 'exav':
+        if not args.source_root or args.extra_root or args.action_report:
+            parser.error('--source exav requires --source-root; extra/action review remains separate')
+        spec = importlib.util.spec_from_file_location('parity_exav', Path(__file__).with_name('parity_exav.py'))
+        exav = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(exav)
+        exav.run(sys.modules[__name__], args)
+        return
+    if args.source_root:
+        parser.error('--source-root requires --source exav')
     if args.report and not args.report.resolve().is_relative_to((ROOT / 'tmp').resolve()):
         parser.error('--report must be under this checkout\'s tmp/')
     if args.action_report and not args.action_report.resolve().is_relative_to((ROOT / 'tmp').resolve()):

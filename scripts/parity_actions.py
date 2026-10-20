@@ -122,7 +122,7 @@ def apply_reviews(tree, base, reviews, strip_comments, digest, registry_source):
                    modernDestinations=[workflow['destination']],
                    phases=workflow['phases'], manualRequirements=workflow['manualRequirements'],
                    reachability=source_reviews[row['baselinePath']]['reachability'],
-                   evidence=[row['baselinePath'], 'doc/parity/action-map.json#' + workflow_id],
+                   evidence=[row['baselinePath'], 'doc/parity/historical/action-map.json#' + workflow_id],
                    differences=workflow['differences'])
         if 'disposition' in decision:
             if decision['disposition'] not in allowed:

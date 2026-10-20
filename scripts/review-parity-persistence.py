@@ -18,7 +18,7 @@ SPEC = importlib.util.spec_from_file_location('inventory_parity', Path(__file__)
 inventory = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(inventory)
 ROOT = inventory.ROOT
-PLAN = ROOT / 'doc/parity/domain-transition.json'
+PLAN = inventory.OUT / 'domain-transition.json'
 BASE_REVISION = '1f755ca6f291253b8cd5024ef53402b85d467170'
 IMPLEMENTATION_REVISION = '4ddb808a337e805f519451bad92b71ec02f67ae2'
 

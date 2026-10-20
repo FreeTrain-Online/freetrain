@@ -13,6 +13,19 @@ download/upload and an optional station sound are available.
 Multiple participants can share that world with owner/operator/observer roles,
 conflict checks, independent reconnects and timed train-control leases.
 
+## Parity source policy
+
+The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
+[https://github.com/rdmark/freetrain-exav-archive].
+The running reference slice and its asset importer still retain their recorded
+prototype provenance; they are not yet complete ExAV implementations. P0-01 ExAV
+discovery is complete; P0-02–09 reviews remain open. See
+[the source inventory](doc/web-parity-exav-inventory.md) and
+[maintained source policy](doc/web-feature-parity.md).
+
+Keep LGPL bundled content separate from the non-LGPL V2 additional set, canonical
+[https://github.com/rdmark/freetrain-online-plugins-nonfree].
+
 ## Prerequisites and checks
 
 Install the exact .NET SDK in `global.json` (10.0.402) and Deno in

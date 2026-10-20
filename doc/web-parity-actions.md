@@ -1,13 +1,20 @@
 # Baseline player action reconciliation
 
-P0-03 source mapping completed 19 October 2026 against legacy `1f755ca` and the
-delivered operation registry at `8e4c6d4`. This closes the action-inventory item,
+**ExAV reassessment pending — 20 October 2026:** this P0-03 action review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01 now supplies [stable ExAV source discovery](web-parity-exav-inventory.md):
+298 lexical bindings and 1,108 additional surfaces, including reference/excluded
+code. The historical workflow decisions below are not applied to those records;
+ExAV reachability, configuration, translations and modern destinations remain P0-03.
+
+Historical P0-03 source mapping completed 19 October 2026 against original FreeTrain `1f755ca` and the
+delivered operation registry at `8e4c6d4`. This closed the original-FreeTrain action-inventory item,
 not P0, gameplay parity, P9 workflow delivery or native/device UX acceptance.
 The [port plan](../tmp/web-feature-parity-port-plan.md) keeps those gates separate.
 
 ## Maintained review and generated evidence
 
-[`parity/action-map.json`](parity/action-map.json) is the maintained review input.
+[`parity/historical/action-map.json`](parity/historical/action-map.json) is the maintained review input.
 Its schema version 2 records 75 workflow destinations/dispositions, 180 pinned
 source reviews, all 248 original event/command binding decisions, 985 additional
 source-surface decisions, all 509 declaration/generated-child routes and reciprocal
@@ -17,8 +24,8 @@ All 26 post-manual release groups have action-level source/workflow links; the
 pinned baseline's 15 `whatsnew.txt` notes have individual UI/content/no-functional-
 change dispositions. These are not verification of each historical bug fix.
 
-[`parity/action-review.json`](parity/action-review.json) is reproducible output.
-The original binding IDs remain in [`base-ledger.json`](parity/base-ledger.json),
+[`parity/historical/action-review.json`](parity/historical/action-review.json) is reproducible output.
+The original binding IDs remain in [`base-ledger.json`](parity/historical/base-ledger.json),
 now with reviewed workflow, reachability, mapping status, phase and manual links.
 Their implementation status remains **inventoried**. Missing gameplay destinations
 use `missing:`; explicit adaptations, exclusions, source-only and supporting code

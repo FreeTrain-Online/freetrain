@@ -1,16 +1,23 @@
 # Parity contract, content and persistence transition
 
-P0-05 specification completed on 19 October 2026. This specifies the transition;
+**ExAV reassessment pending — 20 October 2026:** this P0-05 contract/content/persistence review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+
+P0-01 now supplies [stable ExAV discovery](web-parity-exav-inventory.md) with
+195 serialization candidate files, source hashes and project memberships. Their
+fields/defaults/callbacks and stable-version layouts remain P0-05 work; the
+historical 186-file inventory and reserved rules/content names below are unchanged.
+
+Historical original-FreeTrain P0-05 specification completed on 19 October 2026. This specifies the transition;
 it does not change the running protocol, implement a converter, or deliver a
-compatibility mode. The base source is `1f755ca6f291253b8cd5024ef53402b85d467170`.
+compatibility mode. Its historical source is `1f755ca6f291253b8cd5024ef53402b85d467170`.
 The current implementation review is pinned independently at
 `4ddb808a337e805f519451bad92b71ec02f67ae2`, following P0-04. The earlier
 `a48e8fa` inventory remains historical evidence.
 
-The maintained [transition decisions](parity/domain-transition.json) contain
+The maintained [transition decisions](parity/historical/domain-transition.json) contain
 `TRANS-001`–`TRANS-012` and future acceptance cases `MIG-01`–`MIG-08`.
-[Transition source evidence](parity/domain-transition-review.json) hashes 24
-implementation dependencies. The [serializer inventory](parity/serialization-review.json)
+[Transition source evidence](parity/historical/domain-transition-review.json) hashes 24
+implementation dependencies. The [serializer inventory](parity/historical/serialization-review.json)
 accounts for every one of the original 186 candidate files, plus three envelope/
 binder/version dependencies. This page and the [geometry specification](web-parity-geometry.md)
 replace the initial persistence paragraphs in the [domain overview](web-parity-domain-transition.md)
@@ -52,7 +59,7 @@ epoch, revision, ruleset and pack set; never combine deltas across those boundar
 ## Spatial and content contract
 
 Parity headings are JSON integer indices `0..7`, exactly N, NE, E, SE, S, SW,
-W, NW. The [design table](parity/domain-transition.json) retains all vectors.
+W, NW. The [design table](parity/historical/domain-transition.json) retains all vectors.
 Left/right change by -1/+1, left90/right90 by -2/+2 and opposite by +4 modulo 8.
 Reject missing, fractional and out-of-range headings. Existing C# ordinals
 N=0/E=1/S=2/W=3 and wire/save strings `north/east/south/west` require explicit
