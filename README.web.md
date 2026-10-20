@@ -23,7 +23,8 @@ discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 so
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
 [P0-08 optional V2 source review and launch/credits specification](doc/web-parity-optional-plugins.md)
-is complete. P0-09 and runtime/native acceptance remain open. See
+is complete. [P0-09 authority/scope integration](doc/web-parity-exav-integration.md)
+is complete at source level; overall P0 and runtime/native acceptance remain open. See
 [the source inventory](doc/web-parity-exav-inventory.md) and
 [maintained source policy](doc/web-feature-parity.md).
 

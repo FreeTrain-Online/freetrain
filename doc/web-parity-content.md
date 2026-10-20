@@ -10,8 +10,7 @@ This closes the content inventory/specification task. Revised P0-03 workflow/sco
 reconciliation, P0-04/P0-05 source specifications and P0-06 scenario specification
 are also complete. [P0-07 coverage/estimates reporting](web-parity-report.md)
 completed on 21 October 2026. P0-08 [optional source inventory/specification](web-parity-optional-plugins.md)
-is also complete; P0-09, the overall P0 gate, content conversion, gameplay, visual fidelity and save continuation remain
-open. No desktop assemblies or serialized objects were activated.
+is also complete. [P0-09 source integration](web-parity-exav-integration.md) is complete at source level; the overall P0 gate, content conversion, gameplay, visual fidelity and save continuation remain open. No desktop assemblies or serialized objects were activated.
 
 | Source accounting | ExAV result |
 | --- | ---: |

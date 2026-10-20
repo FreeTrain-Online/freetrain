@@ -2,8 +2,7 @@
 
 **P0-07 report complete — 21 October 2026.** P0-01–06 now establish the
 stable ExAV discovery, source reconciliation and scenario specifications below.
-**P0-08 source inventory/specification is now complete; P0-09, overall P0 and
-every P1–P11 exit gate remain open.** See the separate
+**P0-08 source inventory/specification and [P0-09 authority/scope integration](web-parity-exav-integration.md) are now complete; overall P0 and every P1–P11 exit gate remain open.** See the separate
 [optional V2 review](web-parity-optional-plugins.md) for its 21 October follow-up. This report
 closes reporting and provisional sizing; the existing UX handoff still governs
 gameplay implementation.
@@ -21,13 +20,14 @@ copies retain their comparison/translation roles under the
 
 | Workstream | Reviewed denominator and present evidence | Remaining acceptance / phase owner |
 | --- | --- | --- |
-| [P0-01 discovery](web-parity-exav-inventory.md) | 1,041 hashed files; 456 C# files; 67 projects, 33 in the selected solution; 1,158 project item/reference edges | Lexical/project inclusion is not runtime reachability. Preserve source-only, authoring, native and excluded records. P0-09/P1–P11. |
+| [P0-01 discovery](web-parity-exav-inventory.md) | 1,041 hashed files; 456 C# files; 67 projects, 33 in the selected solution; 1,158 project item/reference edges | Lexical/project inclusion is not runtime reachability. Preserve source-only, authoring, native and excluded records. P0-09 scope assignment complete; P1–P11 feature acceptance pending. |
 | [P0-02 content](web-parity-content.md) | 56 manifests; 482 direct declarations including 33 factories, one generated child; 347 implementation bindings; all 75 missing DLL edges mapped to qualified source/projects; 238 media, 224 referenced and 14 alternatives | Full importer, portable code registrations/effects, converted assets and runtime recipe/gallery validation. P2 and owning P3–P8 slices. |
 | [P0-03 actions](web-parity-actions.md) | 298 bindings, 1,108 additional surfaces, 87 workflow families / 46 routes; all 483 contribution consumer/support decisions and 56 dependency closures | 154 of 166 UI source reviews require feature detail; 12 have explicit scope/support dispositions. Granular controls, dependency semantics, reciprocal MAN/DEV links and text classification ship with each slice. P1–P9/P11. |
 | [P0-04 geometry](web-parity-geometry.md) | 98 distinct reviewed files across source/dependency/gallery work; 60 patterns, 16 support slices, 48 level / 64 slope poses, 192 attachment decisions; 152 initial rail/car compositions | Native/full-world render, placement, picking, movement and save-continuation comparisons. P1/P2/P4–P6/P10. |
 | [P0-04 expanded gallery](web-parity-geometry-gallery.md) | 332 raw and 1,176 composition records; all 28 contacts inspected; six raw / 12 composition records diagnose an invalid source crop | EXAV-GAL-001 requires a P2/P6 disposition; diagnostic records are not successfully rendered recipes. Expanded counts stay separate from the initial 152. |
 | [P0-05 persistence](web-parity-persistence.md) | 195 candidate files, 377 declarations / 1,048 fields; 26 semantic dependencies, 24 implementation files; callbacks, custom writers and two older structural save profiles | Version/schema/pack dispatch, subsystem state, stable-runtime save fixtures, safe import, migration and continuation. P1/P2/P3–P10. |
 | [P0-06 scenarios](web-parity-scenarios.md) | 31 independent cases / 38 hashed files; six bilingual workflows; three proposed city profiles, two integration companions and full-content gallery recipe | Fixture generation, exact content bindings, instantiated legality, execution, continuation, capacity and native acceptance. P1–P11. |
+| [P0-09 integration](web-parity-exav-integration.md) | EXAV-01–16, eight gap dispositions, 465 stable source assignments / 73 historical-only paths, 24 scope groups and six archive profiles | Feature detail/defect choices, reproducible bundled build migration and runtime acceptance remain with P1–P11; overall P0 and UX handoff stay open. |
 | [P0-08 optional V2](web-parity-optional-plugins.md) | 4,933 hashed files; 452 source manifests / 11,484 declarations / 23,417 generated children / 4,399 media; stable profile selects 450 manifests / 11,470 declarations; 21,686 text candidates | Startup preparation/loading, localized per-set credits, image/case repairs, map-capture adapter/scope, per-file conversion terms and save/runtime evidence. P2/P9/P10/P11. |
 
 These denominators overlap and describe different things. Do not sum UI bindings
@@ -67,7 +67,7 @@ or resolve a source defect by implication.
 
 | Register / source difference | Required disposition and next owner |
 | --- | --- |
-| [Discovery](parity/exav-ledger.json): 351 shared direct IDs, 131 ExAV-only, 42 original-only | Matching IDs do not establish matching definitions. Original-only IDs are historical/compatibility differences, not missing bundled ExAV content. P0-09/P10. |
+| [Discovery](parity/exav-ledger.json): 351 shared direct IDs, 131 ExAV-only, 42 original-only | Matching IDs do not establish matching definitions. Original-only IDs are historical/compatibility differences, not missing bundled ExAV content. P0-09 scope integration complete; P10 compatibility pending. |
 | [EXAV-CONTENT-001–008](parity/exav-content-rules.json) | 66 commercial / 55 variable-height definitions have development consumers; removed direct menus and builder stubs require the planned P7/P9 catalog/placement adaptation. Preserve Int64 values, seated capacity, effects and state. Source/project bindings do not establish a successful Windows build. |
 | [EXAV-ACTION-001–015 / EXAV-UI-DEP-01–05](parity/exav-action-rules.json) | Include reachable station/train information, tracking, speed limits, report histories, diagram copy/files, passage materials, development tuning and group delegation. Resolve atomic validation, delegation and timetable defects in P4–P10. Old source-only/unused-selector claims do not transfer. |
 | [EXAV-GEO-01–11](parity/exav-geometry-rules.json), [four dependency chains](parity/exav-geometry-dependency-review.json) | Implement eight-direction terrain/host/drawing/timing contracts, source money/cadence, forwarding/TURNING, speed and platform cases in P1–P6. Source specifications are complete; runtime/full-world fidelity remains open. |
@@ -84,7 +84,7 @@ Source/project gaps also stay visible: seven unresolved project items (five old
 core entries and Straight.bmp in two TAT projects), two core C# files without
 selected-solution membership, Windows/native dependencies and source stubs.
 P0-02's mappings explain missing DLLs without removing the discovery diagnostics.
-P0-09 reconciles residual source/scope decisions; implementing slices must record
+[P0-09 integration](web-parity-exav-integration.md) now assigns residual source/scope decisions; implementing slices must record
 equivalent portable adaptations versus accepted semantic changes before verification.
 
 A4/external user-file music and debug remain excluded; bundled BGM, silence,
@@ -124,8 +124,7 @@ assembles the completed chapter manual; P11 reconciles the final in-scope ledger
 | Earlier combined ExAV/community tree | Historical 508 manifests / 11,966 explicit declarations / 11,952 distinct explicit IDs. Includes optional content; not stable bundled coverage. |
 | [Earlier PluginsExtra ledger](parity/historical/extra-suite-ledger.json) | 228 manifests / 6,216 direct declarations / 6,610 generated children / 2,511 media at its recorded `6886a0f` provenance; separate owner-requested compatibility evidence. |
 
-Earlier-copy counts retain the dated [ExAV assessment](../tmp/web-feature-parity-exav-delta.md)
-provenance. The canonical [P0-08 review](web-parity-optional-plugins.md) now binds
+Earlier-copy counts retain their dated research provenance under the maintained [P0-09 content boundaries](web-parity-exav-integration.md#branch-and-content-boundaries). The canonical [P0-08 review](web-parity-optional-plugins.md) now binds
 source/normalization hashes, six local includes, generated identities/direction
 selections, selected membership, dependencies, notices and translation candidates.
 It finds 773 missing DLL edges with exact stable source/project bindings, 27
@@ -156,7 +155,7 @@ integrated acceptance beyond slice checks, avoiding duplicate effort allowances.
 
 | Phase | Remaining days | Sizing basis / main uncertainty |
 | --- | ---: | --- |
-| P0 closure (original P0-07 allowance) | 5–10 | P0-08 source/specification review is now complete; P0-09 authority/scope integration remains. This dated allowance is retained pending re-sizing, not a fresh remaining-P0 estimate. |
+| P0 closure (original P0-07 allowance) | 5–10 | P0-08 source/specification and P0-09 authority/scope integration are now complete; final coverage/schema/priority review and UX handoff remain. This dated allowance is retained pending re-sizing, not a fresh remaining-P0 estimate. |
 | P1 spatial/time/contracts | 10–20 | Eight directions, terrain/clock/timer/random boundaries and coordinated contract/version/Save 1 dispatch. |
 | P2 content/rendering | 25–45 | 483 content records / 238 media, factory/recipe conversion, native effects, traversal/picking, full runtime gallery and reproducible build-input migration. |
 | P3 terrain/world creation | 10–20 | Two providers, terrain/corners/Mountain2, heightmaps, water/underground legality and save/reopen UI. |
@@ -182,7 +181,7 @@ No reliable combined total or calendar completion date is available.
 Native Chromium/device/IME/assistive checks may take roughly **1–3 active days**
 with devices and reviewers available, plus uncapped fixes/waiting; this is a separate
 pre-implementation handoff allowance. Other-engine execution remains owner-deferred.
-First close P0-09 and the UX handoff, then P1/P2 → P3 → P4 → P5/P6;
+P0-09 source integration is complete. Close the final P0 review and UX handoff, then P1/P2 → P3 → P4 → P5/P6;
 P7/P8 depend on P1 scheduling/random/accounting and integrate with railway flows.
 Subsystem UI/save work ships with each feature. Re-estimate with P0-08 findings during initial P2 conversion, the first
 complete terrain/rail/train/passenger slice, and the first economy/development slice,
@@ -214,7 +213,7 @@ still require measured evidence with exact implementation/content/fixture hashes
 
 ## Reproduction and completion boundary
 
-Fresh checks on 21 October all passed using the pinned archive:
+The P0-07 checks on 21 October all passed using the pinned archive:
 
 ```sh
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
@@ -233,6 +232,8 @@ not execute ExAV assemblies or the modern game. P0-07 publishes the required
 coverage/differences/translation/estimate report with optional uncertainty and
 native gates intact. P0-08 has subsequently closed at source/specification
 level with its own checker and tests; see its reproduction instructions.
-Next: **P0-09 cross-document/source/scope closure**, then the existing UX handoff before affected
+Next: **final P0 coverage/schema/priority review and the existing UX handoff** before affected
 P1/P2 gameplay work. No generated discovery status, source pin, asset, runtime
 version or service limit changes in this reporting batch.
+
+**P0-09 follow-up — 21 October 2026:** all eight explicit-source checks (discovery, content, actions, geometry, persistence, scenarios, optional V2 and integration), **105 Python tests** and `git diff --check` pass. The [integration checker](../scripts/review-exav-integration.py) also pins the inspected importer, Docker inputs and current protocol/save constants at implementation `357c6e4095e98333e619d153db679c731e87831c`. No application/browser/native execution or content conversion was performed.

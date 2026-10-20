@@ -15,7 +15,7 @@ legal instantiated city validation, simulation/browser execution, original-runti
 comparison, measured capacity and native/device acceptance remain open.** P0-07
 [coverage/estimates reporting](web-parity-report.md) and P0-08
 [optional source/specification](web-parity-optional-plugins.md) are now complete;
-P0-09 and overall P0 remain open. No game, protocol, content, save version,
+P0-09 [source integration](web-parity-exav-integration.md) is complete; overall P0 remains open. No game, protocol, content, save version,
 service limit or distribution input changes in this batch.
 
 ## Independent expectations
@@ -184,7 +184,7 @@ P11 reconciles every scenario, expanded matrix, difference and locale workflow t
 evidence. The completed [P0-07 report](web-parity-report.md) publishes
 coverage/estimates using this distinction; P0-08 now specifies optional source
 identities/profile and acceptance, with runtime fixture binding in P2/P10/P11.
-P0-09 reconciles the remaining authority/scope and
+P0-09 [integrates authority/scope](web-parity-exav-integration.md) and
 cross-document decisions. The discovery ledger retains its inventoried statuses.
 [Historical scenarios](parity/historical/scenarios.json) and
 [prototype traces](../prototype/scenarios/README.md) keep their original provenance;

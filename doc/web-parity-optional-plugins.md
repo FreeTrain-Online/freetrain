@@ -5,7 +5,7 @@
 [metadata review](parity/exav-optional-review.json) reconcile the canonical
 non-free V2 set against stable ExAV. Portable conversion, launch loading, credits
 UI, recipe repairs and save/runtime compatibility remain P2/P9/P10/P11 work.
-P0-09, overall P0 and the existing UX/native handoff remain open.
+P0-09 [source integration](web-parity-exav-integration.md) subsequently completed; overall P0 and the existing UX/native handoff remain open.
 
 ## Sources and accounting
 
@@ -230,7 +230,7 @@ Default Python tests use checked-in evidence and synthetic XML/graphs without
 discovering siblings. Source/specification closure does not imply a loadable pack,
 permission clearance for every derivative, rendered fidelity, implemented credits
 or successful startup/join/save continuation. Those acceptance cases are
-**OPT-AC-01–05** in the maintained rules. Next: **P0-09 integration**, then the
+**OPT-AC-01–05** in the maintained rules. P0-09 integration is now recorded [separately](web-parity-exav-integration.md). Next: the
 existing UX handoff before affected gameplay implementation.
 
 Validation on 21 October: the optional `--check`, bundled ExAV inventory/content

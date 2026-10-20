@@ -1,0 +1,1231 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "reviewedOn": "2026-10-21",
+  "status": "P0-09 source authority/scope integration; runtime implementation pending",
+  "reviewArtifacts": [
+    "doc/parity/exav-content-review.json",
+    "doc/parity/exav-action-review.json",
+    "doc/parity/exav-geometry-rules.json",
+    "doc/parity/exav-geometry-dependency-review.json",
+    "doc/parity/exav-persistence-rules.json",
+    "doc/parity/exav-serialization-review.json",
+    "doc/parity/exav-scenarios.json",
+    "doc/parity/exav-optional-review.json"
+  ],
+  "requirements": [
+    {
+      "id": "EXAV-01",
+      "title": "Engine, rules, pack and save identity",
+      "phases": [
+        "P1",
+        "P2",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-feature-parity.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "New worlds target stable V2; engine, ruleset, pack family/hash, protocol and save schema remain independent. Prototype Save 1 retains its explicit compatibility disposition; V1/V2 alone is not an import verdict.",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "2.1.1.12"
+          ]
+        },
+        {
+          "path": "core/world/World.cs",
+          "symbols": [
+            "save("
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-02",
+      "title": "Money and accounting",
+      "phases": [
+        "P1",
+        "P8",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-persistence.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Audit field and intermediate widths, exact transport values, per-field units and bankruptcy validation. Never multiply every historical amount by one conversion factor.",
+      "evidence": [
+        {
+          "path": "core/world/accounting/AccountManager.cs",
+          "symbols": [
+            "15000000000"
+          ]
+        },
+        {
+          "path": "core/framework/GlobalOptions.cs",
+          "symbols": [
+            "10000000000"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-03",
+      "title": "V2 train contribution contract",
+      "phases": [
+        "P2",
+        "P5",
+        "P6"
+      ],
+      "specifications": [
+        "doc/web-parity-content.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Validate required fare/amenity/seatedcapacity, reversal/inheritance, amenity 50–200, optional triprange fallback; retain triprange as metadata without importing beta passenger mechanics.",
+      "evidence": [
+        {
+          "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+          "symbols": [
+            "_fare = int.Parse",
+            "_amenity = int.Parse",
+            "triprange"
+          ]
+        },
+        {
+          "path": "core/contributions/train/TrainCarContribution.cs",
+          "symbols": [
+            "seatedcapacity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-04",
+      "title": "Boarding, fare and operating cadence",
+      "phases": [
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "specifications": [
+        "doc/web-parity-geometry.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Execute EXAV-SCN-010–014: seats plus twice standing, float truncation, actual exported passengers, integer distance, fare times two and charge on moves 1,5,9. Preserve source-width observations separately from approved fixes.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbols": [
+            "passengerPackingCapacity",
+            "passenger"
+          ]
+        },
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbols": [
+            "loadPassengers"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-05",
+      "title": "Station statistics, catchment and timer lifecycle",
+      "phases": [
+        "P1",
+        "P6",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-persistence.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Check hourly 0.8 recovery, midnight upkeep, special reach, returned timer handles, demolition cancellation and pre-2.1.1.4 migration. Inspectors must not enter durable state.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbols": [
+            "REACH_RANGE",
+            "0.8"
+          ]
+        },
+        {
+          "path": "core/world/Clock.cs",
+          "symbols": [
+            "registerRepeated"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-06",
+      "title": "Population and calendar",
+      "phases": [
+        "P1",
+        "P6",
+        "P7"
+      ],
+      "specifications": [
+        "doc/web-parity-scenarios.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Cover weekly/hourly tables, vacations and out-of-month holiday defects; ordinary demand cap uses footprint and integer height/4. calcEntering has combinator consumers, but no stable station attraction chain.",
+      "evidence": [
+        {
+          "path": "core/world/Time.cs",
+          "symbols": [
+            "isHoliday",
+            "isVacation"
+          ]
+        },
+        {
+          "path": "core/world/rail/StationListenerImpl.cs",
+          "symbols": [
+            "getPopulation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-07",
+      "title": "Development",
+      "phases": [
+        "P7",
+        "P8"
+      ],
+      "specifications": [
+        "doc/web-parity-actions.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Rederive imported plus 0.1 exported score, diffusion, V2 candidate price scale, ownership/protection, replacement/no-candidate and reproducible growth; expose validated shared development settings.",
+      "evidence": [
+        {
+          "path": "core/world/development/DevelopmentAlgorithm.cs",
+          "symbols": [
+            "SearchPlan"
+          ]
+        },
+        {
+          "path": "core/world/development/DevelopConfigurePlugin.cs",
+          "symbols": [
+            "DevelopConfigure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-08",
+      "title": "Timetable, forwarding and diagram files",
+      "phases": [
+        "P5",
+        "P9",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-actions.md",
+        "doc/web-parity-geometry.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Implement stop sentinels -999/-1000, physical TURNING and empty-stock variants, copy isolation/masks/duplicates and bounded inert .ftdd conversion. Extension does not identify alpha seconds layouts.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbols": [
+            "_forwarding"
+          ]
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+          "symbols": [
+            ".ftdd"
+          ]
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+          "symbols": [
+            "checkTurn",
+            "TURNING"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-09",
+      "title": "Speed limits",
+      "phases": [
+        "P4",
+        "P5",
+        "P9",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-actions.md",
+        "doc/web-parity-geometry.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Keep placement/removal/overlay, flat/slope timing, native slower-speed preservation, world isolation and saved otherObjects roots in one slice.",
+      "evidence": [
+        {
+          "path": "core/world/rail/SpeedLimit.cs",
+          "symbols": [
+            "SpeedLimit"
+          ]
+        },
+        {
+          "path": "plugins/SpeedLimit/SpeedLimitManager.cs",
+          "symbols": [
+            "SpeedLimit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-10",
+      "title": "Platforms and passageways",
+      "phases": [
+        "P2",
+        "P4",
+        "P6",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-geometry.md",
+        "doc/web-parity-geometry-gallery.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Verify roofless thin platforms, host range 8, three passage materials/appearance defaults, draw order, 180000 daily length charge and removal cancellation. EXAV-GAL-001 remains an acceptance-blocking crop decision.",
+      "evidence": [
+        {
+          "path": "core/world/rail/ThinPlatform.cs",
+          "symbols": [
+            "ThinPlatform"
+          ]
+        },
+        {
+          "path": "core/world/rail/ThinPlatform.cs",
+          "symbols": [
+            "HOST_RANGE = 8"
+          ]
+        },
+        {
+          "path": "core/world/rail/Platform.cs",
+          "symbols": [
+            "180000"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-11",
+      "title": "Infrastructure economics",
+      "phases": [
+        "P3",
+        "P4",
+        "P7",
+        "P8"
+      ],
+      "specifications": [
+        "doc/web-parity-geometry.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Trace source operation-specific bookings/categories/endpoints, underwater/underground height factors, slope and demolition costs. Legal preview must agree with atomic commit; source discrepancies require explicit correction records.",
+      "evidence": [
+        {
+          "path": "core/world/rail/SingleRailRoad.cs",
+          "symbols": [
+            "6000000",
+            "2000000"
+          ]
+        },
+        {
+          "path": "core/world/rail/SlopeRailRoad.cs",
+          "symbols": [
+            "40000000",
+            "8000000"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-12",
+      "title": "Train asset lifecycle",
+      "phases": [
+        "P5",
+        "P8",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-persistence.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Purchase/formation/placement and sale use purchase-time presence and completed 365-day years. Missing dates produce no manufactured refunds; verify anniversary and save continuation.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbols": [
+            "boughtThisTrain"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-13",
+      "title": "Terrain and protected demolition",
+      "phases": [
+        "P3",
+        "P4",
+        "P7"
+      ],
+      "specifications": [
+        "doc/web-parity-actions.md",
+        "doc/web-parity-geometry.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Include registered Mountain2 rectangular terrain repair and operation-specific rolling-stock protection; define atomic validation for shared commands and verify source bookings independently.",
+      "evidence": [
+        {
+          "path": "plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs",
+          "symbols": [
+            "Mountain2"
+          ]
+        },
+        {
+          "path": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+          "symbols": [
+            "Mountain2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-14",
+      "title": "Reports, inspectors and presentation settings",
+      "phases": [
+        "P2",
+        "P6",
+        "P8",
+        "P9"
+      ],
+      "specifications": [
+        "doc/web-parity-actions.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Implement station list/add-remove-rename, information versus continuous tracking, labels/fonts/poles and daily/monthly/fiscal histories with live bilingual refresh and stable selection/drafts.",
+      "evidence": [
+        {
+          "path": "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationListPlugIn.cs",
+          "symbols": [
+            "StationList"
+          ]
+        },
+        {
+          "path": "core/world/accounting/TransactionHistory.cs",
+          "symbols": [
+            "TransactionHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-15",
+      "title": "Stadium, bank, stock and subsidiaries",
+      "phases": [
+        "P6",
+        "P7",
+        "P8",
+        "P10"
+      ],
+      "specifications": [
+        "doc/web-parity-content.md",
+        "doc/web-parity-persistence.md",
+        "doc/web-parity-scenarios.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Keep event/attendance-driven stadium demand/special listeners, categories, deposit/debt/stock state and histories. Bank recalc/order defects remain explicit; tests must distinguish source outputs from corrections.",
+      "evidence": [
+        {
+          "path": "plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumStructure.cs",
+          "symbols": [
+            "StadiumStructure"
+          ]
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+          "symbols": [
+            "recalcTotalAssets"
+          ]
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/Economy.cs",
+          "symbols": [
+            "Economy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-16",
+      "title": "Portable host, content loading and historical containers",
+      "phases": [
+        "P2",
+        "P9",
+        "P10",
+        "P11"
+      ],
+      "specifications": [
+        "doc/web-parity-content.md",
+        "doc/web-parity-optional-plugins.md",
+        "doc/web-parity-persistence.md"
+      ],
+      "disposition": "included; source specification linked, implementation pending",
+      "acceptance": "Port effects/audio and trusted registrations; retain notices and deterministic selected-pack resolution. Replace broken profile loading/native DLL search with explicit directory preparation and per-set localized credits. Bounded BZ/SOAP policy is independent of legacy regressions.",
+      "evidence": [
+        {
+          "path": "core/framework/plugin/PluginUtil.cs",
+          "symbols": [
+            "loadType"
+          ]
+        },
+        {
+          "path": "core/framework/Core.cs",
+          "symbols": [
+            "parseProfile"
+          ]
+        },
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbols": [
+            "BZip2InputStream"
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "EXAV-D01",
+      "title": "Money widths and units",
+      "disposition": "source formulas retained; overflow/correction decision required per implementing operation",
+      "phases": [
+        "P1",
+        "P8",
+        "P10"
+      ],
+      "acceptance": "Reuse normal-range vectors; pin intermediate integer types, exact JSON representation and boundary behavior. No universal unit multiplier.",
+      "evidence": [
+        {
+          "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+          "symbols": [
+            "_price*length"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-D02",
+      "title": "Calendar braces",
+      "disposition": "source defect retained as expectation; correction not approved",
+      "phases": [
+        "P1",
+        "P7"
+      ],
+      "acceptance": "EXAV-SCN-020 must cover January 23 and out-of-month day 30/31; record any intended-calendar correction explicitly.",
+      "evidence": [
+        {
+          "path": "core/world/Time.cs",
+          "symbols": [
+            "if( day==23 ) return true;",
+            "if( day==30 || day==31 ) return true;"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-D03",
+      "title": "Save fields, callbacks and timers",
+      "disposition": "separate structural profiles; continuation unresolved",
+      "phases": [
+        "P1",
+        "P6",
+        "P10"
+      ],
+      "acceptance": "Use 377 declarations/1048 fields and sample-specific layouts; acquire stable save plus .ftgt/.ftdd fixtures, execute migration/removal/continuation.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbols": [
+            "OnDeserialization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-D04",
+      "title": "Bus stub and registered delegation",
+      "disposition": "bus remains source gap; delegation is included with defects",
+      "phases": [
+        "P5",
+        "P7",
+        "P10"
+      ],
+      "acceptance": "Bus.draw throws and does not establish a playable transport system. World registers delegation: test null/root fallback, group reassignment/cycles and continuation before accepting P5.",
+      "evidence": [
+        {
+          "path": "core/world/road/Bus.cs",
+          "symbols": [
+            "throw new NotImplementedException()"
+          ]
+        },
+        {
+          "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+          "symbols": [
+            "NO THIS DOES NOT WORK"
+          ]
+        },
+        {
+          "path": "core/world/World.cs",
+          "symbols": [
+            "trainControllers.add( DelegationTrainControllerImpl.theInstance )"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-D05",
+      "title": "Announced stop timer and unused demand metadata",
+      "disposition": "unproven workflow excluded from stable feature claims; metadata retained",
+      "phases": [
+        "P5",
+        "P6",
+        "P9"
+      ],
+      "acceptance": "getTimer has no caller in pinned stable C#; calcEntering only recurses through population wrappers, triprange is parsed/exposed but does not implement beta alighting. No dedicated stop-timer or destination-routing requirement without new source evidence.",
+      "evidence": [
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbols": [
+            "public Timer getTimer()"
+          ]
+        },
+        {
+          "path": "core/contributions/population/CombinationPopulation.cs",
+          "symbols": [
+            "p.calcEntering(currentTime)"
+          ]
+        },
+        {
+          "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+          "symbols": [
+            "triprange"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-D06",
+      "title": "Cost previews, inspector persistence and BZ loader",
+      "disposition": "portable validation/import adaptation required; crashes are not intended gameplay",
+      "phases": [
+        "P3",
+        "P4",
+        "P6",
+        "P10"
+      ],
+      "acceptance": "Preview/commit must use validated authoritative rules; inspectors stay ephemeral. Bounded BZ handling must distinguish the actual BZh stream from historical prefixes; source removed decompression is not an import contract.",
+      "evidence": [
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbols": [
+            "//\tstream = new BZip2InputStream(stream);"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-P0-09-BUILD",
+      "title": "Project/resource gaps",
+      "disposition": "retain source diagnostics; no claimed successful desktop build",
+      "phases": [
+        "P2",
+        "P5",
+        "P9"
+      ],
+      "acceptance": "Keep five missing old-core items distinct from two TAT Straight.bmp items. Existing embedded GIF evidence does not repair project entries. Bind portable resources explicitly.",
+      "evidence": [
+        {
+          "path": "core/FreeTrain.Core.csproj",
+          "symbols": [
+            "StationListenerImpl.cs"
+          ]
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.2008.csproj",
+          "symbols": [
+            "Straight.bmp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EXAV-P0-09-INPUTS",
+      "title": "Prototype build/import provenance",
+      "disposition": "historical runnable inputs retained until deliberate P2 replacement",
+      "phases": [
+        "P2",
+        "P11"
+      ],
+      "acceptance": "Migrate import-web-content.py, Docker inputs, catalogs and notices to reproducible reviewed ExAV inputs before claiming ExAV build/content parity; default builds must work without sibling repositories.",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "2.1.1.12"
+          ]
+        }
+      ]
+    }
+  ],
+  "sourceAssignments": [
+    {
+      "id": "excluded-a4",
+      "paths": [
+        "plugins/org.kohsuke.freetrain.music.a4mem"
+      ],
+      "phases": [
+        "P11"
+      ],
+      "destination": "Inventory/notices only; no A4 or user-file music workflow",
+      "disposition": "owner-excluded"
+    },
+    {
+      "id": "excluded-debug",
+      "paths": [
+        "plugins/org.kohsuke.freetrain.tools.dbgwnd"
+      ],
+      "phases": [
+        "P11"
+      ],
+      "destination": "Inventory/notices only; ordinary content diagnostics remain required",
+      "disposition": "owner-excluded"
+    },
+    {
+      "id": "source-bus-gap",
+      "paths": [
+        "core/world/road/Bus.cs"
+      ],
+      "phases": [
+        "P7"
+      ],
+      "destination": "Source-gap record; no bus simulation capability asserted",
+      "disposition": "retained source stub; no proven playable bus workflow"
+    },
+    {
+      "id": "experimental",
+      "paths": [
+        "experiments"
+      ],
+      "phases": [
+        "P11"
+      ],
+      "destination": "Retain reference source; no stable parity implementation",
+      "disposition": "later enhancement; outside stable gameplay scope"
+    },
+    {
+      "id": "map-construction",
+      "paths": [
+        "tools/MapConstructionDriver"
+      ],
+      "phases": [
+        "P3",
+        "P9"
+      ],
+      "destination": "Simulation map-construction capability and browser editor; retire launcher",
+      "disposition": "included capability; portable host adaptation"
+    },
+    {
+      "id": "authoring",
+      "paths": [
+        "tools",
+        "report"
+      ],
+      "phases": [
+        "P2",
+        "P11"
+      ],
+      "destination": "Portable content/build diagnostics as required; not desktop utility replicas",
+      "disposition": "authoring/launch reference"
+    },
+    {
+      "id": "host-libraries",
+      "paths": [
+        "lib",
+        "extlib"
+      ],
+      "phases": [
+        "P2",
+        "P9",
+        "P11"
+      ],
+      "destination": "Portable rendering/audio and browser controls with component notices",
+      "disposition": "dependency/native-host adaptation; no Windows API requirement"
+    },
+    {
+      "id": "accounting",
+      "paths": [
+        "core/world/accounting",
+        "core/world/subsidiaries",
+        "plugins/jp.co.tripod.chiname.financial.bank",
+        "plugins/jp.co.tripod.chiname.financial.stockmarket"
+      ],
+      "phases": [
+        "P1",
+        "P8",
+        "P10"
+      ],
+      "destination": "Simulation finance/state; Contracts exact money; browser reports",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "population",
+      "paths": [
+        "core/contributions/population"
+      ],
+      "phases": [
+        "P6",
+        "P7",
+        "P10"
+      ],
+      "destination": "Simulation population tables, station consumers and serialized state",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "growth",
+      "paths": [
+        "core/world/development"
+      ],
+      "phases": [
+        "P7",
+        "P8",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation development; browser tuning/inspection",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "train-contract",
+      "paths": [
+        "core/contributions/train",
+        "plugins/org.kohsuke.freetrain.trains.colorTest"
+      ],
+      "phases": [
+        "P2",
+        "P5",
+        "P6"
+      ],
+      "destination": "Content V2 train definitions; browser catalog/color configuration",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "train-control",
+      "paths": [
+        "plugins/org.kohsuke.freetrain.tc.manual",
+        "plugins/org.kohsuke.freetrain.tc.tat",
+        "core/world/rail/Train.cs",
+        "core/world/rail/TrainController.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/world/rail/TrainItem.cs",
+        "core/world/rail/DelegationTrainControllerImpl.cs",
+        "core/world/rail/SimpleTrainControllerImpl.cs"
+      ],
+      "phases": [
+        "P5",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation train/controller/timetable state; browser train management",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "speed-limits",
+      "paths": [
+        "plugins/SpeedLimit",
+        "core/world/rail/SpeedLimit.cs"
+      ],
+      "phases": [
+        "P4",
+        "P5",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation authoritative limits; browser tools/overlays",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "stadium",
+      "paths": [
+        "plugins/org.kohsuke.freetrain.soccerStadium"
+      ],
+      "phases": [
+        "P6",
+        "P7",
+        "P8",
+        "P10"
+      ],
+      "destination": "Simulation stadium/event/state; browser properties",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "stations",
+      "paths": [
+        "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist",
+        "core/controllers/rail/StationInformationWindow.cs",
+        "core/controllers/rail/StationPropertyDialog.cs",
+        "core/world/rail/Station.cs",
+        "core/world/rail/StationListener.cs",
+        "core/world/rail/StationListenerImpl.cs",
+        "core/world/rail/SpecialStationListener.cs",
+        "core/world/rail/SpecialStationListenerImpl.cs"
+      ],
+      "phases": [
+        "P6",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation station network/listeners; browser station inspector/list",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "platforms",
+      "paths": [
+        "core/world/rail/Platform.cs",
+        "core/world/rail/PlatformHost.cs",
+        "core/world/rail/ThinPlatform.cs",
+        "core/world/rail/FatPlatform.cs",
+        "core/world/rail/PassagewayRail.cs",
+        "core/controllers/rail/PlatformController.cs",
+        "core/controllers/rail/PlatformPropertyDialog.cs",
+        "core/controllers/rail/StationPassagewayController.cs"
+      ],
+      "phases": [
+        "P2",
+        "P4",
+        "P6",
+        "P10"
+      ],
+      "destination": "Content passage/platform art; Simulation hosts/timers; browser construction",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "rail",
+      "paths": [
+        "core/world/rail",
+        "core/controllers/rail",
+        "core/contributions/rail",
+        "plugins/org.kohsuke.freetrain.rail.electricPole",
+        "plugins/org.kohsuke.freetrain.rail.signal",
+        "plugins/org.kohsuke.freetrain.rail.garage"
+      ],
+      "phases": [
+        "P2",
+        "P4",
+        "P5",
+        "P6",
+        "P10"
+      ],
+      "destination": "Simulation rail/occupancy/train interactions; browser construction and train tools",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "terrain",
+      "paths": [
+        "core/world/terrain",
+        "core/controllers/terrain",
+        "plugins/foobarbazer.Mountain2",
+        "plugins/org.kohsuke.freetrain.terrain.terrace",
+        "plugins/org.kohsuke.freetrain.tools.terrainloader"
+      ],
+      "phases": [
+        "P3",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation terrain/map construction; browser world/heightmap tools",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "structures",
+      "paths": [
+        "core/world/structs",
+        "core/world/land",
+        "core/controllers/structs",
+        "core/controllers/land",
+        "core/contributions/common",
+        "core/contributions/land",
+        "core/contributions/structs",
+        "plugins/jp.co.tripod.chiname.lib.generic",
+        "plugins/jp.co.tripod.chiname.lib.halfvoxel",
+        "plugins/jp.co.tripod.chiname.lib.fence",
+        "plugins/org.kohsuke.freetrain.land.477",
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya",
+        "plugins/org.kohsuke.freetrain.land.forest",
+        "plugins/org.kohsuke.freetrain.land.ricefield"
+      ],
+      "phases": [
+        "P2",
+        "P3",
+        "P7",
+        "P9",
+        "P10"
+      ],
+      "destination": "Content recipes and Simulation ownership/buildings/land; browser catalog/placement",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "roads",
+      "paths": [
+        "core/world/road",
+        "core/controllers/road",
+        "core/contributions/road",
+        "plugins/jp.co.tripod.chiname.lib"
+      ],
+      "phases": [
+        "P4",
+        "P7",
+        "P9",
+        "P10"
+      ],
+      "destination": "Simulation roads/crossings/accessories/dummy cars; browser construction",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "render-audio",
+      "paths": [
+        "core/views",
+        "core/framework/graphics",
+        "core/framework/sound",
+        "core/contributions/sound"
+      ],
+      "phases": [
+        "P2",
+        "P9",
+        "P11"
+      ],
+      "destination": "Content effects/audio; browser map/picking/cuts/labels and bundled music/bells; excluded external playback remains excluded",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "plugin-contracts",
+      "paths": [
+        "core/framework/plugin",
+        "core/contributions"
+      ],
+      "phases": [
+        "P1",
+        "P2",
+        "P9",
+        "P10"
+      ],
+      "destination": "Trusted Content registrations, identity/pack/schema validation; browser contributions",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "world-foundation",
+      "paths": [
+        "core/world"
+      ],
+      "phases": [
+        "P1",
+        "P2",
+        "P10"
+      ],
+      "destination": "Simulation eight-direction world/time/entity state and persistence; per-subsystem owners retain behavior detail",
+      "disposition": "included; implementation-slice detail required"
+    },
+    {
+      "id": "host-and-utilities",
+      "paths": [
+        "core"
+      ],
+      "phases": [
+        "P1",
+        "P9",
+        "P10",
+        "P11"
+      ],
+      "destination": "Browser shell/settings/commands/localization plus managed helpers; keep shared rules server-authoritative",
+      "disposition": "included support or portable host adaptation; no native UI replica obligation"
+    }
+  ],
+  "branches": [
+    {
+      "id": "stable",
+      "subtree": "trunk",
+      "version": "2.1.1.12",
+      "pluginFamily": "V2",
+      "disposition": "sole new-world authority",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "2.1.1.12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beta22",
+      "subtree": "Beta2.2.0.1/trunk",
+      "version": "2.2.0.7",
+      "pluginFamily": "V2",
+      "disposition": "experiment; persistent passenger cohorts/destination attraction excluded from stable scope",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "2.2.0.7"
+          ]
+        },
+        {
+          "path": "core/world/rail/Train.cs",
+          "symbols": [
+            "passengerList"
+          ]
+        },
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbols": [
+            "WantEntering"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alpha31",
+      "subtree": "ALPHA3/trunk",
+      "version": "3.1.1.4",
+      "pluginFamily": "V2",
+      "disposition": "experiment; seconds, maxspeed banks, finer masks/.ftgd3 and changed prices excluded from stable scope",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "3.1.1.4"
+          ]
+        },
+        {
+          "path": "core/world/Time.cs",
+          "symbols": [
+            "totalSeconds"
+          ]
+        },
+        {
+          "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+          "symbols": [
+            "maxspeed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beta20",
+      "subtree": "Beta2.0.2.11/trunk",
+      "version": "2.0.2.11",
+      "pluginFamily": "V1",
+      "disposition": "historical compatibility reference; not a second rules target",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "2.0.2.11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alpha30",
+      "subtree": "Beta2.0.2.11/ALPHA3/trunk",
+      "version": "3.0.1.11",
+      "pluginFamily": "V1",
+      "disposition": "nested historical alpha; separate time/save profile",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "3.0.1.11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "release10",
+      "subtree": "Release1.0/trunk",
+      "version": "1.0.1.0",
+      "pluginFamily": "V1",
+      "disposition": "historical compatibility reference",
+      "evidence": [
+        {
+          "path": "core/AssemblyInfo.cs",
+          "symbols": [
+            "1.0.1.0"
+          ]
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "Read explicitly supplied pinned Git objects, never sibling working files or old CLR assemblies.",
+    "All source files receive an explicit scope/destination/phase assignment. An assignment and a review reference are not a complete semantic dependency review.",
+    "Existing discovery records remain inventoried; no original completion/evidence or matching ID automatically transfers authority.",
+    "P0-01–09 inventory/specification completion does not close overall P0, UX3-GATE, runtime/native acceptance or P1–P11.",
+    "Only EXAV-DIR-001 SOUTH and EXAV-ENC-001 UTF-8 are already owner-approved source corrections; other defect choices remain phase acceptance blockers.",
+    "Original-only content/source, old 228-manifest suite, V1 and combined copies retain historical/compatibility identities; no merged bundled denominator.",
+    "Protocol 2, prototype-content-1, Save 1 and running build assets remain unchanged; reserved ExAV names/versions stay design inputs."
+  ],
+  "implementationRevision": "357c6e4095e98333e619d153db679c731e87831c",
+  "implementationSources": [
+    {
+      "path": "scripts/import-web-content.py",
+      "symbols": [
+        "baseline='1f755ca'",
+        "ROOT/'core/res/ConstructionFence.bmp'",
+        "ROOT/'plugins/org.kohsuke.freetrain.trains'"
+      ]
+    },
+    {
+      "path": "deploy/Dockerfile",
+      "symbols": [
+        "COPY plugins/",
+        "COPY core/"
+      ]
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/NetworkSession.cs",
+      "symbols": [
+        "new(2, ContentVersion",
+        "\"prototype-content-1\""
+      ]
+    },
+    {
+      "path": "src/FreeTrain.Online.Persistence/SaveDocument.cs",
+      "symbols": [
+        "public const int Version = 1;",
+        "public const int MaximumBytes = 1024 * 1024;"
+      ]
+    }
+  ]
+}

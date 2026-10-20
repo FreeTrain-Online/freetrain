@@ -20,8 +20,7 @@ P0-04 source specification and expanded visual review subsequently completed.
 P0-06 [source-scenario specification](web-parity-scenarios.md) completed on 21 October 2026.
 P0-07 [coverage/difference/translation reporting and provisional sizing](web-parity-report.md)
 completed on 21 October 2026. P0-08 [canonical optional source review](web-parity-optional-plugins.md)
-also completed at inventory/specification level. P0-09, the overall P0 gate, implementation and runtime
-acceptance remain open.
+also completed at inventory/specification level. [P0-09 source integration](web-parity-exav-integration.md) completed on 21 October 2026; the overall P0 gate, implementation and runtime acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.
 It excludes the archive's beta, alpha and Release1.0 trees. It neither imports
@@ -110,7 +109,7 @@ entities. No legacy executable, assembly or serialized object is activated.
 
 | Finding | Disposition / next owner |
 | --- | --- |
-| 351 shared direct IDs, **131 ExAV-only**, **42 original-only** | ID comparison only. Shared identity does not establish equivalent definitions or behavior. Original-only IDs are historical differences, not missing stable content. P0-02/P0-09. |
+| 351 shared direct IDs, **131 ExAV-only**, **42 original-only** | ID comparison only. Shared identity does not establish equivalent definitions or behavior. Original-only IDs are historical differences, not missing stable content. P0-02 source accounting and P0-09 scope integration complete; P10 compatibility remains open. |
 | Only **3 of 456 C# files** are byte-identical at the same path in original `1f755ca`; 425 differ and 28 paths are absent there | The unchanged files are terrace `AssemblyInfo.cs`, `MountainDisambiguator.cs` and `Strategy.cs`. Encoding/line endings also affect these byte comparisons; do not infer 425 semantic changes. Even identical bytes need dependency review before reusing conclusions. P0-02–05. |
 | Pinned stable `GenericStructureContribution.parseDirection` recognizes **`SOURTH`**, not `SOUTH` | **EXAV-DIR-001 — owner-approved correction, 20 October 2026:** treat `SOURTH` as a source typo and use **`SOUTH`** for the south direction in the port's parser and content. The ExAV-only scanner preserves the source token and behavior as evidence, pinned to loader SHA-256 `978c938267a06309118096dbb6ee768b2e03c2003610c939123dea7fb205792d`. `ALL` assigns cardinal entries; absence of direction elements supplies the fallback. The bundled generic null entry has no direction element, so this is not evidence of a visible bundled direction failure. The stable archive checkout now has the `SOUTH` correction applied in its working tree (not committed or repinned); the corrected file hash is recorded in `exav-baseline.json`. Carry the correction into P0-02/P0-04 and optional-pack compatibility. |
 | A4 music and debug-window manifests are present but owner-excluded | Keep them in the denominator with explicit exclusions. The old recorder manifest is absent from stable; do not manufacture a missing-content requirement. Bundled music and useful player diagnostics retain their separate scope. |
@@ -142,6 +141,7 @@ repository containing the pinned commit:
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
 python3 scripts/review-exav-persistence.py --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/review-exav-integration.py --source-root /path/to/freetrain-exav-archive --check
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --report tmp/parity-p0/exav-inventory.md
 
 # Historical outputs keep their source and review family.
@@ -177,5 +177,5 @@ specification/runtime acceptance handed to the named slices. The subsequent
 distinct reviewed files overall, 332 raw records, 1,176 expanded composition
 records and 28 inspected contacts. Explicit invalid-crop diagnostics retain
 EXAV-GAL-001 and its P2/P6 decision boundary. P0-04 is closed at source level;
-P0-09, overall P0 and runtime/save-continuation gates remain open; optional source/specification closure is recorded separately in P0-08. Discovery hashes and lexical project membership
+P0-09 source integration is recorded [separately](web-parity-exav-integration.md); overall P0 and runtime/save-continuation gates remain open; optional source/specification closure is recorded separately in P0-08. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.

@@ -1,5 +1,7 @@
 # Original manual: player workflow oracle
 
+**P0-09 integration — 21 October 2026:** [the maintained authority/scope reconciliation](web-parity-exav-integration.md) now links EXAV-01–16, source gaps, branch boundaries and implementation handoffs. Read historical examples below through the current ExAV specifications; feature detail, translation and runtime acceptance remain with each slice.
+
 **ExAV P0-03 overlay — 20 October 2026:** [the current action reassessment](web-parity-actions.md#man--and-dev--reconciliation)
 records the source-reviewed changes to information/list windows, continuous tracking,
 platform roofs and consumed passage materials, speed limits, Mountain2, timetable

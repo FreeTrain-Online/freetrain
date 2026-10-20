@@ -1,5 +1,7 @@
 # Parity domain transition design
 
+**P0-09 integration — 21 October 2026:** [the maintained authority/scope reconciliation](web-parity-exav-integration.md) now links EXAV-01–16, source gaps, branch boundaries and implementation handoffs. Read historical examples below through the current ExAV specifications; feature detail, translation and runtime acceptance remain with each slice.
+
 **ExAV source specifications complete — 20 October 2026:** P0-04 geometry and
 P0-05 contract/save reviews supersede the historical examples on this page. Use
 [ExAV transition decisions](parity/exav-domain-transition.json),
