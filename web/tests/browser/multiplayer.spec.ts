@@ -89,7 +89,7 @@ test('Leave game signs out, releases control and allows changing roles or rejoin
     await a.getByLabel('Language').selectOption('ja');
     await openPanel(a, 'session', 'ja');
     await a.getByRole('button', { name: 'ゲームから退出', exact: true }).click();
-    await expect(a.getByLabel('操作キー', { exact: true })).toBeVisible();
+    await expect(a.getByLabel('アクセスキーを入力してゲームに参加', { exact: true })).toBeVisible();
     await a.getByLabel('言語').selectOption('en');
     await login('', 'Owner');
     await b.getByRole('button', { name: 'Pause', exact: false }).click();

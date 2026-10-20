@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { appName } from '../../src/lib/localization.ts';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { bootstrap, clickSprite, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
-const evidence = process.env.FREETRAIN_UX3_EVIDENCE!;
+const evidence = process.env.FREETRAIN_ONLINE_UX3_EVIDENCE!;
 const sizes = [[1920,1080],[1280,720],[1024,768],[640,900],[360,800],[800,450]];
 test.beforeEach(async () => { await mkdir(evidence, { recursive: true }); });
 async function fit(page: Page) {

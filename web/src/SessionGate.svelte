@@ -56,7 +56,7 @@
   <div class="session-dialog" bind:this={dialog} role="dialog" aria-modal="true" aria-labelledby={title ? 'session-title' : 'session-brand'} tabindex="-1" onkeydown={key}>
     <div class="panel-title"><strong class="brand" id="session-brand">{appName}</strong></div>
     <div class="panel-body">
-      <img class="session-logo" src="/assets/FTlogoL.png" width="141" height="71" alt="FreeTrain"/>
+      <img class="session-logo" src="/assets/FTlogoL.png" width="141" height="71" alt={appName}/>
       {#if title}<h1 id="session-title">{title}</h1>{/if}
       {#if !signingIn && view.connection !== 'disconnected'}<p data-testid="connection">{text[view.connection]}</p>{/if}
       {#if signingIn}

@@ -18,7 +18,7 @@ export async function downloadSave(): Promise<void> {
   const response = await fetch('/api/saves/download', { signal: AbortSignal.timeout(15000), credentials: 'same-origin' });
   if (!response.ok) throw new SaveError('saveFailed');
   const url = URL.createObjectURL(await response.blob());
-  const link = document.createElement('a'); link.href = url; link.download = 'freetrain-save.json'; link.click();
+  const link = document.createElement('a'); link.href = url; link.download = 'freetrain-online-save.json'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export async function listSaveSlots(): Promise<SaveSlot[]> {

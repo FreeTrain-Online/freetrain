@@ -1,14 +1,14 @@
 import { chromium, expect } from '@playwright/test';
 import { resolve } from 'node:path';
 
-// Run from web/ after docker build. Owns only the freetrain-stage7-check project.
+// Run from web/ after docker build. Owns only the freetrain-online-stage7-check project.
 // Fixed subnet/ports in compose.yaml must be free. Leaves evidence under tmp/.
-const root=resolve('..'), project='freetrain-stage7-check';
+const root=resolve('..'), project='freetrain-online-stage7-check';
 const secret=crypto.randomUUID()+crypto.randomUUID();
-const env={...Deno.env.toObject(),FREETRAIN_OPERATOR_SECRET:secret,
-  FREETRAIN_IMAGE:'freetrain:prototype',FREETRAIN_SAVE_VOLUME:`${project}_saves`,
-  FREETRAIN_SITE:'localhost',FREETRAIN_TLS:'internal',FREETRAIN_BIND:'127.0.0.1',
-  FREETRAIN_HTTP_PORT:'8080',FREETRAIN_HTTPS_PORT:'8443',FREETRAIN_CHECKPOINT_INTERVAL:'00:00:30'};
+const env={...Deno.env.toObject(),FREETRAIN_ONLINE_OPERATOR_SECRET:secret,
+  FREETRAIN_ONLINE_IMAGE:'freetrain-online:prototype',FREETRAIN_ONLINE_SAVE_VOLUME:`${project}_saves`,
+  FREETRAIN_ONLINE_SITE:'localhost',FREETRAIN_ONLINE_TLS:'internal',FREETRAIN_ONLINE_BIND:'127.0.0.1',
+  FREETRAIN_ONLINE_HTTP_PORT:'8080',FREETRAIN_ONLINE_HTTPS_PORT:'8443',FREETRAIN_ONLINE_CHECKPOINT_INTERVAL:'00:00:30'};
 const compose=['compose','-p',project,'-f',`${root}/deploy/compose.yaml`];
 async function docker(args:string[],environment=env) {
   const result=await new Deno.Command('docker',{args,env:environment,stdout:'piped',stderr:'piped'}).output();
@@ -22,7 +22,7 @@ async function healthy(){for(let i=0;i<200;i++){try{const response=await fetch(u
 const browser=await chromium.launch({headless:true});
 const errors:string[]=[];
 let restoredVolume=false;
-const restoreEnv={...env,FREETRAIN_SAVE_VOLUME:`${project}_restored`};
+const restoreEnv={...env,FREETRAIN_ONLINE_SAVE_VOLUME:`${project}_restored`};
 try {
   const start=performance.now();
   await docker([...compose,'up','-d','--no-build']);
@@ -36,7 +36,7 @@ try {
   expect(redirect.status).toBe(308);expect(redirect.headers.get('location')).toBe(url+'/health');
   const architecture=await docker(['exec',`${project}-game-1`,'uname','-m']);expect(architecture).toBe('x86_64');
   const info=await docker(['exec',`${project}-game-1`,'dotnet','--info']);
-  const image=JSON.parse(await docker(['image','inspect','freetrain:prototype','--format','{{json .}}']));
+  const image=JSON.parse(await docker(['image','inspect','freetrain-online:prototype','--format','{{json .}}']));
   // Independent CA/hostname verification above. Chromium bypasses local test-CA trust only.
   const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:1920,height:1080},locale:'en'});
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
@@ -45,7 +45,7 @@ try {
   async function bootstrap(){const response=await page.request.get(url+boot);expect(response.ok()).toBe(true);return response.json();}
   async function rename(name:string){await page.getByLabel('Station name',{exact:true}).fill(name);await page.getByRole('button',{name:'Apply name',exact:true}).click();await expect(page.getByTestId('confirmed-name')).toHaveText(name);}
   await login();
-  expect((await context.cookies()).find(c=>c.name==='freetrain.operator')).toMatchObject({secure:true,httpOnly:true,sameSite:'Strict',path:'/api'});
+  expect((await context.cookies()).find(c=>c.name==='freetrain-online.operator')).toMatchObject({secure:true,httpOnly:true,sameSite:'Strict',path:'/api'});
   expect(socketUrls.length).toBeGreaterThan(0);expect(socketUrls.every(u=>u.startsWith('wss://'))).toBe(true);
   expect((await page.request.get(url+boot,{headers:{Origin:'https://foreign.example'}})).status()).toBe(403);
   expect((await page.request.get(url+'/api/bootstrap?protocolVersion=999&contentVersion=prototype-content-1')).status()).toBe(426);
@@ -81,11 +81,11 @@ try {
   await login();before=await bootstrap();expect(before.snapshot.stations[0].name).toBe('SIGTERMで保存した駅');expect(before.snapshot.paused).toBe(true);
   await docker([...compose,'stop','game']);
   await docker(['volume','create',`${project}_restored`]);restoredVolume=true;
-  await docker(['run','--rm','--platform','linux/amd64','--user','0','-v',`${project}_restored:/data/saves`,'--mount',`type=bind,src=${root}/tmp/web-prototype-linux-backup.json,dst=/backup.json,readonly`,'--entrypoint','sh','freetrain:prototype','-c','cp /backup.json /data/saves/checkpoint.json && chown -R 1654:1654 /data/saves']);
+  await docker(['run','--rm','--platform','linux/amd64','--user','0','-v',`${project}_restored:/data/saves`,'--mount',`type=bind,src=${root}/tmp/web-prototype-linux-backup.json,dst=/backup.json,readonly`,'--entrypoint','sh','freetrain-online:prototype','-c','cp /backup.json /data/saves/checkpoint.json && chown -R 1654:1654 /data/saves']);
   const restoreStart=performance.now();await docker([...compose,'up','-d','--no-build','game'],restoreEnv);await healthy();const independentRestoreMs=performance.now()-restoreStart;
   await login();before=await bootstrap();expect(before.snapshot.stations[0].name).toBe('Linux永続ボリューム駅');expect(before.snapshot.paused).toBe(true);
   await page.getByLabel('Language').selectOption('ja');await page.screenshot({path:`${root}/tmp/web-prototype-deployment-ja.png`,fullPage:true});
-  const profile=JSON.parse(await docker(['run','--rm','--platform','linux/amd64','freetrain:prototype','--headless-profile']));
+  const profile=JSON.parse(await docker(['run','--rm','--platform','linux/amd64','freetrain-online:prototype','--headless-profile']));
   const sorted=saveTimes.sort((a,b)=>a-b);expect(errors).toEqual([]);
   const report={recordedAt:new Date().toISOString(),scope:'Local Docker Desktop ARM host, emulated linux/amd64 game and Caddy; private CA verified by Deno; Chromium ignores local CA trust only; no public host',
     image:{id:image.Id,architecture:image.Architecture,os:image.Os,bytes:image.Size},architecture,runtime:info,browser:browser.version(),coldComposeStartMs:coldStartMs,

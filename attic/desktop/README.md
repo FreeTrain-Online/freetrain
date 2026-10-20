@@ -1,7 +1,7 @@
 # Retired desktop infrastructure
 
 These files were retired on 17 October 2026 after validation of the web vertical
-slice. Build the maintained application with `FreeTrain.slnx`; see
+slice. Build the maintained application with `FreeTrain.Online.slnx`; see
 [README.web.md](../../README.web.md).
 
 This archive preserves original file contents and repository-relative paths from

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain.invalid/prototype/contracts-v2.schema.json",
+  "$id": "https://freetrain-online.invalid/prototype/contracts-v2.schema.json",
   "title": "PrototypeDocument",
   "oneOf": [
     {

@@ -19,13 +19,13 @@ import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parent.parent
-DLL = ROOT / 'src/FreeTrain.Server/bin/Release/net10.0/FreeTrain.Server.dll'
+DLL = ROOT / 'src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll'
 BOOTSTRAP = '/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1'
 
 class Server:
     def __init__(self, directory):
-        environment = dict(os.environ, FreeTrain__Saves__Directory=str(directory), FreeTrain__Saves__Interval='00:00:30',
-                           FreeTrain__Network__DisconnectGrace='00:00:00')
+        environment = dict(os.environ, FreeTrainOnline__Saves__Directory=str(directory), FreeTrainOnline__Saves__Interval='00:00:30',
+                           FreeTrainOnline__Network__DisconnectGrace='00:00:00')
         started = time.perf_counter()
         self.process = subprocess.Popen(['dotnet', str(DLL), '--urls', 'http://127.0.0.1:0'], cwd=ROOT,
                                         env=environment, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
@@ -112,7 +112,7 @@ class Server:
 
 
 def main():
-    with tempfile.TemporaryDirectory(prefix='freetrain-recovery-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='freetrain-online-recovery-') as temporary:
         directory = Path(temporary) / 'live'
         backup = Path(temporary) / 'independent-backup'
         backup.mkdir()

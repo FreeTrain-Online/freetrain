@@ -1,6 +1,6 @@
 export const schemes = ['evergreen', 'classic-blue', 'slate', 'plum'] as const;
 export type Scheme = typeof schemes[number];
-export const schemeKey = 'freetrain.ui.v1';
+export const schemeKey = 'freetrain-online.ui.v1';
 export function resolveScheme(value: unknown): Scheme {
   return schemes.includes(value as Scheme) ? value as Scheme : 'evergreen';
 }

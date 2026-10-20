@@ -59,7 +59,7 @@ export const messages = {
     visualSample: 'Visual sample by the pier: water, fence and slope. Winter ground and recoloring are local display options.',
     track: 'Track', building: 'Building', eastWest: 'East-west', northSouth: 'North-south',
     curveSE: 'Curve south-east', curveSW: 'Curve south-west', curveNE: 'Curve north-east', curveNW: 'Curve north-west', junctionE: 'Junction east',
-    title: 'FreeTrain', subtitle: 'Web prototype', language: 'Language',
+    title: appName, subtitle: 'Web prototype', language: 'Language',
     network: 'Live reference game', networkNotice: 'Inspect the world, operate the train and extend the siding. Changes are confirmed by the game service.',
     accessRequired: 'Operator access required', incompatible: 'Client and server versions differ. Reload after updating.',
     operatorSecret: 'Enter access key to join game', connect: 'Connect', accessFailed: 'Access failed. Check the key and try again.',
@@ -144,7 +144,7 @@ export const messages = {
     visualSample: '桟橋付近の表示見本：水面・柵・斜面。冬の地面と色変更は表示のみの設定です。',
     track: '線路', building: '建物', eastWest: '東西', northSouth: '南北',
     curveSE: '曲線：南東', curveSW: '曲線：南西', curveNE: '曲線：北東', curveNW: '曲線：北西', junctionE: '東分岐',
-    title: 'FreeTrain', subtitle: 'ウェブ試作版', language: '言語',
+    title: appName, subtitle: 'ウェブ試作版', language: '言語',
     network: '参照ゲームに接続', networkNotice: 'マップの確認、列車の運転、側線の延長ができます。操作はゲームサーバーで確定します。',
     accessRequired: '操作キーが必要です', incompatible: 'クライアントとサーバーのバージョンが異なります。更新後に再読み込みしてください。',
     operatorSecret: 'アクセスキーを入力してゲームに参加', connect: '接続', accessFailed: '接続できませんでした。キーを確認してください。',
@@ -178,12 +178,12 @@ export function resolveLocale(value: string | null | undefined): Locale {
 }
 export function initialLocale(): Locale {
   try {
-    const saved = localStorage.getItem('freetrain.locale');
+    const saved = localStorage.getItem('freetrain-online.locale');
     if (saved === 'en' || saved === 'ja') return saved;
   } catch { /* A blocked storage setting must not prevent startup. */ }
   return resolveLocale(navigator.language);
 }
 export function persistLocale(locale: Locale): void {
   document.documentElement.lang = locale;
-  try { localStorage.setItem('freetrain.locale', locale); } catch { /* Preference is optional. */ }
+  try { localStorage.setItem('freetrain-online.locale', locale); } catch { /* Preference is optional. */ }
 }

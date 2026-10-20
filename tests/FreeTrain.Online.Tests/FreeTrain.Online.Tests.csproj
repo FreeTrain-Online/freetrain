@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><IsTestProject>true</IsTestProject><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Contracts/FreeTrain.Online.Contracts.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Persistence/FreeTrain.Online.Persistence.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Content/FreeTrain.Online.Content.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Session/FreeTrain.Online.Session.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Plugins.ManualController/FreeTrain.Online.Plugins.ManualController.csproj" />
+    <None Include="../../prototype/protocol/fixtures/*.json" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

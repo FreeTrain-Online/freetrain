@@ -124,7 +124,7 @@
 <div class="app-shell" class:gated={!live} data-shell="svelte">
   {#if live}
     <div class="command-bar" role="toolbar" aria-label={text.game} aria-describedby="mutation-help" use:toolbar>
-      <img class="app-icon" src={icon} width="32" height="32" alt="FreeTrain"/>
+      <img class="app-icon" src={icon} width="32" height="32" alt={appName}/>
       <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); menu = !menu; if (menu) void tick().then(() => [...document.querySelectorAll<HTMLButtonElement>('#game-menu button')].find(button => !button.disabled && button.getClientRects().length)?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
       <div class="transport">
         <button disabled={disabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { at, bootstrap, clickSprite, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
-const evidence = process.env.FREETRAIN_UX2_EVIDENCE!;
+const evidence = process.env.FREETRAIN_ONLINE_UX2_EVIDENCE!;
 test.beforeEach(async ({ page }) => {
   await mkdir(evidence, { recursive: true });
   await page.goto('/'); await ready(page);
@@ -144,7 +144,7 @@ test('UX2 schemes persist across refresh and gates without changing camera, canv
     await expect(page.getByRole('button', { name: 'Build track', exact: true })).toHaveAttribute('aria-pressed', 'true');
   }
   await page.getByLabel('UI color scheme', { exact: true }).selectOption('plum');
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('freetrain.ui.v1')!))).toEqual({ version: 1, scheme: 'plum' });
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('freetrain-online.ui.v1')!))).toEqual({ version: 1, scheme: 'plum' });
   expect(await bootstrap(page)).toEqual(before);
   await page.reload(); await ready(page); await expect(page.locator('html')).toHaveAttribute('data-ui-scheme', 'plum');
   await selectStation(page); await page.getByLabel('Station name', { exact: true }).fill('Preserve my draft');
@@ -153,14 +153,14 @@ test('UX2 schemes persist across refresh and gates without changing camera, canv
   await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible(); await expect(page.getByLabel('UI color scheme', { exact: true })).toHaveValue('plum');
   await page.getByLabel('UI color scheme', { exact: true }).selectOption('classic-blue');
   await page.getByLabel('Language', { exact: true }).selectOption('ja'); await page.setViewportSize({ width: 360, height: 800 });
-  await expect(page.getByLabel('操作キー', { exact: true })).toBeVisible();
+  await expect(page.getByLabel('アクセスキーを入力してゲームに参加', { exact: true })).toBeVisible();
   await page.screenshot({ path: `${evidence}/scheme-gate-ja.png` });
   await page.reload(); await expect(page.getByLabel('UI配色', { exact: true })).toHaveValue('classic-blue'); expect(errors).toEqual([]);
 });
 
 test('UX2 invalid or obsolete stored scheme falls back before gameplay', async ({ page }) => {
   for (const stored of ['not JSON', '{"version":1,"scheme":"unknown"}', '{"version":2,"scheme":"plum"}']) {
-    await page.evaluate(value => localStorage.setItem('freetrain.ui.v1', value), stored); await page.reload(); await ready(page);
+    await page.evaluate(value => localStorage.setItem('freetrain-online.ui.v1', value), stored); await page.reload(); await ready(page);
     await expect(page.locator('html')).toHaveAttribute('data-ui-scheme', 'evergreen');
   }
 });

@@ -23,6 +23,7 @@ BASE_REVISION = '1f755ca6f291253b8cd5024ef53402b85d467170'
 IMPLEMENTATION_REVISION = '4ddb808a337e805f519451bad92b71ec02f67ae2'
 
 IMPLEMENTATION_SOURCES = {
+    # Paths identify the pinned implementation commit, before the FreeTrain Online rename.
     'src/FreeTrain.Simulation/Definitions.cs': 'Four-direction ordinals, eight prototype shapes, fixed definitions and Park-Miller random stream',
     'src/FreeTrain.Simulation/GridPosition.cs': 'Prototype rectangular coordinates',
     'src/FreeTrain.Simulation/SimulationClock.cs': 'Prototype DateTime/tick origin and semantic move events',

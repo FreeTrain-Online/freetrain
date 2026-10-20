@@ -40,7 +40,7 @@ Run from the repo root:
 ```sh
 deno task --cwd web generate:contracts
 deno task --cwd web test
-dotnet test FreeTrain.slnx -c Release
+dotnet test FreeTrain.Online.slnx -c Release
 ```
 
 Commit generated TypeScript alongside schema changes. C# records in Contracts

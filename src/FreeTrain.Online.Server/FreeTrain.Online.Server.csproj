@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../FreeTrain.Online.Session/FreeTrain.Online.Session.csproj" />
+    <ProjectReference Include="../FreeTrain.Online.Contracts/FreeTrain.Online.Contracts.csproj" />
+    <ProjectReference Include="../FreeTrain.Online.Content/FreeTrain.Online.Content.csproj" />
+    <ProjectReference Include="../FreeTrain.Online.Plugins.ManualController/FreeTrain.Online.Plugins.ManualController.csproj" />
+  </ItemGroup>
+</Project>

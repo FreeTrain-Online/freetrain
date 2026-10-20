@@ -1,14 +1,16 @@
-# FreeTrain Web
+# FreeTrain Online
 
-The bilingual Svelte browser now drives the deterministic reference game through
-real HTTP/WebSocket transport and an authoritative C# session. Run/pause/step,
+FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail and business simulation game FreeTrain by Kohsuke Kawaguchi.
+
+The bilingual Svelte web app drives the deterministic reference game through
+HTTP/WebSocket transport and an authoritative C# session. Run/pause/step,
 controller changes and Japanese station rename use committed server state.
 Reconnect/refresh recover the current game. The Canvas map supports pan/zoom,
 height cuts, object picking, track previews and confirmed construction/removal,
 with focus-scoped manual keyboard control. Versioned saves, server checkpoints, browser
 download/upload and an optional station sound are available.
 
-Multiple participants can now share that world with owner/operator/observer roles,
+Multiple participants can share that world with owner/operator/observer roles,
 conflict checks, independent reconnects and timed train-control leases.
 
 ## Prerequisites and checks
@@ -22,7 +24,14 @@ Frontend dependencies and tasks are defined in `web/deno.json`; `web/deno.lock`
 pins transitive versions and integrity hashes. Python 3 (standard library only)
 is also required to reproduce/check the curated legacy sprite conversion.
 
-The solution to build is `FreeTrain.slnx`.
+The solution to build is `FreeTrain.Online.slnx`.
+
+When updating an existing installation, use `FreeTrainOnline__…` for server
+environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
+The image is now `freetrain-online:prototype`. Reuse your existing save directory
+or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume; save formats
+are unchanged. Browser login and preference keys use `freetrain-online`;
+sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
 
@@ -53,7 +62,7 @@ cross-platform browser matrix or native IME behavior.
 In separate terminals:
 
 ```sh
-dotnet run --project src/FreeTrain.Server --no-launch-profile
+dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
 ```
 
 ```sh
@@ -69,19 +78,19 @@ Independent browser sessions can control the same game. Each participant has one
 active socket; tabs sharing cookies share that identity. Local browsers receive
 independent owner identities. Train control requires a lease, visible in the inspector.
 
-For a remote binding, configure `FreeTrain__OperatorSecret` on the server. The
+For a remote binding, configure `FreeTrainOnline__OperatorSecret` on the server. The
 browser exchanges the access key for an HttpOnly, SameSite cookie. Keep the static
 client and service behind one HTTPS origin. The release container serves both;
-Caddy provides HTTPS/WSS. Additional remote participants use separate `FreeTrain__Participants__0__Id`,
+Caddy provides HTTPS/WSS. Additional remote participants use separate `FreeTrainOnline__Participants__0__Id`,
 `__Role` (`owner`, `operator`, `observer`) and `__Secret` settings.
 Save/load mutations require an owner. **Leave game** revokes this login and returns
 to sign-in, allowing you to connect with another participant key.
 For a complete local setup with Owner, Operator and Observer clients, see
 [multiplayer operation guide](doc/web-multiplayer-operation.md).
 No secret belongs in frontend configuration. Optional explicit
-origins use `FreeTrain__AllowedOrigins__0`; lifecycle and queue settings use
-`FreeTrain__Network__<Property>`. See
-[NetworkOptions](src/FreeTrain.Server/NetworkSession.cs) for defaults and limits.
+origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings use
+`FreeTrainOnline__Network__<Property>`. See
+[NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
 Disconnect clears that participant’s held input and releases their train leases.
 The game pauses/checkpoints one second after the last owner/operator disconnects;
@@ -171,10 +180,10 @@ use `data/saves` relative to the service working directory by default. Set an
 absolute directory for predictable local or persistent-volume storage:
 
 ```sh
-FreeTrain__Saves__Directory="$PWD/data/saves" dotnet run --project src/FreeTrain.Server --no-launch-profile
+FreeTrainOnline__Saves__Directory="$PWD/data/saves" dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
 ```
 
-`FreeTrain__Saves__Interval=00:00:30` configures the checkpoint interval
+`FreeTrainOnline__Saves__Interval=00:00:30` configures the checkpoint interval
 (allowed range: one second to five minutes). Only one server can hold a save
 directory at a time. A corrupt checkpoint prevents startup and is left intact;
 restore an independent download/backup using the
@@ -200,8 +209,8 @@ Public hosting remains pending; cross-browser testing is skipped at the owner's 
 
 ```sh
 ./scripts/build-web-release.sh
-PLAYWRIGHT_BROWSERS_PATH=/tmp/freetrain-playwright deno task --cwd web test:deployment
-PLAYWRIGHT_BROWSERS_PATH=/tmp/freetrain-playwright deno task --cwd web profile
+PLAYWRIGHT_BROWSERS_PATH=/tmp/freetrain-online-playwright deno task --cwd web test:deployment
+PLAYWRIGHT_BROWSERS_PATH=/tmp/freetrain-online-playwright deno task --cwd web profile
 ```
 
 Release image/static archives and checksums go into `tmp/release/`. Deployment
@@ -212,8 +221,8 @@ updates, shutdown and independent backup restoration. Performance evidence lives
 in `tmp/`.
 
 If a development server already uses browser-test ports, set
-`FREETRAIN_TEST_SERVER_PORT=5182 FREETRAIN_TEST_WEB_PORT=4182` when running
-`deno task --cwd web test:browser`. `FREETRAIN_API_TARGET` changes the Vite
+`FREETRAIN_ONLINE_TEST_SERVER_PORT=5182 FREETRAIN_ONLINE_TEST_WEB_PORT=4182` when running
+`deno task --cwd web test:browser`. `FREETRAIN_ONLINE_API_TARGET` changes the Vite
 development/preview proxy target only; the production client uses its own origin.
 
 ## Headless scenario
@@ -221,7 +230,7 @@ development/preview proxy target only; the production client uses its own origin
 Run the 10,000-tick reference scenario without starting an HTTP listener:
 
 ```sh
-dotnet run --project src/FreeTrain.Server -c Release --no-build --no-restore -- --headless-trace 10000
+dotnet run --project src/FreeTrain.Online.Server -c Release --no-build --no-restore -- --headless-trace 10000
 ```
 
 Append an output path to write full per-tick state/event NDJSON. The command

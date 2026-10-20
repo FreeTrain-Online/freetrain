@@ -7,9 +7,9 @@ python3 scripts/inventory-parity.py --check
 python3 scripts/reconcile-parity-content.py --check
 python3 scripts/parity-rail-gallery.py --check
 python3 -m unittest discover -s scripts/tests
-dotnet restore FreeTrain.slnx --locked-mode
-dotnet build FreeTrain.slnx -c Release --no-restore
-dotnet test FreeTrain.slnx -c Release --no-build --no-restore
+dotnet restore FreeTrain.Online.slnx --locked-mode
+dotnet build FreeTrain.Online.slnx -c Release --no-restore
+dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore
 deno install --config web/deno.json --frozen
 deno task --cwd web test
 deno task --cwd web build

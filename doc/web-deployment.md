@@ -1,4 +1,4 @@
-# FreeTrain web deployment and recovery
+# FreeTrain Online deployment and recovery
 
 Deploy one authoritative world with multiple participants and one save-directory writer.
 See the [multiplayer operation guide](web-multiplayer-operation.md) for participant
@@ -32,8 +32,8 @@ Outputs under `tmp/release/`:
 
 | Artifact | Use |
 | --- | --- |
-| `freetrain-linux-x64.tar.gz` | `docker load` image archive, tagged `freetrain:prototype` |
-| `freetrain-static.tar.gz` | Exact `/app/wwwroot` from that same image; no frontend runtime needed |
+| `freetrain-online-linux-x64.tar.gz` | `docker load` image archive, tagged `freetrain-online:prototype` |
+| `freetrain-online-static.tar.gz` | Exact `/app/wwwroot` from that same image; no frontend runtime needed |
 | `image.json`, `SHA256SUMS` | Image metadata and transfer checksums |
 | `static/` | Extracted matching static files for inspection |
 
@@ -50,13 +50,13 @@ the hashes in their archive directory, then load:
 
 ```sh
 sha256sum -c SHA256SUMS
-gzip -dc freetrain-linux-x64.tar.gz | docker load
+gzip -dc freetrain-online-linux-x64.tar.gz | docker load
 ```
 
 On macOS, use `shasum -a 256 -c SHA256SUMS` for verification.
 
 Use a release-specific tag or registry digest for a hosted rollout rather than
-overwriting the only retained image. Set `FREETRAIN_IMAGE` in `deploy/.env`.
+overwriting the only retained image. Set `FREETRAIN_ONLINE_IMAGE` in `deploy/.env`.
 
 ## Local HTTPS/WSS
 
@@ -68,8 +68,8 @@ Replace the example key with a long random key, e.g. output from
 `openssl rand -hex 32`. Keep `deploy/.env` private (it is ignored). Run:
 
 ```sh
-docker compose --env-file deploy/.env -p freetrain -f deploy/compose.yaml up -d --no-build
-docker compose --env-file deploy/.env -p freetrain -f deploy/compose.yaml logs --tail 50
+docker compose --env-file deploy/.env -p freetrain-online -f deploy/compose.yaml up -d --no-build
+docker compose --env-file deploy/.env -p freetrain-online -f deploy/compose.yaml logs --tail 50
 ```
 
 Open `https://localhost:8443`, enter the operator key, and play. Local HTTP port
@@ -79,8 +79,8 @@ public certificate if needed (do not export the CA private key):
 
 ```sh
 mkdir -p tmp
-docker cp freetrain-proxy-1:/data/caddy/pki/authorities/local/root.crt tmp/freetrain-local-root.crt
-curl --cacert tmp/freetrain-local-root.crt https://localhost:8443/health
+docker cp freetrain-online-proxy-1:/data/caddy/pki/authorities/local/root.crt tmp/freetrain-online-local-root.crt
+curl --cacert tmp/freetrain-online-local-root.crt https://localhost:8443/health
 ```
 
 The automated deployment check verifies CA trust and the `localhost` hostname
@@ -89,7 +89,7 @@ for this disposable private CA; this is not public certificate validation.
 
 Compose reserves `172.30.70.0/28`; backend `.2`, proxy `.3`. If it conflicts with
 another local network, update the subnet, both addresses and
-`FreeTrain__TrustedProxy` together. Only one stack using that subnet can run at
+`FreeTrainOnline__TrustedProxy` together. Only one stack using that subnet can run at
 a time. The game has no host-published port. Forwarded scheme/client headers
 are accepted only from the configured adjacent proxy; host/origin checks and
 secure cookies operate on the HTTPS origin. Keep the internal backend port
@@ -102,11 +102,11 @@ the image and deploy configuration, point the intended DNS hostname at the
 machine, and set these values in `deploy/.env`:
 
 ```dotenv
-FREETRAIN_SITE=game.example.org
-FREETRAIN_TLS=operator@example.org
-FREETRAIN_BIND=0.0.0.0
-FREETRAIN_HTTP_PORT=80
-FREETRAIN_HTTPS_PORT=443
+FREETRAIN_ONLINE_SITE=game.example.org
+FREETRAIN_ONLINE_TLS=operator@example.org
+FREETRAIN_ONLINE_BIND=0.0.0.0
+FREETRAIN_ONLINE_HTTP_PORT=80
+FREETRAIN_ONLINE_HTTPS_PORT=443
 ```
 
 Replace the example hostname/email/key with actual values. Allow inbound TCP
@@ -121,13 +121,13 @@ the container workflow; record host-specific validation separately.
 
 | Setting | Meaning |
 | --- | --- |
-| `FREETRAIN_OPERATOR_SECRET` | Compose injects server-only operator key; never put it in a bundle or URL |
-| `FREETRAIN_IMAGE` | Matched server/static image; default `freetrain:prototype` |
-| `FREETRAIN_SAVE_VOLUME` | Optional existing/new named save volume; default `<project>_saves` |
-| `FREETRAIN_CHECKPOINT_INTERVAL` | Default `00:00:30`; supported range one second to five minutes |
-| `FREETRAIN_SITE`, `FREETRAIN_TLS` | Hostname and private-CA `internal` or public-certificate email |
-| `FREETRAIN_BIND`, `FREETRAIN_HTTP_PORT`, `FREETRAIN_HTTPS_PORT` | Host binding and public ports |
-| `FreeTrain__Network__<Property>` | Optional backend lifecycle/queue settings defined in [NetworkOptions](../src/FreeTrain.Server/NetworkSession.cs) |
+| `FREETRAIN_ONLINE_OPERATOR_SECRET` | Compose injects server-only operator key; never put it in a bundle or URL |
+| `FREETRAIN_ONLINE_IMAGE` | Matched server/static image; default `freetrain-online:prototype` |
+| `FREETRAIN_ONLINE_SAVE_VOLUME` | Optional existing/new named save volume; default `<project>_saves` |
+| `FREETRAIN_ONLINE_CHECKPOINT_INTERVAL` | Default `00:00:30`; supported range one second to five minutes |
+| `FREETRAIN_ONLINE_SITE`, `FREETRAIN_ONLINE_TLS` | Hostname and private-CA `internal` or public-certificate email |
+| `FREETRAIN_ONLINE_BIND`, `FREETRAIN_ONLINE_HTTP_PORT`, `FREETRAIN_ONLINE_HTTPS_PORT` | Host binding and public ports |
+| `FreeTrainOnline__Network__<Property>` | Optional backend lifecycle/queue settings defined in [NetworkOptions](../src/FreeTrain.Online.Server/NetworkSession.cs) |
 
 `GET /health` is unauthenticated: 200 with `status: ok`, stage and protocol
 version after the service has initialized its checkpoint; 503 with
@@ -165,15 +165,15 @@ To back up checkpoint plus all manual slots, stop the sole writer cleanly,
 then archive the named volume using the release image:
 
 ```sh
-docker compose --env-file deploy/.env -p freetrain -f deploy/compose.yaml stop game
+docker compose --env-file deploy/.env -p freetrain-online -f deploy/compose.yaml stop game
 mkdir -p tmp/backups
 docker run --rm --user 0 --entrypoint sh \
-  -v freetrain_saves:/saves:ro \
+  -v freetrain-online_saves:/saves:ro \
   --mount "type=bind,src=$PWD/tmp/backups,dst=/backup" \
-  freetrain:prototype -c 'tar -czf /backup/freetrain-volume.tar.gz -C /saves .'
+  freetrain-online:prototype -c 'tar -czf /backup/freetrain-online-volume.tar.gz -C /saves .'
 ```
 
-Replace `freetrain_saves` if using a custom project/volume. Copy the archive to
+Replace `freetrain-online_saves` if using a custom project/volume. Copy the archive to
 independent storage, verify it, and start the game again or load the new image
 and run Compose `up -d --no-build`. Keep the same save volume and allow the
 20-second shutdown grace. A normal stop pauses and writes a final checkpoint,
@@ -192,16 +192,16 @@ Stop the writer before touching its files. Preserve a corrupt checkpoint for
 diagnosis; never overwrite the only backup. Restore into a fresh volume first:
 
 ```sh
-docker volume create freetrain_restored
+docker volume create freetrain-online_restored
 docker run --rm --user 0 --entrypoint sh \
-  -v freetrain_restored:/data/saves \
+  -v freetrain-online_restored:/data/saves \
   --mount "type=bind,src=$PWD/tmp/backups/backup.json,dst=/backup.json,readonly" \
-  freetrain:prototype -c 'cp /backup.json /data/saves/checkpoint.json && chown -R 1654:1654 /data/saves'
+  freetrain-online:prototype -c 'cp /backup.json /data/saves/checkpoint.json && chown -R 1654:1654 /data/saves'
 ```
 
 Here `backup.json` is an independent downloaded Save v1 JSON file. For a full
 volume archive, extract it into the empty volume instead, then set ownership.
-Set `FREETRAIN_SAVE_VOLUME=freetrain_restored` in `deploy/.env`, start the
+Set `FREETRAIN_ONLINE_SAVE_VOLUME=freetrain-online_restored` in `deploy/.env`, start the
 stack, require healthy startup, sign in, and confirm paused state, station name,
 cash, train and manual slots before retiring the old volume. If it fails, stop
 and retain both copies; inspect logs/version compatibility. A second writer
@@ -216,17 +216,17 @@ is not implemented; older images must not overwrite a newer unsupported save.
 ```sh
 ./scripts/check-web-prototype.sh
 deno task --cwd web install:browser
-FREETRAIN_TEST_SERVER_PORT=5182 FREETRAIN_TEST_WEB_PORT=4182 \
+FREETRAIN_ONLINE_TEST_SERVER_PORT=5182 FREETRAIN_ONLINE_TEST_WEB_PORT=4182 \
   deno task --cwd web test:browser
 ./scripts/build-web-release.sh
 deno task --cwd web test:deployment
 deno task --cwd web profile
-dotnet src/FreeTrain.Server/bin/Release/net10.0/FreeTrain.Server.dll --headless-profile
+dotnet src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll --headless-profile
 ```
 
 These commands use Playwright's default browser cache. If you use a custom
 cache, set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and checks.
-`test:deployment` exclusively owns the `freetrain-stage7-check` Compose
+`test:deployment` exclusively owns the `freetrain-online-stage7-check` Compose
 project/volumes, uses ports 8080/8443 and the
 documented subnet, and removes those test resources afterward. Never attach
 production data to that project. Its temporary access key is random and stays

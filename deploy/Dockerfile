@@ -17,8 +17,8 @@ WORKDIR /source
 COPY global.json ./
 COPY eng/ eng/
 COPY src/ src/
-RUN dotnet restore src/FreeTrain.Server/FreeTrain.Server.csproj --locked-mode \
- && dotnet publish src/FreeTrain.Server/FreeTrain.Server.csproj -c Release --no-restore -p:UseAppHost=false -o /release
+RUN dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode \
+ && dotnet publish src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore -p:UseAppHost=false -o /release
 
 # Portable managed publish; the target image supplies the Linux x64 runtime.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac AS release
@@ -27,8 +27,8 @@ COPY --from=backend /release/ ./
 COPY --from=frontend /source/web/dist/ wwwroot/
 RUN mkdir -p /data/saves && chown -R app:app /data
 ENV ASPNETCORE_URLS=http://0.0.0.0:8080 \
-    FreeTrain__Saves__Directory=/data/saves \
+    FreeTrainOnline__Saves__Directory=/data/saves \
     DOTNET_EnableDiagnostics=0
 USER app
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "FreeTrain.Server.dll"]
+ENTRYPOINT ["dotnet", "FreeTrain.Online.Server.dll"]

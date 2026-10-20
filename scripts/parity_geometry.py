@@ -151,7 +151,7 @@ def gallery(tree, geometry, review, out, images):
              'plugins/org.kohsuke.freetrain.rail/BridgeRail.bmp',
              'plugins/org.kohsuke.freetrain.rail/TunnelRail.bmp']
     decoded = {}
-    with tempfile.TemporaryDirectory(prefix='freetrain-composition-') as directory:
+    with tempfile.TemporaryDirectory(prefix='freetrain-online-composition-') as directory:
         for index, path in enumerate(paths):
             local = Path(directory) / f'{index}.bmp'
             local.write_bytes(tree.read(path))

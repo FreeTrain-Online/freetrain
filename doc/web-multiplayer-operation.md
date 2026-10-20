@@ -6,7 +6,7 @@ access key used to sign in.
 
 ## Default local mode
 
-Without `FreeTrain__OperatorSecret`, loopback access automatically assigns an
+Without `FreeTrainOnline__OperatorSecret`, loopback access automatically assigns an
 independent Owner identity to each browser cookie jar. Firefox and Chrome can
 therefore both show Owner on the same machine. Tabs sharing cookies share one
 participant identity.
@@ -23,14 +23,14 @@ Run the following commands from the repository root.
 Stop the existing backend, then start it with these local test credentials:
 
 ```sh
-FreeTrain__OperatorSecret=owner-test \
-FreeTrain__Participants__0__Id=builder \
-FreeTrain__Participants__0__Role=operator \
-FreeTrain__Participants__0__Secret=operator-test \
-FreeTrain__Participants__1__Id=viewer \
-FreeTrain__Participants__1__Role=observer \
-FreeTrain__Participants__1__Secret=observer-test \
-dotnet run --project src/FreeTrain.Server --no-launch-profile
+FreeTrainOnline__OperatorSecret=owner-test \
+FreeTrainOnline__Participants__0__Id=builder \
+FreeTrainOnline__Participants__0__Role=operator \
+FreeTrainOnline__Participants__0__Secret=operator-test \
+FreeTrainOnline__Participants__1__Id=viewer \
+FreeTrainOnline__Participants__1__Role=observer \
+FreeTrainOnline__Participants__1__Secret=observer-test \
+dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
 ```
 
 The backend normally listens on `http://127.0.0.1:5080`. The example keys are for
@@ -108,7 +108,7 @@ For a quick manual check:
 
 ## Change roles or return to automatic local access
 
-To change an identity's role, edit its `FreeTrain__Participants__<index>__Role`
+To change an identity's role, edit its `FreeTrainOnline__Participants__<index>__Role`
 setting to `owner`, `operator` or `observer`, then restart the backend. Reload
 clients and sign in again. Additional identities need distinct IDs and keys;
 `operator-1` is reserved for the main owner key.
@@ -138,7 +138,7 @@ settings were exported separately or put in a configuration file, remove them
 there as well.
 
 If all clients still show Owner, verify that the active backend was restarted
-with `FreeTrain__OperatorSecret` set and that the frontend points to that backend.
+with `FreeTrainOnline__OperatorSecret` set and that the frontend points to that backend.
 If a second tab keeps reconnecting, check whether another tab uses the same
 participant. The access endpoint allows ten sign-in attempts per minute across
 the server; after HTTP 429, wait for that window to reset before retrying.

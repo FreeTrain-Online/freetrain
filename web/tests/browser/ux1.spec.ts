@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { appName } from '../../src/lib/localization.ts';
 import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-const evidence = process.env.FREETRAIN_UX1_EVIDENCE!;
+const evidence = process.env.FREETRAIN_ONLINE_UX1_EVIDENCE!;
 
 test('UX1 fixed viewport, persistent canvas and overlay-independent camera at target sizes', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));

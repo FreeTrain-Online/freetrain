@@ -1,6 +1,6 @@
 # Web game UX contract
 
-This is the implementation contract for the FreeTrain web game UX.
+This is the implementation contract for the FreeTrain Online game UX.
 The simulation, protocol, saves and canvas projection stay unchanged.
 English and Japanese are acceptance languages.
 
@@ -92,10 +92,10 @@ stale construction geometry, and late acknowledgements cannot clear a newer draf
 
 Settings and every session gate offer Evergreen, Classic blue, Slate and Plum.
 Selection updates semantic root colors immediately; only the allowlisted ID in
-`{version: 1, scheme}` is stored under `freetrain.ui.v1`. Missing, corrupt,
+`{version: 1, scheme}` is stored under `freetrain-online.ui.v1`. Missing, corrupt,
 obsolete or invalid preferences use Evergreen. The preference is applied before
-mounting the app and survives demo/live, refresh and Leave. Language retains its
-existing storage path. No credentials, leases or world drafts are persisted.
+mounting the app and survives demo/live, refresh and Leave. Language is stored
+under `freetrain-online.locale`. No credentials, leases or world drafts are persisted.
 Run/Pause uses one stable button derived from confirmed clock state; keyboard
 focus stays on that button when its action changes. Narrow Game overflow retains Step.
 
@@ -125,7 +125,7 @@ the shell/map/persistence/multiplayer journeys and shell-model tests. Integrated
 evidence covers six required viewport sizes, English/Japanese, DPR 1/2 and live
 DPR changes, doubled text, coarse-pointer and reduced-height emulation, preset
 contrast, focus/cancellation, authority and independent local UI. The profile
-runner supports `FREETRAIN_PROFILE_EVIDENCE` so new evidence does not overwrite
+runner supports `FREETRAIN_ONLINE_PROFILE_EVIDENCE` so new evidence does not overwrite
 the UX0 baseline; it also measures 30 panel opens and verifies canvas identity,
 camera, bounds and unchanged image decode count.
 

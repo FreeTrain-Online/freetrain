@@ -160,7 +160,7 @@ Default builds and tests use only base content. The proposed build interface is
 `--extra-source <repository>` plus a required separate `--extra-output <directory>`;
 names remain design proposals until the canonical importer/package tooling is
 implemented. Startup configuration will accept a list of prepared pack directories
-(`FreeTrain:Content:Packs`) and serve exactly the selected catalog/assets to all
+(`FreeTrainOnline:Content:Packs`) and serve exactly the selected catalog/assets to all
 clients. Container operators mount the prepared pack; no download or sibling-path
 discovery occurs implicitly. Verify both explicit build/run and base build/run
 with a mounted prepared pack. Reject conflicting IDs rather than applying overrides.
