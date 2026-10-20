@@ -12,8 +12,9 @@ original bytes even where its working tree has approved corrections.
 
 This closes scenario design and source reassessment. **Fixture implementation,
 legal instantiated city validation, simulation/browser execution, original-runtime
-comparison, measured capacity and native/device acceptance remain open.** P0-07,
-P0-08, P0-09 and overall P0 remain open. No game, protocol, content, save version,
+comparison, measured capacity and native/device acceptance remain open.** P0-07
+[coverage/estimates reporting](web-parity-report.md) is now complete; P0-08, P0-09
+and overall P0 remain open. No game, protocol, content, save version,
 service limit or distribution input changes in this batch.
 
 ## Independent expectations
@@ -177,7 +178,8 @@ Validation on 21 October: the scenario checker and **93 Python tests** pass;
 
 P1–P10 implement and execute these fixture designs with their feature slices;
 P11 reconciles every scenario, expanded matrix, difference and locale workflow to
-evidence. P0-07 publishes coverage/estimates using this distinction; P0-08 owns
+evidence. The completed [P0-07 report](web-parity-report.md) publishes
+coverage/estimates using this distinction; P0-08 owns
 optional-pack fixture binding; P0-09 reconciles the remaining authority/scope and
 cross-document decisions. The discovery ledger retains its inventoried statuses.
 [Historical scenarios](parity/historical/scenarios.json) and

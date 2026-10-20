@@ -4,6 +4,7 @@
 
 | Location | Status |
 | --- | --- |
+| [P0-07 coverage/differences/estimates](../web-parity-report.md) | Current ExAV report: reviewed denominators, justified reuse, translation/optional gaps, provisional phase effort and open UX/native gates; P0-08/P0-09 and overall P0 stay open |
 | [exav-baseline.json](exav-baseline.json) | Current pinned archive source selection and approved source corrections |
 | [exav-ledger.json](exav-ledger.json) | Current ExAV discovery ledger; behavior reviews and implementation remain open |
 | [exav-content-rules.json](exav-content-rules.json) | Maintained P0-02 ExAV recipe/effect/state rules, differences and translation policy |

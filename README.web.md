@@ -21,7 +21,8 @@ The running reference slice and its asset importer still retain their recorded
 prototype provenance; they are not yet complete ExAV implementations. P0-01 ExAV
 discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
-complete; P0-07–09 and runtime/native acceptance remain open. See
+complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
+P0-08/P0-09 and runtime/native acceptance remain open. See
 [the source inventory](doc/web-parity-exav-inventory.md) and
 [maintained source policy](doc/web-feature-parity.md).
 
