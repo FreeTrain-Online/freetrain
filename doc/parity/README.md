@@ -6,6 +6,8 @@
 | --- | --- |
 | [exav-baseline.json](exav-baseline.json) | Current pinned archive source selection and approved source corrections |
 | [exav-ledger.json](exav-ledger.json) | Current ExAV discovery ledger; behavior reviews and implementation remain open |
+| [exav-content-rules.json](exav-content-rules.json) | Maintained P0-02 ExAV recipe/effect/state rules, differences and translation policy |
+| [exav-content-review.json](exav-content-review.json) | P0-02 source reconciliation; complete bundled accounting and XML text inventory, runtime parity unverified |
 | [exav-manifest-encoding-review.json](exav-manifest-encoding-review.json) | Separate evidence for the approved UTF-8 working-tree conversion |
 | [historical/](historical/README.md) | Superseded original-FreeTrain parity artifacts, earlier optional-suite inventory and historical manual evidence |
 

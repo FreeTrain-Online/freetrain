@@ -2,6 +2,8 @@
 
 **ExAV reassessment pending — 20 October 2026:** this P0-05 contract/content/persistence review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
 
+P0-02 now provides [ExAV contribution/instance state findings](web-parity-content.md#changes-and-handoffs), including Int64 values, returned timer handlers and expanded stadium state. These are inputs to this still-open P0-05 reassessment; the historical serializer/transition artifacts below have not been repinned.
+
 P0-01 now supplies [stable ExAV discovery](web-parity-exav-inventory.md) with
 195 serialization candidate files, source hashes and project memberships. Their
 fields/defaults/callbacks and stable-version layouts remain P0-05 work; the

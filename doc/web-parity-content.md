@@ -1,26 +1,163 @@
-# Base content reconciliation
+# Stable ExAV bundled-content reconciliation
 
-**ExAV reassessment pending — 20 October 2026:** this P0-02 bundled-content review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+**P0-02 source reconciliation completed — 20 October 2026**, against FreeTrain
+ExAV **2.1.1.12 / V2**, archive Git
+`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, SVN r115, **`trunk/`**.
+The [review](parity/exav-content-review.json) and
+[maintained rules](parity/exav-content-rules.json) are separate from the
+[discovery ledger](parity/exav-ledger.json) and superseded original-source review.
+This closes the content inventory/specification task. P0-03–09, the overall P0
+gate, content conversion, gameplay, visual fidelity and save continuation remain
+open. No desktop assemblies or serialized objects were activated.
 
-P0-01 now supplies a separate [stable ExAV discovery ledger](web-parity-exav-inventory.md):
-56 manifests / 482 direct declarations, one discovered generic child and 238 loose
-media files. These replace the historical discovery denominator for the next
-P0-02 review; factory/resource/alias/state reconciliation below has not transferred.
+| Source accounting | ExAV result |
+| --- | ---: |
+| Bundled manifests, including two owner exclusions | 56 |
+| Ordered direct declarations, including 33 factory definitions | 482 |
+| Registered generated children | 1 |
+| Direction selections / registered reverse-car wrappers | 8 / 2 |
+| Explicit class/implementation bindings | 347 |
+| Manifest file edges / DLL edges mapped to source and projects | 287 / 75 |
+| Additional resource/project/document edges | 374 |
+| Loose media, each hashed with credits/notices and a disposition | 238 |
+| Referenced media / retained unused alternatives | 224 / 14 |
+| Embedded image/resource values | 12 |
+| Picture identities / manifest picture references | 159 / 353 |
+| Excluded A4 plugin-local music objects | 9 |
+| XML presentation candidates / English donor candidates | 977 / 641 |
 
-**EXAV-DIR-001 — owner-approved correction, 20 October 2026:** treat the generic
-loader's `SOURTH` token as a source typo. Use **`SOUTH`** for the south direction
-in ported content and its parser. The source inventory retains the original
-spelling/behavior; see [the recorded decision](parity/exav-baseline.json).
-The stable ExAV checkout's generic loader has now been corrected to `SOUTH` in
-the working tree; the pinned archive commit and its evidence remain unchanged.
+Every explicit binding and every effective recipe implementation resolves to its
+qualified source type and compile membership. Each explicit binding has a project
+in the selected 2008 solution; older project memberships are retained separately.
+The 75 missing DLL paths remain missing in discovery. Their review disposition is
+**legacy build output**, established from type and project evidence, not filename
+similarity or successful assembly loading. ExAV `PluginUtil.loadType` additionally
+searches plugin subdirectories for a DLL basename when its requested path is absent;
+the port must resolve reviewed dependencies deterministically.
 
-**EXAV-ENC-001 — owner-approved conversion, 20 October 2026:** all 56 stable
-ExAV checkout manifests now contain UTF-8 bytes and XML declarations, without BOM.
-Decoded Japanese text, entities, all 482 direct declarations and line endings are
-preserved. `Plugin.loadFailSafe` now reads UTF-8 metadata. Use UTF-8 for ported
-manifests; the pinned archive evidence retains its original CP932 encoding.
-The working-tree conversion is uncommitted; [per-file hashes and verification](parity/exav-manifest-encoding-review.json)
-are separate from the pinned source ledger.
+Complete expanded XML trees retain declaration order, nested overrides, prices,
+populations, capacities, categories, configuration and data files. Factories are
+not ordinary catalog objects. The only generated child is **`null-contrib-0:0`**;
+height, half-voxel side/highlight/color and direction-table selections do not create
+additional registered IDs. Code registration-site accounting finds the generic
+child loop, manifest registration, contribution-registry implementation and picture
+registry. A4's nine external objects stay plugin-local and excluded. Debug-window
+content is excluded; the historical recorder manifest is absent from stable.
+
+All 353 manifest picture references and reviewed literal picture/contribution
+references resolve in their respective registries. BGM `<href>` text, bell
+`sound/@href`, stock data, category XML/icons, code-loaded bridge/garage/terrace
+pictures, embedded resources and project items have separate edges. A project item
+establishes packaging membership, not runtime reachability. The 213 BMPs comprise
+169 24-bit, 34 8-bit and ten 4-bit images, all uncompressed. Crop origins, anchor
+offsets, transparency margins and invisible occupied cells remain distinct.
+
+Stable `doc/readme.txt`, `doc/readme_ftexav.txt` and `doc/COPYING.txt` are hashed and
+attached to every media record alongside manifest author declarations. These
+notices describe bundled licensing and credits; the review does not infer
+individual image authorship or extend terms to optional packs. No optional
+repository is read or blended into these outputs.
+
+## Changes and handoffs
+
+The maintained differences **EXAV-CONTENT-001–008** bind the following findings
+to pinned source hashes:
+
+- **Building identity and reachability:** 66 commercial and 55 variable-height
+  declarations replace historical generic families. ExAV's development algorithm
+  consumes these direct declarations subject to `computerCannotBuild`. The old
+  MainWindow construction bindings are commented out; the generic selector lists
+  `GenericStructureContribution`. Retain the direct entries in scope. **P0-03**
+  must disposition their player workflow; a surviving builder class is not proof
+  of a reachable menu. Direct variable-height builder/remover methods remain stubs.
+- **Native effects:** ExAV routes night, alpha, shape, color and hue work through
+  `lib/DirectXWraper/{DirectDraw.cpp,AlphaBlender.cpp,DirectXWrapper.h}`. Historical
+  `DirectDraw.AlphaBlend` source paths are absent. Retain upper-left color keys,
+  seasonal/night override ordering, quarter-darkening and special light colors,
+  native quantization and exact sprite/overlay slicing. `DirectSprite.offset` is
+  still recursive; native 16-bit detection repeats red-mask tests, and palette
+  collision limitations remain documented. **P2/P0-04** must select and verify
+  pixel behavior and record defect adaptations; these are source findings.
+- **Numeric semantics:** structure prices/entity values use **Int64**;
+  variable-height `pricePerArea` returns footprint `_ppa`, changing the historical
+  result. Train **`seatedcapacity`** is distinct from total **`capacity`**, including
+  reversed cars. **P0-05/P3/P5/P7** own migration, transaction and acceptance cases.
+- **Placed state:** inherited contribution serialization still substitutes a
+  catalog ID; pictures have a separate resolver. ExAV half-voxel ownership and
+  charges, bank/economy returned timer handlers, stadium capacity/population,
+  match/win/draw counters and audience-return callbacks add or change requirements.
+  TAT now passes `Train` to stop-time handling. The lexical type/field index and
+  state rules retain those sources; complete nested save graphs and continuation
+  belong to **P0-05/P10**. Mutable ColorTest/catalog selections are not automatically
+  durable merely because fields exist. Temporary BGM `fileName` serialization is
+  separate from global catalog identity; **P0-03** must retain its action/scope disposition.
+- **Project gaps:** five embedded/content edges remain missing: three in the old
+  core project and `res/Straight.bmp` in both TAT projects. The discovery ledger
+  also retains two missing old-core Compile entries, making seven project gaps
+  overall. No ExAV project source was edited here.
+
+For TAT, the ExAV `.resx` file hash **differs** from the historical file, but its
+normalized `imageList.ImageStream` base64 payload and both loose GIF byte streams
+are identical. The review verifies this before reusing historical `CONTENT-001`'s
+narrow pixel result: index 0 matches Straight.gif, index 1 matches Curve.gif,
+including visible color/alpha. This establishes artwork continuity, not project
+buildability or a fresh desktop rendering capture. The original gap remains.
+
+The approved **EXAV-DIR-001** (`SOURTH` → `SOUTH`) and **EXAV-ENC-001** (CP932 →
+UTF-8 without BOM) decisions continue to apply to ported content. Generation reads
+pinned Git objects, preserving original spellings/encoding; it does not read the
+archive's corrected, uncommitted working files. See
+[baseline decisions](parity/exav-baseline.json) and
+[encoding evidence](parity/exav-manifest-encoding-review.json).
+
+## Translation and implementation status
+
+The review inventories manifest and auxiliary XML presentation candidates with
+source path/hash, contribution ID or field key, original text/hash, matching
+historical English donor where found, text-comparison classification, proposed
+wording and review status. A same-ID donor is not an approved translation.
+Proposals remain explicitly unassigned until the implementing feature reviews
+meaning; source code, form/resource strings, validation, reports and help remain
+**P0-03**. The rule file begins a glossary for total/seated capacity, price,
+footprint price and hundred-share units. Japanese text, numeric data and stable IDs
+remain unchanged. Each feature slice must supply English/Japanese wording and
+layout evidence; P0-06 supplies scenarios and P11 reconciles remaining translations.
+
+Recipe status is **source-reconciled; runtime parity unverified**. Discovery and
+generated-child implementation status stay `inventoried`. This review does not
+migrate the prototype importer, Docker inputs, runtime catalog, protocol or saves;
+those still require the explicit ExAV build/import transition. Modern destinations,
+fixtures and independent expectations remain assigned with P0-03–06 and feature
+slices, not manufactured from passing prototype tests.
+
+## Reproduction
+
+Run from the repository root with an explicit archive containing the pinned commit:
+
+```sh
+python3 scripts/reconcile-exav-content.py --source-root /path/to/freetrain-exav-archive
+python3 scripts/reconcile-exav-content.py --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/reconcile-parity-content.py --check
+python3 -m unittest discover -s scripts/tests -v
+```
+
+The ExAV command writes/checks only `doc/parity/exav-content-review.json`; edit its
+rules and regenerate. It shares inert parsing/reconciliation mechanics with the
+historical command, with explicit CP932, pinned direction-token and project-model
+inputs. Unknown asset dispositions, changed diagnostics, unresolved type/reference
+bindings and changed TAT reuse inputs fail generation. Default tests inspect the
+checked-in evidence and synthetic cases without discovering a sibling checkout.
+Fresh archive generation/checks and the full Python suite passed on 20 October
+2026. Application/browser, native-device, visual and save-continuation acceptance
+were not run for this source/documentation change.
+
+---
+
+## Historical original-FreeTrain reconciliation
+
+The following dated review retains original `1f755ca` counts and derivations as
+comparison evidence. Its commands reproduce historical outputs only.
 
 Historical P0-02 completed a **source inventory and specification**, against original FreeTrain
 `1f755ca6f291253b8cd5024ef53402b85d467170`. This does not establish playable

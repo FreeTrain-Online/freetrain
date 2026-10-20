@@ -2,7 +2,7 @@
 
 **Authority replaced — 20 October 2026:** the current parity source is **FreeTrain ExAV 2.1.1.12**, repository `/Users/dmark/dev/freetrain-exav-archive` at **`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`** (SVN r115), **subtree `trunk/`**, including its bundled `plugins/`. This repository's old `core/`, `plugins/`, archived desktop source and original-FreeTrain `1f755ca` are historical comparison and English-translation donors only. They do not define current game behavior, bundled coverage or a second parity target.
 
-**P0-01 ExAV discovery completed — 20 October 2026; P0-02–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. Discovery does not transfer historical behavior reviews or establish implementation/runtime parity.
+**P0-01 discovery and P0-02 source reconciliation completed — 20 October 2026; P0-03–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. The [ExAV content review](web-parity-content.md) now reconciles all bundled declarations/resources, source/project bindings, recipes/state and XML translation candidates. Neither discovery nor source reconciliation establishes implementation/runtime parity.
 
 The existing `parity/historical/baseline.json`, `base-ledger.json`, action/content reviews, geometry/scenarios and serialization/transition reports below still pin the original-FreeTrain source and earlier implementation revisions. They retain their historical provenance and have **not** been repinned. Passing their historical `--check` commands verifies historical reproducibility, not ExAV coverage. Reuse reviewed results only after checking ExAV symbols and their dependencies. See the [complete P0 reassessment](../tmp/web-feature-parity-checklist.md#p0-reassessment-and-repository-recommendation--20-october-2026) and [ExAV source assessment](../tmp/web-feature-parity-exav-delta.md).
 
@@ -18,6 +18,7 @@ The current ExAV discovery outputs are:
 | --- | --- |
 | [exav-baseline.json](parity/exav-baseline.json) | Archive commit/subtree, stable engine/V2 identity, root/scope dispositions and generated-registration source review |
 | [exav-ledger.json](parity/exav-ledger.json) | Separate namespaced source/content/UI/save discovery, hashes, project memberships/dependencies, translation references and open review fields |
+| [Bundled content reconciliation](web-parity-content.md), [ExAV review](parity/exav-content-review.json), [ExAV rules](parity/exav-content-rules.json) | Current P0-02 source accounting, recipes/effects/state, XML text inventory and explicit handoffs; historical review retained below |
 | [ExAV discovery report](web-parity-exav-inventory.md) | Fresh accounting, source differences, build gaps, limits and explicit-source reproduction commands |
 | [Manifest encoding conversion](parity/exav-manifest-encoding-review.json) | EXAV-ENC-001: separate working-tree evidence for 56 Shift-JIS → UTF-8 manifests and the UTF-8 fallback metadata reader; pinned archive provenance remains unchanged |
 
@@ -33,7 +34,6 @@ The historical inputs and outputs, pending semantic ExAV reassessment, are:
 | [base-ledger.json](parity/historical/base-ledger.json) | All 54 manifests, declarations/generated children, resources, source files, UI bindings and serialization candidates |
 | [base-content-review.json](parity/historical/base-content-review.json) | P0-02 source reconciliation: complete recipes, build mappings, aliases, resource graph, notices and contribution/instance state evidence |
 | [content-rules.json](parity/historical/content-rules.json) | Maintained decoding/crop/anchor/effect/state rules and explicit difference dispositions |
-| [Base content reconciliation](web-parity-content.md) | P0-02 accounting, source findings and boundaries of the evidence |
 | [extra-suite-ledger.json](parity/historical/extra-suite-ledger.json) | Separate metadata inventory for the 228-manifest non-free suite; no artwork or binaries |
 | [action-map.json](parity/historical/action-map.json), [action-review.json](parity/historical/action-review.json) | Complete P0-03 source mappings and generated control/contribution/manual evidence; missing gameplay stays explicit |
 | [Player action reconciliation](web-parity-actions.md) | Workflow destinations, dynamic registration routes, configuration/gesture review and source-only dispositions |

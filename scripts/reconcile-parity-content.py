@@ -221,8 +221,9 @@ def indirect_graph(tree, project_rows, rules):
     return edges, embedded
 
 
-def reconcile(tree, base, rules):
-    types, builds = source_types(tree), projects(tree)
+def reconcile(tree, base, rules, *, project_rows=None, allow_cp932=False, south_token='SOUTH'):
+    types = source_types(tree)
+    builds = projects(tree) if project_rows is None else project_rows
     bindings, recipes, refs, aliases, local_children = [], [], [], [], []
     pictures, picture_refs = [], []
     declarations = {r['coverageId']: r for r in base['contributions'] if not r.get('generatedFrom')}
@@ -230,7 +231,7 @@ def reconcile(tree, base, rules):
     plugin_paths = {p['pluginId']: p['baselinePath'] for p in base['plugins']}
     nodes = {}
     for plugin, path in plugin_paths.items():
-        root, _ = inv.manifest(tree.read(path))
+        root, _ = inv.manifest(tree.read(path), allow_cp932=allow_cp932)
         for index, node in enumerate(root.findall('contribution')):
             key = f'base:contribution:{plugin}:{index}:{node.get("id")}'
             nodes[key] = node
@@ -290,7 +291,7 @@ def reconcile(tree, base, rules):
                                  resolution=resolution, kind='manifest-data-resource'))
         if kind == 'GenericStructure':
             color_count, sprites = inv.child_recipe(node)
-            directions = inv.direction_aliases(sprites)
+            directions = inv.direction_aliases(sprites, south_token=south_token)
             for color in range(color_count):
                 for direction, selected in enumerate(directions):
                     aliases.append(dict(owner=key, colorIndex=color, direction=direction,
