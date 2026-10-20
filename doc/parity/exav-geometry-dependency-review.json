@@ -701,6 +701,6 @@
   ],
   "boundaries": [
     "This closes the four explicitly described dependency reviews, not all ExAV subsystem specifications or runtime fidelity.",
-    "Expanded platform/girder visual review remains P0-04 work. Feature-level cases/port decisions stay with the named P1-P10 owners."
+    "Expanded platform/girder source visual review is recorded separately in exav-geometry-gallery-review.json; runtime comparison remains open. Feature-level cases/port decisions stay with the named P1-P10 owners."
   ]
 }

@@ -4,6 +4,7 @@ import argparse
 import importlib.util
 import json
 from pathlib import Path
+import tempfile
 
 HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('rail_gallery', HERE / 'parity-rail-gallery.py')
@@ -11,6 +12,7 @@ rail = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rail)
 inv = rail.inventory
 OUT = inv.PARITY_ROOT
+expanded = rail.load('parity_exav_gallery', HERE / 'parity_exav_gallery.py')
 
 
 def validate_dependencies(tree, rules, dependencies):
@@ -45,13 +47,21 @@ def validate_dependencies(tree, rules, dependencies):
         raise ValueError('Dependency sources lack chain dispositions')
 
 
+def validate_gallery_review(gallery, review):
+    if (review['status'] != 'source-gallery-review-complete' or
+            review['sourceId'] != gallery['sourceId'] or review['revision'] != gallery['revision'] or
+            review['gallerySha256'] != inv.digest(inv.dump_ledger(gallery)) or
+            review['counts'] != gallery['counts'] or review['contactsReviewed'] != gallery['contacts']):
+        raise ValueError('Expanded gallery review is missing or stale; inspect regenerated contacts before closure')
+
+
 def build(tree, historical, rules, dependencies=None):
     if tree.revision != rules['revision']:
         raise ValueError('ExAV geometry requires a fresh source review')
     paths = [r['path'] for r in rules['sourceReviews']]
     if len(paths) != len(set(paths)) or not set(rail.semantics.SOURCES) <= set(paths):
         raise ValueError('Incomplete or duplicate ExAV source reviews')
-    for row in rules['sourceReviews']:
+    for row in rules['sourceReviews'] + rules['gallerySourceReviews']:
         if inv.digest(tree.read(row['path'])) != row['sha256']:
             raise ValueError('ExAV source review hash drift: ' + row['path'])
     validate_dependencies(tree, rules, dependencies)
@@ -69,7 +79,7 @@ def build(tree, historical, rules, dependencies=None):
             'doc/parity/exav-geometry-rules.json', 'doc/parity/exav-baseline.json',
             'doc/parity/exav-geometry-dependency-review.json',
             'scripts/review-exav-geometry.py', 'scripts/parity-rail-gallery.py',
-            'scripts/parity_geometry.py', 'scripts/import-web-content.py')}
+            'scripts/parity_geometry.py', 'scripts/parity_exav_gallery.py', 'scripts/import-web-content.py')}
     # Compare formulas and raw bytes separately: matching art does not validate
     # changed callers, money, capacities, host selection or native wrappers.
     old = rail.extract(historical)
@@ -81,7 +91,7 @@ def build(tree, historical, rules, dependencies=None):
         p.startswith('plugins/SpeedLimit/') or
         p.startswith('plugins/system/renraku') or
         p.startswith('plugins/system/ThinPlatform'))]
-    for path in sorted(set(paths + assets + [r['path'] for r in dependencies['sourceReviews']])):
+    for path in sorted(set(paths + assets + [r['path'] for r in dependencies['sourceReviews'] + rules['gallerySourceReviews']])):
         current = inv.digest(tree.read(path))
         previous = inv.digest(historical.read(path)) if path in historical.entries else None
         comparisons.append(dict(path='trunk/' + path, exavSha256=current,
@@ -127,12 +137,26 @@ def main():
     tree = inv.Tree(args.source_root, config['revision'], config['subtree'])
     historical = inv.Tree(inv.ROOT, config['historicalComparisonRevision'])
     geometry, behavior = build(tree, historical, rules, dependencies)
+    with tempfile.TemporaryDirectory(prefix='exav-expanded-gallery-') as folder:
+        target = args.gallery / 'expanded' if args.gallery else Path(folder)
+        gallery = expanded.render(tree, geometry, rail, target)
+    gallery['sourceId'] = config['sourceId']
+    gallery['sourceReviews'] = rules['gallerySourceReviews']
+    gallery['reviewInputs'] = behavior['reviewInputs']
+    if args.check:
+        validate_gallery_review(gallery, json.loads((inv.ROOT / rules['galleryReview']).read_text()))
+    behavior['expandedGallery'] = dict(path='doc/parity/exav-geometry-gallery.json',
+                                       counts=gallery['counts'], boundary=gallery['evidence'])
+    inv.write(OUT / 'exav-geometry-gallery.json', inv.dump_ledger(gallery), args.check)
     for name, value in [('exav-geometry.json', geometry), ('exav-geometry-behavior.json', behavior)]:
         inv.write(OUT / name, inv.dump_ledger(value), args.check)
     if args.gallery:
         rail.gallery(tree, geometry, args.gallery)
         count = rail.semantics.gallery(tree, geometry, behavior, args.gallery, rail.images)
-        print(f'Rendered {count} pinned ExAV offline compositions; expanded platform/girder review remains open')
+        # Add navigation without modifying the historical gallery implementation.
+        index = args.gallery / 'index.html'
+        index.write_text(index.read_text() + '<p><a href="expanded/index.html">Expanded ExAV girder/platform review</a></p>')
+        print(f'Rendered {count} rail/car + {gallery["counts"]["compositions"]} expanded ExAV offline compositions')
     print(f'ExAV geometry: {len(geometry["patterns"])} patterns/supports, {len(rules["sourceReviews"])} source reviews')
 
 

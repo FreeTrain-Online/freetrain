@@ -183,7 +183,10 @@ This avoids treating every transitively referenced subsystem as a P0 prerequisit
 The new defect findings are recorded for explicit implementation decisions; this
 batch changes no gameplay, save formats or source archive files.
 
-**P0-04 remains open for the expanded girder/platform/passageway visual review.**
+**P0-04 subsequently closed at source-specification level** with the
+[expanded girder/platform/passageway review](web-parity-geometry-gallery.md).
+That follow-up adds nine source/manifest bindings (98 distinct files overall),
+explicit invalid-crop diagnostics and the reviewed contact/hash artifact.
 Runtime/native pixel comparisons and full-world rendering remain later acceptance
 work, independently of this source review.
 

@@ -16,7 +16,8 @@ P0-01 discovery was reassessed and completed on **20 October 2026** against
 [generated ledger](parity/exav-ledger.json) are maintained in this repository.
 P0-02 [content source reconciliation](web-parity-content.md) subsequently completed on
 20 October 2026; revised P0-03 scope reconciliation is also complete.
-P0-04–P0-09, the overall P0 gate, implementation and runtime
+P0-04 source specification and expanded visual review subsequently completed.
+P0-05–P0-09, the overall P0 gate, implementation and runtime
 acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.
@@ -164,6 +165,10 @@ labels. The 152 regenerated rail/car compositions use pinned Git objects.
 The [four-chain dependency review](web-parity-geometry-dependencies.md) now pins
 63 files, 14 findings and 33 case descriptions; 97 distinct files combine both
 reviews. This closes the agreed source dependency review, with full feature
-specification/runtime acceptance handed to the named slices. P0-04 remains open
-for the expanded platform/girder visual review. Discovery hashes and lexical project membership
+specification/runtime acceptance handed to the named slices. The subsequent
+[expanded gallery review](web-parity-geometry-gallery.md) completes P0-04 with 98
+distinct reviewed files overall, 332 raw records, 1,176 expanded composition
+records and 28 inspected contacts. Explicit invalid-crop diagnostics retain
+EXAV-GAL-001 and its P2/P6 decision boundary. P0-04 is closed at source level;
+P0-05–09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.

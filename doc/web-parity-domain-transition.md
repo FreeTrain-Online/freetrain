@@ -22,7 +22,8 @@ this document's historical geometry/train rule examples, including train cost
 cadence, forwarding, speed-limit and platform behavior. Its separate generated
 ExAV tables preserve source provenance. The
 [four dependency chains](web-parity-geometry-dependencies.md) are source-reviewed;
-expanded visual review remains open; persistence and reserved profile decisions below still require
+the [expanded source gallery review](web-parity-geometry-gallery.md) now closes
+P0-04 at source-specification level. Persistence and reserved profile decisions below still require
 P0-05 ExAV reassessment.
 
 ## Geometry, clock and train state

@@ -2,21 +2,21 @@
 
 **Authority replaced — 20 October 2026:** the current parity source is **FreeTrain ExAV 2.1.1.12**, repository `/Users/dmark/dev/freetrain-exav-archive` at **`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`** (SVN r115), **subtree `trunk/`**, including its bundled `plugins/`. This repository's old `core/`, `plugins/`, archived desktop source and original-FreeTrain `1f755ca` are historical comparison and English-translation donors only. They do not define current game behavior, bundled coverage or a second parity target.
 
-**P0-01 discovery, P0-02 source reconciliation and revised P0-03 workflow/scope reconciliation completed — 20 October 2026; P0-04–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. The [ExAV content review](web-parity-content.md) now reconciles all bundled declarations/resources, source/project bindings, recipes/state and XML translation candidates. [P0-03 reconciliation](web-parity-actions.md) assigns 87 workflow families, all 483 declaration/generated-child consumers and 56 bundled dependency closures, with 15 reviewed differences. Per-control/dependency detail, granular reciprocal MAN/DEV links and translation classification are mandatory in each implementation slice; see [incremental feature completion](web-parity-actions.md#incremental-feature-completion). Neither discovery nor source reconciliation establishes implementation/runtime parity.
+**P0-01 discovery, P0-02 source reconciliation, revised P0-03 workflow/scope reconciliation and P0-04 source specification completed — 20 October 2026; P0-05–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. The [ExAV content review](web-parity-content.md) now reconciles all bundled declarations/resources, source/project bindings, recipes/state and XML translation candidates. [P0-03 reconciliation](web-parity-actions.md) assigns 87 workflow families, all 483 declaration/generated-child consumers and 56 bundled dependency closures, with 15 reviewed differences. Per-control/dependency detail, granular reciprocal MAN/DEV links and translation classification are mandatory in each implementation slice; see [incremental feature completion](web-parity-actions.md#incremental-feature-completion). Neither discovery nor source reconciliation establishes implementation/runtime parity.
 
-**P0-04 ExAV reassessment progressed — 20 October 2026:** the
-[geometry/clock/train review](web-parity-geometry.md) now uses pinned stable ExAV,
-with [56 reviewed source/manifest inputs](parity/exav-geometry-rules.json),
-11 explicit ExAV deltas and separate regenerated
-[geometry](parity/exav-geometry.json)/[behavior tables](parity/exav-geometry-behavior.json).
-All pattern records and direction vectors are retained after comparison; changed
-costs, forwarding, speed-limit timing, platform and drawing behavior are specified.
-The 152 ExAV rail/car compositions are offline studies. **P0-04 remains open** for
-expanded girder/platform visual review. The
-[dependency review](web-parity-geometry-dependencies.md) now closes the four agreed
-source chains: 63 files, 14 findings and 33 case descriptions (97 distinct files
-with the initial review).
-P0-05–09, overall P0 and runtime gates remain open.
+**P0-04 source specification complete — 20 October 2026:** the
+[geometry/clock/train specification](web-parity-geometry.md),
+[four-chain dependency review](web-parity-geometry-dependencies.md) and
+[expanded gallery review](web-parity-geometry-gallery.md) reconcile stable ExAV
+with 98 distinct reviewed files. Separate generated tables retain 60 patterns,
+16 supports, level/slope poses and attachments; source deltas cover costs,
+forwarding, speed limits, platforms and drawing. The 152 rail/car studies remain
+separate from 332 expanded crop records and 1,176 expanded compositions. Six raw
+and 12 composition records explicitly diagnose the source-invalid stair crop;
+no correction or native pixel outcome is inferred. All 28 contact sheets were
+inspected; 88 Python tests and ExAV/historical reproducibility checks pass.
+**P0-04 is closed at source-specification level.** P0-05–09, overall P0 and
+implementation/runtime/native/save-continuation gates remain open.
 
 The existing `parity/historical/baseline.json`, `base-ledger.json`, action/content reviews, geometry/scenarios and serialization/transition reports below still pin the original-FreeTrain source and earlier implementation revisions. They retain their historical provenance and have **not** been repinned. Passing their historical `--check` commands verifies historical reproducibility, not ExAV coverage. Reuse reviewed results only after checking ExAV symbols and their dependencies. See the [complete P0 reassessment](../tmp/web-feature-parity-checklist.md#p0-reassessment-and-repository-recommendation--20-october-2026) and [ExAV source assessment](../tmp/web-feature-parity-exav-delta.md).
 
@@ -55,7 +55,7 @@ The reference artifacts below retain historical provenance except where explicit
 | [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
 | [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/historical/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
 | [geometry.json](parity/historical/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
-| [Geometry/clock/train specification](web-parity-geometry.md), [ExAV geometry](parity/exav-geometry.json), [behavior tables](parity/exav-geometry-behavior.json) | P0-04 reassessed: 56 reviewed source/manifest files, 11 ExAV deltas, retained level/slope/attachment tables and 152 regenerated rail/car compositions; four dependency chains now reviewed (97 distinct files total); expanded visual review still open |
+| [Geometry/clock/train specification](web-parity-geometry.md), [ExAV geometry](parity/exav-geometry.json), [behavior tables](parity/exav-geometry-behavior.json) | P0-04 source specification complete: initial 56-file/11-delta review, four dependency chains and expanded gallery; 98 distinct reviewed files, 152 rail/car studies plus separately counted expanded records and explicit source diagnostics |
 | [scenarios.json](parity/historical/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |
 | [Contract/content/persistence specification](web-parity-persistence.md), [transition decisions](parity/historical/domain-transition.json), [source evidence](parity/historical/domain-transition-review.json) | P0-05: eight-direction/version boundaries, explicit prototype compatibility mode/reference disposition, pack requirements and authority/draft/readiness obligations; implementation remains P1/P2/P10 |

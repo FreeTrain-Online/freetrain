@@ -4,7 +4,7 @@
   "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
   "subtree": "trunk",
   "reviewedOn": "2026-10-20",
-  "status": "source and four-chain dependency reassessment complete; P0-04 closure pending expanded visual review",
+  "status": "P0-04 source specification, dependency review and expanded offline gallery complete; gameplay/runtime gates remain open",
   "sourceReviews": [
     {
       "path": "core/world/Direction.cs",
@@ -356,8 +356,55 @@
     }
   ],
   "openWork": [
-    "Expand offline gallery to changed girder artwork and three platform/passageway styles, both roofs/widths/stairs and cuts. The regenerated 152 rail/car scenes do not cover these additions.",
     "P0-06 must derive independent movement/boarding/calendar/cost cases; P1-P5 implement and verify runtime routes, timers, train state, picking and full-world rendering. Native/runtime captures and P10 save continuation remain unverified."
   ],
-  "dependencyReview": "doc/parity/exav-geometry-dependency-review.json"
+  "dependencyReview": "doc/parity/exav-geometry-dependency-review.json",
+  "gallerySourceReviews": [
+    {
+      "path": "core/world/rail/PassagewayRail.cs",
+      "sha256": "355e7cf0ae5c98f6788f9dd48966c8e97110c337b4c995ca3d75c6a57644be69",
+      "review": "All three 14-entry passage/floating and 32-entry stair arrays including aliases, SOUTH23 x=388 and anchors."
+    },
+    {
+      "path": "core/world/rail/ThinPlatform.cs",
+      "sha256": "e21e713eb3e5697c2722fdbef3c1daf048a023398992bdd741aef4cc1b54f412",
+      "review": "Plain roof frames, E/S before and N/W after order, floating-after override, isDoubleWidth requires opposite passage neighbor."
+    },
+    {
+      "path": "core/world/rail/FatPlatform.cs",
+      "sha256": "a5e8943923a567f9a69bd80c11aa356e01955a7e115b5b5de6c04ab1cc578b74",
+      "review": "Dedicated platform voxel and one/two yard lanes, YardChip-before-normal-rail, source ignores heightCutDiff."
+    },
+    {
+      "path": "core/world/rail/StealSupportedRailContributionImpl.cs",
+      "sha256": "7618db89c16fb455fa6da0f2b57db922d6e34a6a71ad4d5030045efc53a35aab",
+      "review": "Four changed-art crops and direction modulo4 -> 3/1/0/2; before-car only."
+    },
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "review": "Resolve picture IDs to exact day/night authored thin/concrete/brown/green filenames."
+    },
+    {
+      "path": "core/controllers/rail/StationPassagewayController.cs",
+      "sha256": "73670c7023a3674208b0b4bb6034eb7878f93606df1662703613562451544f67",
+      "review": "Source/preview styles and usage requirements; empty-voxel and draw-overload gaps retained, not repaired by isolated parameter studies."
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8",
+      "review": "Base pattern before draw, empty after; tall sprites are not clipped by cut."
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "review": "Ordered rail-before/car/rail-after dispatch ignores heightCutDiff; voxels selected by drawer cut."
+    },
+    {
+      "path": "core/views/QuarterViewDrawer.cs",
+      "sha256": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb",
+      "review": "V/H/Z traversal, full-height water-level start, inclusive cut voxel filter; same camera across cuts."
+    }
+  ],
+  "galleryReview": "doc/parity/exav-geometry-gallery-review.json"
 }

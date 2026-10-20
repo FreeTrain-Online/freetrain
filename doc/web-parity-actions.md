@@ -86,7 +86,7 @@ findings supply exact tokens, hashes and destinations. `missing:` and
 | --- | --- |
 | 001 — Station information/list | `Station.onRightClick` and StationPropertyDialog's Information button open live name, boarding/alighting/train-call counters today/yesterday, and actual waiting passengers versus demand. The station-list manifest registers **dockingContent**, consumed by DockingContribution; it is not registered through the spare StationListPlugIn class. Its sorted list updates on world/station changes and double-click moves maps. Use stable station IDs and accessible list actions in P6/P9. |
 | 002 — Train information/tracking | `system/plugin.xml` registers TrainInformationWindow through dockingContent. It offers nested train/group selection, name/state, car count, capacity, passenger percentage and Move. `MapView` separately creates `views/map/TrainTrackingWindow`, with continuous-tracking checkbox. Existing inspector/find-train covers only part of these P5/P9 workflows. The old core project path gap does not erase the current manifest route. |
-| 003 — Speed limits | SpeedLimit's menu initializes the subsystem and supplies level section, slope section and orphan cleanup. Add/remove, endpoints, low/medium/high choices and slope directions need P4/P5/P9 workflows. Exact values/movement and slope boundary cases remain P0-04/06; these choices are distinct from simulation-clock speed. |
+| 003 — Speed limits | SpeedLimit's menu initializes the subsystem and supplies level section, slope section and orphan cleanup. Add/remove, endpoints, low/medium/high choices and slope directions need P4/P5/P9 workflows. Values/movement and slope boundaries are specified by [P0-04](web-parity-geometry.md); independent cases remain P0-06; these choices are distinct from simulation-clock speed. |
 | 004 — Terrain editing 2 | Registered Mountain2 specialStructure supplies rectangular raise/excavate and Ctrl repair of mismatched corners. Preserve it separately from ordinary corner editing and heightmap import. Provide an explicit accessible repair action in P3/P9. |
 | 005 — Report history | AccountSummaryWindow has today/yesterday, this/last month and this/last year. Context actions open 31-day and 12-month histories, with sales/expenditure/balance, genre selection and font choice. P8/P9 must expose these; P0-05/06 owns rollover/state fixtures. A Close label without a handler is still a gap. |
 | 006 — Timetable copy/files | Manager adds controller copying; advanced station rules add copy, confirmed clear-all, `.ftdd` read/append/save, duplicate time-mask checking on Add and forwarding/reverse variants. Copy/import bypasses and sorted display versus execution order need fixtures. Adapt BinaryFormatter clone/file routes to validated authoritative commands and drafts. The day-from-month edit defect still requires disposition. |
@@ -178,7 +178,7 @@ are feature work, not abandoned reviews. Every implementing slice must:
    be counted complete because P0 scope closed; P9/P11 reconcile all residual work.
 
 These requirements are also machine-readable in `sliceCompletionRequirements`.
-P0-04–09 and the overall P0 gate stay open, as do native/device and runtime gates.
+P0-04 source specification subsequently completed; P0-05–09 and the overall P0 gate stay open, as do native/device and runtime gates.
 No grand per-control specification or full translation pass is required before
 starting feature implementation.
 
@@ -350,4 +350,4 @@ cross-reference in the maintained map. `MAN-A*` are still pending acceptance cas
 source/prose numeric differences remain P0-04/P0-06. Per-release numeric/fix and save
 reconciliation remains in P0-04/P0-05/P0-06, alongside later phase delivery.
 No runtime application, browser, performance or native/device acceptance is
-established by this source/tooling batch. P0-04 is next; P0 as a whole stays open.
+established by this source/tooling batch. P0-04 source specification is now complete; P0-05 is next and P0 as a whole stays open.

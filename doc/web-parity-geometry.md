@@ -1,18 +1,21 @@
 # P0-04 geometry, clock, train state and drawing expectations
 
-**ExAV source reassessed — 20 October 2026.** Authority is archive Git
-`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`, stable **2.1.1.12**.
-This review reads pinned Git objects, including the original manifest encodings;
-working-tree corrections do not alter the evidence. **P0-04 remains open** for
-the expanded platform/girder visual review listed below. The four agreed
-dependency chains are now source-reviewed; see the
-[dependency report](web-parity-geometry-dependencies.md). No gameplay or runtime parity is claimed.
+**P0-04 source specification complete — 20 October 2026.** Authority is archive
+Git `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`, stable **2.1.1.12**.
+Pinned source reconciliation, the four agreed dependency chains and the expanded
+source visual review are complete. This closes P0-04; overall P0, implementation,
+runtime/native/browser comparison and save-continuation gates remain open.
 
 [Reviewed inputs](parity/exav-geometry-rules.json) pin **56 source/manifest files**
 and **11 ExAV differences**. The separate
 [dependency evidence](parity/exav-geometry-dependency-review.json) pins **63 files**,
 **14 caller/dependency findings** and **33 case descriptions**; the union is
-**97 distinct files**. [Geometry metadata](parity/exav-geometry.json) and
+**97 distinct files** before the gallery follow-up. Nine gallery source/manifest
+bindings bring the combined review to **98 distinct files**. The
+[expanded gallery review](web-parity-geometry-gallery.md) adds 332 raw day/night
+records and 1,176 composition records, including six raw and 12 composition
+diagnostics for the explicitly invalid source stair crop (`EXAV-GAL-001`).
+[Geometry metadata](parity/exav-geometry.json) and
 [behavior/comparison tables](parity/exav-geometry-behavior.json) regenerate eight
 directions, 60 serialized patterns, 16 support slices, 48 level poses, 64 slope
 poses and 192 attachment decisions. Source paths in tables are relative to
@@ -25,7 +28,8 @@ the existing raw/composition gallery are byte-identical. Their ExAV callers were
 compared separately: retained car-frame, rail topology, projection and pass/cut
 formulas justify regenerating those studies. This does **not** transfer native
 wrapper, night/alpha, terrain or platform fidelity. Girder art changed, and brown/
-green passageway sheets are new; the existing 152 compositions do not cover them.
+green passageway sheets are new. The separate expanded gallery now covers these;
+the original 152-composition denominator remains unchanged.
 
 **EXAV-DIR-001 — owner-approved correction, 20 October 2026:** `SOURTH` in
 ExAV's `GenericStructureContribution.parseDirection` is a typo. Use **`SOUTH`**
@@ -425,9 +429,18 @@ recursive disconnection, speed-limit startup coupling, mutating TAT reversal and
 the null next-state scheduling fault. These supersede broader equivalence/retry/
 defaulting assumptions; no source defect is silently approved or fixed.
 
-**P0-04 closure still requires** the expanded offline visual review for changed
-girder art and all three passage/stair styles, roofs, widths and cuts. Keep the
-existing 152-study denominator separate. No old screenshot proves these cases.
+**Expanded source visual review completed — 20 October 2026.** The
+[gallery report](web-parity-geometry-gallery.md), [generated crop/layer/hash evidence](parity/exav-geometry-gallery.json)
+and [visual review record](parity/exav-geometry-gallery-review.json) close the
+remaining P0-04 work. All 28 contact sheets were inspected. Coverage includes all
+eight girder directions, plain roofs, wide-platform lanes, concrete/brown/green
+passages and stairs, width/up/down/roof aliases, source draw-order dispatch and
+fixed-camera voxel cuts. Night uses authored sheets or the reviewed RGB888 formula.
+
+`EXAV-GAL-001` records SOUTH/down/double/roof stair index 23 at x=388 in
+336-wide sheets. Its red diagnostic markers preserve the invalid selection;
+they are not claimed native pixels or an approved correction. The discrepancy
+has a P2/P6 implementation owner and does not block source-specification closure.
 
 Generated tables now include native-speed 1–5, both-direction platform length
 boundaries, optional roofs and movement charge cadence. P0-06 still owns independent
@@ -447,3 +460,9 @@ including six ExAV geometry review/guard checks. ExAV generation followed by
 `--check`, historical geometry `--check` and `git diff --check` pass. The dependency artifact
 contains source hashes and endpoint/case validation; its 33 descriptions are
 pending feature acceptance scenarios, not 33 executed runtime tests.
+
+P0-04 closure validation on 20 October 2026: **88 Python tests pass**. ExAV
+regeneration/`--check` validates the full expanded artifact and inspected contact
+hashes; historical geometry `--check` and `git diff --check` pass. Source review
+and offline visual expectations are complete. No original-game/runtime, browser,
+native/device or save-continuation acceptance is claimed by this closure.

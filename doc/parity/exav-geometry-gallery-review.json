@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "reviewedOn": "2026-10-20",
+  "status": "source-gallery-review-complete",
+  "method": "Inspected all 28 generated contact sheets, covering every full-height parameter combination in day/night plus lower-cut girder supports. Cut/full invariants, crop bounds, source dispatch and hash reproducibility checked separately.",
+  "gallerySha256": "da0e550dc378a35eee9fff2bc880fbfe285c8d1caec6f1075160ea258e0ca1dc",
+  "counts": {
+    "recipes": 166,
+    "rawCrops": 332,
+    "compositions": 1176,
+    "contactSheets": 28
+  },
+  "contactsReviewed": [
+    {
+      "image": "contact-dispatch-day-brown-0.png",
+      "sha256": "829d77bed63408dd188d0922727c84f3249f82b6b42d80364f7a4217cbab2f7a",
+      "studies": [
+        "standalone-brown-0-day-cut-full",
+        "standalone-brown-2-day-cut-full",
+        "standalone-brown-4-day-cut-full",
+        "standalone-brown-6-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-dispatch-day-concrete-0.png",
+      "sha256": "829d77bed63408dd188d0922727c84f3249f82b6b42d80364f7a4217cbab2f7a",
+      "studies": [
+        "standalone-concrete-0-day-cut-full",
+        "standalone-concrete-2-day-cut-full",
+        "standalone-concrete-4-day-cut-full",
+        "standalone-concrete-6-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-dispatch-day-green-0.png",
+      "sha256": "829d77bed63408dd188d0922727c84f3249f82b6b42d80364f7a4217cbab2f7a",
+      "studies": [
+        "standalone-green-0-day-cut-full",
+        "standalone-green-2-day-cut-full",
+        "standalone-green-4-day-cut-full",
+        "standalone-green-6-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-dispatch-night-brown-0.png",
+      "sha256": "0c6706b9b154295b7785b8a020380bfbff1cfdd32dc34eac643a1d75a4fee774",
+      "studies": [
+        "standalone-brown-0-night-cut-full",
+        "standalone-brown-2-night-cut-full",
+        "standalone-brown-4-night-cut-full",
+        "standalone-brown-6-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-dispatch-night-concrete-0.png",
+      "sha256": "0c6706b9b154295b7785b8a020380bfbff1cfdd32dc34eac643a1d75a4fee774",
+      "studies": [
+        "standalone-concrete-0-night-cut-full",
+        "standalone-concrete-2-night-cut-full",
+        "standalone-concrete-4-night-cut-full",
+        "standalone-concrete-6-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-dispatch-night-green-0.png",
+      "sha256": "0c6706b9b154295b7785b8a020380bfbff1cfdd32dc34eac643a1d75a4fee774",
+      "studies": [
+        "standalone-green-0-night-cut-full",
+        "standalone-green-2-night-cut-full",
+        "standalone-green-4-night-cut-full",
+        "standalone-green-6-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-fat-day-0.png",
+      "sha256": "12f9f82e8f41357babed0994263c73b96fbbdd88a209ac099db1fd6883e82bef",
+      "studies": [
+        "fat-0-lanes-1-day-cut-full",
+        "fat-0-lanes-2-day-cut-full",
+        "fat-2-lanes-1-day-cut-full",
+        "fat-2-lanes-2-day-cut-full",
+        "fat-4-lanes-1-day-cut-full",
+        "fat-4-lanes-2-day-cut-full",
+        "fat-6-lanes-1-day-cut-full",
+        "fat-6-lanes-2-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-fat-night-0.png",
+      "sha256": "279f9870002e35d4e6cba88884e058dbc0b46c36e03fe650247418195398c840",
+      "studies": [
+        "fat-0-lanes-1-night-cut-full",
+        "fat-0-lanes-2-night-cut-full",
+        "fat-2-lanes-1-night-cut-full",
+        "fat-2-lanes-2-night-cut-full",
+        "fat-4-lanes-1-night-cut-full",
+        "fat-4-lanes-2-night-cut-full",
+        "fat-6-lanes-1-night-cut-full",
+        "fat-6-lanes-2-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-girder-day-0.png",
+      "sha256": "9eb601bae46fdecb49321d87f0a331c057bd8756158d82836a9ae062a6dcf830",
+      "studies": [
+        "girder-0-day-cut-full",
+        "girder-1-day-cut-full",
+        "girder-2-day-cut-full",
+        "girder-3-day-cut-full",
+        "girder-4-day-cut-full",
+        "girder-5-day-cut-full",
+        "girder-6-day-cut-full",
+        "girder-7-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-girder-day-below-0.png",
+      "sha256": "70a91d8f906381492a6ad28e40e679be8cf63da31a019c0ca10aa986287c2e17",
+      "studies": [
+        "girder-0-day-cut-0",
+        "girder-1-day-cut-0",
+        "girder-2-day-cut-0",
+        "girder-3-day-cut-0",
+        "girder-4-day-cut-0",
+        "girder-5-day-cut-0",
+        "girder-6-day-cut-0",
+        "girder-7-day-cut-0"
+      ]
+    },
+    {
+      "image": "contact-girder-night-0.png",
+      "sha256": "c47b1cd97b369bfafa13f00fed9e4d09703bea64145473f9d48a3c95c8244c16",
+      "studies": [
+        "girder-0-night-cut-full",
+        "girder-1-night-cut-full",
+        "girder-2-night-cut-full",
+        "girder-3-night-cut-full",
+        "girder-4-night-cut-full",
+        "girder-5-night-cut-full",
+        "girder-6-night-cut-full",
+        "girder-7-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-girder-night-below-0.png",
+      "sha256": "23cbdf665252d9b3d4da3d7cd0c34f44c634a84440b7e34ff6acc338e1160f76",
+      "studies": [
+        "girder-0-night-cut-0",
+        "girder-1-night-cut-0",
+        "girder-2-night-cut-0",
+        "girder-3-night-cut-0",
+        "girder-4-night-cut-0",
+        "girder-5-night-cut-0",
+        "girder-6-night-cut-0",
+        "girder-7-night-cut-0"
+      ]
+    },
+    {
+      "image": "contact-passage-day-brown-0.png",
+      "sha256": "171beb68f4f45a9776f99b32771e32ea73d3a07b411bc8b920f7c88e13635562",
+      "studies": [
+        "passage-brown-0-0-0-day-cut-full",
+        "passage-brown-0-0-1-day-cut-full",
+        "passage-brown-0-1-0-day-cut-full",
+        "passage-brown-0-1-1-day-cut-full",
+        "passage-brown-2-0-0-day-cut-full",
+        "passage-brown-2-0-1-day-cut-full",
+        "passage-brown-2-1-0-day-cut-full",
+        "passage-brown-2-1-1-day-cut-full",
+        "passage-brown-4-0-0-day-cut-full",
+        "passage-brown-4-0-1-day-cut-full",
+        "passage-brown-4-1-0-day-cut-full",
+        "passage-brown-4-1-1-day-cut-full",
+        "passage-brown-6-0-0-day-cut-full",
+        "passage-brown-6-0-1-day-cut-full",
+        "passage-brown-6-1-0-day-cut-full",
+        "passage-brown-6-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-passage-day-concrete-0.png",
+      "sha256": "f88e315161d427c52408d009981870e393e18c163af4cb09b52571a565d82035",
+      "studies": [
+        "passage-concrete-0-0-0-day-cut-full",
+        "passage-concrete-0-0-1-day-cut-full",
+        "passage-concrete-0-1-0-day-cut-full",
+        "passage-concrete-0-1-1-day-cut-full",
+        "passage-concrete-2-0-0-day-cut-full",
+        "passage-concrete-2-0-1-day-cut-full",
+        "passage-concrete-2-1-0-day-cut-full",
+        "passage-concrete-2-1-1-day-cut-full",
+        "passage-concrete-4-0-0-day-cut-full",
+        "passage-concrete-4-0-1-day-cut-full",
+        "passage-concrete-4-1-0-day-cut-full",
+        "passage-concrete-4-1-1-day-cut-full",
+        "passage-concrete-6-0-0-day-cut-full",
+        "passage-concrete-6-0-1-day-cut-full",
+        "passage-concrete-6-1-0-day-cut-full",
+        "passage-concrete-6-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-passage-day-green-0.png",
+      "sha256": "73e72b3ba2f1f9e8dd5a1c2987f3ae0cbcc0ec60b32e8675850a1c33852f71e2",
+      "studies": [
+        "passage-green-0-0-0-day-cut-full",
+        "passage-green-0-0-1-day-cut-full",
+        "passage-green-0-1-0-day-cut-full",
+        "passage-green-0-1-1-day-cut-full",
+        "passage-green-2-0-0-day-cut-full",
+        "passage-green-2-0-1-day-cut-full",
+        "passage-green-2-1-0-day-cut-full",
+        "passage-green-2-1-1-day-cut-full",
+        "passage-green-4-0-0-day-cut-full",
+        "passage-green-4-0-1-day-cut-full",
+        "passage-green-4-1-0-day-cut-full",
+        "passage-green-4-1-1-day-cut-full",
+        "passage-green-6-0-0-day-cut-full",
+        "passage-green-6-0-1-day-cut-full",
+        "passage-green-6-1-0-day-cut-full",
+        "passage-green-6-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-passage-night-brown-0.png",
+      "sha256": "b8d3df2d27656ae0705fc6b39ae135ced138d385ae8d4746fd58cd62c9978a90",
+      "studies": [
+        "passage-brown-0-0-0-night-cut-full",
+        "passage-brown-0-0-1-night-cut-full",
+        "passage-brown-0-1-0-night-cut-full",
+        "passage-brown-0-1-1-night-cut-full",
+        "passage-brown-2-0-0-night-cut-full",
+        "passage-brown-2-0-1-night-cut-full",
+        "passage-brown-2-1-0-night-cut-full",
+        "passage-brown-2-1-1-night-cut-full",
+        "passage-brown-4-0-0-night-cut-full",
+        "passage-brown-4-0-1-night-cut-full",
+        "passage-brown-4-1-0-night-cut-full",
+        "passage-brown-4-1-1-night-cut-full",
+        "passage-brown-6-0-0-night-cut-full",
+        "passage-brown-6-0-1-night-cut-full",
+        "passage-brown-6-1-0-night-cut-full",
+        "passage-brown-6-1-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-passage-night-concrete-0.png",
+      "sha256": "ce0b9c0b3c3566193c0f455bc6c36cf8473aef4864eab578c03fbaa52aaa82bd",
+      "studies": [
+        "passage-concrete-0-0-0-night-cut-full",
+        "passage-concrete-0-0-1-night-cut-full",
+        "passage-concrete-0-1-0-night-cut-full",
+        "passage-concrete-0-1-1-night-cut-full",
+        "passage-concrete-2-0-0-night-cut-full",
+        "passage-concrete-2-0-1-night-cut-full",
+        "passage-concrete-2-1-0-night-cut-full",
+        "passage-concrete-2-1-1-night-cut-full",
+        "passage-concrete-4-0-0-night-cut-full",
+        "passage-concrete-4-0-1-night-cut-full",
+        "passage-concrete-4-1-0-night-cut-full",
+        "passage-concrete-4-1-1-night-cut-full",
+        "passage-concrete-6-0-0-night-cut-full",
+        "passage-concrete-6-0-1-night-cut-full",
+        "passage-concrete-6-1-0-night-cut-full",
+        "passage-concrete-6-1-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-passage-night-green-0.png",
+      "sha256": "19114c93c366d457a9c64fdabe679294f3129b1b94ff03f2d006d700e57671c0",
+      "studies": [
+        "passage-green-0-0-0-night-cut-full",
+        "passage-green-0-0-1-night-cut-full",
+        "passage-green-0-1-0-night-cut-full",
+        "passage-green-0-1-1-night-cut-full",
+        "passage-green-2-0-0-night-cut-full",
+        "passage-green-2-0-1-night-cut-full",
+        "passage-green-2-1-0-night-cut-full",
+        "passage-green-2-1-1-night-cut-full",
+        "passage-green-4-0-0-night-cut-full",
+        "passage-green-4-0-1-night-cut-full",
+        "passage-green-4-1-0-night-cut-full",
+        "passage-green-4-1-1-night-cut-full",
+        "passage-green-6-0-0-night-cut-full",
+        "passage-green-6-0-1-night-cut-full",
+        "passage-green-6-1-0-night-cut-full",
+        "passage-green-6-1-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-plain-day-0.png",
+      "sha256": "9c1b8282d42f221f7e375945d59eb8b7e331956c0138e823be3ad1ba94c98648",
+      "studies": [
+        "plain-0-roof-0-day-cut-full",
+        "plain-0-roof-1-day-cut-full",
+        "plain-2-roof-0-day-cut-full",
+        "plain-2-roof-1-day-cut-full",
+        "plain-4-roof-0-day-cut-full",
+        "plain-4-roof-1-day-cut-full",
+        "plain-6-roof-0-day-cut-full",
+        "plain-6-roof-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-plain-night-0.png",
+      "sha256": "d05c3e9d957ba4e4764a7ae148e6186fac4a44beac89abca5081233bb7a656fe",
+      "studies": [
+        "plain-0-roof-0-night-cut-full",
+        "plain-0-roof-1-night-cut-full",
+        "plain-2-roof-0-night-cut-full",
+        "plain-2-roof-1-night-cut-full",
+        "plain-4-roof-0-night-cut-full",
+        "plain-4-roof-1-night-cut-full",
+        "plain-6-roof-0-night-cut-full",
+        "plain-6-roof-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-roof-run-day-0.png",
+      "sha256": "366d8818ffabd357918d9ba7ff91e41879bd1cff0fea068f346201b9be623a44",
+      "studies": [
+        "roof-run-0-4-0-day-cut-full",
+        "roof-run-0-8-0-day-cut-full",
+        "roof-run-0-4-1-day-cut-full",
+        "roof-run-0-8-1-day-cut-full",
+        "roof-run-2-4-0-day-cut-full",
+        "roof-run-2-8-0-day-cut-full",
+        "roof-run-2-4-1-day-cut-full",
+        "roof-run-2-8-1-day-cut-full",
+        "roof-run-4-4-0-day-cut-full",
+        "roof-run-4-8-0-day-cut-full",
+        "roof-run-4-4-1-day-cut-full",
+        "roof-run-4-8-1-day-cut-full",
+        "roof-run-6-4-0-day-cut-full",
+        "roof-run-6-8-0-day-cut-full",
+        "roof-run-6-4-1-day-cut-full",
+        "roof-run-6-8-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-roof-run-night-0.png",
+      "sha256": "ad4b3560723fdf47e55a6eebd2db62cb12c84fb2699c0a8095ead70e957ba8f1",
+      "studies": [
+        "roof-run-0-4-0-night-cut-full",
+        "roof-run-0-8-0-night-cut-full",
+        "roof-run-0-4-1-night-cut-full",
+        "roof-run-0-8-1-night-cut-full",
+        "roof-run-2-4-0-night-cut-full",
+        "roof-run-2-8-0-night-cut-full",
+        "roof-run-2-4-1-night-cut-full",
+        "roof-run-2-8-1-night-cut-full",
+        "roof-run-4-4-0-night-cut-full",
+        "roof-run-4-8-0-night-cut-full",
+        "roof-run-4-4-1-night-cut-full",
+        "roof-run-4-8-1-night-cut-full",
+        "roof-run-6-4-0-night-cut-full",
+        "roof-run-6-8-0-night-cut-full",
+        "roof-run-6-4-1-night-cut-full",
+        "roof-run-6-8-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-day-brown-0.png",
+      "sha256": "64df1d5655733f0819d6d251d3687af0dc2dc1ef14738e2ece03ce7263546216",
+      "studies": [
+        "stair-brown-0-0-0-0-day-cut-full",
+        "stair-brown-0-0-0-1-day-cut-full",
+        "stair-brown-0-0-1-0-day-cut-full",
+        "stair-brown-0-0-1-1-day-cut-full",
+        "stair-brown-0-1-0-0-day-cut-full",
+        "stair-brown-0-1-0-1-day-cut-full",
+        "stair-brown-0-1-1-0-day-cut-full",
+        "stair-brown-0-1-1-1-day-cut-full",
+        "stair-brown-2-0-0-0-day-cut-full",
+        "stair-brown-2-0-0-1-day-cut-full",
+        "stair-brown-2-0-1-0-day-cut-full",
+        "stair-brown-2-0-1-1-day-cut-full",
+        "stair-brown-2-1-0-0-day-cut-full",
+        "stair-brown-2-1-0-1-day-cut-full",
+        "stair-brown-2-1-1-0-day-cut-full",
+        "stair-brown-2-1-1-1-day-cut-full",
+        "stair-brown-4-0-0-0-day-cut-full",
+        "stair-brown-4-0-0-1-day-cut-full",
+        "stair-brown-4-0-1-0-day-cut-full",
+        "stair-brown-4-0-1-1-day-cut-full",
+        "stair-brown-4-1-0-0-day-cut-full",
+        "stair-brown-4-1-0-1-day-cut-full",
+        "stair-brown-4-1-1-0-day-cut-full",
+        "stair-brown-4-1-1-1-day-cut-full",
+        "stair-brown-6-0-0-0-day-cut-full",
+        "stair-brown-6-0-0-1-day-cut-full",
+        "stair-brown-6-0-1-0-day-cut-full",
+        "stair-brown-6-0-1-1-day-cut-full",
+        "stair-brown-6-1-0-0-day-cut-full",
+        "stair-brown-6-1-0-1-day-cut-full",
+        "stair-brown-6-1-1-0-day-cut-full",
+        "stair-brown-6-1-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-day-concrete-0.png",
+      "sha256": "d0b7817d41d0e9b6d7613785a348644c89bf87e86df6e636fd90e8672c40a779",
+      "studies": [
+        "stair-concrete-0-0-0-0-day-cut-full",
+        "stair-concrete-0-0-0-1-day-cut-full",
+        "stair-concrete-0-0-1-0-day-cut-full",
+        "stair-concrete-0-0-1-1-day-cut-full",
+        "stair-concrete-0-1-0-0-day-cut-full",
+        "stair-concrete-0-1-0-1-day-cut-full",
+        "stair-concrete-0-1-1-0-day-cut-full",
+        "stair-concrete-0-1-1-1-day-cut-full",
+        "stair-concrete-2-0-0-0-day-cut-full",
+        "stair-concrete-2-0-0-1-day-cut-full",
+        "stair-concrete-2-0-1-0-day-cut-full",
+        "stair-concrete-2-0-1-1-day-cut-full",
+        "stair-concrete-2-1-0-0-day-cut-full",
+        "stair-concrete-2-1-0-1-day-cut-full",
+        "stair-concrete-2-1-1-0-day-cut-full",
+        "stair-concrete-2-1-1-1-day-cut-full",
+        "stair-concrete-4-0-0-0-day-cut-full",
+        "stair-concrete-4-0-0-1-day-cut-full",
+        "stair-concrete-4-0-1-0-day-cut-full",
+        "stair-concrete-4-0-1-1-day-cut-full",
+        "stair-concrete-4-1-0-0-day-cut-full",
+        "stair-concrete-4-1-0-1-day-cut-full",
+        "stair-concrete-4-1-1-0-day-cut-full",
+        "stair-concrete-4-1-1-1-day-cut-full",
+        "stair-concrete-6-0-0-0-day-cut-full",
+        "stair-concrete-6-0-0-1-day-cut-full",
+        "stair-concrete-6-0-1-0-day-cut-full",
+        "stair-concrete-6-0-1-1-day-cut-full",
+        "stair-concrete-6-1-0-0-day-cut-full",
+        "stair-concrete-6-1-0-1-day-cut-full",
+        "stair-concrete-6-1-1-0-day-cut-full",
+        "stair-concrete-6-1-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-day-green-0.png",
+      "sha256": "76ddb591ee9524435ae18123cccfc5d5fa0a43c9d7a44567546dc94eca3f2866",
+      "studies": [
+        "stair-green-0-0-0-0-day-cut-full",
+        "stair-green-0-0-0-1-day-cut-full",
+        "stair-green-0-0-1-0-day-cut-full",
+        "stair-green-0-0-1-1-day-cut-full",
+        "stair-green-0-1-0-0-day-cut-full",
+        "stair-green-0-1-0-1-day-cut-full",
+        "stair-green-0-1-1-0-day-cut-full",
+        "stair-green-0-1-1-1-day-cut-full",
+        "stair-green-2-0-0-0-day-cut-full",
+        "stair-green-2-0-0-1-day-cut-full",
+        "stair-green-2-0-1-0-day-cut-full",
+        "stair-green-2-0-1-1-day-cut-full",
+        "stair-green-2-1-0-0-day-cut-full",
+        "stair-green-2-1-0-1-day-cut-full",
+        "stair-green-2-1-1-0-day-cut-full",
+        "stair-green-2-1-1-1-day-cut-full",
+        "stair-green-4-0-0-0-day-cut-full",
+        "stair-green-4-0-0-1-day-cut-full",
+        "stair-green-4-0-1-0-day-cut-full",
+        "stair-green-4-0-1-1-day-cut-full",
+        "stair-green-4-1-0-0-day-cut-full",
+        "stair-green-4-1-0-1-day-cut-full",
+        "stair-green-4-1-1-0-day-cut-full",
+        "stair-green-4-1-1-1-day-cut-full",
+        "stair-green-6-0-0-0-day-cut-full",
+        "stair-green-6-0-0-1-day-cut-full",
+        "stair-green-6-0-1-0-day-cut-full",
+        "stair-green-6-0-1-1-day-cut-full",
+        "stair-green-6-1-0-0-day-cut-full",
+        "stair-green-6-1-0-1-day-cut-full",
+        "stair-green-6-1-1-0-day-cut-full",
+        "stair-green-6-1-1-1-day-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-night-brown-0.png",
+      "sha256": "7fb2ba996bd65bf9498f5f990790a3f5e69ced4b91e0aac1f720951d970eeac1",
+      "studies": [
+        "stair-brown-0-0-0-0-night-cut-full",
+        "stair-brown-0-0-0-1-night-cut-full",
+        "stair-brown-0-0-1-0-night-cut-full",
+        "stair-brown-0-0-1-1-night-cut-full",
+        "stair-brown-0-1-0-0-night-cut-full",
+        "stair-brown-0-1-0-1-night-cut-full",
+        "stair-brown-0-1-1-0-night-cut-full",
+        "stair-brown-0-1-1-1-night-cut-full",
+        "stair-brown-2-0-0-0-night-cut-full",
+        "stair-brown-2-0-0-1-night-cut-full",
+        "stair-brown-2-0-1-0-night-cut-full",
+        "stair-brown-2-0-1-1-night-cut-full",
+        "stair-brown-2-1-0-0-night-cut-full",
+        "stair-brown-2-1-0-1-night-cut-full",
+        "stair-brown-2-1-1-0-night-cut-full",
+        "stair-brown-2-1-1-1-night-cut-full",
+        "stair-brown-4-0-0-0-night-cut-full",
+        "stair-brown-4-0-0-1-night-cut-full",
+        "stair-brown-4-0-1-0-night-cut-full",
+        "stair-brown-4-0-1-1-night-cut-full",
+        "stair-brown-4-1-0-0-night-cut-full",
+        "stair-brown-4-1-0-1-night-cut-full",
+        "stair-brown-4-1-1-0-night-cut-full",
+        "stair-brown-4-1-1-1-night-cut-full",
+        "stair-brown-6-0-0-0-night-cut-full",
+        "stair-brown-6-0-0-1-night-cut-full",
+        "stair-brown-6-0-1-0-night-cut-full",
+        "stair-brown-6-0-1-1-night-cut-full",
+        "stair-brown-6-1-0-0-night-cut-full",
+        "stair-brown-6-1-0-1-night-cut-full",
+        "stair-brown-6-1-1-0-night-cut-full",
+        "stair-brown-6-1-1-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-night-concrete-0.png",
+      "sha256": "0571091dcd002932df91e1a4a61d4d5b2e22d09a29dc374080c917f57c56deca",
+      "studies": [
+        "stair-concrete-0-0-0-0-night-cut-full",
+        "stair-concrete-0-0-0-1-night-cut-full",
+        "stair-concrete-0-0-1-0-night-cut-full",
+        "stair-concrete-0-0-1-1-night-cut-full",
+        "stair-concrete-0-1-0-0-night-cut-full",
+        "stair-concrete-0-1-0-1-night-cut-full",
+        "stair-concrete-0-1-1-0-night-cut-full",
+        "stair-concrete-0-1-1-1-night-cut-full",
+        "stair-concrete-2-0-0-0-night-cut-full",
+        "stair-concrete-2-0-0-1-night-cut-full",
+        "stair-concrete-2-0-1-0-night-cut-full",
+        "stair-concrete-2-0-1-1-night-cut-full",
+        "stair-concrete-2-1-0-0-night-cut-full",
+        "stair-concrete-2-1-0-1-night-cut-full",
+        "stair-concrete-2-1-1-0-night-cut-full",
+        "stair-concrete-2-1-1-1-night-cut-full",
+        "stair-concrete-4-0-0-0-night-cut-full",
+        "stair-concrete-4-0-0-1-night-cut-full",
+        "stair-concrete-4-0-1-0-night-cut-full",
+        "stair-concrete-4-0-1-1-night-cut-full",
+        "stair-concrete-4-1-0-0-night-cut-full",
+        "stair-concrete-4-1-0-1-night-cut-full",
+        "stair-concrete-4-1-1-0-night-cut-full",
+        "stair-concrete-4-1-1-1-night-cut-full",
+        "stair-concrete-6-0-0-0-night-cut-full",
+        "stair-concrete-6-0-0-1-night-cut-full",
+        "stair-concrete-6-0-1-0-night-cut-full",
+        "stair-concrete-6-0-1-1-night-cut-full",
+        "stair-concrete-6-1-0-0-night-cut-full",
+        "stair-concrete-6-1-0-1-night-cut-full",
+        "stair-concrete-6-1-1-0-night-cut-full",
+        "stair-concrete-6-1-1-1-night-cut-full"
+      ]
+    },
+    {
+      "image": "contact-stair-night-green-0.png",
+      "sha256": "d3ad640bae1fc0c9ac15780373129c4befaeb443ef3f1da633fff3131bec9e14",
+      "studies": [
+        "stair-green-0-0-0-0-night-cut-full",
+        "stair-green-0-0-0-1-night-cut-full",
+        "stair-green-0-0-1-0-night-cut-full",
+        "stair-green-0-0-1-1-night-cut-full",
+        "stair-green-0-1-0-0-night-cut-full",
+        "stair-green-0-1-0-1-night-cut-full",
+        "stair-green-0-1-1-0-night-cut-full",
+        "stair-green-0-1-1-1-night-cut-full",
+        "stair-green-2-0-0-0-night-cut-full",
+        "stair-green-2-0-0-1-night-cut-full",
+        "stair-green-2-0-1-0-night-cut-full",
+        "stair-green-2-0-1-1-night-cut-full",
+        "stair-green-2-1-0-0-night-cut-full",
+        "stair-green-2-1-0-1-night-cut-full",
+        "stair-green-2-1-1-0-night-cut-full",
+        "stair-green-2-1-1-1-night-cut-full",
+        "stair-green-4-0-0-0-night-cut-full",
+        "stair-green-4-0-0-1-night-cut-full",
+        "stair-green-4-0-1-0-night-cut-full",
+        "stair-green-4-0-1-1-night-cut-full",
+        "stair-green-4-1-0-0-night-cut-full",
+        "stair-green-4-1-0-1-night-cut-full",
+        "stair-green-4-1-1-0-night-cut-full",
+        "stair-green-4-1-1-1-night-cut-full",
+        "stair-green-6-0-0-0-night-cut-full",
+        "stair-green-6-0-0-1-night-cut-full",
+        "stair-green-6-0-1-0-night-cut-full",
+        "stair-green-6-0-1-1-night-cut-full",
+        "stair-green-6-1-0-0-night-cut-full",
+        "stair-green-6-1-0-1-night-cut-full",
+        "stair-green-6-1-1-0-night-cut-full",
+        "stair-green-6-1-1-1-night-cut-full"
+      ]
+    }
+  ],
+  "findingDispositions": [
+    {
+      "id": "EXAV-GAL-001",
+      "phase": "P2/P6",
+      "finding": "SOUTH downward double-width roofed stair index 23 uses x=388, beyond all three 336-wide day/night sheets. Red placeholders are diagnostics, not predicted native pixels.",
+      "disposition": "Preserve source recipe and explicit invalid-crop case; correction/native failure behavior requires a feature-slice decision."
+    }
+  ],
+  "boundaries": [
+    "332 raw records = 326 source crops + 6 invalid-crop diagnostics. 1176 expanded records = 1164 source-formula studies + 12 diagnostic compositions. Existing 152 rail/car studies are separate.",
+    "EXAV-GAL-001 preserves the source-invalid SOUTH/down/double/roof stair23 crop (x388 in 336-wide sheets). Diagnostic crosses are not a prediction of native pixels. Source review closes with an explicit P2/P6 decision; no source correction is approved.",
+    "Whole voxel inclusion at cuts; no clipping of tall sprite art at the cut plane. Full/at-cut renders match, below-cut platform studies are empty, girder supports remain. Camera framing is held across cuts.",
+    "Night: authored sheet where bound, otherwise RGB888 source formula; native pixel-format/runtime equivalence unverified.",
+    "Isolated representative car/voxel studies omit host graph simulation, warning badges, fences, other traffic and terrain/water. Roof runs repeat representative head art to expose roof coverage, not a simulated consist.",
+    "P0-04 source specification/reconciliation gate closed. Gameplay/native/browser fidelity, full-world scenes, independent P0-06 fixtures, P0-05/P10 save continuation and overall P0 gate remain open."
+  ]
+}
