@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "status": "source-specification-complete; implementation/runtime/continuation open",
+  "sourceReviews": [
+    {
+      "path": "core/framework/MainWindow.cs",
+      "sha256": "9e65046d7c1c8407662b810b99b255074f18ac2246b6f8f7166cea650e0004b2",
+      "review": "saveGame/getFormatter/loadGame: UC writer, two header bytes consumed; BZ decompressor deleted; .ftgd binary, other extension SOAP, .ftgt noncompatibility warning. Native load mutates BGM before world completion; retain modern candidate isolation."
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "review": "save/load: independent BGMContribution[1] and World streams; OnDeserialization rebuilds outlook listeners; setWorld invokes module hooks; otherObjects is durable. Preserve H/V/Z conversion and reciprocal entity identities."
+    },
+    {
+      "path": "core/framework/plugin/PluginSerializationBinder.cs",
+      "sha256": "dac95cfaf85c6b7e1c02aa1fa23f4b668372cef904651b6d191000bb99ea0177",
+      "review": "BindToType ignores assemblyName and searches contribution assemblies. Replace with inert profile-qualified signatures."
+    },
+    {
+      "path": "core/AssemblyInfo.cs",
+      "sha256": "ce502069419efd7452ed284eef3f4ad49cac08f905e1caf944b60135944bb913",
+      "review": "Stable source core assembly version 2.1.1.12; older sample assemblies are separate profiles."
+    },
+    {
+      "path": "core/world/Time.cs",
+      "sha256": "35895f60a90ddd3bc99b42294b6b1caa57be60a8e1aab5ca024d237d2c8fcdf7",
+      "review": "Signed long currentTime and minute constants; totalMinutes subtracts START_TIME. Encode absolute currentTime distinctly from elapsed totalMinutes."
+    },
+    {
+      "path": "core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33",
+      "review": "Signed long duration, including source controller sentinels; freeze signed arithmetic before runtime migration."
+    },
+    {
+      "path": "core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "review": "registerRepeated returns wrapper delegate for cancellation; queue holds absolute due minute. RepeatedTimer serializes clock/handler/interval; tick invokes due callback before removeMin. endOfTurnHandlers is NonSerialized."
+    },
+    {
+      "path": "core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "review": "SortedList entries compare priority then signed int id subtraction. Persist insertion identity/idGen and removal semantics; modern order encoding does not authorize arithmetic widening."
+    },
+    {
+      "path": "core/world/accounting/AccountManager.cs",
+      "sha256": "402292886da4fa0464dc28639aef67ff98c578519e74e978e7ee49d2e2a6936a",
+      "review": "Liquid assets, debt and transaction delta are long; no prototype cash scaling. History is reached via account genres/otherObjects."
+    },
+    {
+      "path": "core/world/accounting/AccountGenre.cs",
+      "sha256": "8a6792ceaed54c4fcfc8d62af9373584f7d1aa61cdf7a41eb0e3e95eca7852ad",
+      "review": "Contribution resolver identity; lazy history keyed by contribution in otherObjects, reset on world change. No catalog mutable state fallback."
+    },
+    {
+      "path": "core/world/accounting/TransactionHistory.cs",
+      "sha256": "c713d556e5ba0faf54862698a7a11fe3efdf52629b805dc3a34fec7b4025ebdb",
+      "review": "Expanded long totals plus 32 day/13 month arrays; Recorder.OnDeserializedMethod repairs null arrays. TransactionHistory.OnDeserializedMethod repairs yesterday/lastmonth/lastyear/dayAgo/monthAgo wrappers. Constructors alone do not specify absent historical fields."
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "review": "Durable _forwarding, boughtThisTrain nullable Time used for age-based resale, independent car and train/controller state; OnDeserialization recreates next-state calculator. Source comment mentions OptionalField but live _forwarding declaration has no such attribute."
+    },
+    {
+      "path": "core/world/rail/Station.cs",
+      "sha256": "583af2748ca5ebdbaa1a850010d5bea09cad7f74eef353177385a96ef172c1fb",
+      "review": "Four timer handles retain old and aligned-hour/day identities. clockHandlerHour migrates nonnull old handles, then clears them; speciallisteners lazily rebuilt if null. OnDeserialization rebuilds nonserialized stationChangeListeners; onStationChange is nonserialized. TransportLog uses double lastweekperday."
+    },
+    {
+      "path": "core/world/rail/Platform.cs",
+      "sha256": "cfb81d8b8af5835ce8fecf9fda4001216edac31de3bf8c646e87fdd3aab98b57",
+      "review": "Persist returned repeated-timer cancellation handle and host/nodes links; remove unregisters handle. Roof and costs belong to ExAV content/geometry rules."
+    },
+    {
+      "path": "core/world/rail/ThinPlatform.cs",
+      "sha256": "e21e713eb3e5697c2722fdbef3c1daf048a023398992bdd741aef4cc1b54f412",
+      "review": "PassagewayPlatform and StairPlatform passagewayRailType carry OptionalField(VersionAdded=5), declared concrete initializer. Missing-field import needs explicit enum-zero/profile rule, not constructor execution."
+    },
+    {
+      "path": "core/world/rail/StationListenerImpl.cs",
+      "sha256": "1228d711afe0395d5f3916d7122788b90e41dcbb89f5eeafa7fc305a1994f124",
+      "review": "Persist XYSize/ZSize in addition to population/location/stations; two-argument constructor delegates 1,1, but this is not proof of historical missing-field defaults."
+    },
+    {
+      "path": "core/world/rail/SpecialStationListenerImpl.cs",
+      "sha256": "e5824ac4ea95d201e6e20ee55c58245b9d4e60434f7905ff303232e4e67e698d",
+      "review": "Special population listener durable station relationships/size; separate from ordinary listeners."
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "review": "New onNewWorld otherObjects root {2B4B87D9-1856-4558-BD07-8C5D5467D109}; low/medium/fast location lists persist; static singleton is rebound."
+    },
+    {
+      "path": "core/world/development/DevelopmentAlgorithm.cs",
+      "sha256": "98c38e82547c344f74dedaee54f6c822333e669c8c04e381eba532751b9e8cd1",
+      "review": "Static System.Random rnd is not world-saved; saved plans/timers do not establish stochastic continuation."
+    },
+    {
+      "path": "core/world/development/LandValue.cs",
+      "sha256": "c9a5d7a1c0637c96554e00778ec666dfa490e3cd951d91a3a88b36d34df1bf25",
+      "review": "otherObjects root {51CD7E24-4296-4043-B58D-A654AB71F121} plus timed updates retained."
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/BankModule.cs",
+      "sha256": "21c5726fe206d1159420791ff40c5e1757b3a68a5483e48a7133c6521e96ad52",
+      "review": "onNewWorld binds otherObjects {227E053A-6667-43fe-8CE1-26EB55CE6A56}; retain accounts/assets and callbacks."
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.bank/FloatingAssets.cs",
+      "sha256": "7026b5dd9f1e449d5154d67183d9084785c58693bf46355e69e557cc71e6997f",
+      "review": "Returned repeatHandler is durable cancellation identity, separate from h_unit callback; onDue unregisters wrapper."
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/StockCompanyModule.cs",
+      "sha256": "aebfeecde9f9a7a3e4562d3d050a04a1233daf0f3a54dcf60c071edfd757eadd",
+      "review": "onNewWorld binds otherObjects {227E053A-6667-43fe-8CE2-26EB55CE6A56} and calls Economy world-loaded/new hooks."
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/Economy.cs",
+      "sha256": "6f2515d24abf44609c3c9b0d62ed22a55143f7f1279bb8ee7249a7354bdd4727",
+      "review": "repeatHandlerMajorUpdateEvent/MinorUpdateEvent retain returned wrappers. Economy and RandomEx explicitly stored/restored through otherObjects key and key+rand; static does not imply unsaved when reachable by this graph."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumStructure.cs",
+      "sha256": "b78d867e3c57f7a5589e8f4961edd8caf5726010351495cb1ec4cdf6ad6c2f42",
+      "review": "Persist capacity, specialstationListener, PopulationImpl, games/team state and repeatHandler; no reconstruction from a generic building alone."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.soccerStadium/src/PopulationImpl.cs",
+      "sha256": "e257e70920fe255fb62104d0e06af2061703aece2854c93ddae6508edb9a48fa",
+      "review": "Mutable _populs/_enters/_baseP are instance state, not catalog-only."
+    }
+  ],
+  "implementationRevision": "65cd2fb43d1e6121dce338fe22dcaba20ef0d0ec",
+  "implementationSourceReviews": [
+    {
+      "path": "src/FreeTrain.Online.Simulation/Definitions.cs",
+      "sha256": "505733063ed5fe811efe140093c3a5929700eddb1fcdbfadfa068f71a7668234",
+      "review": "Four-direction ordinals, eight prototype shapes, fixed definitions and Park-Miller random stream"
+    },
+    {
+      "path": "src/FreeTrain.Online.Simulation/GridPosition.cs",
+      "sha256": "f02bd376b176ab2c9a7e09ad6723af2d5e94e62478bfe230191dbb4fa5b9f09e",
+      "review": "Prototype rectangular coordinates"
+    },
+    {
+      "path": "src/FreeTrain.Online.Simulation/SimulationClock.cs",
+      "sha256": "5bc1acf9cf53522ae1a667f22978fd6498e62786facb5b878ccc0236443ddf25",
+      "review": "Prototype DateTime/tick origin and semantic move events"
+    },
+    {
+      "path": "src/FreeTrain.Online.Simulation/World.cs",
+      "sha256": "17fabe4bf294b1b92223f6989cd4d5541854f007fa0f8c7c25017c65cabea73b",
+      "review": "Prototype track/car/station state and validation"
+    },
+    {
+      "path": "src/FreeTrain.Online.Content/ReferenceScenario.cs",
+      "sha256": "5888bb49901add36603995c67702fd4f13a478606895bb8e82f6bcada1ca2d82",
+      "review": "reference-v1 identities, geometry, content and initial state"
+    },
+    {
+      "path": "src/FreeTrain.Online.Contracts/WireContracts.cs",
+      "sha256": "8ca2273a99ef6eab0edbab86cdaae4466ece1ce8edd3172dc7de284f1faabc30",
+      "review": "Protocol DTOs, roles/epochs/revisions, leases, exact Int64 JSON"
+    },
+    {
+      "path": "src/FreeTrain.Online.Persistence/SaveDocument.cs",
+      "sha256": "0beb0f19cdd0519add7af123ac1b880ba99ff86ebe4b4bc1ce7d9390fd5fbd1b",
+      "review": "Save 1 triple, strict decode/restore, 1 MiB and entity/event validation"
+    },
+    {
+      "path": "src/FreeTrain.Online.Persistence/SaveStorage.cs",
+      "sha256": "86ead2d55ad65514bce52d9fafc712c4b60e04fe8c0a2d1a7b448a865d085005",
+      "review": "Atomic writes and single writer; path allowlist"
+    },
+    {
+      "path": "src/FreeTrain.Online.Session/SessionHost.cs",
+      "sha256": "5bebcc1cc080ba82ba6a73378e408f62bb08e31a0146ecd4c1ee086a0df54b4b",
+      "review": "Authority, leases, wall-time expiry and validated candidate replacement"
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/NetworkEndpoints.cs",
+      "sha256": "c5c86458c1f1f3b5d97d1294d25d1a1c4824148c310eb8dafeef1916dfe30aad",
+      "review": "Owner/epoch save-transfer gates and protocol/content compatibility"
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/NetworkSession.cs",
+      "sha256": "c5a574018b1f4ff0d35c4fafd02bb9838c6c8bd928569f18f8565398de08cc58",
+      "review": "Participant lifecycle, coherent snapshots/deltas and bounded transfer"
+    },
+    {
+      "path": "prototype/protocol/schema.json",
+      "sha256": "15c7cf7401b80c27b36032e1ad5e90f5592f9129b6cd7dd770e8d516e4705425",
+      "review": "Canonical schema: wire strings, exact counters and independent versions"
+    },
+    {
+      "path": "prototype/protocol/fixtures/save-reference.json",
+      "sha256": "9db587ef9588a28cbbce547e92392f288a0f0e0e714ed6420e4a7c7ee47fe3a0",
+      "review": "Prototype save fixture"
+    },
+    {
+      "path": "web/src/lib/protocol.ts",
+      "sha256": "eed76643a0f8a57254d8ace099e928c544c4f18ee911acf6ae63f6b6f0983fb3",
+      "review": "Generated wire/save types; regenerate atomically with schema"
+    },
+    {
+      "path": "web/src/lib/session-client.ts",
+      "sha256": "0ce309d444ac55ea19c209ddc0d464ef1a7d1903a4a40b039a0152057a3dffbb",
+      "review": "Read-store revision/coherence and command boundary"
+    },
+    {
+      "path": "web/src/lib/remote-session-client.ts",
+      "sha256": "e2ea5d9994cbe3e5a82cd1b0eb7ee4e09568925dd2c0bb9fddc9be28adf1c0b5",
+      "review": "Transport generation, epoch, receipts/reconnect and no automatic replay"
+    },
+    {
+      "path": "web/src/lib/shell-model.ts",
+      "sha256": "24a73903098af1f7956f09bd54cc8b0fcdaf824d63ae4817a0c77b72d98da366",
+      "review": "Picked IDs, authority/controller lease and request generations"
+    },
+    {
+      "path": "web/src/lib/save-transfer.ts",
+      "sha256": "88468bda73935be26397f3fbec212a4a9df2e812c48fdd191deb291479e7dd42",
+      "review": "1 MiB upload, captured expected epoch and failure codes"
+    },
+    {
+      "path": "web/src/lib/demo-scene.ts",
+      "sha256": "87dfd74f05fb0852ac80ebb699cef818af4a1d6cc72b82000c5680b8cff91f03",
+      "review": "Separate prototype demo identities/data"
+    },
+    {
+      "path": "web/src/App.svelte",
+      "sha256": "b9226b8d9b0dd2fa66fe50d47f067dede62ed8c4fc2f338a2d20f72e678d947b",
+      "review": "Draft/conflict/load confirmation, demo/live gates and selected stable IDs"
+    },
+    {
+      "path": "web/src/MapView.svelte",
+      "sha256": "48723683e529bc0d1ce66b7b03c8a6add3c25b51677b59246448a6fbff4120f5",
+      "review": "Persistent canvas/camera, decoded assets/first draw and draft generations"
+    },
+    {
+      "path": "web/src/lib/map-renderer.ts",
+      "sha256": "90acde5f83ba01f139efa3ab0f08dcac36d848c17109f3e0e256e22428a43862",
+      "review": "Prototype geometry/assets and renderer content boundary"
+    },
+    {
+      "path": "tests/FreeTrain.Online.Tests/PersistenceTests.cs",
+      "sha256": "3e9c9b2a44eb802918a25de789a3131ffdc7e88ba811520eb3f048d56376d48f",
+      "review": "Current strict Save 1 round-trip/rejection/continuation obligations"
+    },
+    {
+      "path": "tests/FreeTrain.Online.Tests/MultiplayerTests.cs",
+      "sha256": "8181b5436f38e1da7036a84c157678dd0e46a47adc03e44cc8838dac4f11546a",
+      "review": "Authority, lease and epoch regression obligations"
+    }
+  ]
+}

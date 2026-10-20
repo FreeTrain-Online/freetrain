@@ -13,6 +13,9 @@
 | [exav-geometry-dependency-review.json](exav-geometry-dependency-review.json) | Four source dependency chains complete: 63 pinned files, 14 findings and 33 acceptance descriptions; 97 distinct files with initial geometry review. Full feature/runtime acceptance remains with implementing slices |
 | [exav-geometry-gallery.json](exav-geometry-gallery.json), [exav-geometry-gallery-review.json](exav-geometry-gallery-review.json) | Expanded P0-04 crop/dispatch/cut gallery complete: 332 raw and 1,176 composition records including explicit invalid-crop diagnostics, 28 inspected contacts, 98 distinct source files overall; native/runtime comparison remains open |
 | [exav-manifest-encoding-review.json](exav-manifest-encoding-review.json) | Separate evidence for the approved UTF-8 working-tree conversion |
+| [exav-domain-transition.json](exav-domain-transition.json), [exav-persistence-rules.json](exav-persistence-rules.json) | P0-05 ExAV source specification: version/pack/prototype design, 26 stable dependencies and 24 implementation files; runtime migrations remain open |
+| [exav-serialization-review.json](exav-serialization-review.json) | All 195 serialization candidates, 377 declarations / 1,048 fields, inheritance/custom writers, supplemental serialization attributes and historical comparison |
+| [exav-save-samples.json](exav-save-samples.json) | Inert structural evidence for supplied ExAV 0.4 and owner-reported 0.6.2 saves against stable source; no compatibility/continuation verdict |
 | [historical/](historical/README.md) | Superseded original-FreeTrain parity artifacts, earlier optional-suite inventory and historical manual evidence |
 
 The historical files were relocated on **20 October 2026** to distinguish them

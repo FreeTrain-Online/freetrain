@@ -1,40 +1,32 @@
 # Parity contract, content and persistence transition
 
-**ExAV reassessment pending — 20 October 2026:** this P0-05 contract/content/persistence review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+**P0-05 ExAV source specification complete — 20 October 2026.** Authority is
+archive `trunk/`, ExAV **2.1.1.12**, Git
+`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`. The separate
+[serializer inventory](parity/exav-serialization-review.json) expands all **195**
+serialization candidates. [Reviewed source dependencies](parity/exav-persistence-rules.json)
+and [transition decisions](parity/exav-domain-transition.json) replace the
+original-FreeTrain authority for this specification. Historical outputs remain
+unchanged under [historical/](parity/historical/README.md).
 
-P0-02 now provides [ExAV contribution/instance state findings](web-parity-content.md#changes-and-handoffs), including Int64 values, returned timer handlers and expanded stadium state. These are inputs to this still-open P0-05 reassessment; the historical serializer/transition artifacts below have not been repinned.
-
-P0-01 now supplies [stable ExAV discovery](web-parity-exav-inventory.md) with
-195 serialization candidate files, source hashes and project memberships. Their
-fields/defaults/callbacks and stable-version layouts remain P0-05 work; the
-historical 186-file inventory and reserved rules/content names below are unchanged.
-
-Historical original-FreeTrain P0-05 specification completed on 19 October 2026. This specifies the transition;
-it does not change the running protocol, implement a converter, or deliver a
-compatibility mode. Its historical source is `1f755ca6f291253b8cd5024ef53402b85d467170`.
-The current implementation review is pinned independently at
-`4ddb808a337e805f519451bad92b71ec02f67ae2`, following P0-04. The earlier
-`a48e8fa` inventory remains historical evidence.
-
-The maintained [transition decisions](parity/historical/domain-transition.json) contain
-`TRANS-001`–`TRANS-012` and future acceptance cases `MIG-01`–`MIG-08`.
-[Transition source evidence](parity/historical/domain-transition-review.json) hashes 24
-implementation dependencies. The [serializer inventory](parity/historical/serialization-review.json)
-accounts for every one of the original 186 candidate files, plus three envelope/
-binder/version dependencies. This page and the [geometry specification](web-parity-geometry.md)
-replace the initial persistence paragraphs in the [domain overview](web-parity-domain-transition.md)
-where more precise decisions are needed. P0, gameplay implementation, P10
-historical compatibility and native/device UX acceptance remain open.
+The current implementation is reviewed independently at
+`65cd2fb43d1e6121dce338fe22dcaba20ef0d0ec`: protocol 2,
+`prototype-content-1`, Save 1 and `reference-v1` remain in force, including the
+1 MiB save limit. This work implements no migration, importer or compatibility
+mode. P1/P2 implement contracts/catalogs; P3–P9 supply subsystem state; P10
+owns conversions, stable-runtime fixtures and continuation. Overall P0 and native/
+device acceptance remain open. [P0-02](web-parity-content.md) and
+[P0-04](web-parity-geometry.md) supply the content and geometry dependencies.
 
 ## Version and ruleset dispatch
 
 | Boundary | Delivered value, unchanged by P0 | Reserved next design |
 | --- | --- | --- |
 | Wire protocol | `2` | `3`; deploy matching static client/service/schema/codegen |
-| Content | `prototype-content-1` | `legacy-base-1`, plus versioned required-pack descriptors |
+| Content | `prototype-content-1` | `exav-bundled-v2-1`, plus versioned required-pack descriptors |
 | JSON save | `1` | `2` for parity worlds |
 | Scenario | `reference-v1` | Keep this identity for the original fixture; assign separate parity IDs |
-| Ruleset | Implicit prototype | Explicit `prototype-reference-1` or `legacy-main-1f755ca-v1` |
+| Ruleset | Implicit prototype | Explicit `prototype-reference-1` or `exav-2.1.1.12-v1` |
 
 These are independent version axes. A save-version increase does not make old
 content compatible. The proposed names reserve a design boundary; no emitted
@@ -61,7 +53,7 @@ epoch, revision, ruleset and pack set; never combine deltas across those boundar
 ## Spatial and content contract
 
 Parity headings are JSON integer indices `0..7`, exactly N, NE, E, SE, S, SW,
-W, NW. The [design table](parity/historical/domain-transition.json) retains all vectors.
+W, NW. The [design table](parity/exav-domain-transition.json) retains all vectors.
 Left/right change by -1/+1, left90/right90 by -2/+2 and opposite by +4 modulo 8.
 Reject missing, fractional and out-of-range headings. Existing C# ordinals
 N=0/E=1/S=2/W=3 and wire/save strings `north/east/south/west` require explicit
@@ -218,9 +210,12 @@ scheme ID; no new preference persistence is implied.
 
 `MainWindow.saveGame` writes `UC`, then `World.save` writes two independent
 formatter streams: one-element `BGMContribution[]` (element may be null), then
-World. `.ftgd` chooses BinaryFormatter; `.ftgt` chooses SoapFormatter. The load
-path recognizes `BZ` and wraps the remaining bytes in BZip2InputStream; the
-current writer's compression lines are commented out. The legacy loader consumes
+World. `.ftgd` chooses BinaryFormatter; other extensions use SoapFormatter.
+Stable ExAV warns that `.ftgt` may become unreadable after upgrades. Its writer
+compression lines and BZ reader decompression call are commented out; the BZ
+branch consumes the header without decompression. Older original-FreeTrain did
+decompress. Bounded BZ support is an explicit older-profile compatibility addition
+(`EXAV-SAVE-007`), not stable loader parity. The legacy loader consumes
 two bytes even for an unrecognized header. The portable design requires an
 explicit recognized wrapper and rejects ambiguity instead of reproducing that
 permissive header behavior (`SAVE-001`).
@@ -233,24 +228,25 @@ No actual `.ftgt` example has been supplied or found in the pinned base tree or
 local sample directory. Source-defined/hand-authored fixtures must be labeled
 controlled evidence; they do not close representative-runtime compatibility.
 
-The source inventory now records 359 declarations across the 186 candidate files:
-314 serializable/enum declarations (including 30 enums), 45 nonserializable
-helpers, and 903 declared fields. These fields include 173 static/constant and
-34 `[NonSerialized]` declarations. These are source counts, not counts of saved
-objects or functioning features. Each type retains its qualified nested name,
-path-qualified `sourceTypeId`, bases/source ancestors, unresolved/framework bases,
-declared fields/ordinals and inherited field slots, custom writer/keys/type
-substitution, callbacks, target family/phase and explicit scope.
+The source inventory records **377declarations**, **331 serializable/enum
+declarations** (31 enums), 46 helpers and **1,048 declared fields** across all
+195 candidate files; 229 fields are static/constant and 36 are `[NonSerialized]`.
+Compared with the historical inventory, 185 candidate paths changed bytes and ten
+are new paths; one historical path disappeared (a moved listener source).
+Counts are lexical source evidence, not saved-object or functioning-feature counts.
+Each declaration retains path-qualified nested identity, fields/ordinals, source
+inheritance and inherited slots, custom writer/keys/substitution, callbacks,
+phase destination and scope. Source reviews retain project membership and source
+hashes; source-only/build questions are not silently promoted to runtime features.
 
-Two distinct source files declare
-`freetrain.world.rail.signal.RailSignalContribution`; path/assembly identity must
-not collapse to a unique CLR name. The source scanner retains both. It is a
-lexical inventory with resolved source inheritance, not a C# compiler, compile
-reachability proof or complete wire-layout generator. Conditional branches are
-inventoried together. Framework inherited fields need separate mappings.
-Default serializer layouts can repeat inherited fields under qualified names;
-hidden fields may also share an identical name. Never create an import map keyed
-only by an unqualified type or member name.
+The scanner is not a compiler or CLR layout generator. Conditional branches are
+retained together; framework bases remain explicit. Assembly/path identity,
+qualified inherited copies and duplicate field ordinals cannot be collapsed into
+an unqualified name dictionary. ExAV's supplementary `serializationAttributes`
+records also retain the two `[OnDeserialized]` accounting methods and two
+`[OptionalField(VersionAdded=5)]` passageway fields, which the historical scanner's
+named-callback list did not capture. Declared initializers are source evidence,
+not automatic missing-field import defaults.
 
 | Source serializer / family | Explicit portable mapping rule |
 | --- | --- |
@@ -272,12 +268,13 @@ only by an unqualified type or member name.
 | Delegate/MemberInfo/Comparer/CompareInfo framework records | Read inert data only. Known domain callbacks become versioned semantic events or rebuilt listeners; arbitrary target/method/comparer/reflection records are unsupported. |
 
 Custom serialization and singleton rules above cover all nine `GetObjectData`
-writers and all reference-resolver families found by the inventory. The six
+writers and all reference-resolver families found by the inventory. The seven named
 deserialization callbacks have explicit outcomes: World recreates transient
 outlook listeners; Train recreates the next-car-state calculator; RRCrossing
 reattaches railway-change observation; PThreeDimStructure.VoxelImpl and
 FatPlatform.FatPlatformVoxel reconstruct sprites from owner/recipe; SubsidiaryMarket
-recreates volatile events. Rebuild these outcomes as data/derived state. Do not
+recreates volatile events; Station recreates its nonserialized station-change
+listeners. Rebuild these outcomes as data/derived state. Do not
 execute callbacks. Bank/stock world hooks reattach module roots through
 `otherObjects`; genre history invalidates catalog-side caches on world change.
 
@@ -296,36 +293,68 @@ source-format assembly/type/field signatures and explicit reviewed aliases;
 no assembly load, reflection activation, object replacement or callback execution
 is allowed in the service (`SAVE-002`).
 
-## Supplied ExAV sample and evidence limits
+## Stable ExAV state and reconstruction differences
 
-The owner-supplied `.ftgd` has SHA-256
-`35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313`
-and 23,584,925 bytes. Its [recovery report](../tmp/parity-p0/p0-04-save-recovery.md)
-retains provenance and untouched bytes. The readme requires FreeTrainExAV 0.4
-and external plugins. The [P0-05 local inspection](../tmp/parity-p0/p0-05-sample-review.json)
-walks record structure without activating objects:
+The [source review](parity/exav-persistence-rules.json) hashes 26 semantic
+dependencies and 24 current implementation files. Retained authority, draft,
+readiness, pack isolation and prototype compatibility decisions were rechecked
+against these boundaries. Geometry mappings reuse P0-04's separate ExAV evidence.
 
-| Observation | Result |
+| Family | Stable source finding and implementation obligation |
 | --- | --- |
-| Wrapper and stream extents | UC; BGM stream `[2,167)`, World stream `[167,23584925)`; exact EOF |
-| BGM root | One-element typed BGM array, null selection |
-| Objects | 1 first-root array; 33,366 World-stream nodes; referenced IDs/libraries resolve within each stream |
-| World dimensions / water | H=1500, V=1090, Z=45; waterLevel=11; readme's approximate 1500×1000 is not the serialized size |
-| Ground | Byte array `[1500,1090]`, 1,635,000 bytes; data hash retained |
-| Types/layouts | 444 class metadata records, 150 distinct layouts; every non-framework name has a source-inventory candidate |
-| Contribution references | 150 exact IDs, 12 in the base catalog; 138 require external-pack/alias review, not proven missing from all available packs |
-| Delegates | 309 entries over 18 distinct target/method pairs; includes train movement, repeated timers, station/day/hour, development, economy, bank and subsidiary callbacks |
-| Source-field differences | `StationCollection.OnStationConstruction`, `Station.OnStationChanged`, `Train._forwarding` are present in the sample and absent from the pinned source |
+| Time / numeric widths | `Time.currentTime` and `TimeLength.totalMinutes` are signed Int64 minutes. `Time.totalMinutes` subtracts `START_TIME`; absolute and elapsed values must remain distinct. Money/debt/history totals are Int64, while queue insertion IDs and many population/counter calculations remain Int32 and some reports use double. Decimal-string encoding does not authorize widening source arithmetic. P1/P6/P8 freeze encodings, overflow and rounding. |
+| Timer cancellation | `Clock.registerRepeated` returns a delegate targeting `RepeatedTimer.onClock`, distinct from the user's handler. Station/platform, bank assets, Economy and stadium retain returned handles. Map due time, equal-time insertion order, interval and cancellation identity; restoring the queue and registering the same timer again is invalid. Queue comparison uses signed Int32 subtraction. P1/P10. |
+| Station migration | Four old/aligned handles; `clockHandlerHour` replaces old handles when `repeatHandler1 != null`, registers hour/day boundary callbacks and clears the old pair. `speciallisteners` can be lazily rebuilt; regular/special listeners retain station and dimension relationships. These are version-specific transitions, not blanket post-load registration. P6/P10. |
+| Train resale / forwarding | `_forwarding` is durable; `boughtThisTrain` is nullable `Time`, consulted by age-based resale. A null purchase time yields no resale payment on that source path. A source comment mentions OptionalField for forwarding, but the live field has no attribute. No purchase timestamp may be invented for old files. P5/P8/P10. |
+| Accounting repair | `Recorder.OnDeserializedMethod` repairs null 32-day/13-month arrays; the outer history callback repairs five missing summary wrappers. These are two additional attribute-driven callbacks beyond the seven named interface callbacks. Convert outcomes as explicit data; never activate methods supplied by a save. P8/P10. |
+| Passageways | Two `passagewayRailType` fields carry OptionalField VersionAdded=5 with a concrete initializer; version-specific missing-field semantics still need fixtures. P4/P10. |
+| Module roots | `otherObjects` includes speed limits (three location lists), land value, account-genre histories, subsidiaries, bank, stocks, Economy and its random state. Preserve typed roots and cross-references, not arbitrary CLR dictionary activation. P4/P7/P8/P10. |
+| Randomness | Stock `Economy._random` is static **and explicitly saved/restored** through `otherObjects[key+"rand"]`. Development's static `System.Random rnd` is not world-saved. Review each reachable stream; neither all-saved nor all-unsaved is a valid generalization. P1/P7/P8/P10. |
+| Stadium / population | Capacity, mutable population counters, special station listener, matches and returned timer handle are durable instance state. New population families resolve against ExAV catalog rules. Generic-building reconstruction is insufficient. P6/P7/P8/P10. |
 
-Core assembly is `FreeTrain.Core, Version=0.4.3255.7465`. Additional assemblies
-include StockMarket, Bank, ElectricPole, Creek, Terrace, RailSignal, TrainGarage,
-TATTrainController and System.Drawing. Matching type names or most field names
-does not establish compatible types, field order, defaults, enum meanings,
-algorithms or callback outcomes. The three field-name differences make ExAV a
-separate version profile (`SAVE-003`). The sample's duplicate Station `type`
-fields are preserved by ordinal. Source comparison uses normalized name sets
-only, records inherited framework fields separately, and retains complete raw
-layouts; it is deliberately not a signature-compatibility verdict.
+## Supplied ExAV samples and evidence limits
+
+The [maintained structural summaries](parity/exav-save-samples.json) retain both
+samples' hashes, assembly identities, root extents, field differences, contribution
+references and delegate targets. Full local record-layout reports remain under
+`tmp/parity-p0/`. Original inputs were read without modification or CLR activation.
+The new file's **0_6_2 provenance is owner-reported from its download page**; no URL
+was supplied for independent verification. Observed assembly versions are separate
+evidence and are not a product-release equivalence claim.
+
+| Observation | Earlier sample (`データ０１.ftgd`) | Additional `チョココロネB400x600x16.ftgd` |
+| --- | --- | --- |
+| Profile evidence | Readme requires ExAV 0.4; core `0.4.3255.7465` | Owner reports Ex-AV 0_6_2; core `0.6.3326.40211` |
+| SHA-256 | `35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313` | `8991dbba1b2f73c14eb921e3dcb4a69d2bce26e45d81c5e318bc19c20e061263` |
+| Bytes / UC root extents | 23,584,925; `[2,167)`, `[167,23584925)` | 10,119,231; `[2,168)`, `[168,10119231)` |
+| Dimensions / water | 1500×1090×45 / 11 | 400×600×16 / 4 |
+| Ground bytes / absolute clock minute | 1,635,000 / 532970 | 240,000 / 130722 |
+| Objects | BGM array + 33,366 World-stream nodes | BGM array + 195,078 World-stream nodes |
+| Layouts vs stable source | 150: 115 field-name matches, 23 framework, 12 differences | 68: 52 field-name matches, 14 framework, two differences |
+| Contribution references vs stable bundled IDs | 150: 11 exact, 139 unresolved pack/alias requirements | Seven, all exact bundled IDs |
+| Delegates | 309 entries / 18 target-method pairs | 22 entries / nine target-method pairs |
+
+Both streams end exactly at EOF and references resolve within each independent
+stream. The new save also names StockMarket `0.5.3326.40213` and Bank
+`1.0.3326.40213`; a core version alone cannot identify the complete profile.
+All new-sample non-framework layout names have a source candidate. The two
+field-name differences are missing `Train.boughtThisTrain` and missing
+`Economy.repeatHandlerMajorUpdateEvent` / `repeatHandlerMinorUpdateEvent`.
+No purchase-time default, cancellation-handle reconstruction or runtime compatibility
+is inferred. Seven matching contribution IDs do not validate the complete asset/
+recipe/pack version or exercise all stable subsystems.
+
+Against **stable ExAV**, the older sample has 12 differing layouts, superseding the
+historical comparison's three differences against original-FreeTrain. They cover
+StationCollection, history/Recorder, Economy, Station, TransportLog,
+StationListenerImpl, Train, ThinPlatform, its stair/passageway outlooks and FatPlatform.
+The complete missing/extra names remain in the maintained summaries. The original
+historical report remains accurate for its original comparison revision.
+
+Matching normalized field-name sets does not verify field types, enum values,
+order, duplicates, defaults, graph semantics or algorithms. There is **no supplied
+stable 2.1.1.12 runtime save, SOAP/BZ sample or original-runtime continuation**.
+Older profiles remain explicit P10 mapping work (`SAVE-003`, `EXAV-SAVE-008`).
 
 `scripts/parity_nrbf.py` is an offline structural reader. Its implemented layout
 uses Microsoft's [MS-NRBF record enumeration](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-nrbf/954a0657-b901-4813-9398-4ec732fe8b32),
@@ -357,27 +386,34 @@ owner sample or extra suite; the sample assertion skips when absent.
 | --- | --- |
 | `SAVE-001` | Portable reader recognizes wrappers explicitly rather than consuming arbitrary leading bytes. P10 tests recognized UC/BZ and rejects ambiguity. |
 | `SAVE-002` | Replace assembly-name-ignoring binder/object activation with explicit inert mappings. P10 rejects unknown signatures and reachable types. |
-| `SAVE-003` | ExAV field/version profile remains unverified; three extra fields and external IDs require mappings, not inferred defaults or silent drops. P10. |
+| `SAVE-003` | Older ExAV profiles differ from stable layouts; two new-sample and 12 older-sample layout differences require explicit mappings, not inferred defaults or silent drops. P10. |
 | `SAVE-004` | Static randomness, nonserialized handlers and derived state can leave legacy continuation underdetermined. P1/P10 must declare reconstruction/mismatch limits and obtain runtime evidence. |
 | `SAVE-005` | Prototype topology/time/economy are retained as labeled compatibility rules; automatic conversion is deferred until explicitly reviewed. Implement dispatch before model replacement in P1. |
 | `SAVE-006` | Historical world view options/native playback objects become portable local presentation/derived playback state; retain catalog BGM selection and source art behavior, with no silently added local persistence. P9/P10 review. |
 
-P0-05's specification, serializer inventory and early historical sample/version
-review are complete. P1 implements contract/model/compatibility changes; P2
+P0-05 is closed at **ExAV source-specification level**. Serializer and transition
+reviews cover the stable source and both supplied older samples. P1 implements contract/model/compatibility changes; P2
 implements catalog/pack changes; each gameplay phase adds durable subsystem state;
 P10 closes actual conversions/continuation/recovery. `MIG-*` are future acceptance
 obligations, not tests claimed to have run. P0-06 scenarios/capacity work and
 P0-07/P0-08 remain open. No gameplay, original-runtime comparison, browser/native
 acceptance or optional-suite compatibility is established here.
 
+Validation on 20 October: **93 Python tests**, fresh ExAV serializer/transition
+and both local sample checks, historical persistence reproducibility and
+`git diff --check` pass. These are source/tooling checks, not runtime acceptance.
+
 Reproduce from the repository root:
 
 ```sh
-python3 scripts/review-parity-persistence.py
-python3 scripts/review-parity-persistence.py --check
+python3 scripts/review-exav-persistence.py --source-root ../freetrain-exav-archive
+python3 scripts/review-exav-persistence.py --source-root ../freetrain-exav-archive --check
 python3 -m unittest discover -s scripts/tests -v
 # Explicit local-only sample inspection; no search/download or object activation.
-python3 scripts/review-parity-persistence.py \
+python3 scripts/review-exav-persistence.py --source-root ../freetrain-exav-archive \
+  --sample 'tmp/チョココロネB400x600x16.ftgd' \
+  --sample-report tmp/parity-p0/exav-062-sample-review.json --check
+python3 scripts/review-exav-persistence.py --source-root ../freetrain-exav-archive \
   --sample 'tmp/000-001-sample-save/recovered/データ０１.ftgd' \
-  --sample-report tmp/parity-p0/p0-05-sample-review.json --check
+  --sample-report tmp/parity-p0/exav-04-sample-review.json --check
 ```

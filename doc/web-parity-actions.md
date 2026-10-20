@@ -178,7 +178,7 @@ are feature work, not abandoned reviews. Every implementing slice must:
    be counted complete because P0 scope closed; P9/P11 reconcile all residual work.
 
 These requirements are also machine-readable in `sliceCompletionRequirements`.
-P0-04 source specification subsequently completed; P0-05–09 and the overall P0 gate stay open, as do native/device and runtime gates.
+P0-04 source specification subsequently completed; P0-06–09 and the overall P0 gate stay open, as do native/device and runtime gates.
 No grand per-control specification or full translation pass is required before
 starting feature implementation.
 
@@ -350,4 +350,4 @@ cross-reference in the maintained map. `MAN-A*` are still pending acceptance cas
 source/prose numeric differences remain P0-04/P0-06. Per-release numeric/fix and save
 reconciliation remains in P0-04/P0-05/P0-06, alongside later phase delivery.
 No runtime application, browser, performance or native/device acceptance is
-established by this source/tooling batch. P0-04 source specification is now complete; P0-05 is next and P0 as a whole stays open.
+established by this source/tooling batch. P0-04 source specification is now complete; P0-05 source specification is now complete; P0-06 is next and P0 as a whole stays open.

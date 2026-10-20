@@ -1,10 +1,12 @@
 # Parity domain transition design
 
-**ExAV reassessment pending — 20 October 2026:** this domain transition design records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
-
-P0-01's [stable ExAV discovery](web-parity-exav-inventory.md) is complete. The
-domain/geometry/save design below remains historical input for P0-04/P0-05;
-source discovery does not accept its numeric rules or reserved profile names.
+**ExAV source specifications complete — 20 October 2026:** P0-04 geometry and
+P0-05 contract/save reviews supersede the historical examples on this page. Use
+[ExAV transition decisions](parity/exav-domain-transition.json),
+[serializer inventory](parity/exav-serialization-review.json) and
+[contract/persistence specification](web-parity-persistence.md) for current authority.
+Original derivations below retain their historical meaning; runtime format,
+compatibility and continuation remain implementation work.
 
 Status: P0 source specification and P1 design input, with P0-04 detail in the
 [geometry/clock/train review](web-parity-geometry.md) and the completed P0-05
@@ -23,8 +25,7 @@ cadence, forwarding, speed-limit and platform behavior. Its separate generated
 ExAV tables preserve source provenance. The
 [four dependency chains](web-parity-geometry-dependencies.md) are source-reviewed;
 the [expanded source gallery review](web-parity-geometry-gallery.md) now closes
-P0-04 at source-specification level. Persistence and reserved profile decisions below still require
-P0-05 ExAV reassessment.
+P0-04 at source-specification level. P0-05 now supplies the separate stable ExAV persistence review and reserved profiles.
 
 ## Geometry, clock and train state
 
@@ -96,7 +97,7 @@ documented algorithm/state contract during P1.
 
 Keep current protocol **2**, content `prototype-content-1`, and JSON Save **1**
 unchanged while P0 discovery proceeds. P0-05 reserves protocol 3, base content
-`legacy-base-1` and parity Save 2, with explicit ruleset/pack metadata; these
+`exav-bundled-v2-1` and parity Save 2, with explicit ruleset/pack metadata; these
 versions are not implemented. The proposed next protocol must explicitly
 carry eight-direction indices; sparse terrain/ownership and bounded world
 dimensions; rail pattern/topology and slope/support metadata; stable per-car
@@ -144,27 +145,16 @@ reference implementations, and Train recreates its nonserialized state calculato
 after loading. Preserve reference identity and required callback outcomes as
 explicit data transformations, not object activation.
 
-The initial ledger lists 186 lexical serialization candidate files. P0-05's
-[expanded inventory](parity/historical/serialization-review.json) now records 359 declarations,
-903 fields, source inheritance/field slots, custom writer/resolver families,
-callback outcomes and target phases for all of them. Compiler reachability,
-exact runtime wire signatures/aliases and implemented conversion remain P10
-gates. The initial search found no historical examples. On 19 October
-2026 the owner supplied `tmp/000-001-sample-save/`: a 23,584,925-byte `.ftgd`
-whose recovered title is `データ０１`, SHA-256
-`35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313`.
-Its readme requires FreeTrainExAV 0.4 and several external plugin sets; classify
-it as an ExAV reference, with canonical-baseline compatibility unverified. The
-[text recovery report](../tmp/parity-p0/p0-04-save-recovery.md) records CP932-to-UTF-8
-readme recovery, filename evidence, unchanged save bytes and selected intact UTF-8
-string records. Subsequent P0-05 [offline record inspection](../tmp/parity-p0/p0-05-sample-review.json)
-walks both streams at offsets 2/167 to exact EOF, retaining 33,367 total nodes and
-resolving record references without activation. Serialized size is 1500×1090×45;
-150 contribution references include 12 exact base IDs and 138 unresolved
-pack/alias requirements. Three field-name differences establish a separate ExAV
-profile, not canonical compatibility. No runtime load/continuation or `.ftgt`
-example is established. Controlled fixtures must be labeled as such; historical
-compatibility stays open until domain mappings and continuation are reviewed.
+The historical inventory remains under [historical/](parity/historical/README.md)
+with its original 186-file/359-declaration/903-field denominator. The current
+[ExAV inventory](parity/exav-serialization-review.json) covers 195 files,
+377 declarations and 1,048 fields, plus separate attributed-callback evidence.
+The [sample review](web-parity-persistence.md#supplied-exav-samples-and-evidence-limits)
+now compares both owner-supplied saves against stable ExAV: 12 differing layouts
+for the 0.4 sample and two for the owner-reported 0.6.2 sample. Its product-release
+provenance remains separate from observed core `0.6.3326.40211` assembly metadata.
+Neither sample is a stable 2.1.1.12 fixture or runtime continuation verdict.
+Historical counts and comparisons retain their original source meanings.
 Build a bounded record/type reader outside the live world, with allowlisted
 mappings, limits and precise unsupported-type diagnostics. Never call the old
 deserializers inside the web service. Missing content, malformed input or an

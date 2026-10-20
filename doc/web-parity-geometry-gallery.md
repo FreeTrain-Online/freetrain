@@ -108,7 +108,7 @@ repository and reads pinned Git objects; ordinary application builds do not gain
 a sibling-checkout dependency. PNGs/HTML stay under ignored `tmp/`; the committed
 metadata/review record preserves the review when those local images are absent.
 
-**P0-04 is closed at source-specification level.** P0-05–09 and overall P0 remain
+**P0-04 is closed at source-specification level.** P0-06–09 and overall P0 remain
 open. P1–P6/P9 implementation, independent P0-06 fixtures, source-defect decisions,
 full-world/native/browser rendering comparison and P10 save continuation retain
 their existing gates. This batch changes no gameplay, protocol, save format,

@@ -17,7 +17,7 @@ P0-01 discovery was reassessed and completed on **20 October 2026** against
 P0-02 [content source reconciliation](web-parity-content.md) subsequently completed on
 20 October 2026; revised P0-03 scope reconciliation is also complete.
 P0-04 source specification and expanded visual review subsequently completed.
-P0-05–P0-09, the overall P0 gate, implementation and runtime
+P0-06–P0-09, the overall P0 gate, implementation and runtime
 acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.
@@ -120,7 +120,8 @@ action/content/geometry/serialization decisions. The separate
 [content review](web-parity-content.md) now records ExAV source reconciliation,
 including narrow, checked reuse of TAT image evidence. The
 [action](web-parity-actions.md), [geometry](web-parity-geometry.md) and
-[persistence](web-parity-persistence.md) reviews still await ExAV reconciliation.
+[persistence](web-parity-persistence.md) reviews now have separate ExAV reconciliation;
+P0-05 inventories all 195 candidates and reviews both supplied older save profiles.
 Manual/wiki workflows remain evidence to reconcile against these source inputs.
 The canonical non-LGPL optional V2 set is outside this ledger and remains P0-08;
 no optional repository is discovered or read. EXAV-ENC-001 changes only stable
@@ -135,6 +136,7 @@ repository containing the pinned commit:
 ```sh
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/review-exav-persistence.py --source-root /path/to/freetrain-exav-archive --check
 python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --report tmp/parity-p0/exav-inventory.md
 
 # Historical outputs keep their source and review family.
@@ -170,5 +172,5 @@ specification/runtime acceptance handed to the named slices. The subsequent
 distinct reviewed files overall, 332 raw records, 1,176 expanded composition
 records and 28 inspected contacts. Explicit invalid-crop diagnostics retain
 EXAV-GAL-001 and its P2/P6 decision boundary. P0-04 is closed at source level;
-P0-05–09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
+P0-06–09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.
