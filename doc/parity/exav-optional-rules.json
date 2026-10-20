@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "packId": "exav-additional-v2-nonfree",
+  "source": {
+    "repository": "freetrain-online-plugins-nonfree",
+    "revision": "c8ec62e47a7f5089b666e57072164a0e14934466",
+    "pluginRoot": "plugins",
+    "pluginFamily": "V2",
+    "packageVersion": "2.1.0.10",
+    "packageDate": "2012-09-26"
+  },
+  "normalizedRevision": "55ac13e7d292b1d003cf6f97a63be1675d7202f4",
+  "bundledSource": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "expectedCounts": {
+    "files": 4933,
+    "manifests": 452,
+    "selectedManifests": 450,
+    "selectedDeclarations": 11470,
+    "directDeclarations": 11484,
+    "uniqueExplicitIds": 11470,
+    "generatedChildren": 23417,
+    "uniqueGeneratedIds": 23273,
+    "media": 4399,
+    "manifestReferencedMedia": 4212,
+    "translationCandidates": 21686,
+    "typeBindings": 6919,
+    "distinctTypeBindings": 37,
+    "localIncludes": 6,
+    "duplicateExplicitIds": 14,
+    "collisions": 158,
+    "bundledIdCollisions": 0,
+    "nestedManifests": 2,
+    "missingPluginDependencies": 0,
+    "fileEdges": 5615,
+    "fileEdgeResolutions": {
+      "case-folded": 36,
+      "exact": 4779,
+      "missing": 800
+    },
+    "types": {
+      "DummyCar": 108,
+      "GenericStructure": 1330,
+      "HalfVoxelStructure": 91,
+      "bgm": 2,
+      "commercial": 268,
+      "electricPole": 273,
+      "land": 1224,
+      "menu": 1,
+      "picture": 2155,
+      "railSignal": 5,
+      "railStationary": 1100,
+      "road": 218,
+      "roadAccessory": 197,
+      "station": 422,
+      "train": 1134,
+      "trainCar": 2911,
+      "varHeightBuilding": 45
+    }
+  },
+  "exavSources": [
+    {
+      "path": "core/framework/Core.cs",
+      "symbols": [
+        "PluginManager",
+        "parseProfile",
+        "File.Exists(basedirs[i])",
+        "Directory.GetDirectories(baseDir)"
+      ],
+      "review": "Stable Core.getDefaultProfile enumerates immediate children only. Core.parseProfile tests File.Exists on each directory argument and never adds any subdirectories to its result, so the custom profile returns an empty plugin list. Browser launch-directory loading deliberately repairs this broken path."
+    },
+    {
+      "path": "core/framework/plugin/PluginManager.cs",
+      "symbols": [
+        "init( ICollection dirs",
+        "File.Exists(Path.Combine(dir,\"plugin.xml\"))",
+        "pluginMap.Contains(p.name)",
+        "addContributionFactory",
+        "contributionMap.Add"
+      ],
+      "review": "init consumes individual directories; basename identities and contribution/factory collisions cannot be silently overridden."
+    },
+    {
+      "path": "core/framework/plugin/Plugin.cs",
+      "symbols": [
+        "getDependencies",
+        "getPlugin(\"system\")",
+        "loadContributionFactories",
+        "loadContributions"
+      ],
+      "review": "Implicit system dependency, declared dependencies, factories before instances, ID registration, then initialization."
+    },
+    {
+      "path": "core/framework/plugin/PluginUtil.cs",
+      "symbols": [
+        "GetFiles",
+        "SearchOption.AllDirectories",
+        "Assembly.LoadFrom",
+        "spriteLoader:"
+      ],
+      "review": "Legacy DLL fallback chooses the first basename match. Portable loading must use reviewed adapters and deterministic resource resolution."
+    },
+    {
+      "path": "plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs",
+      "symbols": [
+        "loadSprites",
+        "parseDirection",
+        "SOURTH"
+      ],
+      "review": "Generated color/sprite identities and eight-direction selections; apply approved SOUTH correction when porting."
+    },
+    {
+      "path": "core/contributions/train/TrainCarContribution.cs",
+      "symbols": [
+        "seatedcapacity",
+        "capacity"
+      ],
+      "review": "V2 seated versus total capacity remains distinct; matching IDs do not validate numeric recipes."
+    },
+    {
+      "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+      "symbols": [
+        "fare",
+        "amenity",
+        "triprange"
+      ],
+      "review": "V2 train parameters consume stable ExAV semantics; package version is not engine, save or protocol version."
+    },
+    {
+      "path": "core/framework/plugin/PluginListDialog.cs",
+      "symbols": [
+        "author",
+        "homepage"
+      ],
+      "review": "Legacy per-plugin information is attribution evidence; localized plugin-set credits are a new browser adaptation."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "EXAV-OPT-001",
+      "phase": "P2/P11",
+      "status": "owner-directed, 2026-10-21",
+      "decision": "Keep non-free plugins, their localized credits XML, original/converted assets, catalogs and notices in the separate repository/distribution. Core builds and CI have no implicit sibling or network dependency. Launch accepts repeatable --plugin-dir PATH arguments for plugin-set roots; startup prepares or validates a separate cached portable catalog and adds it to the server-selected pack set. No mandatory separate manual build step for the operator. Runtime implementation remains open."
+    },
+    {
+      "id": "EXAV-OPT-002",
+      "phase": "P2/P9/P11",
+      "status": "owner-directed, 2026-10-21",
+      "decision": "Show one additional localized credits button per enabled plugin set, using a versioned UTF-8 plugin-set.xml in that set's repo. Both English and Japanese labels/title/plain credits text, locale fallback, pack identity/version and notice references travel with that set; preserve original attribution. No optional-set button in base-only mode. All joined clients see the enabled server set."
+    },
+    {
+      "id": "EXAV-OPT-003",
+      "phase": "P2/P10",
+      "status": "required conflict handling",
+      "decision": "Reject ambiguous plugin basenames, duplicate factory/contribution/generated IDs, missing dependencies, unresolved file case/path and unported code before publishing the composed catalog. No last-directory-wins override, automatic V1/V2 blending, guessed alias or silent skip. Diagnostics name source owners and preserve the running world/input."
+    },
+    {
+      "id": "EXAV-OPT-004",
+      "phase": "P2/P9",
+      "status": "implementation review required",
+      "decision": "Stable Core.getDefaultProfile selects only immediate-child manifests: 450 selected, with 11,470 declarations. Keep both nested toaru manifests in the 452-manifest inventory as source-only duplicate copies, not additional active plugins; 12 of the 14 duplicate explicit definitions differ. Do not recursively activate them. Six explicitly reviewed XML includes, both resource registries and all recipe hashes remain inventoried; P2 still resolves asset/case repairs before accepting recipes."
+    },
+    {
+      "id": "EXAV-OPT-005",
+      "phase": "P2/P9/P10",
+      "status": "open source/adapter gap",
+      "decision": "The canonical V2 set contains two Windows DLLs (rail signal and map capture), with no C# sources in the set. Preserve hashes and explicit class/factory bindings; assess exact stable source equivalents or a separately specified portable adapter. No DLL execution or binary filename equivalence claim. Map-capture scope is not automatically excluded by the older debug/video exclusions."
+    },
+    {
+      "id": "EXAV-OPT-006",
+      "phase": "P2/P9/P11",
+      "status": "owner permission statement retained; per-file conversion terms pending",
+      "decision": "Owner reports non-free redistribution with authors' permission. Retain readmeV2, changelog, manifest author/homepage and local notices separately; credits are attribution, not a new license grant. Keep per-resource translation/derivative permission and missing notice classification in the optional conversion ledger; do not attach bundled LGPL notices to the set."
+    },
+    {
+      "id": "EXAV-OPT-007",
+      "phase": "P2/P10/P11",
+      "status": "separate compatibility obligation",
+      "decision": "Earlier 228-manifest PluginsExtra, V1 and combined copies retain their existing provenance and compatibility scope. This canonical V2 review does not certify or silently merge them. Save profiles and converted catalogs must select a reviewed family and exact pack identity/hash; legacy-only IDs remain a separate P10 mapping obligation."
+    },
+    {
+      "id": "EXAV-OPT-008",
+      "phase": "P2/P11",
+      "status": "normalization evidence only",
+      "decision": "Preserve original c8ec62e source authority and separately verify de8c7ce UTF-8 and 55ac13e filename normalization by pinned Git objects. Equal decoded XML/recipes does not prove Linux file resolution or runtime compatibility. Do not repin bundled ExAV or rewrite historical inventory outputs."
+    },
+    {
+      "id": "EXAV-OPT-009",
+      "phase": "P2/P9",
+      "status": "portable adaptation specified; implementation pending",
+      "decision": "Core.parseProfile never populates its return set and tests File.Exists for directory arguments. Implement --plugin-dir as a working explicit directory-list startup interface, preserving the implicit system dependency and ordered factory/instance initialization. Do not reuse the broken source parser or its Windows DLL search."
+    },
+    {
+      "id": "EXAV-OPT-010",
+      "phase": "P2/P11",
+      "status": "source diagnostics retained; recipe repairs pending",
+      "decision": "All 773 missing explicit DLL file edges map by exact qualified type and project membership to stable bundled source. The 27 missing image edges affect 26 declarations; 36 case-only file edges also require explicit portable path maps. Preserve diagnostic owners and require reviewed repair, supported mapping or explicit scope decision before accepting affected recipes. No guessed filename, missing-image replacement or blanket optional-pack compatibility claim."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "OPT-AC-01",
+      "phase": "P2/P11",
+      "expected": "Clean base build/start/test succeeds without optional checkout, assets, credits, cache or network. Explicit startup with one or more --plugin-dir roots prepares/loads each reviewed set without copying it into core or requiring an extra core build; container mounts work. A subsequent clean base build contains no non-free originals, derivatives, credits or cache entries."
+    },
+    {
+      "id": "OPT-AC-02",
+      "phase": "P2/P9/P11",
+      "expected": "Selected catalog includes every accepted explicit/generated ID, all required resources/effects and V2 numeric data under stable ExAV semantics. Duplicate explicit/generated IDs, ambiguous plugin names, missing dependencies, unsupported DLL classes, out-of-root includes and case mismatches give owner-specific errors before world/catalog publication. No silent omission or override."
+    },
+    {
+      "id": "OPT-AC-03",
+      "phase": "P9/P11",
+      "expected": "Base-only has no plugin-set credits button. Each enabled set adds a button with its own localized label/title and complete credits/notice text in English and Japanese, with specified fallback and language switching. Long text, keyboard focus/close/return, narrow layouts and multiple sets work; names and credits never render executable markup."
+    },
+    {
+      "id": "OPT-AC-04",
+      "phase": "P2/P10",
+      "expected": "Server advertises exact enabled pack ID/version/catalog/asset and credits hashes. Clients cannot nominate filesystem paths. Joining/loading with missing, changed or incompatible packs names requirements and preserves the running world/input. Base saves need no optional pack; required-pack saves round-trip and continue with exact reviewed contribution/recipe mappings."
+    },
+    {
+      "id": "OPT-AC-05",
+      "phase": "P2/P11",
+      "expected": "Conversion/cache/package manifests retain source revisions, per-file hashes, author/notice/permission and locale review. Optional source, output, screenshots, caches and release artifacts remain separate; ordinary CI uses synthetic metadata and explicit optional integration runs report their own denominators."
+    }
+  ],
+  "noticeReviews": [
+    {
+      "path": "readmeV2.txt",
+      "landmarks": [
+        "各プラグイン作者様のご協力",
+        "■謝辞",
+        "混在させない"
+      ],
+      "finding": "Collection-level collaboration/acknowledgments and V2 mixing warning. Preserve complete author/site lists; no blanket browser-derivative grant inferred."
+    },
+    {
+      "path": "plugins/jp.big.ayase.freetrain.road/readme.txt",
+      "landmarks": [
+        "無断修正・改変",
+        "著作権は綾瀬ヒロ"
+      ],
+      "finding": "Attributes image copyright to AYASE Hiro and permits redistribution provided distributed files are not modified without authorization. Reconcile conversion with the owner-reported permission before optional release."
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.structure.teha/readme.txt",
+      "landmarks": [
+        "ご自由に改造したり別目的に利用"
+      ],
+      "finding": "Author expressly invites modification and use for other purposes; retain attribution and verify coverage for particular assets rather than applying this statement to the whole collection."
+    },
+    {
+      "path": "plugins/jp.geocities.freetrain_ft.mapCapture/ژسژ«.txt",
+      "landmarks": [
+        "謝辞",
+        "nanashi"
+      ],
+      "finding": "Acknowledges Kawaguchi, C477 and community code/art/music/plugin work. Attribution evidence, not source code or an explicit license grant."
+    },
+    {
+      "path": "plugins/info.hiyohiyo.riorio.freetrain.rail.structure.horitake/メモ.txt",
+      "landmarks": [
+        "綾瀬氏",
+        "改造"
+      ],
+      "finding": "Declares a modification of Ayase buffer-stop art; retain upstream attribution chain."
+    },
+    {
+      "path": "plugins/jp.co.infoseek.hp.t-tomonori.land2/read_me.txt",
+      "landmarks": [
+        "しかしかさん",
+        "改造"
+      ],
+      "finding": "Declares modified shikashika stone-paving textures; retain upstream attribution chain."
+    },
+    {
+      "path": "plugins/jp.co.infoseek.hp.t-tomonori.road1/read_me.txt",
+      "landmarks": [
+        "しかしかさん",
+        "改造"
+      ],
+      "finding": "Declares modified shikashika stone-paving textures; retain upstream attribution chain."
+    },
+    {
+      "path": "plugins/JRcentral.tokaiface series.hermes/read me.txt",
+      "landmarks": [
+        "画像の使用は、基本フリー",
+        "スレのほうで一言"
+      ],
+      "finding": "Describes image use as basically free and requests a thread message before publication. Preserve that request and the named author; do not infer a collection-wide grant."
+    },
+    {
+      "path": "plugins/aichi.loopline.hermes/read me.txt",
+      "landmarks": [
+        "画像の使用は、基本フリー",
+        "スレのほうで一言"
+      ],
+      "finding": "Describes image use as basically free and requests a thread message before publication. Preserve that request and the named author; do not infer a collection-wide grant."
+    },
+    {
+      "path": "plugins/gassho.Hermes/read�@me.txt",
+      "landmarks": [
+        "画像の使用は、基本フリー",
+        "スレのほうで一言"
+      ],
+      "finding": "Describes image use as basically free and requests a thread message before publication. Preserve that request and the named author; do not infer a collection-wide grant."
+    }
+  ]
+}

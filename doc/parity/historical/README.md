@@ -13,7 +13,7 @@ select the current game rules/content or close stable ExAV review gates.
 | [geometry.json](geometry.json), [geometry-behavior.json](geometry-behavior.json) | Original source-derived geometry/clock/train expectations |
 | [scenarios.json](scenarios.json) | Original source-derived scenario seeds; not current ExAV expectations |
 | [domain-transition.json](domain-transition.json), [domain-transition-review.json](domain-transition-review.json), [serialization-review.json](serialization-review.json) | Earlier contract/save design and original serializer evidence |
-| [extra-suite-ledger.json](extra-suite-ledger.json) | Earlier separately pinned 228-manifest non-free suite; distinct from the canonical optional V2 inventory still required by P0-08 |
+| [extra-suite-ledger.json](extra-suite-ledger.json) | Earlier separately pinned 228-manifest non-free suite; distinct from the [canonical optional V2 P0-08 review](../../web-parity-optional-plugins.md); older-suite runtime compatibility remains open |
 | [online-manual-review.json](online-manual-review.json) | Historical manual snapshot provenance; still useful workflow evidence to reconcile against ExAV |
 
 Each JSON file retains its original provenance and IDs. Only artifact-location

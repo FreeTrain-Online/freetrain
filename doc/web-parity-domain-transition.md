@@ -162,23 +162,38 @@ unsupported mapping must preserve the file and running world.
 
 ## Optional non-free pack design
 
-Default builds and tests use only base content. The proposed build interface is
-`--extra-source <repository>` plus a required separate `--extra-output <directory>`;
-names remain design proposals until the canonical importer/package tooling is
-implemented. Startup configuration will accept a list of prepared pack directories
-(`FreeTrainOnline:Content:Packs`) and serve exactly the selected catalog/assets to all
-clients. Container operators mount the prepared pack; no download or sibling-path
-discovery occurs implicitly. Verify both explicit build/run and base build/run
-with a mounted prepared pack. Reject conflicting IDs rather than applying overrides.
+The [P0-08 source review and owner-directed launch/credits contract](web-parity-optional-plugins.md)
+specifies the separate canonical V2 pack. Default builds/tests/startup need only
+bundled content. The reserved startup interface is repeatable `--plugin-dir PATH`,
+each naming a plugin-set root with its own `plugin-set.xml` and manifest directory.
+Startup validates and prepares or reuses a separately cached portable pack; an
+operator need not rebuild core or perform a mandatory manual conversion step.
+Explicit offline conversion still takes separate source/output directories for
+packaging. Configuration may map the same list to `FreeTrainOnline:Content:Packs`;
+names remain reserved until P2 implements them. Containers mount the selected
+sets. Default startup performs no download or sibling-directory discovery.
 
-Each pack needs ID, version, source revision, canonical catalog hash, asset hashes,
-base/pack dependencies, contribution IDs and notices. Saves reference required
-pack ID/version/hash and contribution/recipe IDs; local paths and content binaries
-are excluded. The server's enabled pack set governs join/load compatibility.
-Missing/incompatible packs must be named before world replacement, preserve the
-current world/input, and allow retry after installation/restart. Base-only worlds
-must remain usable without the extra suite. Source, converted art, notices,
-screenshots, caches and release outputs must remain separate from base artifacts;
-test a subsequent clean base build after an opt-in build. One legacy DLL is
-inventoried, with binary-only behavior still unresolved. No Windows assembly
-loading is a runtime extension contract.
+The server publishes exactly its selected catalogs/assets to every client after
+validation. Preserve stable ExAV's immediate-child membership rather than
+recursively activating the two nested duplicate manifests. Reject selected
+factory/plugin/contribution/generated-ID conflicts and unsupported code; do not
+apply overrides. Legacy DLL loading is not the portable extension contract. The
+canonical set has two DLLs; rail signal has stable source, while map capture still
+needs a source/adapter or scope disposition. Resource/case repairs remain P2 work.
+
+Each enabled set adds its own localized credits button/dialog using the set's XML
+English/Japanese labels and plain credit text. Base-only mode has no optional-set
+button. Set identity/version, source revision, canonical catalog/asset hashes,
+dependencies and credits/notice hashes belong to its metadata. Missing/malformed
+credits metadata fails that set's startup validation. Both locales, fallback,
+long text, keyboard/focus return and multiple sets require P9 acceptance.
+
+Saves reference required pack ID/version/hash and contribution/recipe IDs; local
+paths and content binaries are excluded. The server's enabled pack set governs
+join/load compatibility. Missing/incompatible packs must be named before world
+replacement, preserve the current world/input, and allow retry after installation
+and restart. Base-only worlds remain usable without the extra suite. Source,
+converted art, localized credits, notices, screenshots, caches and release outputs
+remain separate from bundled artifacts; verify a clean base build after opt-in
+use. P0-08 closes source inventory/specification, not P2/P9/P10/P11 implementation
+or runtime/save compatibility. See OPT-AC-01–05 in the maintained optional rules.

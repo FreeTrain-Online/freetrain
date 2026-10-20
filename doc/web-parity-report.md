@@ -2,7 +2,9 @@
 
 **P0-07 report complete — 21 October 2026.** P0-01–06 now establish the
 stable ExAV discovery, source reconciliation and scenario specifications below.
-**P0-08, P0-09, overall P0 and every P1–P11 exit gate remain open.** This report
+**P0-08 source inventory/specification is now complete; P0-09, overall P0 and
+every P1–P11 exit gate remain open.** See the separate
+[optional V2 review](web-parity-optional-plugins.md) for its 21 October follow-up. This report
 closes reporting and provisional sizing; the existing UX handoff still governs
 gameplay implementation.
 
@@ -26,6 +28,7 @@ copies retain their comparison/translation roles under the
 | [P0-04 expanded gallery](web-parity-geometry-gallery.md) | 332 raw and 1,176 composition records; all 28 contacts inspected; six raw / 12 composition records diagnose an invalid source crop | EXAV-GAL-001 requires a P2/P6 disposition; diagnostic records are not successfully rendered recipes. Expanded counts stay separate from the initial 152. |
 | [P0-05 persistence](web-parity-persistence.md) | 195 candidate files, 377 declarations / 1,048 fields; 26 semantic dependencies, 24 implementation files; callbacks, custom writers and two older structural save profiles | Version/schema/pack dispatch, subsystem state, stable-runtime save fixtures, safe import, migration and continuation. P1/P2/P3–P10. |
 | [P0-06 scenarios](web-parity-scenarios.md) | 31 independent cases / 38 hashed files; six bilingual workflows; three proposed city profiles, two integration companions and full-content gallery recipe | Fixture generation, exact content bindings, instantiated legality, execution, continuation, capacity and native acceptance. P1–P11. |
+| [P0-08 optional V2](web-parity-optional-plugins.md) | 4,933 hashed files; 452 source manifests / 11,484 declarations / 23,417 generated children / 4,399 media; stable profile selects 450 manifests / 11,470 declarations; 21,686 text candidates | Startup preparation/loading, localized per-set credits, image/case repairs, map-capture adapter/scope, per-file conversion terms and save/runtime evidence. P2/P9/P10/P11. |
 
 These denominators overlap and describe different things. Do not sum UI bindings
 and surfaces, declarations and media, or source files across reviews into a feature
@@ -74,6 +77,7 @@ or resolve a source defect by implication.
 | EXAV-SCN-D02 | P8: bank asset recalculation uses debts for deposit totals; cancellation recalculates before removal. Preserve source outputs separately from any approved correction. |
 | EXAV-SCN-D03 | P5: disconnected train paths can leave a null next state before scheduling. A passing free-reverse case does not resolve this case. |
 | EXAV-SCN-D04 | P1/P8: integer intermediates/overflow and whole-year bank interest require explicit boundaries; do not substitute fractional interest or translated monetary units. |
+| [EXAV-OPT-001–010](parity/exav-optional-rules.json) | P2/P9/P10/P11: explicit directory loading, separate catalogs/caches/notices, localized credits XML/button per enabled set; preserve immediate-child membership, 27 image gaps / 36 case-only edges, map-capture code gap and older-suite profiles. |
 | [EXAV-DIR-001 / EXAV-ENC-001](parity/exav-baseline.json) | Owner-approved SOUTH typo correction and UTF-8 manifest/fallback-reader conversion are recorded separately from pinned source. Port these decisions; do not repin or replace evidence with corrected working files. |
 
 Source/project gaps also stay visible: seven unresolved project items (five old
@@ -96,6 +100,7 @@ adaptations must remain visible in release scope.
 | --- | --- |
 | XML: 977 candidates, 641 with English donor candidates | All 977 retain pending feature wording review and null proposed English; 336 have no donor candidate. These include scope/support records, not only player-visible text. |
 | C#/resx/HTML: 3,671 candidates, 997 containing Japanese, 2,543 with ASCII English donor candidates | All retain pending classification/wording review; 1,128 have no donor candidate. 2,345 are unclassified C# literals and may be IDs, paths or formats. Neither number is a count of missing player translations. |
+| Optional XML: 21,686 candidates under separate pack identity | P0-08 occurrence inventory only; all need feature wording review, including collection credits supplied in the optional repo. Do not combine with bundled counts. |
 | Six P0-06 bilingual workflows | Representative acceptance designs only; no locale workflow was executed in this report. |
 
 These inventories are occurrence-based, overlap and include non-presentation and
@@ -113,20 +118,30 @@ assembles the completed chapter manual; P11 reconciles the final in-scope ledger
 | Source family | Recorded totals and authority |
 | --- | --- |
 | Stable bundled ExAV | **56 manifests / 482 direct declarations / one generated child / 238 media**; current reviewed LGPL bundled denominator, including explicit exclusions. |
-| Canonical non-LGPL V2, `freetrain_online_extra_plugins`, observed `c8ec62e47a7f5089b666e57072164a0e14934466`, root `plugins/` | **Current totals pending P0-08 reconciliation.** Required optional build/run support remains in scope; no copy-equivalence or runtime compatibility verdict is inferred. |
+| Canonical non-LGPL V2, `freetrain-online-plugins-nonfree`, original `c8ec62e47a7f5089b666e57072164a0e14934466`, root `plugins/`; normalized `55ac13e7d292b1d003cf6f97a63be1675d7202f4` | **P0-08 source inventory/specification complete:** 452 manifests / 11,484 declarations / 23,417 generated children / 4,399 media. Immediate-child profile selects 450 manifests / 11,470 declarations / 23,273 generated children; nested source-only copies explain all 158 source ID conflicts. No runtime compatibility verdict. |
 | Earlier AdditionalPluginSet V2 copy | Historical 452 manifests / 11,484 explicit declarations / 11,470 distinct explicit IDs, with 14 duplicate occurrences. Not a current canonical-pack total. |
 | Earlier AdditionalPluginSet V1 copy | Historical 436 manifests / 11,420 explicit declarations and distinct explicit IDs. Compatibility/reference scope, not a second gameplay authority. |
 | Earlier combined ExAV/community tree | Historical 508 manifests / 11,966 explicit declarations / 11,952 distinct explicit IDs. Includes optional content; not stable bundled coverage. |
 | [Earlier PluginsExtra ledger](parity/historical/extra-suite-ledger.json) | 228 manifests / 6,216 direct declarations / 6,610 generated children / 2,511 media at its recorded `6886a0f` provenance; separate owner-requested compatibility evidence. |
 
-Earlier-copy counts come from the dated [ExAV assessment](../tmp/web-feature-parity-exav-delta.md),
-not a fresh canonical optional inventory. P0-08 must bind canonical hashes, local
-XML/fragments, generated children/aliases, duplicate-ID choices, dependencies,
-permissions/notices, translation scope and fixture/save identities. Its outputs
-must preserve V1/earlier-extra compatibility dispositions. Default builds must use
-reviewed bundled inputs without sibling discovery; optional source, conversion,
-catalog, notices and packages remain separate and disabled by default. No combined
-bundled-plus-optional coverage denominator is valid yet.
+Earlier-copy counts retain the dated [ExAV assessment](../tmp/web-feature-parity-exav-delta.md)
+provenance. The canonical [P0-08 review](web-parity-optional-plugins.md) now binds
+source/normalization hashes, six local includes, generated identities/direction
+selections, selected membership, dependencies, notices and translation candidates.
+It finds 773 missing DLL edges with exact stable source/project bindings, 27
+missing image edges and 36 case-only edges, plus one unbound map-capture type.
+The earlier PluginsExtra suite has 82 direct IDs absent from canonical V2;
+V1/older-suite compatibility remains separately profiled P10 work. The supplied
+0.4 sample resolves 138 IDs in selected optional V2 and 11 in bundled ExAV, with
+one unmatched legacy ID; the seven 0.6-era sample IDs are bundled. These are
+identity matches, not recipe/import/continuation evidence.
+
+Owner-directed delivery keeps plugins in their separate repo. Explicit startup
+plugin-set directory arguments prepare/load portable content and add one localized
+credits button per enabled set from that set's XML. Conversion/loading, credits
+UI and compatibility remain implementation work. Default builds have no optional
+sibling dependency; optional outputs/caches/notices/packages stay separate. Source
+metadata totals must not be presented as combined playable coverage.
 
 ## Revised phase estimates
 
@@ -141,7 +156,7 @@ integrated acceptance beyond slice checks, avoiding duplicate effort allowances.
 
 | Phase | Remaining days | Sizing basis / main uncertainty |
 | --- | ---: | --- |
-| P0-08/09 closure | 5–10 | Canonical optional graph/notices/collision review and remaining authority/scope integration; P0-07 reporting is complete. |
+| P0 closure (original P0-07 allowance) | 5–10 | P0-08 source/specification review is now complete; P0-09 authority/scope integration remains. This dated allowance is retained pending re-sizing, not a fresh remaining-P0 estimate. |
 | P1 spatial/time/contracts | 10–20 | Eight directions, terrain/clock/timer/random boundaries and coordinated contract/version/Save 1 dispatch. |
 | P2 content/rendering | 25–45 | 483 content records / 238 media, factory/recipe conversion, native effects, traversal/picking, full runtime gallery and reproducible build-input migration. |
 | P3 terrain/world creation | 10–20 | Two providers, terrain/corners/Mountain2, heightmaps, water/underground legality and save/reopen UI. |
@@ -158,17 +173,18 @@ The additive **bundled remaining-work envelope is 210–390 engineering days**,
 including residual P0. It excludes optional-pack implementation/compatibility
 beyond P0 inventory, and device/access waits. For planning only, reserve a further
 **15–40 days** for optional conversion/package/startup/diagnostic/compatibility
-work if P0-08 shows its types fit the reviewed adapters; this is **not a complete
-pack quote**. Binary-only behavior, new code families, unresolved permissions or
-large recipe differences require re-sizing. No reliable combined total or calendar
-completion date is available before that reconciliation.
+work; this remains the dated P0-07 conditional allowance, **not a complete pack
+quote**. P0-08 now identifies a map-capture adapter gap, missing/case-only image
+references, large recipe/translation scope and pending per-file conversion terms.
+Re-size during the first P2 optional conversion slice before committing effort.
+No reliable combined total or calendar completion date is available.
 
 Native Chromium/device/IME/assistive checks may take roughly **1–3 active days**
 with devices and reviewers available, plus uncapped fixes/waiting; this is a separate
 pre-implementation handoff allowance. Other-engine execution remains owner-deferred.
-First close P0-08/P0-09 and the UX handoff, then P1/P2 → P3 → P4 → P5/P6;
+First close P0-09 and the UX handoff, then P1/P2 → P3 → P4 → P5/P6;
 P7/P8 depend on P1 scheduling/random/accounting and integrate with railway flows.
-Subsystem UI/save work ships with each feature. Re-estimate after P0-08, the first
+Subsystem UI/save work ships with each feature. Re-estimate with P0-08 findings during initial P2 conversion, the first
 complete terrain/rail/train/passenger slice, and the first economy/development slice,
 using actual effort, instantiated recipe gaps and legal-city capacity measurements.
 
@@ -215,7 +231,8 @@ All **93 Python tests** pass. These checks reproduce source accounting/reviews,
 gallery metadata and selected independent scenario arithmetic/geometry; they do
 not execute ExAV assemblies or the modern game. P0-07 publishes the required
 coverage/differences/translation/estimate report with optional uncertainty and
-native gates intact. Next: **P0-08 canonical optional reconciliation and P0-09
-cross-document/source/scope closure**, then the existing UX handoff before affected
+native gates intact. P0-08 has subsequently closed at source/specification
+level with its own checker and tests; see its reproduction instructions.
+Next: **P0-09 cross-document/source/scope closure**, then the existing UX handoff before affected
 P1/P2 gameplay work. No generated discovery status, source pin, asset, runtime
 version or service limit changes in this reporting batch.

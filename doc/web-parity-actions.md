@@ -180,7 +180,8 @@ are feature work, not abandoned reviews. Every implementing slice must:
 These requirements are also machine-readable in `sliceCompletionRequirements`.
 P0-04/P0-05 source specifications and P0-06 scenarios subsequently completed;
 [P0-07 reporting and provisional sizing](web-parity-report.md) completed on
-21 October. P0-08/P0-09 and the overall P0 gate stay open, as do native/device
+21 October. P0-08 [optional source/specification](web-parity-optional-plugins.md)
+is also complete; P0-09 and the overall P0 gate stay open, as do native/device
 and runtime gates.
 No grand per-control specification or full translation pass is required before
 starting feature implementation.

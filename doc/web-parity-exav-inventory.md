@@ -19,7 +19,8 @@ P0-02 [content source reconciliation](web-parity-content.md) subsequently comple
 P0-04 source specification and expanded visual review subsequently completed.
 P0-06 [source-scenario specification](web-parity-scenarios.md) completed on 21 October 2026.
 P0-07 [coverage/difference/translation reporting and provisional sizing](web-parity-report.md)
-completed on 21 October 2026. P0-08/P0-09, the overall P0 gate, implementation and runtime
+completed on 21 October 2026. P0-08 [canonical optional source review](web-parity-optional-plugins.md)
+also completed at inventory/specification level. P0-09, the overall P0 gate, implementation and runtime
 acceptance remain open.
 
 The ledger reads pinned Git objects from an explicitly supplied archive repository.
@@ -125,10 +126,12 @@ including narrow, checked reuse of TAT image evidence. The
 [persistence](web-parity-persistence.md) reviews now have separate ExAV reconciliation;
 P0-05 inventories all 195 candidates and reviews both supplied older save profiles.
 Manual/wiki workflows remain evidence to reconcile against these source inputs.
-The canonical non-LGPL optional V2 set is outside this ledger and remains P0-08;
-no optional repository is discovered or read. EXAV-ENC-001 changes only stable
-`trunk/plugins/**/plugin.xml` and its fallback reader; historical archive branches
-and optional plugin repositories retain their original encodings.
+The canonical non-LGPL optional V2 set is outside this ledger; its separate
+[P0-08 review](web-parity-optional-plugins.md) requires explicit optional/archive
+roots. This bundled command discovers or reads no optional repository.
+EXAV-ENC-001 changes only stable `trunk/plugins/**/plugin.xml` and its fallback
+reader. Optional source at `c8ec62e` retains its original encoding; its separate
+UTF-8/casing normalization at `55ac13e` is reviewed without repinning this ledger.
 
 ## Reproduction and checks
 
@@ -174,5 +177,5 @@ specification/runtime acceptance handed to the named slices. The subsequent
 distinct reviewed files overall, 332 raw records, 1,176 expanded composition
 records and 28 inspected contacts. Explicit invalid-crop diagnostics retain
 EXAV-GAL-001 and its P2/P6 decision boundary. P0-04 is closed at source level;
-P0-08/P0-09, overall P0 and runtime/save-continuation gates remain open. Discovery hashes and lexical project membership
+P0-09, overall P0 and runtime/save-continuation gates remain open; optional source/specification closure is recorded separately in P0-08. Discovery hashes and lexical project membership
 are inputs to that review; they do not certify runtime graphics/native behavior.

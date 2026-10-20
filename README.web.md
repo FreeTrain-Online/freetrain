@@ -22,12 +22,17 @@ prototype provenance; they are not yet complete ExAV implementations. P0-01 ExAV
 discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
-P0-08/P0-09 and runtime/native acceptance remain open. See
+[P0-08 optional V2 source review and launch/credits specification](doc/web-parity-optional-plugins.md)
+is complete. P0-09 and runtime/native acceptance remain open. See
 [the source inventory](doc/web-parity-exav-inventory.md) and
 [maintained source policy](doc/web-feature-parity.md).
 
 Keep LGPL bundled content separate from the non-LGPL V2 additional set, canonical
-[https://github.com/rdmark/freetrain-online-plugins-nonfree].
+[https://github.com/rdmark/freetrain-online-plugins-nonfree]. Planned startup support
+uses explicit plugin-set directory arguments and adds a localized credits button
+for each enabled set, with credits supplied by XML in that separate repository.
+This loading/credits interface remains to be implemented; see the
+[reserved contract and source diagnostics](doc/web-parity-optional-plugins.md#owner-directed-launch-and-credits-contract).
 
 ## Prerequisites and checks
 

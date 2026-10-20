@@ -4,7 +4,8 @@
 
 | Location | Status |
 | --- | --- |
-| [P0-07 coverage/differences/estimates](../web-parity-report.md) | Current ExAV report: reviewed denominators, justified reuse, translation/optional gaps, provisional phase effort and open UX/native gates; P0-08/P0-09 and overall P0 stay open |
+| [P0-07 coverage/differences/estimates](../web-parity-report.md) | Current ExAV report: reviewed denominators, justified reuse, translation/optional gaps, provisional phase effort and open UX/native gates; P0-08 is now source-specified separately; P0-09 and overall P0 stay open |
+| [exav-optional-rules.json](exav-optional-rules.json), [exav-optional-review.json](exav-optional-review.json), [specification](../web-parity-optional-plugins.md) | P0-08 canonical non-free V2 source inventory/specification complete: 452 source manifests, 450 selected; separate pins/hashes, source gaps and directory-loading/localized credits contract; implementation pending |
 | [exav-baseline.json](exav-baseline.json) | Current pinned archive source selection and approved source corrections |
 | [exav-ledger.json](exav-ledger.json) | Current ExAV discovery ledger; behavior reviews and implementation remain open |
 | [exav-content-rules.json](exav-content-rules.json) | Maintained P0-02 ExAV recipe/effect/state rules, differences and translation policy |

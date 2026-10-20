@@ -13,8 +13,9 @@ original bytes even where its working tree has approved corrections.
 This closes scenario design and source reassessment. **Fixture implementation,
 legal instantiated city validation, simulation/browser execution, original-runtime
 comparison, measured capacity and native/device acceptance remain open.** P0-07
-[coverage/estimates reporting](web-parity-report.md) is now complete; P0-08, P0-09
-and overall P0 remain open. No game, protocol, content, save version,
+[coverage/estimates reporting](web-parity-report.md) and P0-08
+[optional source/specification](web-parity-optional-plugins.md) are now complete;
+P0-09 and overall P0 remain open. No game, protocol, content, save version,
 service limit or distribution input changes in this batch.
 
 ## Independent expectations
@@ -117,7 +118,9 @@ season/night/alpha keys; give factories/support wrappers/audio explicit outcomes
 Paginate isolated scenes using actual footprints. Preserve invalid-crop diagnostics
 and inspect native-size composition, picking and occlusion. Measure full-catalog
 cold decode separately from active-city rendering. Optional pack identities,
-outputs, notices and fixture results remain separate pending P0-08.
+outputs, notices and fixture results remain separate under the
+[P0-08 selected profile and acceptance contract](web-parity-optional-plugins.md).
+Optional runtime gallery, legality and save-continuation fixtures remain P2/P10/P11 work.
 
 ## English/Japanese workflows and measurement
 
@@ -179,8 +182,9 @@ Validation on 21 October: the scenario checker and **93 Python tests** pass;
 P1–P10 implement and execute these fixture designs with their feature slices;
 P11 reconciles every scenario, expanded matrix, difference and locale workflow to
 evidence. The completed [P0-07 report](web-parity-report.md) publishes
-coverage/estimates using this distinction; P0-08 owns
-optional-pack fixture binding; P0-09 reconciles the remaining authority/scope and
+coverage/estimates using this distinction; P0-08 now specifies optional source
+identities/profile and acceptance, with runtime fixture binding in P2/P10/P11.
+P0-09 reconciles the remaining authority/scope and
 cross-document decisions. The discovery ledger retains its inventoried statuses.
 [Historical scenarios](parity/historical/scenarios.json) and
 [prototype traces](../prototype/scenarios/README.md) keep their original provenance;

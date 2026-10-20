@@ -398,7 +398,8 @@ reviews cover the stable source and both supplied older samples. P1 implements c
 implements catalog/pack changes; each gameplay phase adds durable subsystem state;
 P10 closes actual conversions/continuation/recovery. `MIG-*` are future acceptance
 obligations, not tests claimed to have run. P0-06 [scenario specification](web-parity-scenarios.md) is complete; fixture
-implementation/capacity measurements, P0-07/P0-08/P0-09 remain open. No gameplay, original-runtime comparison, browser/native
+implementation/capacity measurements and P0-09 remain open. P0-07 reporting and
+P0-08 [optional source/specification](web-parity-optional-plugins.md) are now complete. No gameplay, original-runtime comparison, browser/native
 acceptance or optional-suite compatibility is established here.
 
 Validation on 20 October: **93 Python tests**, fresh ExAV serializer/transition
