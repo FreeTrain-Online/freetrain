@@ -1,5 +1,14 @@
 # Original manual: player workflow oracle
 
+**ExAV P0-03 overlay — 20 October 2026:** [the current action reassessment](web-parity-actions.md#man--and-dev--reconciliation)
+records the source-reviewed changes to information/list windows, continuous tracking,
+platform roofs and consumed passage materials, speed limits, Mountain2, timetable
+copy/rule files, financial histories and registered development tuning/options.
+Read all completion/reachability statements below as historical original-FreeTrain
+evidence. ExAV candidate links now exist, but reciprocal per-action/dependency
+closure and all MAN-A* acceptance cases remain open.
+
+
 **ExAV reassessment pending — 20 October 2026:** this original manual mapping records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
 
 P0-01's [stable ExAV discovery ledger](web-parity-exav-inventory.md) now provides

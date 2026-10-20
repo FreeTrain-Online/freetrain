@@ -1,0 +1,592 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-20",
+  "status": "ExAV action reassessment; closure pending",
+  "boundaries": [
+    "Source topology and text inventory, not runtime parity or a C# semantic analysis.",
+    "Historical workflow and exact-expression matches are donor candidates only; changed dependencies and per-field effects must be reviewed before P0-03 closes.",
+    "Missing destinations are planning identities, never delivered registry IDs.",
+    "Read pinned archive Git objects; approved working-tree corrections are recorded in exav-baseline.json, not silently substituted.",
+    "Bundled LGPL source only; optional packs and experiments retain separate scope."
+  ],
+  "pathAliases": {
+    "core/views/map/TrainTrackingWindow.cs": "core/controllers/rail/TrainTrackingWindow.cs"
+  },
+  "newSourceWorkflows": {
+    "core/controllers/rail/StationInformationWindow.cs": "station-information",
+    "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.cs": "station-information",
+    "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationListPlugIn.cs": "station-information",
+    "core/controllers/rail/TrainInformationWindow.cs": "train-information",
+    "core/world/rail/SpeedLimit.cs": "speed-limits",
+    "plugins/SpeedLimit/MenuContributionImpl.cs": "speed-limits",
+    "plugins/SpeedLimit/SpeedLimitRailRoadController.cs": "speed-limits",
+    "plugins/SpeedLimit/SpeedLimitSlopeController.cs": "speed-limits",
+    "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs": "terrain-two",
+    "core/world/accounting/HistoryViewDays.cs": "account-history",
+    "core/world/accounting/HistoryViewMonths.cs": "account-history"
+  },
+  "findings": [
+    {
+      "id": "EXAV-ACTION-001",
+      "title": "Station information and station list",
+      "workflow": "station-information",
+      "destination": "missing:stations/information-and-list",
+      "phases": [
+        "P6",
+        "P9"
+      ],
+      "behavior": "Station right click and the property dialog Information button open live counters: name; loaded, unloaded and train calls today/yesterday; waiting passengers versus demand (population). Manifest dockingContent registers StationList through DockingContribution; its sorted list subscribes to world/station changes and double-click moves map views. Replace name/hashcode/index correlation with stable station IDs; preserve keyboard/touch access.",
+      "evidence": [
+        {
+          "path": "core/world/rail/Station.cs",
+          "symbol": "public override bool onRightClick()"
+        },
+        {
+          "path": "core/controllers/rail/StationPropertyDialog.cs",
+          "symbol": "InformationButton_Click"
+        },
+        {
+          "path": "core/controllers/rail/StationInformationWindow.cs",
+          "symbol": "station.WaitingPassengers, station.population"
+        },
+        {
+          "path": "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.cs",
+          "symbol": "StationListBox_DoubleClick"
+        },
+        {
+          "path": "core/contributions/dock/DockingContribution.cs",
+          "symbol": "PluginUtil.loadTypeFromManifest"
+        },
+        {
+          "path": "plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+          "symbol": "freetrain.views.StationList"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M02",
+        "MAN-W03",
+        "MAN-O07"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-002",
+      "title": "Train information and continuous tracking differ",
+      "workflow": "train-information",
+      "destination": "missing:trains/information-and-tracking",
+      "phases": [
+        "P5",
+        "P9"
+      ],
+      "behavior": "TrainInformationWindow has nested group/train selection, name/state, car count, total capacity, passenger count/percentage and Move. MapView creates a separate TrainTrackingWindow with a tracking checkbox. System dockingContent registers TrainInformationWindow; this is a proven separate entry route. Existing web find-train/inspector is partial, not continuous tracking.",
+      "evidence": [
+        {
+          "path": "core/controllers/rail/TrainInformationWindow.cs",
+          "symbol": "populateMenu"
+        },
+        {
+          "path": "core/views/map/TrainTrackingWindow.cs",
+          "symbol": "TrainTrackingOn"
+        },
+        {
+          "path": "core/views/map/MapView.cs",
+          "symbol": "new TrainTrackingWindow(this,drawer)"
+        },
+        {
+          "path": "plugins/system/plugin.xml",
+          "symbol": "freetrain.controllers.rail.TrainInformationWindow"
+        },
+        {
+          "path": "core/contributions/dock/DockingContribution.cs",
+          "symbol": "PluginUtil.loadTypeFromManifest"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M02",
+        "MAN-W10"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-003",
+      "title": "Speed-limit construction and cleanup",
+      "workflow": "speed-limits",
+      "destination": "missing:rail/speed-limits",
+      "phases": [
+        "P4",
+        "P5",
+        "P9"
+      ],
+      "behavior": "Registered menu initializes SpeedLimit and supplies level section, slope section and remove-not-on-traffic cleanup. Level tool has add/remove, two map endpoints and low/medium/high choices; slope tool adds four direction picks and its own interaction. These are railway tools, not alternative global clock speeds. Resolve exact speed values, slope placement/deletion and train movement in P0-04/06; do not infer units from translated labels.",
+      "evidence": [
+        {
+          "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+          "symbol": "removeNotTrafficVoxel"
+        },
+        {
+          "path": "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+          "symbol": "setSpeedList"
+        },
+        {
+          "path": "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+          "symbol": "setSpeedList"
+        },
+        {
+          "path": "core/world/rail/SpeedLimit.cs",
+          "symbol": "class SpeedLimit"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M03",
+        "MAN-T02",
+        "MAN-T03"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-004",
+      "title": "Second terrain tool",
+      "workflow": "terrain-two",
+      "destination": "missing:terrain/rectangle-and-repair",
+      "phases": [
+        "P3",
+        "P9"
+      ],
+      "behavior": "Mountain2 rectangular raise/excavate uses RectSelectorController; Ctrl switches to checking and repairing mismatched adjacent corners. Keep the registered second tool distinct from MountainController corner editing and terrain image import; provide an explicit accessible repair action rather than requiring a global modifier.",
+      "evidence": [
+        {
+          "path": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+          "symbol": "if(Keyboard.isControlKeyPressed)"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-T09",
+        "MAN-O06"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-005",
+      "title": "Report periods and history windows",
+      "workflow": "account-history",
+      "destination": "missing:reports/accounting/history",
+      "phases": [
+        "P8",
+        "P9"
+      ],
+      "behavior": "AccountSummaryWindow has six periods: today/yesterday, this/last month, this/last year. Context actions open daily and monthly histories; each offers sales/expenditure/balance, genre selection and fonts. Preserve 31-day/12-month columns and rollover semantics as P0-05/06 obligations. Close menu text without an event remains a source gap, not verified behavior.",
+      "evidence": [
+        {
+          "path": "core/world/accounting/AccountSummaryWindow.cs",
+          "symbol": "selectLastYear"
+        },
+        {
+          "path": "core/world/accounting/HistoryViewDays.cs",
+          "symbol": "onUpdateDays31"
+        },
+        {
+          "path": "core/world/accounting/HistoryViewMonths.cs",
+          "symbol": "onUpdateMonths12"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M02",
+        "MAN-W10",
+        "MAN-O03"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-006",
+      "title": "Timetable copy and station-rule files",
+      "workflow": "tat-files",
+      "destination": "missing:timetables/copy-and-rule-files",
+      "phases": [
+        "P5",
+        "P9",
+        "P10"
+      ],
+      "behavior": "Controller manager adds copy with BinaryFormatter cloning and a unique derived name. Station advanced rules add copy, clear-all confirmation, read/append and save of .ftdd rule collections, duplicate time-mask checking on Add, and forwarding/reverse variants. Copy/import bypassing Add and sorted UI versus rule execution order require explicit P0-06 cases. Adapt source file dialogs to validated service commands/drafts; do not run BinaryFormatter in the browser/service. Historical day-from-month edit defect remains visible.",
+      "evidence": [
+        {
+          "path": "core/controllers/rail/TrainControllerDialog.cs",
+          "symbol": "buttonCopy_Click"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+          "symbol": "buttonReadDia_Click"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+          "symbol": "radioRForwarding2"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs",
+          "symbol": "dayBox.SelectedIndex = rule.month"
+        },
+        {
+          "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+          "symbol": "diagram.ftdd"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-T08",
+        "MAN-W09",
+        "MAN-O09"
+      ],
+      "developerRequirements": [
+        "DEV-P20"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-007",
+      "title": "Platform choices, cost and consumed passage materials",
+      "workflow": "platform-choices",
+      "destination": "missing:stations/platform-choices",
+      "phases": [
+        "P4",
+        "P6"
+      ],
+      "behavior": "Platform controller replaces slim checkbox with wide, slim roofed and slim unroofed radios; station/platform previews and charges are explicit. Footbridge type selects concrete, brown wood or green wood and is consumed by passage/stair outlooks and floating previews. Historical ACTION-009 unused-selector claim is superseded for ExAV. Empty-voxel branches remain separately incomplete; material support does not close all footbridge construction.",
+      "evidence": [
+        {
+          "path": "core/controllers/rail/PlatformController.cs",
+          "symbol": "ThinPlatformNoRoof"
+        },
+        {
+          "path": "core/controllers/rail/StationPassagewayController.cs",
+          "symbol": "passagewayRailType = ThinPlatform.PassagewayRailType.pwrtWoodenGreen"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-T04",
+        "MAN-W04",
+        "MAN-W06",
+        "MAN-O16"
+      ],
+      "developerRequirements": [
+        "DEV-P16"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-008",
+      "title": "Options include game rules and local presentation",
+      "workflow": "exav-options",
+      "destination": "missing:settings/exav-options",
+      "phases": [
+        "P1",
+        "P8",
+        "P9"
+      ],
+      "behavior": "ConfigDialog adds train labels, electric-pole visibility, station/train font and color dialogs (8–16 designer limits), bankruptcy message flag and liquidity increments 10^10/10^11/10^12. Bankruptcy options affect shared gameplay and need an authority policy; font/color/visibility adapt to local browser presentation. Native allocation remains a portable disposition. Do not put authoritative economy settings into local preferences.",
+      "evidence": [
+        {
+          "path": "core/framework/ConfigDialog.cs",
+          "symbol": "opts.liquidPlusAtBunkrupt"
+        },
+        {
+          "path": "core/framework/ConfigDialog.cs",
+          "symbol": "opts.drawElectlicPoles"
+        },
+        {
+          "path": "core/framework/ConfigDialog.cs",
+          "symbol": "fontDialogStation.MinSize = 8"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M06"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-009",
+      "title": "Direct buildings lack historical main-menu route",
+      "workflow": "direct-buildings",
+      "destination": "disposition:source-only/direct-building-entry",
+      "phases": [
+        "P7",
+        "P9"
+      ],
+      "behavior": "MainWindow commercial and variable-height commands are commented out; generic picker enumerates GenericStructureContribution, not the 66 commercial/55 variable-height declarations. Retain development-driven use and content accounting. Direct placement UI needs an explicit planned adaptation; do not transfer historical reachable builder status or interpret absent menu as excluded content. Variable-height direct builder/remover stubs remain open.",
+      "evidence": [
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbol": "CommercialStructPlacementController.create"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.lib.generic/MultiSelectorController.cs",
+          "symbol": "typeof(GenericStructureContribution)"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-T10",
+        "MAN-M05"
+      ],
+      "developerRequirements": [
+        "DEV-P04",
+        "DEV-P22",
+        "DEV-P35"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-010",
+      "title": "Road extension source defect changed",
+      "workflow": "road-extension-review",
+      "destination": "disposition:empty-extension/road-accessories",
+      "phases": [
+        "P7",
+        "P9"
+      ],
+      "behavior": "ExAV RoadAccessory ControllerForm declares PreviewDrawer drawer in its using statement: historical ACTION-006 undeclared-drawer claim does not apply. No RoadAccessory or DummyCar instance contribution types appear in bundled declarations. Registered menu/factory shells do not establish working bus simulation; selection/null behavior and obsolete DummyCarController still require per-source review.",
+      "evidence": [
+        {
+          "path": "plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/ControllerForm.cs",
+          "symbol": "using( PreviewDrawer drawer = builder.createPreview(preview.Size) )"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.lib/src/DummyCars/ControllerForm.cs",
+          "symbol": "DummyCarContribution"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M04",
+        "MAN-O04"
+      ],
+      "developerRequirements": [
+        "DEV-D06",
+        "DEV-P39",
+        "DEV-P40"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-011",
+      "title": "Generic category navigation is Japanese",
+      "workflow": "generic-navigation",
+      "destination": "missing:catalog/generic-construction",
+      "phases": [
+        "P7",
+        "P9"
+      ],
+      "behavior": "CategoryTreeWnd searches the Japanese menu label, so historical ACTION-005 exact English-label defect is no longer the right finding. Exact-label and index navigation remain brittle. Category changes invoke OnNodeSelected only when subscribed. Preserve stable category/design/color/direction/height identity and transaction cost; translate presentation without changing lookup identities.",
+      "evidence": [
+        {
+          "path": "plugins/jp.co.tripod.chiname.lib.generic/CategoryTreeWnd.cs",
+          "symbol": "OnNodeSelected!=null"
+        },
+        {
+          "path": "plugins/jp.co.tripod.chiname.lib.generic/MenuContributionImpl.cs",
+          "symbol": "mergeMenu"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-T10"
+      ],
+      "developerRequirements": [
+        "DEV-P35"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-012",
+      "title": "Save dialog and source loader diverge",
+      "workflow": "exav-save-ui",
+      "destination": "missing:saves/exav-import",
+      "phases": [
+        "P10"
+      ],
+      "behavior": "ExAV save dialog warns for .ftgd while using updated file filters. BZ detection remains but the BZip2InputStream wrapping line is removed. UI/file extension recognition is not proof of historical import support; assign serializer/default/continuation and compression diagnosis to P0-05.",
+      "evidence": [
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbol": "int b2 = stream.ReadByte()"
+        },
+        {
+          "path": "core/framework/MainWindow.cs",
+          "symbol": "FileInfo(sd.FileName).Extension"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M01",
+        "MAN-O10"
+      ],
+      "developerRequirements": [],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-013",
+      "title": "Temporary external music stays excluded",
+      "workflow": "external-music",
+      "destination": "disposition:excluded/external-music",
+      "phases": [
+        "P9"
+      ],
+      "behavior": "BGMManager and BGMContributionFactoryImpl permit user-file selection and fileName state. Preserve source evidence, but owner excludes A4/external user-file equivalents; bundled BGM, silence, sound effects and departure bells remain in scope. Neither temporary contributions nor saved fileName authorizes redistributing music or enabling the optional pack.",
+      "evidence": [
+        {
+          "path": "core/framework/BGMManager.cs",
+          "symbol": "OpenFileDialog"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M06"
+      ],
+      "developerRequirements": [
+        "DEV-P02",
+        "DEV-P03",
+        "DEV-P21"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    },
+    {
+      "id": "EXAV-ACTION-014",
+      "title": "Development tuning is registered in ExAV",
+      "workflow": "development-tuning",
+      "destination": "missing:settings/development-parameters",
+      "phases": [
+        "P7",
+        "P9",
+        "P10"
+      ],
+      "behavior": "System manifest {develop-config} registers DevelopConfigurePlugin, which merges a menu and opens DevelopConfigure. Historical ACTION-007 source-only disposition is superseded. Apply parses building-price, replacement, diffusion, station-range and land-value parameters; Save writes Core.options.devParams, Load repopulates controls, Cancel closes. Source stores preferences separately from world state and does not automatically reload them on restart. Define server-authoritative parameter edits and continuation/validation policy; local browser settings cannot change shared development rules. Apply assigns fields sequentially inside try/finally and disposes even on parse failure; browser validation/commit must prevent partial authoritative updates.",
+      "evidence": [
+        {
+          "path": "plugins/system/plugin.xml",
+          "symbol": "{develop-config}"
+        },
+        {
+          "path": "core/world/development/DevelopConfigurePlugin.cs",
+          "symbol": "DevelopConfigure form = new DevelopConfigure()"
+        },
+        {
+          "path": "core/world/development/DevelopConfigure.cs",
+          "symbol": "Core.options.devParams"
+        }
+      ],
+      "manualRequirements": [
+        "MAN-M02",
+        "MAN-M06"
+      ],
+      "developerRequirements": [
+        "DEV-P35",
+        "DEV-D06"
+      ],
+      "status": "source-reviewed; implementation and acceptance pending"
+    }
+  ],
+  "glossary": [
+    {
+      "japanese": "駅情報",
+      "proposedEnglish": "Station information",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "駅一覧",
+      "proposedEnglish": "Stations",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "速度制限",
+      "proposedEnglish": "Speed limit",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "低速",
+      "proposedEnglish": "Low",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "中速",
+      "proposedEnglish": "Medium",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "高速",
+      "proposedEnglish": "High",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "乗車待ち客数（実数/需要値)",
+      "proposedEnglish": "Waiting passengers (actual / demand)",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "定員",
+      "proposedEnglish": "Total passenger capacity",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "座席定員",
+      "proposedEnglish": "Seated passenger capacity",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "回送",
+      "proposedEnglish": "Out of service",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "地形操作２",
+      "proposedEnglish": "Terrain editing 2",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "月間売上履歴",
+      "proposedEnglish": "Daily financial history",
+      "status": "proposed; wording review with implementing feature"
+    },
+    {
+      "japanese": "年間売上履歴",
+      "proposedEnglish": "Monthly financial history",
+      "status": "proposed; wording review with implementing feature"
+    }
+  ],
+  "remainingClosure": [
+    "Review each candidate binding/control effect and its dependency/registration closure against ExAV; matching expressions or file hashes do not approve inherited behavior.",
+    "Resolve direct commercial/variable-height UI adaptation; review manifest-derived menu and docking routes per field, preserving source-only classifications only where no consumer is proven.",
+    "Complete all MAN-* reciprocal action-level links and DEV-A01 / DEV-D01–06 source reconciliation, including new numeric/gameplay dependencies assigned to P0-04–06.",
+    "Classify conservative C#/resx/HTML text candidates, review source-to-English donor meaning and resource indirection; preserve non-presentation exclusions explicitly.",
+    "Review native/empty-extension/source-only options per control and add feature fixtures; runtime/native/locale acceptance is later phase work."
+  ],
+  "workflowReferences": [
+    {
+      "repository": "freetrain-modern",
+      "revision": "82bf78c3e1902805626b4444e6e8b8d160a89a5b",
+      "branchAtReview": "main",
+      "path": "src/FreeTrain.Modern/MainWindow.Layout.cs",
+      "sha256": "fe874d76b96b50c4ac2b46b69d692b4d35cacda6adcd1731d2af1fb049cd7028",
+      "symbol": "BuildMapToolbar",
+      "disposition": "Toolbar modes, rail-type/height controls, searchable catalog and option groups inform browser workflow design.",
+      "status": "source inspected; no desktop execution or parity credit"
+    },
+    {
+      "repository": "freetrain-modern",
+      "revision": "82bf78c3e1902805626b4444e6e8b8d160a89a5b",
+      "branchAtReview": "main",
+      "path": "src/FreeTrain.Modern/MainWindow.Catalog.cs",
+      "sha256": "b82f0cf84c23e60c75d1b8a68feab3bbec4718880a99cde27fa2a335b69d08c8",
+      "symbol": "UpdateBuildCatalog",
+      "disposition": "Catalog grouping/selection reference; verify ExAV identities and metadata separately.",
+      "status": "source inspected; no desktop execution or parity credit"
+    },
+    {
+      "repository": "freetrain-modern",
+      "revision": "82bf78c3e1902805626b4444e6e8b8d160a89a5b",
+      "branchAtReview": "main",
+      "path": "src/FreeTrain.Modern.Core/PluginLocalizationCatalog.cs",
+      "sha256": "e4557d578219fd6b21b6a9d3f4259eeaedfc6bf14323577366298306819418fa",
+      "symbol": "PluginLocalizationCatalog",
+      "disposition": "English donor reference only; meaning and gameplay stay ExAV-authoritative.",
+      "status": "source inspected; no desktop execution or parity credit"
+    }
+  ]
+}

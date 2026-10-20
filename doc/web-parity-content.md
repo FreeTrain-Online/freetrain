@@ -68,8 +68,9 @@ to pinned source hashes:
   consumes these direct declarations subject to `computerCannotBuild`. The old
   MainWindow construction bindings are commented out; the generic selector lists
   `GenericStructureContribution`. Retain the direct entries in scope. **P0-03**
-  must disposition their player workflow; a surviving builder class is not proof
-  of a reachable menu. Direct variable-height builder/remover methods remain stubs.
+  now records their absent direct menu route in
+  [EXAV-ACTION-009](web-parity-actions.md). The planned direct-placement adaptation
+  remains open; a surviving builder class is not proof of a reachable menu. Direct variable-height builder/remover methods remain stubs.
 - **Native effects:** ExAV routes night, alpha, shape, color and hue work through
   `lib/DirectXWraper/{DirectDraw.cpp,AlphaBlender.cpp,DirectXWrapper.h}`. Historical
   `DirectDraw.AlphaBlend` source paths are absent. Retain upper-left color keys,
@@ -117,8 +118,9 @@ source path/hash, contribution ID or field key, original text/hash, matching
 historical English donor where found, text-comparison classification, proposed
 wording and review status. A same-ID donor is not an approved translation.
 Proposals remain explicitly unassigned until the implementing feature reviews
-meaning; source code, form/resource strings, validation, reports and help remain
-**P0-03**. The rule file begins a glossary for total/seated capacity, price,
+meaning; source code, form/resource strings, validation, reports and help now have a
+separate [P0-03 candidate inventory](web-parity-actions.md), with classification
+and donor/wording review still open. The rule file begins a glossary for total/seated capacity, price,
 footprint price and hundred-share units. Japanese text, numeric data and stable IDs
 remain unchanged. Each feature slice must supply English/Japanese wording and
 layout evidence; P0-06 supplies scenarios and P11 reconciles remaining translations.

@@ -1,11 +1,148 @@
-# Baseline player action reconciliation
+# ExAV player action reassessment
 
-**ExAV reassessment pending — 20 October 2026:** this P0-03 action review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+**P0-03 reassessment executed — 20 October 2026; closure remains open.** Current
+source is stable ExAV **2.1.1.12**, archive commit
+`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, subtree `trunk/`.
+The source-reviewed differences below replace the corresponding historical
+conclusions. The remaining original-FreeTrain workflows are donor candidates,
+not approved ExAV behavior. No application behavior changed in this batch.
 
-P0-01 now supplies [stable ExAV source discovery](web-parity-exav-inventory.md):
-298 lexical bindings and 1,108 additional surfaces, including reference/excluded
-code. The historical workflow decisions below are not applied to those records;
-ExAV reachability, configuration, translations and modern destinations remain P0-03.
+[Maintained findings](parity/exav-action-rules.json) and the separate
+[generated review](parity/exav-action-review.json) preserve source hashes,
+registry evidence, candidate destinations, contribution bindings and text.
+The [discovery ledger](parity/exav-ledger.json) remains discovery evidence;
+this review does not rewrite it or promote its implementation statuses.
+
+## Accounting and review status
+
+| Evidence | Count / meaning |
+| --- | --- |
+| UI source files | 166; 158 require player-action field/dependency closure; 8 have explicit excluded, experiment or authoring scope |
+| Event/command bindings | All 298 accounted for, retaining namespaced discovery IDs |
+| Additional surfaces | All 1,108 accounted for, including controls, delegates, shortcuts, custom input and dialog results |
+| Contributions | All 482 direct declarations plus one generated child; current P0-02 type/project/source bindings joined, historical routes retained only as donors |
+| Reviewed ExAV differences | 14 findings, `EXAV-ACTION-001`–`014`, with pinned source tokens/hashes and phase/destination obligations |
+| C#/resx/HTML text candidates | 3,671; 997 contain Japanese; 2,543 have an ASCII English donor candidate |
+| Unclassified C# literals | 2,345 of the 3,671; include IDs, paths, formats and non-presentation values, not 2,345 missing translations |
+| XML presentation inventory | Separate P0-02 inventory: 977 entries / 641 English donor candidates; do not add these counts as unique strings |
+
+Counts are lexical records, not distinct player capabilities or approved
+translations. Every action has a source-file candidate workflow or explicit
+scope disposition. Exact historical surface-expression matches retain the old
+per-control effect as a **donor**, with field/dependency review still pending.
+Contribution identity matching similarly does not prove a consumer. No default
+mapping is called implemented, verified or semantically unchanged.
+
+## Findings that change the action specification
+
+All paths in this table are relative to pinned ExAV `trunk/`. Machine-readable
+findings supply exact tokens, hashes and destinations. `missing:` and
+`disposition:` are planning labels, not web operation IDs.
+
+| Finding | ExAV evidence and browser obligation |
+| --- | --- |
+| 001 — Station information/list | `Station.onRightClick` and StationPropertyDialog's Information button open live name, boarding/alighting/train-call counters today/yesterday, and actual waiting passengers versus demand. The station-list manifest registers **dockingContent**, consumed by DockingContribution; it is not registered through the spare StationListPlugIn class. Its sorted list updates on world/station changes and double-click moves maps. Use stable station IDs and accessible list actions in P6/P9. |
+| 002 — Train information/tracking | `system/plugin.xml` registers TrainInformationWindow through dockingContent. It offers nested train/group selection, name/state, car count, capacity, passenger percentage and Move. `MapView` separately creates `views/map/TrainTrackingWindow`, with continuous-tracking checkbox. Existing inspector/find-train covers only part of these P5/P9 workflows. The old core project path gap does not erase the current manifest route. |
+| 003 — Speed limits | SpeedLimit's menu initializes the subsystem and supplies level section, slope section and orphan cleanup. Add/remove, endpoints, low/medium/high choices and slope directions need P4/P5/P9 workflows. Exact values/movement and slope boundary cases remain P0-04/06; these choices are distinct from simulation-clock speed. |
+| 004 — Terrain editing 2 | Registered Mountain2 specialStructure supplies rectangular raise/excavate and Ctrl repair of mismatched corners. Preserve it separately from ordinary corner editing and heightmap import. Provide an explicit accessible repair action in P3/P9. |
+| 005 — Report history | AccountSummaryWindow has today/yesterday, this/last month and this/last year. Context actions open 31-day and 12-month histories, with sales/expenditure/balance, genre selection and font choice. P8/P9 must expose these; P0-05/06 owns rollover/state fixtures. A Close label without a handler is still a gap. |
+| 006 — Timetable copy/files | Manager adds controller copying; advanced station rules add copy, confirmed clear-all, `.ftdd` read/append/save, duplicate time-mask checking on Add and forwarding/reverse variants. Copy/import bypasses and sorted display versus execution order need fixtures. Adapt BinaryFormatter clone/file routes to validated authoritative commands and drafts. The day-from-month edit defect still requires disposition. |
+| 007 — Platform/passage choices | Wide, slim roofed and slim unroofed radios replace the old slim checkbox; station/platform costs and charges are explicit. Concrete/brown-wood/green-wood passage selection **is consumed** in previews/outlooks: historical ACTION-009's unused-selector claim is superseded. Empty-voxel construction gaps remain separate. P4/P6. |
+| 008 — Options | Train labels, poles, station/train font/color, bankruptcy notification and liquidity increments 10^10/10^11/10^12 join existing options. Fonts/visibility adapt to local presentation; bankruptcy changes require shared authority. Native allocation remains a portable disposition. P1/P8/P9; no local preference may change shared economy rules. |
+| 009 — Direct buildings | MainWindow's commercial/variable-height entry commands are commented out; generic picker enumerates GenericStructureContribution. The 66 commercial/55 variable-height declarations remain required content with development consumers. Direct placement needs an explicit adaptation; surviving classes are insufficient reachability evidence. Variable-height builder/remover stubs remain. P7/P9. |
+| 010 — Road extension defect | ExAV's RoadAccessory preview correctly declares `drawer`; historical ACTION-006's undeclared-variable claim does not transfer. No bundled RoadAccessory/DummyCar instance types establish working bus simulation. Empty/null selection and obsolete controller questions remain explicit. |
+| 011 — Generic navigation | CategoryTreeWnd uses the Japanese menu label; historical ACTION-005's exact English-label claim does not transfer. Label/index lookup is still brittle, and category callbacks depend on a subscriber. Preserve stable identities while localizing presentation. P7/P9. |
+| 012 — Save UI | ExAV warns for `.ftgd` and changes filters; BZ detection survives while the BZip2InputStream wrapping line is removed. Recognized extensions do not prove import support. P0-05/P10 must reconcile formats, compression and continuation. |
+| 013 — External music | Temporary user-file BGM/fileName remains source evidence under the owner's external-music exclusion. Bundled BGM, silence, effects and departure bells remain required. No automatic optional-pack inclusion or external music redistribution. |
+| 014 — Development tuning | `system/plugin.xml` **registers `{develop-config}`** and DevelopConfigurePlugin merges its menu. Historical ACTION-007's source-only classification is superseded. Apply, Cancel, Save settings and Load settings operate development/land-value parameters; source preferences are separate from the world and require explicit reload. P7/P9/P10 must define shared authority, validation and continuation policy. Source Apply can partially mutate before parse failure; use validated atomic commands. |
+
+## MAN-* and DEV-* reconciliation
+
+The historical map's 45 MAN-T/M/W/O family links are preserved under
+`historicalManualWorkflowCandidates`, without silently approving them. Findings
+link affected families; reciprocal per-action links remain a P0-03 closure task.
+Read [Word/manual](web-parity-manual.md) and [online/manual](web-parity-online-manual.md)
+through this current overlay:
+
+- MAN-M02/MAN-W10 need the ExAV train/station information, station-list and
+  separate tracking routes; MAN-T04/MAN-W03–06/MAN-O07/O16 need current station
+  counters, roof choices and consumed passage materials. Older illustrations are partial.
+- MAN-T08/MAN-W09/MAN-O09 need controller/rule copying, `.ftdd` files and extra
+  station actions. MAN-T09/MAN-O06 needs Mountain2 as well as the ordinary corner
+  editor; MAN-T02/T03/MAN-M03 needs speed-limit tools. These are additions to the
+  workflow families, not claims that the manuals describe ExAV's new fields.
+- MAN-M06 needs ExAV bankruptcy options; the View/settings families also need
+  registered development tuning. MAN-A20's accounting/menu exercise includes all
+  six report periods and both history windows (MAN-M02/MAN-W10/MAN-O03).
+  These are pending feature cases, not executed journeys.
+- DEV-P02–22/P25–27 and DEV-A01 join the P0-02 factory/type bindings to actual
+  consumers; the current review retains all declarations, including support-only
+  factories/art and the one generated child. Dynamic consumer decisions are still
+  pending per declaration; same-ID historical routes are not closure evidence.
+- DEV-D01–03's original passenger/fare/cost findings must **not** supply ExAV
+  expected numbers: packed/seated capacity, configurable fare/amenities, calendar
+  and changed costs need P0-04–06 derivation. DEV-D04/05's rendering rules remain
+  P0-02/P0-04 evidence with their own source/dependency checks.
+- DEV-D06/P35/P39–42 proposals do not create bus/economy/consist/fare features.
+  Conversely, a documented proposal is no reason to exclude ExAV's registered
+  tuning window or source-supported fare fields. ExAV code determines the boundary.
+
+## English/Japanese text and UI reference
+
+Text entries retain source file/hash, a literal/statement occurrence key or resx
+resource key, original text/hash, source expression/line where available, donor
+revision/path/hash/text, comparison and explicit review status. C# escapes remain
+source spellings; this is not a C# evaluator. Conservative HTML text-node and resx
+string candidates include support/authoring text; binary resources are omitted.
+String concatenations, indirect resources and runtime-generated messages still
+need semantic classification. The inventory does not claim every literal is
+player-visible or every donor means the same thing.
+
+Proposed English remains null until reviewed with its feature. The maintained
+rules add provisional terminology for total versus seated capacity, actual versus
+demand, speed categories, out-of-service operation and daily/monthly financial
+history. Preserve Japanese text, IDs and data. Current web localization is hashed
+as a donor/reference; no translated gameplay code is imported.
+
+Avalonia `freetrain-modern/main` was inspected at
+`82bf78c3e1902805626b4444e6e8b8d160a89a5b`: `MainWindow.Layout.cs`'s toolbar,
+rail type/height context controls, searchable catalog and option groups;
+`MainWindow.Catalog.cs`; and `PluginLocalizationCatalog.cs`. Exact path/hash
+references are in the rules/review. These inform browser workflow and wording;
+they do not define ExAV gameplay or authorize replacing the delivered web shell.
+
+## Reproduction, validation and remaining work
+
+```sh
+python3 scripts/inventory-parity.py --source exav --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/reconcile-exav-actions.py --source-root /path/to/freetrain-exav-archive
+python3 scripts/reconcile-exav-actions.py --source-root /path/to/freetrain-exav-archive --check
+python3 -m unittest discover -s scripts/tests -v
+```
+
+Generation requires an explicit source repository and reads the configured commit,
+not HEAD or corrected working files. It checks the discovery file hashes, finding
+tokens and delivered operation IDs, and hashes current inputs/registry/localization.
+The separate output is byte reproducible. Ordinary tests do not discover siblings.
+
+Fresh validation for this batch: **73 Python tests passed**, including six new
+action-review checks. ExAV discovery, content and action `--check` commands passed,
+as did `git diff --check`. No desktop/browser/runtime acceptance was run.
+
+**P0-03 remains open** until the 158 player-source reviews have per-control effects
+and dependency/registration closure, all dynamic routes and reciprocal MAN/DEV
+links have dispositions, and conservative text candidates have presentation/donor
+classification. Wording delivery, executable scenarios, gameplay, browser and
+native/device acceptance remain with their respective feature phases. P0-04–09
+and the overall P0 gate also remain open. The explicit remaining-closure list in
+the rules/review is the next-work queue, not an automatic completion assignment.
+
+## Historical original-FreeTrain review
+
+The rest of this document preserves the 19 October original-source review.
+Its counts, reachability claims, ACTION-* differences and verification refer to
+that source only. In particular, its development-tuning, passage-selector,
+English-menu-label and undeclared-drawer findings are superseded above for ExAV.
 
 Historical P0-03 source mapping completed 19 October 2026 against original FreeTrain `1f755ca` and the
 delivered operation registry at `8e4c6d4`. This closed the original-FreeTrain action-inventory item,

@@ -1,5 +1,12 @@
 # Stable ExAV source and coverage inventory
 
+**P0-03 follow-through — 20 October 2026:** the [current action reassessment](web-parity-actions.md)
+now accounts for every discovered binding/surface and contribution, adds source/resource
+text candidates and records 14 reviewed ExAV differences. Discovery records retain
+`inventoried` status; candidate maps, field/dependency closure and runtime parity
+are distinct. Registered development tuning and information/list windows supersede
+the corresponding original-source reachability claims.
+
 P0-01 discovery was reassessed and completed on **20 October 2026** against
 **FreeTrain ExAV 2.1.1.12 / V2**, archive Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, SVN r115, **`trunk/`**.
