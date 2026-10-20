@@ -4,6 +4,17 @@
 
 **P0-01 discovery, P0-02 source reconciliation and revised P0-03 workflow/scope reconciliation completed — 20 October 2026; P0-04–P0-09 and the overall P0 gate remain open.** The separate [stable ExAV inventory](web-parity-exav-inventory.md), [source selection](parity/exav-baseline.json) and [ledger](parity/exav-ledger.json) now pin and inventory archive `trunk/`: 1,041 files, 56 manifests / 482 direct declarations, 456 C# files, 298 lexical UI bindings and 195 serialization candidates. The [ExAV content review](web-parity-content.md) now reconciles all bundled declarations/resources, source/project bindings, recipes/state and XML translation candidates. [P0-03 reconciliation](web-parity-actions.md) assigns 87 workflow families, all 483 declaration/generated-child consumers and 56 bundled dependency closures, with 15 reviewed differences. Per-control/dependency detail, granular reciprocal MAN/DEV links and translation classification are mandatory in each implementation slice; see [incremental feature completion](web-parity-actions.md#incremental-feature-completion). Neither discovery nor source reconciliation establishes implementation/runtime parity.
 
+**P0-04 ExAV reassessment progressed — 20 October 2026:** the
+[geometry/clock/train review](web-parity-geometry.md) now uses pinned stable ExAV,
+with [56 reviewed source/manifest inputs](parity/exav-geometry-rules.json),
+11 explicit ExAV deltas and separate regenerated
+[geometry](parity/exav-geometry.json)/[behavior tables](parity/exav-geometry-behavior.json).
+All pattern records and direction vectors are retained after comparison; changed
+costs, forwarding, speed-limit timing, platform and drawing behavior are specified.
+The 152 ExAV rail/car compositions are offline studies. **P0-04 remains open** for
+complete semantic dependency closure and expanded girder/platform visual review;
+P0-05–09, overall P0 and runtime gates remain open.
+
 The existing `parity/historical/baseline.json`, `base-ledger.json`, action/content reviews, geometry/scenarios and serialization/transition reports below still pin the original-FreeTrain source and earlier implementation revisions. They retain their historical provenance and have **not** been repinned. Passing their historical `--check` commands verifies historical reproducibility, not ExAV coverage. Reuse reviewed results only after checking ExAV symbols and their dependencies. See the [complete P0 reassessment](../tmp/web-feature-parity-checklist.md#p0-reassessment-and-repository-recommendation--20-october-2026) and [ExAV source assessment](../tmp/web-feature-parity-exav-delta.md).
 
 The original Windows manual, online manual and developer wiki remain historical workflow/authoring evidence. Reconcile their claims and `MAN-*` requirements with stable ExAV source and owner decisions before treating them as current behavior. The delivered browser UX/multiplayer contracts remain implementation requirements, independently of historical game-source authority. `freetrain-modern/main` remains a useful modern Avalonia reference for its full toolbar, building catalog, rail laying and other implemented UI actions.
@@ -27,7 +38,7 @@ Superseded original-FreeTrain artifacts and supplemental historical evidence now
 live under [parity/historical/](parity/historical/README.md). Their source pins,
 IDs and review status retain their original meaning. The
 [artifact index](parity/README.md) distinguishes them from current ExAV outputs.
-The historical inputs and outputs, pending semantic ExAV reassessment, are:
+The reference artifacts below retain historical provenance except where explicitly marked ExAV:
 
 | File | Meaning |
 | --- | --- |
@@ -41,7 +52,7 @@ The historical inputs and outputs, pending semantic ExAV reassessment, are:
 | [Manual workflow oracle](web-parity-manual.md) | Chapters 2–4: toolbar/menu/task-window requirements, source differences and pending acceptance cases |
 | [Online manual comparison](web-parity-online-manual.md), [snapshot inventory](parity/historical/online-manual-review.json) | All 16 saved pages, individual edit/capture dates and hashes; added details, source gaps and MAN-O01–16 / MAN-A17–22 follow-through |
 | [geometry.json](parity/historical/geometry.json) | Source-derived eight directions, 60 rail patterns, 16 support slices and traffic draw order |
-| [Geometry/clock/train specification](web-parity-geometry.md), [behavior tables](parity/historical/geometry-behavior.json) | P0-04: 45 pinned dependency reviews, level/slope poses, attachment decisions, pass/cut compositions and explicit source differences; runtime acceptance remains open |
+| [Geometry/clock/train specification](web-parity-geometry.md), [ExAV geometry](parity/exav-geometry.json), [behavior tables](parity/exav-geometry-behavior.json) | P0-04 reassessed: 56 reviewed source/manifest files, 11 ExAV deltas, retained level/slope/attachment tables and 152 regenerated rail/car compositions; full dependency and expanded visual review still open |
 | [scenarios.json](parity/historical/scenarios.json) | Initial independently calculated acceptance examples; implementation status stays explicit |
 | [Domain transition design](web-parity-domain-transition.md) | Draft spatial/time/save/pack boundaries and migration policy |
 | [Contract/content/persistence specification](web-parity-persistence.md), [transition decisions](parity/historical/domain-transition.json), [source evidence](parity/historical/domain-transition-review.json) | P0-05: eight-direction/version boundaries, explicit prototype compatibility mode/reference disposition, pack requirements and authority/draft/readiness obligations; implementation remains P1/P2/P10 |

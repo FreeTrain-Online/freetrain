@@ -9,6 +9,7 @@
 | [exav-content-rules.json](exav-content-rules.json) | Maintained P0-02 ExAV recipe/effect/state rules, differences and translation policy |
 | [exav-content-review.json](exav-content-review.json) | P0-02 source reconciliation; complete bundled accounting and XML text inventory, runtime parity unverified |
 | [exav-action-rules.json](exav-action-rules.json), [exav-action-review.json](exav-action-review.json) | P0-03 workflow/scope reconciliation complete: 15 deltas, 87 workflow families, all 483 consumer decisions and 56 bundled dependency closures; granular controls, MAN/DEV and translation classification required per slice |
+| [exav-geometry-rules.json](exav-geometry-rules.json), [exav-geometry.json](exav-geometry.json), [exav-geometry-behavior.json](exav-geometry-behavior.json) | P0-04 reassessment: 56 reviewed source/manifest files, 11 deltas, pinned comparisons and regenerated tables; complete dependency and expanded visual review remain open |
 | [exav-manifest-encoding-review.json](exav-manifest-encoding-review.json) | Separate evidence for the approved UTF-8 working-tree conversion |
 | [historical/](historical/README.md) | Superseded original-FreeTrain parity artifacts, earlier optional-suite inventory and historical manual evidence |
 

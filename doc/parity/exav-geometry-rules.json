@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "sourceId": "exav-883cf7d-trunk",
+  "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "subtree": "trunk",
+  "reviewedOn": "2026-10-20",
+  "status": "source-reassessment; P0-04 closure pending dependency and expanded visual review",
+  "sourceReviews": [
+    {
+      "path": "core/world/Direction.cs",
+      "sha256": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "review": "Direction indices, rotations, angle and vector offsets"
+    },
+    {
+      "path": "core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "review": "Location.toward/align4To/align8To, integer distance"
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "review": "World.toHV/toXYZ/fromXYZToAB/isBorderOfWorld and bounds"
+    },
+    {
+      "path": "core/world/Matrix.cs",
+      "sha256": "bc79661f2cb6544028f8a4d88c3a1a55f3c9f3ed02bdfa52f0009229f9e2d4cd",
+      "review": "Matrix half-integer transforms and return candidates"
+    },
+    {
+      "path": "core/world/Time.cs",
+      "sha256": "35895f60a90ddd3bc99b42294b6b1caa57be60a8e1aab5ca024d237d2c8fcdf7",
+      "review": "Time calendar, display, day/night and seasons"
+    },
+    {
+      "path": "core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33",
+      "review": "TimeLength durations, tomorrow and random interval"
+    },
+    {
+      "path": "core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "review": "Clock registration, cancellation and tick ordering"
+    },
+    {
+      "path": "core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "review": "PriorityQueue.Entry.CompareTo and removal"
+    },
+    {
+      "path": "core/world/CarState.cs",
+      "sha256": "c68ad252be432207df5f59b551b5dced074fc80d07ea9cd526e30f5c3787999e",
+      "review": "Inside/Outside/Unplaced and immutable placed state"
+    },
+    {
+      "path": "core/world/Car.cs",
+      "sha256": "996a334c9352048c03d53dea36c4ab5b581a86312a4db94637475c405230d03d",
+      "review": "Car.setState occupancy, invalidation and place/remove"
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "review": "Train place/timer/move/reverse/return and TrainCar.draw"
+    },
+    {
+      "path": "core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "review": "All 60 serialized IDs, 16 supports and connections"
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8",
+      "review": "RailRoad.zdiff/isWellConnected and draw passes"
+    },
+    {
+      "path": "core/world/rail/SingleRailRoad.cs",
+      "sha256": "999171a080e821cd9d6aa3a839171eb898440acb1fca18783877c79d562a5937",
+      "review": "Guide, attach/detach, route, cost and construction"
+    },
+    {
+      "path": "core/world/rail/JunctionRailRoad.cs",
+      "sha256": "43c6fef5f1c8873dbf86867cdb8f779780a84d68fd8049226282d76aaeb00fc4",
+      "review": "Controller/head/follower guide and detach"
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "review": "Eight-voxel slope, legality, support/hole and removal"
+    },
+    {
+      "path": "core/world/rail/SpecialPurposeRailRoad.cs",
+      "sha256": "2fc4805573fad2e04c9b614b1e18b24b566bad29948b08bac4d1d6b456188598",
+      "review": "Straight special rail attachment restrictions"
+    },
+    {
+      "path": "core/world/rail/BridgePierVoxel.cs",
+      "sha256": "20caa79eda8e465c7f4bbf1f70bc724226af2f7433ae72ac7b2cd09d20e8fa26",
+      "review": "Support election, teardown and cut rendering"
+    },
+    {
+      "path": "core/world/rail/BridgeRail.cs",
+      "sha256": "b61ea51e9f8ec4ebe27fc076b2e5b2bca8012035aa50ea2e0f347baaa3365a8b",
+      "review": "Bridge background/car/foreground and six indices"
+    },
+    {
+      "path": "core/world/rail/TunnelRail.cs",
+      "sha256": "df1eb9b225a260f95dfa32bc24ada420c33f0e25d29bc28ddc1a9ab4d13afbd7",
+      "review": "Tunnel terrain restoration and draw/invalidation"
+    },
+    {
+      "path": "core/world/rail/SimpleTrainControllerImpl.cs",
+      "sha256": "436ef3578c8f972175572970701d388f2e17fa8b1e14f78180e1bc9961aaafbc",
+      "review": "Default straight junction, 30-minute dwell"
+    },
+    {
+      "path": "core/world/rail/YardRailRoad.cs",
+      "sha256": "7db261e01be0c6c0dd0e7bbb95ed970161378f28c0963482e718e8eb8c15a798",
+      "review": "Platform-relative stop position and passenger/bell callback ordering"
+    },
+    {
+      "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+      "sha256": "8f092209729a8b885660a9610e18f05e1654bf6cb537dbfa5d17727d31db0e9f",
+      "review": "Controller ancestor lookup and default fallback"
+    },
+    {
+      "path": "core/world/rail/StealSupportedRailContributionImpl.cs",
+      "sha256": "7618db89c16fb455fa6da0f2b57db922d6e34a6a71ad4d5030045efc53a35aab",
+      "review": "Raised eight-way girder and four sprite indices"
+    },
+    {
+      "path": "core/world/rail/PassagewayRail.cs",
+      "sha256": "355e7cf0ae5c98f6788f9dd48966c8e97110c337b4c995ca3d75c6a57644be69",
+      "review": "Floating passageway after-car pass"
+    },
+    {
+      "path": "core/world/rail/FatPlatform.cs",
+      "sha256": "a5e8943923a567f9a69bd80c11aa356e01955a7e115b5b5de6c04ab1cc578b74",
+      "review": "Yard chip then inherited rail before-car pass"
+    },
+    {
+      "path": "core/world/rail/ThinPlatform.cs",
+      "sha256": "e21e713eb3e5697c2722fdbef3c1daf048a023398992bdd741aef4cc1b54f412",
+      "review": "Platform rail presentation and yard ownership"
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "review": "TrafficVoxel occupancy, crossings and six draw passes"
+    },
+    {
+      "path": "core/world/Voxel.cs",
+      "sha256": "ae234706b9f1afe305afdb7ca498c0bfab062001d80626fc9d0d2ad843f912cd",
+      "review": "Fence wrappers, transparency and HoleVoxel contract"
+    },
+    {
+      "path": "core/views/QuarterViewDrawer.cs",
+      "sha256": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb",
+      "review": "Traversal, projection, picking, water/cuts/overlays"
+    },
+    {
+      "path": "core/views/GlobalViewOptions.cs",
+      "sha256": "c9604d943e07c8bc7ea825a4d1bf727f90f44eba6b8b0ffbdd00572a4c79ca99",
+      "review": "Clock/forced day/night selection"
+    },
+    {
+      "path": "core/framework/MainWindow.cs",
+      "sha256": "9e65046d7c1c8407662b810b99b255074f18ac2246b6f8f7166cea650e0004b2",
+      "review": "timerHandler double ticks and four speed settings"
+    },
+    {
+      "path": "core/framework/graphics/SimpleSprite.cs",
+      "sha256": "5c39ae5d8e2bcaf58bfb1fdc48e1faec93cfe76fa01a71d0b90fcd099aba3f61",
+      "review": "Crop origin, draw anchor and transparency"
+    },
+    {
+      "path": "core/contributions/train/TrainCarContribution.cs",
+      "sha256": "9d4a88767aaa92ace6f9a3fc2dabfbb414704fd5268a7bfb6a6149054b2afa86",
+      "review": "16-angle level / cardinal-slope API"
+    },
+    {
+      "path": "core/contributions/train/SymTrainCarImpl.cs",
+      "sha256": "54dbee917f03abcc7015954b590fc92df079e6f626ce988750b041c970a5c737",
+      "review": "Symmetric level and slope frame lookup"
+    },
+    {
+      "path": "core/contributions/train/AsymTrainCarImpl.cs",
+      "sha256": "1e282ebfc0efdcd4607453a6da4f696022dde07649cd77e5649d7f0e7c324aa5",
+      "review": "Asymmetric level and slope frame lookup"
+    },
+    {
+      "path": "core/contributions/train/ReverseTrainCarImpl.cs",
+      "sha256": "7a416b4c432b1f9a0d3dcb91134103b5adbeba8c3fb4b1b7531f260f7adfe55e",
+      "review": "Tail frame transformation"
+    },
+    {
+      "path": "core/contributions/train/TrainContribution.cs",
+      "sha256": "b84521f1aa69697934f66f80bdb5a2ca58119b116470caf8c2f10e60ffeb6a86",
+      "review": "Speed contract and preview differences"
+    },
+    {
+      "path": "core/controllers/rail/RailRoadController.cs",
+      "sha256": "a9ab580258e61acbe1b543a38a31c6e01c0b510d393c6f55441e8b0527e75a64",
+      "review": "Same-level selection and read-only route preview"
+    },
+    {
+      "path": "core/controllers/rail/SlopeRailRoadController.cs",
+      "sha256": "caff18e43415c6304033c80e0730f7f42e50d29deaa7decb1d4deba9bea04457",
+      "review": "Slope selection, removal base and preview"
+    },
+    {
+      "path": "core/controllers/AbstractLineController.cs",
+      "sha256": "6400b550e5c02b7b4acc5f49e0756ba31f019a7e8961499e52cca915980631ee",
+      "review": "Special-rail four/eight-way snapping"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+      "sha256": "630c218420cd62c480995b8394237ff91ae151c6417c5daa225968d32e60bfd1",
+      "review": "Signal side gating and actual draw-pass predicate"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+      "sha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "review": "Signal side and sprite-index predicate"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "review": "485 head/body/reverse-tail references and sprite origins"
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "review": "Special bridge/tunnel contribution registrations"
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "review": "World-bound singleton, three independent location lists, overlap precedence consumed by Train.registerTimer(Location); list overload duplicate behavior and save root."
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitManager.cs",
+      "sha256": "0f252596836507c8b426c3fe38084bad91e9c833f9af62a95c91a98c05ca3e42",
+      "review": "TrafficVoxel-only validation/cleanup; does not require a rail component."
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+      "sha256": "214a916282aa6bfca86c3d96880b465334b526040e2f2ff4669727a2d1a6a567",
+      "review": "Same-level sign-vector route, overlap rejection, selected category add and all-category removal, preview overlays."
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+      "sha256": "ef99b993f4301939cf9f176f2635e12962458888b538bfe44f46e2cfff05b874",
+      "review": "Four cardinal slope rail locations at z+[0,0,1,1]; no paired filler locations; overlap and TrafficVoxel checks."
+    },
+    {
+      "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+      "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "review": "Bundled entry points for normal and slope speed-limit controls."
+    },
+    {
+      "path": "plugins/SpeedLimit/plugin.xml",
+      "sha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "review": "Bundled speed-limit entry and three picture bindings."
+    },
+    {
+      "path": "core/world/rail/Platform.cs",
+      "sha256": "cfb81d8b8af5835ce8fecf9fda4001216edac31de3bf8c646e87fdd3aab98b57",
+      "review": "Host search expanded rectangle, z +/-1 plus full-height column scan; otherEnd uses length (not length-1); daily upkeep 180000*length."
+    },
+    {
+      "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+      "sha256": "9a80d7ab9863413b83d028193c9d2381bc9fe28456ce508e7b9562b9fb0cc806",
+      "review": "Train speed/fare/amenity/triprange and composition metadata loader."
+    },
+    {
+      "path": "core/contributions/train/PatternTrainImpl.cs",
+      "sha256": "8f5cb330f8186ccb6d8de00b1d5d964ad3ffbed8e0c09720a915cdb5fa1de010",
+      "review": "Character-to-car mapping, whitespace-skipping composition strings keyed by length, cloned arrays on create."
+    },
+    {
+      "path": "core/contributions/train/ParamTrainImpl.cs",
+      "sha256": "d8314e062e1387a6a8ee6da308f579ee1b978b779112927747c7cd416f85747a",
+      "review": "Parametric train composition."
+    },
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "review": "Thin-platform and concrete/brown/green passageway day/night picture bindings."
+    }
+  ],
+  "differences": [
+    {
+      "id": "EXAV-GEO-01",
+      "phase": "P1/P2/P4",
+      "topic": "Direction/projection/patterns",
+      "finding": "Direction indices/vectors, integer projection/picking and all 60 pattern/16 support definitions retained. Direction display names are Japanese; host drawing namespaces changed."
+    },
+    {
+      "id": "EXAV-GEO-02",
+      "phase": "P4",
+      "topic": "SingleRailRoad cost",
+      "finding": "Construction 6000000 * (height<0 ? -2*height : height+1), height=z-ground. Removal 2000000 * count * (abs(endZ-water)+1). Long quote/aggregate; individual int products still need overflow decisions."
+    },
+    {
+      "id": "EXAV-GEO-03",
+      "phase": "P4",
+      "topic": "SlopeRailRoad cost",
+      "finding": "Construction 40000000 * (height<0 ? -2*height : height+1), height=baseZ-water; removal 8000000*(abs(baseZ+1-water)+1). Eight-cell legality and slope frame/z-transition geometry retained."
+    },
+    {
+      "id": "EXAV-GEO-04",
+      "phase": "P4/P5",
+      "topic": "Bridge/tunnel/girder",
+      "finding": "New build/removal accounting and occupied TrainCar removal guards. Bridge/girder precharge entire inclusive route even when occupied cells are skipped; tunnel charges only created/removed cells and still excludes final removal endpoint. Preserve as source differences pending portable transaction decisions."
+    },
+    {
+      "id": "EXAV-GEO-05",
+      "phase": "P5/P6",
+      "topic": "Train forwarding",
+      "finding": "-999 forwards without reversal, -1000 reverses and forwards; other negative waits reverse. Yard departure rings bell but skips boarding for either sentinel. Outside counter 50 unloads but skips reload while forwarding."
+    },
+    {
+      "id": "EXAV-GEO-06",
+      "phase": "P5/P6",
+      "topic": "Train money/capacity",
+      "finding": "Movement charges on successful movements 1,5,9,...: (length*20+passenger/20)*2000. Fare r*fare*distance*2. Seated capacity falls back per car when invalid, packed capacity = seated+2*(capacity-seated). Reverse wrapper copies seated capacity. Sale returns price/(wholeYears+2) only with boughtTime."
+    },
+    {
+      "id": "EXAV-GEO-07",
+      "phase": "P5",
+      "topic": "Speed limit scheduling",
+      "finding": "First placement uses native interval. At callback completion Inside->Inside uses pre-move head location (also on blocked retry); exit and outside-return use native interval. Low always 4; medium native only if exactly 4 else 3; fast native only if exactly 3/4 else 2. This is not a generic max(native,limit). Priority low,medium,fast if malformed lists overlap."
+    },
+    {
+      "id": "EXAV-GEO-08",
+      "phase": "P4/P5/P9",
+      "topic": "Platforms",
+      "finding": "Both host ranges now 8. Thin roof optional, middle indices length/4 <= i < length-length/4; fat constructor resets only its local withRoof argument, no new roof drawing. Concrete/brown/green passageway and stair arrays; changed drawAfter overload no longer overrides ordinary two-argument RailRoad.drawAfter."
+    },
+    {
+      "id": "EXAV-GEO-09",
+      "phase": "P1/P6",
+      "topic": "Clock/calendar",
+      "finding": "Tick/queue order and minute/calendar constants retained. Clock adds shallow Clone, Time adds gameStartTime, fixed holiday/vacation predicates and Japanese weekday/display strings; TimeLength adds integer division. PriorityQueue.setValueComparer now assigns vc; callback cancellation issue remains."
+    },
+    {
+      "id": "EXAV-GEO-10",
+      "phase": "P2/P9",
+      "topic": "Drawing and preview",
+      "finding": "Car pose/frame and six traffic passes retained. SimpleSprite blits _size. Station labels use configured fonts/colors; recursive train labels render afterwards only for Inside heads, offset Y=-8. Catalog preview searches 5,6..17,4..1; it is not a movement oracle. AbstractLineController cost display calls road helpers even for special rail; must not be used as authoritative rail quote."
+    },
+    {
+      "id": "EXAV-GEO-11",
+      "phase": "P5",
+      "topic": "Signal removal",
+      "finding": "Occupied signal removal rejects any car; source pass-predicate inversion retained."
+    }
+  ],
+  "openWork": [
+    "Complete transitive dependency semantics for drawing wrappers/native color-key/night/alpha behavior, terrain/water and platform host/state consumers; P0-02 content review and ExAV ledger are the starting graph, not automatic equivalence evidence.",
+    "Expand offline gallery to changed girder artwork and three platform/passageway styles, both roofs/widths/stairs and cuts. The regenerated 152 rail/car scenes do not cover these additions.",
+    "P0-06 must derive independent movement/boarding/calendar/cost cases; P1-P5 implement and verify runtime routes, timers, train state, picking and full-world rendering. Native/runtime captures and P10 save continuation remain unverified."
+  ]
+}

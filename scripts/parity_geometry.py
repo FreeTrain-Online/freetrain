@@ -97,6 +97,11 @@ def slope_pose(climb, level, heading, reversed=False):
 def extract(tree, geometry, digest):
     if tree.revision != REVIEWED_REVISION:
         raise ValueError('Geometry semantics require a fresh review before changing the pinned revision')
+    return extract_reviewed_tables(tree, geometry, digest)
+
+
+def extract_reviewed_tables(tree, geometry, digest):
+    """Shared formulas; callers must separately validate their source review pins."""
     normals = [p for p in geometry['patterns'] if p['family'] == 'normal']
     by_edges = {tuple(sorted(p['connections'])): p['id'] for p in geometry['patterns']
                 if p['family'] in ('normal', 'junction')}

@@ -153,3 +153,14 @@ separate reviewed import/build-input migration is delivered. The offline tests
 check metadata integrity and source-selection behavior; they cannot replace
 regeneration against the archive. No runtime, visual or save-continuation
 acceptance is claimed by these source/tool checks.
+
+## P0-04 geometry reassessment handoff — 20 October 2026
+
+The [maintained geometry review](web-parity-geometry.md) now specifies stable ExAV
+and links separate `exav-geometry*` inputs/outputs. Its 56 reviewed source/manifest
+files and hashed artwork comparisons retain the eight-direction/pattern/frame
+formulas while recording changed money, speed limits, forwarding, platforms and
+labels. The 152 regenerated rail/car compositions use pinned Git objects.
+P0-04 remains open for complete semantic dependency closure and the expanded
+platform/girder visual review. Discovery hashes and lexical project membership
+are inputs to that review; they do not certify runtime graphics/native behavior.

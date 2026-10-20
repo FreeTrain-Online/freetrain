@@ -16,6 +16,14 @@ save format changes are implemented by this document. Sources are pinned by the
 [coverage inventory](web-feature-parity.md); examples are source-derived, without
 an original Windows runtime comparison.
 
+**P0-04 update — 20 October 2026:** the maintained
+[ExAV geometry/clock/train specification](web-parity-geometry.md) now supersedes
+this document's historical geometry/train rule examples, including train cost
+cadence, forwarding, speed-limit and platform behavior. Its separate generated
+ExAV tables preserve source provenance. Complete dependency/expanded visual review
+remains open; persistence and reserved profile decisions below still require
+P0-05 ExAV reassessment.
+
 ## Geometry, clock and train state
 
 `core/world/Direction.cs` numbers N, NE, E, SE, S, SW, W, NW from 0 through 7.

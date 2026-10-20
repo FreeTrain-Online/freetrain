@@ -1,11 +1,27 @@
 # P0-04 geometry, clock, train state and drawing expectations
 
-**ExAV reassessment pending — 20 October 2026:** this P0-04 geometry/clock/train review records the earlier original-FreeTrain source/documentation and its stated revision. It is historical input, not current ExAV completion or authority. [The current source policy](web-feature-parity.md) selects stable ExAV archive `trunk/` (2.1.1.12), including bundled plugins; P0 must validate retained findings and replace changed ones against that source. Existing original-source JSON, counts and fixtures retain their old provenance until regenerated. Carry English translations onto ExAV semantics as features are ported.
+**ExAV source reassessed — 20 October 2026.** Authority is archive Git
+`883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`, stable **2.1.1.12**.
+This review reads pinned Git objects, including the original manifest encodings;
+working-tree corrections do not alter the evidence. **P0-04 remains open** for
+complete dependency semantics and the expanded platform/girder visual review
+listed below. No gameplay or runtime parity is claimed.
 
-P0-01 now supplies [stable ExAV source/dependency hashes](web-parity-exav-inventory.md)
-and project membership, including the generic loader's `SOURTH` token difference.
-These are inputs to P0-04 source/dependency reconciliation; the historical numeric
-tables and galleries below have not been rederived or accepted against ExAV.
+[Reviewed inputs](parity/exav-geometry-rules.json) pin **56 source/manifest files**
+and **11 ExAV differences**. [Geometry metadata](parity/exav-geometry.json) and
+[behavior/comparison tables](parity/exav-geometry-behavior.json) regenerate eight
+directions, 60 serialized patterns, 16 support slices, 48 level poses, 64 slope
+poses and 192 attachment decisions. Source paths in tables are relative to
+`trunk/`; comparison rows preserve the full archive path and both hashes.
+Historical tables remain in `parity/historical/` with their original provenance.
+
+The complete pattern records and direction indices/vectors match the historical
+source; direction **names** are Japanese. All eight distinct bitmap inputs for
+the existing raw/composition gallery are byte-identical. Their ExAV callers were
+compared separately: retained car-frame, rail topology, projection and pass/cut
+formulas justify regenerating those studies. This does **not** transfer native
+wrapper, night/alpha, terrain or platform fidelity. Girder art changed, and brown/
+green passageway sheets are new; the existing 152 compositions do not cover them.
 
 **EXAV-DIR-001 — owner-approved correction, 20 October 2026:** `SOURTH` in
 ExAV's `GenericStructureContribution.parseDirection` is a typo. Use **`SOUTH`**
@@ -18,28 +34,21 @@ The stable ExAV checkout's `trunk/plugins/jp.co.tripod.chiname.lib.generic/Gener
 now uses `SOUTH` (working-tree correction, 20 October 2026). The archive commit
 pin remains unchanged, so its generated source evidence still records `SOURTH`.
 
-Historical status: original-FreeTrain source extraction complete against `1f755ca6f291253b8cd5024ef53402b85d467170`.
-This is a specification for P1–P5, not delivered gameplay or an original-runtime
-comparison. [Geometry metadata](parity/historical/geometry.json) pins all eight directions,
-60 serialized RailPattern IDs and 16 support slices.
-[Behavior tables](parity/historical/geometry-behavior.json) pin the reviewed dependency files,
-48 level poses, 64 slope poses, 192 attachment decisions and `GEO-*` differences.
-The source review descriptions name the symbols owning each expectation below.
-
-Generate or verify with:
+Reproduce or check the separate ExAV outputs with:
 
 ```sh
-python3 scripts/parity-rail-gallery.py --check
-python3 scripts/parity-rail-gallery.py --gallery tmp/parity-p0/rail-gallery
+python3 scripts/review-exav-geometry.py --source-root /path/to/freetrain-exav-archive --check
+python3 scripts/review-exav-geometry.py --source-root /path/to/freetrain-exav-archive --gallery tmp/parity-p0/exav-rail-gallery
 ```
 
-The generated [raw gallery](../tmp/parity-p0/rail-gallery/index.html) includes all
-patterns/supports and authored day/night sheets. The
-[composition gallery](../tmp/parity-p0/rail-gallery/compositions.html) adds 152
-isolated snapshots: level/slope train poses, each bridge/tunnel draw stage and
-surface/underground ramp consists at two cuts. These use pinned artwork and exact
-source frame/anchor formulas. They do not execute the legacy game, exercise the
-browser renderer, simulate a running train, or reproduce full terrain/water scenes.
+The [raw gallery](../tmp/parity-p0/exav-rail-gallery/index.html) includes all
+patterns/supports and authored day/night crops. The
+[composition gallery](../tmp/parity-p0/exav-rail-gallery/compositions.html) contains
+152 regenerated ExAV studies: 48 level poses, 64 slope poses, 24 bridge/tunnel
+pass stages and 16 ramp/cut snapshots. These use pinned artwork and reviewed
+frame/anchor formulas. They do not execute the game or browser renderer, simulate
+running trains or reproduce terrain/water scenes. Historical reproduction remains
+`python3 scripts/parity-rail-gallery.py --check`.
 
 ## Coordinates and direction contract
 
@@ -116,16 +125,18 @@ cell, returning null on the first zero quote. At start/end only one attachment i
 allowed; a middle cell containing a rail cannot accept both route edges at once.
 Normal construction rejects cars, nonreclaimable obstacles, invalid attachment,
 and `ground<=z<=water && ground<water`. Other empty/Traffic cells cost
-`12000*(abs(z-ground)+1)`; reclaimable obstacles add entity value. It does not
+`6000000*(height<0 ? -2*height : height+1)`, where `height=z-ground`; reclaimable obstacles add entity value. It does not
 implement a general road-conflict check (the TODO remains). A same-point route
 preview is empty at cost zero; the UI suppresses same-point build/remove. Direct
 `build(from==to)` is not safe (`GEO-003`).
 
 Construction rechecks the quote, reclaims eligible entities, attaches endpoints or
 creates normal rails, elects bridge supports and charges the rail account. Example:
-three empty, flat, dry ground-level cells cost 36,000; three cells at z=3 over
-ground 1 cost 108,000. Deletion quotes all unoccupied rail cells along the route,
-even when actual detach will do nothing, at `4000*count*max(1,endZ-water)`; removal
+three empty, flat, dry ground-level cells cost **18,000,000**; three cells at z=3 over
+ground 1 cost **54,000,000**. At two levels below dry ground the same route costs
+**72,000,000**. Quotes/aggregates are `long`, but some multiplications still
+execute as `int` before widening; P1/P4 must decide overflow behavior. Deletion quotes all unoccupied rail cells along the route,
+even when actual detach will do nothing, at `2000000*count*(abs(endZ-water)+1)`; removal
 calls subtype detach and support teardown. These are source behaviors, not a
 promise of atomic multiplayer validation. P4 must supply authoritative preview,
 commit revalidation and explicit correction/rejection with the existing UX.
@@ -141,12 +152,12 @@ apply a generic z increment on every slope voxel.
 
 Creation requires an even direction, room below the ceiling, and all eight cells
 empty, including absence of TrafficVoxels. Out-of-bounds sentinels block it. Cost
-is `400000*max(1,baseZ-water)`. Supports are selected by `climb.index+i-2` into
+is `40000000*(h<0 ? -2*h : h+1)`, where `h=baseZ-water`. Supports are selected by `climb.index+i-2` into
 the eight-entry support arrays for levels 2/3. Fillers and supports expose
 HoleVoxel.drawGround flags determined at creation. Slopes invalidate their own
 voxel and the upper/lower paired voxel. Teardown checks cars at the four rail
 positions, recognizes the second rail via zdiff=1/zangle, charges
-`80000*max(1,baseZ+1-water)`, clears each of the four rail components, removes
+`8000000*(abs(baseZ+1-water)+1)`, clears each of the four rail components, removes
 its paired filler/support cell and tears down the bridge piers below baseZ.
 The separate SlopeEntity.remove path scans its enclosing cube instead. Generic
 track deletion cannot tear down the slope. The removal UI resolves a clicked
@@ -217,20 +228,22 @@ delegate, and sets Unplaced. Do not replace car identity with array position:
 reversal changes array order while original car indices/types persist.
 
 At each movement callback an Inside head asks its current rail for stop duration:
-positive increments stopCallCount, schedules that duration and returns; negative
-reverses; zero proceeds. Then reset the stop counter. Compute new location from
+positive increments stopCallCount, schedules that duration and returns.
+For nonpositive results it clears forwarding, then `-999` enables forwarding
+without reversal; `-1000` reverses and enables forwarding; other negatives reverse;
+zero proceeds. Then reset the stop counter. Compute new location from
 guide plus heading-dependent zdiff. A border exit produces Outside counter 100
 before testing reciprocal track; otherwise the destination must have the opposite
 edge. An occupied destination yields EmergencyStopping with no movement. Missing
 track reverses and tries once from the new head; failure/blocking yields an
-emergency stop. Retry is after minutesPerVoxel. A blocked car does not trigger the
+emergency stop. Retry uses the speed-limit rule below. A blocked car does not trigger the
 missing-track reversal, and occupancy includes cars of the same train.
 
 Moving passes each car's old state to the next car from head to tail. The first
-successful movement and every sixteenth thereafter charge
-`length*20+passenger/20`, with integer division. Countdown movements count too.
-For a three-car train with 39 passengers, successful movements 1 and 17 each
-charge 61, with no charge on 2–16. Reversal derives each Inside car's new heading
+successful movement and every fourth thereafter charge
+`(length*20+passenger/20)*2000`, with integer division. Countdown movements count too.
+For a three-car train with 39 passengers, successful movements 1, 5 and 9 each
+charge **122,000**, with no charge on 2–4 or 6–8. Reversal derives each Inside car's new heading
 from **guide().opposite**, then reverses the car array and toggles isReversed.
 It is not simply opposite of the stored heading on a curve. Previous-car lookup
 uses the original index plus the reversal flag.
@@ -240,8 +253,8 @@ outside location and direction. After 100 decrements, counter zero attempts retu
 on the following callback. Failed track lookup resets to ten; occupancy is checked
 after finding the first connected candidate, so an occupied first candidate does
 not cause a search of later candidates. At resulting counter 50, unload passengers
-and load `min(100,capacity)`; fare uses the stored boarding location and truncated
-3D distance. These events occur before car-chain shifting.
+and load `min(100,capacity)` unless forwarding; fare uses the stored boarding
+location and truncated 3D distance, earning `r*type.fare*distance*2`. These events occur before car-chain shifting.
 
 Return candidates use Matrix integer/half-integer transforms, in this order:
 
@@ -260,7 +273,12 @@ return track exists its state is left unchanged.
 YardRailRoad's stop index is `(platformLength+trainLength)/2-1` in the platform
 direction, `(platformLength-trainLength)/2` in the opposite direction. Out-of-range
 index or no station means no stop. A positive first stop unloads passengers;
-departure after at least one wait loads passengers and rings the bell. Default
+departure after at least one wait loads passengers and rings the bell, except
+`-999`/`-1000` ring without boarding. A train one car longer than the platform can
+still stop in the opposite direction: C# `(4-5)/2` truncates to **0**. Along the
+platform direction the same lengths produce index 3, also accepted. At lengths
+4/6 both directions reject. Preserve these formulas rather than the source
+comment’s general “longer than platform” claim. Default
 controller: junction straight, 30-minute first station wait, then zero; nonstation
 harbors ignored. Delegating controllers search ancestors and fall back to default.
 Detailed manual/TAT timetable, station population and signal/garage semantics
@@ -306,7 +324,9 @@ in a portable renderer.
 The drawer passes `heightCutDiff=-1` at full height, otherwise `cutZ-z+1`; the top
 included voxel gets **one**, not the zero claimed by Voxel's comment. This leaves
 BridgePierVoxel's alpha-at-zero case unreachable here (`GEO-001`). Station names
-are drawn after overlay wrap-up, above their base location. Picture resets occur
+are drawn after overlay wrap-up at base Y-16 using configured fonts/colors.
+Train names then recurse through groups and draw only for Inside heads at Y-8;
+Outside/Unplaced heads have no label. Picture resets occur
 at day/night transitions, forced view changes, surface loss and explicit clock
 changes. Raw gallery night sheets are authored art; the train composition gallery
 is a day-art study and does not validate night color transformations.
@@ -320,3 +340,91 @@ all six bridge/two tunnel sprite indices, and water/terrain/cut/picking scenes.
 Use the existing roles/leases, preview/revalidate, epoch/revision identity and
 demo/live readiness contracts. Native/platform acceptance, full-world runtime
 captures and historical-save continuation remain open at their named gates.
+
+## Stable ExAV additions and remaining review
+
+`EXAV-GEO-01`–`11` in the reviewed inputs bind each delta to its phase owner.
+These supplement retained `GEO-001`–`008`; matching formulas do not approve fixes.
+
+**Speed limits (P5).** `Train.registerTimer(Location)` checks the **pre-move**
+Inside head voxel after movement or blocking. Initial placement, border exit and
+callbacks whose old head was Outside use the train's native interval. Station
+positive waits schedule their requested duration directly. This produces a
+one-cell timing boundary at limit entry/exit; it is not a destination lookup.
+
+| Native minutes/voxel | Low | Medium | Fast | No limit |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 4 | 3 | 2 | 1 |
+| 2 | 4 | 3 | 2 | 2 |
+| 3 | 4 | 3 | 3 | 3 |
+| 4 | 4 | 4 | 4 | 4 |
+| 5 | 4 | 3 | 2 | 5 |
+
+The final row is reachable through numeric speed parsing; a generic
+`max(native, limit)` changes source behavior. Overlap precedence is low → medium
+→ fast. UI add rejects any overlap and requires TrafficVoxels, which can exist
+without rail components; cleanup also tests TrafficVoxel existence. Normal tools
+select same-level routes; slope tools select four cardinal positions at
+`base+i*direction+(0,0,i/2)`, excluding paired fillers/supports. Lists persist
+under world.otherObjects key `{2B4B87D9-1856-4558-BD07-8C5D5467D109}`; P0-05 owns
+save graph/lifecycle validation. ArrayList add overloads allow duplicates whereas
+Hashtable overloads avoid same-list duplicates. Removal is not a normalization pass.
+
+**Platforms (P4/P5/P6).** Both thin and fat host ranges are **8**, with local
+z±1 search and full-height scans along the platform. `Platform.otherEnd` uses
+`length`, not `length-1`; do not silently tighten the search rectangle. Daily
+upkeep is `180000*length`. Thin platforms optionally roof the middle indices
+`length/4 <= i < length-length/4`; disabling the option roofs none. For lengths
+4 and 8 the roof indices are respectively 1–2 and 2–5. Fat platforms add no
+roof drawing through the new constructor parameter.
+
+Passage and stair outlooks select concrete, brown wood or green wood. Passage
+index is `(direction.index/2)*3 + (doubleWidth ? (bridged ? 2 : 1) : 0)`;
+floating index is 12 for X-parallel, otherwise 13. Stair index is
+`direction.index*4 | (upward ? 0 : 4) | (doubleWidth ? 2 : 0) | (hasRoof ? 1 : 0)`.
+Thin platforms draw their outlook before cars for E/S and after for N/W, then
+call outlook.drawAfter. The standalone `PassagewayRail.drawAfter` now has a third
+style parameter and **does not override** the ordinary two-argument rail draw
+method: preserve the actual dispatch gap separately from working thin outlooks.
+
+**Other changed rules.** Bridge/girder accounting charges the inclusive route
+before mutation, even if occupied TrainCar cells are then skipped. Tunnel build
+charges 12,000,000 per newly created cell; removal charges 4,000,000 per removed
+matching tunnel, skips occupied TrainCar cells and excludes the final endpoint.
+Signal removal rejects an occupied car. AbstractLineController's displayed quote
+uses road helpers; special-rail implementation must derive its own authoritative
+quote. These are source quirks requiring explicit port decisions, not instructions
+to reproduce unsafe multiplayer transactions.
+
+Seated capacity falls back to each car's capacity when outside `[0,capacity]`;
+packing capacity is seated plus twice standing capacity. Reverse-tail wrappers
+copy seated capacity. Sale reimbursement is `price(length)/(wholeYearsUsed+2)`
+when boughtTime exists. Calendar adds fixed holiday and vacation predicates;
+these are game rules, not today's Japanese holiday calendar. P0-06/P6 must derive
+boundary fixtures directly from `Time.isHoliday/isVacation`. Clock.Clone is shallow;
+PriorityQueue now correctly assigns its provided value comparer, while the queued
+callback/cancellation ordering issue remains.
+
+**P0-04 closure still requires:**
+
+- Complete semantic dependency review of native drawing wrappers, picture/night/
+  alpha handling, terrain/water and platform host/state consumers. P0-01 hashes
+  and P0-02 content bindings identify these dependencies; they do not prove them
+  equivalent. The 56 reviewed files are an explicit review set, not a claim of
+  complete transitive closure.
+- Expand the offline visual review for changed girder art and all three passage/
+  stair styles, roofs, widths and cuts. Keep the existing 152-study denominator
+  separate. No old screenshot proves these new cases.
+
+Generated tables now include native-speed 1–5, both-direction platform length
+boundaries, optional roofs and movement charge cadence. P0-06 still owns independent
+scenarios. Runtime/native/browser comparison, full terrain/water scenes and P10
+save continuation remain their later gates. Prototype protocol/save values are
+unchanged. English donors remain presentation inputs; Japanese ExAV meanings,
+IDs and numeric rules remain authoritative.
+
+Validation on 20 October 2026: **81 Python tests pass**, including four ExAV
+review/edge-case checks. ExAV generation followed by `--check`, historical gallery
+`--check` and `git diff --check` pass. The ExAV gallery regenerated 152 scenes;
+the level-pose contact sheet was inspected. No application/browser/native run or
+original-game runtime comparison was performed in this reassessment.
