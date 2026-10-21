@@ -1,34 +1,147 @@
-# Original manual: player workflow oracle
+# Manual evidence: ExAV and historical FreeTrain references
 
-**P0-09 integration — 21 October 2026:** [the maintained authority/scope reconciliation](web-parity-exav-integration.md) now links EXAV-01–16, source gaps, branch boundaries and implementation handoffs. Read historical examples below through the current ExAV specifications; feature detail, translation and runtime acceptance remain with each slice.
+**Baseline and authority — 21 October 2026:** the port targets **FreeTrain ExAV
+2.1.1.12 / V2**, archive Git `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`,
+SVN r115, **`trunk/`**. Its source and the approved decisions in the
+[authority/scope reconciliation](web-parity-exav-integration.md) determine
+behavior. The ExAV wiki in `tmp/online-manual-exav/` is the preferred available
+player-documentation reference, subject to version and source reconciliation.
+It is incomplete and covers several incompatible ExAV lines.
 
-**ExAV P0-03 overlay — 20 October 2026:** [the current action reassessment](web-parity-actions.md#man--and-dev--reconciliation)
-records the source-reviewed changes to information/list windows, continuous tracking,
-platform roofs and consumed passage materials, speed limits, Mountain2, timetable
-copy/rule files, financial histories, registered development tuning/options and
-registered group delegation (with its source defect warning).
-Read all completion/reachability statements below as historical original-FreeTrain
-evidence. ExAV workflow/consumer scope is reconciled. Granular reciprocal
-MAN/DEV links and per-control/dependency review are mandatory during each feature
-slice; all MAN-A* acceptance cases remain open.
+**All earlier findings are non-authoritative for ExAV.** The February 2003 Word
+manual, the original FreeTrain online manual in `tmp/online-manual/`, their
+screenshots, release history, source comparisons and derived `MAN-*` claims are
+historical evidence. They do not prescribe ExAV fields, defaults, prices,
+algorithms, limitations, feature membership or acceptance results. Missing ExAV
+instructions do **not** make an older description normative. Even a matching
+feature name or repeated sentence needs current source/dependency review.
 
-**Historical source boundary:** the detailed comparison below retains original-FreeTrain
-source/documentation, revisions and evidence. Stable ExAV `trunk/` supplies current
-behavior under [the source policy](web-feature-parity.md). Current workflow scope
-is reconciled above; retained field/numeric claims and wording require review
-with the relevant implementation slice and P0-04–06 foundations.
+Use the evidence in this order: pinned stable ExAV source plus approved port
+adaptations; version-qualified ExAV documentation; older FreeTrain documentation
+as a comparison or illustration candidate. Record contradictions and gaps rather
+than filling them with assumptions. Beta 2.2 passenger behavior, Prototype 3 time
+and speed settings, optional packs and V1 compatibility remain separate from
+stable bundled scope. Existing browser UX and multiplayer requirements retain
+their own authority under the [web UX contract](web-game-ux.md).
 
-P0-01's [stable ExAV discovery ledger](web-parity-exav-inventory.md) now provides
-the separate pinned source paths/hashes for reconciliation. The MAN-* behavior
-claims and source comparisons below require ExAV feature-detail/P0-04 review.
+`MAN-T*`, `MAN-M*`, `MAN-W*`, `MAN-O*` and `MAN-D*` keep their identities for
+traceability; retaining them does not approve their old semantics. `MAN-A*` remain
+pending journey candidates whose expected results must come from current ExAV
+specifications. New `MAN-E*` entries below are documentation findings, not runtime
+operation IDs or completed action mappings. The existing [action review](web-parity-actions.md#man--and-dev--reconciliation)
+reconciles the earlier workflow families; this documentation review closes no
+implementation, runtime, save-continuation or acceptance gate.
+
+## ExAV documentation reviewed
+
+Reviewed **all 15 top-level saved HTML articles** in `tmp/online-manual-exav/`
+on 21 October 2026 as UTF-8. Article text was separated from atwiki navigation,
+advertising, tag/edit widgets and footers; embedded scripts were not executed.
+The [input inventory](parity/exav-manual-review.json) records local filenames,
+raw SHA-256, canonical URLs and the articles' own last-update strings. Links in
+this table identify the saved articles' origins; this was an offline review,
+not a check of today's live wiki. These are individual 2009–2010 page dates,
+not proof of the illustrated game build or capture date.
+
+| Input ID / saved article | Article last updated | Review coverage |
+| --- | --- | --- |
+| EXAV-DOC-P01 / [FAQ plugin作成編](https://w.atwiki.jp/freetrain-exav/pages/43.html) | 2009-03-30 | Symmetric/asymmetric car graphics and slope-frame diagnosis |
+| EXAV-DOC-P02 / [FAQ plugin導入編](https://w.atwiki.jp/freetrain-exav/pages/26.html) | 2010-05-08 | V1/V2 packs, engine compatibility and installation |
+| EXAV-DOC-P03 / [FAQエラー対応編](https://w.atwiki.jp/freetrain-exav/pages/59.html) | 2010-03-29 | Save incompatibility, missing content and stale-window load failures |
+| EXAV-DOC-P04 / [FAQバージョンアップ編](https://w.atwiki.jp/freetrain-exav/pages/25.html) | 2010-05-08 | Fork identity, upgrade promises, removed tools and future plans |
+| EXAV-DOC-P05 / [FAQ全般編](https://w.atwiki.jp/freetrain-exav/pages/33.html) | 2010-08-24 | View/speed limits, transport exclusions, bankruptcy and map-size anecdotes |
+| EXAV-DOC-P06 / [FAQ列車運転編](https://w.atwiki.jp/freetrain-exav/pages/29.html) | 2010-05-02 | Orientation, exits, timetable restrictions, signals, groups and passengers |
+| EXAV-DOC-P07 / [FAQ導入編](https://w.atwiki.jp/freetrain-exav/pages/24.html) | 2010-08-26 | Branch/time-scale distinctions, bundled versus additional content and startup diagnosis |
+| EXAV-DOC-P08 / [FAQ建物建設編](https://w.atwiki.jp/freetrain-exav/pages/34.html) | 2009-05-14 | Generic versus older building menus, construction/removal bugs and ground cover |
+| EXAV-DOC-P09 / [FAQ経営編](https://w.atwiki.jp/freetrain-exav/pages/91.html) | 2010-05-08 | Finance caveats, V2 improvements, report categories and money width |
+| EXAV-DOC-P10 / [FAQ道路建設編](https://w.atwiki.jp/freetrain-exav/pages/30.html) | 2009-03-30 | Road anchors, development attributes, decorative infrastructure and crossings |
+| EXAV-DOC-P11 / [FAQ鉄道建設編](https://w.atwiki.jp/freetrain-exav/pages/31.html) | 2010-04-27 | Platforms, poles/roofs, passage materials, removal hazards and catchments |
+| EXAV-DOC-P12 / [FAQ鉄道車両編](https://w.atwiki.jp/freetrain-exav/pages/28.html) | 2010-05-08 | Formation restrictions, lighting, resale and plugin modification guidance |
+| EXAV-DOC-P13 / [マニュアル/ツールバー](https://w.atwiki.jp/freetrain-exav/pages/140.html) | 2010-04-20 | Task shortcuts, pause/speed and automatic/day/night controls |
+| EXAV-DOC-P14 / [マニュアル/メインメニュー](https://w.atwiki.jp/freetrain-exav/pages/141.html) | 2010-04-20 | Seven menu families, additional windows, options and compatibility routes |
+| EXAV-DOC-P15 / [用語集](https://w.atwiki.jp/freetrain-exav/pages/32.html) | 2009-03-05 | Night colors/overrides, terraces/cuttings and timetable stop markers |
+
+This collection contains two manual overview pages, twelve FAQ pages and a
+glossary. It contains no detailed ExAV station, track, purchase or controller
+manual chapters, changelog, complete options reference or complete parameter
+specification. Linked pages, plugin downloads and test saves were not supplied
+as reviewed articles. The snapshots also have broken local image references:
+33 article image references were counted, 25 of which do not resolve verbatim
+within the saved tree; downloaded `_002`/`_003` variants exist for some. The
+inventory preserves this distinction without assuming variant identity. Two
+local toolbar variants were inspected and show the extra appearance controls;
+this is no claim of a complete ExAV screenshot review. Older illustrations remain
+historical and cannot certify omitted ExAV controls.
+
+## ExAV findings and reconciliation
+
+The evidence column reports claims in the saved ExAV articles; it does not mean
+they were verified in stable 2.1.1.12. P01–P15 abbreviate the EXAV-DOC input IDs
+above. Current-source conclusions link to the existing maintained reviews;
+no native application was run for this review.
+
+| ID / inputs / earlier references | ExAV documentation evidence | Disposition for the port |
+| --- | --- | --- |
+| MAN-E01 / P13–14 / MAN-T01–10, MAN-O01 | The toolbar repeats the ten familiar clock/construction/train task groups and adds automatic/day/night appearance buttons. P13 says automatic switches at 06:00/18:00. | Preserve task reachability and expose appearance modes through the current UI. Clock speed, train speed and appearance are separate controls. Treat the wiki times as a source-check candidate; the toolbar is not a complete ExAV feature inventory. P2/P9. |
+| MAN-E02 / P05/P14 / MAN-M01, MAN-O02 | New offers an empty map with name/three dimensions or a grayscale BMP terrain loader with width/depth/height/water level. File has Open, Save, plugin list and Exit; terrain loading is described inside New. | Keep MAN-A02/A19 aligned with the [current two-provider action review](web-parity-actions.md). Do not require the 2003 separate terrain-import menu entry. Loader limits and validation need source rules; P05's large-map examples are anecdotes, not supported capacities. P3/P10. |
+| MAN-E03 / P14 / MAN-M02, MAN-W10–11, MAN-O03 | View additionally lists subsidiaries, bankbook, building categories, holdings, station list, development tuning, bank, pole visibility, securities and train tracking. Multiple map windows can show different places/trains; tracking selects one train per view. | [EXAV-ACTION-001/002/014](web-parity-actions.md) distinguish station/train information, one-time Move, station lists and continuous tracking. Development settings have Apply/Cancel/Save/Load and are separate from world saves. Pole visibility synchronizes with Options. Native multiwindow layout needs an explicit browser disposition. P5–P9/P10. |
+| MAN-E04 / P09/P14 / MAN-M02, MAN-W10, MAN-O03 | P14 describes only today/this month/this year sales tabs and calls the balance sheet unimplemented with incorrect values. P09 warns that categories may be placeholders and says several costs/subsidiary receipts are absent, while explicitly announcing improved V2 economics. | This wiki is internally dated/mixed. Do not omit costs, finance or subsidiaries on this basis. [EXAV-ACTION-005](web-parity-actions.md) establishes six periods and 31-day/12-month histories; [EXAV-02/11/15](web-parity-exav-integration.md) supplies current economics/finance. The computed balance sheet is an existing P8 adaptation, not established native behavior. P8/P9. |
+| MAN-E05 / P13–14 / MAN-M03–05, MAN-T02/03/09 | Railway retains the familiar tools; Roads now has a plugin-tree construction tool, accessory tool and dummy-car placement. Construction adds generic building categories and land trading; older building/rental menus are described as compatibility routes. | Older two-/six-road menu lists cannot determine current membership. [EXAV-ACTION-003/004/009/010/011](web-parity-actions.md) adds speed limits and Mountain2, distinguishes direct-building consumers/stubs, and records empty road-accessory/dummy-car extensions. Required content follows current bundled/optional inventories. P3/P4/P7/P9. |
+| MAN-E06 / P06/P11 / MAN-W03–06, MAN-O07 | FAQs explain back-to-back slim island platforms, pole plugins used as roofs/girders, wide-platform visual limitations, concrete/brown-wood/green-wood passage choices from beta 0.8, and an underground-platform workaround of laying rails first. | [EXAV-ACTION-007](web-parity-actions.md) establishes wide/slim-roofed/slim-unroofed controls and consumed materials. [EXAV-10](web-parity-exav-integration.md) and [host review](web-parity-geometry-dependencies.md#platform-host-connections) replace the old 5/3 host ranges with range 8 and exact enumeration. FAQ visual limitations and underground defects require per-tool review, not unconditional browser restrictions. P4/P6. |
+| MAN-E07 / P06/P15 / MAN-W02/09, MAN-O09 | Detailed rules can physically turn/reverse or forward empty stock; station rules apply across its platforms. FAQs propose signals beyond platforms for direction-specific waits or stops without passenger exchange. Basic signal graphics share behavior; automatic block and pass-monitor features require additional plugins. The glossary shows stop markers holding trains off-platform. | Use [EXAV-08](web-parity-exav-integration.md), [EXAV-ACTION-006](web-parity-actions.md) and P5/P6 source semantics for shared identities, forwarding, copying, clear/import/append/export and rule ordering. Do not infer that all signal plugins are equivalent or bundled. Timed waits are distinct from optional block/monitor logic. P4/P5/P6/P10. |
+| MAN-E08 / P06 / MAN-W08, MAN-O08 | Placement clicks change travel direction; withdraw/redeploy can change formation orientation. Map-exit return reverses formation and may use the neighboring return track. The FAQ says unwanted groups cannot be deleted. | Preserve these as concrete journeys, with exact heading/exit timing from [current geometry](web-parity-geometry.md). Group deletion is a documentation claim to check. Registered delegation is established separately by [EXAV-ACTION-015](web-parity-actions.md); the FAQ's silence cannot remove it. Resolve null/root/cycle/reparenting defects in P5/P10. |
+| MAN-E09 / P05/P12 / MAN-W07/08 | Train formations depend on plugin choices; the FAQ claims a 100-car ceiling but admits the total train-count limit is unknown. It dates resale refunds to beta 2.0.3.4 / alpha 3.0.2.1 and describes 1/2, 1/3, 1/4… depreciation with age. | V2 fare, amenity and seated capacity are required beyond old purchase details ([EXAV-03](web-parity-exav-integration.md)). Use reviewed manifests for allowed formations; do not turn the unknown train count into a limit. [EXAV-SCN-026](web-parity-scenarios.md) defines completed-365-day resale boundaries and missing purchase-date behavior. P2/P5/P8/P10. |
+| MAN-E10 / P06/P07/P11 / MAN-W04/05, MAN-D01/03, MAN-O07 | P06 repeats “platform at least as long as train” and explains actual versus demanded waiting passengers using 30% boarding. P11 describes catchments as radius 10 for versions 1–2, radius 25 for Prototype 3, plus a special stadium range. P07 identifies partial alighting as experimental 2.2. | None of these prose numbers is an algorithm. [Current yard arithmetic](web-parity-geometry.md) still admits some one-car-overlength stops. [EXAV-SCN-010–020](web-parity-scenarios.md) and [EXAV-04–06](web-parity-exav-integration.md) specify packing, demand/depletion and asymmetric listener/catchment behavior. Keep beta passenger cohorts out of stable scope. P5/P6/P7. |
+| MAN-E11 / P10 / MAN-M04, MAN-O04 | Roads start from flat ground/terraces or rails and extend straight; decorative slope roads are buildings, so the FAQ proposes temporary elevated rails/terraces as anchors. Roads do not grow automatically. Development depends on road attributes; untyped decorative surfaces do not contribute. | Review actual road construction/development consumers and metadata in [content](web-parity-content.md) and [actions](web-parity-actions.md), including occupied targets and source accounting. Decorative monorail paths, supports and dummy crossings do not establish another simulated transport system. P4/P7. |
+| MAN-E12 / P08/P11 / MAN-M05, MAN-W01/02, MAN-O05 | The FAQs distinguish generic versus legacy building menus and report hazards involving in-progress demolition, partial slope removal and signals/road surfaces under trains. Several fixes are explicitly dated beta 0.7/0.7.1; one passage still reports unresolved crashes. | Use these as regression candidates for [EXAV-13/D06](web-parity-exav-integration.md) and operation-specific occupancy/dependency checks. A bug or old workaround is not a parity requirement to crash or leave broken entities. Current direct-placement adaptation and source stubs remain explicit. P3/P4/P7. |
+| MAN-E13 / P02/P03/P04/P07 / MAN-M01/07, MAN-W12, MAN-O12/14 | ExAV is a fork, with no original/EX save compatibility promised. V1/V2 plugin families differ; old V1 definitions do not directly load as V2. A compatibility table separately versions signal/map-capture plugins. Save-compatibility promises span older releases and exclude Prototype 3. | [Current persistence](web-parity-persistence.md) separates engine, ruleset, pack and save identities. Wiki promises cannot certify 2.1.1.12 import/continuation, shared V2 identity cannot certify 2.2/3.x saves, and historical “cannot convert” wording does not cancel the authorized port importer. Current bundled and [optional](web-parity-optional-plugins.md) source inventories govern membership. P2/P9/P10. |
+| MAN-E14 / P03/P07/P08 / MAN-W12, MAN-A21 | Load failures may involve open timetable/train/station/funds/category windows, absent or damaged plugins, or corrupt saves. Startup advice diagnoses V1/V2 mismatch, missing dependencies, stale DLL paths and an empty generic catalog. | Preserve useful content/version/error diagnosis; make world replacement atomic and invalidate stale drafts/inspectors. Empty catalog controls need safe behavior. Do not reproduce DLL-copy instructions, ASCII-only install paths, native crashes or “close windows first” as browser requirements. P2/P7/P9/P10. |
+| MAN-E15 / P01/P12/P15 / MAN-W07, MAN-O10 | Car-light pixels are baked into sprites, not switched by leading/trailing position. The glossary documents night-emissive colors and day/night/season overrides. Authoring FAQ distinguishes 12/24 graphic cases and warns about symmetric/asymmetric slope ordering. | Treat this as rendering/authoring evidence; use the [ExAV geometry/gallery](web-parity-geometry.md) and content recipes for actual frame/override dispatch. The FAQ's 12/24 cases are not a replacement for current direction/frame indexing. Wiki redistribution advice does not establish an asset license; existing source/notices review governs. P2/P5/P7/P11. |
+| MAN-E16 / P05/P07/P14 / MAN-M06, MAN-O10/11 | P14 labels train-name display as beta and train-speed units as Prototype 3; P07 separately describes five Prototype 3 time-scale choices. P05 describes four train speed classes and version-1+ speed-limit sections; it reports bankruptcy notice followed by replenishment/continuation. | Article labels do not decide stable membership: [EXAV-ACTION-008](web-parity-actions.md) confirms stable train labels and bankruptcy options. Prototype 3 time scales remain excluded; approximate km/h equivalents are not clock formulas. Economy changes require shared authority; local visibility/fonts remain presentation settings. P1/P4/P5/P8/P9. |
+| MAN-E17 / P04/P05/P09/P14 / MAN-M02/04/07 | The FAQ explicitly denies playable buses, moving dummy cars, freight/material transport, coupling/uncoupling, cab view, zoom and rotation. Recorder is unsupported; map capture requires an ExAV-specific additional plugin. It also lists future plans and placeholder report categories. | Separate stable absence, optional functionality, future announcements and approved browser adaptations. In particular, existing browser zoom is a UX adaptation; it need not be removed to match the FAQ. Keep current [scope/exclusions](web-parity-exav-integration.md#branch-and-content-boundaries); neither category labels nor linked addons create bundled requirements. P2/P5/P7/P9/P11. |
+
+## Documentation gaps and feature handoff
+
+Every older `MAN-*` statement below carries historical status, including ones
+for which this ExAV collection has no replacement. For each implementing slice,
+link the requirement to the current ExAV symbol/hash, registration and consumer,
+record an approved adaptation or unresolved difference, and derive expected
+results before accepting the journey. The [source-scenario specification](web-parity-scenarios.md)
+is the current numeric reference; source specification completion and executed
+acceptance are different statuses.
+
+The gaps most likely to mislead implementation are:
+
+- **Detailed forms and numeric boundaries:** the saved ExAV manual does not
+  enumerate complete station/purchase/timetable/options fields. Old screenshots
+  cannot establish completeness. Include roof variants, counters, V2 metadata,
+  controller/rule files, all report periods and histories from current reviews.
+- **Outdated statements within the ExAV wiki:** finance, passenger, platform-length,
+  group and catchment prose needs source reconciliation even when no old manual
+  is involved. Preserve the page/version claim and the current decision separately.
+- **Unreviewed branches/content:** neither linked changelog/addon names nor wiki
+  installation counts revise the pinned bundled/optional denominators. Prototype
+  3, experimental 2.2 and older V1 saves retain separate compatibility identities.
+- **Help and acceptance:** P9-HELP should use ExAV task vocabulary and delivered
+  browser illustrations. Reuse old text only after current-rule review; show
+  unresolved documentation gaps in planning, and publish instructions only for
+  implemented behavior. All MAN-A cases below remain unexecuted.
+
+## Historical original-FreeTrain review
+
+The following retains the 19 October 2026 review and its IDs as historical
+comparison evidence. Imperative language in the old tables describes proposed
+port work from that review, subject to the ExAV qualifications above; it does
+not grant those descriptions current specification authority. Original source
+paths refer to the older snapshot unless explicitly linked to an ExAV review.
 
 Added 19 October 2026 during P0, after source/content reconciliation P0-02.
 Use chapters **2–4** of the [user manual](http://www.kohsuke.org/freetrain/wordDoc.lzh) (Word format)
 together with the [later archived online manual comparison](web-parity-online-manual.md)
 as historical player-workflow evidence for the original game's structure, features,
 and toolbar/dialog workflows. Chapter 1's installation and platform requirements
-are outside this review. This is a specification input, not delivered web behavior
-or evidence of running the Windows application.
+are outside this review. This is historical comparison material, not an ExAV
+specification or evidence of delivered behavior or running the Windows application.
 
 The input is Japanese Markdown with 49 embedded PNG references. SHA-256 of the
 complete file: `f200f03f6bd49682bb31f7686c2a197e00c415533710a16c6aef92b991ba5634`.
@@ -38,7 +151,7 @@ which credits Neon for the Word manual. This dates the documentation, not the
 pinned game's full feature set. Section numbers below follow its table of
 contents; the exported body's nested numbering restarts and is not reliable.
 The original remains in ignored `tmp/`; this maintained document preserves the
-derived requirements without shipping the manual or its screenshots as game assets.
+historical findings without shipping the manual or its screenshots as game assets.
 
 **Online-manual supplement — 19 October 2026:** all 16 supplied HTML pages in
 `tmp/online-manual/` have now been compared with this Word baseline. Most gameplay
@@ -47,32 +160,32 @@ each page's modification and capture dates separately. The [detailed comparison]
 adds `MAN-O01`–`MAN-O16`, records missing images/chapters and the conflicting wiki
 Word-download date, and extends acceptance with `MAN-A17`–`MAN-A22`. Its
 [hash/provenance inventory](parity/historical/online-manual-review.json) preserves the exact
-local inputs. The tables below retain the Word requirements; read them together
-with the online supplements rather than treating the early menu list as final.
+local inputs. The tables below retain the Word-era candidates; both older manuals are
+non-authoritative for ExAV and remain subordinate to the current review above.
 
-The manual supplies expected player outcomes and information architecture. The
-current pinned ExAV source supplies exact algorithms, geometry, state and bundled
-features; the original-source comparisons below require ExAV reconciliation. Reconcile disagreements explicitly; do not
-silently replace either with the current prototype. Existing scope decisions
-(archived debug/video tools and external A4/user-file music exclusions) still
-apply. A manual omission does not exclude source-implemented bank, stocks,
-development, other plugins or the owner's optional content suite.
+The older manual supplies historical workflow and information-architecture
+candidates. Current ExAV source and approved decisions supply behavior and scope;
+original-source comparisons cannot substitute for that review. Existing debug,
+video and external-music exclusions retain their separate decisions. Manual
+omissions do not exclude current source features or the authorized optional suite.
 
-The `MAN-*` IDs below are stable requirement references for P0-03's action map
-and later acceptance fixtures. All are **documented expectations**; the [P0-03 source/action reconciliation](web-parity-actions.md)
-now links all 45 toolbar/menu/window/online families to source and destinations/dispositions.
-Implementation verification and acceptance fixtures remain pending. They are not
-new runtime operation IDs. Source bindings, destinations and scope/difference
-dispositions now live in the action map; add fixture evidence as implementation
-proceeds. This manual reference alone is not P0-03 or P0-06 completion evidence.
+The retained `MAN-*` IDs are historical cross-reference identities. The
+[P0-03 source/action reconciliation](web-parity-actions.md) maps all 45 earlier
+toolbar/menu/window/online families to current source workflows/dispositions;
+that mapping does not approve old field/numeric semantics. Implementation
+verification and acceptance remain pending. New MAN-E findings above record
+this documentation comparison separately from that completed family mapping.
 
 ## Post-manual release history
 
-Reviewed 19 October 2026: [post-cutoff releases](https://www.kohsuke.org/freetrain/downloads.html).
-All 26 release groups follow; individual-fix reconciliation remains open.
-P0-03 now assigns each group's UI/action consequences to reviewed source workflows
-in `action-map.json#releaseActionLinks`. Numeric/fix/save regression verification
-remains P0-04/P0-05/P0-06 work.
+**Historical chronology only:** reviewed 19 October 2026 from the original
+FreeTrain [post-cutoff releases](https://www.kohsuke.org/freetrain/downloads.html).
+These 26 groups are not an ExAV changelog or a current feature checklist;
+individual-fix reconciliation remains open.
+The historical P0-03 map assigns each group's UI/action consequences in
+`doc/parity/historical/action-map.json#releaseActionLinks`. Those links preserve
+original-source provenance; current source specifications and runtime regression
+acceptance retain their separate statuses.
 
 | 2003 date | Change areas |
 | --- | --- |
@@ -112,7 +225,8 @@ infer that every documented fix exists identically in the pinned revision, or
 restore an obsolete bug to match an early illustration. Use the chronology when
 writing P9-HELP so the adapted manual describes the delivered game.
 
-Two source checks illustrate why this must remain a reconciliation:
+Two historical original-source checks illustrate why this must remain a
+reconciliation. Their conclusions are not automatically ExAV findings:
 
 - `core/world/World.cs` constructs `core/world/development/LandValue.cs`, whose
   implementation describes heat conductivity and registers periodic updates and
@@ -127,13 +241,17 @@ Two source checks illustrate why this must remain a reconciliation:
 
 ## Toolbar and menu structure
 
+**Historical toolbar/menu evidence:** these are older workflow candidates,
+not normative ExAV requirements. Apply MAN-E01–05/16–17 and current action/source
+dispositions before reusing any row. Missing ExAV instructions do not validate it.
+
 Manual §2.1, `toolbar.jpg` / embedded `image5`, depicts a single compact top
 toolbar. Its icons are shortcuts to menu commands and task windows, rather than
 one button per field or construction variant. Preserve this relationship when
 extending the existing web command bar/tool strip; exact Windows chrome and icon
 positions are presentation references, not required browser coordinates.
 
-| ID | Original shortcut, in displayed order | Browser requirement / phase |
+| ID | Historical original shortcut, in displayed order | Earlier browser candidate / phase; ExAV review required |
 | --- | --- | --- |
 | MAN-T01 | Time: click icon to pause; adjacent ▼ selects progression speed | Clock control group with confirmed pause/run and source speed choices; existing Step remains available. P1/P9; run/pause alone is partial coverage. |
 | MAN-T02 | Track construction | Rail task controls and map targeting, shared with Railway menu. P4. |
@@ -146,12 +264,12 @@ positions are presentation references, not required browser coordinates.
 | MAN-T09 | Terrain manipulation | Terrain mode/options and map editing. P3. |
 | MAN-T10 | Building construction | Constructible catalog, variants and placement/removal; current browse-only catalog is partial. P7. |
 
-Manual §2.2 has seven menu families. Every entry below needs a source binding or
-explicit disposition, even when it shares a toolbar destination. These are
-navigation families to preserve in the browser action map; changing the existing
-Game/View shell to seven desktop menus is not a prerequisite.
+Manual §2.2 has seven historical menu families. Each retained entry needs a
+current source binding or explicit disposition even if it shares a destination.
+This does not require restoring original-only menus, catalog membership or old
+field semantics. The browser need not reproduce seven desktop menus.
 
-| ID / manual section | Documented entries and outcomes | Port work / disposition |
+| ID / manual section | Historically documented entries and outcomes | Earlier port candidate / disposition; ExAV review required |
 | --- | --- | --- |
 | MAN-M01 / §2.2.1 File | New (world name, width, depth, height); Open; Import terrain; Save; Installed plugins; Exit | P3/P9/P10. Distinguish new-world configuration, terrain import and full-game restore. Plugin/dependency information is distinct from building catalog browsing. Exit → participant Leave is an adaptation, not host shutdown. |
 | MAN-M02 / §2.2.2 View | Map; Sales report; Train information; Debug window; Land value inspection; Test train color settings; Height cut; Height-cut window | P3/P5/P7/P8/P9. Keep each capability accounted for; archived debug window remains explicitly excluded. Train recoloring is separately source-reviewed, not covered by a global display tint. |
@@ -163,13 +281,17 @@ Game/View shell to seven desktop menus is not a prerequisite.
 
 ## Focused windows and map operations
 
-The screenshots were inspected directly, including toolbar `image5`, rail `image13`,
+**Historical window evidence:** form fields, bounds and interactions below are
+from the original manual; they are not a complete ExAV UI specification. See
+MAN-E03–16 for changed or conflicting descriptions and current source owners.
+
+The original-manual screenshots were inspected in the earlier review, including toolbar `image5`, rail `image13`,
 station tabs `image27`/`image29`, platform properties `image34`, footbridge `image36`,
 purchase `image42`, placement `image43` and timetable manager `image47`.
 Visual observations below refer to those embedded images in the supplied manual;
 they are original illustrations, not fresh original-runtime captures.
 
-| ID / manual section | Fields, actions and expected behavior | Source starting points / phase |
+| ID / manual section | Historical fields, actions and claimed behavior | Original-source starting points / earlier phase candidates |
 | --- | --- | --- |
 | MAN-W01 / §3.1.1 Track | Small window with track preview, start-point instruction, cost, Lay/Remove. Choosing a start shows a translucent planned route. Underground construction uses height cut. Removal follows the route interaction; the manual says no removal ghost. Obstacles and right-angle curves are disallowed. | `core/controllers/rail/RailRoadController.cs`, `core/world/rail/RailPattern.cs`; P4. Keep the web's explicit commit/cancel and read-only authoritative legality/cost query; record any removal-preview adaptation. |
 | MAN-W02 / §3.1.2–6 Infrastructure | Junction direction is chosen per train/controller, default straight; use timetable settings. Slopes change rail height; terrain slopes alone do not create sloped rail. Elevated routes inherit starting height and need a usable start; supports are automatic. Bridges have four directions and no curves/junctions; girder elevated track cannot be at ground level or curve/branch. Tunnels cut raised terrain, with four directions and no curves/junctions. | `core/world/rail/`, slope/special-rail controllers and TAT junction forms; P4/P5. These are manual summaries to refine against source, not complete legality algorithms. |
@@ -184,15 +306,19 @@ they are original illustrations, not fresh original-runtime captures.
 | MAN-W11 / §2.2.2 Map and height cut | Left or right drag scrolls; Shift or Ctrl doubles distance, together quadruple it. Shift+wheel changes height cut; dedicated slider also changes it. Cut limits displayed height and construction affected by that height, including tall buildings. | `core/views/QuarterViewDrawer.cs`, map views/controllers and `HeightCutWindow.cs`; P3/P4/P7/P9. Record gestures, cut boundary and placement policy separately from current wheel zoom and construction-level selection. |
 | MAN-W12 / §4.1–4.3 Help and diagnosis | Explain incompatible saves and operation failures; useful bug report contains version, reproduction steps, error details/stack trace and optional screenshot. Glossary defines timetable, plugin, height, junction, voxel and elevated construction. | Existing help/feedback and persistence diagnostics; P9/P10. Portable error details and support guidance remain in scope; Windows installation paths, MSCOREE errors, Print Screen tutorial and obsolete submission sites are historical context, not new game features. |
 
-Paths without a directory in the source column are relative to
-`core/controllers/rail/`. These are starting points, not a claim of complete
-designer/dynamic/plugin-form reconciliation.
+Paths without a directory in the source column are relative to the historical
+`core/controllers/rail/`. They are original-source starting points, not verified
+ExAV path/behavior bindings or complete designer/dynamic/plugin-form coverage.
+In particular, the old `TrainTrackingWindow.cs` reference does not identify both
+current information and continuous-tracking routes (MAN-E03).
 
 ## Browser adaptation contract
 
-Apply the original task grouping through the delivered [web UX contract](web-game-ux.md).
-This section specifies future subsystem UX; it does not add unavailable controls
-to the current [operation registry](../web/src/lib/game-ui.ts).
+Apply current ExAV task scope through the delivered [web UX contract](web-game-ux.md).
+These browser adaptation requirements come from that contract, independently of
+historical gameplay prose. Subsystem controls/fields must first be reconciled
+with current source. This section adds no unavailable controls to the current
+[operation registry](../web/src/lib/game-ui.ts).
 
 - Menu and toolbar routes open the same task and preserve a single set of options.
   Keep icon labels/tooltips and English/Japanese names; compact toolbar overflow
@@ -225,50 +351,56 @@ to the current [operation registry](../web/src/lib/game-ui.ts).
 
 | ID | Evidence / finding | Required disposition |
 | --- | --- | --- |
-| MAN-D01 | §§3.2.1/6 say normal 5/slim 3; §3.2.5 mentions 5 generically. Source `FatPlatform.HOST_RANGE=5`, `ThinPlatform.HOST_RANGE=3`, but `Platform.listHosts` searches an endpoint-expanded rectangle at z ±1 and also scans every height directly over the platform footprint. Only already station-connected platforms qualify as hosts. | P0-03/P6: preserve manual intent and exact source enumeration, including vertical cases. Do not implement a simple Euclidean 3D distance cutoff from prose. No semantic fix is accepted by this note. |
-| MAN-D02 | Manual says height “at or above” the setting disappears; `QuarterViewDrawer.draw` begins its traversal at `Z=heightCutHeight`, including that level. It also documents cut-related construction restrictions beyond the current local display switch. | P0-04/P3/P4/P7: specify inclusive cut, picking and per-tool legality independently. Check height-boundary/footprint cases; preserve current authority and shared-world policy while recording any adaptation. |
-| MAN-D03 | §3.2.4 says every train longer than a platform passes. `YardRailRoad.getStopTimeSpan` derives stop index with integer arithmetic: `(platformLength + trainLength)/2 - 1` or `(platformLength - trainLength)/2`, then range-checks it. For platform 5/train 6, C# truncation yields 4/0, both in range. This source boundary does not implement the prose rule literally. | P0-04/P6: add both-direction boundary fixtures and a semantic-difference decision before implementation. Keep the manual's expected outcome and source's actual calculation visible; do not silently introduce a length check or call the source equivalent. |
-| MAN-D04 | Manual was last updated 2 February 2003. Its illustrations and two documented timetable methods are an early snapshot; the post-manual release index above and pinned source supply later coverage. | P0-03: reconcile every later release group with reachable in-scope source features, dynamic contributions/forms and configuration options. Retain explicit dispositions for source gaps, fixes and supplemental code; do not shrink the baseline to the manual or treat a changelog announcement alone as verified implementation. |
+| MAN-D01 | **Superseded original-source numbers:** old manual/source described normal 5/slim 3. Stable ExAV uses range **8**, an endpoint-expanded inclusive rectangle at z ±1 plus full-height footprint columns. Constructor auto-selection requires a direct Station; properties can select an already connected platform. | Use [EXAV-DEP-008–010](web-parity-geometry-dependencies.md#platform-host-connections), not the old constants. P6 fixtures must cover candidate order, vertical hosts, host removal and child disconnection on reparenting. No Euclidean cutoff or automatic nearest-host rule follows from either manual. |
+| MAN-D02 | Both the older manual and ExAV P14 say height “at or above” the cut disappears. The earlier original-source comparison found that level included; repeating the wiki wording does not settle this boundary. | Use the current [ExAV geometry and picking review](web-parity-geometry.md) for cut/render/picking predicates and per-tool legality. P3/P4/P7 must derive boundary/footprint fixtures from those bindings and record portable gesture decisions. |
+| MAN-D03 | Old §3.2.4 and ExAV P06 both say an overlong train passes. The [current ExAV yard review](web-parity-geometry.md) independently confirms `(platformLength + trainLength)/2 - 1` / `(platformLength - trainLength)/2` and range checks: platform 5/train 6 yields valid 4/0 by C# truncation. | Current source arithmetic, not either manual's simplified rule, supplies P5/P6 expected results absent an approved change. Cover both directions and one-/two-car-overlength boundaries; do not introduce a prose-derived hard length check. |
+| MAN-D04 | Word manual is a February 2003 snapshot; the later original wiki and 2003 releases still predate the current baseline. The ExAV wiki is also incomplete and mixes branch/version claims. | Use current ExAV registrations/consumers and source-specified behavior. Historical releases, future plans and wiki omissions cannot set stable scope. Missing manual chapters remain documentation gaps rather than implied old-rule defaults. |
 | MAN-D05 | §§2.2/4 mention archived debug tools, external/user-file music, Windows memory/setup and historical support URLs. | Keep explicit exclusions/portability dispositions; bundled MIDI, bells, useful help and ordinary content/error diagnosis remain required. Chapter 4 is support guidance, not an instruction to revive native dependencies or obsolete external services. |
 
-The source observations above were checked in the retained baseline files; they
-are source-derived comparisons, not original-runtime results. Resolve each open
-semantic question through the plan's difference register before declaring parity.
+Original-source observations retain their historical provenance. Only the
+explicitly linked current ExAV reviews establish revalidated source conclusions;
+this document establishes no runtime result. Resolve remaining semantic questions
+through the current difference registers before declaring parity.
 
 ## Acceptance cases to add with the relevant slices
 
-These are fixture obligations, **not executed tests**. Derive precise numeric
-expectations from pinned source and the difference decisions above. Reuse these
-MAN-* IDs in the ExAV scenario ledger as P0-06 adds executable fixtures.
-`doc/parity/historical/scenarios.json` retains the earlier source-derived seeds;
-revalidate them against ExAV before carrying their expectations forward.
+These are **unexecuted journey candidates**, not normative old-manual assertions.
+The table is updated below where current reviews already establish ExAV changes;
+all remaining fields, restrictions and outcomes still require per-slice ExAV
+source review. Keep the stable MAN-A identities, link MAN-E evidence where
+relevant, and use [current ExAV scenarios](web-parity-scenarios.md) for expected
+arithmetic/state boundaries. Historical `doc/parity/historical/scenarios.json`
+seeds and MAN-A wording cannot override those specifications. Browser authority,
+accessibility and safe-replacement requirements have their separate UX contract.
 
-| ID | Player journey and observable acceptance | Phase |
+| ID | Candidate player journey; expected results require current ExAV bindings | Phase |
 | --- | --- | --- |
 | MAN-A01 | Open every in-scope toolbar shortcut through its menu equivalent and verify identical task/options; pause and source speed choices reflect confirmed time. Narrow English/Japanese layouts keep all delivered tasks reachable. | P1/P9 + each task slice |
-| MAN-A02 | Create named world with all three dimensions; import terrain through its separate workflow; save/restore it without replacing it on invalid input. | P3/P10 |
+| MAN-A02 | Create a named world with reviewed dimension bounds through empty/terrain-loader New providers (MAN-E02); save/restore without replacement on invalid input. A separate 2003 File import entry is not required. | P3/P10 |
 | MAN-A03 | Choose rail start/end, inspect ghost/legal cost, cancel without mutations; commit route, then remove it. Reject obstacles and unsupported right-angle curves; exercise underground cut. | P4 |
-| MAN-A04 | Join ground/sloped/elevated track; inherit start elevation and verify automatic supports; exercise legal/illegal bridge, girder and tunnel directions, terrain and curve/junction cases. | P4 |
-| MAN-A05 | Build/orient/name station building and normal/slim platforms; verify length endpoints, elevated placement and blocked curve/junction/special-rail targets. Remove an existing type while another catalog type is selected. | P6 |
-| MAN-A06 | Connect/reconnect platforms to a building or already connected platform; test normal/slim range edges, out-of-range choices, vertical hosts and disconnected warnings after host removal. No stop/passengers at an unconnected platform. Use MAN-D01's source algorithm. | P6 |
+| MAN-A04 | Join ground/sloped/elevated track and exercise supports, bridge/girder/tunnel geometry and legal targets under current ExAV rules. Include flat/slope speed-limit sections, removal and continuation (MAN-E05/16). | P4 |
+| MAN-A05 | Build/orient/name stations and wide/slim-roofed/slim-unroofed platforms; verify source-derived length/placement/removal boundaries, material/roof appearance and underground picking. Cover current station information and counters (MAN-E03/06). | P6 |
+| MAN-A06 | Connect/reconnect platforms using current range-8 enumeration, direct-station automatic selection and explicit connected-platform hosts. Cover vertical candidates, reparented child disconnection, host removal and no station callbacks when disconnected. Use MAN-D01's current dependency review. | P6 |
 | MAN-A07 | Compare shorter/equal/one-car-longer formations approaching both directions under a stopping timetable; record the MAN-D03 decision and exact integer-boundary results. | P5/P6 |
 | MAN-A08 | Configure independent platform names and bells; extend normal-platform rail connections while slim has no extension; save/reload and verify membership, bells and names. | P6 |
-| MAN-A09 | Place passage and stairs on slim platforms at right angles; reject normal/incorrect orientation cases; station service is unchanged by cosmetic footbridge removal. | P6 |
-| MAN-A10 | Browse company catalog, preview metadata, set cars × formations and inspect capacity/total before purchase; owned inventory and accounting change exactly once and persist. | P5/P8 |
-| MAN-A11 | Group/name owned formations, assign timetable, deploy/orient/withdraw, redeploy and sell using distinct actions. Invalid/occupied track leaves inventory and funds intact. | P5 |
-| MAN-A12 | Create/name/configure manual and TAT timetables independently, assign one to multiple formations, change route/stop settings, and exercise deletion/references under source rules; save/reload maintains shared identity. Signals accept control without passenger exchange. | P4/P5/P6 |
-| MAN-A13 | Inspect selected train's status/passengers/occupancy and frame that exact train; compare sales report Day/Month/Year and display settings against independent accounting totals; inspect pointed land value. | P5/P7/P8/P9 |
+| MAN-A09 | Exercise passage/stair placement and removal using current legality; compare concrete/brown-wood/green-wood previews/outlooks and separate appearance from station host/service logic (MAN-E06). Resolve EXAV-GAL-001 before visual acceptance. | P6 |
+| MAN-A10 | Browse current catalog metadata and permitted formations, including V2 fare/amenity/seated and packed capacity; inspect authoritative totals before purchase. Verify inventory/accounting once and persistence (MAN-E09). | P5/P8 |
+| MAN-A11 | Group/name formations, assign controllers, deploy/orient/withdraw/redeploy and sell. Verify formation versus travel direction, outside/return behavior, exact resale anniversaries and missing purchase dates; invalid targets leave inventory/funds intact (MAN-E08/09). | P5 |
+| MAN-A12 | Manage shared manual/TAT controllers; copy controllers/rules, confirm clear-all, read/append/save validated rule files and exercise source order/masks/reverse/empty-stock actions. Verify reference/deletion/continuation behavior and signal stops without passenger exchange; optional block/monitor logic stays pack-qualified (MAN-E07). | P4/P5/P6 |
+| MAN-A13 | Inspect train/station data and lists, frame versus continuously track the selected train, and retain stable selection. Verify all six report periods, 31-day/12-month histories, genre settings, rollover and land-value inspection against current source (MAN-E03/04). | P5/P7/P8/P9 |
 | MAN-A14 | Exercise cut slider/gesture, inclusive boundary, underground picking and tall-building/construction constraints; test documented pan modifiers or record their portable gesture dispositions. Terrain repeat and mountain-only terrace cases are covered. | P3/P4/P7/P9 |
-| MAN-A15 | Map station-name visibility/error options; choose bundled MIDI/effects and per-platform bells with browser gesture handling; help explains implemented systems and incompatible saves, and exposes useful error/version details. | P2/P6/P9/P10 |
+| MAN-A15 | Review current labels/fonts/poles/error options and pole-menu synchronization; separate local preferences from shared bankruptcy/economy controls. Exercise bundled MIDI/effects/bells with browser gesture handling and current save/content/version help (MAN-E13/14/16). | P2/P6/P9/P10 |
 | MAN-A16 | Run purchase/deploy/connect/timetable workflows through authority, stale revision, dirty draft, disconnect and world-replacement cases; observer browsing remains available, no old draft replays and local navigation never pauses another player. Verify keyboard/touch and English/Japanese field access. | Every relevant slice |
 | MAN-A17 | Create and name nested train groups, assign group timetables, choose parent inheritance or a per-train override, move trains between groups, change the group timetable and save/reload effective controller identity. ExAV registers delegation (EXAV-ACTION-015); resolve null/root/cycle/defect cases during P5; offer keyboard/touch Move to group alongside any drag/drop. | P5/P10 |
 | MAN-A18 | Target terrain corners in Raise and Dig, temporarily reverse with Ctrl, repeat with Shift plus mouse movement, release modifiers/focus without further mutations, and verify legal elevation, obstruction and water-level boundaries. Do not derive a timer-repeat or flooding algorithm from the wiki prose. | P3/P9 |
 | MAN-A19 | Reach empty-world and terrain-loader creation through their reconciled New workflow; verify name/dimensions and terrain height/water-level settings, cancel without replacement, then save/reload. Account for terrain import without requiring the old duplicate File-menu entry. | P3/P10 |
-| MAN-A20 | Map balance sheet, land trading, six documented road choices and automatic/Always day/Always night to actual source contributions, pack membership and browser destinations or explicit dispositions. Keep missing road definitions, placeholder descriptions and archived recorder/debug exclusions visible. | P0-03/P2/P7/P8/P9 |
+| MAN-A20 | Account for current bank/stocks/subsidiaries, land trading, development tuning, road catalog/empty extension shells and appearance modes through actual source consumers or explicit adaptations. Verify the balance-sheet placeholder disposition and computed P8 adaptation separately; old road counts and FAQ finance omissions do not determine scope (MAN-E01/04/05/11/17). | P0-03/P2/P7/P8/P9 |
 | MAN-A21 | Load with missing, incompatible or updated content definitions; diagnose required identities before replacing the world, preserve the file/current state, then recover with the matching content set. Help explains why removing a required plugin breaks saves; historical stock-plugin deletion advice is not the browser recovery path. | P0-05/P9/P10 |
-| MAN-A22 | Review chapter-tabbed Help against both manual versions and resolved source differences, including group inheritance, terrain modifiers, station no-stop diagnosis, appearance modes and pack compatibility. Verify localized narrow/desktop chapter/section navigation and replace absent wiki chapters/images with reviewed browser content. | P9-HELP/P11 |
+| MAN-A22 | Review Help against delivered ExAV behavior and resolved MAN-E gaps, including inheritance, modifiers, stop/catchment diagnosis, appearance and pack compatibility. Verify localized narrow/desktop navigation; use reviewed browser illustrations and revalidated older text, keeping beta/Prototype 3 and outdated finance guidance out of stable instructions. | P9-HELP/P11 |
 
-P0-03 source/action/configuration mapping is complete; see the
-[action reconciliation](web-parity-actions.md). Keep P0-04 (numeric/source
-boundaries) and P0-06 (independent executable cases) open.
-Native/device UX acceptance and gameplay handoff remain separate prerequisites.
+P0-03 workflow/scope mapping and P0-04/P0-06 source specifications are recorded
+in the current [action](web-parity-actions.md), [geometry](web-parity-geometry.md)
+and [scenario](web-parity-scenarios.md) reviews. This document does not reopen or
+complete those source gates. Granular feature reconciliation, implementation,
+executable fixtures, native/device UX acceptance and gameplay handoff remain
+with their owning slices; overall P0/runtime acceptance is not established here.

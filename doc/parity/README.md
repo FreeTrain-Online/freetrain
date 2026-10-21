@@ -4,6 +4,7 @@
 
 | Location | Status |
 | --- | --- |
+| [exav-manual-review.json](exav-manual-review.json), [manual evidence review](../web-parity-manual.md) | Offline review of all 15 supplied ExAV wiki articles; version-qualified findings, documentation gaps and historical-manual qualifications; no runtime or acceptance promotion |
 | [exav-integration-rules.json](exav-integration-rules.json), [exav-integration-review.json](exav-integration-review.json), [reconciliation](../web-parity-exav-integration.md) | P0-09 source integration complete: requirements/gaps, complete code-scope assignments, branch boundaries and phase handoffs; no runtime promotion |
 | [P0-07 coverage/differences/estimates](../web-parity-report.md) | Current ExAV report: reviewed denominators, justified reuse, translation/optional gaps, provisional phase effort and open UX/native gates; P0-08 is now source-specified separately; P0-09 source integration is complete; overall P0 stays open |
 | [exav-optional-rules.json](exav-optional-rules.json), [exav-optional-review.json](exav-optional-review.json), [specification](../web-parity-optional-plugins.md) | P0-08 canonical non-free V2 source inventory/specification complete: 452 source manifests, 450 selected; separate pins/hashes, source gaps and directory-loading/localized credits contract; implementation pending |

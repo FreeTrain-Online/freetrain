@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-21",
+  "reviewKind": "offline-documentation-evidence",
+  "document": "doc/web-parity-manual.md",
+  "inputRoot": "tmp/online-manual-exav",
+  "authority": "Pinned stable ExAV trunk and approved port decisions; wiki claims require branch/version/source reconciliation.",
+  "baseline": {
+    "engineVersion": "2.1.1.12",
+    "pluginFamily": "V2",
+    "archiveGit": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "svnRevision": 115,
+    "subtree": "trunk/"
+  },
+  "reviewMethod": "Read all 15 top-level UTF-8 HTML article bodies under div#wikibody using inert HTML parsing. Exclude site navigation, ads, tag/edit widgets and footer text from findings; do not execute embedded scripts. Canonical URLs identify saved origins, not live-page verification.",
+  "scopeLimitations": [
+    "Incomplete manual: two overview pages, twelve FAQs, one glossary; no detailed ExAV task chapters or complete parameter reference.",
+    "Articles mix versions 1/2, stable V2, experimental 2.2 and Prototype 3. Page modification dates do not identify an exact game build or capture date.",
+    "33 article image references; 25 decoded relative paths do not resolve verbatim locally. Some saved _002/_003 variants exist; their presence alone does not prove image identity. Only the two listed toolbar variants were visually inspected for this review.",
+    "No linked changelog, unsupplied article, test save or plugin download was reviewed as an additional input.",
+    "Source conclusions are cross-references to existing maintained ExAV reviews, not a fresh source audit or native/browser runtime evidence.",
+    "Older manuals, screenshots, changelog entries and original-source comparisons remain historical and non-normative even where ExAV instructions are missing.",
+    "MAN-E identifiers are documentation findings, not implemented operations or new completed action mappings; no implementation/acceptance status is promoted."
+  ],
+  "pages": [
+    {
+      "id": "EXAV-DOC-P01",
+      "path": "tmp/online-manual-exav/FAQ_FAQ plugin作成編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "0b1a6b1d6341a90476953b072bfec1d7f7efc8211a09aaab52cd839554858f72",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/43.html",
+      "articleTitle": "FAQ/FAQ plugin作成編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2009年03月30日 (月) 01時07分30秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E15"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P02",
+      "path": "tmp/online-manual-exav/FAQ_FAQ plugin導入編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "30cf62544b1f9968f6ebd6022d87676630d0d5f33f17b0590e3c0638d83e987d",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/26.html",
+      "articleTitle": "FAQ/FAQ plugin導入編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年05月08日 (土) 23時16分06秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E13"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P03",
+      "path": "tmp/online-manual-exav/FAQ_FAQエラー対応編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "336828d2150f3dfee350fe7cd9cbcac02659d74e6c46e7b4ec662dc1e0654ec2",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/59.html",
+      "articleTitle": "FAQ/FAQエラー対応編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年03月29日 (月) 18時35分56秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E13",
+        "MAN-E14"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P04",
+      "path": "tmp/online-manual-exav/FAQ_FAQバージョンアップ編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "a45b49b803732dce35b43dfbe4bb12a7103ceeec5d961219a2d8793e840efa9e",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/25.html",
+      "articleTitle": "FAQ/FAQバージョンアップ編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年05月08日 (土) 09時06分21秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E13",
+        "MAN-E17"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P05",
+      "path": "tmp/online-manual-exav/FAQ_FAQ全般編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "171ffc885e993656a7584d0876790aba31f9fe3a4e655a36b6b2aaf3b43016ae",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/33.html",
+      "articleTitle": "FAQ/FAQ全般編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年08月24日 (火) 02時12分43秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E02",
+        "MAN-E09",
+        "MAN-E16",
+        "MAN-E17"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P06",
+      "path": "tmp/online-manual-exav/FAQ_FAQ列車運転編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "aaf744769fd2e014573201b85e43e73902f2cb60a0ed24b6dc18b46ea483a110",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/29.html",
+      "articleTitle": "FAQ/FAQ列車運転編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年05月02日 (日) 06時47分27秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 5,
+      "verbatimLocalImagePathResolvedCount": 1,
+      "findingIds": [
+        "MAN-E06",
+        "MAN-E07",
+        "MAN-E08",
+        "MAN-E10"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P07",
+      "path": "tmp/online-manual-exav/FAQ_FAQ導入編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "cbcda145d7aaa68eea04e9b79ebfdb235ca4f3ed6df054bba8bbb8ddd2a43beb",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/24.html",
+      "articleTitle": "FAQ/FAQ導入編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年08月26日 (木) 18時28分28秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 4,
+      "verbatimLocalImagePathResolvedCount": 1,
+      "findingIds": [
+        "MAN-E10",
+        "MAN-E13",
+        "MAN-E14",
+        "MAN-E16",
+        "MAN-E17"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P08",
+      "path": "tmp/online-manual-exav/FAQ_FAQ建物建設編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "26926230683257554fd4899f8feef134da337c1d5667e0c37502f6ce47a2c086",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/34.html",
+      "articleTitle": "FAQ/FAQ建物建設編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2009年05月14日 (木) 23時38分53秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E12",
+        "MAN-E14"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P09",
+      "path": "tmp/online-manual-exav/FAQ_FAQ経営編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "4fea29e52ccba6ead33699ceb2d62b9e84cd45245e34c2f27744094d71e6cf51",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/91.html",
+      "articleTitle": "FAQ/FAQ経営編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年05月08日 (土) 09時07分54秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E04",
+        "MAN-E17"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P10",
+      "path": "tmp/online-manual-exav/FAQ_FAQ道路建設編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "35d3b7e36feda0bc7aa9f4b1962291530077e1c5376db5c029e11465dbe7544f",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/30.html",
+      "articleTitle": "FAQ/FAQ道路建設編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2009年03月30日 (月) 22時54分52秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E11"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P11",
+      "path": "tmp/online-manual-exav/FAQ_FAQ鉄道建設編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "685990c1b1fcd0ca692e14b27624cab7375c2c76758000b069e4435aaf09c375",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/31.html",
+      "articleTitle": "FAQ/FAQ鉄道建設編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年04月27日 (火) 10時20分51秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E06",
+        "MAN-E10",
+        "MAN-E12"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P12",
+      "path": "tmp/online-manual-exav/FAQ_FAQ鉄道車両編 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "b35dee341ced1d838a33c24ba83c6d08d6ae34f1be365228e51a77c970cffe27",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/28.html",
+      "articleTitle": "FAQ/FAQ鉄道車両編 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年05月08日 (土) 07時05分39秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E09",
+        "MAN-E15"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P13",
+      "path": "tmp/online-manual-exav/マニュアル_ツールバー - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "95d153ac4c9d400ea7671bff7ad8bf26699910e0198fab613ed9c158bdc4a600",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/140.html",
+      "articleTitle": "マニュアル/ツールバー - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年04月20日 (火) 01時28分11秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 12,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E01",
+        "MAN-E05"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P14",
+      "path": "tmp/online-manual-exav/マニュアル_メインメニュー - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "eed8b1334255bcbe129fad8d63a2d2f25da32db82a35a9bc36982fd7b4c1e2c3",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/141.html",
+      "articleTitle": "マニュアル/メインメニュー - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2010年04月20日 (火) 02時11分09秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 0,
+      "verbatimLocalImagePathResolvedCount": 0,
+      "findingIds": [
+        "MAN-E01",
+        "MAN-E02",
+        "MAN-E03",
+        "MAN-E04",
+        "MAN-E05",
+        "MAN-E13",
+        "MAN-E16",
+        "MAN-E17"
+      ]
+    },
+    {
+      "id": "EXAV-DOC-P15",
+      "path": "tmp/online-manual-exav/用語集 - FreeTrain EX Av @ wiki - atwiki（アットウィキ）.html",
+      "sha256": "6f9ad93b75861f1cc258f87bf7a6f757cac783439a38f869b9882d6869fda2e9",
+      "encoding": "UTF-8",
+      "canonicalUrl": "https://w.atwiki.jp/freetrain-exav/pages/32.html",
+      "articleTitle": "用語集 - FreeTrain EX Av @ wiki",
+      "articleLastUpdatedAsSaved": "最終更新日時：2009年03月05日 (木) 15時42分37秒",
+      "captureDate": null,
+      "articleImageReferenceCount": 12,
+      "verbatimLocalImagePathResolvedCount": 6,
+      "findingIds": [
+        "MAN-E07",
+        "MAN-E15"
+      ]
+    }
+  ],
+  "inspectedImageVariants": [
+    {
+      "path": "tmp/online-manual-exav/マニュアル_ツールバー - FreeTrain EX Av @ wiki - atwiki（アットウィキ）_files/toolbar1_002_JuFp.PNG",
+      "sha256": "86232042928c0ffd31763df8b3a41ca616b0e3f73b8853cbee4091b0162fb1ff",
+      "scope": "Inspected saved variant; no equivalence to missing verbatim HTML image path established."
+    },
+    {
+      "path": "tmp/online-manual-exav/マニュアル_ツールバー - FreeTrain EX Av @ wiki - atwiki（アットウィキ）_files/toolbar12_002_JuFp.PNG",
+      "sha256": "12bdb564820c659f00009a27c8c4ec8f610fd2681598e51b2405ef1f40dc1bcf",
+      "scope": "Inspected saved variant; no equivalence to missing verbatim HTML image path established."
+    }
+  ]
+}
