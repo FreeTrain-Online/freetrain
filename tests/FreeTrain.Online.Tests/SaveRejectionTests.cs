@@ -19,6 +19,7 @@ public class SaveRejectionTests
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
+    [InlineData(3)]
     [InlineData(999)]
     public void No_legacy_or_version_relabelled_save_is_accepted(int version)
     {
@@ -45,6 +46,8 @@ public class SaveRejectionTests
 
     [Theory]
     [InlineData("{\"saveVersion\":1}", "incompatibleSave")]
+    [InlineData("{\"saveVersion\":2}", "incompatibleSave")]
+    [InlineData("{\"saveVersion\":3}", "incompatibleSave")]
     [InlineData("{broken", "invalidSave")]
     public async Task Ignored_checkpoint_is_reported_and_preserved_through_shutdown_and_manual_save(string text, string error)
     {
@@ -69,6 +72,20 @@ public class SaveRejectionTests
             Assert.Empty(Directory.GetFiles(directory, "*.tmp"));
         }
         finally { Directory.Delete(directory, true); }
+    }
+
+    [Theory]
+    [InlineData(2)][InlineData(3)]
+    public async Task Retired_canonical_fixtures_are_rejected_without_replacing_the_current_world(int version)
+    {
+        var data=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,$"RetiredSaves/reference-v{version}.json"));
+        Assert.Equal("incompatibleSave",Assert.Throws<InvalidDataException>(()=>SaveCodec.Read(data)).Message);
+        var host=SessionComposition.CreateReferenceHost();
+        var capture=host.CaptureSave();host.Pump();var before=await capture;
+        var load=host.LoadSave(data,1);host.Pump();
+        Assert.Equal("incompatibleSave",(await Assert.ThrowsAsync<InvalidDataException>(()=>load)).Message);
+        Assert.Equal(1,host.WorldEpoch);
+        var after=host.CaptureSave();host.Pump();Assert.Equal(before,await after);
     }
 
     [Fact]

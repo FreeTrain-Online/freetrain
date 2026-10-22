@@ -304,7 +304,7 @@
       "revision": "0"
     }
   ],
-  "ruleset": "reference-spatial-2",
+  "ruleset": "reference-spatial-3",
   "contentVersion": "reference-spatial-content-1",
   "requiredPacks": [
     {

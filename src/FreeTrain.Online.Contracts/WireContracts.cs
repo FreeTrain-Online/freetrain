@@ -7,7 +7,7 @@ namespace FreeTrain.Online.Contracts;
 public static class ProtocolIdentity
 {
     public const int Version = 3;
-    public const string ReferenceRuleset = "reference-spatial-2";
+    public const string ReferenceRuleset = "reference-spatial-3";
     public const string ReferenceContent = "reference-spatial-content-1";
     public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "1", "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c")];
     public const string PrototypeRuleset = "prototype-reference-1";

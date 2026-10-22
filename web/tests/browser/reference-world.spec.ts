@@ -16,7 +16,7 @@ async function checker(page:Page){await page.getByRole('button',{name:'Check a l
 test('default live H/V map renders, picks source rails and keeps unsupported operations unavailable',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.goto('/');await ready(page);
-  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-2');
+  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-3');
   await expect(page.getByTestId('reference-world')).toHaveText('Spatial reference world');
   await expect(page.getByRole('button',{name:'Run',exact:false})).toBeEnabled();await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
   const before=await bootstrap(page);expect(before.tracks).toHaveLength(32);expect(before.trains).toHaveLength(0);
@@ -35,9 +35,9 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-en.png'),fullPage:true});
 });
 
-test('real Save 3 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
+test('real Save 4 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','save-preserved'));
-  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(3);
+  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(4);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
   await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Confirm load',exact:true}).click();
@@ -47,11 +47,28 @@ test('real Save 3 download, upload confirmation and socket epoch replacement pre
 
 test('prototype and corrupt saves report errors without replacement confirmation or mutation',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page);await openPanel(page,'saves');
-  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{broken','Invalid save data']] as const){
+  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{"saveVersion":2}','not supported'],['{"saveVersion":3}','not supported'],['{broken','Invalid save data']] as const){
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer:Buffer.from(body)});
     await expect(page.getByTestId('save-feedback')).toContainText(message);await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
     expect(await bootstrap(page)).toEqual(before);
+  }
+});
+
+test('random state validation rejects incompatible saves before confirmation and keeps the current epoch',async({page})=>{
+  await page.goto('/');await ready(page);await openPanel(page,'saves');
+  const before=await bootstrap(page),bytes=await(await page.request.get('/api/saves/download')).body();
+  for(const [mutation,message] of [['algorithm','not supported'],['duplicate','Invalid save data'],['zero','Invalid save data']] as const){
+    const save=JSON.parse(bytes.toString());
+    if(mutation==='algorithm')save.random.algorithm='future';
+    if(mutation==='duplicate')save.random.streams[1].id=save.random.streams[0].id;
+    if(mutation==='zero')save.random.streams[0].state.values.fill(0);
+    await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
+    await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'random.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
+    await expect(page.getByTestId('save-feedback')).toContainText(message);
+    await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
+    expect(await bootstrap(page)).toEqual(before);
+    expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
   }
 });
 
@@ -118,7 +135,7 @@ test('save availability must be known before upload, and Cancel never sends a re
   }finally{release();}
 });
 
-test('canonical clock step, shared run/pause, panel navigation and Save 3 continuation',async({page,browser})=>{
+test('canonical clock step, shared run/pause, panel navigation and Save 4 continuation',async({page,browser})=>{
   const observerContext=await browser.newContext();
   try{
     await page.goto('/');await ready(page);

@@ -1,5 +1,9 @@
 # Parity phase review — 21 October 2026
 
+**Current save policy — 22 October 2026:** [only Save 4 is supported](web-parity-runtime-policy.md). Save 2/3 parsers and upgrades are removed; earlier compatibility and verification statements below record the previous slices only.
+
+**P1-03 update — 22 October 2026:** [versioned world-owned random streams](web-parity-random.md) now persist in Save 4 under ruleset `reference-spatial-3`. Only the current save format is supported. P1-04 entity/footprint/pack contracts and later gameplay/native gates remain open. Earlier slice identities/counts below retain their dated scope.
+
 **P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
 
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.

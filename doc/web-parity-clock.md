@@ -1,5 +1,9 @@
 # P1-02: clock, calendar and scheduler — 22 October 2026
 
+**Current save policy — 22 October 2026:** [only Save 4 is supported](web-parity-runtime-policy.md). Save 2/3 parsers and upgrades are removed; earlier compatibility and verification statements below record the previous slices only.
+
+**P1-03 update:** [Save 4 and versioned random streams](web-parity-random.md) supersede the current ruleset/save identity below. Save 2/3 are now unsupported; this document records the P1-02 implementation and verification.
+
 The canonical reference world now runs the stable ExAV source-minute clock.
 Run/Pause/Step are authoritative Owner/Operator actions; Observers see the same
 confirmed time. Local panels, targeting, focus and input resets do not pause shared
@@ -75,10 +79,10 @@ pump while running, with no unbounded catch-up. Source desktop speed choices and
 unbounded fast mode remain MAN-T01/MAN-A01 work for P9; no new speed control is
 claimed here.
 
-[Save 3](../prototype/protocol/save-v3.schema.json) adds paused state and a clock
+[Save 3](../prototype/protocol/historical/save-v3/schema.json) adds paused state and a clock
 graph: absoluteMinute, nextOrder and pending named action records (registration,
 order, due minute, handler ID, interval). Long values are canonical decimal
-strings. The independent [sample](../prototype/protocol/saves/reference-v3.json)
+strings. The independent [sample](../prototype/protocol/historical/save-v3/reference-v3.json)
 shares the runtime contract. Standalone scheduler continuation serializes queue
 values and rebinds them to the new world's callback table, preserving tie order
 and repeat cookies without retaining old-world delegates. End-of-turn callbacks

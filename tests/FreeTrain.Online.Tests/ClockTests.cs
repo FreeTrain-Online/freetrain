@@ -143,12 +143,9 @@ public class ClockTests
         Assert.Equal(64,a.Pump(0).AdvancedTicks);
     }
     [Fact]
-    public void Save_2_upgrade_is_explicit_and_save_3_clock_validation_is_atomic()
+    public void Current_save_clock_validation_is_atomic()
     {
-        var old=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v2.json"));
-        var upgraded=SaveCodec.Read(old);
-        Assert.Equal(130080,upgraded.Clock.Time.AbsoluteMinute);Assert.True(upgraded.Paused);
-        var modern=SaveCodec.Write(upgraded);
+        var modern=SaveCodec.Write(SpatialReferenceScenario.Create());
         Assert.Equal(modern,SaveCodec.Write(SaveCodec.Read(modern)));
         foreach(var mutation in new[]{"negative","tooLarge","number","unbound","duplicate","missing","null","order"})
         {

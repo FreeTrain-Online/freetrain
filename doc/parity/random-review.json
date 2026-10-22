@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "slice": "P1-03",
+  "reviewedOn": "2026-10-22",
+  "baseline": {
+    "name": "FreeTrain ExAV 2.1.1.12",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "root": "trunk"
+  },
+  "sourceDependencies": [
+    {
+      "path": "trunk/core/contributions/land/RandomLandBuilder.cs",
+      "sha256": "5bc3145efbeb88fab68386cbedbda1da006d8919988be4d3e62b2f8698033d13"
+    },
+    {
+      "path": "trunk/core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33"
+    },
+    {
+      "path": "trunk/core/world/development/DevelopmentAlgorithm.cs",
+      "sha256": "98c38e82547c344f74dedaee54f6c822333e669c8c04e381eba532751b9e8cd1"
+    },
+    {
+      "path": "trunk/core/world/structs/ConstructionSite.cs",
+      "sha256": "01ca68c326b92a636a2993df016b549afec2a2bb4ee1b1a36d2cb50f1a88fab8"
+    },
+    {
+      "path": "trunk/core/world/subsidiaries/SubsidiaryCompany.cs",
+      "sha256": "fed908354ba713f3a9d96bdd41724f5b8a23bf64761c4eecd2cef68cd1beb9e6"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/EconomicalEvent.cs",
+      "sha256": "541c202d243daad35f2f17afb2bd1225290b59913f4a3767e206f65d7cabde81"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/Economy.cs",
+      "sha256": "6f2515d24abf44609c3c9b0d62ed22a55143f7f1279bb8ee7249a7354bdd4727"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/EventManager.cs",
+      "sha256": "1f0a3cd244b831cf88f89e5edebf42ab7ffc3348bf4b35c108be3b325d17efe2"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/Trend.cs",
+      "sha256": "7ea38209102c1130b2f1f2879a22e4b2d81953002b61c2c6559c1b07193f3cf4"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/MultiSelectorController.cs",
+      "sha256": "0123f4548b14b7d4af8ca7dadb43f588c26e72d42bfc86ece74a0b12a7af2c62"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/ControllerForm.cs",
+      "sha256": "1954e9718eb19f024a5a80bb4376703e6be346aff90372afdf5357d760baef18"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "sha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "sha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/Const.cs",
+      "sha256": "fb7cd3e3000b080362d5e2c5b280ea0967194f53a238996e59476fb845b434c8"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/Game.cs",
+      "sha256": "fb62c37cfc6194d85d18a81a95fd2e670ed68b305b3f14cdb4b8b08e639c6d35"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/OpponentTeam.cs",
+      "sha256": "03503d6607f5e2a75a1e07fd8b350b17b69ad3f1dfe40dc954c612bd6125f23c"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumStructure.cs",
+      "sha256": "b78d867e3c57f7a5589e8f4961edd8caf5726010351495cb1ec4cdf6ad6c2f42"
+    }
+  ],
+  "algorithmReference": {
+    "url": "https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.Private.CoreLib/src/System/Random.CompatImpl.cs",
+    "license": "MIT",
+    "notice": "src/FreeTrain.Online.Simulation/NOTICE.txt",
+    "scope": "Frozen modified subtractive initialization, integer sampling, double scaling and large signed ranges. ExAV itself references System.Random, not a bundled implementation. Runtime reference is supplementary, not an ExAV desktop oracle."
+  },
+  "durableStreams": [
+    {
+      "id": "construction",
+      "source": "trunk/core/world/structs/ConstructionSite.cs",
+      "symbols": "ConstructionSite.random / VoxelImpl constructor / clockHandler / registerClockHandler",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P7",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "development",
+      "source": "trunk/core/world/development/DevelopmentAlgorithm.cs",
+      "symbols": "SearchPlan.rnd / Rand",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P7",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "forest",
+      "source": "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "symbols": "ForestBuilder.rnd / createRandomTrees",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P2/P7",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "land-selection",
+      "source": "trunk/core/contributions/land/RandomLandBuilder.cs",
+      "symbols": "RandomLandBuilder.random / create",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P2/P7",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "stadium",
+      "source": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/Const.cs",
+      "symbols": "Const.rnd (shared by Game, OpponentTeam and StadiumStructure)",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P7/P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "stock-economy",
+      "source": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/Economy.cs",
+      "symbols": "Economy._random / rand; shared with Trend and EventManager; saved in otherObjects",
+      "sourcePersistence": "saved via Economy.otherObjects rand key",
+      "consumerPhase": "P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "stock-effects",
+      "source": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/EconomicalEvent.cs",
+      "symbols": "SingleEffect.rand (RandomEx)",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "stock-tables",
+      "source": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/EconomicalEvent.cs",
+      "symbols": "RandomTable.rand (shared by BranchedTable and ForEachTable)",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "subsidiaries",
+      "source": "trunk/core/world/subsidiaries/SubsidiaryCompany.cs",
+      "symbols": "SubsidiaryCompany.random / clockHandler / registerClock",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    },
+    {
+      "id": "time-length",
+      "source": "trunk/core/world/TimeLength.cs",
+      "symbols": "TimeLength.rnd / random",
+      "sourcePersistence": "static generator state not serialized",
+      "consumerPhase": "P5/P7/P8",
+      "status": "stream infrastructure implemented and verified; gameplay consumption awaits implementing phase"
+    }
+  ],
+  "specialGenerators": [
+    {
+      "source": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "symbol": "createRandomGenerator",
+      "disposition": "Operation-local GameRandom via RandomStreams.ForCreek; unchecked Int32 ((x1*128+y1)^(x2*128+y2)); atomic placement later in P3/P7. No world stream consumption."
+    },
+    {
+      "source": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/ControllerForm.cs",
+      "symbol": "rnd; randomize design/color selectors",
+      "disposition": "Transient UI proposal randomness; P9 browser-local implementation must never consume authoritative world streams. Confirmed choices enter commands explicitly."
+    },
+    {
+      "source": "trunk/plugins/jp.co.tripod.chiname.lib.generic/MultiSelectorController.cs",
+      "symbol": "rnd; selectorDesign/selectorColor/selectorCol2",
+      "disposition": "Transient UI proposal randomness; P9 browser-local implementation must never consume authoritative world streams. Confirmed choices enter commands explicitly."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "P1-RANDOM-001",
+      "decision": "Freeze subtractive-55-v1 instead of calling host System.Random or reusing prototype Park-Miller. Preserve seeded Next(), Next(max), Next(min,max) and NextDouble consumption/scaling; signed Int32 seed initialization wraps explicitly. Validate 55 values in [0,2147483646], at least one nonzero, next-write index in [0,54].",
+      "evidence": "RandomTests literal independent Python recurrence vectors and supplementary seeded .NET comparisons across table wraps."
+    },
+    {
+      "id": "P1-RANDOM-002",
+      "decision": "Replace each source static generator with a named world-owned stream, preserving sharing within source generators. Move all ten authoritative stream states into saves. This deliberately adds repeatable continuation to source-unsaved development/construction/etc. No new correlations by merging source generators, no per-entity split.",
+      "evidence": "RandomTests interleaved subsystems/sessions, immutable capture/restore, scheduler rebinding and real checkpoint restart."
+    },
+    {
+      "id": "P1-RANDOM-003",
+      "decision": "Stream-bank version 1 derives each stream seed from SHA-256 of UTF-8 freetrain.random-streams.v1 + LF + invariant signed decimal root seed + LF + exact stream ID (no trailing LF); little-endian first 4 digest bytes masked with 0x7fffffff. IDs, encoding, algorithm, initialization and API consumption form the versioned contract. No string.GetHashCode, environment seed, lazy registration or request-order seed assignment. Reference root seed is 0.",
+      "evidence": "Ten literal seed-derivation vectors and independent initial-state Save 4 fixture."
+    },
+    {
+      "id": "P1-RANDOM-004",
+      "decision": "Save 4 / reference-spatial-3 persist complete random bank alongside clock; protocol 3 and asset-free pack/content hash unchanged. Per subsequent owner direction during rapid slice iteration without a save-game corpus, support only the current format: reject Saves 1/2/3 with incompatibleSave, preserve current world/files, and retain no older-format parser or upgrade. Unknown bank version/algorithm gives incompatibleSave; malformed bank gives invalidSave before world replacement.",
+      "evidence": "Strict current schema and C# codec; retired Save 2/3 fixtures are used only for rejection tests. Client schema, HTTP checkpoint and browser upload rejection/confirmation tests."
+    },
+    {
+      "id": "P1-RANDOM-005",
+      "decision": "No authoritative draws in browser rendering, read-only queries, save/capture, pause changes, or empty reference-clock advancement. UI selector generators remain transient local proposals, creek remains operation-local. Source RandomEx helpers and exact consumer call order, bounds, arithmetic/anomalies and no-candidate branches must be bound and verified in P7/P8; they are not implemented gameplay here. RandomEx.Next2DExt has asymmetric loop logic and halfRange=0 can loop forever: retain source difference for P8 rather than silently changing it.",
+      "evidence": "Source consumer hashes and P1 tests for empty-clock, creek and independent-session consumption."
+    }
+  ],
+  "localization": {
+    "newUserVisibleStrings": [],
+    "review": "No new control, label, help text or random-generator name is exposed. Existing invalidSave/incompatibleSave English and Japanese keys are reused; no untranslated random errors enter product flows. Source random selector UI labels remain with P2/P7/P8/P9 consumer translations. Browser regression includes narrow Japanese and English save errors."
+  },
+  "implementation": [
+    "src/FreeTrain.Online.Simulation/RandomStreams.cs",
+    "src/FreeTrain.Online.Simulation/ReferenceWorld.cs",
+    "src/FreeTrain.Online.Persistence/SaveCodec.cs",
+    "prototype/protocol/save-v4.schema.json",
+    "prototype/protocol/saves/reference-v4.json"
+  ],
+  "verification": [
+    "tests/FreeTrain.Online.Tests/RandomTests.cs",
+    "tests/FreeTrain.Online.Tests/ReferenceWorldTests.cs",
+    "web/tests/spatial.test.ts",
+    "web/tests/browser/reference-world.spec.ts"
+  ],
+  "limits": [
+    "Source-derived algorithm/ownership review; no stable desktop-runtime comparison or historical binary RNG-state import.",
+    "Reference world contains no gameplay random consumers; all consumer gameplay/optional packs and full-city continuations remain later slices.",
+    "P1-04 entity/footprint/pack contracts and native/device gates remain open."
+  ]
+}

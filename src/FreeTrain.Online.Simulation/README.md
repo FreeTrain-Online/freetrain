@@ -10,7 +10,10 @@ obsolete original-FreeTrain gameplay baseline. Its four-direction geometry,
 clock, random generator, definitions and world remain only for explicit historical
 regression harnesses and headless traces. The default service uses `ReferenceWorld`,
 a validated H/V loop with the canonical source-minute clock/calendar/scheduler
-and no prototype subsystem dependencies. See [P1-02](../../doc/web-parity-clock.md). Save 1 compatibility is retired;
+and versioned world-owned random streams, with no prototype subsystem dependencies.
+See [P1-02](../../doc/web-parity-clock.md) and [P1-03](../../doc/web-parity-random.md).
+Only Save 4 is supported; it captures the clock and all random states.
+Earlier save formats are rejected without conversion;
 the running application rejects prototype saves and does not write them. They are not
 authorities or defaults for new game rules. Original-source runtime ports outside
 this project, including the reference content and manual controller, carry the

@@ -95,14 +95,6 @@ Deno.test('shared canonical live fixture validates, renders and picks every sour
     (r:Snapshot)=>{r.map.coordinateSystem='prototypeXY';},
   ]){const broken=structuredClone(read);mutate(broken);throws(()=>parseMessage(JSON.stringify(broken)));}
 });
-Deno.test('Save 2 shared fixture follows its independent structural schema',async()=>{
-  const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v2.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v2.json',import.meta.url)));
-  const validate=new Ajv({strict:true}).compile(schema);
-  assert(validate(save));assert(!validate({...save,clock:0}));assert(!validate({...save,saveVersion:1}));
-});
-
 Deno.test('canonical source-minute display uses fixed years and ten-minute precision in both locales',async()=>{
   const {gameDate,formatGameTime,maximumGameMinute}=await import('../src/lib/game-time.ts');
   equal(gameDate('130080'),{year:1,month:4,day:1,weekday:6,hour:8,minute:0});
@@ -112,10 +104,10 @@ Deno.test('canonical source-minute display uses fixed years and ten-minute preci
   equal(gameDate(String(maximumGameMinute)).year,2147483647);
   throws(()=>gameDate('-1'));throws(()=>gameDate(String(maximumGameMinute+1n)));
 });
-Deno.test('Save 3 carries canonical clock state and strict source action binding boundary',async()=>{
+Deno.test('current save carries canonical clock state and strict source action binding boundary',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v3.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v3.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v4.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v4.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));
   for(const clock of [null,{...save.clock,absoluteMinute:130080},{...save.clock,absoluteMinute:'-1'},
@@ -129,4 +121,31 @@ Deno.test('canonical clock deltas retain geometry and reject unsupported clock r
   const next=applyDelta(read,delta as never);assert(next);equal(next.tick,'130081');equal(next.paused,false);equal(next.tracks,read.tracks);
   assert(!applyDelta(read,{...delta,tick:'1128717404863200'} as never));
   throws(()=>parseMessage(JSON.stringify({...read,ruleset:'reference-spatial-1'})));
+  throws(()=>parseMessage(JSON.stringify({...read,ruleset:'reference-spatial-2'})));
+});
+
+Deno.test('Save 4 freezes complete random state and rejects malformed or incompatible streams',async()=>{
+  const {default:Ajv}=await import('ajv');
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v4.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v4.json',import.meta.url)));
+  const validate=new Ajv({strict:true}).compile(schema);
+  assert(validate(save));
+  equal(save.ruleset,'reference-spatial-3');equal(save.random.streams.length,10);
+  for(const mutate of [
+    (s:typeof save)=>{delete s.random;},
+    (s:typeof save)=>{s.random=null;},
+    (s:typeof save)=>{s.random.algorithm='future';},
+    (s:typeof save)=>{s.random.version=2;},
+    (s:typeof save)=>{s.random.seed='0';},
+    (s:typeof save)=>{s.random.streams.pop();},
+    (s:typeof save)=>{s.random.streams[1].id=s.random.streams[0].id;},
+    (s:typeof save)=>{s.random.streams[0].id='unknown';},
+    (s:typeof save)=>{s.random.streams[0].state.index=55;},
+    (s:typeof save)=>{s.random.streams[0].state.index='0';},
+    (s:typeof save)=>{s.random.streams[0].state.values.pop();},
+    (s:typeof save)=>{s.random.streams[0].state.values[0]=-1;},
+    (s:typeof save)=>{s.random.streams[0].state.values[0]=2147483647;},
+    (s:typeof save)=>{s.random.streams[0].state.values.fill(0);},
+    (s:typeof save)=>{s.random.streams[0].state.extra=0;},
+  ]){const broken=structuredClone(save);mutate(broken);assert(!validate(broken));}
 });

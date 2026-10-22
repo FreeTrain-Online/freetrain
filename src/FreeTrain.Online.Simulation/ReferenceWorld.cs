@@ -23,6 +23,8 @@ public static class NormalRailPatterns
 public sealed class ReferenceWorld
 {
     public Clock Clock { get; private set; } = new();
+    public RandomStreams Random { get; private set; }
+    public void RestoreRandom(RandomStreamsState state) => Random = RandomStreams.Restore(state);
     public bool Paused { get; private set; } = true;
     public long Revision { get; private set; }
     public void SetPaused(bool paused)
@@ -46,8 +48,9 @@ public sealed class ReferenceWorld
     }
     public WorldSpace Space { get; }
     public ImmutableArray<ReferenceRail> Rails { get; }
-    public ReferenceWorld(int width, int height, int levels, IEnumerable<ReferenceRail> rails)
+    public ReferenceWorld(int width, int height, int levels, IEnumerable<ReferenceRail> rails, int randomSeed = RandomStreams.ReferenceSeed)
     {
+        Random = new(randomSeed);
         if (width is < 1 or > 64 || height is < 1 or > 128 || levels is < 1 or > 16)
             throw new ArgumentException("Invalid reference dimensions.");
         Space = new(width, height, levels);
