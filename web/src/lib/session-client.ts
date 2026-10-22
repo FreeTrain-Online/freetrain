@@ -1,5 +1,5 @@
 import fixture from '../../../prototype/protocol/fixtures/snapshot.json' with { type: 'json' };
-import type { Accepted, Command, Rejected, Snapshot } from '../generated/contracts.ts';
+import type { Accepted, Command, Rejected, Snapshot, SpatialQuery, SpatialPreview } from '../generated/contracts.ts';
 
 type DeepReadonly<T> = T extends object ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : T;
 export type ReadState = DeepReadonly<Snapshot>;
@@ -16,6 +16,7 @@ export interface SessionClient {
   subscribeStatus?(listener: (status: ConnectionStatus) => void): () => void;
   readonly unresolved?: boolean;
   send(command: Command): Promise<Accepted | Rejected>;
+  previewSpatial?(query:SpatialQuery,signal:AbortSignal):Promise<SpatialPreview>;
   dispose(): void;
 }
 function freeze<T extends object>(value: T): DeepReadonly<T> {

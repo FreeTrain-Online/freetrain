@@ -6,7 +6,7 @@ using FreeTrain.Online.Content;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Server;
 using FreeTrain.Online.Session;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 using FreeTrain.Online.Plugins.ManualController;
 using Xunit;
 using static NetworkTests;
@@ -193,20 +193,20 @@ public class MultiplayerTests
     }
 
     [Fact]
-    public async Task Load_clears_leases_for_all_peers_and_rejects_old_epoch_work()
+    public async Task Incompatible_save_preserves_leases_epoch_and_other_participants_work()
     {
         var session = new NetworkSession(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
-        var saved = session.CaptureSave(); session.Tick(Now); var document = await saved;
         await Apply(session, a, Command("take", new AcquireControlCommand("train-1"))); Drain(a); Drain(b);
-        var load = session.LoadSave(document, 1);
-        var old = session.Submit(b, Command("old", new StepCommand()), Now);
-        session.Tick(Now); await load;
-        Assert.Equal("staleEpoch", Assert.IsType<RejectedMessage>(await old).Code);
-        foreach (var peer in new[] { a, b })
-        {
-            var state = Assert.IsType<SnapshotMessage>(await peer.Output.Reader.ReadAsync());
-            Assert.Equal(2, state.WorldEpoch); Assert.Null(state.Trains[0].ControlLease); Assert.True(state.Paused);
-        }
+        var before = session.Bootstrap().Snapshot;
+        var load = session.LoadSave(System.Text.Encoding.UTF8.GetBytes("{\"saveVersion\":1}"), 1);
+        session.Tick(Now);
+        Assert.Equal("incompatibleSave", (await Assert.ThrowsAsync<InvalidDataException>(() => load)).Message);
+        var after = session.Bootstrap().Snapshot;
+        Assert.Equal(before.WorldEpoch, after.WorldEpoch);
+        Assert.Equal(before.Trains[0].ControlLease, after.Trains[0].ControlLease);
+        Assert.Equal(before.Revision, after.Revision);
+        var step = session.Submit(b, Command("still-current", new StepCommand()), Now);
+        session.Tick(Now); Assert.IsType<AcceptedMessage>(await step);
     }
 
     [Fact]

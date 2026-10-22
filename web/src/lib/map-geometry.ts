@@ -1,30 +1,77 @@
-// Projection adapted from core/world/World.cs at 1f755ca. LGPL-2.1-or-later.
-import type { Position, Track } from '../generated/contracts.ts';
+// Stable ExAV 2.1.1.12, archive 883cf7d/trunk/core/world/{Direction,Location,World}.cs
+// and core/views/QuarterViewDrawer.cs (fixed-level application of picking candidates).
+// Original: Copyright (c) 2002 Kohsuke Kawaguchi et al.; LGPL-2.1-or-later.
+import type { Heading, Position, StoragePosition } from '../generated/contracts.ts';
 export interface Point { x: number; y: number }
-export interface Camera { x: number; y: number; zoom: number }
-export function project(p: Position): Point { return { x: 16 * (p.x + p.y), y: 8 * (p.y - p.x) - 16 * p.z }; }
-export function unproject(p: Point, z: number): Point { return { x: p.x / 32 - (p.y + 16*z) / 16, y: p.x / 32 + (p.y + 16*z) / 16 }; }
-export function toScreen(p: Position, camera: Camera, width: number, height: number): Point {
-  const q = project(p); return { x: (q.x-camera.x)*camera.zoom+width/2, y: (q.y-camera.y)*camera.zoom+height/2 };
+export interface SpatialMap {
+  project(p: Position): Point;
+  center(p: Position): Point;
+  pick(p: Point, z: number): Position;
+  contains(p: Position): boolean;
+  storage(p: Position): StoragePosition | null;
+  ground(): Iterable<Position>;
 }
-export function tileAt(p: Point, z: number, camera: Camera, width: number, height: number): Position {
-  const q = unproject({ x: (p.x-width/2)/camera.zoom+camera.x, y: (p.y-height/2)/camera.zoom+camera.y },z);
-  return { x: Math.floor(q.x+0.5), y: Math.floor(q.y+0.5), z };
+export function int32(value: number): number {
+  if (!Number.isInteger(value) || value < -2147483648 || value > 2147483647) throw new RangeError('Spatial Int32 overflow');
+  return value;
 }
-export function zoomAt(camera: Camera, factor: number, p: Point, width: number, height: number): Camera {
-  const zoom = Math.min(4, Math.max(0.5, camera.zoom*factor));
-  return { x: camera.x+(p.x-width/2)*(1/camera.zoom-1/zoom), y: camera.y+(p.y-height/2)*(1/camera.zoom-1/zoom), zoom };
+export function heading(value: number): Heading {
+  if (!Number.isInteger(value) || value < 0 || value > 7) throw new RangeError('Invalid heading');
+  return value;
 }
-export function same(a: Position, b: Position) { return a.x===b.x && a.y===b.y && a.z===b.z; }
-export const ports: Record<Track['shape'], readonly Point[]> = {
-  eastWest: [{x:1,y:0},{x:-1,y:0}], northSouth: [{x:0,y:-1},{x:0,y:1}],
-  curveSE: [{x:0,y:1},{x:1,y:0}], curveSW: [{x:0,y:1},{x:-1,y:0}],
-  curveNE: [{x:0,y:-1},{x:1,y:0}], curveNW: [{x:0,y:-1},{x:-1,y:0}],
-  junctionE: [{x:0,y:-1},{x:0,y:1},{x:1,y:0}], buffer: [{x:-1,y:0}],
-};
-export interface SpriteMask { width: number; height: number; mask: readonly string[] }
-export function opaqueAt(sprite: SpriteMask, x: number, y: number) {
-  const ix=Math.floor(x), iy=Math.floor(y);
-  return ix>=0 && iy>=0 && ix<sprite.width && iy<sprite.height && sprite.mask[iy][ix]==='1';
+const offsets: readonly Point[] = [{x:0,y:-1},{x:1,y:-1},{x:1,y:0},{x:1,y:1},{x:0,y:1},{x:-1,y:1},{x:-1,y:0},{x:-1,y:-1}];
+export function offset(h: Heading): Point { return {...offsets[heading(h)]}; }
+export function rotate(h: Heading, eighthTurns: number): Heading { return ((heading(h)+int32(eighthTurns)%8+8)%8); }
+export function angle(a: Heading,b: Heading): number { const d=Math.abs(heading(a)-heading(b));return Math.min(d,8-d); }
+export function directionTo(from: Position,to: Position): Heading {
+  if(from.z!==to.z)throw new RangeError('Direction requires the same level');
+  const dx=Math.sign(int32(to.x-from.x)),dy=Math.sign(int32(to.y-from.y));
+  const result=offsets.findIndex(p=>p.x===dx&&p.y===dy);
+  if(result<0)throw new RangeError('Direction requires distinct locations');
+  return result;
 }
-export function visible(x: number,y: number,w: number,h: number,width: number,height: number) { return x+w>=0 && y+h>=0 && x<=width && y<=height; }
+export function move(p:Position,h:Heading):Position { const d=offset(h);return {x:int32(p.x+d.x),y:int32(p.y+d.y),z:int32(p.z)}; }
+export function distance(from:Position,to:Position):number {
+  const dx=int32(to.x-from.x),dy=int32(to.y-from.y),dz=int32(to.z-from.z);
+  return Math.trunc(Math.sqrt(int32(int32(int32(dx*dx)+int32(dy*dy))+int32(dz*dz))));
+}
+export function snap(p:Position,anchor:Position,mode:0|4|8):Position {
+  if(p.z!==anchor.z)throw new RangeError('Snapping requires the same level');
+  if(mode===0)return {...p};
+  const dx=int32(Math.abs(int32(p.x-anchor.x))),dy=int32(Math.abs(int32(p.y-anchor.y)));
+  if(mode===4)return dx>=dy?{x:p.x,y:anchor.y,z:p.z}:{x:anchor.x,y:p.y,z:p.z};
+  if(mode!==8)throw new RangeError('Invalid snap mode');
+  if(Math.trunc(dy/2)>dx)return {x:anchor.x,y:p.y,z:p.z};
+  if(Math.trunc(dx/2)>dy)return {x:p.x,y:anchor.y,z:p.z};
+  return {x:p.x,y:int32(anchor.y+dx*Math.sign(int32(p.y-anchor.y))),z:p.z};
+}
+export class WorldSpace implements SpatialMap {
+  readonly centerX:number;
+  constructor(readonly horizontalSize:number,readonly verticalSize:number,readonly levels:number) {
+    if([horizontalSize,verticalSize,levels].some(v=>int32(v)<=0))throw new RangeError('Invalid dimensions');
+    this.centerX=Math.trunc((verticalSize-1)/2);
+  }
+  storage(p:Position):StoragePosition {
+    const xx=int32(p.x-this.centerX);
+    return {h:Math.floor(int32(xx+p.y)/2),v:int32(p.y-xx),z:int32(p.z)};
+  }
+  location(p:StoragePosition):Position {
+    return {x:int32(int32(p.h-Math.trunc(p.v/2))+this.centerX),y:int32(p.h+Math.trunc(int32(p.v+1)/2)),z:int32(p.z)};
+  }
+  containsHorizontal(p:Position):boolean { const s=this.storage(p);return s.h>=0&&s.h<this.horizontalSize&&s.v>=0&&s.v<this.verticalSize; }
+  contains(p:Position):boolean { return p.z>=0&&p.z<this.levels&&this.containsHorizontal(p); }
+  project(p:Position):Point {
+    const x=int32(int32(p.x+p.z)-this.centerX),y=int32(p.y-p.z);
+    return {x:int32(16*int32(x+y)),y:int32(8*int32(-x+y))};
+  }
+  // Terrain diamonds have their center 16,8 pixels from the source top-left.
+  center(p:Position):Point { const q=this.project(p);return {x:int32(q.x+16),y:int32(q.y+8)}; }
+  pick(p:Point,z:number):Position {
+    if(!Number.isFinite(p.x)||!Number.isFinite(p.y))throw new RangeError('Invalid screen point');
+    const t=2*p.y-16;
+    return {x:int32(Math.floor((p.x-t)/32)+this.centerX-z),y:int32(Math.floor((p.x+t)/32)+z),z:int32(z)};
+  }
+  *ground():Iterable<Position> {
+    for(let v=0;v<this.verticalSize;v++)for(let h=0;h<this.horizontalSize;h++)yield this.location({h,v,z:0});
+  }
+}

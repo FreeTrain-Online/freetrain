@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "slice": "P1-01 client/server spatial integration",
+  "reviewedOn": "2026-10-21",
+  "entries": [
+    {
+      "key": "snapDirection",
+      "english": "Align target",
+      "japanese": "対象の方向合わせ",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "snapNone",
+      "english": "Free",
+      "japanese": "自由",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "snapFour",
+      "english": "Four directions",
+      "japanese": "4方向",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "snapEight",
+      "english": "Eight directions",
+      "japanese": "8方向",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "useAnchor",
+      "english": "Use as alignment anchor",
+      "japanese": "方向合わせの基準にする",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "snapAnchor",
+      "english": "Alignment anchor",
+      "japanese": "基準位置",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "alignmentHint",
+      "english": "Confirm changes the selected tile.",
+      "japanese": "確定すると選択したマスを変更します。",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "checkingGeometry",
+      "english": "Checking target…",
+      "japanese": "対象の座標を確認中…",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "geometryChecked",
+      "english": "Target is within the map.",
+      "japanese": "対象はマップの範囲内です。",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "geometryFailed",
+      "english": "Target could not be checked. Select it again to retry.",
+      "japanese": "対象の座標を確認できませんでした。もう一度選択してください。",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "outsideMap",
+      "english": "Target is outside the map.",
+      "japanese": "対象はマップの範囲外です。",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "directionLabel",
+      "english": "Direction",
+      "japanese": "方向",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "distanceLabel",
+      "english": "Distance in cells",
+      "japanese": "距離（マス）",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "temporaryReferenceWorld",
+      "english": "Temporary reference world",
+      "japanese": "暫定参照ワールド",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Temporary runtime label updated under ONLINE-SAVE-001 on 2026-10-22; not claimed source UI text or save compatibility."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "unvalidatedPreview",
+      "english": "Preview only. Placement and cost are checked on Confirm.",
+      "japanese": "プレビューです。配置と費用は確定時に判定します。",
+      "classification": "browser adaptation; newly authored bilingual presentation",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "sourceBehavior": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Location.cs",
+        "symbols": [
+          "align4To",
+          "align8To",
+          "getDistanceTo"
+        ],
+        "note": "Labels are a portable targeting adaptation, not claimed source UI text."
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingNorth",
+      "english": "North",
+      "japanese": "北",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[0].displayName",
+        "originalJapanese": "北",
+        "japaneseTextSha256": "01bc01b32975b903cf2b9402e6307327f5fc72b4ca762ac6de2bb2039f0a4cb3"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[0].displayName",
+        "text": "North"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingNorthEast",
+      "english": "North-east",
+      "japanese": "北東",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[1].displayName",
+        "originalJapanese": "北東",
+        "japaneseTextSha256": "fb964ecb449ef78a160bbedb4704de691a9415ebd44d3660d100d727b79adc51"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[1].displayName",
+        "text": "Northeast"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingEast",
+      "english": "East",
+      "japanese": "東",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[2].displayName",
+        "originalJapanese": "東",
+        "japaneseTextSha256": "469e009b15a00cf1b308259866d5855699e71385d383faf289db85597db28f83"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[2].displayName",
+        "text": "East"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingSouthEast",
+      "english": "South-east",
+      "japanese": "南東",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[3].displayName",
+        "originalJapanese": "南東",
+        "japaneseTextSha256": "3df3000f82f6c02da9540879012f6ef41d9745b666a755b106cade39ed28585b"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[3].displayName",
+        "text": "Southeast"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingSouth",
+      "english": "South",
+      "japanese": "南",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[4].displayName",
+        "originalJapanese": "南",
+        "japaneseTextSha256": "b2f94b1034506f37163aad2674a55705a27173aa22114de7c4906cafe4c592a0"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[4].displayName",
+        "text": "South"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingSouthWest",
+      "english": "South-west",
+      "japanese": "南西",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[5].displayName",
+        "originalJapanese": "南西",
+        "japaneseTextSha256": "fb22b2e6af61bcd2c9972c5a1dd3c95ce80ed81e8d727131650ea645675e8b9a"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[5].displayName",
+        "text": "Southwest"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingWest",
+      "english": "West",
+      "japanese": "西",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[6].displayName",
+        "originalJapanese": "西",
+        "japaneseTextSha256": "b9f0c815459caa83d43d49643d76e70468a1306ad668d3a5e0759bedb5fb1f1d"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[6].displayName",
+        "text": "West"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    },
+    {
+      "key": "headingNorthWest",
+      "english": "North-west",
+      "japanese": "北西",
+      "classification": "source meaning carryover; English donor with reviewed spelling",
+      "reviewStatus": "English/Japanese reviewed; narrow Japanese DPR2 and English browser checks passed",
+      "implementation": "web/src/lib/localization.ts",
+      "source": {
+        "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+        "path": "trunk/core/world/Direction.cs",
+        "symbol": "Direction.directions[7].displayName",
+        "originalJapanese": "北西",
+        "japaneseTextSha256": "7ba3c590c665c889e5a9045d1ea8f63b727734c25e018948ad194a736bbdba7d"
+      },
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "core/world/Direction.cs",
+        "symbol": "Direction.directions[7].displayName",
+        "text": "Northwest"
+      },
+      "evidence": "web/tests/browser/spatial.spec.ts"
+    }
+  ]
+}

@@ -1,8 +1,10 @@
+// OBSOLETE GAMEPLAY BASELINE: original-FreeTrain prototype compatibility/reference only.
+// Canonical game logic belongs in FreeTrain.Online.Simulation and follows stable ExAV.
 // Behavioral extraction from FreeTrain at 1f755ca; see prototype/assets/PROVENANCE.md.
 // Original: Copyright (c) 2002 Kohsuke Kawaguchi et al.; LGPL-2.1-or-later (COPYING.txt).
 using System.Collections.Immutable;
 
-namespace FreeTrain.Online.Simulation;
+namespace FreeTrain.Online.Simulation.Prototype;
 
 public sealed record PendingAction(long DueTick, long Order, string Kind, string SubjectId);
 

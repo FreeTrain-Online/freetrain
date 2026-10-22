@@ -1,0 +1,9 @@
+{
+  "type": "command",
+  "requestId": "fixture-acquireControl",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "acquireControl",
+    "trainId": "train-1"
+  }
+}

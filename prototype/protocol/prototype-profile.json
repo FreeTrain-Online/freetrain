@@ -1,0 +1,11 @@
+{
+  "ruleset": "prototype-reference-1",
+  "contentVersion": "prototype-content-1",
+  "requiredPacks": [
+    {
+      "id": "prototype-reference",
+      "version": "1",
+      "catalogHash": "0607821d22faaae836a3f04246a9a79f6c7779aa19081390244fb227a461af2c"
+    }
+  ]
+}

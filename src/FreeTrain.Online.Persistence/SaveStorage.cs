@@ -16,17 +16,18 @@ public sealed class SaveStorage : IDisposable
     private string PathFor(string id) => Slots.Contains(id, StringComparer.Ordinal)
         ? Path.Combine(directory, id + ".json") : throw new InvalidDataException("invalidSlot");
     public bool Exists(string id) => File.Exists(PathFor(id));
-    public SaveDocument Read(string id)
+    // Bounded opaque input only. Reading a file does not make its format supported.
+    public byte[] Read(string id)
     {
         var path = PathFor(id);
         using var file = File.OpenRead(path);
         if (file.Length > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
         var bytes = new byte[(int)file.Length]; file.ReadExactly(bytes);
-        return SaveCodec.Decode(bytes);
+        return bytes;
     }
-    public async Task Write(string id, SaveDocument document)
+    public async Task Write(string id, ReadOnlyMemory<byte> bytes)
     {
-        var path = PathFor(id); var bytes = SaveCodec.Encode(document);
+        var path = PathFor(id);
         if (bytes.Length > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
         await writes.WaitAsync();
         var temporary = Path.Combine(directory, ".save-" + Guid.NewGuid().ToString("N") + ".tmp");

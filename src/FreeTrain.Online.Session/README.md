@@ -44,3 +44,7 @@ also expires input after five ticks, before due events.
 
 Future agents use the same contexts, commands, reads and leases. No decision engine or
 provider is part of this library.
+
+Prototype Save 1 support is retired. Save input reaches the authority boundary
+and is rejected without changing world/epoch/leases. Capture reports
+`savingUnavailable` until canonical persistence is implemented.

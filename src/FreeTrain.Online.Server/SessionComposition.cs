@@ -1,7 +1,7 @@
 using FreeTrain.Online.Content;
 using FreeTrain.Online.Plugins.ManualController;
 using FreeTrain.Online.Session;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 
 namespace FreeTrain.Online.Server;
 

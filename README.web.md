@@ -7,8 +7,8 @@ HTTP/WebSocket transport and an authoritative C# session. Run/pause/step,
 controller changes and Japanese station rename use committed server state.
 Reconnect/refresh recover the current game. The Canvas map supports pan/zoom,
 height cuts, object picking, track previews and confirmed construction/removal,
-with focus-scoped manual keyboard control. Versioned saves, server checkpoints, browser
-download/upload and an optional station sound are available.
+with focus-scoped manual keyboard control. An optional station sound is available. Prototype save support is retired;
+canonical-world persistence remains to be implemented.
 
 Multiple participants can share that world with owner/operator/observer roles,
 conflict checks, independent reconnects and timed train-control leases.
@@ -24,7 +24,7 @@ specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) a
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
 [P0-08 optional V2 source review and launch/credits specification](doc/web-parity-optional-plugins.md)
 is complete. [P0-09 authority/scope integration](doc/web-parity-exav-integration.md)
-is complete at source level; overall P0 and runtime/native acceptance remain open. See
+is complete at source level. [P0 coverage is closed](doc/web-parity-phase-gates.md); P1 and runtime/native acceptance remain open. See
 [the source inventory](doc/web-parity-exav-inventory.md) and
 [maintained source policy](doc/web-feature-parity.md).
 
@@ -190,42 +190,21 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-Open **Game → Save and restore**, then use **Save slot** / **Load slot** for three server slots, or **Download save** /
-**Upload save** for an independent JSON backup. Loading asks for confirmation,
-validates the complete file, replaces the game under a new epoch, clears held input,
-and starts paused. Invalid/incompatible files preserve the current world. Uploads
-are limited to 1 MiB. This format does not import historical FreeTrain saves.
+**Prototype Save 1 is unsupported.** The current temporary reference world is
+in-memory only: Save slot / Download save and automatic/shutdown checkpoint writes
+are disabled. Uploads and old slots report an incompatibility error while keeping
+the running world unchanged. An incompatible startup checkpoint is ignored with
+an error and preserved byte-for-byte; the service starts a fresh reference world.
+See [the current policy and next canonical-world slice](doc/web-parity-runtime-policy.md).
 
-The automatic checkpoint is separate from the three manual slots. The server
-writes it periodically, after disconnect/load, and on graceful shutdown. Saves
-use `data/saves` relative to the service working directory by default. Set an
-absolute directory for predictable local or persistent-volume storage:
-
-```sh
-FreeTrainOnline__Saves__Directory="$PWD/data/saves" dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
-```
-
-`FreeTrainOnline__Saves__Interval=00:00:30` configures the checkpoint interval
-(allowed range: one second to five minutes). Only one server can hold a save
-directory at a time. A corrupt checkpoint prevents startup and is left intact;
-restore an independent download/backup using the
-[recovery procedure](doc/web-deployment.md#restore-and-rollback).
-Health reports `checkpointError: "checkpointFailed"` if an automatic write fails.
+`FreeTrainOnline__Saves__Directory` still locates existing inputs; the application
+does not overwrite rejected files. `/api/saves/status` reports availability and
+any ignored-checkpoint error. Canonical-world persistence requires a new format;
+the earlier prototype recovery checker is retired.
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
-new station-arrival events. Reconnects, refreshes and loaded snapshots do not replay
-old events. **Disable sound** mutes it; refresh starts muted.
-
-After a Release build, run the real crash/restart/independent-backup check:
-
-```sh
-python3 scripts/check-save-recovery.py
-```
-
-This launches isolated local servers with temporary save directories and writes
-measurements into `tmp/web-prototype-save-measurements.json`. Linux x64 volume
-recovery and local HTTPS/WSS are now validated under Docker emulation on macOS ARM.
-Public hosting remains pending; cross-browser testing is skipped at the owner's request.
+new station-arrival events. Reconnects and refreshes do not replay old events.
+**Disable sound** mutes it; refresh starts muted.
 
 ## Release deployment and profiling
 
@@ -261,6 +240,17 @@ prints counts and a SHA-256. The .NET test suite compares two complete
 station timing, manual control, accounting atomicity and host isolation.
 
 ## Contract changes
+
+The spatial integration now uses **protocol 3**, with explicit ruleset/content/pack
+identity, coordinate-system tags and per-car eight-direction heading indices.
+Restart/deploy matching client and service artifacts together; protocol 2 peers
+receive HTTP 426. The live reference game remains explicitly in prototype
+an obsolete temporary runtime profile; prototype Save 1 is rejected and writing is unavailable. See the
+[spatial integration and remaining scope](doc/web-parity-spatial-integration.md).
+
+Build track offers four/eight-direction target alignment with an optional anchor.
+A read-only server check verifies coordinates/bounds before Confirm becomes
+available. Confirm still checks actual placement and cost and changes one tile.
 
 Edit `prototype/protocol/schema.json`, run
 `deno task --cwd web generate:contracts`, and update the C# DTOs and shared

@@ -30,25 +30,36 @@ public sealed class NetworkSession
 {
     private readonly NetworkOptions options;
     private readonly SaveStorage? storage;
-    public NetworkSession(NetworkOptions options, SaveStorage? storage = null)
+    public NetworkSession(NetworkOptions options, SaveStorage? storage = null, ILogger<NetworkSession>? logger = null)
     {
         options.Validate();
         this.options = options; this.storage = storage;
         host = SessionComposition.CreateReferenceHost(inputExpiry: options.InputExpiry);
         if (storage?.Exists("checkpoint") == true)
         {
-            var load = host.LoadSave(storage.Read("checkpoint")); host.Pump(); load.GetAwaiter().GetResult();
+            try
+            {
+                var load = host.LoadSave(storage.Read("checkpoint")); host.Pump(); load.GetAwaiter().GetResult();
+            }
+            catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
+            {
+                StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";
+                logger?.LogWarning("Ignored checkpoint ({Reason}); starting the reference world. The file was preserved.", StartupSaveError);
+            }
         }
     }
+    public bool SavingAvailable => false;
+    public string? StartupSaveError { get; }
     private bool disconnectCheckpoint;
     public bool TakeCheckpointRequest() { lock (gate) { var requested = disconnectCheckpoint; disconnectCheckpoint = false; return requested; } }
-    public Task<SaveDocument> CaptureSave(long? epoch = null, ParticipantContext? participant = null) { lock (gate) return host.CaptureSave(epoch, participant); }
+    public Task<byte[]> CaptureSave(long? epoch = null, ParticipantContext? participant = null) { lock (gate) return host.CaptureSave(epoch, participant); }
     public async Task Checkpoint(string id = "checkpoint", long? epoch = null, ParticipantContext? participant = null)
     {
+        if (!SavingAvailable) throw new InvalidDataException("savingUnavailable");
         if (storage == null) return;
         await storage.Write(id, await CaptureSave(epoch, participant));
     }
-    public async Task LoadSave(SaveDocument document, long epoch, ParticipantContext? participant = null)
+    public async Task LoadSave(ReadOnlyMemory<byte> document, long epoch, ParticipantContext? participant = null)
     {
         Task<SnapshotMessage> loaded;
         lock (gate) loaded = host.LoadSave(document, epoch, participant);
@@ -72,8 +83,8 @@ public sealed class NetworkSession
     // Shutdown has stopped the driver, so explicitly drain this final queued capture.
     public async Task FinalCheckpoint()
     {
-        if (storage == null) return;
-        Task<SaveDocument> capture;
+        if (storage == null || !SavingAvailable) return;
+        Task<byte[]> capture;
         lock (gate) { capture = host.CaptureSave(); host.Pump(); }
         await storage.Write("checkpoint", await capture);
     }
@@ -140,8 +151,9 @@ public sealed class NetworkSession
             RevokeAccess(credential, now);
     }
     public JoinMessage Bootstrap(ParticipantContext? participant = null) { lock (gate) return Join(participant ?? new("operator-1")); }
-    private JoinMessage Join(ParticipantContext participant) => new(2, ContentVersion, Incarnation, "reference-v1", participant.ParticipantId,
-        participant.Role.ToString().ToLowerInvariant(), host.WorldEpoch, host.Snapshot());
+    private JoinMessage Join(ParticipantContext participant) => new(ProtocolIdentity.Version, ContentVersion, Incarnation, "reference-v1", participant.ParticipantId,
+        participant.Role.ToString().ToLowerInvariant(), host.WorldEpoch, host.Snapshot(), ProtocolIdentity.PrototypeRuleset, ProtocolIdentity.PrototypePacks);
+    public SpatialPreviewRead PreviewSpatial(SpatialQuery query) { lock (gate) return host.PreviewSpatial(query); }
     public Peer? Connect(DateTimeOffset now, ParticipantContext? participant = null, string? accessCredential = null)
     {
         lock (gate)
@@ -285,7 +297,8 @@ public sealed class NetworkSession
             new(previous.Trains.Select(x => x.Id).Except(next.Trains.Select(x => x.Id)).ToArray(),
                 previous.Stations.Select(x => x.Id).Except(next.Stations.Select(x => x.Id)).ToArray(),
                 previous.Buildings.Select(x => x.Id).Except(next.Buildings.Select(x => x.Id)).ToArray(),
-                previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray()));
+                previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray()),
+            next.Ruleset, next.ContentVersion, next.RequiredPacks);
     }
 }
 
@@ -317,7 +330,7 @@ public sealed class SessionDriver(NetworkSession session, ILogger<SessionDriver>
                     { CheckpointError = "checkpointFailed"; logger.LogError(ex, "Checkpoint failed; current game remains in memory"); }
                     checkpoint = null;
                 }
-                if (checkpoint == null && (now >= next || session.TakeCheckpointRequest()))
+                if (session.SavingAvailable && checkpoint == null && (now >= next || session.TakeCheckpointRequest()))
                 { checkpoint = session.Checkpoint(); next = now + interval; }
             }
         }

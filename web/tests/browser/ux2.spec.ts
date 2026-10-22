@@ -71,8 +71,10 @@ test('UX2 dirty retarget keeps the original entity and stale revisions require R
 test('UX2 replacement modal blocks the game, cancels without changes and preserves safe slot choice', async ({ page }) => {
   await openPanel(page, 'saves');
   await page.getByLabel('Slot', { exact: true }).selectOption('slot2');
-  await page.getByRole('button', { name: 'Save slot', exact: true }).click();
-  await expect(page.getByTestId('save-feedback')).toHaveText('Save completed');
+  await expect(page.getByRole('button', { name: 'Save slot', exact: true })).toBeDisabled();
+  // Future supported-save modal lifecycle fixture; no prototype codec is enabled.
+  await page.route('**/api/saves',route=>route.fulfill({json:[{id:'slot2',exists:true}]}));
+  await page.route('**/api/saves/status',route=>route.fulfill({json:{savingAvailable:false,loadingAvailable:true,startupError:null}}));
   await openPanel(page, 'settings'); await openPanel(page, 'saves');
   await expect(page.getByLabel('Slot', { exact: true })).toHaveValue('slot2');
   const before = await bootstrap(page), camera = await page.locator('canvas').getAttribute('data-camera');

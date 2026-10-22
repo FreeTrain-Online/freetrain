@@ -1,5 +1,7 @@
 # FreeTrain Online deployment and recovery
 
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
 Deploy one authoritative world with multiple participants and one save-directory writer.
 See the [multiplayer operation guide](web-multiplayer-operation.md) for participant
 credentials, owner/operator/observer permissions and train leases.

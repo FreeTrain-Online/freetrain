@@ -1,9 +1,11 @@
+// OBSOLETE GAMEPLAY BASELINE: original-FreeTrain prototype compatibility/reference only.
+// Canonical game logic belongs in FreeTrain.Online.Simulation and follows stable ExAV.
 // Behavioral extraction from FreeTrain at 1f755ca; see prototype/assets/PROVENANCE.md.
 // Original: Copyright (c) 2002 Kohsuke Kawaguchi et al.; LGPL-2.1-or-later (COPYING.txt).
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 
-namespace FreeTrain.Online.Simulation;
+namespace FreeTrain.Online.Simulation.Prototype;
 
 public sealed record TrackState(GridPosition Position, TrackShape Shape, long Revision);
 public sealed record TrainState(string Id, string Name, string DefinitionId, long Revision,

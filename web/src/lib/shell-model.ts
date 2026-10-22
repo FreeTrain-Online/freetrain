@@ -1,4 +1,4 @@
-import type { CommandPayload, Rejected } from '../generated/contracts.ts';
+import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
 import type { ConnectionStatus, FixtureBehavior, ReadState, SessionClient } from './session-client.ts';
 import type { Locale } from './localization.ts';
 
@@ -132,6 +132,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   reconnect();
   return {
     get state() { return state; },
+    async previewSpatial(query:SpatialQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewSpatial)throw new Error('Unavailable');
+      const result=await active.previewSpatial(query,signal);
+      if(disposed||current!==generation||client!==active||state.read?.worldEpoch!==query.expectedWorldEpoch)throw new Error('Stale spatial preview');
+      return result;
+    },
     subscribe(listener: (state: ShellState) => void) { listeners.add(listener); listener(state); return () => { listeners.delete(listener); }; },
     setLocale(locale: Locale) { update({ locale }); },
     setDraft(draft: string) { dirty = true; update({ draft, draftInterrupted: false }); },

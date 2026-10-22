@@ -1,5 +1,7 @@
 # Parity contract, content and persistence transition
 
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
 **P0-05 ExAV source specification complete — 20 October 2026.** Authority is
 archive `trunk/`, ExAV **2.1.1.12**, Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`. The separate

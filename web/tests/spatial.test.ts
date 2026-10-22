@@ -1,0 +1,68 @@
+import vectors from '../../prototype/scenarios/spatial-vectors.json' with { type:'json' };
+import fixture from '../../prototype/protocol/fixtures/snapshot.json' with { type:'json' };
+import type { Snapshot, SpatialQuery } from '../src/generated/contracts.ts';
+import { WorldSpace, offset, rotate, angle, directionTo, move, distance, snap } from '../src/lib/map-geometry.ts';
+import { localSpatialPreview, matchesSpatialPreview } from '../src/lib/spatial-preview.ts';
+import { tileAt, toScreen, zoomAt } from '../src/lib/map-display.ts';
+import { mapSpace } from '../src/lib/map-space.ts';
+import { parseMessage, applyDelta } from '../src/lib/protocol.ts';
+import removal from '../../prototype/protocol/fixtures/delta-removal.json' with { type:'json' };
+function assert(value:unknown,message='Assertion failed'):asserts value {if(!value)throw new Error(message);}
+function equal(a:unknown,b:unknown) {assert(JSON.stringify(a)===JSON.stringify(b),`${JSON.stringify(a)} != ${JSON.stringify(b)}`);}
+function throws(action:()=>unknown) {let failed=false;try{action();}catch{failed=true;}assert(failed);}
+for(const row of vectors.cases)Deno.test(`shared authoritative spatial vector: ${row.id}`,()=>{
+  const read={...structuredClone(fixture),map:row.map} as Snapshot;
+  const actual=localSpatialPreview(read,row.query as SpatialQuery);
+  for(const key of ['position','inside','projected','storage','heading','distance'] as const)equal(actual[key],row.expected[key]);
+});
+Deno.test('eight headings retain canonical indices, rotations, angles and diagonal steps',()=>{
+  const rows=[[0,0,-1,7,1,6,2,4],[1,1,-1,0,2,7,3,5],[2,1,0,1,3,0,4,6],[3,1,1,2,4,1,5,7],
+    [4,0,1,3,5,2,6,0],[5,-1,1,4,6,3,7,1],[6,-1,0,5,7,4,0,2],[7,-1,-1,6,0,5,1,3]];
+  for(const [index,x,y,left,right,left90,right90,opposite] of rows){
+    equal(offset(index),{x,y});equal([rotate(index,-1),rotate(index,1),rotate(index,-2),rotate(index,2),rotate(index,4)],[left,right,left90,right90,opposite]);
+    equal(move({x:10,y:20,z:3},index),{x:10+x,y:20+y,z:3});
+    equal(directionTo({x:10,y:20,z:3},{x:10+x*5,y:20+y*8,z:3}),index);
+    equal(angle(index,opposite),4);equal(angle(index,left),1);
+  }
+  for(const h of [-1,8,1.5,NaN])throws(()=>offset(h));
+});
+Deno.test('H/V projection and source picking round trip at zoom, pan, elevation and negative coordinates',()=>{
+  const space=new WorldSpace(4,8,3),camera={x:37,y:-52,zoom:1.7};
+  for(const p of [...space.ground(),{x:-3,y:7,z:2},{x:3,y:0,z:2}]){
+    const screen=toScreen(p,camera,1000,600,space);
+    equal(tileAt(screen,p.z,camera,1000,600,space),p);
+    equal(tileAt(screen,p.z,zoomAt(camera,1.25,screen,1000,600),1000,600,space),p);
+  }
+  equal(space.pick({x:16,y:8},0),{x:3,y:0,z:0});
+  equal(space.pick({x:-.01,y:8},0),{x:2,y:-1,z:0});
+  equal(space.storage({x:0,y:0,z:0}),{h:-2,v:3,z:0});
+  equal(space.location({h:0,v:-1,z:0}),{x:3,y:0,z:0});
+  assert(space.containsHorizontal({x:3,y:0,z:3})&&!space.contains({x:3,y:0,z:3}));
+  equal(new WorldSpace(4,9,3).project({x:4,y:0,z:0}),{x:0,y:0});
+});
+Deno.test('source snapping thresholds and checked Int32 failure boundaries are explicit',()=>{
+  const origin={x:0,y:0,z:0};equal(snap({x:2,y:5,z:0},origin,8),{x:2,y:2,z:0});equal(snap({x:2,y:6,z:0},origin,8),{x:0,y:6,z:0});
+  equal(snap({x:3,y:3,z:0},origin,4),{x:3,y:0,z:0});equal(distance(origin,{x:1,y:1,z:0}),1);equal(distance(origin,{x:0,y:0,z:3}),3);
+  throws(()=>distance(origin,{x:46341,y:0,z:0}));throws(()=>move({x:2147483647,y:0,z:0},2));
+  throws(()=>new WorldSpace(4,8,3).project({x:2147483647,y:0,z:1}));throws(()=>directionTo(origin,origin));
+  throws(()=>snap({x:1,y:1,z:1},origin,4));
+});
+Deno.test('preview results must match epoch, identity, snapped target, projection, bounds and revision',()=>{
+  const query:SpatialQuery={expectedWorldEpoch:'1',position:{x:12,y:25,z:1},anchor:{x:10,y:20,z:1},snap:8};
+  const local=localSpatialPreview(fixture as Snapshot,query);
+  assert(matchesSpatialPreview(local,{...local,revision:'1'}));
+  for(const patch of [{worldEpoch:'2'},{ruleset:'other'},{inside:false},{position:{x:12,y:23,z:1}},{heading:7},{projected:{a:0,b:0}},{requiredPacks:[]},{revision:'-1'}])assert(!matchesSpatialPreview(local,{...local,...patch}));
+});
+Deno.test('wire profiles and individual car headings cannot silently change meaning',()=>{
+  for(const patch of [{ruleset:'other'},{requiredPacks:[]},{map:{...fixture.map,coordinateSystem:'hv'}},{map:{...fixture.map,width:128}},{trains:[{...fixture.trains[0],heading:8}]},{trains:[{...fixture.trains[0],heading:1.5}]},{trains:[{...fixture.trains[0],heading:3,carHeadings:[3,2,2]}]},{trains:[{...fixture.trains[0],carHeadings:[2]}]}])throws(()=>parseMessage(JSON.stringify({...fixture,...patch})));
+  for(const patch of [{ruleset:'other'},{contentVersion:'other'},{requiredPacks:[]}])assert(applyDelta(fixture as Snapshot,{...removal,...patch} as never)===undefined);
+});
+Deno.test('renderer consumes server car headings and canonical H/V terrain without using prototype topology',async()=>{
+  const {MapRenderer}=await import('../src/lib/map-renderer.ts');
+  const read={...structuredClone(fixture),ruleset:'spatial-source-fixture',map:{width:4,height:8,levels:3,coordinateSystem:'hv'},tracks:[],stations:[],buildings:[],trains:Array.from({length:8},(_,h)=>({id:`h${h}`,name:'fixture',revision:'0',position:{x:3,y:1,z:1},cars:1,controller:'automatic',heading:h,carHeadings:[h],carPositions:[{x:3,y:1,z:1}],state:'moving',controlLease:null}))} as Snapshot;
+  const ctx=new Proxy({}, {get:()=>()=>{}}),canvas={width:800,height:600,dataset:{} as Record<string,string>,getContext:()=>ctx} as unknown as HTMLCanvasElement;
+  const renderer=new MapRenderer(canvas,new Map()),space=mapSpace(read.map),camera={...space.center({x:3,y:1,z:1}),zoom:1};
+  renderer.setRead(read);renderer.draw(camera,800,600,1,{heightCut:2,level:1,night:false,winter:false,recolor:false,shape:'buffer',remove:false});
+  equal(canvas.dataset.headings,'0,1,2,3,4,5,6,7');equal(canvas.dataset.coordinateSystem,'hv');
+  assert(renderer.pick({x:400,y:300},1)?.kind==='train');
+});

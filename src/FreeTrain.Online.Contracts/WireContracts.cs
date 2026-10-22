@@ -4,6 +4,16 @@ using System.Text.Json.Serialization;
 
 namespace FreeTrain.Online.Contracts;
 
+public static class ProtocolIdentity
+{
+    public const int Version = 3;
+    public const string PrototypeRuleset = "prototype-reference-1";
+    public const string PrototypeContent = "prototype-content-1";
+    // SHA-256 of the reviewed prototype sprites.json catalog (not a canonical content pack).
+    public static RequiredPackRead[] PrototypePacks => [new("prototype-reference", "1", "0607821d22faaae836a3f04246a9a79f6c7779aa19081390244fb227a461af2c")];
+}
+public sealed record RequiredPackRead(string Id, string Version, string CatalogHash);
+
 public static class WireJson
 {
     public static JsonSerializerOptions CreateOptions()
@@ -55,24 +65,35 @@ public sealed record HeartbeatMessage : WireMessage;
 public sealed record InputResetMessage : WireMessage;
 
 public sealed record JoinMessage(int ProtocolVersion, string ContentVersion, string ServerIncarnation,
-    string SessionId, string ParticipantId, string Role, long WorldEpoch, [property: JsonConverter(typeof(NestedSnapshotConverter))] SnapshotMessage Snapshot) : WireMessage;
+    string SessionId, string ParticipantId, string Role, long WorldEpoch, [property: JsonConverter(typeof(NestedSnapshotConverter))] SnapshotMessage Snapshot,
+    string Ruleset, RequiredPackRead[] RequiredPacks) : WireMessage;
 public sealed record CommandMessage(string RequestId, long ExpectedWorldEpoch, CommandPayload Payload) : WireMessage;
 public sealed record AcceptedMessage(string RequestId, long WorldEpoch, long Sequence, long Tick, long Revision) : WireMessage;
 public sealed record RejectedMessage(string RequestId, string Code, Dictionary<string, string> Arguments) : WireMessage;
 public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, bool Paused, long Cash,
-    MapRead Map, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings, TrackRead[] Tracks) : WireMessage;
+    MapRead Map, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings, TrackRead[] Tracks,
+    string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
-    TrackRead[] Tracks, RemovedRead Removed) : WireMessage;
+    TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions);
-public sealed record MapRead(int Width, int Height, int Levels);
+// Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
+public sealed record MapRead(int Width, int Height, int Levels, string CoordinateSystem);
 public sealed record PositionRead(int X, int Y, int Z);
 public sealed record TrackRead(PositionRead Position, string Shape, long Revision);
 public sealed record TrainRead(string Id, long Revision, string Name, PositionRead Position, int Cars, string Controller,
-    string Direction, PositionRead[] CarPositions, string State, ControlLeaseRead? ControlLease);
+    int Heading, PositionRead[] CarPositions, int[] CarHeadings, string State, ControlLeaseRead? ControlLease);
 public sealed record ControlLeaseRead(string ParticipantId, string LeaseId, long ExpiresAt);
 public sealed record StationRead(string Id, long Revision, string Name, PositionRead Position);
 public sealed record BuildingRead(string Id, string DefinitionId, PositionRead Position, int Height);
+
+// Read-only geometry, never a placement permission or cost quote.
+public sealed record SpatialQuery(long ExpectedWorldEpoch, PositionRead Position, PositionRead? Anchor, int Snap);
+public sealed record ProjectedPointRead(int A, int B);
+public sealed record StoragePositionRead(int H, int V, int Z);
+public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string Ruleset, string ContentVersion,
+    RequiredPackRead[] RequiredPacks, PositionRead Position, bool Inside, ProjectedPointRead Projected,
+    StoragePositionRead? Storage, int? Heading, int? Distance);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
 [JsonDerivedType(typeof(AcquireControlCommand), "acquireControl")]

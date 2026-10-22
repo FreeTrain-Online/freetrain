@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "slice": "ONLINE-SAVE-001 prototype save retirement",
+  "reviewedOn": "2026-10-22",
+  "classification": "Newly authored browser policy feedback; not source UI text",
+  "implementation": "web/src/lib/localization.ts",
+  "decision": "runtime-decisions.json",
+  "evidence": ["web/tests/browser/persistence.spec.ts", "web/tests/save-transfer.test.ts"],
+  "entries": [
+    {
+      "key": "incompatibleSave",
+      "english": "This save format is not supported. Prototype saves cannot be loaded. The current game was preserved.",
+      "japanese": "この保存形式には対応していません。プロトタイプの保存データは読み込めません。現在のゲームは保持されました。"
+    },
+    {
+      "key": "savingUnavailable",
+      "english": "Saving is unavailable for this reference world.",
+      "japanese": "この参照ワールドでは保存できません。"
+    },
+    {
+      "key": "invalidSave",
+      "english": "Invalid save data. The current game was preserved.",
+      "japanese": "無効な保存データです。現在のゲームは保持されました。"
+    },
+    {
+      "key": "savesHint",
+      "english": "File checks require Owner access. Unsupported files are rejected; empty slots cannot be checked.",
+      "japanese": "ファイルの確認には所有者の権限が必要です。非対応のファイルは拒否されます。空のスロットは確認できません。"
+    },
+    {
+      "key": "loadHint",
+      "english": "Select a file to check compatibility. Unsupported data leaves the current game unchanged.",
+      "japanese": "ファイルを選択して互換性を確認します。非対応のデータで現在のゲームが変更されることはありません。"
+    }
+  ]
+}

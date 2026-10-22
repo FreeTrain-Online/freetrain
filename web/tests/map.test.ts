@@ -1,4 +1,8 @@
-import { opaqueAt, project, tileAt, toScreen, unproject, visible, zoomAt } from '../src/lib/map-geometry.ts';
+import { opaqueAt, tileAt as pickTile, toScreen as screen, visible, zoomAt } from '../src/lib/map-display.ts';
+import { project, unproject, PrototypeMap } from '../src/lib/prototype/map-geometry.ts';
+const space=new PrototypeMap(64,64,16);
+const tileAt=(p:any,z:number,c:any,w:number,h:number)=>pickTile(p,z,c,w,h,space);
+const toScreen=(p:any,c:any,w:number,h:number)=>screen(p,c,w,h,space);
 import sprites from '../src/generated/sprites.json' with { type: 'json' };
 function assert(value:unknown,message='Assertion failed'):asserts value {if(!value)throw new Error(message);}
 Deno.test('source projection fixtures and inverse preserve elevation and negative coordinates',()=>{
@@ -63,7 +67,7 @@ Deno.test('renderer picks visible opaque layers in paint order and height cut re
   const ctx=new Proxy({}, {get:()=>()=>{}});
   const canvas={width:800,height:600,dataset:{},getContext:()=>ctx} as unknown as HTMLCanvasElement;
   const renderer=new MapRenderer(canvas,new Map());
-  fixture.map={width:4,height:4,levels:16};fixture.tracks=[{position:{x:1,y:1,z:0},shape:'eastWest',revision:'0'}];fixture.stations=[];fixture.trains=[];
+  fixture.map={width:4,height:4,levels:16,coordinateSystem:'prototypeXY'};fixture.tracks=[{position:{x:1,y:1,z:0},shape:'eastWest',revision:'0'}];fixture.stations=[];fixture.trains=[];
   fixture.buildings=[{id:'tall',definitionId:'condo',position:{x:1,y:1,z:0},height:3}];
   renderer.setRead(fixture);
   const camera={...project({x:1,y:1,z:0}),zoom:2};

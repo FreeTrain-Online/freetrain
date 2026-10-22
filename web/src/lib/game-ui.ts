@@ -39,6 +39,8 @@ export const registry = {
   step: action('step', 'clock', 'mutation'),
   'rail-level': field('buildLevel', 'tool-card', 'live'),
   'rail-shape': field('trackShape', 'tool-card', 'live'),
+  'rail-alignment': field('snapDirection', 'tool-card', 'live'),
+  'rail-anchor': action('useAnchor', 'tool-card', 'live'),
   confirm: action('confirmTrack', 'tool-card', 'mutation'),
   'cancel-draft': action('cancelPreview', 'tool-card', 'live'),
   controller: field('controller', 'inspector', 'mutation'),

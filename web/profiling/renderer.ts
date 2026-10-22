@@ -1,16 +1,17 @@
 import { MapRenderer, loadImages } from '../src/lib/map-renderer.ts';
-import { project } from '../src/lib/map-geometry.ts';
+import profile from '../../prototype/protocol/prototype-profile.json' with { type: 'json' };
+import { project } from '../src/lib/prototype/map-geometry.ts';
 import type { Snapshot } from '../src/generated/contracts.ts';
 
 // Fixed renderer stress fixture, not a playable world or a capacity prediction.
 // 128x128 ground + 4096 tracks + 1024 four-layer buildings + 128 three-car trains
 // + 16 stations + 2 decorative sprites = 24978 candidate draw items.
 const read: Snapshot = {
-  type: 'snapshot', worldEpoch: '1', revision: '0', tick: '0', paused: true, cash: '1000000',
-  map: { width: 128, height: 128, levels: 16 },
+  ...profile, type: 'snapshot', worldEpoch: '1', revision: '0', tick: '0', paused: true, cash: '1000000',
+  map: { width: 128, height: 128, levels: 16, coordinateSystem: 'prototypeXY' },
   tracks: Array.from({ length: 4096 }, (_, i) => ({ position: { x: i % 128, y: Math.floor(i / 128) * 4, z: 1 }, shape: 'eastWest', revision: '0' })),
   buildings: Array.from({ length: 1024 }, (_, i) => ({ id: `building-${i}`, definitionId: 'profile-condo', position: { x: (i % 32) * 4, y: Math.floor(i / 32) * 4 + 2, z: 0 }, height: 4 })),
-  trains: Array.from({ length: 128 }, (_, i) => ({ id: `train-${i}`, revision: '0', name: 'Profile', controlLease: null, cars: 3, controller: 'automatic', direction: 'east', state: 'moving',
+  trains: Array.from({ length: 128 }, (_, i) => ({ id: `train-${i}`, revision: '0', name: 'Profile', controlLease: null, cars: 3, controller: 'automatic', heading: 2, carHeadings: [2,2,2], state: 'moving',
     position: { x: 3 + (i % 16) * 7, y: Math.floor(i / 16) * 16, z: 1 },
     carPositions: [0, 1, 2].map(offset => ({ x: 3 + (i % 16) * 7 - offset, y: Math.floor(i / 16) * 16, z: 1 })) as [{x:number;y:number;z:number}, ...{x:number;y:number;z:number}[]] })),
   stations: Array.from({ length: 16 }, (_, i) => ({ id: `station-${i}`, name: 'Profile', revision: '0', position: { x: i * 8, y: 64, z: 1 } })),

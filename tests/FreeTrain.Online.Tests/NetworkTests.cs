@@ -14,6 +14,44 @@ using Xunit;
 
 public class NetworkTests
 {
+    [Fact]
+    public async Task Spatial_preview_is_authenticated_read_only_and_fenced_by_world_epoch()
+    {
+        await using var server = await Harness.Start();
+        const string path = "/api/spatial/preview?protocolVersion=3&contentVersion=prototype-content-1";
+        var query = new SpatialQuery(1, new(12, 25, 1), new(10, 20, 1), 8);
+        Task<HttpResponseMessage> Preview(SpatialQuery q) => server.Http.PostAsync(path, new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(q, NetworkSession.Json)));
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Preview(query)).StatusCode);
+        var before = await server.Bootstrap();
+        Assert.Equal(3, before.ProtocolVersion);
+        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1")).StatusCode);
+        var response = await Preview(query);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = JsonSerializer.Deserialize<SpatialPreviewRead>(await response.Content.ReadAsStringAsync(), NetworkSession.Json)!;
+        Assert.Equal(new PositionRead(12, 22, 1), result.Position); Assert.Equal(3, result.Heading);
+        Assert.Equal(HttpStatusCode.Conflict, (await Preview(query with { ExpectedWorldEpoch = 2 })).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await Preview(query with { Position = new(int.MaxValue, 0, 1) })).StatusCode);
+        Assert.Equal(JsonSerializer.Serialize(before.Snapshot, NetworkSession.Json), JsonSerializer.Serialize((await server.Bootstrap()).Snapshot, NetworkSession.Json));
+    }
+
+    [Fact]
+    public async Task Observer_can_query_spatial_geometry_without_mutation_authority()
+    {
+        await using var server = await Harness.Start("owner-secret", participants: new()
+        {
+            ["FreeTrainOnline:Participants:0:Id"] = "viewer",
+            ["FreeTrainOnline:Participants:0:Role"] = "observer",
+            ["FreeTrainOnline:Participants:0:Secret"] = "viewer-secret"
+        });
+        Assert.Equal(HttpStatusCode.NoContent, (await server.Http.PostAsJsonAsync("/api/access", new { secret = "viewer-secret" })).StatusCode);
+        var before = await server.Bootstrap();
+        Assert.Equal("observer", before.Role);
+        var query = new SpatialQuery(1, new(10, 20, 1), null, 0);
+        var response = await server.Http.PostAsync("/api/spatial/preview?protocolVersion=3&contentVersion=prototype-content-1", new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(query, NetworkSession.Json)));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(before.Snapshot.Revision, (await server.Bootstrap()).Snapshot.Revision);
+    }
+
     [Theory]
     [InlineData(null, false)]
     [InlineData("127.0.0.1", true)]
@@ -177,7 +215,7 @@ public class NetworkTests
         var cookie = Assert.Single(login.Headers.GetValues("Set-Cookie"));
         Assert.Contains("httponly", cookie); Assert.Contains("samesite=strict", cookie);
         Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=99&contentVersion=prototype-content-1")).StatusCode);
-        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=2&contentVersion=bad")).StatusCode);
+        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=3&contentVersion=bad")).StatusCode);
         var join = await server.Bootstrap(); Assert.Equal("operator-1", join.ParticipantId);
         using var socket = await server.Connect(); Assert.IsType<JoinMessage>(await Read(socket));
         using var competitor = new ClientWebSocket(); competitor.Options.Cookies = server.Cookies;
@@ -248,44 +286,28 @@ public class NetworkTests
         Assert.Equal(0, Assert.IsType<JoinMessage>(await Read(recovered)).Snapshot.Tick);
     }
     [Fact]
-    public async Task Real_http_save_transfer_slots_limits_and_load_resnapshot_are_authorized_and_atomic()
+    public async Task Incompatible_save_transfers_preserve_world_and_writing_is_unavailable()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "freetrain-online-http-saves-" + Guid.NewGuid());
-        try
+        await using var server = await Harness.Start();
+        var before = await server.Bootstrap();
+        var download = await server.Http.GetAsync("/api/saves/download");
+        Assert.Equal(HttpStatusCode.Conflict, download.StatusCode);
+        Assert.Contains("savingUnavailable", await download.Content.ReadAsStringAsync());
+        var write = await server.Http.PostAsync("/api/saves/slot1/save?expectedWorldEpoch=1", null);
+        Assert.Equal(HttpStatusCode.Conflict, write.StatusCode);
+        Assert.Contains("savingUnavailable", await write.Content.ReadAsStringAsync());
+        foreach (var body in new[] { "{\"saveVersion\":1}", "{\"saveVersion\":2}", "{\"saveVersion\":999}" })
         {
-            await using var server = await Harness.Start("save-secret", directory);
-            Assert.Equal(HttpStatusCode.Unauthorized, (await server.Http.GetAsync("/api/saves/download")).StatusCode);
-            Assert.Equal(HttpStatusCode.Unauthorized, (await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new StringContent("{}"))).StatusCode);
-            await server.Http.PostAsJsonAsync("/api/access", new { secret = "save-secret" });
-            await server.Bootstrap(); using var socket = await server.Connect(); await Read(socket);
-            var download = await server.Http.GetByteArrayAsync("/api/saves/download");
-            Assert.Equal(0, SaveCodec.Decode(download).World.Tick);
-            Assert.Equal(HttpStatusCode.OK, (await server.Http.PostAsync("/api/saves/slot1/save?expectedWorldEpoch=1", null)).StatusCode);
-            Assert.True(File.Exists(Path.Combine(directory, "slot1.json")));
-            Assert.Equal(HttpStatusCode.BadRequest, (await server.Http.PostAsync("/api/saves/unknown/save?expectedWorldEpoch=1", null)).StatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, (await server.Http.PostAsync("/api/saves/slot3/load?expectedWorldEpoch=1", null)).StatusCode);
-            await Send(socket, Command("step-save", new StepCommand())); await Until(socket, m => m is AcceptedMessage);
-            var before = (await server.Bootstrap()).Snapshot;
-            var invalid = await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new StringContent("{}"));
-            Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
-            Assert.Equal(JsonSerializer.Serialize(before, NetworkSession.Json), JsonSerializer.Serialize((await server.Bootstrap()).Snapshot, NetworkSession.Json));
-            // Let the server reject declared length before the client writes the body.
-            // Otherwise the expected early 413 races HttpClient's in-flight upload/reset.
-            using var hugeRequest = new HttpRequestMessage(HttpMethod.Post, "/api/saves/upload?expectedWorldEpoch=1")
-            { Content = new ByteArrayContent(new byte[SaveCodec.MaximumBytes + 1]) };
-            hugeRequest.Headers.ExpectContinue = true;
-            var huge = await server.Http.SendAsync(hugeRequest);
-            Assert.Equal(HttpStatusCode.RequestEntityTooLarge, huge.StatusCode);
-            Assert.Equal(HttpStatusCode.OK, (await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new ByteArrayContent(download))).StatusCode);
-            var snapshot = Assert.IsType<SnapshotMessage>(await Until(socket, m => m is SnapshotMessage));
-            Assert.Equal(2, snapshot.WorldEpoch); Assert.True(snapshot.Paused); Assert.Equal(0, snapshot.Tick);
-            Assert.Equal(HttpStatusCode.Conflict, (await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new ByteArrayContent(download))).StatusCode);
-            await Send(socket, Command("step-save", new StepCommand()));
-            Assert.Equal("staleEpoch", Assert.IsType<RejectedMessage>(await Until(socket, m => m is RejectedMessage)).Code);
-            Assert.Equal(HttpStatusCode.OK, (await server.Http.PostAsync("/api/saves/slot1/load?expectedWorldEpoch=2", null)).StatusCode);
-            Assert.Equal(3, (await server.Bootstrap()).WorldEpoch);
+            var response = await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new StringContent(body));
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Contains("incompatibleSave", await response.Content.ReadAsStringAsync());
         }
-        finally { Directory.Delete(directory, true); }
+        var malformed = await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1", new StringContent("{broken"));
+        Assert.Equal(HttpStatusCode.BadRequest, malformed.StatusCode);
+        Assert.Contains("invalidSave", await malformed.Content.ReadAsStringAsync());
+        Assert.Equal(JsonSerializer.Serialize(before.Snapshot, NetworkSession.Json), JsonSerializer.Serialize((await server.Bootstrap()).Snapshot, NetworkSession.Json));
+        var status = await server.Http.GetStringAsync("/api/saves/status");
+        Assert.Contains("\"savingAvailable\":false", status);
     }
 
     internal static Task Send(ClientWebSocket socket, WireMessage message) => socket.SendAsync(
@@ -309,10 +331,10 @@ public class NetworkTests
     }
     internal sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies) : IAsyncDisposable
     {
-        public const string BootstrapPath = "/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1";
+        public const string BootstrapPath = "/api/bootstrap?protocolVersion=3&contentVersion=prototype-content-1";
         public HttpClient Http => http;
         public CookieContainer Cookies => cookies;
-        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=2&contentVersion=prototype-content-1");
+        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=3&contentVersion=prototype-content-1");
         public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null)
         {
             var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");

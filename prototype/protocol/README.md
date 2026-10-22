@@ -1,7 +1,6 @@
-# Initial protocol and save contracts
+# Wire protocol 3
 
-`schema.json` is the canonical draft-07 schema for initial wire messages and
-save v1. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
+`schema.json` is the canonical draft-07 schema for current wire messages and spatial queries. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
 mean canonical decimal strings within signed Int64 or nonnegative Int64 bounds.
 Validators must register these formats (see `web/tests/contracts.test.mjs`).
 Strings forbid leading zeros, plus signs, whitespace, and negative zero. World
@@ -9,7 +8,7 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **2**, content `prototype-content-1`, save `1`.
+Versions are independent: protocol **3**, content `prototype-content-1`, no supported save format yet. Online prototype Save 1 is retired.
 Join conveys server incarnation, participant/session identity, server-assigned role,
 epoch and initial snapshot. Commands cannot choose participant identity or authority.
 
@@ -28,12 +27,13 @@ stale/unowned tokens receive `leaseRequired`. Input renews a lease. Disconnect,
 release, expiry or load clear input; a new lease resets input sequence ordering.
 `inputReset` clears only the sender's inputs and carries no global pause flag.
 
-Protocol 1 is rejected with HTTP 426; deploy matching static and server artifacts.
+Protocols 1 and 2 are rejected with HTTP 426; deploy matching static and server artifacts.
 
-The versioned save contains explicit tracks, complete train/controller/body/stop
-state, station dwell state, buildings, clock, cash, deterministic random state and
-ordered scheduled events. It supports validation and continuation. It excludes
-credentials, connections, control leases, held input, UI, delegates and assembly names.
+Online prototype Save 1 is unsupported. The current schema and generated types
+contain no Save 1 model. Historical data is kept only under `historical/save-v1`
+and the archived implementation. The runtime rejects unsupported input with
+`incompatibleSave`; current writes/checkpoints are unavailable. See the
+[owner-directed policy](../../doc/web-parity-runtime-policy.md).
 
 Run from the repo root:
 
@@ -59,3 +59,25 @@ The configured access key remains usable through `POST /api/access`. Bootstrap
 returns HTTP 401 after leaving, including in local mode; the response indicates
 whether an empty key can deliberately rejoin as a local Owner. Login credentials
 are opaque random values retained in a bounded, eight-hour server registry.
+
+The current wire world identity is `prototype-reference-1` / `prototype-content-1`
+with the exact required-pack descriptor in `prototype-profile.json`. Join,
+snapshots and deltas carry this identity. `Map.coordinateSystem` is explicitly
+`prototypeXY` for the obsolete reference-world X/Y rectangle, or `hv` for source
+H/V storage dimensions. The running service still hosts the reference world;
+canonical H/V worlds/packs are not yet installed. Unknown identities block reveal.
+
+Wire train `heading` and each `carHeadings` entry are integer indices 0..7
+(N, NE, E, SE, S, SW, W, NW). Prototype adapters explicitly map old cardinal values
+onto 0/2/4/6. Save 1 is rejected rather than adapted to the new representation. The
+browser validates car counts/headings and the installed prototype profile before
+applying reads. Source canonical geometry has shared fixtures separate from that
+compatibility world. Protocol-2 originals are preserved in `historical/v2`.
+
+`POST /api/spatial/preview?protocolVersion=3&contentVersion=prototype-content-1`
+accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
+Any authenticated role can use it. Expected epoch, position, nullable anchor and
+snap 0/4/8 select a checked read-only calculation. The result carries world
+identity/revision, snapped position, bounds, projection, optional storage,
+heading and distance. It never reserves cells, changes state or approves a later
+construction commit. Invalid/overflow input is 400; stale epoch is 409.

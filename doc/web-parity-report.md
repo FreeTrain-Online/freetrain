@@ -1,5 +1,11 @@
 # ExAV coverage, differences and delivery estimates
 
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
+**P1 follow-up:** [spatial client/server integration](web-parity-spatial-integration.md) now delivers protocol 3, per-car heading reads and server-checked target alignment. Live gameplay remains explicitly in prototype/Save 1 compatibility mode.
+
+**Final phase review — 21 October 2026:** [P0 coverage/specification is closed and P1-01 spatial primitives are implemented/tested](web-parity-phase-gates.md). P1–P11 and UX/native acceptance remain open. Earlier dated open-P0 statements below describe the pre-review state; source statuses/pins and runtime limitations retain their meaning.
+
 **P0-07 report complete — 21 October 2026.** P0-01–06 now establish the
 stable ExAV discovery, source reconciliation and scenario specifications below.
 **P0-08 source inventory/specification and [P0-09 authority/scope integration](web-parity-exav-integration.md) are now complete; overall P0 and every P1–P11 exit gate remain open.** See the separate
@@ -38,9 +44,9 @@ implementation status. Source-reviewed/specification-complete records do not
 become implemented or verified when a checker passes. No aggregate ExAV runtime
 completion percentage is established.
 
-The running slice still uses four directions and eight track shapes in
-[Definitions.cs](../src/FreeTrain.Online.Simulation/Definitions.cs), a
-minute-per-tick [clock](../src/FreeTrain.Online.Simulation/SimulationClock.cs),
+The running slice still uses the obsolete original-FreeTrain prototype: four directions and eight track shapes in
+[Definitions.cs](../src/FreeTrain.Online.Simulation/Prototype/Definitions.cs), a
+minute-per-tick [clock](../src/FreeTrain.Online.Simulation/Prototype/SimulationClock.cs),
 the fixed 64×64×16 [reference scenario](../src/FreeTrain.Online.Content/ReferenceScenario.cs)
 and the curated historical [asset importer](../scripts/import-web-content.py).
 Protocol **2**, `prototype-content-1`, Save **1**, three manual slots and the

@@ -1,0 +1,474 @@
+{
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "evidenceKind": "independent source-derived spatial vectors; canonical cases are not full playable worlds",
+  "cases": [
+    {
+      "id": "hv-origin",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "inside": true,
+        "projected": {
+          "a": 0,
+          "b": 0
+        },
+        "storage": {
+          "h": 0,
+          "v": 0,
+          "z": 0
+        },
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-negative-shift",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "inside": false,
+        "projected": {
+          "a": -48,
+          "b": 24
+        },
+        "storage": {
+          "h": -2,
+          "v": 3,
+          "z": 0
+        },
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-last-row-elevated",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 2
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 2
+        },
+        "inside": true,
+        "projected": {
+          "a": 16,
+          "b": 24
+        },
+        "storage": {
+          "h": 0,
+          "v": 7,
+          "z": 2
+        },
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-z-bound",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 3
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 3
+        },
+        "inside": false,
+        "projected": {
+          "a": 0,
+          "b": -48
+        },
+        "storage": {
+          "h": 0,
+          "v": 0,
+          "z": 3
+        },
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-eight-half-tie",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 5,
+          "y": 5,
+          "z": 0
+        },
+        "anchor": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "snap": 8
+      },
+      "expected": {
+        "position": {
+          "x": 5,
+          "y": 2,
+          "z": 0
+        },
+        "inside": true,
+        "projected": {
+          "a": 64,
+          "b": 0
+        },
+        "storage": {
+          "h": 2,
+          "v": 0,
+          "z": 0
+        },
+        "heading": 3,
+        "distance": 2
+      }
+    },
+    {
+      "id": "hv-eight-vertical",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 5,
+          "y": 6,
+          "z": 0
+        },
+        "anchor": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "snap": 8
+      },
+      "expected": {
+        "position": {
+          "x": 3,
+          "y": 6,
+          "z": 0
+        },
+        "inside": true,
+        "projected": {
+          "a": 96,
+          "b": 48
+        },
+        "storage": {
+          "h": 3,
+          "v": 6,
+          "z": 0
+        },
+        "heading": 4,
+        "distance": 6
+      }
+    },
+    {
+      "id": "hv-four-tie",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 6,
+          "y": 3,
+          "z": 0
+        },
+        "anchor": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "snap": 4
+      },
+      "expected": {
+        "position": {
+          "x": 6,
+          "y": 0,
+          "z": 0
+        },
+        "inside": false,
+        "projected": {
+          "a": 48,
+          "b": -24
+        },
+        "storage": {
+          "h": 1,
+          "v": -3,
+          "z": 0
+        },
+        "heading": 2,
+        "distance": 3
+      }
+    },
+    {
+      "id": "prototype-eight-half-tie",
+      "map": {
+        "width": 64,
+        "height": 64,
+        "levels": 16,
+        "coordinateSystem": "prototypeXY"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 12,
+          "y": 25,
+          "z": 1
+        },
+        "anchor": {
+          "x": 10,
+          "y": 20,
+          "z": 1
+        },
+        "snap": 8
+      },
+      "expected": {
+        "position": {
+          "x": 12,
+          "y": 22,
+          "z": 1
+        },
+        "inside": true,
+        "projected": {
+          "a": 544,
+          "b": 64
+        },
+        "storage": null,
+        "heading": 3,
+        "distance": 2
+      }
+    },
+    {
+      "id": "prototype-outside-negative",
+      "map": {
+        "width": 64,
+        "height": 64,
+        "levels": 16,
+        "coordinateSystem": "prototypeXY"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": -1,
+          "y": 0,
+          "z": 1
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": -1,
+          "y": 0,
+          "z": 1
+        },
+        "inside": false,
+        "projected": {
+          "a": -16,
+          "b": -8
+        },
+        "storage": null,
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-zero-distance",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "anchor": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "snap": 8
+      },
+      "expected": {
+        "position": {
+          "x": 3,
+          "y": 0,
+          "z": 0
+        },
+        "inside": true,
+        "projected": {
+          "a": 0,
+          "b": 0
+        },
+        "storage": {
+          "h": 0,
+          "v": 0,
+          "z": 0
+        },
+        "heading": null,
+        "distance": 0
+      }
+    },
+    {
+      "id": "hv-odd-height-origin",
+      "map": {
+        "width": 4,
+        "height": 9,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "z": 0
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 4,
+          "y": 0,
+          "z": 0
+        },
+        "inside": true,
+        "projected": {
+          "a": 0,
+          "b": 0
+        },
+        "storage": {
+          "h": 0,
+          "v": 0,
+          "z": 0
+        },
+        "heading": null,
+        "distance": null
+      }
+    },
+    {
+      "id": "hv-horizontal-bound",
+      "map": {
+        "width": 4,
+        "height": 8,
+        "levels": 3,
+        "coordinateSystem": "hv"
+      },
+      "query": {
+        "expectedWorldEpoch": "1",
+        "position": {
+          "x": 7,
+          "y": 4,
+          "z": 0
+        },
+        "anchor": null,
+        "snap": 0
+      },
+      "expected": {
+        "position": {
+          "x": 7,
+          "y": 4,
+          "z": 0
+        },
+        "inside": false,
+        "projected": {
+          "a": 128,
+          "b": 0
+        },
+        "storage": {
+          "h": 4,
+          "v": 0,
+          "z": 0
+        },
+        "heading": null,
+        "distance": null
+      }
+    }
+  ]
+}

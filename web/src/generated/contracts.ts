@@ -1,10 +1,11 @@
 /* Generated from prototype/protocol/schema.json. Run deno task generate:contracts. */
 
-export type PrototypeDocument = WireMessage | SaveDocument;
+export type GameDocument = WireMessage | SpatialQuery | SpatialPreview;
 export type WireMessage =
   Join | Command | Accepted | Rejected | Snapshot | Delta | Resync | Heartbeat | InputReset | SoundEvent;
 export type Counter = string;
 export type Money = string;
+export type Heading = number;
 export type CommandPayload =
   | {
       kind: "run";
@@ -62,7 +63,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 2;
+  protocolVersion: 3;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -70,6 +71,11 @@ export interface Join {
   worldEpoch: Counter;
   snapshot: Snapshot;
   role: "owner" | "operator" | "observer";
+  ruleset: string;
+  /**
+   * @maxItems 32
+   */
+  requiredPacks: RequiredPack[];
 }
 export interface Snapshot {
   type: "snapshot";
@@ -83,11 +89,18 @@ export interface Snapshot {
   stations: Station[];
   buildings: Building[];
   tracks: Track[];
+  ruleset: string;
+  contentVersion: string;
+  /**
+   * @maxItems 32
+   */
+  requiredPacks: RequiredPack[];
 }
 export interface Map {
   width: number;
   height: number;
   levels: number;
+  coordinateSystem: "hv" | "prototypeXY";
 }
 export interface Train {
   id: string;
@@ -96,13 +109,17 @@ export interface Train {
   position: Position;
   cars: number;
   controller: "automatic" | "manual";
-  direction: "north" | "east" | "south" | "west";
   /**
    * @minItems 1
    */
   carPositions: [Position, ...Position[]];
   state: "moving" | "station" | "buffer" | "blocked";
   controlLease: ControlLease | null;
+  heading: Heading;
+  /**
+   * @minItems 1
+   */
+  carHeadings: [Heading, ...Heading[]];
 }
 export interface Position {
   x: number;
@@ -130,6 +147,11 @@ export interface Track {
   position: Position;
   shape: "eastWest" | "northSouth" | "curveSE" | "curveSW" | "curveNE" | "curveNW" | "junctionE" | "buffer";
   revision: Counter;
+}
+export interface RequiredPack {
+  id: string;
+  version: string;
+  catalogHash: string;
 }
 export interface Command {
   type: "command";
@@ -177,6 +199,12 @@ export interface Delta {
   paused: boolean;
   cash: Money;
   tracks: Track[];
+  ruleset: string;
+  contentVersion: string;
+  /**
+   * @maxItems 32
+   */
+  requiredPacks: RequiredPack[];
 }
 export interface Removed {
   trainIds: string[];
@@ -199,64 +227,34 @@ export interface SoundEvent {
   worldEpoch: Counter;
   kind: "stationArrived";
 }
-export interface SaveDocument {
-  saveVersion: 1;
+export interface SpatialQuery {
+  expectedWorldEpoch: Counter;
+  position: Position;
+  anchor: Position | null;
+  snap: 0 | 4 | 8;
+}
+export interface SpatialPreview {
+  worldEpoch: Counter;
+  revision: Counter;
+  ruleset: string;
   contentVersion: string;
-  scenarioId: string;
-  world: SavedWorld;
-}
-export interface SavedWorld {
-  tick: Counter;
-  paused: boolean;
-  cash: Money;
-  randomState: Counter;
-  tracks: SavedTrack[];
-  trains: SavedTrain[];
-  stations: SavedStation[];
-  buildings: SavedBuilding[];
-  events: ScheduledEvent[];
-  map: Map;
-  terrain: "flat";
-  clockStart: string;
-  revision: Counter;
-  nextEventOrder: Counter;
-}
-export interface SavedTrack {
-  position: Position;
-  shape: "eastWest" | "northSouth" | "curveSE" | "curveSW" | "curveNE" | "curveNW" | "junctionE" | "buffer";
-  revision: Counter;
-}
-export interface SavedTrain {
-  id: string;
-  definitionId: string;
-  direction: "north" | "south" | "east" | "west";
   /**
-   * @minItems 1
+   * @maxItems 32
    */
-  cars: [Position, ...Position[]];
-  controller: "automatic" | "manual";
-  nextMoveTick: Counter;
-  name: string;
-  revision: Counter;
-  status: "moving" | "station" | "buffer" | "blocked";
-  stationId: string | null;
-}
-export interface SavedStation {
-  id: string;
-  name: string;
+  requiredPacks: RequiredPack[];
   position: Position;
-  dwellTicks: number;
-  revision: Counter;
+  inside: boolean;
+  projected: ProjectedPoint;
+  storage: StoragePosition | null;
+  heading: Heading | null;
+  distance: number | null;
 }
-export interface SavedBuilding {
-  id: string;
-  definitionId: string;
-  position: Position;
-  height: number;
+export interface ProjectedPoint {
+  a: number;
+  b: number;
 }
-export interface ScheduledEvent {
-  dueTick: Counter;
-  order: Counter;
-  kind: "moveTrain";
-  subjectId: string;
+export interface StoragePosition {
+  h: number;
+  v: number;
+  z: number;
 }

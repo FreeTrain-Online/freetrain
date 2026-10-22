@@ -1,7 +1,12 @@
 # Web game UX contract
 
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
 This is the implementation contract for the FreeTrain Online game UX.
-The simulation, protocol, saves and canvas projection stay unchanged.
+Preserve the authority, readiness, focus and canvas-lifecycle requirements as
+feature slices extend the game. [P1 spatial integration](web-parity-spatial-integration.md)
+now supplies protocol 3, profile-aware geometry and checked target alignment;
+the reference game retains explicit prototype/Save 1 compatibility.
 English and Japanese are acceptance languages.
 
 Future parity slices use the original manual's chapters 2–4 as the player-workflow
@@ -153,7 +158,8 @@ policy, including list/download, even if service permissions are broader.
 | `inspect` / MapView | Exclusive default tool, selection → inspector | All live roles; primary click picks; primary drag >3 CSS px pans without selecting on release |
 | `rail`, `demolish` / MapView → model.send | Exclusive tools; compact card with target, Confirm, Cancel | Mutation; choose target then confirm; no pause on tool entry |
 | `rail-level`, `rail-shape` / MapView | Tool card fields; level 0/1; eight existing shapes | buffer, eastWest, northSouth, curveSE/SW/NE/NW, junctionE only; parameter changes invalidate geometry |
-| `confirm`, `cancel-draft` / MapView | Tool card footer, immediate actions | Confirm needs a target; removal needs a current track/revision; pending prevents duplicate submission; Cancel sends nothing |
+| `rail-alignment`, `rail-anchor` / MapView | Free/four/eight-direction target alignment, optional anchor, direction/distance and read-only server check | Single target only; bounds/alignment check precedes Confirm, never substitutes for placement/cost validation; cancel/context/epoch changes discard pending checks |
+| `confirm`, `cancel-draft` / MapView | Tool card footer, immediate actions | Confirm needs a target with a matching server bounds/alignment check; removal needs a current track/revision; pending prevents duplicate submission; Cancel sends nothing |
 | `inspector` / map pick and App details | Selected train/station/building/track panel | Stable ID; track identity is coordinate tuple + world epoch, revision is an edit precondition; never fall back to first entity |
 | `controller`, `take-control`, `release-control` / App → model | Selected-train inspector; confirmed controller select, holder and handoff buttons | Mutation; controller change retains lease acquisition path; Release only own lease; selection never acquires control |
 | `manual-input` / MapView → model.input | Focused map, Inspect, selected manual train, matching local lease; accessible driving status | Shift pass, Up depart, Down reverse, Left/Right junction; 150 ms renewal path and server expiry retained; no automatic reacquisition from held keys |

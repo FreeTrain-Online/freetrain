@@ -1,5 +1,7 @@
 # Parity domain transition design
 
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
 **P0-09 integration — 21 October 2026:** [the maintained authority/scope reconciliation](web-parity-exav-integration.md) now links EXAV-01–16, source gaps, branch boundaries and implementation handoffs. Read historical examples below through the current ExAV specifications; feature detail, translation and runtime acceptance remain with each slice.
 
 **ExAV source specifications complete — 20 October 2026:** P0-04 geometry and

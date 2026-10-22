@@ -49,7 +49,7 @@ public static class NetworkEndpoints
         }
         ParticipantContext? Identity(HttpContext context) => session.ResolveAccess(context.Request.Cookies[CookieName]);
         bool Authorized(HttpContext context) => Identity(context) != null;
-        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == "2" && context.Request.Query["contentVersion"] == NetworkSession.ContentVersion;
+        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == ProtocolIdentity.Version.ToString() && context.Request.Query["contentVersion"] == NetworkSession.ContentVersion;
         app.MapPost("/api/access", async (HttpContext context) =>
         {
             lock (accessGate)
@@ -81,7 +81,7 @@ public static class NetworkEndpoints
         });
         app.MapGet("/api/bootstrap", (HttpContext context) =>
         {
-            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = 2, contentVersion = NetworkSession.ContentVersion }, statusCode: 426);
+            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = ProtocolIdentity.Version, contentVersion = NetworkSession.ContentVersion }, statusCode: 426);
             var participant = Identity(context);
             if (participant == null)
             {
@@ -92,13 +92,41 @@ public static class NetworkEndpoints
             }
             return Results.Json<WireMessage>(session.Bootstrap(participant), NetworkSession.Json);
         });
+        // Observers may query geometry; this takes one coherent read and never queues a mutation.
+        app.MapPost("/api/spatial/preview", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            if (context.Request.ContentLength is > MaximumMessageBytes) return Results.StatusCode(413);
+            try
+            {
+                using var buffer = new MemoryStream();
+                var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk, 0, count);
+                }
+                var query = JsonSerializer.Deserialize<SpatialQuery>(buffer.ToArray(), NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PreviewSpatial(query), NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException)
+            { return Results.Json(new { code = "staleEpoch" }, statusCode: 409); }
+        });
         // Save HTTP requests use the same trusted owner credential and host FIFO as socket commands.
         app.MapGet("/api/saves", (HttpContext context) => Authorized(context)
             ? Results.Ok(session.SaveSlots()) : Results.Unauthorized());
+        app.MapGet("/api/saves/status", (HttpContext context) => Authorized(context)
+            ? Results.Ok(new { savingAvailable = session.SavingAvailable, loadingAvailable = false, startupError = session.StartupSaveError }) : Results.Unauthorized());
         app.MapGet("/api/saves/download", async (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
-            try { return Results.File(SaveCodec.Encode(await session.CaptureSave()), "application/json", "freetrain-online-save.json"); }
+            try { return Results.File(await session.CaptureSave(participant: Identity(context)), "application/json", "freetrain-online-save.json"); }
+            catch (InvalidDataException) { return Results.Json(new { code = "savingUnavailable" }, statusCode: 409); }
+            catch (UnauthorizedAccessException) { return Results.StatusCode(403); }
             catch (InvalidOperationException) { return Results.Json(new { code = "queueFull" }, statusCode: 503); }
         });
         async Task<IResult> SaveOperation(HttpContext context, Func<long, ParticipantContext, Task> action)
@@ -109,7 +137,11 @@ public static class NetworkEndpoints
             if (!long.TryParse(context.Request.Query["expectedWorldEpoch"], out var epoch) || epoch < 0)
                 return Results.BadRequest(new { code = "invalidInput" });
             try { await action(epoch, participant); return Results.Ok(new { status = "confirmed" }); }
-            catch (InvalidDataException ex) { return Results.Json(new { code = ex.Message == "saveTooLarge" ? "saveTooLarge" : "invalidSave" }, statusCode: ex.Message == "saveTooLarge" ? 413 : 400); }
+            catch (InvalidDataException ex)
+            {
+                var code = ex.Message is "saveTooLarge" or "incompatibleSave" or "savingUnavailable" ? ex.Message : "invalidSave";
+                return Results.Json(new { code }, statusCode: code == "saveTooLarge" ? 413 : code == "savingUnavailable" ? 409 : 400);
+            }
             catch (FileNotFoundException) { return Results.NotFound(new { code = "missingSave" }); }
             catch (InvalidOperationException ex) { return Results.Json(new { code = ex.Message == "staleEpoch" ? "staleEpoch" : "queueFull" }, statusCode: 409); }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -124,7 +156,7 @@ public static class NetworkEndpoints
                 if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
                 buffer.Write(chunk, 0, count);
             }
-            await session.LoadSave(SaveCodec.Decode(buffer.ToArray()), epoch, participant);
+            await session.LoadSave(buffer.ToArray(), epoch, participant);
         }));
         app.MapPost("/api/saves/{id}/save", (HttpContext context, string id) => SaveOperation(context, async (epoch, participant) =>
         {

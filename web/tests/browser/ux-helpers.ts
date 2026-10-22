@@ -1,7 +1,24 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
-export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=2&contentVersion=prototype-content-1')).json()).snapshot;
+export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=3&contentVersion=prototype-content-1')).json()).snapshot;
+// Client lifecycle fixture only: no save loading or server world replacement is implied.
+export async function worldReplacementFixture(page:Page) {
+  let client:WebSocketRoute|undefined,replaced=false;
+  await page.routeWebSocket('**/api/session?*',route=>{
+    const server=route.connectToServer();client=route;
+    server.onMessage(message=>{
+      const data=JSON.parse(String(message));
+      if(!replaced||!['snapshot','delta','soundEvent'].includes(data.type))route.send(message);
+    });
+  });
+  return async()=>{
+    const next=await bootstrap(page);next.worldEpoch=String(BigInt(next.worldEpoch)+1n);
+    next.trains.forEach((train:any)=>{train.controlLease=null;});replaced=true;
+    if(!client)throw new Error('Fixture connection missing');
+    client.send(JSON.stringify(next));return next;
+  };
+}
 export async function ready(page: Page, language = 'en') {
   await expect(page.locator('.command-bar')).toBeVisible();
   await expect(page.getByTestId('connection')).toHaveText(language === 'ja' ? 'ゲームに接続済み' : 'Connected to game');
@@ -32,7 +49,7 @@ export async function clickSprite(page: Page, p: { x: number; y: number; z: numb
 export async function selectTrain(page: Page) {
   await closePanel(page);
   const train = (await bootstrap(page)).trains[0];
-  await clickSprite(page, train.position, `train-${train.direction}`);
+  await clickSprite(page, train.position, `train-${({0:'north',2:'east',4:'south',6:'west'} as Record<number,string>)[train.heading]}`);
   await expect(page.getByTestId('train-position')).toBeVisible();
 }
 export async function selectStation(page: Page) {

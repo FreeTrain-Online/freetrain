@@ -153,7 +153,10 @@ def build(tree, historical, config, ledger, previous, rules):
         if inv.digest(tree.read(path)) != row['sha256']:
             raise ValueError('ExAV file hash drift: ' + path)
     validate_findings(tree, rules)
-    registry = (inv.ROOT / 'web/src/lib/game-ui.ts').read_text()
+    # P0 source specifications retain their reviewed implementation snapshot.
+    # New slices publish their own implementation evidence rather than repinning P0.
+    implementation = inv.Tree(inv.ROOT, rules['implementationRevision'])
+    registry = implementation.text('web/src/lib/game-ui.ts')[0]
     body = registry.split('export const registry = {', 1)[1].split('} as const satisfies', 1)[0]
     operations = set(re.findall(r"(?m)^  ['\"]?([\w-]+)['\"]?:", body))
     workflows = {}
@@ -273,7 +276,9 @@ def build(tree, historical, config, ledger, previous, rules):
         inputs={p: inv.digest((inv.ROOT / p).read_bytes()) for p in (
             'doc/parity/exav-baseline.json', 'doc/parity/exav-ledger.json',
             'doc/parity/exav-content-review.json', 'doc/parity/exav-action-rules.json',
-            'doc/parity/historical/action-map.json', 'scripts/reconcile-exav-actions.py',
+            'doc/parity/historical/action-map.json', 'scripts/reconcile-exav-actions.py')},
+        implementationRevision=implementation.revision,
+        implementationInputs={p: inv.digest(implementation.read(p)) for p in (
             'web/src/lib/game-ui.ts', 'web/src/lib/localization.ts')},
         workflows=workflows, consumerRoutes=rules['routes'], sourceReviews=list(sources.values()), actions=actions,
         contributions=contributions, findings=findings,

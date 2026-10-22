@@ -1,11 +1,14 @@
 import content from '../generated/sprites.json' with { type: 'json' };
 import type { Position, Track } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { opaqueAt, ports, project, toScreen, visible, type Camera, type Point } from './map-geometry.ts';
+import { opaqueAt, toScreen, visible, type Camera } from './map-display.ts';
+import { offset, type SpatialMap, type Point } from './map-geometry.ts';
+import { ports } from './prototype/rail-geometry.ts';
+import { mapSpace } from './map-space.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; recolor: boolean; selection?: Selection; preview?: Position; shape: Track['shape']; remove: boolean; }
-interface Item { position: Position; kind: Selection['kind'] | 'sample'; id: string; sprite?: SpriteKey; shape?: Track['shape']; cut?: boolean; }
+export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
+interface Item { position: Position; kind: Selection['kind'] | 'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
   await Promise.all(Object.values(content.sprites).flatMap(sprite => [sprite.image,sprite.nightImage,sprite.tintImage]).map(async path => {
@@ -17,21 +20,23 @@ export class MapRenderer {
   private items: Item[]=[];
   private hits: { item: Item; x: number; y: number }[]=[];
   private read?: ReadState;
+  private space?: SpatialMap;
   private buildings = new Map<string,ReadState['buildings'][number]>();
   constructor(private canvas: HTMLCanvasElement, private images: Map<string, HTMLImageElement>) {}
   setRead(read: ReadState) {
     this.read=read;
+    this.space=mapSpace(read.map);
     this.buildings=new Map(read.buildings.map(building=>[building.id,building]));
     this.items = [
       ...read.tracks.map(track => ({ position: track.position, kind:'track' as const,id:`${track.position.x},${track.position.y},${track.position.z}`,shape:track.shape })),
       ...read.stations.map(station => ({position:station.position,kind:'station' as const,id:station.id})),
-      ...read.trains.flatMap(train => train.carPositions.map((position,index,body) => {
-        // Each follower faces its next car, including around corners.
-        const next=body[Math.max(0,index-1)];
-        const direction=index===0 ? train.direction : next.x>position.x?'east':next.x<position.x?'west':next.y>position.y?'south':'north';
-        return {position,kind:'train' as const,id:train.id,sprite:`train-${direction}` as SpriteKey};
+      ...read.trains.flatMap(train => train.carPositions.map((position,index) => {
+        // Server supplies each car's heading, including followers at corners.
+        const heading=train.carHeadings[index];
+        const sprite=read.map.coordinateSystem==='prototypeXY'?({0:'train-north',2:'train-east',4:'train-south',6:'train-west'} as Record<number,SpriteKey>)[heading]:undefined;
+        return {position,kind:'train' as const,id:train.id,heading,sprite};
       })),
-      ...[{sprite:'fence' as const,position:{x:18,y:18,z:0}},{sprite:'slope' as const,position:{x:19,y:18,z:0}}].map(item=>({...item,kind:'sample' as const,id:item.sprite})),
+      ...(read.map.coordinateSystem==='prototypeXY'?[{sprite:'fence' as const,position:{x:18,y:18,z:0}},{sprite:'slope' as const,position:{x:19,y:18,z:0}}].map(item=>({...item,kind:'sample' as const,id:item.sprite})):[]),
       ...read.buildings.flatMap(building => Array.from({length:building.height},(_,z) => ({
         position:{...building.position,z:building.position.z+z}, kind:'building' as const,id:building.id,
         sprite:(building.height===1?'pier':z===0?'condo-bottom':z===building.height-1?'condo-top':'condo-middle') as SpriteKey,
@@ -47,7 +52,9 @@ export class MapRenderer {
     ctx.setTransform(dpr,0,0,dpr,0,0); ctx.imageSmoothingEnabled=false;
     ctx.fillStyle=options.night?'#17232b':'#d8e5d9'; ctx.fillRect(0,0,width,height);
     this.hits=[]; let drawn=0, culled=0;
-    if (!this.read) return;
+    if (!this.read || !this.space) return;
+    const space=this.space;
+    const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;
     const diamond=(p:Point,color:string,stroke?:string) => {
       ctx.beginPath(); ctx.moveTo(p.x,p.y-8*zoom);ctx.lineTo(p.x+16*zoom,p.y);ctx.lineTo(p.x,p.y+8*zoom);ctx.lineTo(p.x-16*zoom,p.y);ctx.closePath();
@@ -59,17 +66,17 @@ export class MapRenderer {
       const path=options.night?s.nightImage:options.recolor?s.tintImage:s.image;
       ctx.drawImage(this.images.get(path)!,x,y,s.width*zoom,s.height*zoom);drawn++; return true;
     };
-    for(let y=0;y<this.read.map.height;y++) for(let x=0;x<this.read.map.width;x++) {
-      const p=toScreen({x,y,z:0},camera,width,height);
+    for(const cell of space.ground()) {
+      const {x,y}=cell, p=screen(cell);
       if(!visible(p.x-16*zoom,p.y-8*zoom,32*zoom,16*zoom,width,height)){culled++;continue;}
       // Decorative water beneath the fixed pier; no simulation terrain mutation.
-      const water=x>=14&&x<=18&&y>=14&&y<=18;
+      const water=this.read.map.coordinateSystem==='prototypeXY'&&x>=14&&x<=18&&y>=14&&y<=18;
       const color=water?(options.night?'#18334d':'#81b9c6'):options.night?'#263b35':options.winter?'#e5ecea':(x+y)%2?'#aec49f':'#b5c9a6';
       diamond(p,color,options.night?'#30463b':'#a1b795');drawn++;
     }
     for(const item of this.items) {
       if(item.position.z>options.heightCut) continue;
-      const p=toScreen(item.position,camera,width,height);
+      const p=screen(item.position);
       const building=this.buildings.get(item.id);
       const cut=item.kind==='building' && building && building.position.z+building.height-1>options.heightCut;
       if(cut) {
@@ -79,11 +86,18 @@ export class MapRenderer {
       }
       if(item.sprite) { if(sprite(item.sprite,p)&&item.kind!=='sample')this.hits.push({item,...p});continue; }
       if(!visible(p.x-20*zoom,p.y-20*zoom,40*zoom,40*zoom,width,height)){culled++;continue;}
-      if(item.shape) {
+      if(item.kind==='train'&&item.heading!==undefined) {
+        // Spatial marker for diagonal headings until P2 supplies canonical car frames.
+        const d=offset(item.heading), dx=16*(d.x+d.y),dy=8*(d.y-d.x),length=Math.hypot(dx,dy);
+        const ux=dx/length,uy=dy/length;
+        ctx.beginPath();ctx.moveTo(p.x+ux*12*zoom,p.y+uy*12*zoom);
+        ctx.lineTo(p.x-ux*9*zoom-uy*5*zoom,p.y-uy*9*zoom+ux*5*zoom);
+        ctx.lineTo(p.x-ux*9*zoom+uy*5*zoom,p.y-uy*9*zoom-ux*5*zoom);ctx.closePath();ctx.fillStyle='#e3c65e';ctx.fill();
+      } else if(item.shape) {
         diamond(p,options.night?'#444548':'#b5b7ad');
         // Draw each port as a connected half rail. Curves/junctions follow the host topology.
         for(const port of ports[item.shape]) {
-          const q=project({...item.position,x:item.position.x+port.x/2,y:item.position.y+port.y/2}); const base=project(item.position);
+          const q={x:8*(port.x+port.y),y:4*(port.y-port.x)},base={x:0,y:0};
           ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+(q.x-base.x)*zoom,p.y+(q.y-base.y)*zoom);
           ctx.strokeStyle=options.night?'#a4b0b5':'#44575c';ctx.lineWidth=5*zoom;ctx.stroke();
           ctx.strokeStyle='#e1dacc';ctx.lineWidth=zoom;ctx.stroke();
@@ -95,7 +109,11 @@ export class MapRenderer {
       this.hits.push({item,...p});drawn++;
     }
     if(options.preview && options.preview.z<=options.heightCut) {
-      const p=toScreen(options.preview,camera,width,height);
+      const p=screen(options.preview);
+      if(options.anchor) {
+        const a=screen(options.anchor);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#126e79';ctx.lineWidth=zoom;ctx.stroke();
+        diamond(a,'#ffffff33','#126e79');
+      }
       diamond(p,options.remove?'#d86a5377':'#4ba2a177','#fff');
       ctx.strokeStyle=options.remove?'#b63128':'#126e79';ctx.lineWidth=3*zoom;
       if(options.remove){ctx.beginPath();ctx.moveTo(p.x-7*zoom,p.y-4*zoom);ctx.lineTo(p.x+7*zoom,p.y+4*zoom);ctx.moveTo(p.x+7*zoom,p.y-4*zoom);ctx.lineTo(p.x-7*zoom,p.y+4*zoom);ctx.stroke();}
@@ -104,12 +122,16 @@ export class MapRenderer {
     if(options.selection) {
       const selected=options.selection;
       const position=selected.kind==='train'?this.read.trains.find(train=>train.id===selected.id)?.position:selected.position;
-      if(position&&position.z<=options.heightCut)diamond(toScreen(position,camera,width,height),'#ffffff22','#ffeaa0');
+      if(position&&position.z<=options.heightCut)diamond(screen(position),'#ffffff22','#ffeaa0');
     }
     this.canvas.dataset.drawn=String(drawn);this.canvas.dataset.culled=String(culled);
     this.canvas.dataset.paintMs=(performance.now()-start).toFixed(2);
     this.canvas.dataset.zoom=camera.zoom.toFixed(3);this.canvas.dataset.camera=`${camera.x.toFixed(1)},${camera.y.toFixed(1)}`;
     this.canvas.dataset.assets='ready';
+    this.canvas.dataset.coordinateSystem=this.read.map.coordinateSystem;
+    this.canvas.dataset.ruleset=this.read.ruleset;
+    this.canvas.dataset.worldEpoch=this.read.worldEpoch;
+    this.canvas.dataset.headings=this.read.trains.flatMap(train=>train.carHeadings).join(',');
   }
   pick(p:Point,zoom:number):Selection|undefined {
     for(let i=this.hits.length-1;i>=0;i--) {

@@ -38,10 +38,10 @@ headers on behavioral ports. The current source remains available in this tree.
 
 | Source path / notice | Output | Transformation |
 |---|---|---|
-| `core/world/Clock.cs`; root `readme.txt`, `COPYING.txt` | `src/FreeTrain.Online.Simulation/SimulationClock.cs` | Replace singleton/delegate/window callbacks with ordered value actions; explicit due-tick/insertion tie-breaking, future-only scheduling |
-| `core/world/rail/{Train,JunctionRailRoad,RailRoad}.cs`; root notices | `src/FreeTrain.Online.Simulation/{World,Definitions}.cs` | Discrete connected-tile movement, follower-car positions and reversal; no surfaces/audio/voxel globals; scenario dwell, buffer stop, and construction cash rules |
+| `core/world/Clock.cs`; root `readme.txt`, `COPYING.txt` | `src/FreeTrain.Online.Simulation/Prototype/SimulationClock.cs` | Replace singleton/delegate/window callbacks with ordered value actions; explicit due-tick/insertion tie-breaking, future-only scheduling |
+| `core/world/rail/{Train,JunctionRailRoad,RailRoad}.cs`; root notices | `src/FreeTrain.Online.Simulation/Prototype/{World,Definitions}.cs` | Discrete connected-tile movement, follower-car positions and reversal; no surfaces/audio/voxel globals; scenario dwell, buffer stop, and construction cash rules |
 | `plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs` and `plugin.xml`; root notices | `src/FreeTrain.Online.Plugins.ManualController/ManualTrainController.cs` | Preserve default input precedence/initial and later station calls, retain contribution ID; explicit inputs and stop action replace native polling, dialogs and negative-time sentinel |
-| `core/world/accounting/AccountManager.cs` and `core/world/rail/Train.cs`; root notices | `src/FreeTrain.Online.Simulation/World.cs` | Reviewed only for spend/movement concerns; authored prototype construction debit/refund rules, no old account manager or operating-cost formula copied |
+| `core/world/accounting/AccountManager.cs` and `core/world/rail/Train.cs`; root notices | `src/FreeTrain.Online.Simulation/Prototype/World.cs` | Reviewed only for spend/movement concerns; authored prototype construction debit/refund rules, no old account manager or operating-cost formula copied |
 | Ayase/Miha `plugin.xml` paths listed above; plugin creator metadata | `src/FreeTrain.Online.Content/ReferenceScenario.cs` | Curated IDs/height ranges only; author Hiro Ayase (pier), Miha (condo); no XML parser, factories, image conversion or bitmap redistribution |
 | Authored `prototype/scenarios/reference-v1.json` and initial save fixture | `src/FreeTrain.Online.Content/ReferenceScenario.cs` | Typed immutable 80-tile rail topology, three-car placeholder and entity definitions; initial snapshot/track drift checks |
 
@@ -51,3 +51,8 @@ assets were needed in this extraction. Park-Miller/Schrage random arithmetic is
 newly implemented from the public algorithm with fixed test vectors; the scenario
 retains its seed without consuming random values. Session queue/participant
 ownership and diagnostic trace tools are newly authored.
+
+The original-FreeTrain gameplay ports above are an **obsolete prototype baseline**,
+retained for reference/Save 1 compatibility. Canonical rules live in
+`FreeTrain.Online.Simulation` and follow stable ExAV; original-source gameplay
+types are isolated in `FreeTrain.Online.Simulation.Prototype`.

@@ -4,8 +4,11 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { MapRenderer, loadImages, type Selection } from './lib/map-renderer.ts';
-  import { project, same, tileAt, zoomAt, type Camera } from './lib/map-geometry.ts';
-  import type { Position, Track } from './generated/contracts.ts';
+  import { same, tileAt, zoomAt, type Camera } from './lib/map-display.ts';
+  import { snap } from './lib/map-geometry.ts';
+  import { homeLocation, mapSpace } from './lib/map-space.ts';
+  import { localSpatialPreview, matchesSpatialPreview } from './lib/spatial-preview.ts';
+  import type { Position, Track, SpatialPreview } from './generated/contracts.ts';
   import { demoScene } from './lib/demo-scene.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
   import PanelFrame from './PanelFrame.svelte';
@@ -15,20 +18,27 @@
   const liveScene = $derived(view.connection === 'ready' && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
   let renderer: MapRenderer | undefined;
-  let camera: Camera = { ...project({ x: 22, y: 16, z: 0 }), zoom: 1 };
+  const space = $derived(mapSpace(view.read?.map ?? demoScene.map));
+  let camera: Camera = { ...mapSpace(demoScene.map).center({ x: 22, y: 16, z: 0 }), zoom: 1 };
   let zoomPercent = $state(100);
   let width = 0, height = 0, dirty = true, lastDpr = 0;
   let level = $state(1), heightCut = $state(15);
   let shape = $state<Track['shape']>('buffer');
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
+  let rawPosition:Position|undefined;
+  let anchor=$state<Position>();
+  let snapMode=$state<0|4|8>(0);
+  let geometry=$state<SpatialPreview>();
+  let geometryStatus=$state<'idle'|'checking'|'ready'|'failed'>('idle');
+  let previewRequest:AbortController|undefined;
   let draftVersion = 0;
   let targetRevision = $state<string>();
   let uncertain = $state(false);
   let held = $state('');
   const keys = new Set<string>();
   let narrow = $state(false);
-  let space = false, sendingInput = false, inputDirty = false;
+  let spaceHeld = false, sendingInput = false, inputDirty = false;
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; pointerId: number } | undefined;
@@ -42,12 +52,30 @@
     try { while (inputDirty) { inputDirty = false; await model.input(new Set(keys), inputTrainId); } }
     finally { sendingInput = false; }
   }
-  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; space = false; if (had) void flushInput(); }
+  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; spaceHeld = false; if (had) void flushInput(); }
   function cancelGesture() {
     if (drag && canvas.hasPointerCapture(drag.pointerId)) canvas.releasePointerCapture(drag.pointerId);
     drag = undefined;
   }
-  function cancelDraft() { draftVersion++; targetRevision = undefined; selectedPosition = undefined; preview = undefined; uncertain = false; dirty = true; }
+  function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
+  function cancelDraft() { clearTarget();anchor=undefined;snapMode=0; }
+  async function chooseTarget(raw:Position) {
+    clearTarget();rawPosition={...raw};
+    const read=view.read;if(!read)return;
+    const version=draftVersion;
+    const query={expectedWorldEpoch:read.worldEpoch,position:{...raw},anchor:anchor?{...anchor}:null,snap:anchor?snapMode:0 as 0|4|8};
+    try {
+      const local=localSpatialPreview(read,query);
+      selectedPosition=local.position;preview=selectedPosition;targetRevision=read.tracks.find(t=>same(t.position,local.position))?.revision;
+      geometryStatus='checking';const request=previewRequest=new AbortController();dirty=true;
+      const checked=await model.previewSpatial(query,request.signal);
+      if(request.signal.aborted||version!==draftVersion||!live||view.read?.worldEpoch!==read.worldEpoch)return;
+      if(!matchesSpatialPreview(local,checked))throw new Error('Spatial mismatch');
+      geometry=checked;geometryStatus='ready';dirty=true;
+    } catch { if(version===draftVersion){geometry=undefined;geometryStatus='failed';dirty=true;} }
+  }
+  function useAnchor() { if(selectedPosition&&geometry?.inside){const point={...selectedPosition};clearTarget();anchor=point;} }
+  function changeSnap(value:string) { snapMode=Number(value) as 0|4|8; if(rawPosition)void chooseTarget({...rawPosition}); }
   export function suspendInput() { clearInput(); cancelGesture(); }
   export function resetInteraction() { clearInput(); cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
@@ -58,7 +86,7 @@
   }
   function key(event: KeyboardEvent, down: boolean) {
     if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
-    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat) space = down; return; }
+    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat) spaceHeld = down; return; }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
     event.preventDefault();
@@ -83,24 +111,27 @@
         preview = undefined; dirty = true; return;
       }
     }
-    if (tool !== 'inspect' && !panel && !view.pending && !uncertain) { preview = selectedPosition ?? tileAt(p, level, camera, width, height); dirty = true; }
+    if (tool !== 'inspect' && !panel && !view.pending && !uncertain) {
+      const raw=tileAt(p,level,camera,width,height,space);
+      preview=selectedPosition??(anchor?snap(raw,anchor,snapMode):raw);dirty=true;
+    }
   }
   function down(event: PointerEvent) {
     if (!live || inputSuspended || (event.button !== 0 && event.button !== 1)) return;
     event.preventDefault(); focusMap();
-    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || space, panOnly: event.button === 1 || space, pointerId: event.pointerId };
+    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, pointerId: event.pointerId };
     canvas.setPointerCapture(event.pointerId);
   }
   function up(event: PointerEvent) {
     const was = drag; cancelGesture();
-    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.moved || was.panOnly || event.button !== 0 || space) return;
+    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.moved || was.panOnly || event.button !== 0 || spaceHeld) return;
     const p = point(event);
     if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
-    else if (!blocked && !panel && !uncertain) { draftVersion++; selectedPosition = tileAt(p, level, camera, width, height); preview = selectedPosition; targetRevision = view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision; }
+    else if (!blocked && !panel && !uncertain) { void chooseTarget(tileAt(p,level,camera,width,height,space)); }
     dirty = true;
   }
   async function commit() {
-    if (blocked || panel || uncertain || !selectedPosition || !view.read) return;
+    if (blocked || panel || uncertain || !selectedPosition || !view.read || geometryStatus!=='ready'||!geometry?.inside||geometry.worldEpoch!==view.read.worldEpoch) return;
     const position = { ...selectedPosition }, submittedEpoch = epoch, submittedVersion = draftVersion;
     let accepted;
     if (tool === 'build') accepted = await model.send({ kind: 'buildTrack', position, shape });
@@ -119,11 +150,11 @@
     return { x: Math.max(0, overlay.left - r.left) / 2, y: height / 2 };
   }
   export function zoom(factor: number) { if (!live) return; camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
-  export function home() { camera = { ...project({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true; }
+  export function home() { camera = { ...space.center(homeLocation(view.read?.map??demoScene.map)), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true; }
   export function focusTrain(id = selectedTrain?.id) {
     const train = view.read?.trains.find(t => t.id === id);
     if (train && live) {
-      const position = project(train.position), center = visibleCenter();
+      const position = space.center(train.position), center = visibleCenter();
       camera = { x: position.x - (center.x - width / 2) / camera.zoom, y: position.y - (center.y - height / 2) / camera.zoom, zoom: camera.zoom };
       dirty = true; focusMap();
     }
@@ -145,7 +176,7 @@
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
-  $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void tool; dirty = true; });
+    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     const compact = matchMedia('(max-width: 639px)');
@@ -159,10 +190,10 @@
       if (!active) return;
       if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; dirty = true; }
       if (dirty && renderer && width && height && !document.hidden) {
-        const demoCamera = { ...project({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.8, width / 850)) };
+        const demoCamera = { ...mapSpace(demoScene.map).center({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.8, width / 850)) };
         try {
           renderer.draw(liveScene ? camera : demoCamera, width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, shape, remove: tool === 'remove' }
+            ? { heightCut, level, night, winter, recolor, selection, preview, anchor, shape, remove: tool === 'remove' }
             : { heightCut: 15, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           if (liveScene) { renderState = 'ready'; zoomPercent = Math.round(camera.zoom * 100); }
@@ -207,10 +238,16 @@
         {#if tool === 'build'}<label>{text.trackShape}<select aria-label={text.trackShape} bind:value={shape} disabled={view.pending}>{#each shapes as s}<option value={s}>{text[s]}</option>{/each}</select></label>{/if}
       </div>
       <p data-testid="preview-position">{selectedPosition ? `${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}` : text[panel ? 'closePanelToTarget' : 'pickTile']}</p>
+      {#if tool==='build'}
+        <div class="form-actions"><label>{text.snapDirection}<select aria-label={text.snapDirection} value={snapMode} onchange={event=>changeSnap(event.currentTarget.value)} disabled={view.pending}><option value={0}>{text.snapNone}</option><option value={4}>{text.snapFour}</option><option value={8}>{text.snapEight}</option></select></label><button disabled={view.pending||!geometry?.inside} onclick={useAnchor}>{text.useAnchor}</button></div>
+        {#if anchor}<p data-testid="snap-anchor">{text.snapAnchor}: {anchor.x}, {anchor.y}, {anchor.z}</p><p class="hint">{text.alignmentHint}</p>{/if}
+      {/if}
+      <p data-testid="geometry-status" aria-live="polite">{text[geometryStatus==='checking'?'checkingGeometry':geometryStatus==='failed'?'geometryFailed':geometryStatus==='ready'?(geometry?.inside?'geometryChecked':'outsideMap'):'pickTile']}</p>
+      {#if geometry?.heading!==null&&geometry?.heading!==undefined}<p data-testid="preview-heading">{text.directionLabel}: {text[(['headingNorth','headingNorthEast','headingEast','headingSouthEast','headingSouth','headingSouthWest','headingWest','headingNorthWest'] as const)[geometry.heading]]} · {text.distanceLabel}: {geometry.distance}</p>{/if}
       <p class="hint">{text.unvalidatedPreview}</p>
       {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
       {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
-      <div class="form-actions"><button class="primary" disabled={blocked || !!panel || uncertain || !selectedPosition || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+      <div class="form-actions"><button class="primary" disabled={blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
   <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>

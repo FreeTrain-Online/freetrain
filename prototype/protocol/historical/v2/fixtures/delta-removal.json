@@ -1,0 +1,27 @@
+{
+  "type": "delta",
+  "worldEpoch": "1",
+  "baseRevision": "0",
+  "revision": "1",
+  "tick": "1",
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "removed": {
+    "trainIds": [],
+    "stationIds": [],
+    "buildingIds": [
+      "building-1"
+    ],
+    "trackPositions": [
+      {
+        "x": 24,
+        "y": 16,
+        "z": 1
+      }
+    ]
+  },
+  "paused": true,
+  "cash": "1000000",
+  "tracks": []
+}

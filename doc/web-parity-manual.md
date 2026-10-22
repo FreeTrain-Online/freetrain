@@ -404,3 +404,5 @@ and [scenario](web-parity-scenarios.md) reviews. This document does not reopen o
 complete those source gates. Granular feature reconciliation, implementation,
 executable fixtures, native/device UX acceptance and gameplay handoff remain
 with their owning slices; overall P0/runtime acceptance is not established here.
+
+**P1 spatial follow-through — 21 October 2026:** [client/server integration](web-parity-spatial-integration.md) delivers four/eight-direction target alignment, server bounds/projection checks and per-car heading reads. This supports MAN-A03 without closing its P4 multi-cell route, legality, cost, obstacles or removal acceptance. Source H/V rendering/picking fixtures support MAN-E16; full terrain/content/controller disambiguation remains with its owning slices.

@@ -2,7 +2,7 @@ import { compile } from 'json-schema-to-typescript';
 import { readFile, writeFile } from 'node:fs/promises';
 const schema = JSON.parse(await readFile(new URL('../../prototype/protocol/schema.json', import.meta.url), 'utf8'));
 const output = new URL('../src/generated/contracts.ts', import.meta.url);
-const generated = await compile(schema, 'PrototypeDocument', {
+const generated = await compile(schema, 'GameDocument', {
   bannerComment: '/* Generated from prototype/protocol/schema.json. Run deno task generate:contracts. */',
   unreachableDefinitions: true,
 });

@@ -527,7 +527,7 @@ def main():
         for key, value in defaults.items():
             action.setdefault(key, value)
     ui_review = action_review.apply_reviews(tree, base, reviews, strip_comments, digest,
-                                          (ROOT / 'web/src/lib/game-ui.ts').read_text())
+                                          git(ROOT, 'show', implementation_revision + ':web/src/lib/game-ui.ts').decode())
     extra = None
     if args.extra_root:
         extra_tree = Tree(args.extra_root, config['extraRevision'])

@@ -1,0 +1,112 @@
+# Parity phase review — 21 October 2026
+
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+
+## P0 coverage baseline: closed
+
+Final review at implementation base `332ac5f`, against stable ExAV 2.1.1.12,
+archive `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`.
+The P0 exit condition is coverage and reviewable specifications. It does not
+require the inventoried features to be implemented. P0-01–09 supply that evidence:
+
+| P0 exit criterion | Reviewed evidence | Result |
+| --- | --- | --- |
+| Every baseline root and bundled plugin has explicit scope/status | [Baseline](parity/exav-baseline.json), [ledger](parity/exav-ledger.json), [integration](web-parity-exav-integration.md): all eight roots, 1,041 files, 56 manifests and 465 stable code assignments; support, source-only and exclusions retained | Met |
+| Generated contributions are enumerated | [Bundled review](web-parity-content.md): 482 direct declarations plus one registered child, with recipes/wrappers separate; [optional review](web-parity-optional-plugins.md): 23,417 generated children, selected profile and duplicate/source-only copies explicit | Met |
+| Reachability, action destinations and differences are reviewable | [Action review](web-parity-actions.md): 87 families / 46 routes, all 483 contribution decisions and all 56 bundled dependency closures; source defects have implementing owners | Met |
+| Initial geometry/content/state schemas and priorities are reviewable | [Geometry](web-parity-geometry.md), [persistence](web-parity-persistence.md), [transition decisions](parity/exav-domain-transition.json), [scenario specifications](web-parity-scenarios.md) and [phase estimates/owners](web-parity-report.md); independent version axes and prototype Save 1 disposition explicit | Met |
+| Separate optional content, dependency and permission records | [Canonical V2 specification](web-parity-optional-plugins.md): 4,933 files, 452 manifests / 450 selected, resource gaps and terms retained; separate directory/credits contract and historical compatibility profiles | Met |
+| Credit delivered UX without claiming source parity | [Coverage report](web-parity-report.md) separates implementation foundations from source specification, translation candidates and runtime acceptance; native/device evidence remains qualified | Met |
+
+All eight explicit-source `--check` commands passed afresh: inventory, content,
+actions, geometry, persistence, scenarios, optional and integration. All **105**
+Python tests passed. Source checks read pinned Git blobs, including where the
+archive working tree has approved corrections. Check commands are documented in
+the linked reviews; local logs are under `tmp/parity-p1/p0-*.log` and
+`tmp/parity-p1/python-tests.log`.
+
+This closes **P0 coverage/specification only**. Existing source records retain
+their implementation statuses. Import/build migration, granular feature review,
+English/Japanese presentation, source-defect decisions, runtime/continuation and
+capacity evidence stay assigned to P1–P11. UX3-14/17, A-03/A-14 and UX3-GATE remain
+open for their native/device observations. The owner's 21 October instruction to
+continue into P1 authorizes the domain slice below; it does not supply those
+observations or establish browser gameplay acceptance. Earlier dated P0 closure
+qualifications in the source reviews record the state before this final review.
+
+## P1-01: spatial primitives
+
+**Follow-up:** [client/server spatial integration](web-parity-spatial-integration.md)
+now delivers protocol 3, client geometry and server-checked alignment targeting.
+The initial domain-only delivery and its validation are recorded below. P1 and
+canonical-world migration remain open.
+
+Implemented in [Simulation](../src/FreeTrain.Online.Simulation/Heading.cs)
+with [independent vectors](../tests/FreeTrain.Online.Tests/SpatialTests.cs).
+The API supplies eight validated headings, rotations, angles/axes, explicit
+prototype cardinal adapters, location steps/distance/snapping/inclusive bounds,
+H/V/Z storage conversion, horizontal and voxel bounds, and camera-independent
+projection. Each `WorldSpace` carries its own dimensions and origin; there is no
+global current-world dependency.
+
+Source identities come from [P0-04's hashed review](parity/exav-geometry-rules.json):
+
+| Pinned source path under `trunk/` | SHA-256 | Ported symbols |
+| --- | --- | --- |
+| `core/world/Direction.cs` | `53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96` | indices, offsets, rotations, angle, axis tests |
+| `core/world/Location.cs` | `c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126` | toward/direction, distance, inBetween, align4To/align8To |
+| `core/world/World.cs` | `2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2` | toHV, toXYZ, isInsideWorld(Location), fromXYZToAB |
+
+Tests cover all eight vectors/rotations and all 64 angle pairs, explicit
+0/1/2/3 → 0/2/4/6 prototype conversion, diagonal rejection, distance truncation,
+snapping ties and integer-half thresholds, odd/even origins, storage edges,
+negative signed shifts, source negative-row truncation, projection vectors and
+independent world origins. This implements the direction portion of
+EXAV-SCN-001; its rail-pattern legality/matrix remains P4 work. The initial
+distance vectors also support EXAV-SCN-013; fare/economy behavior remains open.
+
+**Boundary decision P1-SPATIAL-001:** retain Int32 spatial intermediates and source
+normal-range results; use checked arithmetic to reject overflow explicitly rather
+than wrap a location or depend on a NaN-to-int conversion. This bounds the supported
+spatial API. It does not decide financial overflow (EXAV-SCN-D04), broaden valid
+world dimensions, or claim source overflow fidelity. Source debug-only direction
+preconditions become argument errors. Negative storage rows retain the source's
+truncating inverse and are not promised to round-trip. Horizontal containment
+matches the source's deliberate lack of a Z check; voxel containment adds that
+check explicitly. No deprecated removal formula is reused.
+
+This is a domain implementation slice. The live prototype, its Direction enum,
+protocol 2, content identity and Save 1 codecs remain in use. No ExAV wire/save
+format is emitted yet. No new user-visible text is introduced; domain exceptions
+are internal and must receive localized presentation when exposed by commands.
+MAN/DEV control mapping and bilingual browser acceptance attach to those future
+workflows rather than these internal primitives.
+
+P1 remains open. Next: source-minute clock/calendar and scheduler fixtures,
+versioned isolated random streams, then stable entity/footprint contracts and
+tested ruleset/prototype compatibility dispatch before replacing live geometry.
+P1-01 does not close full footprint/terrain/rail behavior, session integration or
+the native UX handoff.
+
+Validation: **160 .NET tests passed**, including **31 new spatial cases**, using
+`dotnet test tests/FreeTrain.Online.Tests/FreeTrain.Online.Tests.csproj -c Release
+--no-restore -m:1 -nr:false -p:UseSharedCompilation=false` with local sockets
+enabled for MSBuild/testhost and network tests. The full suite includes prototype
+Save 1, continuation and multiplayer regressions. All 105 Python tests and
+`scripts/check-project-boundaries.py` pass. No browser run was needed for this
+domain-only change. Local .NET evidence: `tmp/parity-p1/dotnet-verified.log`.
+
+## Baseline naming — owner direction, 21 October 2026
+
+Canonical game types, namespaces, directories and tests use ordinary project
+names, without an `Exav` prefix. ExAV identifies the source authority in provenance
+and research artifacts, not an alternate gameplay mode. The spatial types now
+live directly in `FreeTrain.Online.Simulation`; tests are `SpatialTests`.
+
+Original-FreeTrain gameplay is an obsolete baseline. The retained runtime types
+now live under `Prototype/` in `FreeTrain.Online.Simulation.Prototype`, with explicit
+obsolete-baseline notices. Reference content and the old manual controller carry
+the same notice. Direction adapters live in that compatibility namespace, so the
+canonical rules have no dependency on the prototype. This isolates the existing
+reference/Save 1 behavior while subsystems are replaced; it does not make the
+obsolete rules authoritative. See the [simulation boundary](../src/FreeTrain.Online.Simulation/README.md).

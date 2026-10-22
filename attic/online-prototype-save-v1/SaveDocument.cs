@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 
 namespace FreeTrain.Online.Persistence;
 

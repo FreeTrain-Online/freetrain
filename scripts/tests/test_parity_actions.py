@@ -16,7 +16,8 @@ class ActionCoverage(unittest.TestCase):
         cls.base = json.loads((inv.OUT / 'base-ledger.json').read_text())
         cls.review = json.loads((inv.OUT / 'action-map.json').read_text())
         cls.tree = inv.Tree(inv.ROOT, cls.base['revision'])
-        cls.registry = (inv.ROOT / 'web/src/lib/game-ui.ts').read_text()
+        # Historical mappings validate the implementation they actually reviewed.
+        cls.registry = inv.git(inv.ROOT, 'show', cls.review['implementationRevision'] + ':web/src/lib/game-ui.ts').decode()
 
     def apply(self, review=None, base=None, tree=None, registry=None):
         return inv.action_review.apply_reviews(

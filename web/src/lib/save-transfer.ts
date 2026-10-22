@@ -1,4 +1,4 @@
-export type SaveFeedback = 'idle' | 'saving' | 'saved' | 'loaded' | 'invalidSave' | 'saveTooLarge' | 'missingSave' | 'saveFailed' | 'staleEpoch';
+export type SaveFeedback = 'idle' | 'saving' | 'saved' | 'loaded' | 'invalidSave' | 'incompatibleSave' | 'savingUnavailable' | 'saveTooLarge' | 'missingSave' | 'saveFailed' | 'staleEpoch';
 export interface SaveSlot { id: string; exists: boolean }
 export class SaveError extends Error { constructor(readonly code: SaveFeedback) { super(code); } }
 export async function saveRequest(path: string, epoch: string, body?: File): Promise<void> {
@@ -10,13 +10,16 @@ export async function saveRequest(path: string, epoch: string, body?: File): Pro
   }); } catch { throw new SaveError('saveFailed'); }
   if (!response.ok) {
     const result = await response.json().catch(() => ({}));
-    const code = ['invalidSave', 'saveTooLarge', 'missingSave', 'staleEpoch'].includes(result.code) ? result.code : 'saveFailed';
+    const code = ['invalidSave', 'incompatibleSave', 'savingUnavailable', 'saveTooLarge', 'missingSave', 'staleEpoch'].includes(result.code) ? result.code : 'saveFailed';
     throw new SaveError(code);
   }
 }
 export async function downloadSave(): Promise<void> {
   const response = await fetch('/api/saves/download', { signal: AbortSignal.timeout(15000), credentials: 'same-origin' });
-  if (!response.ok) throw new SaveError('saveFailed');
+  if (!response.ok) {
+    const result=await response.json().catch(()=>({}));
+    throw new SaveError(result.code==='savingUnavailable'?'savingUnavailable':'saveFailed');
+  }
   const url = URL.createObjectURL(await response.blob());
   const link = document.createElement('a'); link.href = url; link.download = 'freetrain-online-save.json'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -24,5 +27,11 @@ export async function downloadSave(): Promise<void> {
 export async function listSaveSlots(): Promise<SaveSlot[]> {
   const response = await fetch('/api/saves', { signal: AbortSignal.timeout(5000), credentials: 'same-origin' });
   if (!response.ok) throw new SaveError('saveFailed');
+  return response.json();
+}
+export interface SaveStatus { savingAvailable:boolean;loadingAvailable:boolean;startupError:SaveFeedback|null }
+export async function saveStatus():Promise<SaveStatus> {
+  const response=await fetch('/api/saves/status',{signal:AbortSignal.timeout(5000),credentials:'same-origin'});
+  if(!response.ok)throw new SaveError('saveFailed');
   return response.json();
 }

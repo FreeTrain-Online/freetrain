@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { appName } from '../../src/lib/localization.ts';
-import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain } from './ux-helpers.ts';
+import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain, worldReplacementFixture } from './ux-helpers.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const evidence = process.env.FREETRAIN_ONLINE_UX1_EVIDENCE!;
 
@@ -52,11 +52,6 @@ test('UX1 fixed viewport, persistent canvas and overlay-independent camera at ta
 test('UX1 selected inspectors, clock and explicit rail confirm/cancel remain playable', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/'); await ready(page);
-  // Isolate the known 200-cash buffer-extension scenario from earlier journeys.
-  const epoch = (await bootstrap(page)).worldEpoch;
-  const fixture = JSON.parse(await readFile('../prototype/protocol/fixtures/save-reference.json', 'utf8'));
-  const restored = await page.request.post(`/api/saves/upload?expectedWorldEpoch=${epoch}`, { data: fixture });
-  expect(restored.ok()).toBe(true); await page.reload(); await ready(page);
   if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Ⅱ Pause', exact: true }).click();
   await selectTrain(page); await expect(page.getByRole('combobox', { name: 'Controller', exact: true })).toBeVisible();
   await page.screenshot({ path: `${evidence}/desktop-inspector.png` });
@@ -76,7 +71,7 @@ test('UX1 selected inspectors, clock and explicit rail confirm/cancel remain pla
   await clickTile(page, { x: 37, y: 16, z: 1 });
   await page.getByRole('button', { name: 'Confirm track change', exact: true }).dblclick(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
   await expect(page.getByRole('button', { name: 'Confirm track change', exact: true })).toBeDisabled();
-  expect(BigInt(before.cash) - BigInt((await bootstrap(page)).cash)).toBe(200n);
+  expect(BigInt(before.cash) - BigInt((await bootstrap(page)).cash)).toBe(before.tracks.find((track:any)=>track.position.x===36&&track.position.y===16&&track.position.z===1)?.shape==='buffer'?200n:100n);
   await page.getByRole('button', { name: 'Remove track', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
   await page.getByRole('button', { name: 'Confirm track change', exact: true }).click(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
 });
@@ -205,7 +200,8 @@ test('UX1 lost authentication clears live identity and requires sign-in again', 
   await page.screenshot({ path: `${evidence}/auth-required-ja.png` });
 });
 
-test('UX1 world replacement discards old geometry and restores initial framing', async ({ page }) => {
+test('UX1 epoch snapshot fixture discards old geometry and restores initial framing', async ({ page }) => {
+  const replaceWorld=await worldReplacementFixture(page);
   await page.goto('/'); await ready(page);
   await page.getByRole('button', { name: 'Reset camera', exact: true }).click();
   await page.locator('canvas').evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -214,9 +210,8 @@ test('UX1 world replacement discards old geometry and restores initial framing',
   await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
   await page.getByRole('button', { name: 'Build track', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
   await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
-  const before = await bootstrap(page), save = await (await page.request.get('/api/saves/download')).json();
-  const loaded = await page.request.post(`/api/saves/upload?expectedWorldEpoch=${before.worldEpoch}`, { data: save }); expect(loaded.ok()).toBe(true);
-  await expect.poll(async () => (await bootstrap(page)).worldEpoch).not.toBe(before.worldEpoch);
+  const next=await replaceWorld();
+  await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',next.worldEpoch);
   await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.tool-card')).toHaveCount(0); await expect(page.locator('canvas')).toHaveAttribute('data-zoom', homeZoom!);
   await expect(page.locator('canvas')).toHaveAttribute('data-camera', homeCamera!);

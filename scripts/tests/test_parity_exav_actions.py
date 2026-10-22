@@ -29,6 +29,9 @@ class ExavActions(unittest.TestCase):
             self.assertEqual(self.files[row['path']], row['sourceSha256'])
         for path, sha in self.review['inputs'].items():
             self.assertEqual(sha, actions.inv.digest((actions.inv.ROOT / path).read_bytes()), path)
+        implementation = actions.inv.Tree(actions.inv.ROOT, self.review['implementationRevision'])
+        for path, sha in self.review['implementationInputs'].items():
+            self.assertEqual(sha, actions.inv.digest(implementation.read(path)), path)
 
     def test_candidate_matches_never_approve_historical_behavior(self):
         self.assertIn('feature detail deferred', self.review['status'])

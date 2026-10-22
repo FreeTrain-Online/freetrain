@@ -1,5 +1,9 @@
 # Content boundary
 
+The original-FreeTrain reference scenario is an **obsolete gameplay baseline**,
+retained for prototype/Save 1 compatibility. New content follows the canonical
+ExAV rules, using ordinary project names.
+
 `ReferenceScenario.Create()` supplies immutable typed definitions for the 64×64
 reference world: 80 rail tiles (72 loop + 8 siding), three explicit train-car
 positions, the station, and the two building families. Simulation consumes these

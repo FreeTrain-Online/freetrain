@@ -1,4 +1,5 @@
 {
+  "implementationRevision": "332ac5f8651bf0faded4fa1fbd5a6f4d254907a6",
   "schemaVersion": 2,
   "reviewedOn": "2026-10-20",
   "status": "P0-03 scope and consumer reconciliation complete; feature detail deferred",

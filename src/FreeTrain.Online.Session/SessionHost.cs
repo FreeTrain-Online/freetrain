@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 
 namespace FreeTrain.Online.Session;
 
@@ -126,20 +127,18 @@ public sealed class SessionHost
             return completion.Task;
         }
     }
-    public Task<SaveDocument> CaptureSave(long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary(() =>
+    public Task<byte[]> CaptureSave(long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<byte[]>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        return SaveCodec.Capture(scenario, world.Read());
+        throw new InvalidDataException("savingUnavailable");
     });
-    public Task<SnapshotMessage> LoadSave(SaveDocument save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary(() =>
+    public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        var candidate = SaveCodec.Restore(save, scenario, controllerFactories.Select(factory => factory()));
-        candidate.SetPaused(true);
-        world = candidate; leases.Clear(); lostParticipants.Clear(); resetParticipants.Clear(); WorldEpoch++; sequence = 0; resetInput = false; safetyPause = false;
-        return Snapshot();
+        SaveCodec.RejectUnsupported(save.Span);
+        throw new InvalidDataException("incompatibleSave");
     });
 
     // Bounded, coalesced lifecycle intent; only Pump mutates the world.
@@ -254,19 +253,27 @@ public sealed class SessionHost
     private static PositionRead Position(GridPosition p) => new(p.X, p.Y, p.Z);
     private static string Camel(string value) => char.ToLowerInvariant(value[0]) + value[1..];
     public WorldState ReadState() { lock (gate) return world.Read(); }
+    public SpatialPreviewRead PreviewSpatial(SpatialQuery query)
+    {
+        lock (gate) return SpatialQueries.Preview(Snapshot(), query);
+    }
     public SnapshotMessage Snapshot()
     {
         lock (gate)
         {
             var state = world.Read();
             return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
-                new(state.Map.Width, state.Map.Height, state.Map.Levels),
+                new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),
                 state.Trains.Select(x => new TrainRead(x.Id, x.Revision, x.Name, Position(x.Cars[0]), x.Cars.Length,
-                    x.Controller, Camel(x.Direction.ToString()), x.Cars.Select(Position).ToArray(), Camel(x.Status.ToString()), leases.TryGetValue(x.Id, out var lease)
+                    x.Controller, x.Direction.ToHeading().Index, x.Cars.Select(Position).ToArray(),
+                    x.Cars.Select((car, index) => index == 0 ? x.Direction.ToHeading().Index
+                        : new Location(car.X, car.Y, car.Z).DirectionTo(new(x.Cars[index - 1].X, x.Cars[index - 1].Y, car.Z)).Index).ToArray(),
+                    Camel(x.Status.ToString()), leases.TryGetValue(x.Id, out var lease)
                         ? new(lease.Participant.ParticipantId, lease.Id, lease.Expires.ToUnixTimeMilliseconds()) : null)).ToArray(),
                 state.Stations.Select(x => new StationRead(x.Id, x.Revision, x.Name, Position(x.Position))).ToArray(),
                 state.Buildings.Select(x => new BuildingRead(x.Id, x.DefinitionId, Position(x.Position), x.Height)).ToArray(),
-                state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray());
+                state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray(),
+                ProtocolIdentity.PrototypeRuleset, scenario.ContentVersion, ProtocolIdentity.PrototypePacks);
         }
     }
 }

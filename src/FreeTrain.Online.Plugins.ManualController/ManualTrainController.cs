@@ -1,7 +1,9 @@
+// OBSOLETE GAMEPLAY BASELINE: original-FreeTrain prototype compatibility/reference only.
+// Canonical game logic belongs in FreeTrain.Online.Simulation and follows stable ExAV.
 // Behavioral port of FreeTrain's manual controller; see prototype/assets/PROVENANCE.md.
 // Original: Copyright (c) 2002 Kohsuke Kawaguchi et al.; LGPL-2.1-or-later (COPYING.txt).
 using System.Collections.Immutable;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 
 namespace FreeTrain.Online.Plugins.ManualController;
 

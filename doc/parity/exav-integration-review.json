@@ -7,15 +7,15 @@
   "status": "P0-09 source authority/scope integration; no implementation or runtime closure",
   "inputs": {
     "exav-baseline.json": "eefacdd6276ee003f6c5f76e6568fa9b99ca63d490ac02ab8a6b691acce7a288",
-    "exav-ledger.json": "076804edcb2271bdf6015bb24a7dfcf6ccafddba96ab36f98c93b9bc564ebb5e",
-    "doc/parity/exav-content-review.json": "c5a107d911d962e2d6895174e2dcceaf64a279051ff963ef868c57af4b321e91",
-    "doc/parity/exav-action-review.json": "4f544a322126c7c884885f50658f5fe9863acf6694f4df9693f95271835d0202",
+    "exav-ledger.json": "8afcd1b4efd995d537e908497aea9a0b94db1d22a399611558af7603ecf68142",
+    "doc/parity/exav-content-review.json": "cf18549b3f41267c444325cfedf6ce7504f3f9d8ff2cc7d4f86c4ffad4940a1a",
+    "doc/parity/exav-action-review.json": "4494ab2bf4456f4eff43ef5bbca778bafbe8240fdb5fc65c32eaae64e18fb94d",
     "doc/parity/exav-geometry-rules.json": "b93bd0f6547b38ac27c7bbb1fa14204da71c30e40aaf9d1a74a0ac0bf0a63fcf",
     "doc/parity/exav-geometry-dependency-review.json": "a3348ab774a904b8d5a27ce56de53e85a52dcb321ddba21269624b1a5e96aed6",
     "doc/parity/exav-persistence-rules.json": "9abe84ebfa58f55bd530d97a5f5b8d06c02e11e16a7df24bbf2e1917d1961648",
     "doc/parity/exav-serialization-review.json": "8f0950294a5739fe496fdbd5e5da3e59596220e9f5664646982dac70e91dbc4e",
     "doc/parity/exav-scenarios.json": "0f589e512e9301b42d5e5fdcc26b0c3dd0519710116c419799545056c1beb285",
-    "doc/parity/exav-optional-review.json": "d6f2fecd4e9705495cac7af5d320467b07cebb0f80957ebf5bb066af956dd352"
+    "doc/parity/exav-optional-review.json": "d277d561701116bcf7d66744649b0cd68019eebd2a505ca4d1cc606365549abc"
   },
   "rulesSha256": "f5a4fc40e293903ed6d63d57bf09b675136e478ffbe05ba069ab8d7c45794029",
   "generatorSha256": "fdda4a323bb24a9a3e238af3965660735d5de1e5a28384bebc34c490eab24291",

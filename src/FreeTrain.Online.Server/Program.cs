@@ -1,5 +1,6 @@
 using FreeTrain.Online.Server;
 using FreeTrain.Online.Persistence;
+using FreeTrain.Online.Contracts;
 
 if (args.Length > 0 && args[0] == "--headless-trace")
     return HeadlessTrace.Run(args);
@@ -27,7 +28,7 @@ builder.Services.AddSingleton<SessionDriver>();
 builder.Services.AddHostedService(services => services.GetRequiredService<SessionDriver>());
 var app = builder.Build();
 app.UseDeployment();
-app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = 2, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
+app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = ProtocolIdentity.Version, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
 app.MapNetwork();
 app.Run();
 

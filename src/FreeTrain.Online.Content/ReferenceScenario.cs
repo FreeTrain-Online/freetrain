@@ -1,5 +1,7 @@
+// OBSOLETE GAMEPLAY BASELINE: original-FreeTrain prototype compatibility/reference only.
+// Canonical game logic belongs in FreeTrain.Online.Simulation and follows stable ExAV.
 using System.Collections.Immutable;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 
 namespace FreeTrain.Online.Content;
 

@@ -8,9 +8,10 @@ using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Plugins.ManualController;
 using FreeTrain.Online.Session;
-using FreeTrain.Online.Simulation;
+using FreeTrain.Online.Simulation.Prototype;
 using Xunit;
 
+// Obsolete prototype gameplay compatibility regressions, not canonical rule fixtures.
 public class SimulationTests
 {
     private static readonly ParticipantContext Owner = new("operator-1");
@@ -51,16 +52,15 @@ public class SimulationTests
         new { state = host.ReadState(), events }, WireJson.CreateOptions());
 
     [Fact]
-    public void Fresh_typed_scenario_matches_shared_snapshot_and_initial_save_data()
+    public void Fresh_typed_scenario_matches_shared_snapshot()
     {
         var host = Host();
         var expected = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/snapshot.json")));
         Assert.True(JsonNode.DeepEquals(expected, JsonSerializer.SerializeToNode<WireMessage>(host.Snapshot(), WireJson.CreateOptions())));
-        var save = JsonSerializer.Deserialize<SaveDocument>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/save-reference.json")), SaveCodec.Json)!;
         var state = host.ReadState();
         Assert.Equal(80, state.Tracks.Length);
-        Assert.Equal(save.World.Tracks.Length, state.Tracks.Length);
-        foreach (var track in save.World.Tracks)
+        Assert.Equal(expected!["tracks"]!.AsArray().Count, state.Tracks.Length);
+        foreach (var track in ReferenceScenario.Create().Tracks)
         {
             var actual = Assert.Single(state.Tracks.Where(x => x.Position == new GridPosition(track.Position.X, track.Position.Y, track.Position.Z)));
             Assert.Equal(track.Shape, actual.Shape);

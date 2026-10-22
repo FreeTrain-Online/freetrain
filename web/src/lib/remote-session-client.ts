@@ -1,8 +1,9 @@
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
+import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 
-const compatibility = 'protocolVersion=2&contentVersion=prototype-content-1';
+const compatibility = 'protocolVersion=3&contentVersion=prototype-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -54,6 +55,11 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     reconnectTimer = setTimeout(connect, delay);
   };
   const suspend = () => { if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'inputReset' })); };
+  const incompatible = () => {
+    clearInterval(heartbeat);clearTimeout(connectionTimer);clearTimeout(reconnectTimer);clearPending();
+    if(socket){socket.onclose=null;socket.close();socket=undefined;}
+    join=undefined;read=undefined;setStatus('incompatible');
+  };
   const visibility = () => { if (document.hidden) suspend(); };
   const blur = () => suspend();
   document.addEventListener('visibilitychange', visibility);
@@ -87,13 +93,14 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           const message = parseMessage(event.data);
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 2 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 3 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               publish(message.snapshot); setStatus('ready');
               if (document.hidden) suspend();
               break;
             case 'snapshot':
               if (!join) throw new Error('Snapshot before join');
+              if(!sameIdentity(join,message))throw new IncompatibleWorldError('World profile changed');
               clearTimeout(connectionTimer); resyncing = false;
               if (read && read.worldEpoch !== message.worldEpoch) clearPending();
               publish(message); setStatus('ready'); break;
@@ -118,12 +125,12 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
             }
             default: throw new Error('Unexpected server message');
           }
-        } catch { current.close(1002); }
+        } catch (error) { if(error instanceof IncompatibleWorldError)incompatible();else current.close(1002); }
       };
       current.onopen = () => { heartbeat = setInterval(() => { if (current.readyState === WebSocket.OPEN) current.send('{"type":"heartbeat"}'); }, 5000); };
       current.onclose = fail;
       current.onerror = () => { /* onclose handles reconnect and ambiguous results. */ };
-    } catch { if (!disposed) fail(); }
+    } catch (error) { if (!disposed) {if(error instanceof IncompatibleWorldError)incompatible();else fail();} }
   };
   void connect();
   return {
@@ -137,6 +144,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     get unresolved() { return unresolved; },
     subscribe(listener) { listeners.add(listener); if (read) listener(read); return () => { listeners.delete(listener); }; },
     subscribeStatus(listener) { statuses.add(listener); listener(status); return () => { statuses.delete(listener); }; },
+    async previewSpatial(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/spatial/preview?${compatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(5000)])});
+      if(!response.ok)throw new Error('Spatial preview failed');
+      const preview=parseSpatialPreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||!sameIdentity(identity,preview))throw new Error('Stale spatial preview');
+      return preview;
+    },
     send(command) {
       if (disposed || status !== 'ready' || socket?.readyState !== WebSocket.OPEN || pending.size >= 32 || pending.has(command.requestId)) return Promise.reject(new Error('Unavailable'));
       return new Promise((resolve, reject) => {

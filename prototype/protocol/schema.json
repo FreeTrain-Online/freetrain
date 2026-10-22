@@ -1,13 +1,16 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/prototype/contracts-v2.schema.json",
-  "title": "PrototypeDocument",
+  "$id": "https://freetrain-online.invalid/contracts-v3.schema.json",
+  "title": "GameDocument",
   "oneOf": [
     {
       "$ref": "#/$defs/WireMessage"
     },
     {
-      "$ref": "#/$defs/SaveDocument"
+      "$ref": "#/$defs/SpatialQuery"
+    },
+    {
+      "$ref": "#/$defs/SpatialPreview"
     }
   ],
   "$defs": {
@@ -27,17 +30,17 @@
       "properties": {
         "x": {
           "type": "integer",
-          "minimum": 0,
+          "minimum": -2147483648,
           "maximum": 2147483647
         },
         "y": {
           "type": "integer",
-          "minimum": 0,
+          "minimum": -2147483648,
           "maximum": 2147483647
         },
         "z": {
           "type": "integer",
-          "minimum": 0,
+          "minimum": -2147483648,
           "maximum": 2147483647
         }
       },
@@ -65,12 +68,19 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 2147483647
+        },
+        "coordinateSystem": {
+          "enum": [
+            "hv",
+            "prototypeXY"
+          ]
         }
       },
       "required": [
         "width",
         "height",
-        "levels"
+        "levels",
+        "coordinateSystem"
       ]
     },
     "Train": {
@@ -102,14 +112,6 @@
             "manual"
           ]
         },
-        "direction": {
-          "enum": [
-            "north",
-            "east",
-            "south",
-            "west"
-          ]
-        },
         "carPositions": {
           "type": "array",
           "minItems": 1,
@@ -134,6 +136,16 @@
               "type": "null"
             }
           ]
+        },
+        "heading": {
+          "$ref": "#/$defs/Heading"
+        },
+        "carHeadings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Heading"
+          }
         }
       },
       "required": [
@@ -143,10 +155,11 @@
         "position",
         "cars",
         "controller",
-        "direction",
         "carPositions",
         "state",
-        "controlLease"
+        "controlLease",
+        "heading",
+        "carHeadings"
       ]
     },
     "Station": {
@@ -290,6 +303,21 @@
           "items": {
             "$ref": "#/$defs/Track"
           }
+        },
+        "ruleset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredPacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RequiredPack"
+          },
+          "maxItems": 32
         }
       },
       "required": [
@@ -303,7 +331,10 @@
         "trains",
         "stations",
         "buildings",
-        "tracks"
+        "tracks",
+        "ruleset",
+        "contentVersion",
+        "requiredPacks"
       ]
     },
     "Delta": {
@@ -357,6 +388,21 @@
           "items": {
             "$ref": "#/$defs/Track"
           }
+        },
+        "ruleset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredPacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RequiredPack"
+          },
+          "maxItems": 32
         }
       },
       "required": [
@@ -371,7 +417,10 @@
         "removed",
         "paused",
         "cash",
-        "tracks"
+        "tracks",
+        "ruleset",
+        "contentVersion",
+        "requiredPacks"
       ]
     },
     "CommandPayload": {
@@ -719,7 +768,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 2
+          "const": 3
         },
         "contentVersion": {
           "type": "string",
@@ -749,6 +798,17 @@
             "operator",
             "observer"
           ]
+        },
+        "ruleset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredPacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RequiredPack"
+          },
+          "maxItems": 32
         }
       },
       "required": [
@@ -760,297 +820,9 @@
         "participantId",
         "worldEpoch",
         "snapshot",
-        "role"
-      ]
-    },
-    "SavedTrack": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "position": {
-          "$ref": "#/$defs/Position"
-        },
-        "shape": {
-          "enum": [
-            "eastWest",
-            "northSouth",
-            "curveSE",
-            "curveSW",
-            "curveNE",
-            "curveNW",
-            "junctionE",
-            "buffer"
-          ]
-        },
-        "revision": {
-          "$ref": "#/$defs/Counter"
-        }
-      },
-      "required": [
-        "position",
-        "shape",
-        "revision"
-      ]
-    },
-    "SavedTrain": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "definitionId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "direction": {
-          "enum": [
-            "north",
-            "south",
-            "east",
-            "west"
-          ]
-        },
-        "cars": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/Position"
-          }
-        },
-        "controller": {
-          "enum": [
-            "automatic",
-            "manual"
-          ]
-        },
-        "nextMoveTick": {
-          "$ref": "#/$defs/Counter"
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "revision": {
-          "$ref": "#/$defs/Counter"
-        },
-        "status": {
-          "enum": [
-            "moving",
-            "station",
-            "buffer",
-            "blocked"
-          ]
-        },
-        "stationId": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "required": [
-        "id",
-        "definitionId",
-        "direction",
-        "cars",
-        "controller",
-        "nextMoveTick",
-        "name",
-        "revision",
-        "status",
-        "stationId"
-      ]
-    },
-    "SavedStation": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "position": {
-          "$ref": "#/$defs/Position"
-        },
-        "dwellTicks": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 2147483647
-        },
-        "revision": {
-          "$ref": "#/$defs/Counter"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "position",
-        "dwellTicks",
-        "revision"
-      ]
-    },
-    "SavedBuilding": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "definitionId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "position": {
-          "$ref": "#/$defs/Position"
-        },
-        "height": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 2147483647
-        }
-      },
-      "required": [
-        "id",
-        "definitionId",
-        "position",
-        "height"
-      ]
-    },
-    "ScheduledEvent": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "dueTick": {
-          "$ref": "#/$defs/Counter"
-        },
-        "order": {
-          "$ref": "#/$defs/Counter"
-        },
-        "kind": {
-          "const": "moveTrain"
-        },
-        "subjectId": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "dueTick",
-        "order",
-        "kind",
-        "subjectId"
-      ]
-    },
-    "SavedWorld": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "tick": {
-          "$ref": "#/$defs/Counter"
-        },
-        "paused": {
-          "type": "boolean"
-        },
-        "cash": {
-          "$ref": "#/$defs/Money"
-        },
-        "randomState": {
-          "$ref": "#/$defs/Counter"
-        },
-        "tracks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/SavedTrack"
-          }
-        },
-        "trains": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/SavedTrain"
-          }
-        },
-        "stations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/SavedStation"
-          }
-        },
-        "buildings": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/SavedBuilding"
-          }
-        },
-        "events": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ScheduledEvent"
-          }
-        },
-        "map": {
-          "$ref": "#/$defs/Map"
-        },
-        "terrain": {
-          "const": "flat"
-        },
-        "clockStart": {
-          "type": "string"
-        },
-        "revision": {
-          "$ref": "#/$defs/Counter"
-        },
-        "nextEventOrder": {
-          "$ref": "#/$defs/Counter"
-        }
-      },
-      "required": [
-        "tick",
-        "paused",
-        "cash",
-        "randomState",
-        "tracks",
-        "trains",
-        "stations",
-        "buildings",
-        "events",
-        "map",
-        "terrain",
-        "clockStart",
-        "revision",
-        "nextEventOrder"
-      ]
-    },
-    "SaveDocument": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "saveVersion": {
-          "const": 1
-        },
-        "contentVersion": {
-          "type": "string",
-          "minLength": 1
-        },
-        "scenarioId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "world": {
-          "$ref": "#/$defs/SavedWorld"
-        }
-      },
-      "required": [
-        "saveVersion",
-        "contentVersion",
-        "scenarioId",
-        "world"
+        "role",
+        "ruleset",
+        "requiredPacks"
       ]
     },
     "WireMessage": {
@@ -1197,6 +969,191 @@
         "participantId",
         "leaseId",
         "expiresAt"
+      ]
+    },
+    "Heading": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 7
+    },
+    "RequiredPack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "catalogHash"
+      ]
+    },
+    "SpatialQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snap": {
+          "enum": [
+            0,
+            4,
+            8
+          ]
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "position",
+        "anchor",
+        "snap"
+      ]
+    },
+    "ProjectedPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "a": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "b": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "a",
+        "b"
+      ]
+    },
+    "StoragePosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "h": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "v": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "h",
+        "v",
+        "z"
+      ]
+    },
+    "SpatialPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "worldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "ruleset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredPacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RequiredPack"
+          },
+          "maxItems": 32
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "inside": {
+          "type": "boolean"
+        },
+        "projected": {
+          "$ref": "#/$defs/ProjectedPoint"
+        },
+        "storage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StoragePosition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "distance": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "worldEpoch",
+        "revision",
+        "ruleset",
+        "contentVersion",
+        "requiredPacks",
+        "position",
+        "inside",
+        "projected",
+        "storage",
+        "heading",
+        "distance"
       ]
     }
   }
