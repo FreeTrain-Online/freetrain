@@ -171,5 +171,5 @@
     "sourceEvidenceKind": "source-derived independent vectors; no original-runtime comparison",
     "remainingNativeGate": true
   },
-  "currentSavePolicy": "Owner-directed current-format-only iteration: Save 4 is supported; Save 2/3 parsers/upgrades are removed. The implemented and verification entries record the earlier P1-02 slice. See doc/web-parity-runtime-policy.md and ONLINE-SAVE-002."
+  "currentSavePolicy": "Owner-directed current-format-only iteration: Save 5 is supported; Saves 2/3/4 are rejected without conversion. The implemented and verification entries record the earlier P1-02 slice. See doc/web-parity-runtime-policy.md and ONLINE-SAVE-002."
 }

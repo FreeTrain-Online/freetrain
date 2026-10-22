@@ -3,7 +3,7 @@ import type { ConnectionStatus, ReadState, SessionClient } from './session-clien
 import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 
-const compatibility = 'protocolVersion=3&contentVersion=reference-spatial-content-1&contentVersion=prototype-content-1';
+const compatibility = 'protocolVersion=3&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;

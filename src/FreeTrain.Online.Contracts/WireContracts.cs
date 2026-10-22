@@ -7,9 +7,9 @@ namespace FreeTrain.Online.Contracts;
 public static class ProtocolIdentity
 {
     public const int Version = 3;
-    public const string ReferenceRuleset = "reference-spatial-3";
-    public const string ReferenceContent = "reference-spatial-content-1";
-    public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "1", "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c")];
+    public const string ReferenceRuleset = "reference-spatial-4";
+    public const string ReferenceContent = "reference-spatial-content-2";
+    public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "2", "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82")];
     public const string PrototypeRuleset = "prototype-reference-1";
     public const string PrototypeContent = "prototype-content-1";
     // SHA-256 of the reviewed prototype sprites.json catalog (not a canonical content pack).
@@ -75,15 +75,23 @@ public sealed record AcceptedMessage(string RequestId, long WorldEpoch, long Seq
 public sealed record RejectedMessage(string RequestId, string Code, Dictionary<string, string> Arguments) : WireMessage;
 public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, bool Paused, long Cash,
     MapRead Map, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings, TrackRead[] Tracks,
-    string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks) : WireMessage;
+    string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
-    TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks) : WireMessage;
-public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions);
+    TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null) : WireMessage;
+public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
 public sealed record MapRead(int Width, int Height, int Levels, string CoordinateSystem);
 public sealed record PositionRead(int X, int Y, int Z);
-public sealed record TrackRead(PositionRead Position, string Shape, long Revision);
+public sealed record TrackRead(PositionRead Position, string Shape, long Revision,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? EntityId = null);
+public sealed record DefinitionRead(string PackId, string ContributionId, string RecipeId);
+public sealed record VoxelMemberRead(PositionRead Offset, bool Transparent);
+public sealed record SpatialEntityRead(long Id, long Revision, DefinitionRead Definition, PositionRead Anchor,
+    VoxelMemberRead[] Footprint, bool Owned, bool SilentlyReclaimable, long Value);
 public sealed record TrainRead(string Id, long Revision, string Name, PositionRead Position, int Cars, string Controller,
     int Heading, PositionRead[] CarPositions, int[] CarHeadings, string State, ControlLeaseRead? ControlLease);
 public sealed record ControlLeaseRead(string ParticipantId, string LeaseId, long ExpiresAt);

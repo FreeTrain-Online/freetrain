@@ -307,8 +307,10 @@ public sealed class NetworkSession
             new(previous.Trains.Select(x => x.Id).Except(next.Trains.Select(x => x.Id)).ToArray(),
                 previous.Stations.Select(x => x.Id).Except(next.Stations.Select(x => x.Id)).ToArray(),
                 previous.Buildings.Select(x => x.Id).Except(next.Buildings.Select(x => x.Id)).ToArray(),
-                previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray()),
-            next.Ruleset, next.ContentVersion, next.RequiredPacks);
+                previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray(),
+                next.Entities == null ? null : (previous.Entities ?? []).Select(e => e.Id).Except(next.Entities.Select(e => e.Id)).ToArray()),
+            next.Ruleset, next.ContentVersion, next.RequiredPacks,
+            next.Entities == null ? null : Changed(previous.Entities ?? [], next.Entities, e => e.Id));
     }
 }
 

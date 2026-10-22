@@ -1,6 +1,6 @@
 # P1-01c: canonical live reference world — 22 October 2026
 
-**Current save policy — 22 October 2026:** [only Save 4 is supported](web-parity-runtime-policy.md). Save 2/3 parsers and upgrades are removed; earlier compatibility and verification statements below record the previous slices only.
+**Current save policy — 22 October 2026:** [only Save 5 is supported](web-parity-runtime-policy.md). Saves 2/3/4 are rejected without conversion; earlier compatibility and verification statements below record the previous slices only.
 
 **P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
 

@@ -33,7 +33,7 @@ public class ReferenceWorldTests
     [Fact]
     public void Shared_save_fixture_and_asset_free_pack_hash_match_the_runtime()
     {
-        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v4.json"));
+        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v5.json"));
         Assert.Equal(SaveCodec.Write(SpatialReferenceScenario.Create()),SaveCodec.Write(SaveCodec.Read(bytes)));
         var catalog=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/reference-spatial.json"));
         Assert.Equal(ProtocolIdentity.ReferencePacks[0].CatalogHash,Convert.ToHexStringLower(SHA256.HashData(catalog)));
@@ -121,7 +121,7 @@ public class ReferenceWorldTests
             case "unknownVersion":node["saveVersion"]=99;break;
         }
         var text=node.ToJsonString();
-        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":4", "\"saveVersion\":4,\"saveVersion\":4");
+        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":5", "\"saveVersion\":5,\"saveVersion\":5");
         var result=host.LoadSave(Encoding.UTF8.GetBytes(text),1);host.Pump();
         await Assert.ThrowsAsync<InvalidDataException>(()=>result);
         Assert.Equal(before,JsonSerializer.Serialize(host.Snapshot()));

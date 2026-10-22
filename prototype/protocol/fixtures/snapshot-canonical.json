@@ -22,7 +22,8 @@
         "z": 0
       },
       "shape": "normal3",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "12"
     },
     {
       "position": {
@@ -31,7 +32,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "14"
     },
     {
       "position": {
@@ -40,7 +42,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "16"
     },
     {
       "position": {
@@ -49,7 +52,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "18"
     },
     {
       "position": {
@@ -58,7 +62,8 @@
         "z": 0
       },
       "shape": "normal6",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "20"
     },
     {
       "position": {
@@ -67,7 +72,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "22"
     },
     {
       "position": {
@@ -76,7 +82,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "24"
     },
     {
       "position": {
@@ -85,7 +92,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "26"
     },
     {
       "position": {
@@ -94,7 +102,8 @@
         "z": 0
       },
       "shape": "normal9",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "28"
     },
     {
       "position": {
@@ -103,7 +112,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "29"
     },
     {
       "position": {
@@ -112,7 +122,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "30"
     },
     {
       "position": {
@@ -121,7 +132,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "31"
     },
     {
       "position": {
@@ -130,7 +142,8 @@
         "z": 0
       },
       "shape": "normal11",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "32"
     },
     {
       "position": {
@@ -139,7 +152,8 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "27"
     },
     {
       "position": {
@@ -148,7 +162,8 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "25"
     },
     {
       "position": {
@@ -157,7 +172,8 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "23"
     },
     {
       "position": {
@@ -166,7 +182,8 @@
         "z": 0
       },
       "shape": "normal2",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "21"
     },
     {
       "position": {
@@ -175,7 +192,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "19"
     },
     {
       "position": {
@@ -184,7 +202,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "17"
     },
     {
       "position": {
@@ -193,7 +212,8 @@
         "z": 0
       },
       "shape": "normal4",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "15"
     },
     {
       "position": {
@@ -202,7 +222,8 @@
         "z": 0
       },
       "shape": "normal5",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "13"
     },
     {
       "position": {
@@ -211,7 +232,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "11"
     },
     {
       "position": {
@@ -220,7 +242,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "9"
     },
     {
       "position": {
@@ -229,7 +252,8 @@
         "z": 0
       },
       "shape": "normal7",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "7"
     },
     {
       "position": {
@@ -238,7 +262,8 @@
         "z": 0
       },
       "shape": "normal8",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "5"
     },
     {
       "position": {
@@ -247,7 +272,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "4"
     },
     {
       "position": {
@@ -256,7 +282,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "3"
     },
     {
       "position": {
@@ -265,7 +292,8 @@
         "z": 0
       },
       "shape": "normal10",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "2"
     },
     {
       "position": {
@@ -274,7 +302,8 @@
         "z": 0
       },
       "shape": "normal0",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "1"
     },
     {
       "position": {
@@ -283,7 +312,8 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "6"
     },
     {
       "position": {
@@ -292,7 +322,8 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "8"
     },
     {
       "position": {
@@ -301,16 +332,883 @@
         "z": 0
       },
       "shape": "normal1",
-      "revision": "0"
+      "revision": "0",
+      "entityId": "10"
     }
   ],
-  "ruleset": "reference-spatial-3",
-  "contentVersion": "reference-spatial-content-1",
+  "ruleset": "reference-spatial-4",
+  "contentVersion": "reference-spatial-content-2",
   "requiredPacks": [
     {
       "id": "reference-spatial",
-      "version": "1",
-      "catalogHash": "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c"
+      "version": "2",
+      "catalogHash": "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82"
+    }
+  ],
+  "entities": [
+    {
+      "id": "1",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal0"
+      },
+      "anchor": {
+        "x": 23,
+        "y": 28,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "2",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 23,
+        "y": 29,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "3",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 23,
+        "y": 30,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "4",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 23,
+        "y": 31,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "5",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal8"
+      },
+      "anchor": {
+        "x": 23,
+        "y": 32,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "6",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 24,
+        "y": 27,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "7",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 24,
+        "y": 33,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "8",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 25,
+        "y": 26,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "9",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 25,
+        "y": 34,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "10",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 26,
+        "y": 25,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "11",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 26,
+        "y": 35,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "12",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal3"
+      },
+      "anchor": {
+        "x": 27,
+        "y": 24,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "13",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal5"
+      },
+      "anchor": {
+        "x": 27,
+        "y": 36,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "14",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 28,
+        "y": 24,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "15",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 28,
+        "y": 36,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "16",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 29,
+        "y": 24,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "17",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 29,
+        "y": 36,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "18",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 30,
+        "y": 24,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "19",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal4"
+      },
+      "anchor": {
+        "x": 30,
+        "y": 36,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "20",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal6"
+      },
+      "anchor": {
+        "x": 31,
+        "y": 24,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "21",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal2"
+      },
+      "anchor": {
+        "x": 31,
+        "y": 36,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "22",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 32,
+        "y": 25,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "23",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 32,
+        "y": 35,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "24",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 33,
+        "y": 26,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "25",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 33,
+        "y": 34,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "26",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal7"
+      },
+      "anchor": {
+        "x": 34,
+        "y": 27,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "27",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal1"
+      },
+      "anchor": {
+        "x": 34,
+        "y": 33,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "28",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal9"
+      },
+      "anchor": {
+        "x": 35,
+        "y": 28,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "29",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 35,
+        "y": 29,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "30",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 35,
+        "y": 30,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "31",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal10"
+      },
+      "anchor": {
+        "x": 35,
+        "y": 31,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "32",
+      "revision": "0",
+      "definition": {
+        "packId": "reference-spatial",
+        "contributionId": "normal-rail",
+        "recipeId": "normal11"
+      },
+      "anchor": {
+        "x": 35,
+        "y": 32,
+        "z": 0
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
     }
   ]
 }

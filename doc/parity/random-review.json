@@ -217,8 +217,8 @@
     "src/FreeTrain.Online.Simulation/RandomStreams.cs",
     "src/FreeTrain.Online.Simulation/ReferenceWorld.cs",
     "src/FreeTrain.Online.Persistence/SaveCodec.cs",
-    "prototype/protocol/save-v4.schema.json",
-    "prototype/protocol/saves/reference-v4.json"
+    "prototype/protocol/historical/save-v4/schema.json",
+    "prototype/protocol/historical/save-v4/reference-v4.json"
   ],
   "verification": [
     "tests/FreeTrain.Online.Tests/RandomTests.cs",

@@ -1,7 +1,7 @@
 {
   "id": "reference-spatial",
-  "version": "1",
-  "description": "Asset-free spatial reference; level normal rails only. No gameplay clock, economy or train simulation.",
+  "version": "2",
+  "description": "Asset-free source normal rails with stable entities and voxel footprints; clock and random state are world-owned. Economy, trains and construction remain unavailable.",
   "normalRailPorts": [
     [
       1,
@@ -51,5 +51,180 @@
       5,
       0
     ]
+  ],
+  "contributions": [
+    {
+      "id": "normal-rail",
+      "recipes": [
+        {
+          "id": "normal0",
+          "pattern": 0,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal1",
+          "pattern": 1,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal2",
+          "pattern": 2,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal3",
+          "pattern": 3,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal4",
+          "pattern": 4,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal5",
+          "pattern": 5,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal6",
+          "pattern": 6,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal7",
+          "pattern": 7,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal8",
+          "pattern": 8,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal9",
+          "pattern": 9,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal10",
+          "pattern": 10,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        },
+        {
+          "id": "normal11",
+          "pattern": 11,
+          "footprint": [
+            {
+              "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "transparent": true
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

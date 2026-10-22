@@ -146,7 +146,7 @@ not capacity guarantees. The game root filesystem is read-only, `/tmp` is
 temporary, and the save directory is the writable persistent mount. Only one
 process may own a save directory. Never run replicas against that directory.
 
-Protocol 3, content `reference-spatial-content-1`, and spatial save version 2 are independent
+Protocol 3, content `reference-spatial-content-2`, and canonical save version 5 are independent
 compatibility identifiers. Update the service and its static client together;
 incompatible bootstraps/sockets return 426. HTML and assets without content
 hashes revalidate; hashed Vite JS/CSS can be immutable. No service worker caches

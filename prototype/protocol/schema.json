@@ -246,6 +246,13 @@
           "items": {
             "$ref": "#/$defs/Position"
           }
+        },
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "uniqueItems": true
         }
       },
       "required": [
@@ -318,6 +325,13 @@
             "$ref": "#/$defs/RequiredPack"
           },
           "maxItems": 32
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpatialEntity"
+          },
+          "maxItems": 65536
         }
       },
       "required": [
@@ -403,6 +417,13 @@
             "$ref": "#/$defs/RequiredPack"
           },
           "maxItems": 32
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpatialEntity"
+          },
+          "maxItems": 65536
         }
       },
       "required": [
@@ -905,6 +926,9 @@
         },
         "revision": {
           "$ref": "#/$defs/Counter"
+        },
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
         }
       },
       "required": [
@@ -1179,6 +1203,101 @@
         "storage",
         "heading",
         "distance"
+      ]
+    },
+    "EntityId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "format": "uint63"
+    },
+    "Definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "contributionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "recipeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        }
+      },
+      "required": [
+        "packId",
+        "contributionId",
+        "recipeId"
+      ]
+    },
+    "VoxelMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "$ref": "#/$defs/Position"
+        },
+        "transparent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "offset",
+        "transparent"
+      ]
+    },
+    "SpatialEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "anchor": {
+          "$ref": "#/$defs/Position"
+        },
+        "footprint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VoxelMember"
+          },
+          "minItems": 1,
+          "maxItems": 65536
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "silentlyReclaimable": {
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/$defs/Money"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "anchor",
+        "footprint",
+        "owned",
+        "silentlyReclaimable",
+        "value"
       ]
     }
   }

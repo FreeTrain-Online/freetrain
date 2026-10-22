@@ -1,5 +1,7 @@
 # P1-03: versioned random streams — 22 October 2026
 
+**P1-04 update — 22 October 2026:** [spatial contracts](web-parity-spatial-contracts.md) now use Save 5, ruleset `reference-spatial-4` and content version 2. Save 4 is retired without conversion; the implementation and counts below record the earlier P1-03 slice.
+
 The canonical world now owns ten independent, versioned random streams. Save 4
 stores their complete state, alongside the source-minute clock and rail graph.
 Continuation preserves every stream's next draw through save/load, epoch
@@ -107,8 +109,8 @@ prevents a client supporting only earlier canonical rules from accepting the new
 world implicitly. Random state belongs to durable authority and is not exposed
 in snapshots or browser preferences.
 
-[Save 4's schema](../prototype/protocol/save-v4.schema.json) and independent
-[initial-state fixture](../prototype/protocol/saves/reference-v4.json) add
+[Save 4's schema](../prototype/protocol/historical/save-v4/schema.json) and independent
+[initial-state fixture](../prototype/protocol/historical/save-v4/reference-v4.json) add
 `random`: bank version, algorithm, root seed and ten `{id,state}` records. Each
 state contains `index` in [0,54] and 55 values in [0,2147483646], with at least one
 nonzero value. Loads restore these values directly; they do not replay draws from

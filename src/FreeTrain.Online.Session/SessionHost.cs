@@ -330,8 +330,12 @@ public sealed class SessionHost
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
                     new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
                     [], [], [], reference.Rails.Select(r => new TrackRead(new(r.Position.X,r.Position.Y,r.Position.Z),
-                        $"normal{r.Pattern}",0)).ToArray(),
-                    ProtocolIdentity.ReferenceRuleset,ProtocolIdentity.ReferenceContent,ProtocolIdentity.ReferencePacks);
+                        $"normal{r.Pattern}",0,r.EntityId)).ToArray(),
+                    ProtocolIdentity.ReferenceRuleset,ProtocolIdentity.ReferenceContent,ProtocolIdentity.ReferencePacks,
+                    reference.Spatial.Entities.Select(e => new SpatialEntityRead(e.Id,e.Revision,
+                        new(e.Definition.PackId,e.Definition.ContributionId,e.Definition.RecipeId),new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),
+                        e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
+                        e.Owned,e.SilentlyReclaimable,e.Value)).ToArray());
             var state = world.Read();
             return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
                 new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),

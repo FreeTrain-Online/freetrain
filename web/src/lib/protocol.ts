@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
 import type { Delta, Snapshot, SpatialPreview, WireMessage } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { IncompatibleWorldError, sameIdentity, validSnapshot } from './world-identity.ts';
+import { IncompatibleWorldError, isReferenceWorld, sameIdentity, validSnapshot } from './world-identity.ts';
 const ajv = new Ajv({ strict: true });
 for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
   ajv.addFormat(name, (value: string) => /^(0|-?[1-9][0-9]*)$/.test(value) &&
@@ -29,6 +29,10 @@ export function immutable<T extends object>(value: T): T {
 }
 export function applyDelta(state: ReadState, delta: Delta): ReadState | undefined {
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
+  if(isReferenceWorld(state)&&(!delta.entities||!delta.removed.entityIds))return;
+  if(!isReferenceWorld(state)&&(delta.entities!==undefined||delta.removed.entityIds!==undefined))return;
+  if(delta.entities&&(new Set(delta.entities.map(e=>e.id)).size!==delta.entities.length||
+    delta.entities.some(e=>delta.removed.entityIds?.includes(e.id))))return;
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
     const items = new Map(before.map(item => [key(item), item]));
     for (const id of removed) items.delete(id);
@@ -37,6 +41,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   }
   const position = (p: { readonly x: number; readonly y: number; readonly z: number }) => `${p.x},${p.y},${p.z}`;
   const next={ ...state, revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash,
+    ...(state.entities?{entities:merge(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),
     buildings: merge(state.buildings, delta.buildings, delta.removed.buildingIds, x => x.id),

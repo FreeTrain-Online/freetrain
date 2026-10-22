@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-public sealed record ReferenceRail(Location Position, int Pattern);
+public sealed record ReferenceRail(Location Position, int Pattern, long EntityId = 0);
 
 // Source normal patterns: ExAV 2.1.1.12, 883cf7d/trunk/core/world/rail/RailPattern.cs,
 // singlePatterns (indices 0..11). Original copyright Kohsuke Kawaguchi et al., LGPL-2.1-or-later.
@@ -48,13 +48,22 @@ public sealed class ReferenceWorld
     }
     public WorldSpace Space { get; }
     public ImmutableArray<ReferenceRail> Rails { get; }
-    public ReferenceWorld(int width, int height, int levels, IEnumerable<ReferenceRail> rails, int randomSeed = RandomStreams.ReferenceSeed)
+    public SpatialIndex Spatial { get; }
+    public static DefinitionReference RailDefinition(int pattern) => new("reference-spatial", "normal-rail", $"normal{pattern}");
+    public ReferenceWorld(int width, int height, int levels, IEnumerable<ReferenceRail> rails, int randomSeed = RandomStreams.ReferenceSeed, SpatialState? spatial = null)
     {
         Random = new(randomSeed);
         if (width is < 1 or > 64 || height is < 1 or > 128 || levels is < 1 or > 16)
             throw new ArgumentException("Invalid reference dimensions.");
         Space = new(width, height, levels);
-        Rails = rails.Take(1025).ToImmutableArray();
+        var input = rails.Take(1025).ToImmutableArray();
+        if (spatial == null && input.All(r => r != null && r.EntityId == 0))
+        {
+            var ids = input.Select(r => r.Position).Distinct().OrderBy(p => p.X).ThenBy(p => p.Y).ThenBy(p => p.Z)
+                .Select((p, i) => (p, Id: (long)i + 1)).ToDictionary(row => row.p, row => row.Id);
+            input = input.Select(r => r with { EntityId = ids[r.Position] }).ToImmutableArray();
+        }
+        Rails = input;
         if (Rails.Length is < 8 or > 1024 || Rails.Any(r => r == null || r.Pattern is < 0 or > 11
             || r.Position.Z != 0 || !Space.ContainsVoxel(r.Position))
             || Rails.Select(r => r.Position).Distinct().Count() != Rails.Length)
@@ -83,5 +92,15 @@ public sealed class ReferenceWorld
             pending.Push(position.Move(new(a))); pending.Push(position.Move(new(b)));
         }
         if (visited.Count != Rails.Length || headings.Count != 8) throw new ArgumentException("Expected one eight-heading loop.");
+        var expected = Rails.Select(r => new SpatialEntity(r.EntityId, 0, RailDefinition(r.Pattern), r.Position,
+            new Footprint([new(new(0,0,0), true)]), true, false, 0)).ToArray();
+        Spatial = spatial == null ? new(Space, checked(expected.Max(e => e.Id) + 1), expected) : new(Space, spatial.NextEntityId, spatial.Entities);
+        // Reference rules admit exactly one transparent occupied voxel per normal rail.
+        // Broader entity kinds are admitted only with their implementing ruleset/catalog.
+        if (Spatial.Entities.Length != Rails.Length || expected.Any(e =>
+            Spatial.At(e.Anchor).Entity is not {} actual || actual.Id != e.Id || actual.Revision != 0 ||
+            actual.Definition != e.Definition || actual.Anchor != e.Anchor || !actual.Owned || actual.SilentlyReclaimable || actual.Value != 0 ||
+            actual.Footprint.Members.Length != 1 || actual.Footprint.Members[0] != e.Footprint.Members[0]))
+            throw new ArgumentException("Reference entity graph does not match rails.");
     }
 }

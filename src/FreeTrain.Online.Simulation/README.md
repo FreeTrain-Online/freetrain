@@ -12,7 +12,9 @@ regression harnesses and headless traces. The default service uses `ReferenceWor
 a validated H/V loop with the canonical source-minute clock/calendar/scheduler
 and versioned world-owned random streams, with no prototype subsystem dependencies.
 See [P1-02](../../doc/web-parity-clock.md) and [P1-03](../../doc/web-parity-random.md).
-Only Save 4 is supported; it captures the clock and all random states.
+[P1-04](../../doc/web-parity-spatial-contracts.md) adds Cube, explicit footprints,
+stable entity IDs and world-owned voxel occupancy. Only Save 5 is supported; it
+captures entities, allocator, clock and all random states.
 Earlier save formats are rejected without conversion;
 the running application rejects prototype saves and does not write them. They are not
 authorities or defaults for new game rules. Original-source runtime ports outside

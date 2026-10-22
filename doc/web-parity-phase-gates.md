@@ -1,6 +1,8 @@
 # Parity phase review — 21 October 2026
 
-**Current save policy — 22 October 2026:** [only Save 4 is supported](web-parity-runtime-policy.md). Save 2/3 parsers and upgrades are removed; earlier compatibility and verification statements below record the previous slices only.
+**P1-04 update — 22 October 2026:** [stable entity/voxel/footprint contracts and exact profile dispatch](web-parity-spatial-contracts.md) are implemented through live network reads, Inspector and Save 5 (`reference-spatial-4`, content/pack v2). Earlier slice identities/counts below remain dated evidence. P1 phase-gate review and gameplay/native acceptance remain open.
+
+**Current save policy — 22 October 2026:** [only Save 5 is supported](web-parity-runtime-policy.md). Saves 2/3/4 are rejected without conversion; earlier compatibility and verification statements below record the previous slices only.
 
 **P1-03 update — 22 October 2026:** [versioned world-owned random streams](web-parity-random.md) now persist in Save 4 under ruleset `reference-spatial-3`. Only the current save format is supported. P1-04 entity/footprint/pack contracts and later gameplay/native gates remain open. Earlier slice identities/counts below retain their dated scope.
 
@@ -139,3 +141,19 @@ unsupported. 191 .NET, 80 client, 64 Chromium (10 canonical / 54 historical) and
 boundaries pass. P1 stays open for P1-03 random streams and P1-04 complete entity /
 footprint / pack contracts. Full gameplay consumers, source speed UI, complete-city
 continuation and native/device gates remain open.
+
+## P1-04: stable entities, voxel footprints and profile compatibility
+
+[Delivery evidence](web-parity-spatial-contracts.md) and
+[the pinned eleven-file review](parity/spatial-contracts-review.json) bind source
+Cube/Entity/Voxel/World/structure/traffic contracts to immutable domain graphs,
+world-local IDs and exact pack-qualified definitions. Live reads, deltas and
+inspection retain entity identity; Save 5 persists and validates the complete
+reference graph/allocator alongside clock and random continuation. Saves 1–4 are
+rejected under the existing owner current-format-only policy.
+
+**263 .NET / 83 client / 105 Python** cases pass. Browser/build/source verification
+and remaining limits are recorded in the delivery evidence. P1-01–04 foundations
+are implemented; the P1 gate still requires its final evidence/coverage review.
+Full content, gameplay consumers, complete-city continuation/capacity and
+native/device UX remain open with their owning phases.

@@ -20,6 +20,7 @@ public class SaveRejectionTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
+    [InlineData(4)]
     [InlineData(999)]
     public void No_legacy_or_version_relabelled_save_is_accepted(int version)
     {
@@ -48,6 +49,7 @@ public class SaveRejectionTests
     [InlineData("{\"saveVersion\":1}", "incompatibleSave")]
     [InlineData("{\"saveVersion\":2}", "incompatibleSave")]
     [InlineData("{\"saveVersion\":3}", "incompatibleSave")]
+    [InlineData("{\"saveVersion\":4}", "incompatibleSave")]
     [InlineData("{broken", "invalidSave")]
     public async Task Ignored_checkpoint_is_reported_and_preserved_through_shutdown_and_manual_save(string text, string error)
     {
@@ -75,7 +77,7 @@ public class SaveRejectionTests
     }
 
     [Theory]
-    [InlineData(2)][InlineData(3)]
+    [InlineData(2)][InlineData(3)][InlineData(4)]
     public async Task Retired_canonical_fixtures_are_rejected_without_replacing_the_current_world(int version)
     {
         var data=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,$"RetiredSaves/reference-v{version}.json"));

@@ -16,7 +16,10 @@ public static class SpatialQueries
         Location? anchor = query.Anchor is {} a ? new(a.X, a.Y, a.Z) : null;
         if (anchor is {} origin && point.Z != origin.Z) throw new ArgumentException("invalidInput");
         if (anchor is {} from) point = query.Snap switch { 4 => point.Align4To(from), 8 => point.Align8To(from), _ => point };
+        var profile = WorldProfiles.Resolve(snapshot.Ruleset, snapshot.ContentVersion, snapshot.RequiredPacks)
+            ?? throw new ArgumentException("incompatible");
         var map = snapshot.Map;
+        if (map.CoordinateSystem != profile.CoordinateSystem) throw new ArgumentException("incompatible");
         var space = new WorldSpace(map.Width, map.Height, map.Levels);
         bool inside;
         ProjectedPoint projected;

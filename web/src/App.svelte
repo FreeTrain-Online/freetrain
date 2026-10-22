@@ -48,7 +48,7 @@
   const train = $derived(mapSelection?.kind === 'train' ? read?.trains.find(item => item.id === mapSelection?.id) : undefined);
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
-  const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => `${item.position.x},${item.position.y},${item.position.z}` === mapSelection?.id) : undefined);
+  const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
   const reference = $derived(isReferenceWorld(read));
   const clockDisabled = $derived(saveBusy || view.pending || !live || view.role === 'observer');

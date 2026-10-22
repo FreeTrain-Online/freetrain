@@ -48,9 +48,9 @@ provider is part of this library.
 The default canonical `ReferenceWorld` uses the same bounded FIFO and snapshot /
 spatial query boundary. Run/Pause/Step advance its world-local source-minute clock;
 other gameplay commands return `operationUnavailable`. Economy/train behavior is pending.
-Capture writes canonical Save 4, including the clock and random streams. Load
+Capture writes canonical Save 5, including the entity/voxel graph, allocator, clock and random streams. Load
 accepts only that current format and validates a complete replacement before
 changing the epoch; later commands/loads carrying the old epoch are fenced.
 Earlier save formats are rejected without mutation or conversion. Explicit
 prototype regression hosts cannot write saves.
-See [P1-01c](../../doc/web-parity-reference-world.md) and [P1-02](../../doc/web-parity-clock.md).
+See [P1-01c](../../doc/web-parity-reference-world.md), [P1-02](../../doc/web-parity-clock.md) and [P1-04](../../doc/web-parity-spatial-contracts.md).

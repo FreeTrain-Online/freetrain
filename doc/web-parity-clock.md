@@ -1,6 +1,6 @@
 # P1-02: clock, calendar and scheduler — 22 October 2026
 
-**Current save policy — 22 October 2026:** [only Save 4 is supported](web-parity-runtime-policy.md). Save 2/3 parsers and upgrades are removed; earlier compatibility and verification statements below record the previous slices only.
+**Current save policy — 22 October 2026:** [only Save 5 is supported](web-parity-runtime-policy.md). Saves 2/3/4 are rejected without conversion; earlier compatibility and verification statements below record the previous slices only.
 
 **P1-03 update:** [Save 4 and versioned random streams](web-parity-random.md) supersede the current ruleset/save identity below. Save 2/3 are now unsupported; this document records the P1-02 implementation and verification.
 

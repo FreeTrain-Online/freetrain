@@ -29,7 +29,7 @@ export class MapRenderer {
     this.space=mapSpace(read.map);
     this.buildings=new Map(read.buildings.map(building=>[building.id,building]));
     this.items = [
-      ...read.tracks.map(track => ({ position: track.position, kind:'track' as const,id:`${track.position.x},${track.position.y},${track.position.z}`,shape:track.shape })),
+      ...read.tracks.map(track => ({ position: track.position, kind:'track' as const,id:track.entityId??`${track.position.x},${track.position.y},${track.position.z}`,shape:track.shape })),
       ...read.stations.map(station => ({position:station.position,kind:'station' as const,id:station.id})),
       ...read.trains.flatMap(train => train.carPositions.map((position,index) => {
         // Server supplies each car's heading, including followers at corners.

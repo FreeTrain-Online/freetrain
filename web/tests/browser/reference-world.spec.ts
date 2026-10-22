@@ -2,7 +2,7 @@ import { expect,test,type Page } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ready,openPanel,closePanel } from './ux-helpers.ts';
-const bootPath='/api/bootstrap?protocolVersion=3&contentVersion=reference-spatial-content-1';
+const bootPath='/api/bootstrap?protocolVersion=3&contentVersion=reference-spatial-content-2';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
 async function at(page:Page,p:{x:number;y:number;z:number}) {
   return page.locator('canvas').evaluate((el,p)=>{
@@ -16,12 +16,14 @@ async function checker(page:Page){await page.getByRole('button',{name:'Check a l
 test('default live H/V map renders, picks source rails and keeps unsupported operations unavailable',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.goto('/');await ready(page);
-  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-3');
+  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-4');
   await expect(page.getByTestId('reference-world')).toHaveText('Spatial reference world');
   await expect(page.getByRole('button',{name:'Run',exact:false})).toBeEnabled();await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
   const before=await bootstrap(page);expect(before.tracks).toHaveLength(32);expect(before.trains).toHaveLength(0);
+  expect(before.entities).toHaveLength(32);
+  for(const track of before.tracks){const entity=before.entities.find((e:any)=>e.id===track.entityId);expect(entity.anchor).toEqual(track.position);expect(entity.definition.recipeId).toBe(track.shape);}
   await canvas.evaluate(el=>el.setAttribute('data-instance','canonical-preserved'));
-  await target(page,{x:31,y:24,z:0});await expect(page.getByTestId('selected-object')).toContainText('31,24,0');await expect(page.locator('.primary-panel')).toContainText('Normal rail pattern 6');
+  await target(page,{x:31,y:24,z:0});await expect(page.getByTestId('selected-object')).toHaveText(`Track · ${before.tracks.find((t:any)=>t.position.x===31&&t.position.y===24).entityId} · 31, 24, 0`);await expect(page.locator('.primary-panel')).toContainText('Normal rail pattern 6');
   await openPanel(page,'session');await expect(page.locator('.primary-panel')).toContainText('Economy, trains and construction are not available yet.');
   await expect(canvas).toHaveAttribute('data-instance','canonical-preserved');expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
 });
@@ -35,9 +37,9 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-en.png'),fullPage:true});
 });
 
-test('real Save 4 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
+test('real Save 5 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','save-preserved'));
-  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(4);
+  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(5);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
   await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Confirm load',exact:true}).click();
@@ -47,7 +49,7 @@ test('real Save 4 download, upload confirmation and socket epoch replacement pre
 
 test('prototype and corrupt saves report errors without replacement confirmation or mutation',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page);await openPanel(page,'saves');
-  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{"saveVersion":2}','not supported'],['{"saveVersion":3}','not supported'],['{broken','Invalid save data']] as const){
+  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{"saveVersion":2}','not supported'],['{"saveVersion":3}','not supported'],['{"saveVersion":4}','not supported'],['{broken','Invalid save data']] as const){
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer:Buffer.from(body)});
     await expect(page.getByTestId('save-feedback')).toContainText(message);await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
@@ -111,7 +113,7 @@ test('canonical Observer can inspect and query geometry while save endpoints enf
     const page=await context.newPage();expect((await page.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
     await page.goto('/');await ready(page);await expect(page.getByTestId('participant-role')).toHaveText('Observer');
     const before=await bootstrap(page);
-    const response=await page.request.post('/api/spatial/preview?protocolVersion=3&contentVersion=reference-spatial-content-1',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
+    const response=await page.request.post('/api/spatial/preview?protocolVersion=3&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
     expect(response.ok()).toBe(true);expect((await response.json()).storage).toEqual({h:10,v:28,z:0});
     expect((await page.request.post('/api/saves/slot1/save?expectedWorldEpoch='+before.worldEpoch)).status()).toBe(403);
     expect((await page.request.get('/api/saves/download')).status()).toBe(403);
@@ -135,7 +137,7 @@ test('save availability must be known before upload, and Cancel never sends a re
   }finally{release();}
 });
 
-test('canonical clock step, shared run/pause, panel navigation and Save 4 continuation',async({page,browser})=>{
+test('canonical clock step, shared run/pause, panel navigation and Save 5 continuation',async({page,browser})=>{
   const observerContext=await browser.newContext();
   try{
     await page.goto('/');await ready(page);
@@ -166,5 +168,30 @@ test('canonical clock step, shared run/pause, panel navigation and Save 4 contin
   }finally{
     const pause=page.getByRole('button',{name:'Pause',exact:false});if(await pause.count())await pause.click();
     await observerContext.close();
+  }
+});
+
+test('dangling entity ownership blocks reveal before the live canvas',async({page})=>{
+  await page.route('**/api/bootstrap?*',async route=>{
+    const response=await route.fetch(),body=await response.json();body.snapshot.tracks[0].entityId='999';
+    await route.fulfill({response,json:body});
+  });
+  await page.goto('/');await expect(page.getByRole('heading',{name:'Update required',exact:true})).toBeVisible();
+  await expect(page.locator('canvas')).toHaveAttribute('data-scene','demo');
+});
+
+test('invalid entity graphs report localized save errors before confirmation and preserve current state',async({page})=>{
+  await page.goto('/');await ready(page);await openPanel(page,'saves');
+  const before=await bootstrap(page),bytes=await(await page.request.get('/api/saves/download')).body();
+  for(const mutation of ['owner','duplicate','allocator'] as const){
+    const save=JSON.parse(bytes.toString());
+    if(mutation==='owner')save.rails[0].entityId='999';
+    if(mutation==='duplicate')save.spatial.entities[1].id=save.spatial.entities[0].id;
+    if(mutation==='allocator')save.spatial.nextEntityId='1';
+    await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
+    await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'entities.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
+    await expect(page.getByTestId('save-feedback')).toContainText('Invalid save data');
+    await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
+    expect(await bootstrap(page)).toEqual(before);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
   }
 });

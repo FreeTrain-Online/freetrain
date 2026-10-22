@@ -1,0 +1,501 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canonical spatial, clock and random Save 5",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "saveVersion",
+    "ruleset",
+    "contentVersion",
+    "requiredPacks",
+    "map",
+    "rails",
+    "clock",
+    "paused",
+    "random",
+    "spatial"
+  ],
+  "properties": {
+    "saveVersion": {
+      "const": 5
+    },
+    "ruleset": {
+      "const": "reference-spatial-4"
+    },
+    "contentVersion": {
+      "const": "reference-spatial-content-2"
+    },
+    "requiredPacks": {
+      "const": [
+        {
+          "id": "reference-spatial",
+          "version": "2",
+          "catalogHash": "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82"
+        }
+      ]
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "levels",
+        "coordinateSystem"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "levels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "coordinateSystem": {
+          "const": "hv"
+        }
+      }
+    },
+    "rails": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "z",
+          "pattern",
+          "entityId"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "z": {
+            "const": 0
+          },
+          "pattern": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "entityId": {
+            "$ref": "#/$defs/EntityId"
+          }
+        }
+      }
+    },
+    "paused": {
+      "type": "boolean"
+    },
+    "clock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absoluteMinute",
+        "nextOrder",
+        "pending"
+      ],
+      "properties": {
+        "absoluteMinute": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "description": "Source minutes, 0 through 1128717404863199; checked by the codec."
+        },
+        "nextOrder": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "pending": {
+          "type": "array",
+          "maxItems": 0,
+          "description": "Reference world has no gameplay action bindings yet; unbound actions are rejected."
+        }
+      }
+    },
+    "random": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "algorithm",
+        "seed",
+        "streams"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "subtractive-55-v1"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "streams": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "state"
+            ],
+            "properties": {
+              "id": {
+                "enum": [
+                  "construction",
+                  "development",
+                  "forest",
+                  "land-selection",
+                  "stadium",
+                  "stock-economy",
+                  "stock-effects",
+                  "stock-tables",
+                  "subsidiaries",
+                  "time-length"
+                ]
+              },
+              "state": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "index",
+                  "values"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 54
+                  },
+                  "values": {
+                    "type": "array",
+                    "minItems": 55,
+                    "maxItems": 55,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483646
+                    },
+                    "contains": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "construction"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "development"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "forest"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "land-selection"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stadium"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-economy"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-effects"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-tables"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "subsidiaries"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "time-length"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "spatial": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpatialEntity"
+          },
+          "minItems": 8,
+          "maxItems": 1024
+        }
+      },
+      "required": [
+        "nextEntityId",
+        "entities"
+      ]
+    }
+  },
+  "description": "Save 5 only. Codec additionally checks allocator, source clock, exact profile, reciprocal rails and complete matching entity/voxel graph; earlier saves are rejected without conversion.",
+  "$id": "https://freetrain-online.invalid/save-v5.schema.json",
+  "$defs": {
+    "EntityId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "Money": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]*)$"
+    },
+    "Position": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "y": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "Definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "contributionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "recipeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        }
+      },
+      "required": [
+        "packId",
+        "contributionId",
+        "recipeId"
+      ]
+    },
+    "VoxelMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "$ref": "#/$defs/Position"
+        },
+        "transparent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "offset",
+        "transparent"
+      ]
+    },
+    "SpatialEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "anchor": {
+          "$ref": "#/$defs/Position"
+        },
+        "footprint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VoxelMember"
+          },
+          "minItems": 1,
+          "maxItems": 65536
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "silentlyReclaimable": {
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/$defs/Money"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "anchor",
+        "footprint",
+        "owned",
+        "silentlyReclaimable",
+        "value"
+      ]
+    }
+  }
+}

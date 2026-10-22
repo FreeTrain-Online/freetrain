@@ -5,14 +5,14 @@
       "id": "ONLINE-SAVE-001",
       "decidedOn": "2026-10-22",
       "authority": "owner direction in the project conversation",
-      "status": "implemented: prototype rejection and canonical Save 4; earlier canonical upgrades superseded by ONLINE-SAVE-002",
+      "status": "implemented: prototype rejection and canonical Save 5; earlier canonical upgrades superseded by ONLINE-SAVE-002",
       "supersedes": "Online prototype Save 1 compatibility/import/writer requirements in the earlier P0 transition design and delivery records",
       "prototypeSaveFormat": "unsupported; no migration or version-only relabeling",
       "encounterBehavior": "report incompatibleSave, preserve current world and rejected file; ignore incompatible startup checkpoint with an error",
-      "currentWriting": "canonical Save 4 only; prototype writing remains unavailable; rejected startup checkpoints are protected from automatic, manual and shutdown overwrite",
-      "canonicalReferenceWorld": "P1-01c geometry, P1-02 source-minute clock/calendar/scheduler and P1-03 versioned random streams; no economy/train gameplay",
+      "currentWriting": "canonical Save 5 only; prototype writing remains unavailable; rejected startup checkpoints are protected from automatic, manual and shutdown overwrite",
+      "canonicalReferenceWorld": "P1-01c geometry, P1-02 source-minute clock/calendar/scheduler and P1-03 versioned random streams; no economy/train gameplay; P1-04 stable entities, footprints and exact profile dispatch",
       "desktopExavSaveScope": "separate historical import work remains with P10",
-      "review": "doc/web-parity-random.md"
+      "review": "doc/web-parity-spatial-contracts.md"
     },
     {
       "id": "ONLINE-SAVE-002",
@@ -21,7 +21,7 @@
       "status": "implemented: current-format-only codec",
       "supersedes": "Canonical Save 2/3 parsing and upgrade requirements in P1 delivery records and plans",
       "rationale": "Rapid parity-slice iteration without a corpus of save-game data to retain",
-      "supportedFormat": "current canonical Save 4 only; maintain version checks as the format evolves",
+      "supportedFormat": "current canonical Save 5 only; maintain version checks as the format evolves",
       "unsupportedBehavior": "Older formats return incompatibleSave before current-format deserialization; preserve current world, epoch and rejected files, including checkpoints",
       "migrationPolicy": "No migration parsers during this iteration stage; revisit when there are saves to retain",
       "review": "doc/web-parity-runtime-policy.md"

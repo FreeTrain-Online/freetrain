@@ -6,6 +6,7 @@ export type WireMessage =
 export type Counter = string;
 export type Money = string;
 export type Heading = number;
+export type EntityId = string;
 export type CommandPayload =
   | {
       kind: "run";
@@ -115,6 +116,10 @@ export interface Snapshot {
    * @maxItems 32
    */
   requiredPacks: RequiredPack[];
+  /**
+   * @maxItems 65536
+   */
+  entities?: SpatialEntity[];
 }
 export interface Map {
   width: number;
@@ -187,11 +192,35 @@ export interface Track {
     | "normal10"
     | "normal11";
   revision: Counter;
+  entityId?: EntityId;
 }
 export interface RequiredPack {
   id: string;
   version: string;
   catalogHash: string;
+}
+export interface SpatialEntity {
+  id: EntityId;
+  revision: Counter;
+  definition: Definition;
+  anchor: Position;
+  /**
+   * @minItems 1
+   * @maxItems 65536
+   */
+  footprint: [VoxelMember, ...VoxelMember[]];
+  owned: boolean;
+  silentlyReclaimable: boolean;
+  value: Money;
+}
+export interface Definition {
+  packId: string;
+  contributionId: string;
+  recipeId: string;
+}
+export interface VoxelMember {
+  offset: Position;
+  transparent: boolean;
 }
 export interface Command {
   type: "command";
@@ -246,12 +275,17 @@ export interface Delta {
    * @maxItems 32
    */
   requiredPacks: RequiredPack[];
+  /**
+   * @maxItems 65536
+   */
+  entities?: SpatialEntity[];
 }
 export interface Removed {
   trainIds: string[];
   stationIds: string[];
   buildingIds: string[];
   trackPositions: Position[];
+  entityIds?: EntityId[];
 }
 export interface Resync {
   type: "resync";

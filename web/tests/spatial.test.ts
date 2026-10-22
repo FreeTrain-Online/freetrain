@@ -106,8 +106,8 @@ Deno.test('canonical source-minute display uses fixed years and ten-minute preci
 });
 Deno.test('current save carries canonical clock state and strict source action binding boundary',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v4.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v4.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));
   for(const clock of [null,{...save.clock,absoluteMinute:130080},{...save.clock,absoluteMinute:'-1'},
@@ -116,7 +116,7 @@ Deno.test('current save carries canonical clock state and strict source action b
 Deno.test('canonical clock deltas retain geometry and reject unsupported clock range and old profile',async()=>{
   const read=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-canonical.json',import.meta.url))) as Snapshot;
   const delta={type:'delta',worldEpoch:read.worldEpoch,baseRevision:'0',revision:'2',tick:'130081',paused:false,cash:'0',
-    trains:[],stations:[],buildings:[],tracks:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[]},
+    trains:[],stations:[],buildings:[],tracks:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[]},entities:[],
     ruleset:read.ruleset,contentVersion:read.contentVersion,requiredPacks:read.requiredPacks} as const;
   const next=applyDelta(read,delta as never);assert(next);equal(next.tick,'130081');equal(next.paused,false);equal(next.tracks,read.tracks);
   assert(!applyDelta(read,{...delta,tick:'1128717404863200'} as never));
@@ -124,13 +124,13 @@ Deno.test('canonical clock deltas retain geometry and reject unsupported clock r
   throws(()=>parseMessage(JSON.stringify({...read,ruleset:'reference-spatial-2'})));
 });
 
-Deno.test('Save 4 freezes complete random state and rejects malformed or incompatible streams',async()=>{
+Deno.test('Save 5 freezes complete random state and rejects malformed or incompatible streams',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v4.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v4.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));
-  equal(save.ruleset,'reference-spatial-3');equal(save.random.streams.length,10);
+  equal(save.ruleset,'reference-spatial-4');equal(save.random.streams.length,10);
   for(const mutate of [
     (s:typeof save)=>{delete s.random;},
     (s:typeof save)=>{s.random=null;},
@@ -148,4 +148,49 @@ Deno.test('Save 4 freezes complete random state and rejects malformed or incompa
     (s:typeof save)=>{s.random.streams[0].state.values.fill(0);},
     (s:typeof save)=>{s.random.streams[0].state.extra=0;},
   ]){const broken=structuredClone(save);mutate(broken);assert(!validate(broken));}
+});
+
+Deno.test('canonical stable owners, footprints and exact definition identities reject corrupt graphs before reveal',async()=>{
+  const source=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-canonical.json',import.meta.url))) as Snapshot;
+  for(const mutate of [
+    (r:Snapshot)=>{delete r.entities;},
+    (r:Snapshot)=>{delete r.tracks[0].entityId;},
+    (r:Snapshot)=>{r.tracks[0].entityId='999';},
+    (r:Snapshot)=>{r.tracks[0].entityId=r.tracks[1].entityId;},
+    (r:Snapshot)=>{r.entities![1].id=r.entities![0].id;},
+    (r:Snapshot)=>{r.entities!.pop();},
+    (r:Snapshot)=>{r.entities![0].definition.packId='optional';},
+    (r:Snapshot)=>{r.entities![0].definition.contributionId='Normal-rail';},
+    (r:Snapshot)=>{r.entities![0].definition.recipeId='normal12';},
+    (r:Snapshot)=>{r.entities![0].anchor.z=1;},
+    (r:Snapshot)=>{r.entities![0].footprint[0].transparent=false;},
+    (r:Snapshot)=>{r.entities![0].footprint[0].offset.z=1;},
+    (r:Snapshot)=>{r.entities![0].footprint.push(structuredClone(r.entities![0].footprint[0]));},
+    (r:Snapshot)=>{r.entities![0].owned=false;},
+    (r:Snapshot)=>{r.entities![0].silentlyReclaimable=true;},
+    (r:Snapshot)=>{r.requiredPacks.push(structuredClone(r.requiredPacks[0]));},
+    (r:Snapshot)=>{r.requiredPacks[0].version='1';},
+    (r:Snapshot)=>{r.ruleset='reference-spatial-3';},
+  ]){const broken=structuredClone(source);mutate(broken);throws(()=>parseMessage(JSON.stringify(broken)));}
+});
+Deno.test('entity delta removals and replacements preserve decimal IDs and reject dangling or mixed owners',async()=>{
+  const read=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-canonical.json',import.meta.url))) as Snapshot;
+  const old=read.entities![0].id,newId='9007199254740993';
+  const changed={...structuredClone(read.entities![0]),id:newId};
+  const delta={type:'delta',worldEpoch:read.worldEpoch,baseRevision:read.revision,revision:'1',tick:read.tick,paused:read.paused,cash:read.cash,
+    trains:[],stations:[],buildings:[],tracks:read.tracks.filter(t=>t.entityId===old).map(t=>({...t,entityId:newId})),entities:[changed],
+    removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[old]},ruleset:read.ruleset,contentVersion:read.contentVersion,requiredPacks:read.requiredPacks} as const;
+  const parsed=parseMessage(JSON.stringify(delta));assert(parsed.type==='delta');
+  const next=applyDelta(read,parsed);assert(next);assert(next.entities!.some(e=>e.id===newId));assert(!next.entities!.some(e=>e.id===old));
+  equal(read.entities![0].id,old);
+  for(const patch of [{entities:[]},{tracks:[]},{removed:{...delta.removed,entityIds:[]}},{entities:undefined},{entities:[changed,changed]},
+    {requiredPacks:[...read.requiredPacks,...read.requiredPacks]}])assert(!applyDelta(read,{...delta,...patch} as never));
+});
+Deno.test('current save structurally requires stable graph and old canonical saves remain unsupported',async()=>{
+  const {default:Ajv}=await import('ajv');
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
+  const validate=new Ajv({strict:true}).compile(schema);assert(validate(save));
+  for(const patch of [{spatial:null},{spatial:{...save.spatial,nextEntityId:33}},{saveVersion:4},{ruleset:'reference-spatial-3'},
+    {requiredPacks:[...save.requiredPacks,...save.requiredPacks]}])assert(!validate({...save,...patch}));
 });

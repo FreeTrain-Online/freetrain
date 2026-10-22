@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-22",
+  "slice": "P1-04",
+  "authority": {
+    "version": "ExAV 2.1.1.12",
+    "archiveGit": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "root": "trunk",
+    "method": "git show from the pinned commit; bytes also match the locally inspected working tree"
+  },
+  "sourceDependencies": [
+    {
+      "path": "trunk/core/world/Cube.cs",
+      "sha256": "9b3dc4fa50ddd111112faecd1a52e6095e7084a5b15c293261075a7fa1301d20",
+      "symbols": "createExclusive/createInclusive/contains/voxels/getEntities",
+      "binding": "XYZ bounds, reverse-exclusive first-in/second-out intervals, X/Y/Z enumeration and shared-owner deduplication"
+    },
+    {
+      "path": "trunk/core/world/Entity.cs",
+      "sha256": "bf36f803f7d0c91a1cfd3de9daab3b783eb2ef1b7d90ff785b19a61e77c5786b",
+      "symbols": "Entity",
+      "binding": "Shared voxel ownership; entityValue, isOwned and isSilentlyReclaimable are independent"
+    },
+    {
+      "path": "trunk/core/world/Voxel.cs",
+      "sha256": "ae234706b9f1afe305afdb7ca498c0bfab062001d80626fc9d0d2ad843f912cd",
+      "symbols": "Voxel.entity/transparent; AbstractVoxelImpl.location",
+      "binding": "A voxel has one location and one entity; transparency does not imply vacancy"
+    },
+    {
+      "path": "trunk/core/world/EmptyVoxel.cs",
+      "sha256": "078a4156c901cdb6c0489294a96a09d1bacc7b1362f4b4fedf752dcca08a3ed3",
+      "symbols": "EmptyVoxel.entity/transparent",
+      "binding": "Invisible occupied cells delegate to their shared entity"
+    },
+    {
+      "path": "trunk/core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "symbols": "isInsideWorld/isReusable/OutOfWorldVoxel/voxel indexer",
+      "binding": "H/V storage; reuse is null-or-silently-reclaimable; outside cells block placement"
+    },
+    {
+      "path": "trunk/core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "symbols": "TrafficVoxel.entity/transparent/isOwned/isSilentlyReclaimable/entityValue",
+      "binding": "Normal reference rail owner: self entity, transparent, owned, not silently reclaimable, value zero"
+    },
+    {
+      "path": "trunk/core/world/structs/Structure.cs",
+      "sha256": "439cc862d31b5c1bf7553d43708f5d0541536b7865548361348bc8487fa3abd4",
+      "symbols": "StructureVoxel.owner/entity; canBeBuilt",
+      "binding": "Member voxels delegate ownership; gameplay placement branches remain P3/P7"
+    },
+    {
+      "path": "trunk/core/world/structs/PThreeDimStructure.cs",
+      "sha256": "128d7b082620e5035aae34853131ef19ab4caf7283ebb7ddba7e941f6e2942a5",
+      "symbols": "constructor/cube/VoxelImpl",
+      "binding": "Multi-voxel XYZ extent, invisible upper members still occupied; recipes remain P2/P7"
+    },
+    {
+      "path": "trunk/core/world/structs/TwoDimStructure.cs",
+      "sha256": "b304dc4624551a381f7a5111f07e7dcf57b7c1d401a8bd67a7a809223491544e",
+      "symbols": "constructor/voxels",
+      "binding": "Actual occupied height one independently of sprite height"
+    },
+    {
+      "path": "trunk/core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "symbols": "SlopeEntity/SlopeFillerVoxel/SlopeSupportVoxel",
+      "binding": "Explicit filler/support relationships motivate irregular member lists; slope construction/removal remains P4"
+    },
+    {
+      "path": "trunk/core/framework/plugin/Contribution.cs",
+      "sha256": "caa7bba70deaf8ef3fcaf3a86c4a630a4c420aa267657e5b65eb4e28051a2e93",
+      "symbols": "id/GetObjectData/ReferenceImpl",
+      "binding": "Contribution identities survive references without embedding CLR object state; P2 supplies real pack/recipe registration"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "P1-ENTITY-001",
+      "decision": "Replace CLR shared-object identity with world-local positive Int64 IDs and a persisted monotonic allocator. Never reuse removed IDs. Initial synthetic IDs are assigned once in XYZ order; restored IDs are never regenerated from position or list order. No session ID/epoch is durable entity identity."
+    },
+    {
+      "id": "P1-ENTITY-002",
+      "decision": "Use explicit relative voxel members plus an XYZ anchor; retain transparency separately from occupancy. Cube retains source reverse-exclusive/inclusive endpoints and X/Y/Z enumeration. Empty footprints cannot represent placed entities. Unplaced vehicles remain separate P5 actor state."
+    },
+    {
+      "id": "P1-ENTITY-003",
+      "decision": "Use immutable graphs with validation before publication; add/replace/remove preserve old graph and allocator on failure. Remove retains the allocator. Cell lookups distinguish outside/vacant/occupied; the outside sentinel has no durable ID and is never reusable. No desktop global World or callback/delegate serialization."
+    },
+    {
+      "id": "P1-ENTITY-004",
+      "decision": "Checked Int32 spatial endpoints/volume and Int64 ID/revision arithmetic extend P1-SPATIAL-001. Domain graphs are bounded to 65536 total cells/entities; the canonical reference remains 8–1024 rails in H<=64,V<=128,Z<=16. Bounds apply to actual voxel members, including Z; no source footprint is inferred from art dimensions."
+    },
+    {
+      "id": "P1-PROFILE-001",
+      "decision": "Exact ordinal whole-profile matching: ruleset, content version and duplicate-free exact pack ID/version/SHA-256 set. Pack order is irrelevant. No ranges, hash fallback, silent overrides or cross-pack contribution lookup. Synthetic reference pack v2 contains only normal-rail recipes normal0..normal11. Bundled/optional pack import/loading remains P2 under its own identities."
+    },
+    {
+      "id": "P1-PROFILE-002",
+      "decision": "Protocol 3 common envelopes remain; canonical reference-spatial-4 requires entities, track entityId, and changed-entity/explicit-removal delta collections. Prototype fields stay absent and saves stay rejected. Content reference-spatial-content-2 and reference-spatial v2 catalog hash change with recipe/footprint metadata."
+    },
+    {
+      "id": "P1-SAVE-005",
+      "decision": "Save 5 adds rail owner IDs and complete entity graph/allocator while retaining clock/random state. Only Save 5 is parsed/written under ONLINE-SAVE-002; Save 4 joins retired rejection fixtures. Exact graph/profile validation completes before replacement. Rejected checkpoints remain protected."
+    }
+  ],
+  "presentation": {
+    "newStrings": [],
+    "classification": "No new UI copy. Inspect displays stable entity ID with existing localized Track/normal-pattern labels; existing English/Japanese incompatibleSave/invalidSave messages and owner confirmation are reused. Source Entity members supply internal semantics, not user-visible new strings.",
+    "workflowBindings": [
+      "MAN-A03 spatial ownership foundation only; full railway legality/cost remains P4",
+      "DEV-A01/DEV-P28/P32 voxel/anchor and pack identity contracts; full content authoring/rendering remains P2",
+      "REG-02 stable selection identity, epoch replacement and stale delta fencing",
+      "REG-07 synchronized DTO/schema/client/save identities"
+    ]
+  },
+  "implementation": [
+    "src/FreeTrain.Online.Simulation/SpatialEntities.cs",
+    "src/FreeTrain.Online.Simulation/ReferenceWorld.cs",
+    "src/FreeTrain.Online.Contracts/WorldProfiles.cs",
+    "src/FreeTrain.Online.Contracts/WireContracts.cs",
+    "src/FreeTrain.Online.Persistence/SaveCodec.cs",
+    "src/FreeTrain.Online.Session/SessionHost.cs",
+    "src/FreeTrain.Online.Server/NetworkSession.cs",
+    "web/src/lib/world-identity.ts",
+    "web/src/lib/protocol.ts",
+    "web/src/lib/map-renderer.ts",
+    "web/src/App.svelte"
+  ],
+  "fixtures": [
+    "prototype/protocol/canonical-profile.json",
+    "prototype/protocol/fixtures/snapshot-canonical.json",
+    "prototype/protocol/save-v5.schema.json",
+    "prototype/protocol/saves/reference-v5.json"
+  ],
+  "verification": {
+    "kind": "Independent source-derived contract vectors and real service continuation; no desktop capture or full-world/native claim",
+    "tests": [
+      "tests/FreeTrain.Online.Tests/SpatialEntityTests.cs",
+      "tests/FreeTrain.Online.Tests/SpatialIntegrationTests.cs",
+      "tests/FreeTrain.Online.Tests/ReferenceWorldTests.cs",
+      "tests/FreeTrain.Online.Tests/SaveRejectionTests.cs",
+      "web/tests/spatial.test.ts",
+      "web/tests/browser/reference-world.spec.ts"
+    ],
+    "report": "doc/web-parity-spatial-contracts.md"
+  },
+  "remaining": [
+    "P1 phase gate review and native/device UX observations",
+    "P2 real bundled/optional contribution/recipe registries, importers, hashes, loading, assets and rendering",
+    "P3/P4/P7 terrain/placement/reclamation/removal transactions and financial effects",
+    "P5/P6 trains/cars/platforms and non-spatial actor identity/occupancy relations",
+    "P10 complete-world graph and historical desktop imports",
+    "Full city capacity, public deployment and native/device acceptance"
+  ]
+}

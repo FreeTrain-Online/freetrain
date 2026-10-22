@@ -23,7 +23,8 @@ public class SpatialIntegrationTests
         var options = WireJson.CreateOptions();
         var map = row.GetProperty("map").Deserialize<MapRead>(options)!;
         // A geometry-only source fixture, not a playable canonical scenario or installed content pack.
-        var snapshot = new SnapshotMessage(1, 0, 0, true, 0, map, [], [], [], [], "spatial-source-fixture", "fixture", []);
+        var profile = map.CoordinateSystem == "hv" ? WorldProfiles.Reference : WorldProfiles.Prototype;
+        var snapshot = new SnapshotMessage(1, 0, 0, true, 0, map, [], [], [], [], profile.Ruleset, profile.ContentVersion, profile.Packs.ToArray());
         var query = row.GetProperty("query").Deserialize<SpatialQuery>(options)!;
         var actual = JsonSerializer.SerializeToNode(SpatialQueries.Preview(snapshot, query), options)!;
         foreach (var field in row.GetProperty("expected").EnumerateObject())

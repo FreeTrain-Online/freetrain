@@ -8,7 +8,7 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **3**, default content `reference-spatial-content-1`, canonical **Save 4**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
+Versions are independent: protocol **3**, default content `reference-spatial-content-2`, canonical **Save 5**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
 Join conveys server incarnation, participant/session identity, server-assigned role,
 epoch and initial snapshot. Commands cannot choose participant identity or authority.
 
@@ -32,7 +32,7 @@ Protocols 1 and 2 are rejected with HTTP 426; deploy matching static and server 
 Online prototype Save 1 is unsupported. The current schema and generated types
 contain no Save 1 model. Historical data is kept only under `historical/save-v1`
 and the archived implementation. The runtime rejects unsupported input with
-`incompatibleSave`. Canonical Save 4 uses `save-v4.schema.json` and `saves/reference-v4.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` and `historical/save-v3`. Prototype writes remain unavailable. See the
+`incompatibleSave`. Canonical Save 5 uses `save-v5.schema.json` and `saves/reference-v5.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3/4 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` `historical/save-v3` and `historical/save-v4`. Prototype writes remain unavailable. See the
 [owner-directed policy](../../doc/web-parity-runtime-policy.md).
 
 Run from the repo root:
@@ -60,12 +60,13 @@ returns HTTP 401 after leaving, including in local mode; the response indicates
 whether an empty key can deliberately rejoin as a local Owner. Login credentials
 are opaque random values retained in a bounded, eight-hour server registry.
 
-The default world identity is `reference-spatial-3` / `reference-spatial-content-1`
+The default world identity is `reference-spatial-4` / `reference-spatial-content-2`
 with the exact required-pack descriptor in `canonical-profile.json`. Join, snapshots
 and deltas carry this identity. The map uses `hv` H/V storage dimensions and track
 shapes `normal0`..`normal11`, matching source `RailPattern.singlePatterns` indices.
 The asset-free reference pack is not the complete game catalog. Tick is absolute source minutes (initially 130080); revision advances for time and
-pause changes. Cash stays zero and there are no game entities yet. The world starts
+pause changes. Cash stays zero; each rail has a stable entity ID and an explicit
+occupied footprint. There are no trains, stations or buildings yet. The world starts
 paused. See [P1-02](../../doc/web-parity-clock.md).
 
 `prototype-profile.json` / `prototypeXY` remain explicit historical regression data.
@@ -80,10 +81,24 @@ browser validates car counts/headings and the selected installed profile before
 applying reads. Source canonical geometry has shared fixtures separate from that
 compatibility world. Protocol-2 originals are preserved in `historical/v2`.
 
-`POST /api/spatial/preview?protocolVersion=3&contentVersion=reference-spatial-content-1`
+`POST /api/spatial/preview?protocolVersion=3&contentVersion=reference-spatial-content-2`
 accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
 Any authenticated role can use it. Expected epoch, position, nullable anchor and
 snap 0/4/8 select a checked read-only calculation. The result carries world
 identity/revision, snapped position, bounds, projection, optional storage,
 heading and distance. It never reserves cells, changes state or approves a later
 construction commit. Invalid/overflow input is 400; stale epoch is 409.
+
+Canonical snapshots include `entities`; tracks refer to their `entityId` (positive
+Int64 decimal strings). Entity definitions are exact `{packId, contributionId,
+recipeId}` references; anchors plus footprint offsets identify occupied voxels,
+including invisible ones. Entity value, ownership and silent reclamation are
+separate fields. Canonical deltas include changed `entities` and
+`removed.entityIds`, with base/new revision and identity checks before application.
+The historical prototype omits these fields. Optional schema fields preserve the
+common protocol-3 envelope; exact ruleset dispatch enforces their presence for
+canonical reads. Unknown or inconsistent graphs block reveal.
+
+Save 5 also stores `spatial.nextEntityId`; removed IDs are never allocated again.
+The allocator is private durable state and is absent from public reads. See
+[P1-04](../../doc/web-parity-spatial-contracts.md) for source mappings and limits.

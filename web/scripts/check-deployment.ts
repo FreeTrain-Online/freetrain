@@ -18,7 +18,7 @@ async function docker(args:string[],environment=env) {
   if(!result.success)throw new Error(`docker ${args[0]} failed: ${new TextDecoder().decode(result.stderr)}`);
   return new TextDecoder().decode(result.stdout).trim();
 }
-const url='https://localhost:8443',boot='/api/bootstrap?protocolVersion=3&contentVersion=reference-spatial-content-1';
+const url='https://localhost:8443',boot='/api/bootstrap?protocolVersion=3&contentVersion=reference-spatial-content-2';
 let client:Deno.HttpClient|undefined;
 const sleep=(ms:number)=>new Promise(r=>setTimeout(r,ms));
 async function healthy(){for(let i=0;i<200;i++){try{const response=await fetch(url+'/health',{client});if(response.ok){const health=await response.json();expect(health.status).toBe('ok');return;}}catch{}await sleep(100);}throw new Error('Deployment not healthy');}
@@ -52,7 +52,7 @@ try {
   expect((await context.cookies()).find(c=>c.name==='freetrain-online.operator')).toMatchObject({secure:true,httpOnly:true,sameSite:'Strict',path:'/api'});
   expect(socketUrls.length).toBeGreaterThan(0);expect(socketUrls.every(u=>u.startsWith('wss://'))).toBe(true);
   expect((await page.request.get(url+boot,{headers:{Origin:'https://foreign.example'}})).status()).toBe(403);
-  expect((await page.request.get(url+'/api/bootstrap?protocolVersion=999&contentVersion=reference-spatial-content-1')).status()).toBe(426);
+  expect((await page.request.get(url+'/api/bootstrap?protocolVersion=999&contentVersion=reference-spatial-content-2')).status()).toBe(426);
   const anonymous=await browser.newContext({ignoreHTTPSErrors:true});expect((await anonymous.request.get(url+boot)).status()).toBe(401);await anonymous.close();
   async function resources(){
     const sample=async()=>{
