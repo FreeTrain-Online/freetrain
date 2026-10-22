@@ -18,10 +18,32 @@ public static class NormalRailPatterns
     }
 }
 
-// A static geometry reference, deliberately independent of the prototype world.
+// Canonical geometry and source-minute time, independent of the prototype world.
 // The constructor validates the complete connected, reciprocal, eight-heading loop.
 public sealed class ReferenceWorld
 {
+    public Clock Clock { get; private set; } = new();
+    public bool Paused { get; private set; } = true;
+    public long Revision { get; private set; }
+    public void SetPaused(bool paused)
+    {
+        if (Paused == paused) return;
+        var revision = checked(Revision + 1);
+        Paused = paused; Revision = revision;
+    }
+    public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute;
+    public void AdvanceOneMinute()
+    {
+        var revision = checked(Revision + 1);
+        Clock.Advance(); Revision = revision;
+    }
+    public void RestoreTime(ClockState state, bool paused)
+    {
+        // No gameplay action bindings exist in this reference slice. Unknown
+        // pending actions fail before this world can replace the active world.
+        var restored = Clock.Restore(state);
+        Clock = restored; Paused = paused;
+    }
     public WorldSpace Space { get; }
     public ImmutableArray<ReferenceRail> Rails { get; }
     public ReferenceWorld(int width, int height, int levels, IEnumerable<ReferenceRail> rails)

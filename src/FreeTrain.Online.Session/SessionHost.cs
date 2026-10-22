@@ -188,24 +188,7 @@ public sealed class SessionHost
         {
             var observedTime = now ?? DateTimeOffset.UtcNow;
             if (observedTime > boundaryTime) boundaryTime = observedTime;
-            if (referenceWorld != null)
-            {
-                var count = Math.Min(commands.Count, MaximumCommandsPerBoundary);
-                for (var i = 0; i < count; i++)
-                {
-                    var work = commands.Dequeue();
-                    if (work is Boundary boundary) boundary.Apply();
-                    else
-                    {
-                        var queued = (Queued)work;
-                        var code = !Current(queued.Participant) || queued.Participant.Role == ParticipantRole.Observer
-                            ? "notAuthorized" : queued.Command.ExpectedWorldEpoch != WorldEpoch ? "staleEpoch" : "operationUnavailable";
-                        queued.Completion.SetResult(Reject(queued.Command, code));
-                    }
-                }
-                resetInput = safetyPause = false;
-                return new(0, count, []);
-            }
+            if (referenceWorld != null) return PumpReference(tickBudget);
             MaintainControl();
             var events = ImmutableArray.CreateBuilder<SimulationEvent>();
             var advanced = 0;
@@ -238,6 +221,52 @@ public sealed class SessionHost
             } while (advanced < tickBudget);
             return new(advanced, applied, events.ToImmutable());
         }
+    }
+
+    private PumpResult PumpReference(int tickBudget)
+    {
+        var advanced = 0;
+        var applied = 0;
+        do
+        {
+            var count = Math.Min(commands.Count, MaximumCommandsPerBoundary);
+            for (var i = 0; i < count && advanced < MaximumTicksPerPump; i++)
+            {
+                var work = commands.Dequeue();
+                if (work is Boundary boundary) boundary.Apply();
+                else
+                {
+                    var queued = (Queued)work;
+                    string? code = !Current(queued.Participant) || queued.Participant.Role == ParticipantRole.Observer
+                        ? "notAuthorized" : queued.Command.ExpectedWorldEpoch != WorldEpoch ? "staleEpoch" : null;
+                    if (code == null)
+                    {
+                        switch (queued.Command.Payload)
+                        {
+                            case RunCommand when referenceWorld!.CanAdvance: referenceWorld.SetPaused(false); break;
+                            case RunCommand: code = "invalidInput"; break;
+                            case PauseCommand: referenceWorld!.SetPaused(true); break;
+                            case StepCommand when referenceWorld!.Paused && referenceWorld.CanAdvance:
+                                referenceWorld.AdvanceOneMinute(); advanced++; break;
+                            case StepCommand: code = "invalidInput"; break;
+                            default: code = "operationUnavailable"; break;
+                        }
+                    }
+                    queued.Completion.SetResult(code == null
+                        ? new AcceptedMessage(queued.Command.RequestId, WorldEpoch, ++sequence,
+                            referenceWorld!.Clock.Time.AbsoluteMinute, referenceWorld.Revision)
+                        : Reject(queued.Command, code));
+                }
+                applied++;
+            }
+            resetInput = false;
+            if (safetyPause) { referenceWorld!.SetPaused(true); safetyPause = false; }
+            if (!referenceWorld!.CanAdvance) referenceWorld.SetPaused(true);
+            if (advanced >= tickBudget || referenceWorld.Paused) break;
+            referenceWorld.AdvanceOneMinute(); advanced++;
+        } while (advanced < tickBudget);
+        lostParticipants.Clear(); resetParticipants.Clear();
+        return new(advanced, applied, []);
     }
 
     private WireMessage Apply(Queued queued, ImmutableArray<SimulationEvent>.Builder events)
@@ -298,7 +327,7 @@ public sealed class SessionHost
         lock (gate)
         {
             if (referenceWorld is {} reference)
-                return new(WorldEpoch, 0, 0, true, 0,
+                return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
                     new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
                     [], [], [], reference.Rails.Select(r => new TrackRead(new(r.Position.X,r.Position.Y,r.Position.Z),
                         $"normal{r.Pattern}",0)).ToArray(),

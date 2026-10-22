@@ -46,9 +46,10 @@ Future agents use the same contexts, commands, reads and leases. No decision eng
 provider is part of this library.
 
 The default canonical `ReferenceWorld` uses the same bounded FIFO and snapshot /
-spatial query boundary. It never advances simulation time and rejects gameplay
-commands with `operationUnavailable`. Clock, economy and train behavior are pending.
-Capture writes spatial Save 2. Load validates a complete replacement before changing
+spatial query boundary. Run/Pause/Step advance its world-local source-minute clock;
+other gameplay commands return `operationUnavailable`. Economy/train behavior is pending.
+Capture writes canonical Save 3; canonical Save 2 upgrades with an empty paused
+source-start clock. Load validates a complete replacement before changing
 the epoch; later commands/loads carrying the old epoch are fenced. Prototype Save 1
 is rejected without mutation. Explicit prototype regression hosts cannot write saves.
-See [P1-01c](../../doc/web-parity-reference-world.md).
+See [P1-01c](../../doc/web-parity-reference-world.md) and [P1-02](../../doc/web-parity-clock.md).

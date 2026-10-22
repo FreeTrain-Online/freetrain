@@ -406,3 +406,9 @@ executable fixtures, native/device UX acceptance and gameplay handoff remain
 with their owning slices; overall P0/runtime acceptance is not established here.
 
 **P1 spatial follow-through — 21 October 2026:** [client/server integration](web-parity-spatial-integration.md) delivers four/eight-direction target alignment, server bounds/projection checks and per-car heading reads. This supports MAN-A03 without closing its P4 multi-cell route, legality, cost, obstacles or removal acceptance. Source H/V rendering/picking fixtures support MAN-E16; full terrain/content/controller disambiguation remains with its owning slices.
+
+**P1-02 delivery — 22 October 2026:** MAN-T01/MAN-A01 now have source-calendar
+display and confirmed Run/Pause/Step in English/Japanese, with narrow-menu access
+and Observer enforcement. [Evidence](web-parity-clock.md) also covers MAN-A16 local
+navigation without shared-time changes. Source speed choices and complete menu
+equivalence remain P9; these manual requirements are only partially satisfied.

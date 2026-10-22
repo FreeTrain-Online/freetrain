@@ -2,7 +2,7 @@
   "type": "snapshot",
   "worldEpoch": "1",
   "revision": "0",
-  "tick": "0",
+  "tick": "130080",
   "paused": true,
   "cash": "0",
   "map": {
@@ -304,7 +304,7 @@
       "revision": "0"
     }
   ],
-  "ruleset": "reference-spatial-1",
+  "ruleset": "reference-spatial-2",
   "contentVersion": "reference-spatial-content-1",
   "requiredPacks": [
     {

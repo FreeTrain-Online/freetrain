@@ -58,7 +58,7 @@ public class SaveRejectionTests
             var session = new NetworkSession(new(), storage);
             Assert.Equal(error, session.StartupSaveError);
             Assert.True(session.SavingAvailable);
-            Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(0, session.Bootstrap().Snapshot.Tick);
+            Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(130080, session.Bootstrap().Snapshot.Tick);
             Assert.False(session.AutomaticCheckpointAvailable);
             Assert.Equal(error, (await Assert.ThrowsAsync<InvalidDataException>(() => session.Checkpoint())).Message);
             var slot = session.Checkpoint("slot1"); session.Tick(DateTimeOffset.UtcNow); await slot;

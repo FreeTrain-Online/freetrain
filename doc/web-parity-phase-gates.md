@@ -1,5 +1,7 @@
 # Parity phase review — 21 October 2026
 
+**P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
+
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.
 
 ## P0 coverage baseline: closed
@@ -119,3 +121,17 @@ server/client rendering/picking/targeting, independent identity and strict spati
 Save 2 with real replacement and restart checks. Prototype Save 1 remains unsupported.
 Clock/scheduler, random streams, general entity/footprint and full pack dispatch
 remain P1-02–04; complete gameplay/content/native gates remain open.
+
+## P1-02: source-minute clock, calendar and scheduler
+
+[Implementation, source/decision/translation bindings and evidence](web-parity-clock.md)
+now cover absolute minute 130080 start, fixed 365-day calendar and source holidays /
+vacations, daylight-before-FIFO-before-end-of-turn ordering, repeated callbacks,
+cancellation/GEO-002 repair and world-local queue restoration. Live Run/Pause/Step,
+English/Japanese date display and strict Save 3 continuation ship under ruleset
+`reference-spatial-2`; canonical Save 2 upgrades explicitly and Save 1 remains
+unsupported. 191 .NET, 80 client, 64 Chromium (10 canonical / 54 historical) and
+105 Python cases pass; builds/generated checks, source hashes and project
+boundaries pass. P1 stays open for P1-03 random streams and P1-04 complete entity /
+footprint / pack contracts. Full gameplay consumers, source speed UI, complete-city
+continuation and native/device gates remain open.

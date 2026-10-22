@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "slice": "P1-02",
+  "reviewedOn": "2026-10-22",
+  "baseline": {
+    "name": "FreeTrain ExAV 2.1.1.12",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "root": "trunk"
+  },
+  "sourceDependencies": [
+    {
+      "path": "trunk/core/world/Time.cs",
+      "sha256": "35895f60a90ddd3bc99b42294b6b1caa57be60a8e1aab5ca024d237d2c8fcdf7",
+      "symbols": [
+        "START_TIME",
+        "year/month/day/dayOfWeek",
+        "dayOrNight",
+        "season",
+        "isHoliday",
+        "isVacation",
+        "displayString"
+      ]
+    },
+    {
+      "path": "trunk/core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33",
+      "symbols": [
+        "untilTomorrow",
+        "fromMinutes/fromHours/fromDays"
+      ]
+    },
+    {
+      "path": "trunk/core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "symbols": [
+        "tick",
+        "registerOneShot",
+        "registerRepeated",
+        "unregister",
+        "RepeatedTimer.onClock",
+        "endOfTurnHandlers"
+      ]
+    },
+    {
+      "path": "trunk/core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "symbols": [
+        "insert",
+        "remove",
+        "Entry.CompareTo"
+      ]
+    },
+    {
+      "path": "trunk/core/framework/MainWindow.cs",
+      "sha256": "9e65046d7c1c8407662b810b99b255074f18ac2246b6f8f7166cea650e0004b2",
+      "symbols": [
+        "timerHandler",
+        "menuItem_ClockStop",
+        "timer.Interval"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "GEO-002",
+      "status": "implemented portable correction",
+      "behavior": "Dequeue executing entry before callback; cookie self-cancellation suppresses repeat; never remove a neighboring event."
+    },
+    {
+      "id": "CLOCK-BOUNDS",
+      "status": "implemented portable validation",
+      "behavior": "Nonnegative absolute source minutes, Int32-representable year, positive delays/repeat intervals, checked Int64 order and arithmetic; reject reentry and unbound actions."
+    },
+    {
+      "id": "CLOCK-FAILURE",
+      "status": "implemented portable failure policy",
+      "behavior": "Handler exceptions fault clock; reject subsequent advance/capture, require prior checkpoint recovery; no partial-action replay."
+    },
+    {
+      "id": "CLOCK-PACE",
+      "status": "existing multiplayer adapter adaptation",
+      "behavior": "One minute per 50ms pump, no local UI pause or catch-up; source speed controls remain P9."
+    }
+  ],
+  "presentation": {
+    "implementation": "web/src/lib/game-time.ts; web/src/lib/localization.ts",
+    "entries": [
+      {
+        "key": "formatGameTime",
+        "source": "trunk/core/world/Time.cs",
+        "symbol": "displayString/dayOfWeekChar",
+        "originalJapanese": "{0}年{1}月{2}日({3}) {4,2:d}時{5,1:d}0分",
+        "originalJapaneseSha256": "da5f821c70296b32f14417a6e4a0e256170123128c10715b8de01a1a16f8b68d",
+        "englishDonor": null,
+        "classification": "new translation with browser date/time punctuation adaptation",
+        "english": "Year {year} · {month}/{day} ({weekday}) {hour}:{tenMinutes}0",
+        "japanese": "{year}年{month}月{day}日({weekday}) {hour}:{tenMinutes}0",
+        "reviewStatus": "reviewed source meaning and ten-minute precision; English/Japanese automated checks"
+      },
+      {
+        "key": "referenceWorldHint",
+        "source": "trunk/core/world/Clock.cs",
+        "symbol": "tick; browser reference workflow (no source prose)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "classification": "new bilingual browser adaptation",
+        "english": "Explore the eight-direction rail loop and run, pause or step the calendar. Economy, trains and construction are not available yet.",
+        "japanese": "8方向の環状線を確認し、時計の進行・一時停止・1分送りを操作できます。経済・列車・建設の機能はまだ利用できません。",
+        "reviewStatus": "reviewed bilingual feature-scope description"
+      },
+      {
+        "key": "run",
+        "source": "trunk/core/framework/MainWindow.cs",
+        "symbol": "toggleClock (browser run action)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": "web/src/lib/localization.ts existing bilingual shell labels",
+        "classification": "existing bilingual label carryover; browser action adaptation",
+        "english": "Run",
+        "japanese": "運転",
+        "reviewStatus": "reviewed; authoritative source-minute action and browser role/access checks"
+      },
+      {
+        "key": "pause",
+        "source": "trunk/core/framework/MainWindow.cs",
+        "symbol": "menuItem_ClockStop.Text",
+        "originalJapanese": "一時停止(&S)",
+        "originalJapaneseSha256": "afcad3965fdea8efc82e185c277fd86957b3f8441d6648ffe3b62be30d34141f",
+        "englishDonor": "web/src/lib/localization.ts existing bilingual shell labels",
+        "classification": "exact meaning carryover without desktop accelerator",
+        "english": "Pause",
+        "japanese": "一時停止",
+        "reviewStatus": "reviewed; authoritative source-minute action and browser role/access checks"
+      },
+      {
+        "key": "step",
+        "source": "trunk/core/world/Clock.cs",
+        "symbol": "Clock.tick (browser one-minute action)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": "web/src/lib/localization.ts existing bilingual shell labels",
+        "classification": "existing bilingual label carryover; browser action adaptation",
+        "english": "Single step",
+        "japanese": "1ステップ",
+        "reviewStatus": "reviewed; authoritative source-minute action and browser role/access checks"
+      }
+    ]
+  },
+  "implemented": [
+    "absolute source-minute calendar and source fixed holidays/vacations",
+    "world-local named scheduler, cancellation and end-of-turn ordering",
+    "canonical authoritative run/pause/step and clock deltas",
+    "ruleset 2 and Save 3 with strict canonical Save 2 upgrade",
+    "English/Japanese source calendar display"
+  ],
+  "remaining": [
+    "random durations/streams (P1-03)",
+    "full semantic action registration/content dispatch (P1-04/P2 and consumers)",
+    "source speed choices and full MAN-A01 menu equivalence (P9)",
+    "full gameplay scheduled actions and complete-city save continuation",
+    "native/device UX and desktop-runtime comparison"
+  ],
+  "verification": {
+    "workingTreeBase": "9db3707",
+    "dotnetCases": 191,
+    "clientCases": 80,
+    "canonicalBrowserCases": 10,
+    "historicalBrowserCases": 54,
+    "pythonCases": 105,
+    "sourceEvidenceKind": "source-derived independent vectors; no original-runtime comparison",
+    "remainingNativeGate": true
+  }
+}

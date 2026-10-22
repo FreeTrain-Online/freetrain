@@ -1,3 +1,4 @@
+import { maximumGameMinute } from './game-time.ts';
 import canonical from '../../../prototype/protocol/canonical-profile.json' with { type: 'json' };
 import catalog from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with { type: 'json' };
 import { WorldSpace, move } from './map-geometry.ts';
@@ -14,7 +15,7 @@ export function supportedIdentity(identity:WorldIdentity):boolean { return sameI
 export function validSnapshot(read:Snapshot):boolean {
   if (sameIdentity(read,canonical)) {
     if(read.map.coordinateSystem!=='hv'||read.map.width<1||read.map.width>64||read.map.height<1||read.map.height>128||read.map.levels<1||read.map.levels>16||
-      read.tick!=='0'||read.revision!=='0'||!read.paused||read.cash!=='0'||read.trains.length||read.stations.length||read.buildings.length||read.tracks.length<8||read.tracks.length>1024)return false;
+      BigInt(read.tick)>maximumGameMinute||read.cash!=='0'||read.trains.length||read.stations.length||read.buildings.length||read.tracks.length<8||read.tracks.length>1024)return false;
     const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
     const cells=new Map(read.tracks.map(t=>[key(t.position),t]));

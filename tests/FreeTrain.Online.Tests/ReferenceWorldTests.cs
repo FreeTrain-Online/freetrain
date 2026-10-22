@@ -33,7 +33,7 @@ public class ReferenceWorldTests
     [Fact]
     public void Shared_save_fixture_and_asset_free_pack_hash_match_the_runtime()
     {
-        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v2.json"));
+        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v3.json"));
         Assert.Equal(SaveCodec.Write(SpatialReferenceScenario.Create()),SaveCodec.Write(SaveCodec.Read(bytes)));
         var catalog=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/reference-spatial.json"));
         Assert.Equal(ProtocolIdentity.ReferencePacks[0].CatalogHash,Convert.ToHexStringLower(SHA256.HashData(catalog)));
@@ -56,10 +56,10 @@ public class ReferenceWorldTests
     }
 
     [Fact]
-    public async Task Every_prototype_mutation_is_unavailable_in_the_canonical_world()
+    public async Task Prototype_gameplay_mutations_are_unavailable_in_the_canonical_world()
     {
         var host=SessionComposition.CreateReferenceHost();
-        CommandPayload[] operations=[new RunCommand(),new PauseCommand(),new StepCommand(),new BuildTrackCommand(new(27,24,0),"eastWest"),
+        CommandPayload[] operations=[new BuildTrackCommand(new(27,24,0),"eastWest"),
             new RemoveTrackCommand(new(27,24,0),0),new RenameStationCommand("station-1",0,"name"),new AcquireControlCommand("train-1"),
             new SetControllerCommand("train-1",0,"manual","1")];
         foreach(var operation in operations)
@@ -67,7 +67,7 @@ public class ReferenceWorldTests
             var result=host.Enqueue(new("operator-1"),new(Guid.NewGuid().ToString(),1,operation));host.Pump();
             Assert.Equal("operationUnavailable",Assert.IsType<RejectedMessage>(await result).Code);
         }
-        Assert.Equal(0,host.Snapshot().Tick); Assert.Equal(0,host.Snapshot().Revision);
+        Assert.Equal(GameTime.StartMinute,host.Snapshot().Tick); Assert.Equal(0,host.Snapshot().Revision);
     }
 
     [Fact]
@@ -114,14 +114,14 @@ public class ReferenceWorldTests
             case "outOfBounds":node["rails"]![0]!["x"]=int.MinValue;break;
             case "nullRail":node["rails"]![0]=null;break;
             case "missingRail":node["rails"]!.AsArray().RemoveAt(0);break;
-            case "unknownField":node["clock"]=0;break;
+            case "unknownField":node["unexpected"]=0;break;
             case "wrongPack":node["requiredPacks"]![0]!["catalogHash"]=new string('0',64);break;
             case "wrongCoordinates":node["map"]!["coordinateSystem"]="prototypeXY";break;
             case "oversizeMap":node["map"]!["width"]=int.MaxValue;break;
             case "unknownVersion":node["saveVersion"]=99;break;
         }
         var text=node.ToJsonString();
-        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":2", "\"saveVersion\":2,\"saveVersion\":2");
+        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":3", "\"saveVersion\":3,\"saveVersion\":3");
         var result=host.LoadSave(Encoding.UTF8.GetBytes(text),1);host.Pump();
         await Assert.ThrowsAsync<InvalidDataException>(()=>result);
         Assert.Equal(before,JsonSerializer.Serialize(host.Snapshot()));

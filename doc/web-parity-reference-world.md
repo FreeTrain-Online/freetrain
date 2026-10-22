@@ -1,5 +1,7 @@
 # P1-01c: canonical live reference world — 22 October 2026
 
+**P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
+
 Normal service startup now hosts a source-valid **32-cell eight-heading rail loop**
 on a **32×64×8 H/V map**, with strict spatial **Save 2** persistence. The world is
 static: clock/scheduler, random streams, economy, trains, stations and construction

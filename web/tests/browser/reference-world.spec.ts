@@ -16,13 +16,13 @@ async function checker(page:Page){await page.getByRole('button',{name:'Check a l
 test('default live H/V map renders, picks source rails and keeps unsupported operations unavailable',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.goto('/');await ready(page);
-  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-1');
+  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-2');
   await expect(page.getByTestId('reference-world')).toHaveText('Spatial reference world');
-  await expect(page.getByRole('button',{name:'Run',exact:false})).toBeDisabled();await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:'Run',exact:false})).toBeEnabled();await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
   const before=await bootstrap(page);expect(before.tracks).toHaveLength(32);expect(before.trains).toHaveLength(0);
   await canvas.evaluate(el=>el.setAttribute('data-instance','canonical-preserved'));
   await target(page,{x:31,y:24,z:0});await expect(page.getByTestId('selected-object')).toContainText('31,24,0');await expect(page.locator('.primary-panel')).toContainText('Normal rail pattern 6');
-  await openPanel(page,'session');await expect(page.locator('.primary-panel')).toContainText('Clock, economy, trains and construction are not available yet.');
+  await openPanel(page,'session');await expect(page.locator('.primary-panel')).toContainText('Economy, trains and construction are not available yet.');
   await expect(canvas).toHaveAttribute('data-instance','canonical-preserved');expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
 });
 
@@ -35,9 +35,9 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-en.png'),fullPage:true});
 });
 
-test('real Save 2 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
+test('real Save 3 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','save-preserved'));
-  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(2);
+  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(3);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
   await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Confirm load',exact:true}).click();
@@ -76,6 +76,9 @@ test('canonical Japanese presentation fits narrow DPR 2 and retains canvas throu
   try{
     const page=await context.newPage();await page.goto('/');await ready(page,'ja');await expect(page.getByTestId('reference-world')).toHaveText('空間参照ワールド');
     await openPanel(page,'session','ja');await expect(page.locator('.primary-panel')).toContainText('8方向の環状線');await closePanel(page);
+    await page.getByRole('button',{name:'ゲーム ▾',exact:true}).click();
+    await expect(page.getByTestId('menu-game-time')).toContainText('年4月1日(土)');
+    await page.keyboard.press('Escape');
     await page.getByRole('button',{name:'位置を確認',exact:true}).click();await page.getByLabel('線路の高さ',{exact:true}).selectOption('0');
     await target(page,{x:27,y:24,z:0});await expect(page.getByTestId('geometry-status')).toContainText('対象はマップの範囲内です。');
     await page.getByRole('button',{name:'方向合わせの基準にする',exact:true}).click();await page.getByLabel('対象の方向合わせ',{exact:true}).selectOption('8');
@@ -113,4 +116,38 @@ test('save availability must be known before upload, and Cancel never sends a re
     expect(uploads).toBe(0);await modal.getByRole('button',{name:'Cancel',exact:true}).click();await expect(modal).toHaveCount(0);
     expect(uploads).toBe(0);expect(await bootstrap(page)).toEqual(before);
   }finally{release();}
+});
+
+test('canonical clock step, shared run/pause, panel navigation and Save 3 continuation',async({page,browser})=>{
+  const observerContext=await browser.newContext();
+  try{
+    await page.goto('/');await ready(page);
+    const original=await(await page.request.get('/api/saves/download')).json();
+    const before=await bootstrap(page);
+    const save={...original,clock:{absoluteMinute:'130079',nextOrder:'0',pending:[]},paused:true};
+    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:save})).ok()).toBe(true);
+    await expect(page.getByTestId('game-time')).toHaveText('Year 1 · 4/1 (Sat) 07:50');
+    await page.getByRole('button',{name:'Step',exact:false}).first().click();
+    await expect(page.getByTestId('game-time')).toHaveText('Year 1 · 4/1 (Sat) 08:00');
+    expect((await bootstrap(page)).tick).toBe('130080');
+    const observer=await observerContext.newPage();
+    expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
+    await observer.goto('/');await ready(observer);
+    await expect(observer.getByRole('button',{name:'Run',exact:false})).toBeDisabled();
+    await page.getByRole('button',{name:'Run',exact:false}).click();
+    await expect(observer.getByTestId('clock-state')).toHaveText('Running');
+    const running=await bootstrap(page);await openPanel(page,'settings');
+    await expect.poll(async()=>BigInt((await bootstrap(page)).tick)>BigInt(running.tick)).toBe(true);
+    await page.getByRole('button',{name:'Pause',exact:false}).click();
+    await expect(observer.getByTestId('clock-state')).toHaveText('Paused');
+    const captured=await(await page.request.get('/api/saves/download')).json();
+    expect(captured.paused).toBe(true);expect(captured.clock.absoluteMinute).toBe((await bootstrap(page)).tick);
+    const paused=await bootstrap(page);
+    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+paused.worldEpoch,{data:captured})).ok()).toBe(true);
+    await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',String(BigInt(paused.worldEpoch)+1n));
+    expect((await bootstrap(page)).tick).toBe(captured.clock.absoluteMinute);
+  }finally{
+    const pause=page.getByRole('button',{name:'Pause',exact:false});if(await pause.count())await pause.click();
+    await observerContext.close();
+  }
 });

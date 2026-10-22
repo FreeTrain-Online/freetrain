@@ -1,5 +1,7 @@
 # Web parity coverage inventory
 
+**P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
+
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.
 
 **P1 follow-up:** [spatial client/server integration](web-parity-spatial-integration.md) now delivers protocol 3, per-car heading reads and server-checked target alignment. P1-01c now replaces the default prototype runtime with a canonical H/V reference loop and spatial Save 2. Clock/economy/train gameplay remains pending.

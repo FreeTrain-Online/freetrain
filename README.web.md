@@ -5,8 +5,9 @@ FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail a
 The bilingual Svelte app connects to an authoritative C# session over HTTP and
 WebSocket. Its default world is now a canonical H/V spatial reference: a small
 32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
-check aligned locations and save/restore the spatial graph with **Save 2**.
-Clock, economy, construction, trains and stations remain future slices.
+check aligned locations, run/pause/step the source-minute calendar and save/restore
+with **Save 3**. Economy, construction, trains and stations remain future slices.
+See [P1-02 clock and scheduler](doc/web-parity-clock.md).
 
 Owner/Operator/Observer roles, independent reconnects, bounded queues and epoch
 fencing remain in place. Prototype Save 1 is unsupported and cannot be converted.
@@ -52,7 +53,7 @@ When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
 or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume. Prototype
-saves are rejected and preserved; the default world now writes spatial Save 2. Browser login and preference keys use `freetrain-online`;
+saves are rejected and preserved; the default world now writes canonical Save 3. Browser login and preference keys use `freetrain-online`;
 sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
@@ -97,7 +98,7 @@ Open the Vite loopback URL printed in the second terminal. The server binds to
 `GET /health` reports service health and automatic-checkpoint errors. The live map
 uses source H/V geometry and an asset-free rail schematic. Each participant has
 one active socket; tabs sharing cookies share that identity. Local browsers
-receive independent Owner identities. Train/clock/construction operations are
+receive independent Owner identities. Train/construction operations are
 unavailable until their canonical implementations arrive.
 
 For a remote binding, configure `FreeTrainOnline__OperatorSecret` on the server. The
@@ -114,7 +115,7 @@ origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings u
 `FreeTrainOnline__Network__<Property>`. See
 [NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
-Save 2 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
+Save 3 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
 restores the spatial world after restart; the server incarnation changes. Rejected
 startup checkpoints are reported and preserved, including through later automatic
 and shutdown attempts. Named slots and downloads remain available for the fresh
@@ -168,16 +169,16 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-**Spatial Save 2 is supported; prototype Save 1 is unsupported.** Save slot and
-Download save capture the validated H/V rail graph. Load/upload validates dimensions,
+**Canonical Save 3 is supported; Save 2 upgrades explicitly; prototype Save 1 is unsupported.** Save slot and
+Download save capture the validated H/V rail graph, source-minute clock and paused state. Load/upload validates dimensions,
 unique occupied cells, source patterns, reciprocal connectivity, all eight headings
 and exact ruleset/content/pack identity before replacing the world and advancing
-the epoch. No prototype clock, economy, random or train state is saved.
+the epoch. Save 2 initializes its clock at source start time, paused. No prototype state is saved.
 
 `FreeTrainOnline__Saves__Directory` selects the save directory. An incompatible
 startup checkpoint produces a visible error and a fresh world; the rejected file
 is never overwritten. `/api/saves/status` reports availability and startup errors.
-See [the save contract](prototype/protocol/save-v2.schema.json) and
+See [the save contract](prototype/protocol/save-v3.schema.json) and
 [current policy](doc/web-parity-runtime-policy.md).
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
@@ -224,8 +225,8 @@ are historical regression checks, not canonical gameplay/capacity evidence.
 The spatial integration now uses **protocol 3**, with explicit ruleset/content/pack
 identity, coordinate-system tags and per-car eight-direction heading indices.
 Restart/deploy matching artifacts together; protocol 2 peers receive HTTP 426.
-The default profile is `reference-spatial-1` / `reference-spatial-content-1`,
-with H/V bounds, `normal0`..`normal11` track patterns and spatial Save 2. Unknown
+The default profile is `reference-spatial-2` / `reference-spatial-content-1`,
+with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 3. Unknown
 profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md).
 
 Edit `prototype/protocol/schema.json`, run

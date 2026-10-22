@@ -90,7 +90,7 @@ Deno.test('shared canonical live fixture validates, renders and picks every sour
     (r:Snapshot)=>r.tracks.pop(),
     (r:Snapshot)=>r.tracks.push(structuredClone(r.tracks[0])),
     (r:Snapshot)=>{r.tracks[0].shape='eastWest';},
-    (r:Snapshot)=>{r.tick='1';},
+    (r:Snapshot)=>{r.tick='1128717404863200';},
     (r:Snapshot)=>{r.tracks[0].position.x=2147483647;},
     (r:Snapshot)=>{r.map.coordinateSystem='prototypeXY';},
   ]){const broken=structuredClone(read);mutate(broken);throws(()=>parseMessage(JSON.stringify(broken)));}
@@ -101,4 +101,32 @@ Deno.test('Save 2 shared fixture follows its independent structural schema',asyn
   const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v2.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));assert(!validate({...save,clock:0}));assert(!validate({...save,saveVersion:1}));
+});
+
+Deno.test('canonical source-minute display uses fixed years and ten-minute precision in both locales',async()=>{
+  const {gameDate,formatGameTime,maximumGameMinute}=await import('../src/lib/game-time.ts');
+  equal(gameDate('130080'),{year:1,month:4,day:1,weekday:6,hour:8,minute:0});
+  equal(formatGameTime('130089','en'),'Year 1 · 4/1 (Sat) 08:00');
+  equal(formatGameTime('130090','ja'),'1年4月1日(土) 08:10');
+  equal(gameDate('1661760'),{year:4,month:3,day:1,weekday:6,hour:0,minute:0});
+  equal(gameDate(String(maximumGameMinute)).year,2147483647);
+  throws(()=>gameDate('-1'));throws(()=>gameDate(String(maximumGameMinute+1n)));
+});
+Deno.test('Save 3 carries canonical clock state and strict source action binding boundary',async()=>{
+  const {default:Ajv}=await import('ajv');
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v3.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v3.json',import.meta.url)));
+  const validate=new Ajv({strict:true}).compile(schema);
+  assert(validate(save));
+  for(const clock of [null,{...save.clock,absoluteMinute:130080},{...save.clock,absoluteMinute:'-1'},
+    {...save.clock,pending:[{handlerId:'unknown'}]},{...save.clock,extra:0}])assert(!validate({...save,clock}));
+});
+Deno.test('canonical clock deltas retain geometry and reject unsupported clock range and old profile',async()=>{
+  const read=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-canonical.json',import.meta.url))) as Snapshot;
+  const delta={type:'delta',worldEpoch:read.worldEpoch,baseRevision:'0',revision:'2',tick:'130081',paused:false,cash:'0',
+    trains:[],stations:[],buildings:[],tracks:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[]},
+    ruleset:read.ruleset,contentVersion:read.contentVersion,requiredPacks:read.requiredPacks} as const;
+  const next=applyDelta(read,delta as never);assert(next);equal(next.tick,'130081');equal(next.paused,false);equal(next.tracks,read.tracks);
+  assert(!applyDelta(read,{...delta,tick:'1128717404863200'} as never));
+  throws(()=>parseMessage(JSON.stringify({...read,ruleset:'reference-spatial-1'})));
 });

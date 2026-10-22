@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { formatGameTime } from './lib/game-time.ts';
   import { isReferenceWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
@@ -50,7 +51,8 @@
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => `${item.position.x},${item.position.y},${item.position.z}` === mapSelection?.id) : undefined);
   const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
   const reference = $derived(isReferenceWorld(read));
-  const disabled = $derived(reference || saveBusy || view.pending || !live || view.role === 'observer');
+  const clockDisabled = $derived(saveBusy || view.pending || !live || view.role === 'observer');
+  const disabled = $derived(reference || clockDisabled);
   const draftStation = $derived(read?.stations.find(item => item.id === view.draftStationId));
   const draftConflict = $derived(view.draftDirty && (!draftStation || draftStation.revision !== view.draftRevision));
   const canApply = $derived(!disabled && !view.composing && !!view.draft.trim() && !draftConflict);
@@ -129,11 +131,12 @@
       <img class="app-icon" src={icon} width="32" height="32" alt={appName}/>
       <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); menu = !menu; if (menu) void tick().then(() => [...document.querySelectorAll<HTMLButtonElement>('#game-menu button')].find(button => !button.disabled && button.getClientRects().length)?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
       <div class="transport">
-        <button disabled={disabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
-        <button class="step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
+        <button disabled={clockDisabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
+        <button class="step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
       </div>
-      {#if reference}<span data-testid="reference-world">{text.referenceWorld}</span>{:else}
+      {#if reference}<span class="sr-only" data-testid="reference-world">{text.referenceWorld}</span>{/if}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
+      {#if reference}<span class="clock-summary" data-testid="game-time">{formatGameTime(read!.tick,view.locale)}</span>{:else}
       <span class="clock-summary">{text.tick} <span data-testid="tick">{new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))}</span></span>
       <strong class="cash-summary" aria-label={text.cash}>{new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</strong>
       {/if}
@@ -149,11 +152,11 @@
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'}>
-        <button class="overflow-step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
+        <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); licenseOpen = true; }}>{text.license}</button>
-        {#if reference}<p>{text.referenceWorldHint}</p>{:else}<p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>{/if}
+        {#if reference}<p data-testid="menu-game-time">{formatGameTime(read!.tick,view.locale)}</p><p>{text.referenceWorldHint}</p>{:else}<p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>{/if}
       </nav>
     {/if}
     {#if live && panel && panel !== 'view'}
