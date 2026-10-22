@@ -1,5 +1,7 @@
 # Spatial client/server integration — 21 October 2026
 
+**22 October: P1-01c now replaces the default live prototype with the [canonical spatial reference world and Save 2](web-parity-reference-world.md).** The prototype-runtime statements and counts below record the earlier slice. Prototype gameplay remains only in the explicit loopback regression harness.
+
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
 
 P1-01's domain foundation now has a client implementation, versioned spatial

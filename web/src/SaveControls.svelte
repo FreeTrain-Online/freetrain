@@ -7,7 +7,7 @@
   let feedback = $state<SaveFeedback>('idle');
   let busy = $state(false);
   let slots = $state<SaveSlot[]>([]);
-  let savingAvailable=$state(false),loadingAvailable=$state(false);
+  let savingAvailable=$state(false),loadingAvailable=$state(false),availabilityKnown=$state(false);
   let startupError=$state<SaveFeedback|null>(null);
 
   let confirmLoad = $state(false);
@@ -15,12 +15,22 @@
   let confirmationEpoch = $state<string>();
   const selected = $derived(slots.find(item => item.id === slot));
   const refresh = () => Promise.all([listSaveSlots(),saveStatus()]).then(([value,status]) => {
-    slots=value;savingAvailable=status.savingAvailable;loadingAvailable=status.loadingAvailable;startupError=status.startupError;
+    slots=value;availabilityKnown=true;savingAvailable=status.savingAvailable;loadingAvailable=status.loadingAvailable;startupError=status.startupError;
   }).catch(() => { feedback = 'saveFailed'; });
   $effect(() => { if (confirmLoad && (disabled || epoch !== confirmationEpoch)) { feedback = epoch !== confirmationEpoch ? 'staleEpoch' : 'saveFailed'; confirmLoad = false; upload = undefined; } });
   function confirm() { confirmationEpoch = epoch; onmodal(); confirmLoad = true; }
   function checkOrConfirm() {
-    if(loadingAvailable)confirm();
+    if(busy||disabled||!availabilityKnown)return;
+    if(loadingAvailable && upload) {
+      const file=upload,capturedEpoch=epoch;
+      busy=true;onbusy(true);feedback='saving';
+      void saveRequest('validate',capturedEpoch!,file).then(()=>{
+        if(upload===file&&epoch===capturedEpoch&&!disabled){feedback='idle';confirm();}
+        else feedback='staleEpoch';
+      }).catch(error=>{feedback=error instanceof SaveError?error.code:'saveFailed';upload=undefined;})
+        .finally(()=>{busy=false;onbusy(false);});
+    }
+    else if(loadingAvailable)confirm();
     else void act(()=>saveRequest(upload?'upload':`${slot}/load`,epoch!,upload),'loaded');
   }
   const cancel = () => { confirmLoad = false; upload = undefined; };
@@ -44,7 +54,7 @@
     <button disabled={busy || disabled || !savingAvailable || slot === 'checkpoint'} onclick={() => act(() => saveRequest(`${slot}/save`, epoch!), 'saved')}>{text.saveGame}</button>
     <button disabled={busy || disabled || !selected?.exists} onclick={() => { upload = undefined; checkOrConfirm(); }}>{text.loadGame}</button>
     <button disabled={busy || disabled || !savingAvailable} onclick={() => act(downloadSave, 'saved')}>{text.downloadSave}</button>
-    <label class="field">{text.uploadSave}<input type="file" accept=".json,application/json" disabled={busy || disabled} onchange={event => {
+    <label class="field">{text.uploadSave}<input type="file" accept=".json,application/json" disabled={busy || disabled || !availabilityKnown} onchange={event => {
       upload = event.currentTarget.files?.[0]; if (upload) checkOrConfirm(); event.currentTarget.value = '';
     }} /></label>
   </div>

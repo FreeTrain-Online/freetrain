@@ -1,16 +1,15 @@
 # Content boundary
 
-The original-FreeTrain reference scenario is an **obsolete gameplay baseline**,
-retained for prototype/Save 1 compatibility. New content follows the canonical
-ExAV rules, using ordinary project names.
+`SpatialReferenceScenario.Create()` builds the default canonical reference world:
+32 source-valid normal rail cells forming an eight-heading loop, on a 32×64×8
+H/V map. `reference-spatial.json` contains the twelve source normal-pattern port
+pairs and defines the asset-free spatial pack hash. This is synthetic reference
+content, not the complete bundled ExAV pack. It ships no train, station or building
+entities; clock, economy, random streams and gameplay remain later slices.
 
-`ReferenceScenario.Create()` supplies immutable typed definitions for the 64×64
-reference world: 80 rail tiles (72 loop + 8 siding), three explicit train-car
-positions, the station, and the two building families. Simulation consumes these
-values without referencing Content. Tests compare the initial track definitions
-and snapshot against the shared fixtures to prevent independent drift.
+`ReferenceScenario.Create()` retains the obsolete original-FreeTrain 64×64
+scenario for explicitly selected historical regression tests and headless traces.
+Its assets/importer retain prototype provenance. It is never chosen by default
+service startup and has no save writer or migration path.
 
-The pier and condominium family metadata retain stable historical contribution
-IDs; the train remains an authored three-car placeholder. See
-`prototype/assets/PROVENANCE.md`. No legacy XML or images are loaded at runtime.
-Manifest decoding/validation and browser image conversion remain Stage 5 work.
+See [P1-01c source and verification evidence](../../doc/web-parity-reference-world.md).

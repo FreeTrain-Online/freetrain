@@ -49,7 +49,7 @@ public static class NetworkEndpoints
         }
         ParticipantContext? Identity(HttpContext context) => session.ResolveAccess(context.Request.Cookies[CookieName]);
         bool Authorized(HttpContext context) => Identity(context) != null;
-        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == ProtocolIdentity.Version.ToString() && context.Request.Query["contentVersion"] == NetworkSession.ContentVersion;
+        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == ProtocolIdentity.Version.ToString() && context.Request.Query["contentVersion"].Contains(session.ContentVersion);
         app.MapPost("/api/access", async (HttpContext context) =>
         {
             lock (accessGate)
@@ -81,7 +81,7 @@ public static class NetworkEndpoints
         });
         app.MapGet("/api/bootstrap", (HttpContext context) =>
         {
-            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = ProtocolIdentity.Version, contentVersion = NetworkSession.ContentVersion }, statusCode: 426);
+            if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = ProtocolIdentity.Version, contentVersion = session.ContentVersion }, statusCode: 426);
             var participant = Identity(context);
             if (participant == null)
             {
@@ -120,7 +120,7 @@ public static class NetworkEndpoints
         app.MapGet("/api/saves", (HttpContext context) => Authorized(context)
             ? Results.Ok(session.SaveSlots()) : Results.Unauthorized());
         app.MapGet("/api/saves/status", (HttpContext context) => Authorized(context)
-            ? Results.Ok(new { savingAvailable = session.SavingAvailable, loadingAvailable = false, startupError = session.StartupSaveError }) : Results.Unauthorized());
+            ? Results.Ok(new { savingAvailable = session.SavingAvailable, loadingAvailable = session.SavingAvailable, startupError = session.StartupSaveError }) : Results.Unauthorized());
         app.MapGet("/api/saves/download", async (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
@@ -147,6 +147,18 @@ public static class NetworkEndpoints
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             { return Results.Json(new { code = "saveFailed" }, statusCode: 503); }
         }
+        app.MapPost("/api/saves/validate", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
+        {
+            if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+            using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
+            while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+            {
+                if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+                buffer.Write(chunk,0,count);
+            }
+            if (session.Bootstrap().WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
+            SaveCodec.Read(buffer.ToArray());
+        }));
         app.MapPost("/api/saves/upload", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
         {
             if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");

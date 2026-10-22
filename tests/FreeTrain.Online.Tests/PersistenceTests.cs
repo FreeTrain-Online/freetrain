@@ -7,7 +7,7 @@ public class PersistenceTests
     [Fact]
     public async Task Station_sound_has_a_live_event_id_and_is_absent_from_reconnect_snapshots()
     {
-        var session = new NetworkSession(new()); var peer = session.Connect(DateTimeOffset.UtcNow)!;
+        var session = PrototypeNetwork.Create(new()); var peer = session.Connect(DateTimeOffset.UtcNow)!;
         while (peer.Output.Reader.TryRead(out _)) { }
         for (var i = 0; i < 8; i++)
         {

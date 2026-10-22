@@ -87,7 +87,7 @@ public class NetworkTests
     [Fact]
     public async Task Receipts_share_pending_and_committed_outcomes_and_do_not_charge_twice()
     {
-        var session = new NetworkSession(new());
+        var session = PrototypeNetwork.Create(new());
         var peer = session.Connect(Now)!;
         var command = Command("build", new BuildTrackCommand(new(37, 16, 1), "buffer"));
         var pending = session.Submit(peer, command, Now);
@@ -108,7 +108,7 @@ public class NetworkTests
     [Fact]
     public async Task Receipt_capacity_rejects_new_ids_without_evicting_retry_guarantees()
     {
-        var session = new NetworkSession(new() { ReceiptCapacity = 1 });
+        var session = PrototypeNetwork.Create(new() { ReceiptCapacity = 1 });
         var peer = session.Connect(Now)!;
         var command = Command("step", new StepCommand());
         var first = await Apply(session, peer, command);
@@ -120,7 +120,7 @@ public class NetworkTests
     [Fact]
     public async Task Stale_epochs_and_entity_edits_preserve_state_and_rejections_are_deduplicated()
     {
-        var session = new NetworkSession(new()); var peer = session.Connect(Now)!;
+        var session = PrototypeNetwork.Create(new()); var peer = session.Connect(Now)!;
         var initial = session.Bootstrap().Snapshot;
         var stale = Command("stale", new StepCommand(), 2);
         Assert.Equal("staleEpoch", Assert.IsType<RejectedMessage>(await Apply(session, peer, stale)).Code);
@@ -133,7 +133,7 @@ public class NetworkTests
     [Fact]
     public async Task Wall_time_input_expiry_works_while_paused_and_disconnect_grace_pauses_running_game()
     {
-        var session = new NetworkSession(new()); var peer = session.Connect(Now)!;
+        var session = PrototypeNetwork.Create(new()); var peer = session.Connect(Now)!;
         await Apply(session, peer, Command("acquire", new AcquireControlCommand("train-1")));
         await Apply(session, peer, Command("manual", new SetControllerCommand("train-1", 1, "manual", "1")));
         await Apply(session, peer, Command("input", new ControllerInputCommand("train-1", 1, false, true, false, false, false, false, "1")));
@@ -158,7 +158,7 @@ public class NetworkTests
     [Fact]
     public async Task Slow_output_is_disconnected_without_blocking_host_or_dropping_dependent_deltas()
     {
-        var session = new NetworkSession(new() { OutputCapacity = 2 }); var peer = session.Connect(Now)!;
+        var session = PrototypeNetwork.Create(new() { OutputCapacity = 2 }); var peer = session.Connect(Now)!;
         await Apply(session, peer, Command("run", new RunCommand()));
         session.Tick(Now.AddMilliseconds(100));
         Assert.True(peer.Stop.IsCancellationRequested);
@@ -170,7 +170,7 @@ public class NetworkTests
     [Fact]
     public void Idle_socket_is_released_and_deltas_include_scalars_tracks_and_all_removals()
     {
-        var session = new NetworkSession(new()); var peer = session.Connect(Now)!;
+        var session = PrototypeNetwork.Create(new()); var peer = session.Connect(Now)!;
         session.Tick(Now.AddSeconds(16)); Assert.True(peer.Stop.IsCancellationRequested);
         var old = session.Bootstrap().Snapshot;
         var next = old with { Revision = old.Revision + 1, Tick = 1, Cash = 9007199254740993L, Paused = false,
@@ -187,7 +187,7 @@ public class NetworkTests
     public async Task Publication_slots_preserve_rate_under_timer_jitter_without_catch_up_bursts()
     {
         var started = new DateTimeOffset(2026, 10, 17, 12, 0, 0, TimeSpan.Zero);
-        var session = new NetworkSession(new()); var peer = session.Connect(started)!;
+        var session = PrototypeNetwork.Create(new()); var peer = session.Connect(started)!;
         await Apply(session, peer, Command("run", new RunCommand()), started);
         while (peer.Output.Reader.TryRead(out _)) { }
         var publications = 0;
@@ -329,29 +329,30 @@ public class NetworkTests
         for (var count = 0; count < 40; count++) { var message = await Read(socket); if (predicate(message)) return message; }
         throw new InvalidOperationException("Expected message not received");
     }
-    internal sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies) : IAsyncDisposable
+    internal sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies, bool canonical) : IAsyncDisposable
     {
         public const string BootstrapPath = "/api/bootstrap?protocolVersion=3&contentVersion=prototype-content-1";
         public HttpClient Http => http;
         public CookieContainer Cookies => cookies;
         public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=3&contentVersion=prototype-content-1");
-        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null)
+        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null, bool canonical = false)
         {
             var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");
             builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["FreeTrainOnline:OperatorSecret"] = secret, ["FreeTrainOnline:TrustedProxy"] = trustedProxy });
             if (participants != null) builder.Configuration.AddInMemoryCollection(participants);
-            if (saveDirectory != null) builder.Services.AddSingleton(new SaveStorage(saveDirectory));
-            builder.Services.AddSingleton(new NetworkOptions()); builder.Services.AddSingleton<NetworkSession>(); builder.Services.AddHostedService<SessionDriver>();
+            if (saveDirectory != null) builder.Services.AddSingleton(_ => new SaveStorage(saveDirectory));
+            builder.Services.AddSingleton(new NetworkOptions()); builder.Services.AddSingleton<NetworkSession>(services => new(new NetworkOptions(), services.GetService<SaveStorage>(),
+                hostFactory: canonical ? null : (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry))); builder.Services.AddHostedService<SessionDriver>();
             builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = SaveCodec.MaximumBytes);
             var app = builder.Build(); app.UseDeployment(); app.MapNetwork(); await app.StartAsync();
             var cookies = new CookieContainer();
-            return new(app, new(new HttpClientHandler { CookieContainer = cookies }) { BaseAddress = new(app.Urls.Single()) }, cookies);
+            return new(app, new(new HttpClientHandler { CookieContainer = cookies }) { BaseAddress = new(app.Urls.Single()) }, cookies, canonical);
         }
-        public async Task<JoinMessage> Bootstrap() => JsonSerializer.Deserialize<WireMessage>(await http.GetStringAsync(BootstrapPath), NetworkSession.Json) as JoinMessage ?? throw new InvalidDataException();
+        public async Task<JoinMessage> Bootstrap() => JsonSerializer.Deserialize<WireMessage>(await http.GetStringAsync(canonical ? BootstrapPath.Replace("prototype-content-1", ProtocolIdentity.ReferenceContent) : BootstrapPath), NetworkSession.Json) as JoinMessage ?? throw new InvalidDataException();
         public async Task<ClientWebSocket> Connect(CookieContainer? participantCookies = null)
         {
             var socket = new ClientWebSocket(); socket.Options.Cookies = participantCookies ?? cookies;
-            try { await socket.ConnectAsync(SocketUri, CancellationToken.None); return socket; } catch { socket.Dispose(); throw; }
+            try { await socket.ConnectAsync(canonical ? new Uri(SocketUri.ToString().Replace("prototype-content-1", ProtocolIdentity.ReferenceContent)) : SocketUri, CancellationToken.None); return socket; } catch { socket.Dispose(); throw; }
         }
         public async Task<ClientWebSocket> ConnectEventually(CookieContainer? participantCookies = null)
         {

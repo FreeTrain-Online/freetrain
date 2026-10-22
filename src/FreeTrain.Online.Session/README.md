@@ -45,6 +45,10 @@ also expires input after five ticks, before due events.
 Future agents use the same contexts, commands, reads and leases. No decision engine or
 provider is part of this library.
 
-Prototype Save 1 support is retired. Save input reaches the authority boundary
-and is rejected without changing world/epoch/leases. Capture reports
-`savingUnavailable` until canonical persistence is implemented.
+The default canonical `ReferenceWorld` uses the same bounded FIFO and snapshot /
+spatial query boundary. It never advances simulation time and rejects gameplay
+commands with `operationUnavailable`. Clock, economy and train behavior are pending.
+Capture writes spatial Save 2. Load validates a complete replacement before changing
+the epoch; later commands/loads carrying the old epoch are fenced. Prototype Save 1
+is rejected without mutation. Explicit prototype regression hosts cannot write saves.
+See [P1-01c](../../doc/web-parity-reference-world.md).

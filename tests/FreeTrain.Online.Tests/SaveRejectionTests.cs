@@ -14,7 +14,7 @@ public class SaveRejectionTests
     public void Actual_retired_reference_file_is_rejected_without_deserializing_its_world()
     {
         var data = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "RetiredSaves/save-reference.json"));
-        Assert.Equal("incompatibleSave", Assert.Throws<InvalidDataException>(() => SaveCodec.RejectUnsupported(data)).Message);
+        Assert.Equal("incompatibleSave", Assert.Throws<InvalidDataException>(() => SaveCodec.Read(data)).Message);
     }
     [Theory]
     [InlineData(1)]
@@ -23,7 +23,7 @@ public class SaveRejectionTests
     public void No_legacy_or_version_relabelled_save_is_accepted(int version)
     {
         var data = Encoding.UTF8.GetBytes($"{{\"saveVersion\":{version},\"contentVersion\":\"prototype-content-1\"}}");
-        Assert.Equal("incompatibleSave", Assert.Throws<InvalidDataException>(() => SaveCodec.RejectUnsupported(data)).Message);
+        Assert.Equal("incompatibleSave", Assert.Throws<InvalidDataException>(() => SaveCodec.Read(data)).Message);
     }
 
     [Theory]
@@ -37,11 +37,11 @@ public class SaveRejectionTests
     [InlineData("{\"saveVersion\":-1}")]
     [InlineData("{\"saveVersion\":1.5}")]
     public void Malformed_headers_have_an_invalid_data_error(string text)
-        => Assert.Equal("invalidSave", Assert.Throws<InvalidDataException>(() => SaveCodec.RejectUnsupported(Encoding.UTF8.GetBytes(text))).Message);
+        => Assert.Equal("invalidSave", Assert.Throws<InvalidDataException>(() => SaveCodec.Read(Encoding.UTF8.GetBytes(text))).Message);
 
     [Fact]
     public void Size_limit_is_checked_before_parsing()
-        => Assert.Equal("saveTooLarge", Assert.Throws<InvalidDataException>(() => SaveCodec.RejectUnsupported(new byte[SaveCodec.MaximumBytes + 1])).Message);
+        => Assert.Equal("saveTooLarge", Assert.Throws<InvalidDataException>(() => SaveCodec.Read(new byte[SaveCodec.MaximumBytes + 1])).Message);
 
     [Theory]
     [InlineData("{\"saveVersion\":1}", "incompatibleSave")]
@@ -57,12 +57,15 @@ public class SaveRejectionTests
             using var storage = new SaveStorage(directory);
             var session = new NetworkSession(new(), storage);
             Assert.Equal(error, session.StartupSaveError);
-            Assert.False(session.SavingAvailable);
+            Assert.True(session.SavingAvailable);
             Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(0, session.Bootstrap().Snapshot.Tick);
-            Assert.Equal("savingUnavailable", (await Assert.ThrowsAsync<InvalidDataException>(() => session.Checkpoint())).Message);
+            Assert.False(session.AutomaticCheckpointAvailable);
+            Assert.Equal(error, (await Assert.ThrowsAsync<InvalidDataException>(() => session.Checkpoint())).Message);
+            var slot = session.Checkpoint("slot1"); session.Tick(DateTimeOffset.UtcNow); await slot;
+            Assert.NotNull(SaveCodec.Read(File.ReadAllBytes(Path.Combine(directory, "slot1.json"))));
             session.PrepareShutdown(); await session.FinalCheckpoint();
             Assert.Equal(text, File.ReadAllText(path));
-            Assert.False(File.Exists(Path.Combine(directory, "slot1.json")));
+            Assert.True(File.Exists(Path.Combine(directory, "slot1.json")));
             Assert.Empty(Directory.GetFiles(directory, "*.tmp"));
         }
         finally { Directory.Delete(directory, true); }

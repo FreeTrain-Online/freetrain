@@ -14,6 +14,7 @@ test('prototype and relabelled saves are rejected; writing is unavailable and wo
   const fixture=JSON.parse(await readFile('../prototype/protocol/historical/save-v1/save-reference.json','utf8'));
   for(const version of [1,2,999]){
     const buffer=Buffer.from(JSON.stringify({...fixture,saveVersion:version}));
+    await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer});
     await expect(page.getByTestId('save-feedback')).toContainText('Prototype saves cannot be loaded');
     await expect(page.locator('.decision-dialog')).toHaveCount(0);
@@ -24,6 +25,7 @@ test('prototype and relabelled saves are rejected; writing is unavailable and wo
 test('malformed and oversized data report errors without replacing the live world',async({page})=>{
   await page.goto('/');await ready(page);await pause(page);const before=await bootstrap(page);await openPanel(page,'saves');
   for(const [buffer,message] of [[Buffer.from('{broken'),'Invalid save data'],[Buffer.alloc(1024*1024+1,'x'),'1 MiB']] as const){
+    await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'bad.json',mimeType:'application/json',buffer});
     await expect(page.getByTestId('save-feedback')).toContainText(message);expect(await bootstrap(page)).toEqual(before);
   }

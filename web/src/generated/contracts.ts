@@ -25,7 +25,27 @@ export type CommandPayload =
   | {
       kind: "buildTrack";
       position: Position;
-      shape: "eastWest" | "northSouth" | "curveSE" | "curveSW" | "curveNE" | "curveNW" | "junctionE" | "buffer";
+      shape:
+        | "eastWest"
+        | "northSouth"
+        | "curveSE"
+        | "curveSW"
+        | "curveNE"
+        | "curveNW"
+        | "junctionE"
+        | "buffer"
+        | "normal0"
+        | "normal1"
+        | "normal2"
+        | "normal3"
+        | "normal4"
+        | "normal5"
+        | "normal6"
+        | "normal7"
+        | "normal8"
+        | "normal9"
+        | "normal10"
+        | "normal11";
     }
   | {
       kind: "removeTrack";
@@ -145,7 +165,27 @@ export interface Building {
 }
 export interface Track {
   position: Position;
-  shape: "eastWest" | "northSouth" | "curveSE" | "curveSW" | "curveNE" | "curveNW" | "junctionE" | "buffer";
+  shape:
+    | "eastWest"
+    | "northSouth"
+    | "curveSE"
+    | "curveSW"
+    | "curveNE"
+    | "curveNW"
+    | "junctionE"
+    | "buffer"
+    | "normal0"
+    | "normal1"
+    | "normal2"
+    | "normal3"
+    | "normal4"
+    | "normal5"
+    | "normal6"
+    | "normal7"
+    | "normal8"
+    | "normal9"
+    | "normal10"
+    | "normal11";
   revision: Counter;
 }
 export interface RequiredPack {
@@ -181,7 +221,8 @@ export interface Rejected {
     | "requestConflict"
     | "retryWindowFull"
     | "leaseRequired"
-    | "controlBusy";
+    | "controlBusy"
+    | "operationUnavailable";
   arguments: {
     [k: string]: string;
   };

@@ -9,7 +9,7 @@ public static class HeadlessProfile
 {
     public static int Run()
     {
-        var host = SessionComposition.CreateReferenceHost();
+        var host = SessionComposition.CreatePrototypeHost();
         host.Enqueue(new("operator-1"), new("profile-run", 1, new RunCommand())); host.Pump();
         for (var i = 0; i < 1000; i++) host.Pump(1);
         var durations = new double[10000];

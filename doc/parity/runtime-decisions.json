@@ -5,14 +5,14 @@
       "id": "ONLINE-SAVE-001",
       "decidedOn": "2026-10-22",
       "authority": "owner direction in the project conversation",
-      "status": "implemented: rejection; canonical persistence pending",
+      "status": "implemented: prototype rejection and canonical spatial Save 2",
       "supersedes": "Online prototype Save 1 compatibility/import/writer requirements in the earlier P0 transition design and delivery records",
       "prototypeSaveFormat": "unsupported; no migration or version-only relabeling",
       "encounterBehavior": "report incompatibleSave, preserve current world and rejected file; ignore incompatible startup checkpoint with an error",
-      "currentWriting": "unavailable; no automatic or shutdown prototype checkpoint writes",
-      "canonicalReferenceWorld": "next geometry slice, not yet implemented",
+      "currentWriting": "canonical spatial Save 2 only; prototype writing remains unavailable; rejected startup checkpoints are protected from automatic, manual and shutdown overwrite",
+      "canonicalReferenceWorld": "P1-01c implemented; static H/V eight-heading loop, no clock/economy/train simulation",
       "desktopExavSaveScope": "separate historical import work remains with P10",
-      "review": "doc/web-parity-runtime-policy.md"
+      "review": "doc/web-parity-reference-world.md"
     }
   ]
 }

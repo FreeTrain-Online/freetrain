@@ -66,3 +66,39 @@ Deno.test('renderer consumes server car headings and canonical H/V terrain witho
   equal(canvas.dataset.headings,'0,1,2,3,4,5,6,7');equal(canvas.dataset.coordinateSystem,'hv');
   assert(renderer.pick({x:400,y:300},1)?.kind==='train');
 });
+
+Deno.test('shared canonical live fixture validates, renders and picks every source rail pattern',async()=>{
+  const read=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-canonical.json',import.meta.url))) as Snapshot;
+  equal(parseMessage(JSON.stringify(read)),read);
+  const {normalPorts}=await import('../src/lib/world-identity.ts');
+  const catalog=await Deno.readFile(new URL('../../src/FreeTrain.Online.Content/reference-spatial.json',import.meta.url));
+  const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',catalog))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  equal(hash,read.requiredPacks[0].catalogHash);
+  const {MapRenderer}=await import('../src/lib/map-renderer.ts');
+  const ctx=new Proxy({}, {get:()=>()=>{}}),canvas={width:1280,height:900,dataset:{},getContext:()=>ctx} as unknown as HTMLCanvasElement;
+  const renderer=new MapRenderer(canvas,new Map()),space=mapSpace(read.map),camera={...space.center({x:31,y:32,z:0}),zoom:1};
+  renderer.setRead(read);renderer.draw(camera,1280,900,1,{heightCut:7,level:0,night:false,winter:false,recolor:false,shape:'buffer',remove:false});
+  const directions=new Set<number>();
+  for(const track of read.tracks){
+    const p=toScreen(track.position,camera,1280,900,space);
+    equal(renderer.pick(p,1)?.position,track.position);
+    equal(tileAt(p,0,camera,1280,900,space),track.position);
+    for(const h of normalPorts(track.shape)!)directions.add(h);
+  }
+  equal(directions.size,8);
+  for(const mutate of [
+    (r:Snapshot)=>r.tracks.pop(),
+    (r:Snapshot)=>r.tracks.push(structuredClone(r.tracks[0])),
+    (r:Snapshot)=>{r.tracks[0].shape='eastWest';},
+    (r:Snapshot)=>{r.tick='1';},
+    (r:Snapshot)=>{r.tracks[0].position.x=2147483647;},
+    (r:Snapshot)=>{r.map.coordinateSystem='prototypeXY';},
+  ]){const broken=structuredClone(read);mutate(broken);throws(()=>parseMessage(JSON.stringify(broken)));}
+});
+Deno.test('Save 2 shared fixture follows its independent structural schema',async()=>{
+  const {default:Ajv}=await import('ajv');
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v2.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v2.json',import.meta.url)));
+  const validate=new Ajv({strict:true}).compile(schema);
+  assert(validate(save));assert(!validate({...save,clock:0}));assert(!validate({...save,saveVersion:1}));
+});

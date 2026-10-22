@@ -3,7 +3,7 @@ import type { ConnectionStatus, ReadState, SessionClient } from './session-clien
 import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 
-const compatibility = 'protocolVersion=3&contentVersion=prototype-content-1';
+const compatibility = 'protocolVersion=3&contentVersion=reference-spatial-content-1&contentVersion=prototype-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -93,7 +93,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           const message = parseMessage(event.data);
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 3 || message.contentVersion !== 'prototype-content-1' || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 3 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               publish(message.snapshot); setStatus('ready');
               if (document.hidden) suspend();

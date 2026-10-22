@@ -21,9 +21,11 @@ public sealed class SessionHost
     }
     private readonly object gate = new();
     private readonly Queue<Work> commands = new();
-    private World world;
-    private readonly ScenarioDefinition scenario;
-    private readonly Func<ITrainController>[] controllerFactories;
+    private World world = null!;
+    private ReferenceWorld? referenceWorld;
+    public bool SavingAvailable => referenceWorld != null;
+    private readonly ScenarioDefinition scenario = null!;
+    private readonly Func<ITrainController>[] controllerFactories = [];
     private readonly Dictionary<string, ParticipantContext> participants = new(StringComparer.Ordinal);
     private sealed record Lease(ParticipantContext Participant, string Id, DateTimeOffset Expires, DateTimeOffset? InputAt);
     private readonly Dictionary<string, Lease> leases = new(StringComparer.Ordinal);
@@ -116,6 +118,17 @@ public sealed class SessionHost
         world = new(scenario, this.controllerFactories.Select(factory => factory()));
     }
 
+    public SessionHost(ReferenceWorld referenceWorld, string ownerId, int queueCapacity = 256, long worldEpoch = 1)
+    {
+        ArgumentNullException.ThrowIfNull(referenceWorld);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
+        this.referenceWorld = referenceWorld;
+        this.queueCapacity = queueCapacity;
+        WorldEpoch = worldEpoch;
+        participants.Add(ownerId, new(ownerId));
+    }
+
     // Persistence joins exactly the same bounded FIFO as network commands.
     private Task<T> AtBoundary<T>(Func<T> action)
     {
@@ -131,14 +144,19 @@ public sealed class SessionHost
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        throw new InvalidDataException("savingUnavailable");
+        return referenceWorld != null ? SaveCodec.Write(referenceWorld) : throw new InvalidDataException("savingUnavailable");
     });
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        SaveCodec.RejectUnsupported(save.Span);
-        throw new InvalidDataException("incompatibleSave");
+        var replacement = SaveCodec.Read(save.Span); // Validate completely before touching current state.
+        if (referenceWorld == null) throw new InvalidDataException("incompatibleSave");
+        var epoch = checked(WorldEpoch + 1);
+        referenceWorld = replacement;
+        WorldEpoch = epoch;
+        resetInput = safetyPause = false;
+        return Snapshot();
     });
 
     // Bounded, coalesced lifecycle intent; only Pump mutates the world.
@@ -170,6 +188,24 @@ public sealed class SessionHost
         {
             var observedTime = now ?? DateTimeOffset.UtcNow;
             if (observedTime > boundaryTime) boundaryTime = observedTime;
+            if (referenceWorld != null)
+            {
+                var count = Math.Min(commands.Count, MaximumCommandsPerBoundary);
+                for (var i = 0; i < count; i++)
+                {
+                    var work = commands.Dequeue();
+                    if (work is Boundary boundary) boundary.Apply();
+                    else
+                    {
+                        var queued = (Queued)work;
+                        var code = !Current(queued.Participant) || queued.Participant.Role == ParticipantRole.Observer
+                            ? "notAuthorized" : queued.Command.ExpectedWorldEpoch != WorldEpoch ? "staleEpoch" : "operationUnavailable";
+                        queued.Completion.SetResult(Reject(queued.Command, code));
+                    }
+                }
+                resetInput = safetyPause = false;
+                return new(0, count, []);
+            }
             MaintainControl();
             var events = ImmutableArray.CreateBuilder<SimulationEvent>();
             var advanced = 0;
@@ -252,7 +288,7 @@ public sealed class SessionHost
     private static GridPosition Position(PositionRead p) => new(p.X, p.Y, p.Z);
     private static PositionRead Position(GridPosition p) => new(p.X, p.Y, p.Z);
     private static string Camel(string value) => char.ToLowerInvariant(value[0]) + value[1..];
-    public WorldState ReadState() { lock (gate) return world.Read(); }
+    public WorldState ReadState() { lock (gate) return referenceWorld == null ? world.Read() : throw new InvalidOperationException("Canonical worlds do not expose prototype state."); }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query)
     {
         lock (gate) return SpatialQueries.Preview(Snapshot(), query);
@@ -261,6 +297,12 @@ public sealed class SessionHost
     {
         lock (gate)
         {
+            if (referenceWorld is {} reference)
+                return new(WorldEpoch, 0, 0, true, 0,
+                    new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
+                    [], [], [], reference.Rails.Select(r => new TrackRead(new(r.Position.X,r.Position.Y,r.Position.Z),
+                        $"normal{r.Pattern}",0)).ToArray(),
+                    ProtocolIdentity.ReferenceRuleset,ProtocolIdentity.ReferenceContent,ProtocolIdentity.ReferencePacks);
             var state = world.Read();
             return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
                 new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),

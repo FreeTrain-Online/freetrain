@@ -1,0 +1,11 @@
+{
+  "ruleset": "reference-spatial-1",
+  "contentVersion": "reference-spatial-content-1",
+  "requiredPacks": [
+    {
+      "id": "reference-spatial",
+      "version": "1",
+      "catalogHash": "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c"
+    }
+  ]
+}

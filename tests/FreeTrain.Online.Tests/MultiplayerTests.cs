@@ -25,11 +25,11 @@ public class MultiplayerTests
     [Fact]
     public void Revocable_credentials_bind_identity_role_and_server_incarnation()
     {
-        var session = new NetworkSession(new());
+        var session = PrototypeNetwork.Create(new());
         var participant = new ParticipantContext("viewer", ParticipantRole.Observer);
         var credential = Assert.IsType<string>(session.IssueAccess(participant, Now));
         Assert.Equal(participant, session.ResolveAccess(credential, Now));
-        Assert.Null(new NetworkSession(new()).ResolveAccess(credential, Now));
+        Assert.Null(PrototypeNetwork.Create(new()).ResolveAccess(credential, Now));
         var changed = (credential[0] == 'A' ? "B" : "A") + credential[1..];
         Assert.Null(session.ResolveAccess(changed, Now));
         var otherLogin = Assert.IsType<string>(session.IssueAccess(participant, Now));
@@ -43,7 +43,7 @@ public class MultiplayerTests
     [Fact]
     public void Credential_registry_is_bounded_and_reuses_revoked_and_expired_capacity()
     {
-        var session = new NetworkSession(new());
+        var session = PrototypeNetwork.Create(new());
         var first = Assert.IsType<string>(session.IssueAccess(new("viewer", ParticipantRole.Observer), Now));
         for (var i = 1; i < NetworkSession.MaximumAccessCredentials; i++)
             Assert.NotNull(session.IssueAccess(new("viewer", ParticipantRole.Observer), Now));
@@ -56,7 +56,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Revoking_a_login_disconnects_only_its_peer_and_fences_queued_commands()
     {
-        var session = new NetworkSession(new());
+        var session = PrototypeNetwork.Create(new());
         var firstCredential = Assert.IsType<string>(session.IssueAccess(new("a"), Now));
         var otherCredential = Assert.IsType<string>(session.IssueAccess(new("b"), Now));
         var a = session.Connect(Now, new("a"), firstCredential)!;
@@ -75,7 +75,7 @@ public class MultiplayerTests
     [Fact]
     public void Concurrent_peer_limit_is_bounded_and_disconnected_capacity_can_be_reused()
     {
-        var session = new NetworkSession(new() { MaximumPeers = 2 });
+        var session = PrototypeNetwork.Create(new() { MaximumPeers = 2 });
         var first = session.Connect(Now, new("first"))!;
         var second = session.Connect(Now, new("second"))!;
         Assert.Null(session.Connect(Now, new("third")));
@@ -88,7 +88,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Concurrent_edits_have_one_ordered_winner_and_receipts_are_scoped_to_participant()
     {
-        var session = new NetworkSession(new());
+        var session = PrototypeNetwork.Create(new());
         var alice = session.Connect(Now, new("alice", ParticipantRole.Owner))!;
         var bob = session.Connect(Now, new("bob", ParticipantRole.Operator))!;
         var observer = session.Connect(Now, new("viewer", ParticipantRole.Observer))!;
@@ -113,7 +113,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Competing_builds_charge_once_and_broadcast_identical_confirmed_state()
     {
-        var session = new NetworkSession(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
+        var session = PrototypeNetwork.Create(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
         Drain(a); Drain(b);
         var build = Command("build", new BuildTrackCommand(new(37, 16, 1), "buffer"));
         var first = session.Submit(a, build, Now); var second = session.Submit(b, build, Now);
@@ -130,7 +130,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Train_control_is_exclusive_fenced_renewable_and_expires_while_paused()
     {
-        var session = new NetworkSession(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
+        var session = PrototypeNetwork.Create(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
         var takeA = session.Submit(a, Command("take", new AcquireControlCommand("train-1")), Now);
         var takeB = session.Submit(b, Command("take", new AcquireControlCommand("train-1")), Now);
         session.Tick(Now); Assert.IsType<AcceptedMessage>(await takeA);
@@ -161,7 +161,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Disconnect_fences_queued_commands_reconnects_identity_and_preserves_other_operators_time()
     {
-        var session = new NetworkSession(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
+        var session = PrototypeNetwork.Create(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
         Assert.IsType<AcceptedMessage>(await Apply(session, a, Command("take", new AcquireControlCommand("train-1"))));
         var oldLease = session.Bootstrap().Snapshot.Trains[0].ControlLease!;
         await Apply(session, b, Command("run", new RunCommand()));
@@ -182,7 +182,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Slow_observer_is_disconnected_without_interrupting_healthy_operator()
     {
-        var session = new NetworkSession(new() { OutputCapacity = 2 });
+        var session = PrototypeNetwork.Create(new() { OutputCapacity = 2 });
         var active = session.Connect(Now, new("driver"))!; var slow = session.Connect(Now, new("viewer", ParticipantRole.Observer))!;
         Drain(active);
         await Apply(session, active, Command("run", new RunCommand())); Drain(active);
@@ -195,7 +195,7 @@ public class MultiplayerTests
     [Fact]
     public async Task Incompatible_save_preserves_leases_epoch_and_other_participants_work()
     {
-        var session = new NetworkSession(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
+        var session = PrototypeNetwork.Create(new()); var a = session.Connect(Now, new("a"))!; var b = session.Connect(Now, new("b"))!;
         await Apply(session, a, Command("take", new AcquireControlCommand("train-1"))); Drain(a); Drain(b);
         var before = session.Bootstrap().Snapshot;
         var load = session.LoadSave(System.Text.Encoding.UTF8.GetBytes("{\"saveVersion\":1}"), 1);

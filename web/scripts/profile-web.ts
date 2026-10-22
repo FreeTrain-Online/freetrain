@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 
+// Historical prototype workload only; does not measure canonical game capacity.
 // Run from web/. Build release and profiling artifacts first. Uses only local servers.
 const root=resolve('..');
 const evidence=resolve(Deno.env.get('FREETRAIN_ONLINE_PROFILE_EVIDENCE') ?? `${root}/tmp`);
@@ -11,7 +12,7 @@ const saves=await mkdtemp(`${tmpdir()}/freetrain-online-profile-`);
 function freePort(){const listener=Deno.listen({hostname:'127.0.0.1',port:0});const port=(listener.addr as Deno.NetAddr).port;listener.close();return port;}
 const servicePort=freePort();let fixturePort=freePort();while(fixturePort===servicePort)fixturePort=freePort();
 const serviceUrl=`http://127.0.0.1:${servicePort}`, fixtureUrl=`http://127.0.0.1:${fixturePort}`;
-const child=new Deno.Command('dotnet',{args:[`${root}/src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll`,'--urls',serviceUrl,'--webroot',`${root}/web/dist`],
+const child=new Deno.Command('dotnet',{args:[`${root}/src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll`,'--prototype-regression-harness','--urls',serviceUrl,'--webroot',`${root}/web/dist`],
   cwd:root,env:{FreeTrainOnline__Saves__Directory:saves,FreeTrainOnline__OperatorSecret:'',FreeTrainOnline__TrustedProxy:''},stdout:'null',stderr:'inherit'}).spawn();
 const fixtureServer=new Deno.Command('python3',{args:['-m','http.server',String(fixturePort),'--bind','127.0.0.1','--directory',`${root}/tmp/web-profile`],stdout:'null',stderr:'inherit'}).spawn();
 const browser=await chromium.launch({headless:true});

@@ -14,7 +14,7 @@ public static class HeadlessTrace
             Console.Error.WriteLine("Usage: --headless-trace <ticks:1..1000000> [trace.ndjson]");
             return 2;
         }
-        var host = SessionComposition.CreateReferenceHost();
+        var host = SessionComposition.CreatePrototypeHost();
         var run = host.Enqueue(new("operator-1"), new("trace-run", 1, new RunCommand()));
         host.Pump();
         if (run.GetAwaiter().GetResult() is not AcceptedMessage) return 1;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { isReferenceWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
@@ -42,9 +43,10 @@
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; pointerId: number } | undefined;
+  const reference = $derived(isReferenceWorld(view.read));
   const blocked = $derived(view.pending || !live || view.role === 'observer');
   const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(item => item.id === selection?.id) : undefined);
-  const shapes: Track['shape'][] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
+  const shapes: Exclude<Track['shape'], `normal${number}`>[] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
   async function flushInput() {
     inputDirty = true;
     if (sendingInput) return;
@@ -216,7 +218,7 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools as item}<button aria-label={text[item.label]} title={text[item.label]} aria-pressed={tool === item.id} disabled={item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
+    {#each tools as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'remove' && reference || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
   </div>
   <div class="map-navigation" class:beside-panel={!!panel}>
     <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
@@ -224,32 +226,32 @@
   {#if panel === 'view'}
     <PanelFrame locale={view.locale} title={text.view} closeLabel={text.close} {onclose}>
       <div class="map-options">
-        <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max="15" bind:value={heightCut}/><span>{heightCut}</span></label>
+        <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max={view.read!.map.levels-1} bind:value={heightCut}/><span>{heightCut}</span></label>
         <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
         <button disabled={!selectedTrain} onclick={() => focusTrain()}>{text.findTrain}</button><button onclick={home}>{text.homeMap}</button>
       </div>
     </PanelFrame>
   {/if}
   {#if tool !== 'inspect' && !panel}
-    <section class="tool-card" aria-label={text[tool === 'build' ? 'buildTool' : 'removeTool']}>
-      <h2>{text[tool === 'build' ? 'buildTool' : 'removeTool']}</h2>
+    <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>
+      <h2>{reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}</h2>
       <div class="form-actions">
-        <label>{text.buildLevel}<select aria-label={text.buildLevel} bind:value={level} disabled={view.pending}><option value={0}>0</option><option value={1}>1</option></select></label>
-        {#if tool === 'build'}<label>{text.trackShape}<select aria-label={text.trackShape} bind:value={shape} disabled={view.pending}>{#each shapes as s}<option value={s}>{text[s]}</option>{/each}</select></label>{/if}
+        <label>{text.buildLevel}<select aria-label={text.buildLevel} bind:value={level} disabled={view.pending}>{#each Array.from({length:reference ? view.read!.map.levels:2},(_,i)=>i) as z}<option value={z}>{z}</option>{/each}</select></label>
+        {#if tool === 'build' && !reference}<label>{text.trackShape}<select aria-label={text.trackShape} bind:value={shape} disabled={view.pending}>{#each shapes as s}<option value={s}>{text[s]}</option>{/each}</select></label>{/if}
       </div>
       <p data-testid="preview-position">{selectedPosition ? `${selectedPosition.x}, ${selectedPosition.y}, ${selectedPosition.z}` : text[panel ? 'closePanelToTarget' : 'pickTile']}</p>
       {#if tool==='build'}
         <div class="form-actions"><label>{text.snapDirection}<select aria-label={text.snapDirection} value={snapMode} onchange={event=>changeSnap(event.currentTarget.value)} disabled={view.pending}><option value={0}>{text.snapNone}</option><option value={4}>{text.snapFour}</option><option value={8}>{text.snapEight}</option></select></label><button disabled={view.pending||!geometry?.inside} onclick={useAnchor}>{text.useAnchor}</button></div>
-        {#if anchor}<p data-testid="snap-anchor">{text.snapAnchor}: {anchor.x}, {anchor.y}, {anchor.z}</p><p class="hint">{text.alignmentHint}</p>{/if}
+        {#if anchor}<p data-testid="snap-anchor">{text.snapAnchor}: {anchor.x}, {anchor.y}, {anchor.z}</p>{#if !reference}<p class="hint">{text.alignmentHint}</p>{/if}{/if}
       {/if}
       <p data-testid="geometry-status" aria-live="polite">{text[geometryStatus==='checking'?'checkingGeometry':geometryStatus==='failed'?'geometryFailed':geometryStatus==='ready'?(geometry?.inside?'geometryChecked':'outsideMap'):'pickTile']}</p>
       {#if geometry?.heading!==null&&geometry?.heading!==undefined}<p data-testid="preview-heading">{text.directionLabel}: {text[(['headingNorth','headingNorthEast','headingEast','headingSouthEast','headingSouth','headingSouthWest','headingWest','headingNorthWest'] as const)[geometry.heading]]} · {text.distanceLabel}: {geometry.distance}</p>{/if}
-      <p class="hint">{text.unvalidatedPreview}</p>
+      <p class="hint">{reference ? text.referenceWorldHint : text.unvalidatedPreview}</p>
       {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
       {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
-      <div class="form-actions"><button class="primary" disabled={blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+      <div class="form-actions"><button class="primary" disabled={reference || blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
   <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
-  <span id="manual-help" class="sr-only">{text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
+  <span id="manual-help" class="sr-only">{reference ? text.referenceWorldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
 {/if}

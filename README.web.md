@@ -2,23 +2,23 @@
 
 FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail and business simulation game FreeTrain by Kohsuke Kawaguchi.
 
-The bilingual Svelte web app drives the deterministic reference game through
-HTTP/WebSocket transport and an authoritative C# session. Run/pause/step,
-controller changes and Japanese station rename use committed server state.
-Reconnect/refresh recover the current game. The Canvas map supports pan/zoom,
-height cuts, object picking, track previews and confirmed construction/removal,
-with focus-scoped manual keyboard control. An optional station sound is available. Prototype save support is retired;
-canonical-world persistence remains to be implemented.
+The bilingual Svelte app connects to an authoritative C# session over HTTP and
+WebSocket. Its default world is now a canonical H/V spatial reference: a small
+32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
+check aligned locations and save/restore the spatial graph with **Save 2**.
+Clock, economy, construction, trains and stations remain future slices.
 
-Multiple participants can share that world with owner/operator/observer roles,
-conflict checks, independent reconnects and timed train-control leases.
+Owner/Operator/Observer roles, independent reconnects, bounded queues and epoch
+fencing remain in place. Prototype Save 1 is unsupported and cannot be converted.
+See [the reference-world delivery](doc/web-parity-reference-world.md).
 
 ## Parity source policy
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 [https://github.com/rdmark/freetrain-exav-archive].
-The running reference slice and its asset importer still retain their recorded
-prototype provenance; they are not yet complete ExAV implementations. P0-01 ExAV
+The spatial reference uses source normal rail patterns. The historical demo
+assets and importer retain prototype provenance; complete ExAV content conversion
+remains P2 work. P0-01 ExAV
 discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
@@ -51,8 +51,8 @@ The solution to build is `FreeTrain.Online.slnx`.
 When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
-or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume; save formats
-are unchanged. Browser login and preference keys use `freetrain-online`;
+or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume. Prototype
+saves are rejected and preserved; the default world now writes spatial Save 2. Browser login and preference keys use `freetrain-online`;
 sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
@@ -76,8 +76,9 @@ deno task test:browser
 
 These tests build the Svelte shell into `web/dist/`, run
 Chromium against those release static files, and capture English/Japanese
-screenshots in `web/test-results/`. They do not establish the final
-cross-platform browser matrix or native IME behavior.
+screenshots in `web/test-results/`. The `canonical` project exercises the default server, while `prototype-regression`
+explicitly starts a loopback-only `--prototype-regression-harness`. These tests do
+not establish the final cross-platform browser matrix or native IME behavior.
 
 ## Local development
 
@@ -93,12 +94,11 @@ deno task --cwd web dev
 
 Open the Vite loopback URL printed in the second terminal. The server binds to
 `http://127.0.0.1:5080`; Vite proxies `/api` HTTP and WebSocket traffic to it.
-`GET /health` reports persistence-stage health and any automatic-checkpoint error. Commands and train positions now come
-from the real headless game. The map renders imported pier/condo/FT train images
-and the catalog contains the fixed pier and condo heights 2–5.
-Independent browser sessions can control the same game. Each participant has one
-active socket; tabs sharing cookies share that identity. Local browsers receive
-independent owner identities. Train control requires a lease, visible in the inspector.
+`GET /health` reports service health and automatic-checkpoint errors. The live map
+uses source H/V geometry and an asset-free rail schematic. Each participant has
+one active socket; tabs sharing cookies share that identity. Local browsers
+receive independent Owner identities. Train/clock/construction operations are
+unavailable until their canonical implementations arrive.
 
 For a remote binding, configure `FreeTrainOnline__OperatorSecret` on the server. The
 browser exchanges the access key for an HttpOnly, SameSite cookie. Keep the static
@@ -114,15 +114,12 @@ origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings u
 `FreeTrainOnline__Network__<Property>`. See
 [NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
-Disconnect clears that participant’s held input and releases their train leases.
-The game pauses/checkpoints one second after the last owner/operator disconnects;
-observers do not keep unattended time running. Hidden tabs clear only their own inputs.
-Idle games retain their state. Restart restores the latest checkpoint, starts paused,
-and changes the server incarnation. Automatic checkpoints run every 30 seconds;
-an abrupt crash can lose changes since the most recent successful checkpoint.
-Uncertain command outcomes are shown after reconnect and are never replayed across
-connections. `web/dist/` contains the Svelte static artifact; production needs no
-Deno/Node frontend process.
+Save 2 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
+restores the spatial world after restart; the server incarnation changes. Rejected
+startup checkpoints are reported and preserved, including through later automatic
+and shutdown attempts. Named slots and downloads remain available for the fresh
+canonical world. Uncertain command outcomes are never replayed across connections.
+`web/dist/` contains the Svelte static artifact; production needs no frontend process.
 
 If using the workspace-local SDK installed during the first implementation,
 prepend `$PWD/.tools/dotnet` to `PATH`. `.tools/` is ignored and not required by
@@ -132,42 +129,23 @@ permission to create local sockets.
 
 ## Playing the map
 
-The game fills the browser viewport. Use the left tool strip to inspect, build
-or remove track; secondary controls open bounded panels over the map. See the
-[game UX interaction contract](doc/web-game-ux.md) for implemented behavior.
-Before joining or while disconnected, the session dialog appears over a local,
-noninteractive demo map. A failed Leave offers Retry leave until sign-out is confirmed.
+The map fills the viewport. Click a rail to inspect its source normal-pattern
+index and stable location; drag to pan and use the wheel or zoom buttons.
+Middle drag or Space + drag pans in every tool. **Check a location** offers level
+selection and Free / Four directions / Eight directions alignment with an optional
+anchor. The server verifies H/V bounds and projection without changing the world.
+Construction confirmation, removal, Run and Step are disabled.
 
-Click an object to inspect, drag the map to pan, and use the wheel or zoom buttons.
-Middle drag or Space + drag pans in every tool. A dirty station name offers
-Apply / Discard / Keep editing before closing or changing targets; revised
-stations require Reset before applying. Game → Settings and session dialogs offer
-four locally persisted UI color schemes. Save load/upload requires a modal
-confirmation that names the shared-world replacement; Cancel sends nothing.
-Narrow portrait panels offer **Expand panel** / **Reduce panel**; short windows
-use side sheets. Long content scrolls inside panels. **Game → Single step** keeps
-Step available on narrow screens. The Run/Pause button follows confirmed state.
-Tab enters each toolbar; arrows, Home and End move within it, then Enter or Space
-activates. Native text editing, IME and browser shortcuts keep their usual behavior.
-Meaningful selection/results are announced; success feedback expires after four
-seconds and errors remain available for review.
+Game panels preserve canvas/camera identity. **View** offers height cut and local
+appearance controls. **Settings** offers English/Japanese and four persisted color
+schemes. Narrow panels support Expand / Reduce and internal scrolling. Toolbars
+support Tab, arrows, Home and End. Before joining or after disconnect, the session
+dialog appears over a separate inert demo map. A failed Leave offers Retry leave.
 
-Open **View** for height cut, appearance and camera actions. Height cut hides raised rails and replaces cut buildings with selectable footprints.
-Night uses the source palette transformation; winter ground and recoloring are
-local display options. The water/fence/slope sample by the pier is decorative.
-
-Choose Build track, select a tile on level 1, then confirm. Tools keep shared time
-running; use Pause when needed. Extend the
-siding with a buffer at `(37,16,1)`; the host converts the old buffer and charges
-200 total. Preview/cancel costs nothing. Removal has no refund and rejects occupied
-or station track. Leaving a construction tool does not change shared time.
-
-Click a train to open its inspector. Select Manual there to acquire control, run, and focus the map.
-Another participant must release control, disconnect or let the five-second lease
-expire before you can take over. Take control / Release control allow explicit handoff. Shift passes the
-station, Up departs, Down reverses at a station, and Left/Right choose a junction.
-Focus loss, hidden tabs, disconnect and server expiry clear held input. Text fields
-and IME composition do not capture controller keys.
+Save/upload replacement requires Owner access and explicit confirmation. File
+validation rejects unsupported inputs before a replacement modal is shown.
+The explicit historical regression harness retains station/controller/construction
+UI tests; those results do not establish canonical gameplay behavior.
 
 Reproduce/check bundled sprites:
 
@@ -190,20 +168,20 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-**Prototype Save 1 is unsupported.** The current temporary reference world is
-in-memory only: Save slot / Download save and automatic/shutdown checkpoint writes
-are disabled. Uploads and old slots report an incompatibility error while keeping
-the running world unchanged. An incompatible startup checkpoint is ignored with
-an error and preserved byte-for-byte; the service starts a fresh reference world.
-See [the current policy and next canonical-world slice](doc/web-parity-runtime-policy.md).
+**Spatial Save 2 is supported; prototype Save 1 is unsupported.** Save slot and
+Download save capture the validated H/V rail graph. Load/upload validates dimensions,
+unique occupied cells, source patterns, reciprocal connectivity, all eight headings
+and exact ruleset/content/pack identity before replacing the world and advancing
+the epoch. No prototype clock, economy, random or train state is saved.
 
-`FreeTrainOnline__Saves__Directory` still locates existing inputs; the application
-does not overwrite rejected files. `/api/saves/status` reports availability and
-any ignored-checkpoint error. Canonical-world persistence requires a new format;
-the earlier prototype recovery checker is retired.
+`FreeTrainOnline__Saves__Directory` selects the save directory. An incompatible
+startup checkpoint produces a visible error and a fresh world; the rejected file
+is never overwritten. `/api/saves/status` reports availability and startup errors.
+See [the save contract](prototype/protocol/save-v2.schema.json) and
+[current policy](doc/web-parity-runtime-policy.md).
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
-new station-arrival events. Reconnects and refreshes do not replay old events.
+new station-arrival events in the historical harness. The canonical world has no trains yet. Reconnects and refreshes do not replay old events.
 **Disable sound** mutes it; refresh starts muted.
 
 ## Release deployment and profiling
@@ -223,12 +201,13 @@ in `tmp/`.
 
 If a development server already uses browser-test ports, set
 `FREETRAIN_ONLINE_TEST_SERVER_PORT=5182 FREETRAIN_ONLINE_TEST_WEB_PORT=4182` when running
-`deno task --cwd web test:browser`. `FREETRAIN_ONLINE_API_TARGET` changes the Vite
+`deno task --cwd web test:browser`. The canonical test servers use the next port
+number in each pair (defaults 5081/4174). `FREETRAIN_ONLINE_API_TARGET` changes the Vite
 development/preview proxy target only; the production client uses its own origin.
 
 ## Headless scenario
 
-Run the 10,000-tick reference scenario without starting an HTTP listener:
+Run the historical prototype 10,000-tick scenario without starting an HTTP listener:
 
 ```sh
 dotnet run --project src/FreeTrain.Online.Server -c Release --no-build --no-restore -- --headless-trace 10000
@@ -237,20 +216,17 @@ dotnet run --project src/FreeTrain.Online.Server -c Release --no-build --no-rest
 Append an output path to write full per-tick state/event NDJSON. The command
 prints counts and a SHA-256. The .NET test suite compares two complete
 10,000-tick traces and checks movement legality,
-station timing, manual control, accounting atomicity and host isolation.
+station timing, manual control, accounting atomicity and host isolation. These
+are historical regression checks, not canonical gameplay/capacity evidence.
 
 ## Contract changes
 
 The spatial integration now uses **protocol 3**, with explicit ruleset/content/pack
 identity, coordinate-system tags and per-car eight-direction heading indices.
-Restart/deploy matching client and service artifacts together; protocol 2 peers
-receive HTTP 426. The live reference game remains explicitly in prototype
-an obsolete temporary runtime profile; prototype Save 1 is rejected and writing is unavailable. See the
-[spatial integration and remaining scope](doc/web-parity-spatial-integration.md).
-
-Build track offers four/eight-direction target alignment with an optional anchor.
-A read-only server check verifies coordinates/bounds before Confirm becomes
-available. Confirm still checks actual placement and cost and changes one tile.
+Restart/deploy matching artifacts together; protocol 2 peers receive HTTP 426.
+The default profile is `reference-spatial-1` / `reference-spatial-content-1`,
+with H/V bounds, `normal0`..`normal11` track patterns and spatial Save 2. Unknown
+profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md).
 
 Edit `prototype/protocol/schema.json`, run
 `deno task --cwd web generate:contracts`, and update the C# DTOs and shared

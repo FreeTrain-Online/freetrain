@@ -1,5 +1,7 @@
 # Operating multiplayer games
 
+**22 October 2026:** the default server now hosts the [canonical spatial reference](web-parity-reference-world.md). Role/access/reconnect setup below still applies. Train leases, station edits, construction and shared-clock journeys below are historical prototype regression workflows; those gameplay operations are unavailable in the canonical runtime. Owner-only spatial Save 2 replacement and Observer geometry reads are verified in the new suite.
+
 Run several browser clients against one authoritative world to test Owner,
 Operator and Observer permissions. Roles come from server configuration and the
 access key used to sign in.

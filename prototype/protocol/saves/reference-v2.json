@@ -1,0 +1,212 @@
+{
+  "saveVersion": 2,
+  "ruleset": "reference-spatial-1",
+  "contentVersion": "reference-spatial-content-1",
+  "requiredPacks": [
+    {
+      "id": "reference-spatial",
+      "version": "1",
+      "catalogHash": "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c"
+    }
+  ],
+  "map": {
+    "width": 32,
+    "height": 64,
+    "levels": 8,
+    "coordinateSystem": "hv"
+  },
+  "rails": [
+    {
+      "x": 23,
+      "y": 28,
+      "z": 0,
+      "pattern": 0
+    },
+    {
+      "x": 23,
+      "y": 29,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 23,
+      "y": 30,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 23,
+      "y": 31,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 23,
+      "y": 32,
+      "z": 0,
+      "pattern": 8
+    },
+    {
+      "x": 24,
+      "y": 27,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 24,
+      "y": 33,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 25,
+      "y": 26,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 25,
+      "y": 34,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 26,
+      "y": 25,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 26,
+      "y": 35,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 27,
+      "y": 24,
+      "z": 0,
+      "pattern": 3
+    },
+    {
+      "x": 27,
+      "y": 36,
+      "z": 0,
+      "pattern": 5
+    },
+    {
+      "x": 28,
+      "y": 24,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 28,
+      "y": 36,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 29,
+      "y": 24,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 29,
+      "y": 36,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 30,
+      "y": 24,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 30,
+      "y": 36,
+      "z": 0,
+      "pattern": 4
+    },
+    {
+      "x": 31,
+      "y": 24,
+      "z": 0,
+      "pattern": 6
+    },
+    {
+      "x": 31,
+      "y": 36,
+      "z": 0,
+      "pattern": 2
+    },
+    {
+      "x": 32,
+      "y": 25,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 32,
+      "y": 35,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 33,
+      "y": 26,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 33,
+      "y": 34,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 34,
+      "y": 27,
+      "z": 0,
+      "pattern": 7
+    },
+    {
+      "x": 34,
+      "y": 33,
+      "z": 0,
+      "pattern": 1
+    },
+    {
+      "x": 35,
+      "y": 28,
+      "z": 0,
+      "pattern": 9
+    },
+    {
+      "x": 35,
+      "y": 29,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 35,
+      "y": 30,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 35,
+      "y": 31,
+      "z": 0,
+      "pattern": 10
+    },
+    {
+      "x": 35,
+      "y": 32,
+      "z": 0,
+      "pattern": 11
+    }
+  ]
+}

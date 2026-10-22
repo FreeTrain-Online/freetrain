@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <ProjectReference Include="../FreeTrain.Online.Contracts/FreeTrain.Online.Contracts.csproj" />
     <ProjectReference Include="../FreeTrain.Online.Simulation/FreeTrain.Online.Simulation.csproj" />
   </ItemGroup>
 </Project>

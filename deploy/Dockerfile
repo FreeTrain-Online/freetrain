@@ -8,6 +8,7 @@ RUN deno install --config web/deno.json --frozen
 COPY web/ web/
 COPY scripts/import-web-content.py scripts/
 COPY prototype/ prototype/
+COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/
 COPY plugins/ plugins/
 COPY core/ core/
 RUN deno task --cwd web build

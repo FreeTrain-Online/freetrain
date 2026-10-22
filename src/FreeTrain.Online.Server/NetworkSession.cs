@@ -30,11 +30,12 @@ public sealed class NetworkSession
 {
     private readonly NetworkOptions options;
     private readonly SaveStorage? storage;
-    public NetworkSession(NetworkOptions options, SaveStorage? storage = null, ILogger<NetworkSession>? logger = null)
+    public NetworkSession(NetworkOptions options, SaveStorage? storage = null, ILogger<NetworkSession>? logger = null, Func<long, TimeSpan, SessionHost>? hostFactory = null)
     {
         options.Validate();
         this.options = options; this.storage = storage;
-        host = SessionComposition.CreateReferenceHost(inputExpiry: options.InputExpiry);
+        this.hostFactory = hostFactory ?? ((epoch, expiry) => SessionComposition.CreateReferenceHost(epoch, expiry));
+        host = this.hostFactory(1, options.InputExpiry);
         if (storage?.Exists("checkpoint") == true)
         {
             try
@@ -48,7 +49,9 @@ public sealed class NetworkSession
             }
         }
     }
-    public bool SavingAvailable => false;
+    private readonly Func<long, TimeSpan, SessionHost> hostFactory;
+    public bool SavingAvailable => host.SavingAvailable;
+    public bool AutomaticCheckpointAvailable => SavingAvailable && StartupSaveError == null;
     public string? StartupSaveError { get; }
     private bool disconnectCheckpoint;
     public bool TakeCheckpointRequest() { lock (gate) { var requested = disconnectCheckpoint; disconnectCheckpoint = false; return requested; } }
@@ -56,6 +59,8 @@ public sealed class NetworkSession
     public async Task Checkpoint(string id = "checkpoint", long? epoch = null, ParticipantContext? participant = null)
     {
         if (!SavingAvailable) throw new InvalidDataException("savingUnavailable");
+        // A rejected startup checkpoint is never overwritten, including on shutdown.
+        if (id == "checkpoint" && StartupSaveError != null) throw new InvalidDataException(StartupSaveError);
         if (storage == null) return;
         await storage.Write(id, await CaptureSave(epoch, participant));
     }
@@ -83,12 +88,12 @@ public sealed class NetworkSession
     // Shutdown has stopped the driver, so explicitly drain this final queued capture.
     public async Task FinalCheckpoint()
     {
-        if (storage == null || !SavingAvailable) return;
+        if (storage == null || !SavingAvailable || StartupSaveError != null) return;
         Task<byte[]> capture;
         lock (gate) { capture = host.CaptureSave(); host.Pump(); }
         await storage.Write("checkpoint", await capture);
     }
-    public const string ContentVersion = "prototype-content-1";
+    public string ContentVersion => host.Snapshot().ContentVersion;
     public static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
     private sealed record Receipt(string Payload, DateTimeOffset Expires, Task<WireMessage> Result);
     public sealed class Peer(int capacity, DateTimeOffset now, ParticipantContext participant, string? accessCredential = null)
@@ -151,8 +156,13 @@ public sealed class NetworkSession
             RevokeAccess(credential, now);
     }
     public JoinMessage Bootstrap(ParticipantContext? participant = null) { lock (gate) return Join(participant ?? new("operator-1")); }
-    private JoinMessage Join(ParticipantContext participant) => new(ProtocolIdentity.Version, ContentVersion, Incarnation, "reference-v1", participant.ParticipantId,
-        participant.Role.ToString().ToLowerInvariant(), host.WorldEpoch, host.Snapshot(), ProtocolIdentity.PrototypeRuleset, ProtocolIdentity.PrototypePacks);
+    private JoinMessage Join(ParticipantContext participant)
+    {
+        var snapshot = host.Snapshot();
+        return new(ProtocolIdentity.Version, snapshot.ContentVersion, Incarnation,
+            snapshot.Map.CoordinateSystem == "hv" ? "reference-spatial" : "reference-v1", participant.ParticipantId,
+            participant.Role.ToString().ToLowerInvariant(), snapshot.WorldEpoch, snapshot, snapshot.Ruleset, snapshot.RequiredPacks);
+    }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query) { lock (gate) return host.PreviewSpatial(query); }
     public Peer? Connect(DateTimeOffset now, ParticipantContext? participant = null, string? accessCredential = null)
     {
@@ -253,7 +263,7 @@ public sealed class NetworkSession
             }
             if (storage == null && disconnectedAt is { } idleAt && now - idleAt >= options.IdleRetention)
             {
-                host = SessionComposition.CreateReferenceHost(host.WorldEpoch + 1, options.InputExpiry);
+                host = hostFactory(host.WorldEpoch + 1, options.InputExpiry);
                 foreach (var peer in peers.Values) host.RegisterParticipant(peer.Participant);
                 receipts.Clear(); disconnectedAt = now;
             }
@@ -330,7 +340,7 @@ public sealed class SessionDriver(NetworkSession session, ILogger<SessionDriver>
                     { CheckpointError = "checkpointFailed"; logger.LogError(ex, "Checkpoint failed; current game remains in memory"); }
                     checkpoint = null;
                 }
-                if (session.SavingAvailable && checkpoint == null && (now >= next || session.TakeCheckpointRequest()))
+                if (session.AutomaticCheckpointAvailable && checkpoint == null && (now >= next || session.TakeCheckpointRequest()))
                 { checkpoint = session.Checkpoint(); next = now + interval; }
             }
         }

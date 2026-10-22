@@ -1,11 +1,15 @@
 {
   "schemaVersion": 1,
-  "slice": "ONLINE-SAVE-001 prototype save retirement",
+  "slice": "ONLINE-SAVE-001 retirement and P1-01c canonical save guidance",
   "reviewedOn": "2026-10-22",
   "classification": "Newly authored browser policy feedback; not source UI text",
   "implementation": "web/src/lib/localization.ts",
   "decision": "runtime-decisions.json",
-  "evidence": ["web/tests/browser/persistence.spec.ts", "web/tests/save-transfer.test.ts"],
+  "evidence": [
+    "web/tests/browser/persistence.spec.ts",
+    "web/tests/save-transfer.test.ts",
+    "web/tests/browser/reference-world.spec.ts"
+  ],
   "entries": [
     {
       "key": "incompatibleSave",
@@ -24,8 +28,8 @@
     },
     {
       "key": "savesHint",
-      "english": "File checks require Owner access. Unsupported files are rejected; empty slots cannot be checked.",
-      "japanese": "ファイルの確認には所有者の権限が必要です。非対応のファイルは拒否されます。空のスロットは確認できません。"
+      "english": "Only the Owner can save or replace the shared world. Unsupported files are rejected; empty slots cannot be loaded.",
+      "japanese": "共有ワールドの保存・置換は所有者だけが行えます。非対応のファイルは拒否されます。空のスロットは読み込めません。"
     },
     {
       "key": "loadHint",

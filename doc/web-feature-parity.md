@@ -1,8 +1,8 @@
 # Web parity coverage inventory
 
-**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.
 
-**P1 follow-up:** [spatial client/server integration](web-parity-spatial-integration.md) now delivers protocol 3, per-car heading reads and server-checked target alignment. Live gameplay remains explicitly in prototype/Save 1 compatibility mode.
+**P1 follow-up:** [spatial client/server integration](web-parity-spatial-integration.md) now delivers protocol 3, per-car heading reads and server-checked target alignment. P1-01c now replaces the default prototype runtime with a canonical H/V reference loop and spatial Save 2. Clock/economy/train gameplay remains pending.
 
 **Final phase review — 21 October 2026:** [P0 coverage/specification is closed and P1-01 spatial primitives are implemented/tested](web-parity-phase-gates.md). P1–P11 and UX/native acceptance remain open. Earlier dated open-P0 statements below describe the pre-review state; source statuses/pins and runtime limitations retain their meaning.
 

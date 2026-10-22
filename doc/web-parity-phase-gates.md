@@ -1,6 +1,6 @@
 # Parity phase review — 21 October 2026
 
-**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.
 
 ## P0 coverage baseline: closed
 
@@ -110,3 +110,12 @@ the same notice. Direction adapters live in that compatibility namespace, so the
 canonical rules have no dependency on the prototype. This isolates the existing
 reference/Save 1 behavior while subsystems are replaced; it does not make the
 obsolete rules authoritative. See the [simulation boundary](../src/FreeTrain.Online.Simulation/README.md).
+
+## P1-01c: canonical live reference world
+
+[Source, implementation, workflow and verification evidence](web-parity-reference-world.md)
+now closes this slice: default H/V world, eight-heading source-normal loop, actual
+server/client rendering/picking/targeting, independent identity and strict spatial
+Save 2 with real replacement and restart checks. Prototype Save 1 remains unsupported.
+Clock/scheduler, random streams, general entity/footprint and full pack dispatch
+remain P1-02–04; complete gameplay/content/native gates remain open.

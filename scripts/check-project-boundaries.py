@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 root = Path(__file__).resolve().parent.parent
 allowed = {
     'Simulation': set(), 'Contracts': set(),
-    'Persistence': {'Simulation'}, 'Content': {'Simulation'},
+    'Persistence': {'Simulation', 'Contracts'}, 'Content': {'Simulation'},
     'Session': {'Simulation', 'Contracts', 'Persistence'},
     'Plugins.ManualController': {'Simulation'},
     'Server': {'Session', 'Contracts', 'Content', 'Plugins.ManualController'},

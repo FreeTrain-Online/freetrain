@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spatial reference Save 2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "saveVersion",
+    "ruleset",
+    "contentVersion",
+    "requiredPacks",
+    "map",
+    "rails"
+  ],
+  "properties": {
+    "saveVersion": {
+      "const": 2
+    },
+    "ruleset": {
+      "const": "reference-spatial-1"
+    },
+    "contentVersion": {
+      "const": "reference-spatial-content-1"
+    },
+    "requiredPacks": {
+      "const": [
+        {
+          "id": "reference-spatial",
+          "version": "1",
+          "catalogHash": "b40daa7c21d5cac12800a13e04a947df4ff1ba52833d6bd471cefbfbae38ee0c"
+        }
+      ]
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "levels",
+        "coordinateSystem"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "levels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "coordinateSystem": {
+          "const": "hv"
+        }
+      }
+    },
+    "rails": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "z",
+          "pattern"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "z": {
+            "const": 0
+          },
+          "pattern": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          }
+        }
+      }
+    }
+  },
+  "description": "Structural contract only. The codec also checks one connected reciprocal eight-heading loop, unique occupied voxels and H/V bounds. Prototype Save 1 is unsupported."
+}

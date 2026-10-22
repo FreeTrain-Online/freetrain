@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "slice": "P1-01c",
+  "reviewedOn": "2026-10-22",
+  "baseline": {
+    "name": "FreeTrain ExAV 2.1.1.12",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "root": "trunk"
+  },
+  "sourceDependencies": [
+    {
+      "path": "trunk/core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "symbols": [
+        "singlePatterns",
+        "get(Direction,Direction)"
+      ]
+    },
+    {
+      "path": "trunk/core/world/Direction.cs",
+      "sha256": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "symbols": [
+        "directions",
+        "offsetX",
+        "offsetY"
+      ]
+    },
+    {
+      "path": "trunk/core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "symbols": [
+        "align4To",
+        "align8To",
+        "getDirectionTo"
+      ]
+    },
+    {
+      "path": "trunk/core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "symbols": [
+        "toHV",
+        "toXYZ",
+        "isInsideWorld",
+        "fromXYZToAB"
+      ]
+    }
+  ],
+  "presentation": {
+    "implementation": "web/src/lib/localization.ts",
+    "note": "These are authored browser reference-workflow labels, not translations of previously unclassified Japanese source strings. Existing heading names retain spatial-translation-review.json provenance; save guidance retains save-policy-translation-review.json.",
+    "entries": [
+      {
+        "key": "referenceInspect",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "Inspect",
+        "japanese": "確認",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      },
+      {
+        "key": "referenceWorld",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "Spatial reference world",
+        "japanese": "空間参照ワールド",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      },
+      {
+        "key": "referenceWorldHint",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "Explore the eight-direction rail loop. Clock, economy, trains and construction are not available yet.",
+        "japanese": "8方向の環状線を確認できます。時計・経済・列車・建設の機能はまだ利用できません。",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      },
+      {
+        "key": "normalRail",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "Normal rail pattern",
+        "japanese": "通常線路パターン",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      },
+      {
+        "key": "spatialTarget",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "Check a location",
+        "japanese": "位置を確認",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      },
+      {
+        "key": "operationUnavailable",
+        "classification": "new browser adaptation",
+        "source": "trunk/core/world/rail/RailPattern.cs",
+        "symbol": "singlePatterns; spatial reference workflow (no source UI string)",
+        "originalJapanese": null,
+        "originalJapaneseSha256": null,
+        "englishDonor": null,
+        "english": "This operation is not available in the spatial reference world.",
+        "japanese": "この操作は空間参照ワールドでは利用できません。",
+        "reviewStatus": "reviewed in English and Japanese; compile/layout/browser checks"
+      }
+    ]
+  },
+  "implemented": [
+    "H/V live reference composition",
+    "twelve source normal rail port pairs",
+    "reciprocal closed eight-heading loop",
+    "strict bounded spatial Save 2",
+    "server/client identity dispatch, rendering, picking and read-only targeting"
+  ],
+  "remaining": [
+    "source clock/calendar/scheduler",
+    "random streams and state",
+    "general entity/footprint contracts",
+    "source rail construction, junctions/slopes and full train behavior",
+    "complete bundled/optional pack importer and dispatch",
+    "historical desktop saves and complete-city continuation",
+    "native/device UX gate"
+  ]
+}

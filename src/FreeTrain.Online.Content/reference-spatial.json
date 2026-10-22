@@ -1,0 +1,55 @@
+{
+  "id": "reference-spatial",
+  "version": "1",
+  "description": "Asset-free spatial reference; level normal rails only. No gameplay clock, economy or train simulation.",
+  "normalRailPorts": [
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      5
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      2,
+      7
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      3,
+      7
+    ],
+    [
+      3,
+      0
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      5,
+      0
+    ]
+  ]
+}

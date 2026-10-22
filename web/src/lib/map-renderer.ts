@@ -3,6 +3,7 @@ import type { Position, Track } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
 import { opaqueAt, toScreen, visible, type Camera } from './map-display.ts';
 import { offset, type SpatialMap, type Point } from './map-geometry.ts';
+import { normalPorts } from './world-identity.ts';
 import { ports } from './prototype/rail-geometry.ts';
 import { mapSpace } from './map-space.ts';
 export type SpriteKey = keyof typeof content.sprites;
@@ -96,7 +97,7 @@ export class MapRenderer {
       } else if(item.shape) {
         diamond(p,options.night?'#444548':'#b5b7ad');
         // Draw each port as a connected half rail. Curves/junctions follow the host topology.
-        for(const port of ports[item.shape]) {
+        for(const port of this.read.map.coordinateSystem==='hv' ? (normalPorts(item.shape)??[]).map(offset) : ports[item.shape as keyof typeof ports]) {
           const q={x:8*(port.x+port.y),y:4*(port.y-port.x)},base={x:0,y:0};
           ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+(q.x-base.x)*zoom,p.y+(q.y-base.y)*zoom);
           ctx.strokeStyle=options.night?'#a4b0b5':'#44575c';ctx.lineWidth=5*zoom;ctx.stroke();
@@ -117,7 +118,7 @@ export class MapRenderer {
       diamond(p,options.remove?'#d86a5377':'#4ba2a177','#fff');
       ctx.strokeStyle=options.remove?'#b63128':'#126e79';ctx.lineWidth=3*zoom;
       if(options.remove){ctx.beginPath();ctx.moveTo(p.x-7*zoom,p.y-4*zoom);ctx.lineTo(p.x+7*zoom,p.y+4*zoom);ctx.moveTo(p.x+7*zoom,p.y-4*zoom);ctx.lineTo(p.x-7*zoom,p.y+4*zoom);ctx.stroke();}
-      else for(const port of ports[options.shape]){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+8*(port.x+port.y)*zoom,p.y+4*(port.y-port.x)*zoom);ctx.stroke();}
+      else if(this.read.map.coordinateSystem==='prototypeXY') for(const port of (ports[options.shape as keyof typeof ports]??[])){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+8*(port.x+port.y)*zoom,p.y+4*(port.y-port.x)*zoom);ctx.stroke();}
     }
     if(options.selection) {
       const selected=options.selection;

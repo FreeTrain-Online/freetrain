@@ -507,7 +507,19 @@
                 "curveNE",
                 "curveNW",
                 "junctionE",
-                "buffer"
+                "buffer",
+                "normal0",
+                "normal1",
+                "normal2",
+                "normal3",
+                "normal4",
+                "normal5",
+                "normal6",
+                "normal7",
+                "normal8",
+                "normal9",
+                "normal10",
+                "normal11"
               ]
             }
           },
@@ -743,7 +755,8 @@
             "requestConflict",
             "retryWindowFull",
             "leaseRequired",
-            "controlBusy"
+            "controlBusy",
+            "operationUnavailable"
           ]
         },
         "arguments": {
@@ -875,7 +888,19 @@
             "curveNE",
             "curveNW",
             "junctionE",
-            "buffer"
+            "buffer",
+            "normal0",
+            "normal1",
+            "normal2",
+            "normal3",
+            "normal4",
+            "normal5",
+            "normal6",
+            "normal7",
+            "normal8",
+            "normal9",
+            "normal10",
+            "normal11"
           ]
         },
         "revision": {

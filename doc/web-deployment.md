@@ -1,6 +1,6 @@
 # FreeTrain Online deployment and recovery
 
-**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
+**Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. P1-01c now supports [canonical spatial Save 2](web-parity-reference-world.md). A rejected startup checkpoint disables automatic/shutdown overwrites for that process; named-slot/download saves remain available. Earlier movement/train/save-version evidence below remains historical. Docker execution was not rerun for this slice.
 
 Deploy one authoritative world with multiple participants and one save-directory writer.
 See the [multiplayer operation guide](web-multiplayer-operation.md) for participant
@@ -146,7 +146,7 @@ not capacity guarantees. The game root filesystem is read-only, `/tmp` is
 temporary, and the save directory is the writable persistent mount. Only one
 process may own a save directory. Never run replicas against that directory.
 
-Protocol 1, content `prototype-content-1`, and save version 1 are independent
+Protocol 3, content `reference-spatial-content-1`, and spatial save version 2 are independent
 compatibility identifiers. Update the service and its static client together;
 incompatible bootstraps/sockets return 426. HTML and assets without content
 hashes revalidate; hashed Vite JS/CSS can be immutable. No service worker caches

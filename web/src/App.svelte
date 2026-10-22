@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { isReferenceWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
   import { appName, messages, persistLocale, initialLocale, type Locale } from './lib/localization.ts';
@@ -48,7 +49,8 @@
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => `${item.position.x},${item.position.y},${item.position.z}` === mapSelection?.id) : undefined);
   const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
-  const disabled = $derived(saveBusy || view.pending || !live || view.role === 'observer');
+  const reference = $derived(isReferenceWorld(read));
+  const disabled = $derived(reference || saveBusy || view.pending || !live || view.role === 'observer');
   const draftStation = $derived(read?.stations.find(item => item.id === view.draftStationId));
   const draftConflict = $derived(view.draftDirty && (!draftStation || draftStation.revision !== view.draftRevision));
   const canApply = $derived(!disabled && !view.composing && !!view.draft.trim() && !draftConflict);
@@ -130,9 +132,11 @@
         <button disabled={disabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
         <button class="step" disabled={disabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
       </div>
+      {#if reference}<span data-testid="reference-world">{text.referenceWorld}</span>{:else}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
       <span class="clock-summary">{text.tick} <span data-testid="tick">{new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))}</span></span>
       <strong class="cash-summary" aria-label={text.cash}>{new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</strong>
+      {/if}
       <div class="bar-end">
         <button aria-controls="primary-panel" aria-expanded={panel === 'view'} onclick={event => openPanel('view', event.currentTarget)}>{text.view}</button>
         <button aria-controls="primary-panel" aria-expanded={panel === 'session'} onclick={event => openPanel('session', event.currentTarget)}>{text.session} · <span data-testid="participant-role">{text[view.role!]}</span></button>
@@ -149,7 +153,7 @@
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); licenseOpen = true; }}>{text.license}</button>
-        <p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>
+        {#if reference}<p>{text.referenceWorldHint}</p>{:else}<p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>{/if}
       </nav>
     {/if}
     {#if live && panel && panel !== 'view'}
@@ -175,12 +179,14 @@
             </form>
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>
-          {:else if track}<p>{text[track.shape]} · {track.revision}</p>
+          {:else if track}<p>{track.shape.startsWith('normal') ? `${text.normalRail} ${track.shape.slice(6)}` : text[track.shape as keyof typeof text]} · {track.revision}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}
         {:else if panel === 'catalog'}
+          {#if reference}<p>{text.referenceWorldHint}</p>{:else}
           <p class="hint">{text.catalogHint}</p><ul class="catalog" aria-label={text.buildings}>
             {#each catalog as item (item.id)}<li><button aria-pressed={selected.id === item.id} onclick={() => model.selectBuilding(item.id)}><img class="building-icon" src={item.family === 'pier' ? '/assets/pier.png' : '/assets/condo-top.png'} alt=""/><span><strong>{text[item.family]} {item.variant}</strong><small>{text[item.family === 'pier' ? 'fixed' : 'variable']} · {item.height}</small></span></button></li>{/each}
           </ul><h3>{text.selectedBuilding}</h3><p data-testid="building-name">{text[selected.family]} {selected.variant}</p><p>{text.height}: {selected.height}</p>
+          {/if}
         {:else if panel === 'saves'}
           <SaveControls bind:slot={savedSlot} onmodal={() => map.resetInteraction()} locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner'} onbusy={value => { saveBusy = value; }}/>
         {:else if panel === 'settings'}
@@ -188,10 +194,11 @@
           <label class="field">{text.language}<select aria-label={text.language} value={view.locale} onchange={event => model.setLocale(event.currentTarget.value as Locale)}><option value="en">English</option><option value="ja">日本語</option></select></label>
           <button onclick={async () => { if (soundEnabled) { audio.disable(); soundEnabled = false; } else { soundEnabled = await audio.enable(); soundFailed = !soundEnabled; } }}>{soundEnabled ? text.disableSound : text.enableSound}</button><p data-testid="sound-feedback">{soundFailed ? text.soundFailed : soundEnabled ? text.soundOn : text.soundOff}</p>
         {:else if panel === 'session'}
+          {#if reference}<p>{text.referenceWorldHint}</p>{/if}
           {#if read?.ruleset==='prototype-reference-1'}<p data-testid="compatibility-mode">{text.temporaryReferenceWorld}</p>{/if}
           <p>{text[view.connection]} · {view.role ? text[view.role] : ''}</p><p>{text[view.feedback]}</p><button disabled={saveBusy || view.pending} onclick={() => request(model.reconnect)}>{text.reconnect}</button><button disabled={saveBusy} onclick={leave}>{text.leaveGame}</button>
         {:else if panel === 'help'}
-          <p>{text.observerHint}</p><p>{text.toolbarHelp}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>
+          {#if reference}<p>{text.referenceWorldHint}</p><p>{text.mapHelp}</p>{:else}<p>{text.observerHint}</p><p>{text.toolbarHelp}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>{/if}
         {/if}
       </PanelFrame>
     {/if}
@@ -210,5 +217,5 @@
   {#if !live}<SessionGate {model} {view} renderFailed={renderState === 'failed'} onleave={leaveNow} {scheme} onscheme={value => { scheme = value; }}/>{/if}
   {#if live && creditsOpen}<CreditsDialog locale={view.locale} onclose={() => { creditsOpen = false; }}/>{/if}
   {#if live && licenseOpen}<LicenseDialog locale={view.locale} onclose={() => { licenseOpen = false; }}/>{/if}
-  {#if live}<p id="mutation-help" class="sr-only">{text.observerHint}</p><p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{view.feedback === 'idle' || successExpired ? '' : text[view.feedback]}</p>{/if}
+  {#if live}<p id="mutation-help" class="sr-only">{reference ? text.referenceWorldHint : text.observerHint}</p><p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{view.feedback === 'idle' || successExpired ? '' : text[view.feedback]}</p>{/if}
 </div>

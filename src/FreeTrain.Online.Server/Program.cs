@@ -7,7 +7,9 @@ if (args.Length > 0 && args[0] == "--headless-trace")
 if (args.Length == 1 && args[0] == "--headless-profile")
     return HeadlessProfile.Run();
 
-var builder = WebApplication.CreateBuilder(args);
+// Explicit loopback-only historical UI regression harness. Normal service startup is canonical.
+var prototypeRegression = args.Contains("--prototype-regression-harness");
+var builder = WebApplication.CreateBuilder(args.Where(a => a != "--prototype-regression-harness").ToArray());
 // Loopback only unless an explicit deployment URL is configured.
 if (string.IsNullOrEmpty(builder.Configuration["urls"]))
     builder.WebHost.UseUrls("http://127.0.0.1:5080");
@@ -23,7 +25,11 @@ if (checkpointOptions.Interval < TimeSpan.FromSeconds(1) || checkpointOptions.In
 builder.Services.AddSingleton(checkpointOptions);
 builder.Services.AddSingleton(_ => new SaveStorage(checkpointOptions.Directory));
 builder.Services.AddSingleton(networkOptions);
-builder.Services.AddSingleton<NetworkSession>();
+if (prototypeRegression && builder.Configuration["urls"]!.Split(';').Any(url => !Uri.TryCreate(url, UriKind.Absolute, out var uri) || !uri.IsLoopback))
+    throw new InvalidOperationException("The prototype regression harness requires loopback binding.");
+builder.Services.AddSingleton<NetworkSession>(services => new(networkOptions, services.GetRequiredService<SaveStorage>(),
+    services.GetRequiredService<ILogger<NetworkSession>>(),
+    prototypeRegression ? (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry) : null));
 builder.Services.AddSingleton<SessionDriver>();
 builder.Services.AddHostedService(services => services.GetRequiredService<SessionDriver>());
 var app = builder.Build();

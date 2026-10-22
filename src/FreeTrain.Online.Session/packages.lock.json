@@ -8,6 +8,7 @@
       "freetrain.online.persistence": {
         "type": "Project",
         "dependencies": {
+          "FreeTrain.Online.Contracts": "[1.0.0, )",
           "FreeTrain.Online.Simulation": "[1.0.0, )"
         }
       },
