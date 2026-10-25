@@ -1,6 +1,7 @@
 import { expect,test,type Page } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { ready,openPanel,closePanel } from './ux-helpers.ts';
 const bootPath='/api/bootstrap?protocolVersion=3&contentVersion=reference-spatial-content-2';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
@@ -12,6 +13,25 @@ async function at(page:Page,p:{x:number;y:number;z:number}) {
 }
 async function target(page:Page,p:{x:number;y:number;z:number}){const q=await at(page,p);await page.mouse.click(q.x,q.y);}
 async function checker(page:Page){await page.getByRole('button',{name:'Check a location',exact:true}).click();await page.getByLabel('Track level',{exact:true}).selectOption('0');}
+
+test('prepared bundled catalog and decoded source sheets ship separately from the selected reference world',async({page})=>{
+  await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');
+  await canvas.evaluate(el=>el.setAttribute('data-instance','prepared-preserved'));
+  const response=await page.request.get('/content/bundled-v2/catalog.json');expect(response.ok()).toBeTruthy();
+  const bytes=await response.body(),catalog=JSON.parse(bytes.toString());
+  const hash=(await(await page.request.get('/content/bundled-v2/catalog.sha256')).text()).trim();
+  expect(createHash('sha256').update(bytes).digest('hex')).toBe(hash);
+  expect(catalog.source.revision).toBe('883cf7d81cf49db25ff38cd3a25d0f140afe31a0');
+  expect(catalog.counts.contributions).toBe(448);expect(catalog.status).toBe('prepared; not selected by a world profile');
+  const rail=catalog.assets.find((a:any)=>a.path==='trunk/core/res/RailRoads.bmp');
+  for(const mode of ['day','night']){
+    const image=await page.request.get(rail[mode].url);expect(image.ok()).toBeTruthy();
+    expect(createHash('sha256').update(await image.body()).digest('hex')).toBe(rail[mode].sha256);
+    expect(await page.evaluate(async url=>{const image=new Image();image.src=url;await image.decode();return [image.naturalWidth,image.naturalHeight];},rail[mode].url)).toEqual([rail.width,rail.height]);
+  }
+  expect(before.requiredPacks.every((p:any)=>p.id!=='exav-stable-bundled')).toBeTruthy();
+  expect(await bootstrap(page)).toEqual(before);await expect(canvas).toHaveAttribute('data-instance','prepared-preserved');
+});
 
 test('default live H/V map renders, picks source rails and keeps unsupported operations unavailable',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));

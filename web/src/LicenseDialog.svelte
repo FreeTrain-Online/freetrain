@@ -1,7 +1,7 @@
 <script lang="ts">
   import DecisionModal from './DecisionModal.svelte';
   import { messages, type Locale } from './lib/localization.ts';
-  import licenseText from '../../COPYING.txt?raw';
+  import licenseText from '../../content/bundled-v2/source/trunk/doc/COPYING.txt?raw';
   let { locale, onclose }: { locale: Locale; onclose: () => void } = $props();
   const text = $derived(messages[locale]);
 </script>

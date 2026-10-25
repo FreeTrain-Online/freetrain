@@ -20,8 +20,9 @@ See [the reference-world delivery](doc/web-parity-reference-world.md).
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 [https://github.com/rdmark/freetrain-exav-archive].
 The spatial reference uses source normal rail patterns. The historical demo
-assets and importer retain prototype provenance; complete ExAV content conversion
-remains P2 work. P0-01 ExAV
+assets retain prototype provenance. [P2-01 canonical preparation](doc/web-parity-bundled-preparation.md)
+now supplies pinned bundled inputs, converted surfaces and a prepared metadata
+registry; complete executable recipes/rendering remain P2 work. P0-01 ExAV
 discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
@@ -47,7 +48,7 @@ Install the exact .NET SDK in `global.json` (10.0.402) and Deno in
 
 Frontend dependencies and tasks are defined in `web/deno.json`; `web/deno.lock`
 pins transitive versions and integrity hashes. Python 3 (standard library only)
-is also required to reproduce/check the curated legacy sprite conversion.
+is also required to prepare/check the canonical bundled content.
 
 The solution to build is `FreeTrain.Online.slnx`.
 
@@ -137,7 +138,8 @@ index and stable location; drag to pan and use the wheel or zoom buttons.
 Middle drag or Space + drag pans in every tool. **Check a location** offers level
 selection and Free / Four directions / Eight directions alignment with an optional
 anchor. The server verifies H/V bounds and projection without changing the world.
-Construction confirmation, removal, Run and Step are disabled.
+Construction confirmation and removal are disabled. Run/Pause/Step advance only
+the source-minute calendar; gameplay consumers remain future slices.
 
 Game panels preserve canvas/camera identity. **View** offers height cut and local
 appearance controls. **Settings** offers English/Japanese and four persisted color
@@ -150,17 +152,33 @@ validation rejects unsupported inputs before a replacement modal is shown.
 The explicit historical regression harness retains station/controller/construction
 UI tests; those results do not establish canonical gameplay behavior.
 
-Reproduce/check bundled sprites:
+Prepare/check bundled content:
 
 ```sh
 deno task --cwd web import:content
 deno task --cwd web check:content
 ```
 
-These tasks use the Python standard library. Generated PNGs, night/recolor variants,
-alpha masks, offsets and source hashes are included in source; browser image decode stays
-outside the paint loop. Asset notices ship in `web/public/assets/NOTICE.txt` and
-`COPYING.txt`. Build checks reject generated drift.
+These tasks use the Python standard library and [checked-in stable ExAV inputs](content/README.md).
+They validate pinned source hashes and produce identical server/browser catalogs,
+213 native-size bitmap sheets with day/night PNGs, 141 seasonal picture bindings,
+other native media and original notices under `web/public/content/bundled-v2/`.
+The 448 prepared contribution records are metadata; full executable recipes and
+gameplay remain open. See [P2-01 evidence and follow-ups](doc/web-parity-bundled-preparation.md).
+
+Default builds and Docker need no archive checkout, historical `core/`/`plugins/`
+trees or optional repository. To refresh or verify the source bundle explicitly:
+
+```sh
+python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive
+python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive --check
+```
+
+The existing synthetic live world retains its distinct pack and Save 5 identity.
+Historical demo/regression PNGs, variants, masks and notices in `web/public/assets/`
+remain frozen artifacts checked by `prototype/content-artifacts.json`; they no
+longer trigger historical source import during normal builds. Browser decode
+stays outside the paint loop. Build checks reject generated drift and stale files.
 
 ## Saves and sound
 

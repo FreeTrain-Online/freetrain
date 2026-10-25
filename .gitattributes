@@ -1,0 +1,9 @@
+# Reviewed inputs and distribution notices are checked by their exact byte hashes.
+content/bundled-v2/source/** -text
+web/public/content/bundled-v2/notices/** -text
+content/bundled-v2/*.json text eol=lf
+content/bundled-v2/expanded/** text eol=lf
+src/FreeTrain.Online.Content/bundled-v2.json text eol=lf
+src/FreeTrain.Online.Content/bundled-v2.sha256 text eol=lf
+web/public/content/bundled-v2/catalog.json text eol=lf
+web/public/content/bundled-v2/catalog.sha256 text eol=lf

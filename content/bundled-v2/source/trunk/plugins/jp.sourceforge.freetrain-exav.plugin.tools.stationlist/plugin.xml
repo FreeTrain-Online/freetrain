@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plug-in>
+	<title>駅一覧ウィンドウ</title>
+	<author>FreeTrain Ex-AV Project</author>
+	<homepage>http://sourceforge.jp/projects/freetrain-exav</homepage>
+	<version>1.0.0.0</version>
+
+	<contribution type="dockingContent" id="{6DC3BD54-6282-4522-A157-C4E15FFF21CE}">
+		<name>駅一覧</name>
+		<menu name="駅一覧" location="view" />
+		<class name="freetrain.views.StationList"
+			codebase="bin/FreeTrain.ExAV.Plugin.Tools.StationList.dll" />
+	</contribution>
+</plug-in>

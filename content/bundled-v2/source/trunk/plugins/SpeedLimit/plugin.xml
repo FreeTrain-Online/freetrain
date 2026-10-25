@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plug-in>
+
+	<title>速度制限モジュール</title>
+	<author>nanashi</author>
+	<homepage></homepage>
+
+	
+	<!-- 低速区間図示用アイコン -->
+	<contribution type="picture" id="{CFC7C99B-4EDE-493B-9DD1-268633902901}">
+		<picture src="LowSpeedIcon.bmp" >
+			<override when="night" src="LowSpeedIcon.bmp" />
+		</picture>		
+	</contribution>
+
+	<!-- 中速区間図示用アイコン -->
+	<contribution type="picture" id="{CFC7C99B-4EDE-493B-9DD1-268633902902}">
+		<picture src="MediumSpeedIcon.bmp" >
+			<override when="night" src="MediumSpeedIcon.bmp" />
+		</picture>		
+	</contribution>	
+
+	<!-- 高速区間図示用アイコン -->
+	<contribution type="picture" id="{CFC7C99B-4EDE-493B-9DD1-268633902903}">
+		<picture src="FastSpeedIcon.bmp" >
+			<override when="night" src="FastSpeedIcon.bmp" />
+		</picture>		
+	</contribution>	
+	
+	<!-- 鉄道メニューに「速度制限」を追加 -->
+	<contribution type="menu" id="{998985DC-5A8E-4C72-96B6-56EDC545305B}">
+		<class name="freetrain.world.rail.speedlimit.MenuContributionImpl" 
+			codebase="bin/Debug/SpeedLimit.dll" />
+	</contribution>
+
+ 	
+</plug-in>

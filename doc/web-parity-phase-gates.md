@@ -1,5 +1,10 @@
 # Parity phase review — 21 October 2026
 
+**P2-01 update — 25 October 2026:** [canonical bundled inputs and preparation](web-parity-bundled-preparation.md)
+are delivered through default builds, static output and the server's inert
+catalog registry. P2 has started; full recipe/rendering/optional acceptance stays
+open. P1-01–04 are implemented, with P1's final evidence/coverage review still open.
+
 **P1-04 update — 22 October 2026:** [stable entity/voxel/footprint contracts and exact profile dispatch](web-parity-spatial-contracts.md) are implemented through live network reads, Inspector and Save 5 (`reference-spatial-4`, content/pack v2). Earlier slice identities/counts below remain dated evidence. P1 phase-gate review and gameplay/native acceptance remain open.
 
 **Current save policy — 22 October 2026:** [only Save 5 is supported](web-parity-runtime-policy.md). Saves 2/3/4 are rejected without conversion; earlier compatibility and verification statements below record the previous slices only.
@@ -157,3 +162,14 @@ and remaining limits are recorded in the delivery evidence. P1-01–04 foundatio
 are implemented; the P1 gate still requires its final evidence/coverage review.
 Full content, gameplay consumers, complete-city continuation/capacity and
 native/device UX remain open with their owning phases.
+
+## P2-01: canonical bundled inputs and preparation
+
+[Delivery evidence and remaining work](web-parity-bundled-preparation.md) cover
+386 pinned source inputs, 56 UTF-8 manifests, deterministic plugin dependencies,
+448 exact prepared contribution records, 213 converted bitmap sheets and 141
+seasonal picture bindings. Server/browser catalogs and hashes agree. Default
+builds/Docker use the bundled input snapshot without historical roots or implicit
+archive/optional discovery. Historical assets stay explicitly frozen/regression
+content. Every unimplemented recipe remains diagnosed; P2 is open for executable
+recipes, effects/rendering/picking, full galleries and optional build/startup.

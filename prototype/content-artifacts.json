@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen historical demo/regression artifacts; not canonical ExAV content",
+  "sourceRevision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+  "reproduce": "python3 scripts/import-web-content.py (explicit historical checkout only)",
+  "files": [
+    {
+      "path": "web/src/generated/sprites.json",
+      "sha256": "0607821d22faaae836a3f04246a9a79f6c7779aa19081390244fb227a461af2c"
+    },
+    {
+      "path": "web/public/assets/COPYING.txt",
+      "sha256": "49b07772b218bd3837383e6af3761166ea68914ed00fe0312ab561715a35ed5d"
+    },
+    {
+      "path": "web/public/assets/FTicon.png",
+      "sha256": "fdfe186e45895b87f1165174aea2d41b81891ab9d2370e12add91ec80142d2f3"
+    },
+    {
+      "path": "web/public/assets/FTlogoL.png",
+      "sha256": "c5c31b2ad14a57421dd55928ecb5f906bc446a10cd83f753b7a3b959130dc91a"
+    },
+    {
+      "path": "web/public/assets/NOTICE.txt",
+      "sha256": "faa0d88b22dbab9d2e6b71a43c552684b0bb2f5725a555b9e778ad0f41b50962"
+    },
+    {
+      "path": "web/public/assets/condo-bottom-night.png",
+      "sha256": "1982557510004b7cedbcffca67b0e35a8e31f5f25bd7dc07e9d929683fc51512"
+    },
+    {
+      "path": "web/public/assets/condo-bottom-tint.png",
+      "sha256": "b19d8dd1b507d150684f5ebb7b1b6fab304bb46b64a8fef82e829f55fda9f51e"
+    },
+    {
+      "path": "web/public/assets/condo-bottom.png",
+      "sha256": "d1075b5f6504a0e5f60cdee73a59d2e24f718f7c78cd34ff660fb116f36029b5"
+    },
+    {
+      "path": "web/public/assets/condo-middle-night.png",
+      "sha256": "26781866cce89f0ecdb6df8b189e7e34a01dcb1c13d5b958cb590ba9514bca0e"
+    },
+    {
+      "path": "web/public/assets/condo-middle-tint.png",
+      "sha256": "5f6c62531b0ad6857c56636afa5454908bf05a41bfc4d157bc8173b085544396"
+    },
+    {
+      "path": "web/public/assets/condo-middle.png",
+      "sha256": "02c4bd8dd3fbe472e252cb55ee0d4fa65bbfeb6f65b8be5776d7ff3654eaaf00"
+    },
+    {
+      "path": "web/public/assets/condo-top-night.png",
+      "sha256": "2cf6b2c93039c35c84f41f7d2019e43a6f9930cd3d324123ee471c79297434d5"
+    },
+    {
+      "path": "web/public/assets/condo-top-tint.png",
+      "sha256": "7ed1cd171bfcd56aad6858d76b270013f5758bc31602bb41f3de831d8bbb643f"
+    },
+    {
+      "path": "web/public/assets/condo-top.png",
+      "sha256": "6c8c5d8a3b3684e92c2d9f56f5a5d35a40051ff88bc92119ef144489a6c0fbe3"
+    },
+    {
+      "path": "web/public/assets/fence-night.png",
+      "sha256": "f4407f733673725977947b5fce6694979461a30533de64afa5ca51dbb654307e"
+    },
+    {
+      "path": "web/public/assets/fence-tint.png",
+      "sha256": "f78fa2b6c504a9a8dfb3ef051361b6cbbdcc0d70ebe0820f274c20ff2a25e659"
+    },
+    {
+      "path": "web/public/assets/fence.png",
+      "sha256": "04f369a47d41cb2ed087861bf82f5f412a680ad6647dfedeaf399d83027c7c24"
+    },
+    {
+      "path": "web/public/assets/pier-night.png",
+      "sha256": "73c0ad8b11bd1628d6f5e2f7eebd94ee2f11dfb5a32c0ddb62cf326fff0abfe5"
+    },
+    {
+      "path": "web/public/assets/pier-tint.png",
+      "sha256": "5f013bf69796f04edf5a88ae2ad03ab5a01e2243fb5f61a0da561d4c70e811b3"
+    },
+    {
+      "path": "web/public/assets/pier.png",
+      "sha256": "b9bd95c6e812c6f5b1961cc466066a5db2ba46fe4c3c86daa4a37959e69f85d5"
+    },
+    {
+      "path": "web/public/assets/slope-night.png",
+      "sha256": "21a7ffe4d4a5f2586060e15f3a30c7c584d6cf97d6434eb6291e2dd7cc295893"
+    },
+    {
+      "path": "web/public/assets/slope-tint.png",
+      "sha256": "e009f3c50606949322fdab557fb2bdbaddaf0d894f58c46778de0dab8e48fe35"
+    },
+    {
+      "path": "web/public/assets/slope.png",
+      "sha256": "c4281707b48c9ae6ad6becb5019556899d83138d0face1b04a44f7789e06e7a2"
+    },
+    {
+      "path": "web/public/assets/train-east-night.png",
+      "sha256": "92aaa5a9898de1d709f1f6fca2268754e3a706dec57163c70e060f698ec64f91"
+    },
+    {
+      "path": "web/public/assets/train-east-tint.png",
+      "sha256": "0df404e941f74fc5386c3a01c70ed915e9ec06411ed10963da3f873e0e3f379a"
+    },
+    {
+      "path": "web/public/assets/train-east.png",
+      "sha256": "e8a6ccd3ef545c6383f2d056dc5d937931d0e02f2f5c90b7e695bc7d6894480b"
+    },
+    {
+      "path": "web/public/assets/train-north-night.png",
+      "sha256": "18a413d2427727ba81335e834c1314085a4f44b355aa536fcda1d59b874a3da9"
+    },
+    {
+      "path": "web/public/assets/train-north-tint.png",
+      "sha256": "a1cdadaac811f4e6ae5b6c9ad052dc32874647e2036d509d2bdae156eb00f056"
+    },
+    {
+      "path": "web/public/assets/train-north.png",
+      "sha256": "e9db98b41e6b82b81f026d246e427209259d8ae9adf2eb627032a16bab590c89"
+    },
+    {
+      "path": "web/public/assets/train-south-night.png",
+      "sha256": "18a413d2427727ba81335e834c1314085a4f44b355aa536fcda1d59b874a3da9"
+    },
+    {
+      "path": "web/public/assets/train-south-tint.png",
+      "sha256": "a1cdadaac811f4e6ae5b6c9ad052dc32874647e2036d509d2bdae156eb00f056"
+    },
+    {
+      "path": "web/public/assets/train-south.png",
+      "sha256": "e9db98b41e6b82b81f026d246e427209259d8ae9adf2eb627032a16bab590c89"
+    },
+    {
+      "path": "web/public/assets/train-west-night.png",
+      "sha256": "92aaa5a9898de1d709f1f6fca2268754e3a706dec57163c70e060f698ec64f91"
+    },
+    {
+      "path": "web/public/assets/train-west-tint.png",
+      "sha256": "0df404e941f74fc5386c3a01c70ed915e9ec06411ed10963da3f873e0e3f379a"
+    },
+    {
+      "path": "web/public/assets/train-west.png",
+      "sha256": "e8a6ccd3ef545c6383f2d056dc5d937931d0e02f2f5c90b7e695bc7d6894480b"
+    }
+  ]
+}

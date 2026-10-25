@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace FreeTrain.Online.Server;
 
@@ -21,8 +22,11 @@ public static class Deployment
             app.UseForwardedHeaders(options);
         }
         app.UseDefaultFiles();
+        var contentTypes = new FileExtensionContentTypeProvider();
+        contentTypes.Mappings[".sha256"] = "text/plain";
         app.UseStaticFiles(new StaticFileOptions
         {
+            ContentTypeProvider = contentTypes,
             OnPrepareResponse = context =>
             {
                 // Vite names code bundles by content hash. Other assets may change in place.

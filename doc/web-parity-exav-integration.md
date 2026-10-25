@@ -1,5 +1,12 @@
 # ExAV authority and scope reconciliation
 
+**P2-01 build-input update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
+replaces the historical default importer/Docker inputs with checked-in pinned
+ExAV resources and a prepared catalog. EXAV-P0-09-INPUTS's reproducible-input
+portion is delivered; full recipes/runtime and distribution acceptance stay open.
+The P0 review's separately pinned implementation findings below remain historical
+evidence and are not repinned to the current working tree.
+
 **P0-09 source integration completed — 21 October 2026.** Stable **FreeTrain
 ExAV 2.1.1.12 / V2**, archive Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, SVN r115, **`trunk/`**, is the

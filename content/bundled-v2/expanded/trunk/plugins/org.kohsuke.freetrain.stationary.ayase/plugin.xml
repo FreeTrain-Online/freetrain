@@ -1,0 +1,536 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plug-in>
+	<title>もっともっと橋脚</title>
+	<author>いっちー</author>
+	<homepage />
+	
+	<contribution type="picture" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}">
+		<picture src="brick-girder.bmp" />
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-A">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin=" 0,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-B">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="32,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-C">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="64,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-D">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="96,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>	
+	
+	<contribution type="railStationary" id="{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="128,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-F">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="160,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-G">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="192,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FE-11147914F2A5}-H">
+		<group>レンガ橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="224,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-A">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="0,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-B">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="32,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-C">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="64,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-D">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="96,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-E">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="128,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-F">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="160,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-G">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="192,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-85FF-11147914F2A5}-H">
+		<group>コン橋脚</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="224,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-85FF-11147914F2A5}" />
+		</sprite>
+	</contribution>
+
+
+
+	<contribution type="picture" id="{98619BD4-46C3-4B91-1703d-kokakyo2}">
+		<picture src="brick-girder2.bmp" />
+	</contribution>
+
+
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-A">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin=" 0,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-B">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="32,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-C">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="64,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-D">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="96,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>	
+	
+	<contribution type="railStationary" id="{{98619BD4-46C3-4B90-1703d-kokakyo2}-E">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="128,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-F">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="160,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-G">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="192,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B90-1703d-kokakyo2}-H">
+		<group>レンガ橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="224,0" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-A">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="0,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-B">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="32,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-C">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="64,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-D">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="96,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-E">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="128,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-F">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="160,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-G">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="192,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo2}-H">
+		<group>コン橋脚(側道付)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="224,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo2}" />
+		</sprite>
+	</contribution>
+
+
+
+	<contribution type="picture" id="{98619BD4-46C3-4B91-1703d-kokakyo3}">
+		<picture src="brick-girder3.bmp" />
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-C">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="64,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-D">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="96,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-E">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="128,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-F">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="160,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-G">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="192,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo3}-H">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>1</height>
+		<sprite origin="224,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo3}" />
+		</sprite>
+	</contribution>
+
+
+	<contribution type="picture" id="{98619BD4-46C3-4B91-1703d-kokakyo4}">
+		<picture src="brick-girder4.bmp" />
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-C">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="64,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-D">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="96,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-E">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="128,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-F">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="160,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-G">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="192,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo4}-H">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="224,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo4}" />
+		</sprite>
+	</contribution>
+
+
+
+	<contribution type="picture" id="{98619BD4-46C3-4B91-1703d-kokakyo5}">
+		<picture src="brick-girder5.bmp" />
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-C">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="64,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-D">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="96,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-E">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="128,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-F">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="160,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-G">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="192,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="railStationary" id="{98619BD4-46C3-4B91-1703d-kokakyo5}-H">
+		<group>コン橋脚(複合)</group>
+		<price>100000</price>
+		<size>1,1</size>
+		<height>2</height>
+		<sprite origin="224,32" offset="16">
+			<picture ref="{98619BD4-46C3-4B91-1703d-kokakyo5}" />
+		</sprite>
+	</contribution>
+
+
+</plug-in>

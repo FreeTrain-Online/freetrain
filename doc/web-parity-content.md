@@ -1,5 +1,12 @@
 # Stable ExAV bundled-content reconciliation
 
+**P2-01 implementation — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
+now supplies checked-in pinned/UTF-8 build inputs, 213 day/night bitmap sheets,
+141 seasonal picture bindings, 448 inert contribution records and original notices.
+Default builds no longer read historical `core/`/`plugins/` or a sibling archive.
+Earlier P0 descriptions below retain their source-specification scope; full
+recipe execution, effects, optional loading and rendering acceptance remain open.
+
 **P0-02 source reconciliation completed — 20 October 2026**, against FreeTrain
 ExAV **2.1.1.12 / V2**, archive Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, SVN r115, **`trunk/`**.

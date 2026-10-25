@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE plug-in [
+	<!ENTITY WoodenStation "
+		<group>地上駅舎1</group>
+		<price>12000000</price>
+		<height>1</height>
+		<operationCost>1000000</operationCost>
+	">
+
+
+<!ENTITY eki-1hueTransform_001 '
+	<spriteType name="hueTransform">
+		<map from="*,0,0" to="84,114,166"/>
+		<map from="0,0,*" to="255,206,136"/>
+	</spriteType>
+'>
+<!ENTITY eki-1hueTransform_002 '
+	<spriteType name="hueTransform">
+		<map from="*,0,0" to="255,123,65"/>
+		<map from="0,0,*" to="255,247,217"/>
+	</spriteType>
+'>
+<!ENTITY eki-1hueTransform_003 '
+	<spriteType name="hueTransform">
+		<map from="*,0,0" to="120,121,135"/>
+		<map from="0,0,*" to="191,250,231"/>
+	</spriteType>
+'>
+<!ENTITY eki-1hueTransform_004 '
+	<spriteType name="hueTransform">
+		<map from="*,0,0" to="208,98,110"/>
+		<map from="0,0,*" to="145,110,85"/>
+	</spriteType>
+'>
+<!ENTITY eki-1hueTransform_005 '
+	<spriteType name="hueTransform">
+		<map from="*,0,0" to="122,117,109"/>
+		<map from="0,0,*" to="255,206,136"/>
+	</spriteType>
+'>
+]>
+<plug-in>
+	<title>駅舎</title>
+	<author>qra_ra</author>
+	<homepage></homepage>
+		
+	<contribution type="picture" id="{136A81E5-F568-6516-83FD-001338978F2C}">
+		<picture src="eki-1.bmp">
+			<override when="night" src="eki-1n.bmp" />
+		</picture>
+	</contribution>
+
+	<contribution type="station" id="{372D89DD-0A01-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="0, 0" offset="8">
+				&eki-1hueTransform_001;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0A02-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="48,0" offset="16">
+				&eki-1hueTransform_001;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0A03-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="96,0" offset="8">
+				&eki-1hueTransform_001;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0A04-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="144,0" offset="16">
+				&eki-1hueTransform_001;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>		
+
+
+
+	<contribution type="station" id="{372D89DD-0B01-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="0, 0" offset="8">
+				&eki-1hueTransform_002;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0B02-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="48,0" offset="16">
+				&eki-1hueTransform_002;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0B03-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="96,0" offset="8">
+				&eki-1hueTransform_002;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0B04-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="144,0" offset="16">
+				&eki-1hueTransform_002;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>		
+
+
+
+	<contribution type="station" id="{372D89DD-0C01-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="0, 0" offset="8">
+				&eki-1hueTransform_003;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0C02-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="48,0" offset="16">
+				&eki-1hueTransform_003;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0C03-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="96,0" offset="8">
+				&eki-1hueTransform_003;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0C04-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="144,0" offset="16">
+				&eki-1hueTransform_003;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>		
+
+
+
+	<contribution type="station" id="{372D89DD-0D01-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="0, 0" offset="8">
+				&eki-1hueTransform_004;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0D02-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="48,0" offset="16">
+				&eki-1hueTransform_004;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0D03-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="96,0" offset="8">
+				&eki-1hueTransform_004;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0D04-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="144,0" offset="16">
+				&eki-1hueTransform_004;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>		
+
+	<contribution type="station" id="{372D89DD-0E01-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="0, 0" offset="8">
+				&eki-1hueTransform_005;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0E02-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（入口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="48,0" offset="16">
+				&eki-1hueTransform_005;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0E03-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）L</name>
+		<size>1,2</size>
+                &WoodenStation;
+		<sprite origin="96,0" offset="8">
+				&eki-1hueTransform_005;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>
+	</contribution>
+	
+	<contribution type="station" id="{372D89DD-0E04-554B-8BC3-8B8567CA7F59}">
+		<name>地上駅舎1（改札口側）R</name>
+		<size>2,1</size>
+                &WoodenStation;
+		<sprite origin="144,0" offset="16">
+				&eki-1hueTransform_005;
+			<picture ref="{136A81E5-F568-6516-83FD-001338978F2C}" />
+		</sprite>	
+	</contribution>		
+
+
+
+
+</plug-in>

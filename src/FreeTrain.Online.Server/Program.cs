@@ -1,6 +1,7 @@
 using FreeTrain.Online.Server;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Contracts;
+using FreeTrain.Online.Content;
 
 if (args.Length > 0 && args[0] == "--headless-trace")
     return HeadlessTrace.Run(args);
@@ -10,6 +11,9 @@ if (args.Length == 1 && args[0] == "--headless-profile")
 // Explicit loopback-only historical UI regression harness. Normal service startup is canonical.
 var prototypeRegression = args.Contains("--prototype-regression-harness");
 var builder = WebApplication.CreateBuilder(args.Where(a => a != "--prototype-regression-harness").ToArray());
+// Validate and register prepared authoring data. WorldProfiles continues to
+// select only implemented rules/content; this does not enable recipe handlers.
+builder.Services.AddSingleton(PreparedContentCatalog.Bundled);
 // Loopback only unless an explicit deployment URL is configured.
 if (string.IsNullOrEmpty(builder.Configuration["urls"]))
     builder.WebHost.UseUrls("http://127.0.0.1:5080");

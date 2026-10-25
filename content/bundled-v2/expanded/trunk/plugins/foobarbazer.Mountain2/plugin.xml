@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plug-in>
+	<title>地形操作２</title>
+	<author>foobar</author>
+	<homepage />
+	<contribution type="specialStructure" id="{67F02513-0FAE-49ec-8821-B1B90928B053}">
+		<class name="freetrain.controllers.terrain.Mountain2ContributionImpl" codebase="bin/Debug/FreeTrain.Mountain2.dll" />
+	</contribution>
+</plug-in>

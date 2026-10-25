@@ -1,5 +1,11 @@
 # Web parity coverage inventory
 
+**P2-01 update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
+replaces historical normal-build inputs with pinned stable ExAV resources,
+UTF-8 manifests, converted sheets and a prepared metadata registry. Full P2
+recipe/rendering/optional gates remain open. The live reference remains
+`reference-spatial-4`, content v2 and Save 5; earlier slice identities below are historical.
+
 **P1-02 update — 22 October 2026:** [canonical clock/calendar/scheduler](web-parity-clock.md) now runs in the live reference world with Run/Pause/Step, ruleset `reference-spatial-2` and Save 3. Canonical Save 2 upgrades explicitly at source start time, paused. The P1-01c static-world/Save 2 descriptions below record that earlier slice.
 
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical spatial Save 2 now ships with [P1-01c](web-parity-reference-world.md); full-world persistence remains open.

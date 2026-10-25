@@ -6,11 +6,11 @@ WORKDIR /source
 COPY web/deno.json web/deno.lock web/
 RUN deno install --config web/deno.json --frozen
 COPY web/ web/
-COPY scripts/import-web-content.py scripts/
+COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/
 COPY prototype/ prototype/
+COPY content/bundled-v2/ content/bundled-v2/
 COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/
-COPY plugins/ plugins/
-COPY core/ core/
+COPY src/FreeTrain.Online.Content/bundled-v2.json src/FreeTrain.Online.Content/bundled-v2.sha256 src/FreeTrain.Online.Content/
 RUN deno task --cwd web build
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0.402@sha256:0d99ebf1ccad15037b5c98c9fe8979d6b8dbac23812feae2277a0b277b5c5ffa AS backend
@@ -18,6 +18,7 @@ WORKDIR /source
 COPY global.json ./
 COPY eng/ eng/
 COPY src/ src/
+COPY content/bundled-v2/ content/bundled-v2/
 RUN dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode \
  && dotnet publish src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore -p:UseAppHost=false -o /release
 

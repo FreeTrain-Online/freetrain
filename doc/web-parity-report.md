@@ -1,5 +1,11 @@
 # ExAV coverage, differences and delivery estimates
 
+**P2-01 implementation update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
+delivers reproducible pinned build inputs, converted bitmap surfaces/seasonal
+picture bindings and an inert exact-ID registry. P1-01–04 foundations are
+implemented; P1's final review and P2 full recipe/rendering/optional gates remain
+open. Dated P0 implementation findings and estimates below retain their scope.
+
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. Canonical-world persistence remains open.
 
 **P1 follow-up:** [spatial client/server integration](web-parity-spatial-integration.md) now delivers protocol 3, per-car heading reads and server-checked target alignment. Live gameplay remains explicitly in prototype/Save 1 compatibility mode.

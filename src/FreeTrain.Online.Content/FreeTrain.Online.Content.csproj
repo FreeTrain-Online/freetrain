@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../FreeTrain.Online.Simulation/FreeTrain.Online.Simulation.csproj" />
+    <EmbeddedResource Include="bundled-v2.json" LogicalName="BundledCatalog" />
+    <EmbeddedResource Include="bundled-v2.sha256" LogicalName="BundledCatalogHash" />
+    <None Include="../../content/bundled-v2/source/trunk/doc/COPYING.txt;../../content/bundled-v2/source/trunk/doc/readme.txt;../../content/bundled-v2/source/trunk/doc/readme_ftexav.txt"
+          Link="ContentNotices/bundled-v2/doc/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="../../content/bundled-v2/source/trunk/core/contributions/readme.txt"
+          Link="ContentNotices/bundled-v2/core/contributions/readme.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
