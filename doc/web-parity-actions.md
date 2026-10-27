@@ -1,5 +1,7 @@
 # ExAV player action reassessment
 
+**Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
+
 **P0-03 workflow/scope reconciliation complete — 20 October 2026.** Current
 source is stable ExAV **2.1.1.12**, archive commit
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, subtree `trunk/`.
@@ -56,7 +58,7 @@ P0-02 class/project/recipe bindings remain attached to the same identities.
 | Generic catalog | Registered picker is reachable, but bundled generic content consists of null-contrib and its one generated child. Do not treat the direct building families as generic picker options. P7 owns the populated catalog adaptation. |
 | Road accessory / dummy-car shells | Registered menus, zero bundled instance definitions: retain empty-extension/API disposition. No working bus requirement follows. The obsolete DummyCarController is uncompiled/source-only. |
 | StationListPlugIn | Compiled spare menu class has no selected manifest/production instantiation; classify its duplicate route source-only. The actual StationList docking route stays in scope. |
-| Music and exclusions | Bundled BGM/silence/effects/bells required. A4 factory's nine local children and temporary user-file BGM stay excluded. Debug is excluded; video is absent from stable trunk. |
+| Music and exclusions | Effects/bells required; bundled BGM/silence deferred under [owner audio policy](web-audio-policy.md). A4 factory's nine local children and temporary user-file BGM stay excluded. Debug is excluded; video is absent from stable trunk. |
 | Static/unsupported surfaces | Balance sheet is a reachable placeholder with planned computed P8 report; profile parsing remains incomplete; no implemented Undo/Redo binding was found. These dispositions do not cancel the owner's separate optional-pack support. |
 
 The generated dependency closure resolves all 56 manifest dependency sets within
@@ -96,7 +98,7 @@ findings supply exact tokens, hashes and destinations. `missing:` and
 | 010 — Road extension defect | ExAV's RoadAccessory preview correctly declares `drawer`; historical ACTION-006's undeclared-variable claim does not transfer. No bundled RoadAccessory/DummyCar instance types establish working bus simulation. Empty/null selection and obsolete controller questions remain explicit. |
 | 011 — Generic navigation | CategoryTreeWnd uses the Japanese menu label; historical ACTION-005's exact English-label claim does not transfer. Label/index lookup is still brittle, and category callbacks depend on a subscriber. Preserve stable identities while localizing presentation. P7/P9. |
 | 012 — Save UI | ExAV warns for `.ftgd` and changes filters; BZ detection survives while the BZip2InputStream wrapping line is removed. Recognized extensions do not prove import support. P0-05/P10 must reconcile formats, compression and continuation. |
-| 013 — External music | Temporary user-file BGM/fileName remains source evidence under the owner's external-music exclusion. Bundled BGM, silence, effects and departure bells remain required. No automatic optional-pack inclusion or external music redistribution. |
+| 013 — External music | Temporary user-file BGM/fileName remains source evidence under the owner's external-music exclusion. Effects and departure bells remain required; bundled BGM/silence are deferred under [owner audio policy](web-audio-policy.md). No automatic optional-pack inclusion or external music redistribution. |
 | 014 — Development tuning | `system/plugin.xml` **registers `{develop-config}`** and DevelopConfigurePlugin merges its menu. Historical ACTION-007's source-only classification is superseded. Apply, Cancel, Save settings and Load settings operate development/land-value parameters; source preferences are separate from the world and require explicit reload. P7/P9/P10 must define shared authority, validation and continuation policy. Source Apply can partially mutate before parse failure; use validated atomic commands. |
 | 015 — Group delegation | Non-temporary World registers DelegationTrainControllerImpl, and TrainPlacementController binds World.trainControllers. Historical ACTION-001's unregistered/source-only disposition is superseded. The defect warning remains: resolve null/root fallback, assignment/reparenting, cycles and continuation in P5/P10. |
 
@@ -295,7 +297,7 @@ The optional suite retains its separate P0/content/permission gates.
 | Controllers | Exactly two registered contribution types, manual and TAT. The built-in simple controller is an engine default; group delegation is separately source-only. TAT map picking, station/junction configuration and ordered advanced rules have distinct destinations. Leased browser manual input is partial coverage. |
 | Structures, ground and roads | Generic category/design/color/direction/random/height controls, fixed/variable/half-voxel builders, land cover/trading, terraces/cuttings, road styles/accessories/dummy cars and stadium operations have P3/P7/P8 destinations or explicit empty/source-only dispositions. |
 | Reports and finance | Sales report periods, font/category ordering, subsidiaries, bank terms/amounts/asset selections, stock quantities/trades/chart scales and portfolio/bankbook windows are mapped. The balance-sheet template is a source placeholder. |
-| Options, presentation and audio | Map cut/pan/picking, source-time appearance, errors/duration, station labels, tree visibility, bounding boxes, bundled BGM/Silence, effects and platform bells are individually accounted for. Native allocation/VRAM, fonts, docking and global key polling have portable dispositions. |
+| Options, presentation and audio | Map cut/pan/picking, source-time appearance, errors/duration, station labels, tree visibility, bounding boxes, effects and platform bells are individually accounted for; bundled BGM/Silence are inventoried but deferred. Native allocation/VRAM, fonts, docking and global key polling have portable dispositions. |
 | Support and content | Installed-plugin details/dependencies, error/version/recovery information, train-color XML copy/export, Help and Credits/License are distinct mappings. Full source content/runtime acceptance remains P2/P9/P10/P11. |
 
 `MainWindow.OnLoad` merges registered menus, adds special-rail/special-structure

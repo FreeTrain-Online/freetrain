@@ -1,5 +1,7 @@
 # Web parity coverage inventory
 
+**Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
+
 **P3-01 source contract complete — 27 October 2026:** [terrain contracts and decisions](web-parity-terrain-contract.md)
 bind 40 pinned files, 12 terrain decisions, a separate generation compass policy,
 77 literal fixtures and 59 source-bound text records. The owner retains the simple

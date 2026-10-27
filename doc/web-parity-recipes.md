@@ -1,6 +1,6 @@
 # P2-02: bundled sprite recipes and attribution — 26 October 2026
 
-**27 October follow-up:** [P2 remaining acceptance](web-parity-p2-acceptance.md) adds bundled MIDI/bell playback and shared gallery localization, updates the MIDI descriptor status and records current regression/packaging evidence. Original crop/fidelity dispositions and owner deferrals below retain their scope.
+**27 October follow-up:** [P2 remaining acceptance](web-parity-p2-acceptance.md) records the historical MIDI/bell feasibility experiment and shared gallery localization. [The owner subsequently deferred BGM](web-audio-policy.md) and removed TinySynth; bell previews and source MIDI retention remain. Original crop/fidelity dispositions and owner deferrals below retain their scope.
 
 The prepared stable ExAV bundle now has executable browser sprite recipes,
 source crops/anchors, baked effects, exact variant masks and a read-only review

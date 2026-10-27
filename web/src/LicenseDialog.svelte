@@ -39,8 +39,6 @@ agreements, but unless specifically noted, please assume LGPL.
   <!-- Keyboard focus lets readers scroll the long license with arrow and Page Down keys. -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <pre class="license-text" tabindex="0" role="region" aria-label="GNU Lesser General Public License 2.1">{licenseText}</pre>
-  <hr />
-  <p>{text.thirdPartyLicenses}: <a href="/vendor/webaudio-tinysynth/LICENSE.txt" target="_blank" rel="noopener noreferrer">WebAudio TinySynth — Apache 2.0</a></p>
   {#snippet actions()}
     <button onclick={onclose}>{text.closeDialog}</button>
   {/snippet}

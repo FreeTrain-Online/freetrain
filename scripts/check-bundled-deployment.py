@@ -65,9 +65,6 @@ def run(image, platform):
         for metadata in [catalog['provenance']] + catalog['pluginMetadata']:
             assert hashlib.sha256(get(metadata['url'])).hexdigest() == metadata['sha256']
         assert b'Recipe composition' in get('/content-gallery.html')
-        vendor = json.loads(get('/vendor/webaudio-tinysynth/provenance.json'))
-        assert hashlib.sha256(get('/vendor/webaudio-tinysynth/webaudio-tinysynth.js')).hexdigest() == vendor['distributedSha256']
-        assert hashlib.sha256(get('/vendor/webaudio-tinysynth/LICENSE.txt')).hexdigest() == vendor['files']['LICENSE']
         assert sum(a['status'] == 'retained-midi' for a in catalog['assets']) == 3
         for notice in catalog['notices']:
             assert hashlib.sha256(get(notice['url'])).hexdigest() == notice['sha256']

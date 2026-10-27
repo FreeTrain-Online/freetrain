@@ -7,9 +7,11 @@ WebSocket. Its default world is now a canonical H/V spatial reference: a small
 32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
 with **Save 5**. Economy, construction, trains and stations remain future slices.
-Settings also offers local playback of the three bundled MIDI tracks and six
-departure-bell previews. Music starts only when requested and stops on hiding or
-leaving the page. English/Japanese text now uses a shared language registry with
+Settings offers six departure-bell previews alongside the existing sound effects.
+BGM is deferred to a [future improvement project](doc/web-audio-policy.md); the
+TinySynth feasibility experiment was removed after audible pops and crackles.
+Future music may use digital audio, including reimagined versions of the original
+MIDI compositions. English/Japanese text uses a shared language registry with
 separate translation files; see [adding a language](doc/web-parity-localization.md)
 and [P2 acceptance evidence](doc/web-parity-p2-acceptance.md).
 See [P1-02 clock and scheduler](doc/web-parity-clock.md) and

@@ -1,11 +1,15 @@
 # P2 remaining acceptance — 27 October 2026
 
+**Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
+
+The implementation, MIDI tests, container pins and screenshots below are a historical record of the experiment before removal. They are not the current player or test inventory. Bell previews now load independently of any synthesizer; localization and source-media/provenance retention remain in place. Native BGM timbre/listening comparisons below are deferred with the future project.
+
 This pass implements bundled audio playback and scalable localization, and checks
 the content/render/picking and optional-loading regressions. The final P2 phase
 gate remains open for the existing native/device handoff and fidelity qualifications.
 It does not reopen the owner's deferred optional-suite repairs or POST-ASSETS work.
 
-## Delivered behavior
+## Historical delivered behavior before BGM deferral
 
 Settings exposes the three bundled BGM contributions and six departure bells,
 bound by exact contribution identity to the prepared native MIDI/WAV bytes. Names
@@ -54,7 +58,7 @@ future gameplay candidate as translated.
 
 | Acceptance area | Disposition |
 | --- | --- |
-| Bundled MIDI approach/playback | Implemented with pinned local GM synthesis, gesture start, source looping, Stop, cancellation, error/retry and original notices. Actual notes/output and all bundled bells checked in Chromium. Native listening/timbre comparison remains unverified. |
+| Bundled MIDI approach/playback | Historical feasibility experiment; subsequently removed after audible pops/crackles. [BGM deferred to a future improvement project](web-audio-policy.md), outside parity gates. Departure-bell previews remain supported. |
 | English/Japanese P2 presentation | Shell text preserved in separate catalogs; gallery and audio controls localized, including source-bound audio names, interpolation, plurals and narrow layout. Later gameplay text follows its owning feature and P11 reconciliation. |
 | Source resources/fidelity | Carry forward P2-02's source dispositions and owner spot check. RGB888 is the explicit portable rendering choice; original-runtime/native 555/565 matching is not claimed. The 21 diagnosed crops are assigned to POST-ASSETS-07 by owner direction. |
 | Complete rendered variants/picking | Automated gallery covers all 6,496 season/light combinations and actual alpha/shape/picking regressions. This is not a new exhaustive human/original-runtime fidelity review. Procedural terrain/stadium and world consumers retain P3/P7 and other gameplay owners. |

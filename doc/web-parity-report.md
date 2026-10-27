@@ -1,5 +1,7 @@
 # ExAV coverage, differences and delivery estimates
 
+**Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
+
 **P2-01 implementation update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
 delivers reproducible pinned build inputs, converted bitmap surfaces/seasonal
 picture bindings and an inert exact-ID registry. P1-01–04 foundations are
@@ -99,8 +101,8 @@ P0-02's mappings explain missing DLLs without removing the discovery diagnostics
 [P0-09 integration](web-parity-exav-integration.md) now assigns residual source/scope decisions; implementing slices must record
 equivalent portable adaptations versus accepted semantic changes before verification.
 
-A4/external user-file music and debug remain excluded; bundled BGM, silence,
-effects and bells remain required. Video is absent from stable trunk. Empty road
+A4/external user-file music and debug remain excluded. Effects and bells remain
+required; [bundled BGM and silence controls are deferred](web-audio-policy.md). Video is absent from stable trunk. Empty road
 accessory/dummy-car extension shells do not establish a working bus requirement.
 No implemented Undo/Redo binding was found. The reachable balance-sheet placeholder
 retains its planned computed P8 report. Exclusions, unfinished source and planned
@@ -176,7 +178,7 @@ integrated acceptance beyond slice checks, avoiding duplicate effort allowances.
 | P6 stations/passengers | 15–30 | Platform/passage families, listener migration/catchment anomalies, packed loading, fares/upkeep, information/counters and bells. |
 | P7 city/development | 25–45 | Roads/land/ULV, building families and missing direct-placement adaptation, half-voxels, growth/population/construction and controlled randomness. |
 | P8 economy/plugins | 20–35 | Accounts/history/fiscal rollovers, bank/stocks/subsidiaries/stadium, computed reports and explicit source-anomaly decisions. |
-| P9 workflow completion | 15–30 | Remaining 87-family destinations, complete catalog/settings/view/music/help, chapter manual and cross-feature bilingual/authority review. |
+| P9 workflow completion | 15–30 | Remaining 87-family destinations, complete catalog/settings/view/help (BGM deferred), chapter manual and cross-feature bilingual/authority review. |
 | P10 migration/import | 20–40 | Stable runtime fixture acquisition, old type/layout/pack mappings, diagram/save import, rejection/recovery and paired continuation evidence. |
 | P11 integrated acceptance | 20–35 | Legal-city/catalog campaigns, long-run/soak/performance, release/default-package separation, recovery and ledger/locale/difference closure. |
 

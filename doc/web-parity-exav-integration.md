@@ -1,5 +1,7 @@
 # ExAV authority and scope reconciliation
 
+**Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
+
 **P2-01 build-input update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
 replaces the historical default importer/Docker inputs with checked-in pinned
 ExAV resources and a prepared catalog. EXAV-P0-09-INPUTS's reproducible-input
@@ -127,8 +129,9 @@ Stable bundled scope stays **56 manifests / 482 direct declarations / one
 generated child / 238 media**. The 42 original-only direct IDs are historical
 differences, not missing bundled ExAV features. A4 and user-file external music,
 the debug window and video recorder remain owner-excluded; video is absent from
-stable trunk. Bundled MIDI, departure bells, ordinary diagnostics and
-map-construction capability remain included. Heat/RoadSimulator/NeoFT and other
+stable trunk. Departure bells, ordinary diagnostics and map-construction
+capability remain included. Bundled MIDI remains source material; BGM playback
+is deferred under [owner audio policy](web-audio-policy.md). Heat/RoadSimulator/NeoFT and other
 previously deferred enhancements do not become stable gates through source retention.
 
 The [canonical optional review](web-parity-optional-plugins.md) owns the separate

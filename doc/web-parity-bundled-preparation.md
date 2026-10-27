@@ -160,7 +160,7 @@ Keep these concrete follow-ups open:
   Prepared XML and qualified class bindings do not constitute those handlers.
 - Resolve or disposition five source project-resource gaps and twelve inert
   embedded-resource records; deliver the full recipe/variant review gallery.
-- Implement browser MIDI playback/adaptation and relevant bundled-audio workflows.
+- Retain MIDI source/provenance without a playback requirement; [BGM is deferred](web-audio-policy.md). Maintain sound effects and bundled bell previews independently.
 - Deliver separate optional-pack conversion/build/startup selection, collision and
   dependency diagnostics, localized per-set credits and default-cache separation.
 - Review English/Japanese presentation with each delivered feature; the 977 P0

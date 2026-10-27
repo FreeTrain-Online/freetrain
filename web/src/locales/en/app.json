@@ -224,18 +224,7 @@
   "selectedBuilding": "Building details",
   "variant": "Variant",
   "height": "Height",
-  "music": "Music",
-  "silence": "Silence",
-  "playMusic": "Play music",
-  "stopMusic": "Stop music",
-  "musicHint": "Choose a bundled track, then Play. Music stops when you leave or hide the page.",
-  "musicPlaying": "Playing",
-  "musicStopped": "Stopped",
-  "musicLoading": "Loading music…",
-  "musicFailed": "Music could not play. Press Play to retry.",
-  "midiSynthesis": "MIDI synthesis: WebAudio TinySynth",
   "departureBells": "Departure bells",
   "previewBell": "Preview bell",
-  "audioCredit": "Audio credits",
-  "thirdPartyLicenses": "Third-party licenses"
+  "audioCredit": "Audio credits"
 }

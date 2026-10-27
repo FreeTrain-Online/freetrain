@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { bundledBells } from '../src/lib/bundled-audio.ts';
+import type { RenderCatalog } from '../src/lib/content-recipes.ts';
 import { createBrowserAudio } from '../src/lib/browser-audio.ts';
 const event = (id: string, epoch = '1') => ({ type: 'soundEvent' as const, eventId: id, worldEpoch: epoch, kind: 'stationArrived' as const });
 function fixture() {
@@ -27,4 +29,16 @@ Deno.test('playback rejection disables audio and permits a later user retry', as
   f.fail = false; assert.equal(await f.audio.enable(), true);
   f.fail = true; await f.audio.event(event('fails'), '1'); assert.equal(f.audio.enabled, false);
   f.audio.dispose();
+});
+
+Deno.test('bell previews bind all six exact WAVs without depending on retained BGM assets', async () => {
+  const catalog: RenderCatalog = JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json', import.meta.url)));
+  const bells = bundledBells(catalog);
+  assert.equal(bells.length, 6);
+  assert.equal(new Set(bells.map(bell => bell.id)).size, 6);
+  const withoutMusic = structuredClone(catalog);
+  withoutMusic.assets = withoutMusic.assets?.filter(asset => asset.mediaType !== 'mid');
+  assert.deepEqual(bundledBells(withoutMusic), bells);
+  const missing = structuredClone(catalog); missing.assets = [];
+  assert.throws(() => bundledBells(missing), /Missing bundled audio/);
 });

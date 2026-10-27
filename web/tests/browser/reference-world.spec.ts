@@ -268,7 +268,7 @@ test('bundled recipe gallery renders every source frame in all season/light vari
   expect(await bootstrap(page)).toEqual(before);
 });
 
-test('bundled MIDI and bells produce audio only after gestures, with localized controls and a preserved world',async({page})=>{
+test('bundled bells keep gesture-gated localized previews with BGM deferred and a preserved world',async({page})=>{
   await page.addInitScript(()=>{
     const audioWindow=window as unknown as {__audioPeak:number;__audioContexts:AudioContext[]};
     audioWindow.__audioPeak=0;audioWindow.__audioContexts=[];
@@ -290,71 +290,71 @@ test('bundled MIDI and bells produce audio only after gestures, with localized c
     } as typeof AudioNode.prototype.connect;
   });
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+  const musicRequests:string[]=[];
+  page.on('request',request=>{if(/\.mid$|webaudio-tinysynth/.test(request.url()))musicRequests.push(request.url());});
   await page.goto('/');await ready(page);const before=await bootstrap(page);
   await page.locator('canvas').evaluate(el=>{el.dataset.identity='audio-preserved';});
-  const license=await page.request.get('/vendor/webaudio-tinysynth/LICENSE.txt');
-  expect(license.ok()).toBe(true);expect(await license.text()).toContain('Apache License');
   await openPanel(page,'settings');
-  const tracks=page.getByLabel('Music',{exact:true});
-  await expect(tracks.locator('option')).toHaveCount(3);
-  await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
+  await expect(page.getByLabel('Music',{exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Play music',exact:true})).toHaveCount(0);
   expect(await page.evaluate(()=>(window as any).__audioContexts.length)).toBe(0);
-  for(const id of await tracks.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
-    await tracks.selectOption(id);await page.evaluate(()=>{(window as any).__audioPeak=0;});
-    await page.getByRole('button',{name:'Play music',exact:true}).click();
-    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','playing');
-    await expect.poll(()=>page.evaluate(()=>(window as any).__audioPeak),{timeout:10000}).toBeGreaterThan(.0001);
-    await page.getByRole('button',{name:'Stop music',exact:true}).click();
-    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
-  }
   const bells=page.getByLabel('Departure bells',{exact:true});await expect(bells.locator('option')).toHaveCount(6);
   for(const id of await bells.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
+    const contexts=await page.evaluate(()=>(window as any).__audioContexts.length);
     await bells.selectOption(id);await page.getByRole('button',{name:'Preview bell',exact:true}).click();
+    await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.length)).toBe(contexts+1);
     await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
   }
+  expect(await page.evaluate(()=>(window as any).__audioPeak)).toBeGreaterThan(.0001);
   const evidence=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'audio');mkdirSync(evidence,{recursive:true});
   await page.screenshot({path:join(evidence,'settings-en.png'),fullPage:true});
   await page.getByLabel('Language',{exact:true}).selectOption('ja');
   await expect(page.locator('html')).toHaveAttribute('lang','ja');await expect(page.locator('html')).toHaveAttribute('dir','ltr');
-  await expect(page.getByLabel('音楽',{exact:true}).locator('option').first()).toHaveText('開拓');
+  await expect(page.getByLabel('発車ベル',{exact:true}).locator('option')).toHaveCount(6);
+  await expect(page.getByRole('button',{name:'音楽を再生',exact:true})).toHaveCount(0);
   await page.setViewportSize({width:360,height:800});
-  await page.getByRole('button',{name:'音楽を再生',exact:true}).click();
-  await expect(page.getByTestId('music-status')).toHaveText('再生中');
-  await page.screenshot({path:join(evidence,'settings-ja-narrow.png'),fullPage:true});
   await page.getByRole('button',{name:'ベルを試聴',exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
   await page.screenshot({path:join(evidence,'settings-ja-bells.png'),fullPage:true});
-  await page.locator('.primary-panel .panel-title button:last-child').click();
+  await closePanel(page);
   await expect(page.locator('canvas')).toHaveAttribute('data-identity','audio-preserved');
-  await openPanel(page,'settings','ja');await expect(page.getByTestId('music-status')).toHaveText('再生中');
-  // Visibility stops playback without a replay on the next visible frame.
-  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
-  await expect(page.getByTestId('music-status')).toHaveText('停止中');
-  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
-  await expect(page.getByTestId('music-status')).toHaveText('停止中');
+  await openPanel(page,'settings','ja');
+  await expect(page.getByLabel('発車ベル',{exact:true}).locator('option')).toHaveCount(6);
+  expect(musicRequests).toEqual([]);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
 });
 
-test('music hash failures are localized and retryable; cancelled loads never start later',async({page})=>{
+test('bell hash failures remain localized and retryable; closing Settings fences late previews',async({page})=>{
+  await page.addInitScript(()=>{
+    (window as any).__bellStarts=0;
+    const original=AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start=function(...args:Parameters<typeof original>){
+      (window as any).__bellStarts++;return original.apply(this,args);
+    };
+  });
   await page.goto('/');await ready(page);await openPanel(page,'settings');
-  await expect(page.getByRole('button',{name:'Play music',exact:true})).toBeEnabled();
-  await page.route('**/*.mid',route=>route.fulfill({body:'altered MIDI'}));
-  await page.getByRole('button',{name:'Play music',exact:true}).click();
-  await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','failed');
-  await page.unroute('**/*.mid');
+  const preview=page.getByRole('button',{name:'Preview bell',exact:true});
+  await expect(preview).toBeEnabled();
+  await page.route('**/*.wav',route=>route.fulfill({body:'altered WAV'}));
+  await preview.click();
+  await expect(page.getByRole('status').filter({hasText:'Sound could not play.'})).toBeVisible();
+  expect(await page.evaluate(()=>(window as any).__bellStarts)).toBe(0);
+  await page.unroute('**/*.wav');
+  await preview.click();
+  await expect.poll(()=>page.evaluate(()=>(window as any).__bellStarts)).toBe(1);
   let release=()=>{},waiting=false;const held=new Promise<void>(r=>{release=r;});
-  await page.route('**/*.mid',async route=>{
-    try {const response=await route.fetch();waiting=true;await held;await route.fulfill({response});}catch{/* Cancel aborts this request. */}
+  await page.route('**/*.wav',async route=>{
+    const response=await route.fetch();waiting=true;await held;await route.fulfill({response});
   });
   try {
-    await page.getByRole('button',{name:'Play music',exact:true}).click();await expect.poll(()=>waiting).toBe(true);
-    await page.getByRole('button',{name:'Stop music',exact:true}).click();release();
-    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
-    await page.unroute('**/*.mid');
-    await page.getByRole('button',{name:'Play music',exact:true}).click();
-    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','playing');
-    await page.getByRole('button',{name:'Stop music',exact:true}).click();
+    await preview.click();await expect.poll(()=>waiting).toBe(true);
+    await closePanel(page);release();
+    await page.unrouteAll({behavior:'wait'});
+    await openPanel(page,'settings');
+    expect(await page.evaluate(()=>(window as any).__bellStarts)).toBe(1);
+    await preview.click();
+    await expect.poll(()=>page.evaluate(()=>(window as any).__bellStarts)).toBe(2);
   }finally{release();}
 });
 

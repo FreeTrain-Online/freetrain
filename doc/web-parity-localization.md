@@ -94,8 +94,10 @@ empty strings or changed parameters. A source update requires a wording review;
 do not just refresh hashes to make a translation pass. Exact carryovers, changed
 meanings and newly translated strings retain their donor/comparison records.
 
-The delivered P2 content ledger covers the three music and six departure-bell
-names used in the new audio controls. It is **not** an approval of all 977 bundled
+The P2 content ledger retains the three music names from the feasibility
+experiment and the six departure-bell names used by the current preview controls.
+[Music playback is deferred](web-audio-policy.md); its retained translations do
+not imply a player. It is **not** an approval of all 977 bundled
 XML candidates or later gameplay names/help. Those continue with their implementing
 P3–P9 slices and final P11 reconciliation. Source authors and notices remain literal
 attribution. Follow the existing terminology review in
