@@ -1,5 +1,14 @@
 # P3 world creation, generation and terrain — 27 October 2026
 
+**P3-01 complete at source-contract level — 27 October:**
+[terrain contract, decisions and evidence](web-parity-terrain-contract.md) now
+specify dimensions/bounds, terrain/corners/water, source editing/forest/creek/
+terrace behavior, source-defect adaptations, compass sectors and workflow/text
+handoffs. Forty pinned files, 77 literal fixture vectors and 59 source text
+records are checked separately from runtime verification. Next is **P3-02**.
+**Owner water policy:** retain the existing simple global plane throughout this
+checklist; elevated/flowing water and fluid simulation are outside its scope.
+
 The owner has directed execution to move into P3 and requested configurable
 procedural world generation. This document specifies that work and breaks it into
 reviewable implementation slices. **Source research and planning only:** no new
@@ -74,7 +83,8 @@ does not replace the live world or advance its random streams.
 N/E/S/W must follow canonical `Direction` and world geometry. Bind the compass,
 side selectors and preview to the same coordinate transform, with asymmetric
 fixtures; H/V storage edges and screen edges must not be casually relabeled as
-compass directions. Resolve the exact boundary-sector mapping in P3-01.
+compass directions. P3-01 specifies the boundary-sector mapping as
+[WORLDGEN-D001](web-parity-terrain-contract.md#creation-bounds-and-coordinates).
 
 ## Generation design and constraints
 
@@ -106,8 +116,8 @@ ordinary project names without `Exav` prefixes.
    paths; account for channel width, land rim and outlet connectivity. In v1 their
    wet beds lie below the shared water plane. Routed channels may cut terrain and
    split land, so connectivity/buildability checks follow this stage. Elevated
-   lakes, downhill water surfaces, waterfalls, erosion and fluid dynamics require
-   a later explicit water-model extension and are not implied by these controls.
+   lakes, downhill water surfaces, waterfalls, erosion and fluid dynamics are
+   outside this checklist per the owner's simple-water direction.
 6. **Normalize terrain.** Convert to legal whole-ground and quarter-corner geometry,
    using the reviewed loader constraints. Recheck lake rims, river connectivity,
    coastline sides and landmass after smoothing; it may remove narrow barriers.
@@ -145,13 +155,15 @@ invent a number here or revive migrations for retired development formats.
 ## Granular execution slices
 
 Each slice ships its needed English/Japanese UI/help, source/adaptation decisions,
-save/read-model changes and focused verification. The source review above is an
-input to P3-01, not a completed terrain specification. P3-01 must still derive exact
-legal transitions, constants, defect dispositions and fixture expectations.
+save/read-model changes and focused verification. The initial source review above
+feeds the completed [P3-01 semantic contract](web-parity-terrain-contract.md),
+which supplies legal transitions, constants, defect dispositions and independent
+fixture expectations. Later slices must bind and execute those expectations in
+the production runtime before claiming gameplay verification.
 
 | Slice | Work and dependency | Required evidence before checking it complete |
 | --- | --- | --- |
-| **P3-01 — source contract and decisions** | Derive empty/import dimension mappings, ground/corners/water, forest variants/eligibility, Mountain2 repair and terrace constraints. Resolve source defects, world-construction side effects (including source test trains), construction-mode behavior and compass sectors. Reconcile MAN/DEV/EXAV-13 links and source-visible strings. | Hashed semantic review and independently tabulated small terrain/import/forest/creek fixtures; new generation heuristics have separate decision IDs. No incidental constructor test trains promoted into generated worlds before P5. |
+| **P3-01 — source contract and decisions** | **Source specification complete:** [contract and evidence](web-parity-terrain-contract.md) resolve dimensions, terrain/water/corners, forest variants, Mountain2/terrace rules, defects, test-train side effects, authoring mode and compass sectors; MAN/DEV/EXAV-13/text links retained. | 40 pinned source files, 12 terrain decisions plus WORLDGEN-D001, 77 literal fixtures and 59 source text records. Read-only checks pass; production/gameplay/browser acceptance remains open. |
 | **P3-02 — request/profile and budgets** | Define empty/import/generated DTOs, presets, bounds, generator identity, stage seed derivation, operation/job lifecycle and content requirements. Measure candidate size/memory before selecting exposed size limits. Depends on 01. | Validation matrix for overflow, contradictory settings, tiny maps, high water, missing packs, work limits and deterministic seed/stage vectors. Document initial supported dimensions separately from future capacity targets. |
 | **P3-03 — canonical terrain state** | Add ground grid, quarter corners, global water and vegetation/terrace occupancy to canonical world/read models. Generalize the reference-loop-only invariant so a valid empty world can have zero rails. Integrate stable IDs and prepared recipes with exact profile dispatch. Depends on 01/02. | Independent flat/slope/underwater/border fixtures; invalid corners/overlap rejected without partial mutation; Simulation remains free of native/UI/image dependencies. |
 | **P3-04 — saves and transport foundation** | Serialize actual terrain, decorations, mode and generation provenance; extend snapshot/delta/removal and current-format schema/identity checks. Bound transfer/checkpoint work. Depends on 03; extend incrementally in later slices. | Save/load and restart equality, edited-terrain round trips, missing-pack/unsupported-version rejection preserving files/current world, multi-client resync and epoch fencing. |
@@ -161,7 +173,7 @@ legal transitions, constants, defect dispositions and fixture expectations.
 | **P3-08 — seeded relief** | Implement versioned terrain stage with plains/hills/mountains, relief/scale/smoothness and seed controls; add generated preview. Depends on 02/07. | Fixed expected samples/hashes, same-input replay, distinct-seed variation, quantized legal slopes, preset-specific measured relief and no live/gameplay RNG consumption. |
 | **P3-09 — islands and directional coasts** | Add inland/island/selected-side masks, sea level and approximate coverage. Specify connected land/sea predicates and hard/soft constraints. Depends on 08. | Flood-fill/connectivity oracles after normalization; island rim, four asymmetric single-coast cases and multi-side cases; reject impossible coverage/size combinations. |
 | **P3-10 — lakes and rivers** | Add sea-level enclosed basins and continuous-width channels/outlets; deterministic routing, bounded repairs and conflict diagnostics. Keep decorative creek mode separate. Depends on 09. | Enclosed lake rim, connected river bed/outlet/banks, no illegal uphill water surface; tiny maps/high relief/river-lake-coast combinations; source creek vectors and skipped-cell behavior independently covered. |
-| **P3-11 — forests and cover** | Bind six bundled species/variants, source binomial scatter, seasonal trees and ground cover; add coverage/clustering/palette filters and starting-area reservation. Other foliage only through reviewed compatible contributions. Depends on 05/10. | No underwater/blocked placement, source count/offset vectors, save-preserved appearances, expected eligible-cell coverage, forest-setting changes leave terrain/water identical, base-only and optional identity separation. |
+| **P3-11 — forests and cover** | Bind six bundled species/variants, source binomial scatter, seasonal trees and ground cover; add coverage/clustering/palette filters and starting-area reservation. Other foliage only through reviewed compatible contributions. Depends on 05/10. | Generated vegetation uses dry eligible cells; manual source underwater eligibility stays distinct. Check count/offset vectors, save-preserved appearances, expected coverage, forest-setting changes leaving terrain/water identical, base-only and optional identity separation. |
 | **P3-12 — preview and generation UX completion** | Complete compass, actual coverage/buildable metrics, seed/preset controls, draft invalidation, progress/cancel/retry and exact-candidate replacement. Reuse functionality introduced in 06–11. | Rapid control changes, stale/out-of-order results, epoch/content changes during jobs, reconnect, cancellation, Owner-only commit and EN/JA keyboard/focus/narrow-panel behavior. Preview equals committed terrain. |
 | **P3-13 — corner editing** | Port raise/lower, corner targeting and source Ctrl/Shift behavior with explicit accessible alternatives. Add authoritative read-only legality preview and atomic commit, operation-specific costs/ownership where source requires them. Depends on 06 and terrain rules from 01. | Independent corner transitions at bounds/water/occupied voxels, preview has no effects, commit revalidates revision/role/occupancy and publishes one consistent delta; save continuation. |
 | **P3-14 — rectangle editing and repair** | Port Mountain2 rectangle raise/excavate and explicit repair; review modifier semantics and transaction failures. Depends on 13. | Shared-corner repair vectors, reversed selection, clipped/border/occupied regions, no partial unauthorized edits and multi-client conflict cases. |

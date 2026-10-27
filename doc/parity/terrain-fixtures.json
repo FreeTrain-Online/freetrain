@@ -1,0 +1,1992 @@
+{
+  "schemaVersion": 1,
+  "slice": "P3-01",
+  "status": "specified",
+  "authority": {
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "version": "ExAV 2.1.1.12 / V2"
+  },
+  "method": "Literal independent expectations for source primitives and explicit adaptations. Controlled forest/creek draws are input vectors, not promises about an unseeded desktop run. No modern production terrain executes here. Whole-map importer, gameplay, rendering and browser acceptance remain P3-03–17.",
+  "fixtures": [
+    {
+      "id": "TERRAIN-001",
+      "kind": "dimensions",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "route": "source-empty",
+        "dimensions": [
+          30,
+          30,
+          6
+        ]
+      },
+      "expected": {
+        "storage": [
+          30,
+          42,
+          6
+        ],
+        "water": 1
+      },
+      "derivation": "V=30+2*6; water=6/4 integer.",
+      "sources": [
+        "core/contributions/others/NewWorldDialog.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-002",
+      "kind": "dimensions",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "route": "source-empty",
+        "dimensions": [
+          5,
+          9,
+          7
+        ]
+      },
+      "expected": {
+        "storage": [
+          5,
+          23,
+          7
+        ],
+        "water": 1
+      },
+      "derivation": "Non-square, nonmultiple-of-four Z exposes padding/truncation.",
+      "sources": [
+        "core/contributions/others/NewWorldDialog.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-003",
+      "kind": "dimensions",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "route": "web-explicit",
+        "dimensions": [
+          5,
+          9,
+          7
+        ],
+        "water": 2
+      },
+      "expected": {
+        "storage": [
+          5,
+          9,
+          7
+        ],
+        "water": 2
+      },
+      "derivation": "Explicit stored dimensions have no hidden padding.",
+      "sources": [
+        "core/contributions/others/NewWorldDialog.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-001"
+      ]
+    },
+    {
+      "id": "TERRAIN-004",
+      "kind": "coordinates",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "dimensions": [
+          5,
+          8,
+          4
+        ],
+        "hv": [
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "xy": [
+          3,
+          0
+        ]
+      },
+      "derivation": "x=h-floor(v/2)+floor((V-1)/2); y=h+ceil(v/2).",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-005",
+      "kind": "coordinates",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "dimensions": [
+          5,
+          8,
+          4
+        ],
+        "hv": [
+          4,
+          0
+        ]
+      },
+      "expected": {
+        "xy": [
+          7,
+          4
+        ]
+      },
+      "derivation": "x=h-floor(v/2)+floor((V-1)/2); y=h+ceil(v/2).",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-006",
+      "kind": "coordinates",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "dimensions": [
+          5,
+          8,
+          4
+        ],
+        "hv": [
+          0,
+          7
+        ]
+      },
+      "expected": {
+        "xy": [
+          0,
+          4
+        ]
+      },
+      "derivation": "x=h-floor(v/2)+floor((V-1)/2); y=h+ceil(v/2).",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-007",
+      "kind": "coordinates",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "dimensions": [
+          5,
+          8,
+          4
+        ],
+        "hv": [
+          4,
+          7
+        ]
+      },
+      "expected": {
+        "xy": [
+          4,
+          8
+        ]
+      },
+      "derivation": "x=h-floor(v/2)+floor((V-1)/2); y=h+ceil(v/2).",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-008",
+      "kind": "coordinates",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "dimensions": [
+          5,
+          8,
+          4
+        ],
+        "hv": [
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "xy": [
+          4,
+          4
+        ]
+      },
+      "derivation": "x=h-floor(v/2)+floor((V-1)/2); y=h+ceil(v/2).",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-009",
+      "kind": "compass",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "name": "N",
+        "deltaXY": [
+          0,
+          -1
+        ]
+      },
+      "expected": {
+        "deltaScreen": [
+          -16,
+          -8
+        ]
+      },
+      "derivation": "Projection delta=(16*(dx+dy),8*(dy-dx)); Z unchanged.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-010",
+      "kind": "compass",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "name": "E",
+        "deltaXY": [
+          1,
+          0
+        ]
+      },
+      "expected": {
+        "deltaScreen": [
+          16,
+          -8
+        ]
+      },
+      "derivation": "Projection delta=(16*(dx+dy),8*(dy-dx)); Z unchanged.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-011",
+      "kind": "compass",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "name": "S",
+        "deltaXY": [
+          0,
+          1
+        ]
+      },
+      "expected": {
+        "deltaScreen": [
+          16,
+          8
+        ]
+      },
+      "derivation": "Projection delta=(16*(dx+dy),8*(dy-dx)); Z unchanged.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-012",
+      "kind": "compass",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "name": "W",
+        "deltaXY": [
+          -1,
+          0
+        ]
+      },
+      "expected": {
+        "deltaScreen": [
+          -16,
+          8
+        ]
+      },
+      "derivation": "Projection delta=(16*(dx+dy),8*(dy-dx)); Z unchanged.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-013",
+      "kind": "coast-sector",
+      "classification": "generation",
+      "status": "specified",
+      "input": {
+        "xy": [
+          3,
+          0
+        ],
+        "boundsXY": [
+          0,
+          0,
+          7,
+          8
+        ]
+      },
+      "expected": {
+        "sector": "N"
+      },
+      "derivation": "WORLDGEN-D001 normalized canonical XY sector, not storage-side names.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": [
+        "WORLDGEN-D001"
+      ]
+    },
+    {
+      "id": "TERRAIN-014",
+      "kind": "coast-sector",
+      "classification": "generation",
+      "status": "specified",
+      "input": {
+        "xy": [
+          7,
+          4
+        ],
+        "boundsXY": [
+          0,
+          0,
+          7,
+          8
+        ]
+      },
+      "expected": {
+        "sector": "E"
+      },
+      "derivation": "WORLDGEN-D001 normalized canonical XY sector, not storage-side names.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": [
+        "WORLDGEN-D001"
+      ]
+    },
+    {
+      "id": "TERRAIN-015",
+      "kind": "coast-sector",
+      "classification": "generation",
+      "status": "specified",
+      "input": {
+        "xy": [
+          4,
+          8
+        ],
+        "boundsXY": [
+          0,
+          0,
+          7,
+          8
+        ]
+      },
+      "expected": {
+        "sector": "S"
+      },
+      "derivation": "WORLDGEN-D001 normalized canonical XY sector, not storage-side names.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": [
+        "WORLDGEN-D001"
+      ]
+    },
+    {
+      "id": "TERRAIN-016",
+      "kind": "coast-sector",
+      "classification": "generation",
+      "status": "specified",
+      "input": {
+        "xy": [
+          0,
+          4
+        ],
+        "boundsXY": [
+          0,
+          0,
+          7,
+          8
+        ]
+      },
+      "expected": {
+        "sector": "W"
+      },
+      "derivation": "WORLDGEN-D001 normalized canonical XY sector, not storage-side names.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": [
+        "WORLDGEN-D001"
+      ]
+    },
+    {
+      "id": "TERRAIN-017",
+      "kind": "water-ground",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "z": 1,
+        "water": 2
+      },
+      "expected": {
+        "underwater": true,
+        "underground": true,
+        "elevated": false
+      },
+      "derivation": "Water and ground are independent strict comparisons.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-018",
+      "kind": "water-ground",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "z": 2,
+        "water": 2
+      },
+      "expected": {
+        "underwater": false,
+        "underground": false,
+        "elevated": false
+      },
+      "derivation": "Water and ground are independent strict comparisons.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-019",
+      "kind": "water-ground",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 1,
+        "z": 1,
+        "water": 2
+      },
+      "expected": {
+        "underwater": true,
+        "underground": false,
+        "elevated": false
+      },
+      "derivation": "Water and ground are independent strict comparisons.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-020",
+      "kind": "water-ground",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 1,
+        "z": 3,
+        "water": 2
+      },
+      "expected": {
+        "underwater": false,
+        "underground": false,
+        "elevated": true
+      },
+      "derivation": "Water and ground are independent strict comparisons.",
+      "sources": [
+        "core/world/World.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-021",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "brightness": 0
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-022",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          255,
+          255,
+          255
+        ]
+      },
+      "expected": {
+        "brightness": 1
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-023",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          255,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "brightness": 0.5
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-024",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          0,
+          255,
+          0
+        ]
+      },
+      "expected": {
+        "brightness": 0.5
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-025",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          0,
+          0,
+          255
+        ]
+      },
+      "expected": {
+        "brightness": 0.5
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-026",
+      "kind": "lightness",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "rgb": [
+          64,
+          128,
+          192
+        ]
+      },
+      "expected": {
+        "brightness": 0.5019607843137255
+      },
+      "derivation": "HSL lightness=(max+min)/510; pure RGB primaries all 1/2.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-027",
+      "kind": "sample",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "hv": [
+          0,
+          0
+        ],
+        "worldHV": [
+          4,
+          4
+        ],
+        "image": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "depth": 0
+      },
+      "derivation": "2-pixel horizontal ramp; odd-row half-step offset before image scale, clamped final pixel.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-028",
+      "kind": "sample",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "hv": [
+          0,
+          1
+        ],
+        "worldHV": [
+          4,
+          4
+        ],
+        "image": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "depth": 0.25
+      },
+      "derivation": "2-pixel horizontal ramp; odd-row half-step offset before image scale, clamped final pixel.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-029",
+      "kind": "sample",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "hv": [
+          1,
+          1
+        ],
+        "worldHV": [
+          4,
+          4
+        ],
+        "image": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "depth": 0.75
+      },
+      "derivation": "2-pixel horizontal ramp; odd-row half-step offset before image scale, clamped final pixel.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-030",
+      "kind": "sample",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "hv": [
+          3,
+          1
+        ],
+        "worldHV": [
+          4,
+          4
+        ],
+        "image": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "depth": 1
+      },
+      "derivation": "2-pixel horizontal ramp; odd-row half-step offset before image scale, clamped final pixel.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-031",
+      "kind": "displace",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "depth": 0,
+        "Z": 8
+      },
+      "expected": {
+        "ground": 0
+      },
+      "derivation": "Truncate min(Z-1,Z*depth).",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-032",
+      "kind": "displace",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "depth": 0.5,
+        "Z": 8
+      },
+      "expected": {
+        "ground": 4
+      },
+      "derivation": "Truncate min(Z-1,Z*depth).",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-033",
+      "kind": "displace",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "depth": 1,
+        "Z": 8
+      },
+      "expected": {
+        "ground": 7
+      },
+      "derivation": "Truncate min(Z-1,Z*depth).",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-034",
+      "kind": "displace",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "depth": 0.499,
+        "Z": 8
+      },
+      "expected": {
+        "ground": 3
+      },
+      "derivation": "Truncate min(Z-1,Z*depth).",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-035",
+      "kind": "interpolation-group",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": [
+          0,
+          4,
+          3,
+          2
+        ]
+      },
+      "expected": {
+        "ground": [
+          0,
+          1,
+          1,
+          1
+        ]
+      },
+      "derivation": "One adjacent XY quartet: lower all to min+1; low cell unchanged.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-036",
+      "kind": "interpolation-group",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": [
+          2,
+          3,
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "ground": [
+          2,
+          3,
+          2,
+          3
+        ]
+      },
+      "derivation": "Already spans only one level; never raise low ground.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-037",
+      "kind": "smooth-corner",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "min2": 1,
+        "max2": 1,
+        "max4": 2,
+        "depth": 0.4375,
+        "Z": 4
+      },
+      "expected": {
+        "offset": 3
+      },
+      "derivation": "Only flat 2x2 with higher 4x4 surround: floor(min(4Z-1,4Z*depth)) modulo4.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-038",
+      "kind": "smooth-corner",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "min2": 1,
+        "max2": 2,
+        "max4": 3,
+        "depth": 0.4375,
+        "Z": 4
+      },
+      "expected": {
+        "offset": 0
+      },
+      "derivation": "Only flat 2x2 with higher 4x4 surround: floor(min(4Z-1,4Z*depth)) modulo4.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-039",
+      "kind": "smooth-corner",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "min2": 1,
+        "max2": 1,
+        "max4": 1,
+        "depth": 0.4375,
+        "Z": 4
+      },
+      "expected": {
+        "offset": 0
+      },
+      "derivation": "Only flat 2x2 with higher 4x4 surround: floor(min(4Z-1,4Z*depth)) modulo4.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-040",
+      "kind": "corner-total",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "corners": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "fine": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "packed": 291
+      },
+      "derivation": "NE/SE/SW/NW nibbles 0x0123; add 4*ground.",
+      "sources": [
+        "core/world/terrain/MountainVoxel.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-041",
+      "kind": "corner-edit",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "corners": [
+          4,
+          3,
+          4,
+          4
+        ],
+        "cornerIndex": 1,
+        "delta": 1
+      },
+      "expected": {
+        "ground": 3,
+        "corners": null
+      },
+      "derivation": "All4 saturation raises ground and removes MountainVoxel.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-042",
+      "kind": "corner-edit",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "corners": null,
+        "cornerIndex": 0,
+        "delta": -1
+      },
+      "expected": {
+        "ground": 1,
+        "corners": [
+          3,
+          4,
+          4,
+          4
+        ]
+      },
+      "derivation": "Flat lowering materializes all4 one level below and decrements selected NE.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-043",
+      "kind": "corner-edit",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "corners": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "cornerIndex": 0,
+        "delta": -1
+      },
+      "expected": {
+        "ground": 2,
+        "corners": null
+      },
+      "derivation": "All0 flattening removes slope.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-044",
+      "kind": "corner-raise-gate",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 7,
+        "Z": 8,
+        "offset": 3,
+        "matched": true,
+        "sameGround": true,
+        "blocked": false
+      },
+      "expected": {
+        "allowed": false
+      },
+      "derivation": "Near-roof h=3 cannot reach4.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-045",
+      "kind": "corner-raise-gate",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "Z": 8,
+        "offset": 1,
+        "matched": false,
+        "sameGround": true,
+        "blocked": false
+      },
+      "expected": {
+        "allowed": false
+      },
+      "derivation": "Mismatched shared corners block raising.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-046",
+      "kind": "corner-raise-gate",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "Z": 8,
+        "offset": 1,
+        "matched": true,
+        "sameGround": true,
+        "blocked": false
+      },
+      "expected": {
+        "allowed": true
+      },
+      "derivation": "Matched clear same-ground site with headroom.",
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-047",
+      "kind": "rectangle-upper-target",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "shift": false,
+        "cornersAtLeast2": 0,
+        "eastOrSouthConstraint": false
+      },
+      "expected": {
+        "offset": 4
+      },
+      "derivation": "Shift less2 flag wins over more2; boundary/low neighbor/obstacle forces2.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-048",
+      "kind": "rectangle-upper-target",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "shift": true,
+        "cornersAtLeast2": 0,
+        "eastOrSouthConstraint": false
+      },
+      "expected": {
+        "offset": 2
+      },
+      "derivation": "Shift less2 flag wins over more2; boundary/low neighbor/obstacle forces2.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-049",
+      "kind": "rectangle-upper-target",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "shift": true,
+        "cornersAtLeast2": 2,
+        "eastOrSouthConstraint": false
+      },
+      "expected": {
+        "offset": 4
+      },
+      "derivation": "Shift less2 flag wins over more2; boundary/low neighbor/obstacle forces2.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-050",
+      "kind": "rectangle-upper-target",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "shift": true,
+        "cornersAtLeast2": 3,
+        "eastOrSouthConstraint": true
+      },
+      "expected": {
+        "offset": 2
+      },
+      "derivation": "Shift less2 flag wins over more2; boundary/low neighbor/obstacle forces2.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-051",
+      "kind": "rectangle-sites",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "minXY": [
+          2,
+          3
+        ],
+        "maxXY": [
+          4,
+          5
+        ]
+      },
+      "expected": {
+        "sites": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      },
+      "derivation": "Mountain2 uses x<max,y<max on shared-corner sites; not inclusive land fill.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-052",
+      "kind": "rectangle-sites",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "minXY": [
+          2,
+          3
+        ],
+        "maxXY": [
+          2,
+          5
+        ]
+      },
+      "expected": {
+        "sites": []
+      },
+      "derivation": "Either span<1 returns without edits.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-053",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          9,
+          9,
+          -1
+        ]
+      },
+      "expected": {
+        "offset": 1
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-054",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          8,
+          8,
+          8
+        ]
+      },
+      "expected": {
+        "offset": 0
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-055",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          12,
+          12,
+          12
+        ]
+      },
+      "expected": {
+        "offset": 4
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-056",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          16,
+          16,
+          16
+        ]
+      },
+      "expected": {
+        "offset": null
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-057",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          9,
+          10,
+          9
+        ]
+      },
+      "expected": {
+        "offset": null
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-058",
+      "kind": "repair",
+      "classification": "adaptation",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "neighborFine": [
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "expected": {
+        "offset": null
+      },
+      "derivation": "Require agreeing present refs and offset r-4*ground in0..4; reject unrepresentable/all absent.",
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-010"
+      ]
+    },
+    {
+      "id": "TERRAIN-059",
+      "kind": "forest-scatter",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "density": 2,
+        "spriteCount": 3,
+        "coinDraws": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "treeDraws": [
+          [
+            15,
+            0,
+            2
+          ],
+          [
+            0,
+            15,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "expected": {
+        "count": 3,
+        "triples": [
+          [
+            15,
+            0,
+            2
+          ],
+          [
+            0,
+            8,
+            1
+          ],
+          [
+            15,
+            15,
+            0
+          ]
+        ],
+        "drawCount": 13
+      },
+      "derivation": "3 successful zero coins; X=x+y,Y=((-x+y)>>1)+8; swaps only X/Y; sprites retain original slots.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-060",
+      "kind": "forest-scatter",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "density": 1,
+        "spriteCount": 9,
+        "coinDraws": [
+          1,
+          1
+        ],
+        "treeDraws": []
+      },
+      "expected": {
+        "count": 0,
+        "triples": [],
+        "drawCount": 2
+      },
+      "derivation": "No accepted coin => no trees or placement; still two draws.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-061",
+      "kind": "forest-eligibility",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "z": 1,
+        "ground": 1,
+        "water": 2,
+        "reusable": true,
+        "mountain": false,
+        "generated": false
+      },
+      "expected": {
+        "allowed": true
+      },
+      "derivation": "Source ground && (reusable || Mountain); generated forest adds dry-surface rule only.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-062",
+      "kind": "forest-eligibility",
+      "classification": "generation",
+      "status": "specified",
+      "input": {
+        "z": 1,
+        "ground": 1,
+        "water": 2,
+        "reusable": true,
+        "mountain": false,
+        "generated": true
+      },
+      "expected": {
+        "allowed": false
+      },
+      "derivation": "Source ground && (reusable || Mountain); generated forest adds dry-surface rule only.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": [
+        "P3-TERRAIN-008"
+      ]
+    },
+    {
+      "id": "TERRAIN-063",
+      "kind": "forest-eligibility",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "z": 2,
+        "ground": 2,
+        "water": 1,
+        "reusable": false,
+        "mountain": true,
+        "generated": false
+      },
+      "expected": {
+        "allowed": true
+      },
+      "derivation": "Source ground && (reusable || Mountain); generated forest adds dry-surface rule only.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-064",
+      "kind": "forest-eligibility",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "z": 2,
+        "ground": 2,
+        "water": 1,
+        "reusable": false,
+        "mountain": false,
+        "generated": false
+      },
+      "expected": {
+        "allowed": false
+      },
+      "derivation": "Source ground && (reusable || Mountain); generated forest adds dry-surface rule only.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-065",
+      "kind": "forest-eligibility",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "z": 3,
+        "ground": 2,
+        "water": 1,
+        "reusable": true,
+        "mountain": false,
+        "generated": false
+      },
+      "expected": {
+        "allowed": false
+      },
+      "derivation": "Source ground && (reusable || Mountain); generated forest adds dry-surface rule only.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-066",
+      "kind": "creek-seed",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "fromXY": [
+          2,
+          2
+        ],
+        "toXY": [
+          4,
+          3
+        ]
+      },
+      "expected": {
+        "seed": 769
+      },
+      "derivation": "258 XOR515=769, unchecked Int32; no world stream.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-067",
+      "kind": "creek-route",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "fromXY": [
+          2,
+          2
+        ],
+        "toXY": [
+          4,
+          3
+        ],
+        "axisDraws": [
+          0,
+          1
+        ]
+      },
+      "expected": {
+        "route": [
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            3,
+            12
+          ],
+          [
+            4,
+            3,
+            1
+          ]
+        ]
+      },
+      "derivation": "Controlled diagonal choices left E then right S then E; N8/E4/S2/W1; reciprocal connections.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-068",
+      "kind": "creek-route",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "fromXY": [
+          2,
+          2
+        ],
+        "toXY": [
+          2,
+          2
+        ],
+        "axisDraws": []
+      },
+      "expected": {
+        "route": [
+          [
+            2,
+            2,
+            0
+          ]
+        ]
+      },
+      "derivation": "Coincident endpoint gets direction0 and no route draws.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-069",
+      "kind": "creek-apply",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "route": [
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            3,
+            12
+          ],
+          [
+            4,
+            3,
+            1
+          ]
+        ],
+        "blockedXY": [
+          [
+            3,
+            2
+          ]
+        ],
+        "existingBits": {
+          "3,3": 2
+        }
+      },
+      "expected": {
+        "placed": [
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            3,
+            3,
+            14
+          ],
+          [
+            4,
+            3,
+            1
+          ]
+        ],
+        "continuous": false
+      },
+      "derivation": "Skip blocked site; OR existing bits; no rerouting, carving or repair implied.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-070",
+      "kind": "land-booking",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "width": 2,
+        "depth": 3,
+        "price": 100,
+        "owned": true,
+        "placed": 1
+      },
+      "expected": {
+        "spend": 600
+      },
+      "derivation": "Inclusive rectangle booking independent of successful/zero-tree sites; owned false spends0.",
+      "sources": [
+        "core/contributions/land/LandBuilderContribution.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-071",
+      "kind": "land-booking",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "width": 2,
+        "depth": 3,
+        "price": 100,
+        "owned": true,
+        "placed": 0
+      },
+      "expected": {
+        "spend": 600
+      },
+      "derivation": "Inclusive rectangle booking independent of successful/zero-tree sites; owned false spends0.",
+      "sources": [
+        "core/contributions/land/LandBuilderContribution.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-072",
+      "kind": "land-booking",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "width": 2,
+        "depth": 3,
+        "price": 100,
+        "owned": false,
+        "placed": 6
+      },
+      "expected": {
+        "spend": 0
+      },
+      "derivation": "Inclusive rectangle booking independent of successful/zero-tree sites; owned false spends0.",
+      "sources": [
+        "core/contributions/land/LandBuilderContribution.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-073",
+      "kind": "terrace-roundtrip",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "ground": 2,
+        "corners": [
+          0,
+          1,
+          4,
+          2
+        ],
+        "hasTrees": true,
+        "owned": true
+      },
+      "expected": {
+        "terraceGround": 3,
+        "terraceZ": 2,
+        "restoredGround": 2,
+        "restoredCorners": [
+          0,
+          1,
+          4,
+          2
+        ],
+        "restoredTrees": false,
+        "restoredOwned": false
+      },
+      "derivation": "Back up offsets only, one-level ground delta, recreated Mountain starts unowned/undecorated.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceVoxel.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-074",
+      "kind": "cliff-restore",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "occupied": false,
+        "sampleOffsets": [
+          0,
+          2,
+          4,
+          1
+        ]
+      },
+      "expected": {
+        "result": "create"
+      },
+      "derivation": "Same-Z max neighbor samples, reject obstruction/out-of-range, all0 no-op.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-075",
+      "kind": "cliff-restore",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "occupied": false,
+        "sampleOffsets": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "result": "noop"
+      },
+      "derivation": "Same-Z max neighbor samples, reject obstruction/out-of-range, all0 no-op.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-076",
+      "kind": "cliff-restore",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "occupied": false,
+        "sampleOffsets": [
+          0,
+          5,
+          0,
+          0
+        ]
+      },
+      "expected": {
+        "result": "reject"
+      },
+      "derivation": "Same-Z max neighbor samples, reject obstruction/out-of-range, all0 no-op.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "TERRAIN-077",
+      "kind": "cliff-restore",
+      "classification": "source",
+      "status": "specified",
+      "input": {
+        "occupied": true,
+        "sampleOffsets": [
+          0,
+          2,
+          4,
+          1
+        ]
+      },
+      "expected": {
+        "result": "reject"
+      },
+      "derivation": "Same-Z max neighbor samples, reject obstruction/out-of-range, all0 no-op.",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs"
+      ],
+      "decisions": []
+    }
+  ]
+}

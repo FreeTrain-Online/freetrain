@@ -18,6 +18,19 @@ comparison, measured capacity and native/device acceptance remain open.** P0-07
 P0-09 [source integration](web-parity-exav-integration.md) is complete; overall P0 remains open. No game, protocol, content, save version,
 service limit or distribution input changes in this batch.
 
+## P3-01 terrain fixture handoff
+
+**27 October 2026:** [terrain contracts](web-parity-terrain-contract.md) add
+[77 literal source/adaptation/generation vectors](parity/terrain-fixtures.json),
+bound through [40 pinned files and decisions](parity/terrain-review.json).
+They use `TERRAIN-*` IDs and retain classification; they do not alter the existing
+31 `EXAV-SCN-*` denominator or count new generation heuristics as source parity.
+The read-only `scripts/review-terrain.py` checks specification arithmetic and
+provenance; whole-world production import, editing/rendering/save/browser and
+generated-topology execution remain P3-03–17. Water remains the simple single
+global plane per owner direction. P3-01 source specification can close while
+the phase's runtime and original-runtime acceptance stay open.
+
 ## Independent expectations
 
 Each `EXAV-SCN-*` record has inputs, expected outcomes, a derivation, phase owner,

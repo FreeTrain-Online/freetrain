@@ -1,5 +1,11 @@
 # Web parity coverage inventory
 
+**P3-01 source contract complete — 27 October 2026:** [terrain contracts and decisions](web-parity-terrain-contract.md)
+bind 40 pinned files, 12 terrain decisions, a separate generation compass policy,
+77 literal fixtures and 59 source-bound text records. The owner retains the simple
+global water plane. Source/fixture checks close P3-01 only; runtime, browser and
+P3 acceptance remain open. Next is P3-02 requests/profiles/budgets.
+
 **P3 planning — 27 October 2026:** [world creation, generation and terrain](web-parity-world-generation.md)
 records ExAV's actual empty-world/heightmap/forest/creek facilities and the
 owner-requested configurable procedural generator, with 17 implementation slices

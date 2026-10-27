@@ -134,6 +134,25 @@ through this current overlay:
   Conversely, a documented proposal is no reason to exclude ExAV's registered
   tuning window or source-supported fare fields. ExAV code determines the boundary.
 
+## P3-01 terrain workflow bindings
+
+**27 October 2026, specified:** [terrain contracts and decisions](web-parity-terrain-contract.md)
+and [source/workflow/slice mappings](parity/terrain-review.json) now bind the
+new-world, terrain, rectangle/repair, terrace/cut, forest/creek and ground-picking
+families. MAN-M01/O02/E02/A02/A19 map to P3-06/07; MAN-T09/M05/O06/A14/A18 to
+P3-13/14/15; MAN-M02/W11/D02 to P3-05 and later cross-system cut acceptance;
+MAN-A16 supplies authority/draft behavior for every affected slice. EXAV-13 maps
+to the corner/rectangle/terrace source rules and explicit atomic publication policy.
+
+The historical developer IDs retain precise meanings for this slice:
+**DEV-P07** land builders, **DEV-P09** new-game providers, **DEV-P10** pictures,
+**DEV-P15** special structures, **DEV-P17** fixed terrain-map providers and
+**DEV-P28** voxel boundaries. The [contract's reciprocal table](web-parity-terrain-contract.md#workflow-and-text-handoff)
+links them to actual source consumers and P3 runtime owners. These historical
+pages are format/context donors, not gameplay authorities. The source-bound
+translation review and independent fixtures are specified; the operation registry
+and browser workflows remain unimplemented and no runtime coverage credit changes.
+
 ## English/Japanese text and UI reference
 
 Text entries retain source file/hash, a literal/statement occurrence key or resx

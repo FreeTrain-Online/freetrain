@@ -1,0 +1,970 @@
+{
+  "schemaVersion": 1,
+  "slice": "P3-01",
+  "status": "wording-reviewed-not-shipped",
+  "sourceStrings": [
+    {
+      "id": "TERRAIN-TEXT-001",
+      "source": "core/framework/NewWorldDialog.cs",
+      "line": 70,
+      "symbolOrExpression": "this.label1.Text = \"作者：\";",
+      "ja": "作者：",
+      "jaSha256": "82c0db872c4a7ffcf4f256bd658ba3dacd7823e0ff50d56d2460b991de59d480",
+      "proposedEn": "Author",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/framework/NewWorldDialog.cs",
+        "line": 75,
+        "english": "Author:",
+        "sha256": "5671c26fe334d4d4838f422c41ad793288378ff9f8dd09be5a1a4127e521f894"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-002",
+      "source": "core/framework/NewWorldDialog.cs",
+      "line": 79,
+      "symbolOrExpression": "this.label2.Text = \"解説：\";",
+      "ja": "解説：",
+      "jaSha256": "a77a413799d05006e689f37def050dc4ab50cee0ae3bf42438d49a2fc7cec154",
+      "proposedEn": "Description",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/framework/NewWorldDialog.cs",
+        "line": 85,
+        "english": "Description:",
+        "sha256": "5671c26fe334d4d4838f422c41ad793288378ff9f8dd09be5a1a4127e521f894"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-003",
+      "source": "core/framework/NewWorldDialog.cs",
+      "line": 109,
+      "symbolOrExpression": "this.okButton.Text = \"&OK\";",
+      "ja": "&OK",
+      "jaSha256": "655dc9176554cd3c7c451a0c232085cd96087a04e93cae2ac01e167963fbc485",
+      "proposedEn": "OK",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/framework/NewWorldDialog.cs",
+        "line": 116,
+        "english": "&OK",
+        "sha256": "5671c26fe334d4d4838f422c41ad793288378ff9f8dd09be5a1a4127e521f894"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-004",
+      "source": "core/framework/NewWorldDialog.cs",
+      "line": 120,
+      "symbolOrExpression": "this.cancelButton.Text = \"ｷｬﾝｾﾙ(&C)\";",
+      "ja": "ｷｬﾝｾﾙ(&C)",
+      "jaSha256": "01fc3c7828688d734facb0783c105b8fee7b14c02e660b8fe6f96b657bfdaad4",
+      "proposedEn": "Cancel",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/framework/NewWorldDialog.cs",
+        "line": 127,
+        "english": "&Cancel",
+        "sha256": "5671c26fe334d4d4838f422c41ad793288378ff9f8dd09be5a1a4127e521f894"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-005",
+      "source": "core/framework/NewWorldDialog.cs",
+      "line": 149,
+      "symbolOrExpression": "this.Text = \"新しいゲーム\";",
+      "ja": "新しいゲーム",
+      "jaSha256": "9ee2657d5c39f9c5f972ab19d2d2dc1b94b656c9b2985d92d770272321094aaa",
+      "proposedEn": "New world",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "core/framework/NewWorldDialog.cs",
+        "line": 176,
+        "english": "New Game",
+        "sha256": "5671c26fe334d4d4838f422c41ad793288378ff9f8dd09be5a1a4127e521f894"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-006",
+      "source": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+      "line": 17,
+      "symbolOrExpression": "public override string name { get { return \"空マップ\"; } }",
+      "ja": "空マップ",
+      "jaSha256": "152f8151de7d2b05c988c69a4d0d2fed49eca660eb018465528e8287adb00755",
+      "proposedEn": "Empty map",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+        "line": 17,
+        "english": "Empty map",
+        "sha256": "a149e26043ba63b14698e2f86057e499898e375da002cebf611c949195edab56"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-007",
+      "source": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+      "line": 18,
+      "symbolOrExpression": "public override string description { get { return \"何もない空のマップを作成します\"; } }",
+      "ja": "何もない空のマップを作成します",
+      "jaSha256": "a2b8458e3b285562ea84663c81b5473ad13fd0fc60b071b2a3f169bb16952b57",
+      "proposedEn": "Create an empty map",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+        "line": 19,
+        "english": "Create a completely empty map",
+        "sha256": "a149e26043ba63b14698e2f86057e499898e375da002cebf611c949195edab56"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-008",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 72,
+      "symbolOrExpression": "this.label1.Text = \"名前(&N):\";",
+      "ja": "名前(&N):",
+      "jaSha256": "939b6779ba74f2b78b78eb290b1b11faa0c770bb7b9d4cd134de845e21dc027f",
+      "proposedEn": "Name",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 72,
+        "english": "&Name:",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-009",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 88,
+      "symbolOrExpression": "this.label2.Text = \"サイズ(&S):\";",
+      "ja": "サイズ(&S):",
+      "jaSha256": "290c4edf355c04fdf7b3eb172f3dcd18d459881521d8c1a29f0a3084d1c57dac",
+      "proposedEn": "Size",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 90,
+        "english": "&Size:",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-010",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 116,
+      "symbolOrExpression": "this.label3.Text = \"x\";",
+      "ja": "x",
+      "jaSha256": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881",
+      "proposedEn": "x",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 69,
+        "english": "label1",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-011",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 126,
+      "symbolOrExpression": "this.okButton.Text = \"&OK\";",
+      "ja": "&OK",
+      "jaSha256": "655dc9176554cd3c7c451a0c232085cd96087a04e93cae2ac01e167963fbc485",
+      "proposedEn": "OK",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 131,
+        "english": "&OK",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-012",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 135,
+      "symbolOrExpression": "this.cancelButton.Text = \"ｷｬﾝｾﾙ(&C)\";",
+      "ja": "ｷｬﾝｾﾙ(&C)",
+      "jaSha256": "01fc3c7828688d734facb0783c105b8fee7b14c02e660b8fe6f96b657bfdaad4",
+      "proposedEn": "Cancel",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 141,
+        "english": "&Cancel",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-013",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 143,
+      "symbolOrExpression": "this.label4.Text = \"x\";",
+      "ja": "x",
+      "jaSha256": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881",
+      "proposedEn": "x",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 69,
+        "english": "label1",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-014",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 175,
+      "symbolOrExpression": "this.Text = \"新しいゲームの作成\";",
+      "ja": "新しいゲームの作成",
+      "jaSha256": "0f84b22cf82b3cd7dd738ef262c2a37a51776c6ba31433b2d37ed9c53ea5ff33",
+      "proposedEn": "Create world",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 181,
+        "english": "Create a new game",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-015",
+      "source": "core/contributions/others/NewWorldDialog.cs",
+      "line": 205,
+      "symbolOrExpression": "w.name = \"ななしさん\";",
+      "ja": "ななしさん",
+      "jaSha256": "7e3b04229768aeaf4baf59b3115765bee847942e1e2b533c72c6002498aab203",
+      "proposedEn": "Untitled world",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "core/contributions/others/NewWorldDialog.cs",
+        "line": 213,
+        "english": "Terra Incognita",
+        "sha256": "3e058c626d46c03f53e447e2d922b290310cf047020fe263ad9f0d04c023dd77"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-016",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 91,
+      "symbolOrExpression": "this.label1.Text = \"ファイル名(&F)：\";",
+      "ja": "ファイル名(&F)：",
+      "jaSha256": "70125f1287832b1fa5662717b723a5894b23810d51b8eddf6ac97ed7b2174a81",
+      "proposedEn": "Image file",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 93,
+        "english": "&File Name:",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-017",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 110,
+      "symbolOrExpression": "this.buttonSelectFile.Text = \"選択(&S)...\";",
+      "ja": "選択(&S)...",
+      "jaSha256": "edd61d8e1f1a2cea779f8c827066879b8d24d71419f6484a8ba84c821478d539",
+      "proposedEn": "Choose image…",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 114,
+        "english": "&Select...",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-018",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 119,
+      "symbolOrExpression": "this.label2.Text = \"プレビュー：\";",
+      "ja": "プレビュー：",
+      "jaSha256": "69ad3e0eb362ec82dab638c3528699d55e0cf9b3727f7e0bb1c458699b040a28",
+      "proposedEn": "Preview",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 247,
+        "english": "Preview",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-019",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 139,
+      "symbolOrExpression": "this.buttonOK.Text = \"&OK\";",
+      "ja": "&OK",
+      "jaSha256": "655dc9176554cd3c7c451a0c232085cd96087a04e93cae2ac01e167963fbc485",
+      "proposedEn": "OK",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 126,
+        "english": "&OK",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-020",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 150,
+      "symbolOrExpression": "this.buttonCancel.Text = \"ｷｬﾝｾﾙ(&C)\";",
+      "ja": "ｷｬﾝｾﾙ(&C)",
+      "jaSha256": "01fc3c7828688d734facb0783c105b8fee7b14c02e660b8fe6f96b657bfdaad4",
+      "proposedEn": "Cancel",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 138,
+        "english": "&Cancel",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-021",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 168,
+      "symbolOrExpression": "this.groupBox1.Text = \"大きさ\";",
+      "ja": "大きさ",
+      "jaSha256": "c05f6b95b8cfa90b41c0d22a5c8b0562fb9fc71940a54771b43a913df4b16a07",
+      "proposedEn": "Size",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 158,
+        "english": "Size",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-022",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 184,
+      "symbolOrExpression": "this.label6.Text = \"水面高(&A)：\";",
+      "ja": "水面高(&A)：",
+      "jaSha256": "e417a4ea39c93963e69039300c91ed4d118969ae8e5ebba857cb52c271805906",
+      "proposedEn": "Water level",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 176,
+        "english": "W&ater Level",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-023",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 201,
+      "symbolOrExpression": "this.label5.Text = \"高さ(&H)：\";",
+      "ja": "高さ(&H)：",
+      "jaSha256": "10fa36efd810edbd897da7d3b9547469503efc128c4ef6a29359cbed7a559804",
+      "proposedEn": "Vertical capacity",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 195,
+        "english": "Terrain &Height",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-024",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 218,
+      "symbolOrExpression": "this.label4.Text = \"奥行(&D)：\";",
+      "ja": "奥行(&D)：",
+      "jaSha256": "af8763a82a970f8b62ebc3604579b404f66d3c57aca7fba5d5915e39b1f765d1",
+      "proposedEn": "Depth (V)",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 214,
+        "english": "Map Length",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-025",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 235,
+      "symbolOrExpression": "this.label3.Text = \"幅(&W)：\";",
+      "ja": "幅(&W)：",
+      "jaSha256": "ee98ee09e27b4088e438ebf97d55af08cbbb08cf45d4bb6b580e7d2785d78a3e",
+      "proposedEn": "Width (H)",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 232,
+        "english": "Map &Width",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-026",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "line": 258,
+      "symbolOrExpression": "this.Text = \"地形の読み込み\";",
+      "ja": "地形の読み込み",
+      "jaSha256": "67de9932a73af2d40877ae4bcdfeb2e5bb0d3f13b9d885fe7fb9d6fb12d361bc",
+      "proposedEn": "Import heightmap",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+        "line": 279,
+        "english": "Loading terrain...",
+        "sha256": "386e63b4df45c73027b12953c3a538f1fa5d315e41dd5ed336fb879d7dce80ee"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-027",
+      "source": "core/controllers/terrain/MountainController.cs",
+      "line": 73,
+      "symbolOrExpression": "this.buttonUp.Text = \"隆起\";",
+      "ja": "隆起",
+      "jaSha256": "c28a642f46cf26355d696d0b1b74a2c6f134fd85f69bee88fe69d1939bf3ba85",
+      "proposedEn": "Raise",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/controllers/terrain/MountainController.cs",
+        "line": 86,
+        "english": "Raise",
+        "sha256": "7056cdaf849e3c170e50880a14b2ec9150e633e8041b0839da406068ca14157f"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-028",
+      "source": "core/controllers/terrain/MountainController.cs",
+      "line": 83,
+      "symbolOrExpression": "this.buttonDown.Text = \"掘削\";",
+      "ja": "掘削",
+      "jaSha256": "cfcd6ab8efaaf99841d565bb2cfc863ee7aa9b5a5ca841b1a2156c360796ebf5",
+      "proposedEn": "Lower",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/controllers/terrain/MountainController.cs",
+        "line": 98,
+        "english": "Lower",
+        "sha256": "7056cdaf849e3c170e50880a14b2ec9150e633e8041b0839da406068ca14157f"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-029",
+      "source": "core/controllers/terrain/MountainController.cs",
+      "line": 104,
+      "symbolOrExpression": "this.Text = \"地形操作\";",
+      "ja": "地形操作",
+      "jaSha256": "1056ecc6d48de79bfefb9c14e3bc1fee9458f50a1b1d12a69f58b27f748c83e7",
+      "proposedEn": "Terrain",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "core/controllers/terrain/MountainController.cs",
+        "line": 162,
+        "english": "Modify Terrain",
+        "sha256": "7056cdaf849e3c170e50880a14b2ec9150e633e8041b0839da406068ca14157f"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-030",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "line": 71,
+      "symbolOrExpression": "this.buttonUp.Text = \"隆起\";",
+      "ja": "隆起",
+      "jaSha256": "c28a642f46cf26355d696d0b1b74a2c6f134fd85f69bee88fe69d1939bf3ba85",
+      "proposedEn": "Raise",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-031",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "line": 81,
+      "symbolOrExpression": "this.buttonDown.Text = \"掘削\";",
+      "ja": "掘削",
+      "jaSha256": "cfcd6ab8efaaf99841d565bb2cfc863ee7aa9b5a5ca841b1a2156c360796ebf5",
+      "proposedEn": "Lower",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-032",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "line": 104,
+      "symbolOrExpression": "this.Text = \"地形操作２\";",
+      "ja": "地形操作２",
+      "jaSha256": "e3dcc506f6e3c3dae36ec97ecae3ffcf89fac6bb243df160d25ccca54e622eea",
+      "proposedEn": "Rectangle terrain",
+      "classification": "meaning-adapted",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-033",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "line": 173,
+      "symbolOrExpression": "MainWindow.showError(\"[\" + l.x + \":\" + l.y + \"] - 障害物があります\");",
+      "ja": "] - 障害物があります",
+      "jaSha256": "2d9841ae9c011d2fed54f9414adfe6325c83c7e59d701bd5c2fc7b26fd8dd38a",
+      "proposedEn": "[{x}:{y}] This location is blocked.",
+      "classification": "meaning-adapted",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-034",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "line": 222,
+      "symbolOrExpression": "MainWindow.mainWindow.statusText = \"[\" + loc.x + \":\" + loc.y + \"] - 修正しました\";",
+      "ja": "] - 修正しました",
+      "jaSha256": "e77d7c3ec9650f980a25fa6c8a88f2dac573c4bd3e9710fe719f8896f3e1ea89",
+      "proposedEn": "[{x}:{y}] Repaired terrain.",
+      "classification": "meaning-adapted",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-035",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+      "line": 17,
+      "symbolOrExpression": "public override string name { get { return \"地形ローダー\"; } }",
+      "ja": "地形ローダー",
+      "jaSha256": "8dc5957ca915470bb4100414845f259237b4720c87b50d8921212b3aa3c3eaf3",
+      "proposedEn": "Heightmap",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+        "line": 17,
+        "english": "Terrain Loader",
+        "sha256": "c99ccdd0a096db0edfe54d2facf0500c9b42afdc9e85dffdcd44b13ae7a7364f"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-036",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+      "line": 18,
+      "symbolOrExpression": "public override string description { get { return \"画像から地形データのみをロードします\"; } }",
+      "ja": "画像から地形データのみをロードします",
+      "jaSha256": "49e46a2cb6deaeb17da042bd7b20af6f192dee6fee89d40c36853c2b11155c4d",
+      "proposedEn": "Create terrain from an image",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+        "line": 19,
+        "english": "Load terrain data only from an image",
+        "sha256": "c99ccdd0a096db0edfe54d2facf0500c9b42afdc9e85dffdcd44b13ae7a7364f"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-037",
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs",
+      "line": 16,
+      "symbolOrExpression": "public override string name { get { return \"地形操作（範囲指定）\"; } }",
+      "ja": "地形操作（範囲指定）",
+      "jaSha256": "0cc3cd3a5bf5141e0f8d368f11dadf5bd99dcca485c6217c9e2ca377fe3bb445",
+      "proposedEn": "Rectangle terrain",
+      "classification": "meaning-adapted",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-038",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+      "line": 20,
+      "symbolOrExpression": "public override string name { get { return \"雛壇と切り通し\"; } }",
+      "ja": "雛壇と切り通し",
+      "jaSha256": "2890af09a87cf05fc660e46fe56e6e3676abff55c6991db816c7cd05600db296",
+      "proposedEn": "Terraces and cuts",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+        "line": 20,
+        "english": "Terraces and Cuts",
+        "sha256": "a3dff7f0ccc1cb4d92b2c687e382e8c545a3f577e35a0a09f9eb9d9cf41b7a26"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-039",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "line": 67,
+      "symbolOrExpression": "this.buttonPlace.Text = \"設置\";",
+      "ja": "設置",
+      "jaSha256": "f9ae0a0b324989d8b3541f91a50c938559a8f8a2ae7874b4e173369e3c2f51e9",
+      "proposedEn": "Place",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "line": 68,
+        "english": "Place",
+        "sha256": "a630b99f85261ec4bdf160ada3f46813c24eca716e26137b04911dde70f8347b"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-040",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "line": 78,
+      "symbolOrExpression": "this.buttonRemove.Text = \"撤去\";",
+      "ja": "撤去",
+      "jaSha256": "394ffacbc4e456cd1f13fc8a266fd7819ce638bf937025613e051bc2cf5dbfec",
+      "proposedEn": "Remove",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "line": 81,
+        "english": "Remove",
+        "sha256": "a630b99f85261ec4bdf160ada3f46813c24eca716e26137b04911dde70f8347b"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-041",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "line": 102,
+      "symbolOrExpression": "this.terrace.Text = \"雛壇\";",
+      "ja": "雛壇",
+      "jaSha256": "1d1d2dc370ee0188196c6b79c59abe938826b3fe4bddb186c2ff642b213b2111",
+      "proposedEn": "Terrace",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "line": 107,
+        "english": "Terrace",
+        "sha256": "a630b99f85261ec4bdf160ada3f46813c24eca716e26137b04911dde70f8347b"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-042",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "line": 113,
+      "symbolOrExpression": "this.cut.Text = \"切通\";",
+      "ja": "切通",
+      "jaSha256": "73c79c849d5072791348b32c57faaa2b701e05d3a52767b40059a7ff711fd234",
+      "proposedEn": "Cut",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "line": 120,
+        "english": "Cut",
+        "sha256": "a630b99f85261ec4bdf160ada3f46813c24eca716e26137b04911dde70f8347b"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-043",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "line": 137,
+      "symbolOrExpression": "this.Text = \"雛壇と切り通し\";",
+      "ja": "雛壇と切り通し",
+      "jaSha256": "2890af09a87cf05fc660e46fe56e6e3676abff55c6991db816c7cd05600db296",
+      "proposedEn": "Terraces and cuts",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "line": 143,
+        "english": "Terraces & Cuts",
+        "sha256": "a630b99f85261ec4bdf160ada3f46813c24eca716e26137b04911dde70f8347b"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-044",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerracePlacementStrategy.cs",
+      "line": 20,
+      "symbolOrExpression": "MainWindow.showError(\"山肌にしか設置できません\");",
+      "ja": "山肌にしか設置できません",
+      "jaSha256": "0bed694e3fe1be9c0fdd4aee76b798859e12d7de1f85c7b0226c40ba37fe6f76",
+      "proposedEn": "Select a mountain surface.",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerracePlacementStrategy.cs",
+        "line": 20,
+        "english": "Can only be placed on mountainsides",
+        "sha256": "9d4fdd1ade20ff467957fd95c1b7d615a70c412713810056b2159966ae5d5edc"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-045",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+      "line": 24,
+      "symbolOrExpression": "MainWindow.showError(\"雛壇ではありません\");",
+      "ja": "雛壇ではありません",
+      "jaSha256": "db39618902afc06a912495350da05941c5f22343b16a6976d79f3019b2cdfd22",
+      "proposedEn": "Select a terrace.",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+        "line": 24,
+        "english": "This is not a terrace",
+        "sha256": "f7cc96ebad6cbf8942e4a03127359b63f292783c3f9bda92b475c04c90f33b80"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-046",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+      "line": 28,
+      "symbolOrExpression": "MainWindow.showError(\"上に障害物が乗っています\");",
+      "ja": "上に障害物が乗っています",
+      "jaSha256": "190fd38f250b193e9775c92bad351d29f2c26325d4af0893fa2c18d8ca4ed0c1",
+      "proposedEn": "Remove the obstruction above this terrace first.",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+        "line": 29,
+        "english": "There are obstacles uphill",
+        "sha256": "f7cc96ebad6cbf8942e4a03127359b63f292783c3f9bda92b475c04c90f33b80"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-047",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+      "line": 20,
+      "symbolOrExpression": "MainWindow.showError(\"山肌しか工事できません\");",
+      "ja": "山肌しか工事できません",
+      "jaSha256": "7804f6b3d43fa4edaa15788256d9a2c3e22d90369f82dc3e771d136acc882c0a",
+      "proposedEn": "Select a mountain surface.",
+      "classification": "exact-carryover",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+        "line": 20,
+        "english": "Can only be placed on mountainsides",
+        "sha256": "a38e63d5c2cc623c512e44787fd7bc7a7cd89df92c720e4b6f34580f4daa4694"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-048",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+      "line": 28,
+      "symbolOrExpression": "MainWindow.showError(\"設置位置が不適切です\");",
+      "ja": "設置位置が不適切です",
+      "jaSha256": "e5cf228fbd47c986daf70f94a5cd38d11f907525b25407cf639a9f52e0f1cdf3",
+      "proposedEn": "A neighboring ground level is too high.",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+        "line": 29,
+        "english": "This location is inappropriate",
+        "sha256": "a38e63d5c2cc623c512e44787fd7bc7a7cd89df92c720e4b6f34580f4daa4694"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-049",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+      "line": 19,
+      "symbolOrExpression": "MainWindow.showError(\"障害物があります\");",
+      "ja": "障害物があります",
+      "jaSha256": "2c442750130c800bad7716a6b516b0a25cac179d5a376f0f7ba708417e6187f4",
+      "proposedEn": "This location is blocked.",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+        "line": 18,
+        "english": "There are obstacles",
+        "sha256": "2073a794a86b95437ecd01df0f4353818a0ca6f9f283ed3a6a4f4ac6264e0c6d"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-050",
+      "source": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+      "line": 33,
+      "symbolOrExpression": "MainWindow.showError(\"障害物があります\");",
+      "ja": "障害物があります",
+      "jaSha256": "2c442750130c800bad7716a6b516b0a25cac179d5a376f0f7ba708417e6187f4",
+      "proposedEn": "This location is blocked.",
+      "classification": "meaning-adapted",
+      "donor": {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+        "line": 18,
+        "english": "There are obstacles",
+        "sha256": "2073a794a86b95437ecd01df0f4353818a0ca6f9f283ed3a6a4f4ac6264e0c6d"
+      },
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-051",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "森林",
+      "jaSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "proposedEn": "Forest",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-052",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "森林(山肌)",
+      "jaSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "proposedEn": "Forest with seasonal ground",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-053",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "森林(草原)",
+      "jaSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "proposedEn": "Forest with grass ground",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-054",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "杉",
+      "jaSha256": "47b2849f634f28b4eb2a44d21b6beeb84846a9531e48149cee161bd3e95c972e",
+      "proposedEn": "Japanese cedar",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-055",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "松",
+      "jaSha256": "fb82c376e9fbaa5bdb104160594986d54d762bc19c127c48e98494909f13b9e3",
+      "proposedEn": "Pine",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-056",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "楠",
+      "jaSha256": "78954923784c2726fbc04eefcaf9a27299fc02c57d679a28d6ab29d535db7171",
+      "proposedEn": "Camphor",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-057",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "楓",
+      "jaSha256": "448692683318dc8b4a6d232782198df43b13ab6141bd76367d0926863783f251",
+      "proposedEn": "Maple",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-058",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "銀杏",
+      "jaSha256": "d7a816193a0cc51ff28242c1fd87efcd00ce59ecd0f9472297824bdfef5bc942",
+      "proposedEn": "Ginkgo",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    },
+    {
+      "id": "TERRAIN-TEXT-059",
+      "source": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "line": null,
+      "symbolOrExpression": "land group/name; contribution IDs in terrain-review.json",
+      "ja": "ブナ",
+      "jaSha256": "68328d75cd46eda9d5960af0be4a4f03a5c4aaf0226bf94b190b0781e9e0b838",
+      "proposedEn": "Beech",
+      "classification": "new-translation",
+      "donor": null,
+      "status": "wording-reviewed-not-shipped"
+    }
+  ],
+  "commentedSource": [
+    {
+      "source": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "ja": "高さの不揃いな角があります",
+      "disposition": "commented-out source error, not a reachable UI string; portable repair rejection needs a new localized diagnostic in P3-14"
+    }
+  ],
+  "newBrowserText": {
+    "repair": "Repair terrain",
+    "repeat": "Repeat stroke",
+    "generation": "Generated map",
+    "dryOnly": "Generated vegetation uses dry ground.",
+    "partial": "{changed} changed; {skipped} skipped.",
+    "invalidRepair": "The neighboring corners cannot be repaired consistently."
+  },
+  "limits": "Source-bound reviewed wording/translation candidates only. No product resource changes. Japanese wording for new adaptation controls and all interpolation/focus/layout checks ship with owning P3 slices; source MAN/DEV prose never overrides rules.",
+  "nonTextDispositions": [
+    {
+      "scope": "numeric defaults, x separator, author placeholder and contribution IDs",
+      "disposition": "data/attribution; keep source values and identities rather than translate them as gameplay rules"
+    },
+    {
+      "scope": "source World constructor test-train names",
+      "disposition": "excluded incidental test initialization under P3-TERRAIN-005, not new map-creation labels"
+    },
+    {
+      "scope": "LoadDialog.openFileDialog.Filter",
+      "source": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "disposition": "Native filter/shortcut syntax adapts to a localized browser image-file control; BMP/GIF/PNG/JPG are source formats, P3-02/07 must specify decoder support/limits before exposing them."
+    },
+    {
+      "scope": "plugin XML metadata and fixed-map supplied name/author/description",
+      "disposition": "Use P2 per-pack source-bound metadata/localization mechanism and preserve authors/IDs; do not duplicate catalog fields as UI strings."
+    }
+  ]
+}

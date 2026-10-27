@@ -32,6 +32,23 @@ operation IDs or completed action mappings. The existing [action review](web-par
 reconciles the earlier workflow families; this documentation review closes no
 implementation, runtime, save-continuation or acceptance gate.
 
+## P3-01 terrain source reconciliation
+
+**27 October 2026:** [the terrain contract](web-parity-terrain-contract.md) resolves
+P3 source details for MAN-M01/O02/E02/A02/A19 (New and heightmaps),
+MAN-T09/M05/O06/A14/A18 (corner, rectangle/repair, terraces/cuts),
+MAN-M02/W11/D02 (terrain targeting/cuts) and MAN-A16 (authority/drafts).
+The [reciprocal workflow bindings](web-parity-actions.md#p3-01-terrain-workflow-bindings)
+and [77 independent vectors](parity/terrain-fixtures.json) separate source
+behavior, browser adaptations and new generation rules. The owner retains a
+single global water level for this checklist. Source corner Shift repeats on
+movement; Mountain2 Shift changes its target profile and Ctrl selects repair;
+forest manual eligibility has no water test; intentional cuts/terraces may have
+discontinuous corners. Older prose cannot override these specified rules.
+MAN-A02/A14/A16/A18/A19 browser journeys and MAN-D02 cross-system cut acceptance
+remain open with P3-05–17/P4/P7/P9/P10 as applicable. This closes source
+reconciliation for the terrain slice, not any journey or native observation.
+
 ## ExAV documentation reviewed
 
 Reviewed **all 15 top-level saved HTML articles** in `tmp/online-manual-exav/`

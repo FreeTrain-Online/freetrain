@@ -1,0 +1,858 @@
+{
+  "schemaVersion": 1,
+  "slice": "P3-01",
+  "reviewedOn": "2026-10-27",
+  "status": "source-contract-specified",
+  "authority": {
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "version": "ExAV 2.1.1.12 / V2"
+  },
+  "method": "Pinned Git blobs decoded as UTF-8 or CP932, read without executing original code. Fixtures are independently authored source arithmetic/control examples, not modern production or original-runtime outcomes.",
+  "sourceReviews": [
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "symbols": [
+        "{9093E8B2-9215-42f3-A36A-5CAA7AF389FF}"
+      ]
+    },
+    {
+      "path": "core/framework/NewWorldDialog.cs",
+      "sha256": "ae66e1c739a0a51b64594231c9d0f1295cf9de9eb332540a31965d39efe13bdb",
+      "symbols": [
+        "listContributions",
+        "createWorld"
+      ]
+    },
+    {
+      "path": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+      "sha256": "3a8c728b72a760c622adbf2b774a767a788dea77b4ed38767f68a12392e6d14d",
+      "symbols": [
+        "createNewGame"
+      ]
+    },
+    {
+      "path": "core/contributions/others/NewWorldDialog.cs",
+      "sha256": "8d7f23c6917b05b2fa71778cb9aba996bc7412e11877391829d0ff01a700ffb3",
+      "symbols": [
+        "createWorld",
+        "validateNumber"
+      ]
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "symbols": [
+        "groundLevels",
+        "waterLevel",
+        "isInsideWorld",
+        "isBorderOfWorld",
+        "new Train("
+      ]
+    },
+    {
+      "path": "core/views/QuarterViewDrawer.cs",
+      "sha256": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb",
+      "symbols": [
+        "waterSurfaceColor",
+        "noHeightCut"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "symbols": [
+        "terrainOnlyNewGame",
+        "{9CC6E93F-06D0-4d98-8F8C-7B3CE481F62E}"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "sha256": "f6647ac688086d84a5bc9d750e9bce5654b0c5c15feb8547ad5792544423af56",
+      "symbols": [
+        "updateOKButton",
+        "createWorld"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs",
+      "sha256": "21ecfb8f66ca8215f73b44a48c96848c4c01ec2aebc04e651444d9f1802a3adc",
+      "symbols": [
+        "loadWorld",
+        "displace",
+        "getDepth",
+        "interpolate1",
+        "smooth",
+        "texture",
+        "getCornerHeight"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainOnlyNewGameContribution.cs",
+      "sha256": "14d40c92648196c3b98693f76d49dcc4b771751a4bb10030a168fcdefa5ec12f",
+      "symbols": [
+        "imageFileName",
+        "createNewGame"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "symbols": [
+        "森林(山肌)",
+        "森林(草原)",
+        "computerCannotBuild"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "sha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "symbols": [
+        "canBeBuilt",
+        "create",
+        "createRandomTrees"
+      ]
+    },
+    {
+      "path": "core/contributions/land/RandomLandBuilder.cs",
+      "sha256": "5bc3145efbeb88fab68386cbedbda1da006d8919988be4d3e62b2f8698033d13",
+      "symbols": [
+        "getLand",
+        "create"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "sha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "symbols": [
+        "createRandomGenerator",
+        "computeRoute",
+        "apply"
+      ]
+    },
+    {
+      "path": "core/controllers/terrain/MountainController.cs",
+      "sha256": "d269f5243e63617ea40a075a3275bd262bbf1632c6fe79cf8ddcbab426f089e8",
+      "symbols": [
+        "selectVoxel",
+        "canBeRaised",
+        "onMouseMove",
+        "onClick"
+      ]
+    },
+    {
+      "path": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "sha256": "2f7504e8551cddf290135419e11340709dad7b80cace77b2f247562581fc0992",
+      "symbols": [
+        "onRectSelected",
+        "fixIllegalVoxel",
+        "raise",
+        "lower"
+      ]
+    },
+    {
+      "path": "core/world/terrain/MountainVoxel.cs",
+      "sha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "symbols": [
+        "setTrees",
+        "getHeight",
+        "isCornerMatched"
+      ]
+    },
+    {
+      "path": "core/framework/Core.cs",
+      "sha256": "7d1e993d20bf897258678e2ffdfe873e4c7431d7d6d5df8064e5f3f27bec3dbd",
+      "symbols": [
+        "isConstructionMode",
+        "constructionMode"
+      ]
+    },
+    {
+      "path": "core/world/Direction.cs",
+      "sha256": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "symbols": [
+        "directions",
+        "isSharp",
+        "left90"
+      ]
+    },
+    {
+      "path": "core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "symbols": [
+        "getDirectionTo"
+      ]
+    },
+    {
+      "path": "core/world/SparseVoxelArray.cs",
+      "sha256": "54f0edec62633a434a1ff51d8748de4fc710b3e14e9398e28e98eab320b322c2",
+      "symbols": [
+        "isSilentlyReclaimable",
+        "BLOCK_H"
+      ]
+    },
+    {
+      "path": "core/controllers/Disambiguators.cs",
+      "sha256": "2e570aef234c098cd35cf8a19e862f81ec21d3ec709c5439bf0d3ba054e52296",
+      "symbols": [
+        "GroundDisambiguator",
+        "isSelectable"
+      ]
+    },
+    {
+      "path": "core/controllers/RectSelectorController.cs",
+      "sha256": "b99d3b44062c47b6e7c8c47dfbd86e979e23a6d86f9adba28b074824d8186e09",
+      "symbols": [
+        "location1",
+        "location2",
+        "onClick"
+      ]
+    },
+    {
+      "path": "core/contributions/land/LandBuilderContribution.cs",
+      "sha256": "8e16e62716e0478347db1a75d346dece224923184577976137106fcd02fd79e4",
+      "symbols": [
+        "SUBSIDIARIES.spend",
+        "create"
+      ]
+    },
+    {
+      "path": "core/world/land/LandVoxel.cs",
+      "sha256": "1ca8c88538ea38c7a8b3e3aaf6782ee5636c1ad0cf3710c03c9793d5d5f9dc65",
+      "symbols": [
+        "canBeBuilt",
+        "isSilentlyReclaimable"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekVoxel.cs",
+      "sha256": "0cfa3909961476e14a668211ae2290dc0dc0f51a49e33ada44730adf27b2affe",
+      "symbols": [
+        "entityValue",
+        "dir"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+      "sha256": "2a34df8f451587e5d10456786cdeef0dc1d2ae2026e8e8bf76cdbddb2d26c229",
+      "symbols": [
+        "createNewGame"
+      ]
+    },
+    {
+      "path": "plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs",
+      "sha256": "f1f345e06ed294c7763c55752650e377f120832417e4af95e642de8ab2574df4",
+      "symbols": [
+        "Mountain2Controller.create"
+      ]
+    },
+    {
+      "path": "plugins/foobarbazer.Mountain2/plugin.xml",
+      "sha256": "1c0e98394951472b44cd553049061a6c38c01704c950c3df69bd18257a35e77f",
+      "symbols": [
+        "specialStructure"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "symbols": [
+        "CreekBuilder"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "sha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "symbols": [
+        "specialStructure"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+      "sha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+      "symbols": [
+        "TerraceContributionImpl"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+      "sha256": "a6e10476c105ca110166842077454f5e47e88c0259d40f4f6eb6ce801a1f3422",
+      "symbols": [
+        "TerraceController"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/Strategy.cs",
+      "sha256": "595be974aab49f58ee8fddf6e06bd3999859ea5aadb3627a897be387493e7798",
+      "symbols": [
+        "Strategy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/MountainDisambiguator.cs",
+      "sha256": "9ebe8880283a406afb32825ad3bf89cf46be7acae20d14627072c19396ea5853",
+      "symbols": [
+        "MountainDisambiguator"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerracePlacementStrategy.cs",
+      "sha256": "9e7e97a47ed8586d2da1a2c4212c641905dfe7b81d11dd18bf9945d471822c15",
+      "symbols": [
+        "TerracePlacementStrategy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+      "sha256": "78f4680586c837569f8a1df145e733ee45c0c75ffdcaff029f83e8fb42ab2a7c",
+      "symbols": [
+        "TerraceRemovalStrategy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+      "sha256": "b4fed0e90dade07572ece716b40234b589da903a82f942a6fb3489b6acb01a02",
+      "symbols": [
+        "CliffPlacementStrategy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+      "sha256": "7dce76cf322d9d7f551948b34c4b1accc51245872245f842e4699f56197b5121",
+      "symbols": [
+        "CliffRemovalStrategy"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceVoxel.cs",
+      "sha256": "420200a38880379317b6433f4d44f986dcfe5bc29064fa45fe40b7270a333517",
+      "symbols": [
+        "TerraceVoxel"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "P3-TERRAIN-001",
+      "title": "Dimensions and names",
+      "classification": "portable-adaptation",
+      "decision": "Browser dimensions are stored H,V,Z with no hidden padding. Empty source-default action expands 30,30,6 to H=30,V=42,Z=6, water=1, ground=1; image/fixed-map routes already use supplied H,V directly. Show final dimensions. Preserve nonempty names verbatim; empty name uses localized Untitled world. Validate checked arithmetic before allocation; limits/default generated presets belong to P3-02.",
+      "implementationSlices": [
+        "P3-02",
+        "P3-06",
+        "P3-07"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-002",
+      "title": "Simple global water",
+      "classification": "owner-confirmed-scope",
+      "decision": "Retain one global integer water plane: z < water is underwater; no connectivity-driven flooding, water transport, elevated lakes, waterfalls or downhill water simulation in this checklist. Generated lakes/channels are terrain carved relative to that plane. Decorative creek tiles do not change water or ground.",
+      "implementationSlices": [
+        "P3-03",
+        "P3-07",
+        "P3-09",
+        "P3-10"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-003",
+      "title": "Heights and explicit discontinuities",
+      "classification": "source-with-boundary-adaptation",
+      "decision": "Ground is integer; corners NE,SE,SW,NW have offsets 0..4; total fine height=4*ground+offset. Flat absence is zero. Editor operations normalize all4 saturation to ground+1 and remove the slope; importing/texturing or cut restoration can retain all4 at the existing ground, so do not impose a global saturation rewrite that changes source ground queries. Natural generated/imported surfaces agree at shared corners; intentional cut/terrace discontinuities are explicit supported states. Carry P1 checked XYZ bounds; source horizontal-only isInsideWorld and byte wrap do not permit invalid heights.",
+      "implementationSlices": [
+        "P3-03",
+        "P3-13",
+        "P3-15"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-004",
+      "title": "Validated atomic publication",
+      "classification": "portable-adaptation",
+      "decision": "Evaluate source ordered local edits on a candidate state. Preserve operation-specific eligible-site skips and source x-major/y-minor scan order; return changed/skipped sites and the source charge. Publish the complete result once. Invalid input, authority, stale revision, unrepresentable corners, underflow/overflow or failed final invariants publish nothing. Do not replace source skipping with a universal all-sites-must-be-clear rule. Queries/rendering never mutate terrain/RNG.",
+      "implementationSlices": [
+        "P3-12",
+        "P3-13",
+        "P3-14",
+        "P3-15"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-005",
+      "title": "Detached construction and test trains",
+      "classification": "portable-adaptation",
+      "decision": "Construct/normalize/texture a detached world; publish only after validation. Do not copy TerrainLoader.load early MainWindow.setWorld, static singleton dependencies or World constructor test trains. Initialize only reviewed subsystem state; no autogenerated trains before P5. Repeated creation/cancel must not attach live listeners or consume live RNG.",
+      "implementationSlices": [
+        "P3-03",
+        "P3-06",
+        "P3-07"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-006",
+      "title": "Map authoring semantics",
+      "classification": "portable-adaptation",
+      "decision": "World-owned persisted authoring mode is explicit Owner-controlled workflow state, default off; entered/exited without changing shared pause, funds, legality or roles. Operators retain ordinary authorized editing; the flag grants no new bypass. Creation initializes terrain with owned=false and no construction charge; manual owned land operations retain source booking in either mode. Actual mode commands/persistence ship P3-16.",
+      "implementationSlices": [
+        "P3-04",
+        "P3-16"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-007",
+      "title": "Importer arithmetic and boundary handling",
+      "classification": "source-with-boundary-adaptation",
+      "decision": "Use float32 HSL lightness, bilinear staggered H/V sampling and source truncation; lower-only interpolation then quarter slopes. Ignore nonexistent neighbors in min/max, preserve source corner sample fallback at edges, reject impossible empty neighborhoods. Bound work rather than running an unbounded source while loop. No early publication or byte-cast wrap. Color decode/alpha/frame policy and numeric budgets belong P3-02/07.",
+      "implementationSlices": [
+        "P3-02",
+        "P3-07"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-008",
+      "title": "Source forest/creek versus generated ecology",
+      "classification": "source-with-generation-adaptation",
+      "decision": "Manual forest/creek eligibility has no water-level test: ground and reusable/Mountain rules apply; source underwater placement stays an explicit manual case. Generated vegetation excludes wet cells as a generator rule. Forest binomial draws/offsets/sort preserve source consumption; sort swaps X/Y only, not sprite indices. Use world forest stream for committed manual placement, separate generation stage for generation and transient preview samples. Zero-tree draw leaves existing content unchanged. Creeks keep endpoint-seeded local RNG and fixed Z.",
+      "implementationSlices": [
+        "P3-10",
+        "P3-11",
+        "P3-13"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-009",
+      "title": "Booking and value",
+      "classification": "source",
+      "decision": "Ordinary corner/Mountain2/terrace/cliff methods have no spend call. LandBuilderContribution.create(Location,Location,owned) charges SUBSIDIARIES for the inclusive grid-normalized rectangle when owned, even when concrete builders skip sites or produce zero trees. Forest declared price is 100 per voxel, treePrice is one contribution price per decorated MountainVoxel, creek entity value zero. Generated initialization is not a player-owned land purchase. No generic terrain cost or per-tree multiplication.",
+      "implementationSlices": [
+        "P3-11",
+        "P3-13",
+        "P3-14",
+        "P3-15"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-010",
+      "title": "Repair and border defects",
+      "classification": "portable-adaptation",
+      "decision": "Repair only representable offsets r-4*ground in 0..4 when existing neighbors agree and target is empty or Mountain. Ignore absent neighbors but require at least one reference; reject all-absent or inconsistent references and out-of-bounds targets. Source modulo/extreme-r handling can report success with a mismatched result; never publish that. Source corner lowering treats outside sentinels as blockers, unlike raising which skips outside; preserve that asymmetry. Add full selected-neighborhood bounds checks before all writes.",
+      "implementationSlices": [
+        "P3-13",
+        "P3-14"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-011",
+      "title": "Terrace/cut state loss",
+      "classification": "source-with-boundary-adaptation",
+      "decision": "Terrace saves/restores four offsets only, raises/lowers ground by one, is unowned and non-reclaimable; source forest decoration/ownership is not backed up. Cutting removes MountainVoxel without altering ground. Retain these visible state transitions; expose decoration loss in preview. Enforce top capacity, obstruction and corner range checks before mutation. Cliff restoration follows source same-Z neighbor samples, not a new hydrological/slope solver.",
+      "implementationSlices": [
+        "P3-13",
+        "P3-15"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "P3-TERRAIN-012",
+      "title": "Browser gestures and errors",
+      "classification": "portable-adaptation",
+      "decision": "Provide explicit Raise, Lower, Repeat stroke, Rectangle, Repair, Terrace and Cut actions. Corner Ctrl XOR reverses Raise/Lower and Shift repeats on movement, not a timer. Mountain2 Ctrl selects repair; Shift affects upper profile only. Capture explicit modes in commands; stop strokes on release, blur, disconnect or epoch change. Use localized errors/receipts instead of focus trapping, native assertions and partial live mutations.",
+      "implementationSlices": [
+        "P3-06",
+        "P3-12",
+        "P3-13",
+        "P3-14",
+        "P3-15"
+      ],
+      "status": "specified"
+    }
+  ],
+  "generationDecisions": [
+    {
+      "id": "WORLDGEN-D001",
+      "classification": "new-generation-behavior",
+      "status": "specified",
+      "decision": "Coast compass uses canonical X/Y, N=(0,-1), E=(1,0), S=(0,1), W=(-1,0). Partition boundary storage cells (h=0/H-1 or v=0/V-1) by normalized displacement from the XYZ footprint bounding-box center: qx=2*x-xmin-xmax, qy=2*y-ymin-ymax. If abs(qy)*spanX >= abs(qx)*spanY select N when qy<0 else S; otherwise W when qx<0 else E. Ties favor Y. This is a versioned generation UX policy, not an ExAV algorithm; validate nonzero spans and nonempty required sectors. Top-down compass north is -Y; isometric compass follows projection, so N points upper-left."
+    }
+  ],
+  "forestContributions": [
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+      "nameJa": "杉",
+      "groupJa": "森林",
+      "density": 3,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+      "nameJa": "松",
+      "groupJa": "森林",
+      "density": 2,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+      "nameJa": "楠",
+      "groupJa": "森林",
+      "density": 1,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+      "nameJa": "楓",
+      "groupJa": "森林",
+      "density": 2,
+      "spriteCount": 3,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+      "nameJa": "銀杏",
+      "groupJa": "森林",
+      "density": 2,
+      "spriteCount": 5,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+      "nameJa": "ブナ",
+      "groupJa": "森林",
+      "density": 3,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": null,
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+      "nameJa": "杉",
+      "groupJa": "森林(山肌)",
+      "density": 3,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+      "nameJa": "松",
+      "groupJa": "森林(山肌)",
+      "density": 2,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+      "nameJa": "楠",
+      "groupJa": "森林(山肌)",
+      "density": 1,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+      "nameJa": "楓",
+      "groupJa": "森林(山肌)",
+      "density": 2,
+      "spriteCount": 3,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+      "nameJa": "銀杏",
+      "groupJa": "森林(山肌)",
+      "density": 2,
+      "spriteCount": 5,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+      "nameJa": "ブナ",
+      "groupJa": "森林(山肌)",
+      "density": 3,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+        "origin": "0,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+      "nameJa": "杉",
+      "groupJa": "森林(草原)",
+      "density": 3,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+      "nameJa": "松",
+      "groupJa": "森林(草原)",
+      "density": 2,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+      "nameJa": "楠",
+      "groupJa": "森林(草原)",
+      "density": 1,
+      "spriteCount": 9,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+      "nameJa": "楓",
+      "groupJa": "森林(草原)",
+      "density": 2,
+      "spriteCount": 3,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+      "nameJa": "銀杏",
+      "groupJa": "森林(草原)",
+      "density": 2,
+      "spriteCount": 5,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+      "nameJa": "ブナ",
+      "groupJa": "森林(草原)",
+      "density": 3,
+      "spriteCount": 6,
+      "price": 100,
+      "groundPicture": {
+        "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+        "origin": "64,0"
+      },
+      "computerCannotBuild": true
+    }
+  ],
+  "workflowMappings": [
+    {
+      "id": "new-world",
+      "manual": [
+        "MAN-M01",
+        "MAN-O02",
+        "MAN-E02",
+        "MAN-A02",
+        "MAN-A19"
+      ],
+      "developer": [
+        "DEV-P09",
+        "DEV-P17"
+      ],
+      "slices": [
+        "P3-06",
+        "P3-07"
+      ],
+      "sources": [
+        "core/contributions/others/NewWorldDialog.cs",
+        "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs"
+      ],
+      "integration": [],
+      "status": "specified"
+    },
+    {
+      "id": "corner-edit",
+      "manual": [
+        "MAN-T09",
+        "MAN-M05",
+        "MAN-O06",
+        "MAN-A14",
+        "MAN-A18"
+      ],
+      "developer": [
+        "DEV-P28"
+      ],
+      "slices": [
+        "P3-13"
+      ],
+      "sources": [
+        "core/controllers/terrain/MountainController.cs"
+      ],
+      "integration": [
+        "EXAV-13"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "rectangle-repair",
+      "manual": [
+        "MAN-T09",
+        "MAN-O06",
+        "MAN-A18"
+      ],
+      "developer": [
+        "DEV-P15",
+        "DEV-P28"
+      ],
+      "slices": [
+        "P3-14"
+      ],
+      "sources": [
+        "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs"
+      ],
+      "integration": [
+        "EXAV-13"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "terrace-cut",
+      "manual": [
+        "MAN-M05",
+        "MAN-A14"
+      ],
+      "developer": [
+        "DEV-P15",
+        "DEV-P28"
+      ],
+      "slices": [
+        "P3-15"
+      ],
+      "sources": [
+        "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceVoxel.cs"
+      ],
+      "integration": [
+        "EXAV-13"
+      ],
+      "status": "specified"
+    },
+    {
+      "id": "forest-creek",
+      "manual": [
+        "MAN-M05",
+        "MAN-A16"
+      ],
+      "developer": [
+        "DEV-P07",
+        "DEV-P10"
+      ],
+      "slices": [
+        "P3-10",
+        "P3-11"
+      ],
+      "sources": [
+        "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+        "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+      ],
+      "integration": [],
+      "status": "specified"
+    },
+    {
+      "id": "picking-water",
+      "manual": [
+        "MAN-M02",
+        "MAN-W11",
+        "MAN-D02",
+        "MAN-A14"
+      ],
+      "developer": [
+        "DEV-P28"
+      ],
+      "slices": [
+        "P3-05",
+        "P3-13"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/views/QuarterViewDrawer.cs"
+      ],
+      "integration": [],
+      "status": "specified"
+    }
+  ],
+  "fixtures": "terrain-fixtures.json",
+  "localization": "terrain-localization-review.json",
+  "contract": "../web-parity-terrain-contract.md",
+  "runtimeStatus": "unimplemented; source contract/fixture closure only",
+  "scope": "One global water plane retained by owner direction. No fluid/elevated-water extension deliverable.",
+  "constructionModeConsumerSearch": {
+    "method": "git grep -n isConstructionMode <pinned-revision> -- trunk/core trunk/plugins",
+    "matches": [
+      "core/framework/Core.cs:54",
+      "core/framework/Core.cs:56",
+      "core/framework/Core.cs:75",
+      "core/framework/Core.cs:95"
+    ],
+    "finding": "Getter, backing field and init assignment only; no consumer establishes placement/economy/timing changes."
+  }
+}
