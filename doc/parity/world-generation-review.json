@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "status": "source-research-and-execution-plan",
+  "authority": {
+    "engine": "FreeTrain ExAV 2.1.1.12",
+    "gitRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk"
+  },
+  "report": "../web-parity-world-generation.md",
+  "method": "Read listed source files and pinned Git blobs. Hashes are of pinned raw blobs. Working-tree comparisons disclose encoding/line-ending changes. Source analysis only; no original-runtime execution or modern gameplay verification. Existing P0 ledgers retain registration/project membership authority.",
+  "files": [
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "symbolsOrReviewAreas": [
+        "newGame {9093E8B2-9215-42f3-A36A-5CAA7AF389FF}"
+      ],
+      "workingTreeBytesMatch": false,
+      "workingTreeTextDiff": [
+        "--- ",
+        "+++ ",
+        "@@ -1,4 +1,4 @@",
+        "-<?xml version=\"1.0\" encoding=\"Shift_JIS\"?>",
+        "+<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        " <plug-in>",
+        " \t<title>システム</title>",
+        " \t<author>川口耕介</author>"
+      ]
+    },
+    {
+      "path": "core/framework/NewWorldDialog.cs",
+      "sha256": "ae66e1c739a0a51b64594231c9d0f1295cf9de9eb332540a31965d39efe13bdb",
+      "symbolsOrReviewAreas": [
+        "provider selection"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/contributions/others/EmptyNewGameContributionImpl.cs",
+      "sha256": "3a8c728b72a760c622adbf2b774a767a788dea77b4ed38767f68a12392e6d14d",
+      "symbolsOrReviewAreas": [
+        "createNewGame"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/contributions/others/NewWorldDialog.cs",
+      "sha256": "8d7f23c6917b05b2fa71778cb9aba996bc7412e11877391829d0ff01a700ffb3",
+      "symbolsOrReviewAreas": [
+        "createWorld",
+        "validateNumber"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "symbolsOrReviewAreas": [
+        "World(Distance,int,bool)",
+        "groundLevels",
+        "waterLevel",
+        "toXYZ",
+        "raiseGround",
+        "lowerGround"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/views/QuarterViewDrawer.cs",
+      "sha256": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb",
+      "symbolsOrReviewAreas": [
+        "water surface/underwater draw branches"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "symbolsOrReviewAreas": [
+        "newGame {9CC6E93F-06D0-4d98-8F8C-7B3CE481F62E}",
+        "terrainOnlyNewGame factory"
+      ],
+      "workingTreeBytesMatch": false,
+      "workingTreeTextDiff": [
+        "--- ",
+        "+++ ",
+        "@@ -1,4 +1,4 @@",
+        "-<?xml version=\"1.0\" encoding=\"Shift_JIS\" ?>",
+        "+<?xml version=\"1.0\" encoding=\"UTF-8\" ?>",
+        " <plug-in>",
+        " \t<title>地形ローダー</title>",
+        " \t<author>川口耕介</author>"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.cs",
+      "sha256": "f6647ac688086d84a5bc9d750e9bce5654b0c5c15feb8547ad5792544423af56",
+      "symbolsOrReviewAreas": [
+        "updateOKButton",
+        "createWorld"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainLoader.cs",
+      "sha256": "21ecfb8f66ca8215f73b44a48c96848c4c01ec2aebc04e651444d9f1802a3adc",
+      "symbolsOrReviewAreas": [
+        "loadWorld",
+        "displace",
+        "getDepth",
+        "interpolate1",
+        "smooth",
+        "texture",
+        "getCornerHeight"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/src/TerrainOnlyNewGameContribution.cs",
+      "sha256": "14d40c92648196c3b98693f76d49dcc4b771751a4bb10030a168fcdefa5ec12f",
+      "symbolsOrReviewAreas": [
+        "constructor",
+        "createNewGame"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "symbolsOrReviewAreas": [
+        "six species with base/-m/-g declarations"
+      ],
+      "workingTreeBytesMatch": false,
+      "workingTreeTextDiff": [
+        "--- ",
+        "+++ ",
+        "@@ -1,4 +1,4 @@",
+        "-<?xml version=\"1.0\" encoding=\"Shift_JIS\" ?>",
+        "+<?xml version=\"1.0\" encoding=\"UTF-8\" ?>",
+        " <plug-in>",
+        " \t<title>森林</title>",
+        " \t<homepage>http://www.rocket.ne.jp/~nao/</homepage>"
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "sha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "symbolsOrReviewAreas": [
+        "canBeBuilt",
+        "create",
+        "createRandomTrees"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/contributions/land/RandomLandBuilder.cs",
+      "sha256": "5bc3145efbeb88fab68386cbedbda1da006d8919988be4d3e62b2f8698033d13",
+      "symbolsOrReviewAreas": [
+        "getLand",
+        "create"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "sha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "symbolsOrReviewAreas": [
+        "createRandomGenerator",
+        "computeRoute",
+        "apply"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/controllers/terrain/MountainController.cs",
+      "sha256": "d269f5243e63617ea40a075a3275bd262bbf1632c6fe79cf8ddcbab426f089e8",
+      "symbolsOrReviewAreas": [
+        "selectVoxel",
+        "canBeRaised",
+        "onMouseMove",
+        "onClick"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+      "sha256": "2f7504e8551cddf290135419e11340709dad7b80cace77b2f247562581fc0992",
+      "symbolsOrReviewAreas": [
+        "onRectSelected",
+        "fixIllegalVoxel",
+        "raise",
+        "lower"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/world/terrain/MountainVoxel.cs",
+      "sha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "symbolsOrReviewAreas": [
+        "setTrees",
+        "getHeight",
+        "isCornerMatched"
+      ],
+      "workingTreeBytesMatch": true
+    },
+    {
+      "path": "core/framework/Core.cs",
+      "sha256": "7d1e993d20bf897258678e2ffdfe873e4c7431d7d6d5df8064e5f3f27bec3dbd",
+      "symbolsOrReviewAreas": [
+        "isConstructionMode",
+        "init"
+      ],
+      "workingTreeBytesMatch": true
+    }
+  ]
+}

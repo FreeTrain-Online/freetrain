@@ -1,5 +1,12 @@
 # Web parity coverage inventory
 
+**P3 planning — 27 October 2026:** [world creation, generation and terrain](web-parity-world-generation.md)
+records ExAV's actual empty-world/heightmap/forest/creek facilities and the
+owner-requested configurable procedural generator, with 17 implementation slices
+and [18 pinned source bindings](parity/world-generation-review.json). Source parity
+and added generation heuristics have separate acceptance scope. Implementation
+and P3 acceptance remain open; existing P2 deferrals are preserved.
+
 **P2-01 update — 25 October 2026:** [canonical bundled preparation](web-parity-bundled-preparation.md)
 replaces historical normal-build inputs with pinned stable ExAV resources,
 UTF-8 manifests, converted sheets and a prepared metadata registry. Full P2
