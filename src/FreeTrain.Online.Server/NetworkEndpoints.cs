@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using FreeTrain.Online.Contracts;
+using FreeTrain.Online.Content;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Session;
 
@@ -49,7 +50,9 @@ public static class NetworkEndpoints
         }
         ParticipantContext? Identity(HttpContext context) => session.ResolveAccess(context.Request.Cookies[CookieName]);
         bool Authorized(HttpContext context) => Identity(context) != null;
-        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == ProtocolIdentity.Version.ToString() && context.Request.Query["contentVersion"].Contains(session.ContentVersion);
+        var plugins = app.Services.GetService<OptionalPluginRegistry>() ?? OptionalPluginRegistry.Empty;
+        bool Compatible(HttpContext context) => context.Request.Query["protocolVersion"] == ProtocolIdentity.Version.ToString() && context.Request.Query["contentVersion"].Contains(session.ContentVersion) &&
+            (context.Request.Path == "/api/bootstrap" || plugins.Compatible(context.Request.Query["packSetHash"]));
         app.MapPost("/api/access", async (HttpContext context) =>
         {
             lock (accessGate)
@@ -81,6 +84,7 @@ public static class NetworkEndpoints
         });
         app.MapGet("/api/bootstrap", (HttpContext context) =>
         {
+            context.Response.Headers["X-FreeTrain-Content-Set"] = plugins.Content.SetHash;
             if (!Compatible(context)) return Results.Json(new { code = "incompatible", protocolVersion = ProtocolIdentity.Version, contentVersion = session.ContentVersion }, statusCode: 426);
             var participant = Identity(context);
             if (participant == null)

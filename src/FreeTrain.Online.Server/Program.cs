@@ -10,7 +10,12 @@ if (args.Length == 1 && args[0] == "--headless-profile")
 
 // Explicit loopback-only historical UI regression harness. Normal service startup is canonical.
 var prototypeRegression = args.Contains("--prototype-regression-harness");
-var builder = WebApplication.CreateBuilder(args.Where(a => a != "--prototype-regression-harness").ToArray());
+var pluginArguments = PluginStartup.ParseArguments(args.Where(a => a != "--prototype-regression-harness").ToArray());
+var builder = WebApplication.CreateBuilder(pluginArguments.Remaining);
+var configuredPlugins = builder.Configuration.GetSection("FreeTrainOnline:PluginDirectories").Get<string[]>() ?? [];
+var optionalPlugins = await PluginStartup.Load(pluginArguments.Directories.Concat(configuredPlugins.Select(Path.GetFullPath)).ToArray(),
+    cacheDirectory: builder.Configuration["FreeTrainOnline:PluginCacheDirectory"]);
+builder.Services.AddSingleton(optionalPlugins);
 // Validate and register prepared authoring data. WorldProfiles continues to
 // select only implemented rules/content; this does not enable recipe handlers.
 builder.Services.AddSingleton(PreparedContentCatalog.Bundled);
@@ -40,6 +45,7 @@ var app = builder.Build();
 app.UseDeployment();
 app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = ProtocolIdentity.Version, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
 app.MapNetwork();
+app.MapPluginContent();
 app.Run();
 
 return 0;

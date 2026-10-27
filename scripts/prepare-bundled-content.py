@@ -219,9 +219,9 @@ def resolve_resource(files, directory, reference):
     return matches[0]
 
 
-def picture_variants(declaration, directory, files):
+def picture_variants(declaration, directory, files, resolver=resolve_resource):
     def day(node):
-        return dict(path=resolve_resource(files, directory, node['attributes']['src']), treatment='authored')
+        return dict(path=resolver(files, directory, node['attributes']['src']), treatment='authored')
     def night(node):
         overrides = children(node, 'override')
         return day(overrides[0]) if overrides and overrides[0]['attributes'].get('when') == 'night' else None

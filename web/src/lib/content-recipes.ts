@@ -28,13 +28,13 @@ export async function sha256(bytes: Uint8Array): Promise<string> {
   return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as BufferSource))].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 function safeMedia(media:Media) {
-  if (!media.url.startsWith('/content/bundled-v2/') || /[?#\\%]|(^|\/)\.\.?($|\/)/.test(media.url) ||
+  if (!(media.url.startsWith('/content/bundled-v2/') || /^\/api\/content\/[a-z0-9][a-z0-9._-]{0,95}\/[0-9a-f]{64}\//.test(media.url)) || /[?#\\%]|(^|\/)\.\.?($|\/)/.test(media.url) ||
       !/^[0-9a-f]{64}$/.test(media.sha256) || !Number.isSafeInteger(media.bytes) || media.bytes<0)
     throw new Error('Invalid bundled media descriptor');
 }
-export function validateCatalog(c:RenderCatalog): RenderCatalog {
-  if (c.schemaVersion!==2 || c.packId!=='exav-stable-bundled' || c.version!=='2' ||
-      c.source.revision!=='883cf7d81cf49db25ff38cd3a25d0f140afe31a0') throw new Error('Unsupported render catalog');
+export function validateCatalog(c:RenderCatalog, enabled?:{id:string;version:string;catalogUrl:string}, mediaRoots?:string[]): RenderCatalog {
+  if (c.schemaVersion!==2 || (enabled ? c.packId!==enabled.id || c.version!==enabled.version :
+      c.packId!=='exav-stable-bundled' || c.version!=='2' || c.source.revision!=='883cf7d81cf49db25ff38cd3a25d0f140afe31a0')) throw new Error('Unsupported render catalog');
   const ids=new Set<string>();
   for(const recipe of c.renderRecipes) {
     if(ids.has(recipe.id)) throw new Error('Duplicate render recipe'); ids.add(recipe.id);
@@ -52,7 +52,10 @@ export function validateCatalog(c:RenderCatalog): RenderCatalog {
       }
     }
   }
-  for(const set of Object.values(c.surfaceSets)) for(const binding of Object.values(set)) safeMedia(binding.image);
+  for(const set of Object.values(c.surfaceSets)) for(const binding of Object.values(set)) {
+    safeMedia(binding.image);
+    if(enabled && !(mediaRoots??[enabled.catalogUrl.slice(0,-'catalog.json'.length)]).some(root=>binding.image.url.startsWith(root)) && !binding.image.url.startsWith('/content/bundled-v2/')) throw new Error('Foreign pack media');
+  }
   return c;
 }
 export async function loadRenderCatalog(expectedHash?: string, signal?:AbortSignal):Promise<RenderCatalog> {

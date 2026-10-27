@@ -6,7 +6,7 @@ WORKDIR /source
 COPY web/deno.json web/deno.lock web/
 RUN deno install --config web/deno.json --frozen
 COPY web/ web/
-COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_recipes.py scripts/
+COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_xml.py scripts/content_recipes.py scripts/
 COPY prototype/ prototype/
 COPY content/bundled-v2/ content/bundled-v2/
 COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/
@@ -18,6 +18,7 @@ WORKDIR /source
 COPY global.json ./
 COPY eng/ eng/
 COPY src/ src/
+COPY scripts/prepare-optional-content.py scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_xml.py scripts/content_recipes.py scripts/
 COPY content/bundled-v2/ content/bundled-v2/
 RUN dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode \
  && dotnet publish src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore -p:UseAppHost=false -o /release
@@ -25,6 +26,7 @@ RUN dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --
 # Portable managed publish; the target image supplies the Linux x64 runtime.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac AS release
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*
 COPY --from=backend /release/ ./
 COPY --from=frontend /source/web/dist/ wwwroot/
 RUN mkdir -p /data/saves && chown -R app:app /data

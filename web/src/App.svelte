@@ -9,6 +9,7 @@
   import { createBrowserAudio } from './lib/browser-audio.ts';
   import DecisionModal from './DecisionModal.svelte';
   import CreditsDialog from './CreditsDialog.svelte';
+  import { creditFor, type PluginPack } from './lib/optional-content.ts';
   import LicenseDialog from './LicenseDialog.svelte';
   import SchemeSelect from './SchemeSelect.svelte';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
@@ -21,7 +22,8 @@
   const icon = '/assets/FTicon.png';
   const audio = createBrowserAudio();
   let soundEnabled = $state(false), soundFailed = $state(false), saveBusy = $state(false);
-  const model = createShellModel(() => createRemoteSessionClient((event, epoch) => { void audio.event(event, epoch).then(() => { soundEnabled = audio.enabled; }); }), initialLocale());
+  let enabledPacks = $state<PluginPack[]>([]), optionalCredits = $state<PluginPack>();
+  const model = createShellModel(() => createRemoteSessionClient((event, epoch) => { void audio.event(event, epoch).then(() => { soundEnabled = audio.enabled; }); }, content => { enabledPacks = content.packs; }), initialLocale());
   const dispose = () => { model.dispose(); audio.dispose(); };
   let view = $state(model.state);
   let mapSelection = $state<Selection>();
@@ -59,7 +61,7 @@
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   $effect(() => applyScheme(scheme));
-  $effect(() => { if (!live) { panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; licenseOpen = false; } });
+  $effect(() => { if (!live) { panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
   $effect(() => {
     if (read) {
       if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; }
@@ -148,13 +150,16 @@
     </div>
   {/if}
   <main class="map-stage">
-    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation || creditsOpen || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
+    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'}>
         <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
+        {#each enabledPacks as pack (pack.id)}
+          <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); optionalCredits = pack; }}>{creditFor(pack,view.locale).button}</button>
+        {/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); licenseOpen = true; }}>{text.license}</button>
         {#if reference}<p data-testid="menu-game-time">{formatGameTime(read!.tick,view.locale)}</p><p>{text.referenceWorldHint}</p>{:else}<p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>{/if}
       </nav>
@@ -218,6 +223,13 @@
     </DecisionModal>
   {/if}
   {#if !live}<SessionGate {model} {view} renderFailed={renderState === 'failed'} onleave={leaveNow} {scheme} onscheme={value => { scheme = value; }}/>{/if}
+  {#if live && optionalCredits}
+    <DecisionModal title={creditFor(optionalCredits,view.locale).title} oncancel={() => { optionalCredits = undefined; }}>
+      <p style="white-space:pre-wrap;overflow-wrap:anywhere">{creditFor(optionalCredits,view.locale).text}</p>
+      {#each optionalCredits.notices as notice}<p><a href={notice.url} target="_blank" rel="noopener noreferrer">{notice.path}</a></p>{/each}
+      {#snippet actions()}<button onclick={() => { optionalCredits = undefined; }}>{text.closeDialog}</button>{/snippet}
+    </DecisionModal>
+  {/if}
   {#if live && creditsOpen}<CreditsDialog locale={view.locale} onclose={() => { creditsOpen = false; }}/>{/if}
   {#if live && licenseOpen}<LicenseDialog locale={view.locale} onclose={() => { licenseOpen = false; }}/>{/if}
   {#if live}<p id="mutation-help" class="sr-only">{reference ? text.referenceWorldHint : text.observerHint}</p><p class="command-feedback" role="status" aria-live="polite" aria-atomic="true">{view.draftInterrupted ? text.draftInterrupted + ' ' : ''}{view.feedback === 'idle' || successExpired ? '' : text[view.feedback]}</p>{/if}

@@ -1,3 +1,10 @@
+**P2-03 implementation — 27 October 2026:** the [directory loader, shared preparation,
+authoritative pack negotiation and localized per-set credits](web-parity-plugin-startup.md)
+now run with source and prepared synthetic sets. The canonical non-free repo owns
+its metadata/credits. Full canonical conversion still fails named adapter/resource
+validation; historical-suite and full P2-03 acceptance remain open. The reserved
+interface and “not yet implemented” statements below describe the P0 specification.
+
 # ExAV optional V2 plugin review and loading contract
 
 **P0-08 source inventory/specification complete — 21 October 2026.** The

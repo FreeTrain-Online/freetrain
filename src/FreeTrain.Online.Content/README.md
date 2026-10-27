@@ -25,3 +25,10 @@ It is never chosen by default
 service startup and has no save writer or migration path.
 
 See [P1-01c](../../doc/web-parity-reference-world.md) and [P1-04](../../doc/web-parity-spatial-contracts.md) source and verification evidence.
+
+`OptionalPluginRegistry` validates explicitly selected external prepared directories,
+composes exact plugin dependencies/IDs, publishes authoritative pack descriptors
+and serves only hashed manifest-listed content. `PluginStartup` supplies automatic
+source-set preparation and repeatable `--plugin-dir` arguments. Optional originals,
+converted output and localized credits stay in their separate repository/cache.
+See [P2-03 and the full-suite conversion boundary](../../doc/web-parity-plugin-startup.md).

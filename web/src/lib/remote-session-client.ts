@@ -1,3 +1,4 @@
+import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
 import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
@@ -15,7 +16,7 @@ export async function leaveGame(): Promise<void> {
 // A retry is automatic only on the same open socket, with the same request ID,
 // within the server's advertised/documented two-minute in-memory receipt window.
 // Any connection loss ends pending operations as unresolved; they are never replayed.
-export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: string) => void): SessionClient {
+export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: string) => void, onContent?: (content: EnabledContent) => void): SessionClient {
   const listeners = new Set<(read: ReadState) => void>();
   const statuses = new Set<(status: ConnectionStatus) => void>();
   const pending = new Map<string, { command: Command; resolve: (value: Accepted | Rejected) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout>; attempts: number }>();
@@ -25,6 +26,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
   let join: Join | undefined;
   let status: ConnectionStatus = 'loading';
   let disposed = false;
+  let selectedCompatibility = compatibility;
   let anonymousAccess = false;
   let connectionStage: 'bootstrap' | 'joining' | 'synchronizing' = 'bootstrap';
   let retryAt: number | undefined;
@@ -80,10 +82,17 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       }
       if (response.status === 426) return setStatus('incompatible');
       if (!response.ok) throw new Error('Bootstrap failed');
+      const contentHash=response.headers.get('X-FreeTrain-Content-Set');
+      if(contentHash) {
+        const content=await loadEnabledContent(contentHash,AbortSignal.any([controller.signal,AbortSignal.timeout(30000)]));
+        if(disposed) return;
+        selectedCompatibility=compatibility+'&packSetHash='+encodeURIComponent(content.setHash);
+        onContent?.(content);
+      }
       const bootstrap = parseMessage(await response.text());
       if (bootstrap.type !== 'join') throw new Error('Expected join');
       connectionStage = 'joining'; setStatus('loading');
-      const url = new URL(`/api/session?${compatibility}`, location.href);
+      const url = new URL(`/api/session?${selectedCompatibility}`, location.href);
       url.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const current = socket = new WebSocket(url);
       connectionTimer = setTimeout(fail, 5000);
@@ -147,7 +156,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     async previewSpatial(query,signal) {
       const identity=join;
       if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
-      const response=await fetch(`/api/spatial/preview?${compatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(5000)])});
+      const response=await fetch(`/api/spatial/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(5000)])});
       if(!response.ok)throw new Error('Spatial preview failed');
       const preview=parseSpatialPreview(await response.json());
       if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||!sameIdentity(identity,preview))throw new Error('Stale spatial preview');

@@ -267,3 +267,11 @@ deno install --config web/deno.json --frozen=false
 
 Commit the updated `web/deno.lock` together with the dependency changes. Ordinary
 installs and tasks use the frozen lockfile and fail if it is out of date.
+
+### Optional plugin directories
+
+The executable accepts repeatable `--plugin-dir /path/to/plugin-set` arguments.
+Each directory contains `plugin-set.xml` source metadata or a prepared
+`prepared-pack.json` distribution. Optional content, credits, notices and cache
+remain with the separate plugin distribution; normal builds require none of it.
+See [runtime configuration, external preparation and current full-suite limits](doc/web-parity-plugin-startup.md).

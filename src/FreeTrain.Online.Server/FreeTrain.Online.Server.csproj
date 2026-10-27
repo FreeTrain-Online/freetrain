@@ -5,4 +5,11 @@
     <ProjectReference Include="../FreeTrain.Online.Content/FreeTrain.Online.Content.csproj" />
     <ProjectReference Include="../FreeTrain.Online.Plugins.ManualController/FreeTrain.Online.Plugins.ManualController.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="../../scripts/prepare-optional-content.py;../../scripts/prepare-bundled-content.py;../../scripts/content_bitmap.py;../../scripts/content_xml.py;../../scripts/content_recipes.py"
+             Link="PluginPreparation/scripts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../FreeTrain.Online.Content/bundled-v2.json" Link="PluginPreparation/bundled-v2.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../content/bundled-v2/source/**/*.bmp"
+             Link="PluginPreparation/bundled-v2/source/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

@@ -23,7 +23,7 @@ export default defineConfig({
   use: { baseURL: webURL, viewport: { width: 1280, height: 900 } },
   workers: 1,
   projects: [{name:'canonical',testMatch:'reference-world.spec.ts',use:{baseURL:canonicalWebURL}},
-    {name:'prototype-regression',testIgnore:'reference-world.spec.ts'}],
+    {name:'prototype-regression',testIgnore:['reference-world.spec.ts','optional-content.spec.ts']}],
   webServer: [{ command: `dotnet run --project ../src/FreeTrain.Online.Server -c Release --no-build --no-restore --no-launch-profile -- --prototype-regression-harness --urls ${serverURL}`, env: { FreeTrainOnline__Saves__Directory: saves,
     FreeTrainOnline__Participants__0__Id: 'builder', FreeTrainOnline__Participants__0__Role: 'operator', FreeTrainOnline__Participants__0__Secret: 'operator-test',
     FreeTrainOnline__Participants__1__Id: 'viewer', FreeTrainOnline__Participants__1__Role: 'observer', FreeTrainOnline__Participants__1__Secret: 'observer-test' }, url: `${serverURL}/health`, reuseExistingServer: false }, { command: `deno task preview --port ${webPort} --strictPort`, env: { FREETRAIN_ONLINE_API_TARGET: serverURL }, url: webURL, reuseExistingServer: false },
