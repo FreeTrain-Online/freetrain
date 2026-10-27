@@ -5,5 +5,11 @@
     "webaudio-tinysynth.js": "dd2b1d95d64499dfc3c292858e8c2d6525dc0bcdc345a900b7db207dffaae38c",
     "LICENSE": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
     "README.md": "3238f27f4179436c6166105b33fc46ccecdfbc1919543da1b606b4d919bfbde1"
-  }
+  },
+  "localChanges": [
+    "Expose the sequencer interval as freetrainTimer for disposal.",
+    "Retain exact MIDI tempo rather than rounding BPM.",
+    "Retain end-of-track events to preserve trailing silence; reset tempo and leading delay on each loop."
+  ],
+  "distributedSha256": "4eda4b43695badbab40f4367387685c476cd5067a717988e83752cbf297e9232"
 }

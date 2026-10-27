@@ -82,7 +82,7 @@ class PreparedInputs(unittest.TestCase):
         self.assertEqual(bundled.PIN, self.catalog['source']['revision'])
         self.assertTrue(all(d['status'] == 'prepared; gameplay-unavailable' for d in self.catalog['contributions']))
         self.assertEqual(1, sum('generatedFrom' in d for d in self.catalog['contributions']))
-        self.assertEqual(3, sum(a['status'] == 'retained-midi; playback-adapter-pending' for a in self.catalog['assets']))
+        self.assertEqual(3, sum(a['status'] == 'retained-midi' for a in self.catalog['assets']))
         self.assertEqual(5, sum(d['code'] == 'source-project-gap' for d in self.catalog['diagnostics']))
         self.assertEqual(0, sum(p['status'] == 'code-picture-binding-pending' for p in self.catalog['pictures']))
         self.assertFalse(any('A4' in p['id'] or 'dbgwnd' in p['id'] for p in self.catalog['plugins']))

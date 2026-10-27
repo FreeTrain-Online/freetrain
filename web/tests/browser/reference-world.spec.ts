@@ -267,3 +267,105 @@ test('bundled recipe gallery renders every source frame in all season/light vari
   expect(await pixel()).toEqual([255,212,90]);
   expect(await bootstrap(page)).toEqual(before);
 });
+
+test('bundled MIDI and bells produce audio only after gestures, with localized controls and a preserved world',async({page})=>{
+  await page.addInitScript(()=>{
+    const audioWindow=window as unknown as {__audioPeak:number;__audioContexts:AudioContext[]};
+    audioWindow.__audioPeak=0;audioWindow.__audioContexts=[];
+    const original=AudioNode.prototype.connect;
+    AudioNode.prototype.connect=function(destination:AudioNode|AudioParam,...args:number[]) {
+      if(destination instanceof AudioDestinationNode) {
+        const context=this.context as AudioContext;
+        if(!audioWindow.__audioContexts.includes(context))audioWindow.__audioContexts.push(context);
+        const analyser=context.createAnalyser();analyser.fftSize=256;
+        original.call(this,analyser);
+        const values=new Float32Array(256);
+        const timer=setInterval(()=>{
+          if(context.state==='closed'){clearInterval(timer);return;}
+          analyser.getFloatTimeDomainData(values);
+          audioWindow.__audioPeak=Math.max(audioWindow.__audioPeak,...values.map(Math.abs));
+        },10);
+      }
+      return original.call(this,destination as AudioNode,...args);
+    } as typeof AudioNode.prototype.connect;
+  });
+  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+  await page.goto('/');await ready(page);const before=await bootstrap(page);
+  await page.locator('canvas').evaluate(el=>{el.dataset.identity='audio-preserved';});
+  const license=await page.request.get('/vendor/webaudio-tinysynth/LICENSE.txt');
+  expect(license.ok()).toBe(true);expect(await license.text()).toContain('Apache License');
+  await openPanel(page,'settings');
+  const tracks=page.getByLabel('Music',{exact:true});
+  await expect(tracks.locator('option')).toHaveCount(3);
+  await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
+  expect(await page.evaluate(()=>(window as any).__audioContexts.length)).toBe(0);
+  for(const id of await tracks.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
+    await tracks.selectOption(id);await page.evaluate(()=>{(window as any).__audioPeak=0;});
+    await page.getByRole('button',{name:'Play music',exact:true}).click();
+    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','playing');
+    await expect.poll(()=>page.evaluate(()=>(window as any).__audioPeak),{timeout:10000}).toBeGreaterThan(.0001);
+    await page.getByRole('button',{name:'Stop music',exact:true}).click();
+    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
+  }
+  const bells=page.getByLabel('Departure bells',{exact:true});await expect(bells.locator('option')).toHaveCount(6);
+  for(const id of await bells.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
+    await bells.selectOption(id);await page.getByRole('button',{name:'Preview bell',exact:true}).click();
+    await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
+  }
+  const evidence=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'audio');mkdirSync(evidence,{recursive:true});
+  await page.screenshot({path:join(evidence,'settings-en.png'),fullPage:true});
+  await page.getByLabel('Language',{exact:true}).selectOption('ja');
+  await expect(page.locator('html')).toHaveAttribute('lang','ja');await expect(page.locator('html')).toHaveAttribute('dir','ltr');
+  await expect(page.getByLabel('音楽',{exact:true}).locator('option').first()).toHaveText('開拓');
+  await page.setViewportSize({width:360,height:800});
+  await page.getByRole('button',{name:'音楽を再生',exact:true}).click();
+  await expect(page.getByTestId('music-status')).toHaveText('再生中');
+  await page.screenshot({path:join(evidence,'settings-ja-narrow.png'),fullPage:true});
+  await page.getByRole('button',{name:'ベルを試聴',exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
+  await page.screenshot({path:join(evidence,'settings-ja-bells.png'),fullPage:true});
+  await page.locator('.primary-panel .panel-title button:last-child').click();
+  await expect(page.locator('canvas')).toHaveAttribute('data-identity','audio-preserved');
+  await openPanel(page,'settings','ja');await expect(page.getByTestId('music-status')).toHaveText('再生中');
+  // Visibility stops playback without a replay on the next visible frame.
+  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+  await expect(page.getByTestId('music-status')).toHaveText('停止中');
+  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
+  await expect(page.getByTestId('music-status')).toHaveText('停止中');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect(await bootstrap(page)).toEqual(before);expect(errors).toEqual([]);
+});
+
+test('music hash failures are localized and retryable; cancelled loads never start later',async({page})=>{
+  await page.goto('/');await ready(page);await openPanel(page,'settings');
+  await expect(page.getByRole('button',{name:'Play music',exact:true})).toBeEnabled();
+  await page.route('**/*.mid',route=>route.fulfill({body:'altered MIDI'}));
+  await page.getByRole('button',{name:'Play music',exact:true}).click();
+  await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','failed');
+  await page.unroute('**/*.mid');
+  let release=()=>{},waiting=false;const held=new Promise<void>(r=>{release=r;});
+  await page.route('**/*.mid',async route=>{
+    try {const response=await route.fetch();waiting=true;await held;await route.fulfill({response});}catch{/* Cancel aborts this request. */}
+  });
+  try {
+    await page.getByRole('button',{name:'Play music',exact:true}).click();await expect.poll(()=>waiting).toBe(true);
+    await page.getByRole('button',{name:'Stop music',exact:true}).click();release();
+    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','stopped');
+    await page.unroute('**/*.mid');
+    await page.getByRole('button',{name:'Play music',exact:true}).click();
+    await expect(page.getByTestId('music-status')).toHaveAttribute('data-state','playing');
+    await page.getByRole('button',{name:'Stop music',exact:true}).click();
+  }finally{release();}
+});
+
+test('gallery language switching keeps the composition canvas, decoded images and selected source identities',async({page})=>{
+  await page.goto('/content-gallery.html');const canvas=page.locator('#composition');await expect(canvas).toHaveAttribute('data-ready','true');
+  await canvas.evaluate(el=>{el.dataset.identity='locale-preserved';});
+  const recipe=await page.locator('#recipe').inputValue();
+  await page.getByLabel('Language',{exact:true}).selectOption('ja');
+  await expect(page.getByRole('heading',{name:'同梱画像レシピ',exact:true})).toBeVisible();
+  await expect(canvas).toHaveAttribute('data-ready','true');await expect(canvas).toHaveAttribute('data-identity','locale-preserved');
+  await expect(page.locator('#recipe')).toHaveValue(recipe);await expect(page.locator('#status')).toContainText('レシピ');
+  await page.reload();await expect(page.locator('html')).toHaveAttribute('lang','ja');
+  await expect(page.getByRole('heading',{name:'同梱画像レシピ',exact:true})).toBeVisible();
+});

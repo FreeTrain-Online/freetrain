@@ -1,5 +1,7 @@
 # Parity phase review — 21 October 2026
 
+**P2 remaining acceptance update — 27 October 2026:** [bundled audio, localization and final regression evidence](web-parity-p2-acceptance.md) implements MIDI/bell playback and a scalable language/content-presentation structure. Existing source-defect/optional-suite deferrals and native/device/fidelity qualifications remain explicit; overall P2 stays open.
+
 **P2-01 update — 25 October 2026:** [canonical bundled inputs and preparation](web-parity-bundled-preparation.md)
 are delivered through default builds, static output and the server's inert
 catalog registry. P2 has started; full recipe/rendering/optional acceptance stays

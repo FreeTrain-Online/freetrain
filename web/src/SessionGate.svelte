@@ -1,11 +1,12 @@
 <script lang="ts">
   import SchemeSelect from './SchemeSelect.svelte';
+  import LanguageSelect from './LanguageSelect.svelte';
   import CreditsDialog from './CreditsDialog.svelte';
   import LicenseDialog from './LicenseDialog.svelte';
   import type { Scheme } from './lib/ui-preferences.ts';
   import { onMount, tick } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
-  import { appName, messages, type Locale } from './lib/localization.ts';
+  import { appName, messages } from './lib/localization.ts';
   import { authorize } from './lib/remote-session-client.ts';
   let { model, view, renderFailed, onleave, scheme, onscheme }: { model: ShellModel; view: ShellState; renderFailed: boolean; onleave: () => void; scheme: Scheme; onscheme: (value: Scheme) => void } = $props();
   const text = $derived(messages[view.locale]);
@@ -83,7 +84,7 @@
       {#if renderFailed}<p role="alert">{text.assetsFailed}</p><button onclick={() => location.reload()}>{text.reload}</button>{/if}
       <p role="status" aria-live="polite" aria-atomic="true" hidden={view.feedback === 'unavailable' || (view.feedback === 'idle' && view.connection !== 'loading')}>{text[view.feedback === 'idle' && view.connection === 'loading' ? 'loading' : view.feedback]}</p>
       {#if !view.leaving && view.feedback !== 'leaveFailed' && (view.role || view.authRequiredAgain)}<button disabled={authorizing} onclick={onleave}>{text.leaveGame}</button>{/if}
-      <label class="field">{text.language}<select aria-label={text.language} value={view.locale} onchange={event => model.setLocale(event.currentTarget.value as Locale)}><option value="en">English</option><option value="ja">日本語</option></select></label>
+      <LanguageSelect locale={view.locale} onchange={model.setLocale}/>
       <SchemeSelect locale={view.locale} {scheme} onchange={onscheme}/>
       <div class="form-actions">
         <button aria-haspopup="dialog" onclick={() => { creditsOpen = true; }}>{text.credits}</button>

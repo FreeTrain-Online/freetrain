@@ -223,5 +223,19 @@
   "catalogHint": "取込済みの建物 · 高さを選択して詳細を表示。",
   "selectedBuilding": "建物の詳細",
   "variant": "バリエーション",
-  "height": "高さ"
+  "height": "高さ",
+  "music": "音楽",
+  "silence": "なし",
+  "playMusic": "音楽を再生",
+  "stopMusic": "音楽を停止",
+  "musicHint": "同梱の曲を選んで再生してください。退出またはページを非表示にすると停止します。",
+  "musicPlaying": "再生中",
+  "musicStopped": "停止中",
+  "musicLoading": "音楽を読み込み中…",
+  "musicFailed": "音楽を再生できませんでした。再生ボタンで再試行してください。",
+  "midiSynthesis": "MIDI音源：WebAudio TinySynth",
+  "departureBells": "発車ベル",
+  "previewBell": "ベルを試聴",
+  "audioCredit": "音源のクレジット",
+  "thirdPartyLicenses": "外部ライブラリのライセンス"
 }

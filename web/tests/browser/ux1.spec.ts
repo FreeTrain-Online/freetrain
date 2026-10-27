@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { appName } from '../../src/lib/localization.ts';
+import { appName } from '../../src/lib/app-identity.ts';
 import { at, bootstrap, clickTile, closePanel, openPanel, ready, selectStation, selectTrain, worldReplacementFixture } from './ux-helpers.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const evidence = process.env.FREETRAIN_ONLINE_UX1_EVIDENCE!;

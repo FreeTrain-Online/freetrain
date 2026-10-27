@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { appName } from './src/lib/localization.ts';
+import { appName } from './src/lib/app-identity.ts';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', 'FREETRAIN_ONLINE_');
   const proxy = { '/api': { target: env.FREETRAIN_ONLINE_API_TARGET ?? 'http://127.0.0.1:5080', ws: true } };

@@ -9,7 +9,7 @@ async function pack():Promise<PluginPack>{return {id:'synthetic',version:'1',has
 Deno.test('enabled catalogs are hash-verified and credits follow the selected locale with pack fallback',async()=>{
   const p=await pack(),original=globalThis.fetch;
   globalThis.fetch=async input=>new Response(String(input)==='/api/content'?JSON.stringify({setHash:hex,packs:[p]}):bytes);
-  try{const c=await loadEnabledContent(hex,new AbortController().signal);assert(c.packs.length===1);assert(creditFor(c.packs[0],'en').text==='Original fixture');assert(creditFor(c.packs[0],'fr').text==='検証用');}
+  try{const c=await loadEnabledContent(hex,new AbortController().signal);assert(c.packs.length===1);assert(creditFor(c.packs[0],'en').text==='Original fixture');assert(creditFor(c.packs[0],'en-AU').text==='Original fixture');assert(creditFor(c.packs[0],'fr').text==='検証用');}
   finally{globalThis.fetch=original;}
 });
 Deno.test('descriptor drift, stale catalog bytes, foreign URLs and duplicate identities reject the complete set',async()=>{

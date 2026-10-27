@@ -393,7 +393,7 @@ def prepare(root=INPUT):
                          day=artifact(png(width, height, surface(pixels)), 'png', path, 'day'),
                          night=artifact(png(width, height, surface(pixels, True)), 'png', path, 'night'))
         else:
-            asset.update(status='retained-midi; playback-adapter-pending' if row['mediaType'] == 'mid' else 'retained-native',
+            asset.update(status='retained-midi' if row['mediaType'] == 'mid' else 'retained-native',
                          native=artifact(raw, row['mediaType'], path, 'native'))
         assets.append(asset)
     assets_by_path = unique(assets, 'path', 'asset')

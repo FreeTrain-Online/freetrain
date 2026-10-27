@@ -1,4 +1,5 @@
 import { IncompatibleWorldError } from './world-identity.ts';
+import { matchLocale } from './locale-matching.ts';
 import { sha256, validateCatalog, type RenderCatalog } from './content-recipes.ts';
 
 export interface PluginCredit { button: string; title: string; text: string }
@@ -9,7 +10,7 @@ export interface PluginPack {
   notices: { path: string; url: string; sha256: string }[];
 }
 export interface EnabledContent { setHash: string; packs: PluginPack[] }
-export const creditFor = (pack: PluginPack, locale: string): PluginCredit => pack.credits.locales[locale] ?? pack.credits.locales[pack.credits.defaultLocale];
+export const creditFor = (pack: PluginPack, locale: string): PluginCredit => pack.credits.locales[matchLocale(locale,Object.keys(pack.credits.locales)) ?? pack.credits.defaultLocale];
 
 /** The server's bootstrap pins the complete selected set. The browser cannot add local packs. */
 export async function loadEnabledContent(expectedHash: string, signal: AbortSignal): Promise<EnabledContent> {

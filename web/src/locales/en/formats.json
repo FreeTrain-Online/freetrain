@@ -1,0 +1,16 @@
+{
+  "weekdays": [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ],
+  "gameTime": "Year {year} · {month}/{day} ({weekday}) {time}",
+  "frameCount": {
+    "one": "{count} frame",
+    "other": "{count} frames"
+  }
+}

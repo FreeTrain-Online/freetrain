@@ -1,0 +1,50 @@
+{
+  "locale": "en",
+  "entries": {
+    "system/{9B087AEA-6E9C-48cd-A1F3-1B774500752E}/name": {
+      "text": "Trill",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "system/{87B1BA1B-C18F-4E39-AD50-245255F34388}/name": {
+      "text": "Silence",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music/{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}/name": {
+      "text": "Pioneering",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music/{32A3B9EB-8E86-4F4A-A314-891115B97A9F}/name": {
+      "text": "New residential area",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music/{4435A2E7-8B1D-4342-BA93-F2750EF48C41}/name": {
+      "text": "City",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music.bell/{607AA03D-4203-459E-A835-F4067A32E4B6}/name": {
+      "text": "High trill",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music.bell/{96B8B6EC-1793-445D-98B3-7F9330438CF9}/name": {
+      "text": "Chime",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music.bell/{3528F039-4F73-4592-BE7A-624877DB135A}/name": {
+      "text": "Low tone",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.music.bell/{FC3471E1-D104-4C31-9055-FC3B5B83B97F}/name": {
+      "text": "High tone",
+      "status": "reviewed-with-feature",
+      "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    }
+  }
+}

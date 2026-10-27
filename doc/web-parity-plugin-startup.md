@@ -1,5 +1,7 @@
 # P2-03 runtime plugin directories — 27 October 2026
 
+**Subsequent P2 acceptance pass:** [audio/localization and final evidence](web-parity-p2-acceptance.md) updates the bundled catalog hash, shares BCP 47 parent lookup for optional credits, and rechecks source/prepared/base flows. Full-suite repairs remain postponed by the owner in the separate repository; the source counts and earlier hashes below retain their dated scope.
+
 The service now accepts repeatable `--plugin-dir` options. Each directory is either
 a source plugin set with `plugin-set.xml`, or a prepared distribution with
 `prepared-pack.json`. Sources, original notices, credits, converted media and caches

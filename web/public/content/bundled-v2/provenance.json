@@ -6071,7 +6071,7 @@
         ],
         "individualImageAuthorStatus": "not independently verified; preserve declared evidence"
       },
-      "status": "retained-midi; playback-adapter-pending",
+      "status": "retained-midi",
       "native": {
         "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.music/media/S_JUTAKU.mid.native.4b242a0cbebcd84090e60045559b9b12c00b9b5545bb41cd54a01816713e8b09.mid",
         "sha256": "4b242a0cbebcd84090e60045559b9b12c00b9b5545bb41cd54a01816713e8b09",
@@ -6116,7 +6116,7 @@
         ],
         "individualImageAuthorStatus": "not independently verified; preserve declared evidence"
       },
-      "status": "retained-midi; playback-adapter-pending",
+      "status": "retained-midi",
       "native": {
         "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.music/media/TOSHI.mid.native.918260dcf41baf840b159730207a7f89b03371e71cbc3a230f8e875f437f2002.mid",
         "sha256": "918260dcf41baf840b159730207a7f89b03371e71cbc3a230f8e875f437f2002",
@@ -6161,7 +6161,7 @@
         ],
         "individualImageAuthorStatus": "not independently verified; preserve declared evidence"
       },
-      "status": "retained-midi; playback-adapter-pending",
+      "status": "retained-midi",
       "native": {
         "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.music/media/map.mid.native.ec8835dc1ca6d561f3089bff3399ebd448db48a96d190ffe066e6faf76217fd3.mid",
         "sha256": "ec8835dc1ca6d561f3089bff3399ebd448db48a96d190ffe066e6faf76217fd3",

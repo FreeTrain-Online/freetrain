@@ -9,6 +9,7 @@ COPY web/ web/
 COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_xml.py scripts/content_recipes.py scripts/
 COPY prototype/ prototype/
 COPY content/bundled-v2/ content/bundled-v2/
+COPY content/localization/ content/localization/
 COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/
 COPY src/FreeTrain.Online.Content/bundled-v2.json src/FreeTrain.Online.Content/bundled-v2.sha256 src/FreeTrain.Online.Content/
 RUN deno task --cwd web build

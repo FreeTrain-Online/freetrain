@@ -14,7 +14,7 @@ Deno.test('server and browser prepared catalogs have the same exact bytes and di
   assert(catalog.contributions.every((d: {status: string}) => d.status === 'prepared; gameplay-unavailable'));
 });
 
-Deno.test('prepared resources keep their hashes, native dimensions and explicit playback limits', async () => {
+Deno.test('prepared resources keep their hashes, native dimensions and retained MIDI inputs', async () => {
   const catalog = JSON.parse(new TextDecoder().decode(await file('web/public/content/bundled-v2/catalog.json')));
   for (const asset of catalog.assets) {
     for (const mode of ['day', 'night', 'native']) {
@@ -29,6 +29,6 @@ Deno.test('prepared resources keep their hashes, native dimensions and explicit 
       }
     }
   }
-  assert(catalog.assets.filter((a: {status: string}) => a.status === 'retained-midi; playback-adapter-pending').length === 3);
+  assert(catalog.assets.filter((a: {status: string}) => a.status === 'retained-midi').length === 3);
   assert(catalog.pictures.filter((p: {status: string}) => p.status === 'prepared-picture').length === 159);
 });

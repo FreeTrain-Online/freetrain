@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FreeTrain bundled recipe gallery</title></head>
-<body><main><h1>Bundled recipe gallery / 同梱画像レシピ</h1>
-<p>Stable ExAV source recipes. This read-only review does not select content for a game.</p>
-<label>Plugin / プラグイン <select id="plugin"><option value="">All / 全て</option></select></label>
-<label>Recipe / レシピ <select id="recipe"></select></label>
-<label>Season / 季節 <select id="season"><option value="spring">Spring / 春</option><option value="summer">Summer / 夏</option><option value="autumn">Autumn / 秋</option><option value="winter">Winter / 冬</option></select></label>
-<label><input id="night" type="checkbox">Night / 夜</label>
-<label>Preview / 表示 <select id="effect"><option value="normal">Normal / 通常</option><option value="alpha">Alpha / 半透明</option><option value="shape">Shape / 形状</option></select></label>
-<label>Height / 高さ <input id="height" type="number" min="1" max="256" value="3"></label>
-<p id="status" role="status">Loading / 読み込み中</p><pre id="credits"></pre>
+<body><main><h1 data-i18n="title">Bundled recipe gallery</h1>
+<p data-i18n="intro"></p>
+<label><span id="language-label">Language</span> <select id="language" aria-labelledby="language-label"></select></label>
+<label><span data-i18n="plugin"></span> <select id="plugin"><option value="" data-i18n="all">All</option></select></label>
+<label><span data-i18n="recipe"></span> <select id="recipe"></select></label>
+<label><span data-i18n="season"></span> <select id="season"><option value="spring" data-i18n="spring">Spring</option><option value="summer" data-i18n="summer">Summer</option><option value="autumn" data-i18n="autumn">Autumn</option><option value="winter" data-i18n="winter">Winter</option></select></label>
+<label><input id="night" type="checkbox"><span data-i18n="night"></span></label>
+<label><span data-i18n="preview"></span> <select id="effect"><option value="normal" data-i18n="normal">Normal</option><option value="alpha" data-i18n="alpha">Alpha</option><option value="shape" data-i18n="shape">Shape</option></select></label>
+<label><span data-i18n="height"></span> <input id="height" type="number" min="1" max="256" value="3"></label>
+<p id="status" role="status"></p><pre id="credits"></pre>
 <canvas id="composition" width="720" height="420" aria-label="Recipe composition"></canvas>
 <p id="selection" role="status"></p><div id="frames"></div></main>
 <script type="module" src="/src/content-gallery.ts"></script></body></html>

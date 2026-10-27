@@ -2,11 +2,16 @@
 
 FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail and business simulation game FreeTrain by Kohsuke Kawaguchi.
 
-The bilingual Svelte app connects to an authoritative C# session over HTTP and
+The localized Svelte app connects to an authoritative C# session over HTTP and
 WebSocket. Its default world is now a canonical H/V spatial reference: a small
 32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
 with **Save 5**. Economy, construction, trains and stations remain future slices.
+Settings also offers local playback of the three bundled MIDI tracks and six
+departure-bell previews. Music starts only when requested and stops on hiding or
+leaving the page. English/Japanese text now uses a shared language registry with
+separate translation files; see [adding a language](doc/web-parity-localization.md)
+and [P2 acceptance evidence](doc/web-parity-p2-acceptance.md).
 See [P1-02 clock and scheduler](doc/web-parity-clock.md) and
 [P1-03 random streams](doc/web-parity-random.md) and
 [P1-04 spatial contracts](doc/web-parity-spatial-contracts.md).
@@ -22,7 +27,9 @@ The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 The spatial reference uses source normal rail patterns. The historical demo
 assets retain prototype provenance. [P2-01 canonical preparation](doc/web-parity-bundled-preparation.md)
 now supplies pinned bundled inputs, converted surfaces and a prepared metadata
-registry; complete executable recipes/rendering remain P2 work. P0-01 ExAV
+registry. [P2-02 executable recipes and gallery](doc/web-parity-recipes.md)
+and [P2-03 runtime plugin loading](doc/web-parity-plugin-startup.md) are implemented;
+[remaining acceptance and deferrals](doc/web-parity-p2-acceptance.md) are tracked separately. P0-01 ExAV
 discovery, P0-02 content and P0-03 workflow/scope reconciliation, P0-04/P0-05 source
 specifications and [P0-06 scenario specification](doc/web-parity-scenarios.md) are
 complete. [P0-07 coverage and phase estimates](doc/web-parity-report.md) are published;
@@ -33,11 +40,12 @@ is complete at source level. [P0 coverage is closed](doc/web-parity-phase-gates.
 [maintained source policy](doc/web-feature-parity.md).
 
 Keep LGPL bundled content separate from the non-LGPL V2 additional set, canonical
-[https://github.com/rdmark/freetrain-online-plugins-nonfree]. Planned startup support
-uses explicit plugin-set directory arguments and adds a localized credits button
+[https://github.com/rdmark/freetrain-online-plugins-nonfree]. Startup support
+uses explicit repeatable `--plugin-dir` arguments and adds a localized credits button
 for each enabled set, with credits supplied by XML in that separate repository.
-This loading/credits interface remains to be implemented; see the
-[reserved contract and source diagnostics](doc/web-parity-optional-plugins.md#owner-directed-launch-and-credits-contract).
+See [the implemented loading/credits interface and source diagnostics](doc/web-parity-plugin-startup.md).
+Full canonical V2 adapter/resource repairs and historical-suite acceptance remain
+postponed in the separate repository.
 
 ## Prerequisites and checks
 

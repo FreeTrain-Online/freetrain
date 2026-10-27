@@ -674,7 +674,7 @@ function WebAudioTinySynthCore(target) {
       this.rhythm[9]=1;
       this.preroll=0.2;
       this.relcnt=0;
-      setInterval(
+      this.freetrainTimer = setInterval( // FreeTrain: expose scheduler for disposal.
         function(){
           if(++this.relcnt>=3){
             this.relcnt=0;
@@ -701,6 +701,10 @@ function WebAudioTinySynthCore(target) {
               if(this.playIndex>=this.song.ev.length){
                 if(this.loop){
                   e=this.song.ev[this.playIndex=0];
+                  // FreeTrain: begin each loop with the SMF default tempo.
+                  this.song.tempo=120;
+                  this.tick2Time=4*60/this.song.tempo/this.song.timebase;
+                  this.playTime+=e.t*this.tick2Time;
                   this.playTick=e.t;
                 }
                 else{
@@ -896,9 +900,11 @@ function WebAudioTinySynthCore(target) {
               song.text=GetStr(s, i + datastart, datalen - datastart);
               break;
             case 0x2f:
+              // FreeTrain: preserve authored track-end silence when looping.
+              song.ev.push({t:tick,m:[0xff2f,0]});
               return 1;
             case 0x51:
-              var val = Math.floor(60000000 / Get3(s, i + 3));
+              var val = 60000000 / Get3(s, i + datastart); // FreeTrain: retain exact tempo.
               song.ev.push({t:tick, m:[0xff51, val]});
               break;
             }

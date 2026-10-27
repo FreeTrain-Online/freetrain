@@ -1,215 +1,63 @@
-export const appName = 'FreeTrain Online';
+import en from '../locales/en/app.json' with { type: 'json' };
+import ja from '../locales/ja/app.json' with { type: 'json' };
+import enFormats from '../locales/en/formats.json' with { type: 'json' };
+import jaFormats from '../locales/ja/formats.json' with { type: 'json' };
+import enGallery from '../locales/en/gallery.json' with { type: 'json' };
+import jaGallery from '../locales/ja/gallery.json' with { type: 'json' };
+import { matchLocale } from './locale-matching.ts';
 
-export const messages = {
-  en: {
-    license: 'License', sourceCode: 'Source code on GitHub',
-    credits: 'Credits', closeDialog: 'Close', originalAuthor: 'Original author',
-    originalAuthorName: 'Kohsuke Kawaguchi',
-    originalContributorNames: '477, Hima, 915, Nanashi-san no Yabo, Eshiminarai, Ryokounotomo, Syosei, Kouensya A, Miha, ima, Min, Ayase, Teha, Shirosen no Uchigawa, qra_ra, Blue Phoenix, Daifukyo, Semushi, HEUER, Shirakawago no Hito, Horitake, nanashi, MP, Riorio',
-    englishContributorNames: 'Charles Goodwin, Steven Hoefel, Daniel Markstedt, David Hudson',
-    onlineContributorNames: 'Daniel Markstedt',
-    originalContributors: 'Original contributors', originalCommunity: 'Members of the A-Train community at 2ch:',
-    communityThanks: 'Thanks also to the artists, musicians, and everyone else who contributed to FreeTrain.',
-    englishVersion: 'English version',
-    expandPanel: 'Expand panel', collapsePanel: 'Reduce panel', driving: 'Driving',
-    savesHint: 'Only the Owner can save or replace the shared world. Unsupported files are rejected; empty slots cannot be loaded.',
-    leaseHint: 'Take control before driving. Release is available only for your own lease.',
-    toolbarHelp: 'Toolbars: use arrow keys, Home and End to move; Enter or Space activates. Tab moves to the next group.',
-    closeMenu: 'Close menu', colorScheme: 'UI color scheme', evergreen: 'Evergreen', 'classic-blue': 'Classic blue', slate: 'Slate', plum: 'Plum',
-    dirtyTitle: 'Unsaved station name', dirtyHint: 'Apply this name before continuing, discard the draft, or keep editing.',
-    discard: 'Discard draft', keepEditing: 'Keep editing', draftConflict: 'This station changed. Reset the draft to review its current name before applying.',
-    draftInterrupted: 'The session changed. The unfinished station draft was discarded.',
-    sharedReplacement: 'This replaces the shared world for every participant, clears control and construction drafts, and starts paused. It cannot be undone here.',
-    observerHint: 'Observers can inspect and change local view settings. Game changes require Owner or Operator access; saves require Owner.',
-    game: 'Game', view: 'View', settings: 'Settings', session: 'Session', help: 'Help / Diagnostics', close: 'Close panel',
-    selectionInspector: 'Selected object', connectingGame: 'Connecting to game…', loadingGame: 'Loading game…',
-    connectionLost: 'Connection lost',
-    waitForSync: 'Waiting for a synchronized world and map images.', recoveryHint: 'The game is unavailable until synchronization completes.',
-    retryNow: 'Retry now', retryScheduled: 'Next automatic retry:', retryLeave: 'Retry leave', reload: 'Reload',
-    leaveFailedTitle: 'Leave not confirmed', signInAgain: 'Sign in again', authenticationRequired: 'Authentication is required again. Enter your access key to join.',
-    incompatibleTitle: 'Update required', renderFailedTitle: 'Map unavailable',
-    closePanelToTarget: 'Close panel to choose a target', unvalidatedPreview: 'Preview only. Placement and cost are checked on Confirm.',
-    snapDirection: 'Align target', snapNone: 'Free', snapFour: 'Four directions', snapEight: 'Eight directions',
-    useAnchor: 'Use as alignment anchor', snapAnchor: 'Alignment anchor', alignmentHint: 'Confirm changes the selected tile.',
-    checkingGeometry: 'Checking target…', geometryChecked: 'Target is within the map.', geometryFailed: 'Target could not be checked. Select it again to retry.', outsideMap: 'Target is outside the map.',
-    directionLabel: 'Direction', distanceLabel: 'Distance in cells', headingNorth: 'North', headingNorthEast: 'North-east', headingEast: 'East', headingSouthEast: 'South-east', headingSouth: 'South', headingSouthWest: 'South-west', headingWest: 'West', headingNorthWest: 'North-west',
-    temporaryReferenceWorld: 'Temporary reference world',
-    revealPreview: 'Show preview level', unavailableObject: 'This object is no longer available.',
-    leaveGame: 'Leave game', leavingGame: 'Leaving game…',
-    leaveFailed: 'Leaving could not be confirmed. Retry Leave game to sign out.',
-    localAccessHint: 'Leave the key blank to join locally as Owner.',
+export { appName } from './app-identity.ts';
+export type PluralMessages = Partial<Record<Intl.LDMLPluralRule, string>> & { other: string };
+export type Messages = { [K in keyof typeof en]: string };
+export interface LocaleDefinition {
+  label: string;
+  direction: 'ltr' | 'rtl';
+  messages: Messages;
+  gallery: { [K in keyof typeof enGallery]: string };
+  formats: { weekdays: string[]; gameTime: string; frameCount: PluralMessages };
+}
+// Register a language here once. Selectors, negotiation and document direction
+// all consume this registry; translations live in their own language directory.
+export const locales = {
+  en: { label: 'English', direction: 'ltr', messages: en, formats: enFormats, gallery: enGallery },
+  ja: { label: '日本語', direction: 'ltr', messages: ja, formats: jaFormats, gallery: jaGallery },
+} satisfies Record<string, LocaleDefinition>;
+export type Locale = keyof typeof locales;
+export const defaultLocale: Locale = 'en';
+export const messages = Object.fromEntries(Object.entries(locales).map(([id, definition]) => [id, definition.messages])) as Record<Locale, Messages>;
 
-    owner: 'Owner', operator: 'Operator', observer: 'Observer', control: 'Train control', unclaimed: 'Available', takeControl: 'Take control', releaseControl: 'Release control',
-    controlBusy: 'Another participant controls this train.', leaseRequired: 'Train control expired or changed. Take control again.',
-    cancel: 'Cancel', saves: 'Save and restore', saveSlot: 'Slot', checkpoint: 'Automatic checkpoint', emptySlot: 'empty',
-    saveGame: 'Save slot', loadGame: 'Load slot', downloadSave: 'Download save', uploadSave: 'Upload save',
-    loadHint: 'Select a file to check compatibility. Unsupported data leaves the current game unchanged.',
-    replaceWorld: 'Replace the current game with this save?', confirmLoad: 'Confirm load',
-    saving: 'Waiting for save operation…', saved: 'Save completed', loaded: 'Game restored and paused',
-    incompatibleSave: 'This save format is not supported. Prototype saves cannot be loaded. The current game was preserved.',
-    referenceInspect: 'Inspect',
-    referenceWorld: 'Spatial reference world',
-    referenceWorldHint: 'Explore the eight-direction rail loop and run, pause or step the calendar. Economy, trains and construction are not available yet.',
-    normalRail: 'Normal rail pattern',
-    spatialTarget: 'Check a location',
-    operationUnavailable: 'This operation is not available in the spatial reference world.',
-    savingUnavailable: 'Saving is unavailable for this reference world.',
-    invalidSave: 'Invalid save data. The current game was preserved.', saveTooLarge: 'Save exceeds the 1 MiB limit.',
-    missingSave: 'This slot is empty.', saveFailed: 'Save operation could not be confirmed. Check the connection and server storage.',
-    enableSound: 'Enable sound', disableSound: 'Disable sound', soundOn: 'Station sound on', soundOff: 'Sound off', soundFailed: 'Sound could not play. Try enabling it again.',
-
-    mapTools: 'Map tools', inspectTool: 'Inspect / drive', buildTool: 'Build track', removeTool: 'Remove track',
-    zoomLevel: 'Zoom level', zoomIn: 'Zoom in', zoomOut: 'Zoom out', homeMap: 'Reset camera', findTrain: 'Find train',
-    heightCut: 'Height cut', buildLevel: 'Track level', trackShape: 'Track shape',
-    night: 'Night', winter: 'Winter ground', recolor: 'Recolor',
-    mapHelp: 'Click an object to inspect. Drag to pan; middle drag or Space + drag pans in every tool. Use the wheel or buttons to zoom.',
-    constructionHelp: 'Select a tile, then confirm. Tools keep shared time running; use Pause when needed. 100 per changed tile; buffer extension costs 200. Removal has no refund.',
-    mapCanvas: 'Interactive world map', assetsFailed: 'Map images could not load. Reload to retry.',
-    pickTile: 'Select a tile on the map', confirmTrack: 'Confirm track change', cancelPreview: 'Cancel preview',
-    pickObject: 'Select a map object to inspect',
-    manualHelp: 'Manual: focus the map. Shift passes; Up departs; Down reverses; Left / Right choose a junction. Run advances time. Escape cancels.',
-    keysReleased: 'Keys released', mapFocus: 'Click map to control',
-    visualSample: 'Visual sample by the pier: water, fence and slope. Winter ground and recoloring are local display options.',
-    track: 'Track', building: 'Building', eastWest: 'East-west', northSouth: 'North-south',
-    curveSE: 'Curve south-east', curveSW: 'Curve south-west', curveNE: 'Curve north-east', curveNW: 'Curve north-west', junctionE: 'Junction east',
-    title: appName, subtitle: 'Web prototype', language: 'Language',
-    network: 'Live reference game', networkNotice: 'Inspect the world, operate the train and extend the siding. Changes are confirmed by the game service.',
-    accessRequired: 'Operator access required', incompatible: 'Client and server versions differ. Reload after updating.',
-    operatorSecret: 'Enter access key to join game', connect: 'Connect', accessFailed: 'Access failed. Check the key and try again.',
-    unresolved: 'A command outcome is unresolved. Review the refreshed state before trying again.',
-    staleEpoch: 'The world was replaced. Reconnect and review the current game.',
-    notAuthorized: 'Operator access is unavailable. Reconnect to sign in.',
-    queueFull: 'The server is busy. Review state before trying again.',
-    retryWindowFull: 'Command history is full. Wait before sending more commands.',
-    requestConflict: 'This request ID was already used for a different command.',
-    invalidPlacement: 'Track cannot be placed here.', insufficientFunds: 'Insufficient funds.',
-    trainState: 'State', moving: 'Moving', buffer: 'At buffer', blocked: 'Blocked',
-    run: 'Run', pause: 'Pause', step: 'Single step', mapTitle: 'Reference world',
-    mapSize: '64 × 64 tiles · 16 levels',
-    inspector: 'Train inspector', train: 'Train', cars: 'Cars', controller: 'Controller',
-    automatic: 'Automatic', manual: 'Manual', station: 'Station', stationName: 'Station name',
-    draft: 'Local draft · not submitted', resetDraft: 'Reset draft', buildings: 'Building catalog',
-    pier: 'Railroad pier', condo: 'Condominium', fixed: 'Fixed height', variable: 'Variable height',
-    cash: 'Cash', tick: 'Tick', paused: 'Paused', scenario: 'Reference scenario v1',
-    running: 'Running', rename: 'Apply name', confirmedName: 'Confirmed name', position: 'Position',
-    reconnect: 'Reconnect', loading: 'Connecting…', ready: 'Connected to game', disconnected: 'Disconnected',
-    idle: 'Ready', waiting: 'Waiting for server confirmation…', accepted: 'Confirmed by server',
-    invalidInput: 'The command was rejected. Your draft is retained.',
-    staleRevision: 'The item changed. Review the confirmed state and retry.', unavailable: 'Connection unavailable. Reconnect and review state.',
-    catalogHint: 'Imported building families · select a height to inspect.',
-    selectedBuilding: 'Building details', variant: 'Variant', height: 'Height',
-  },
-  ja: {
-    license: 'ライセンス', sourceCode: 'ソースコード（GitHub）',
-    credits: 'クレジット', closeDialog: '閉じる', originalAuthor: '原作者',
-    originalAuthorName: '川口耕介',
-    originalContributorNames: '477、暇、915、名無しさんの野望、絵師見習い、旅行の友、鐘声、後援者Ａ、ミハ、ima、Min、綾瀬、テハ、白線の内側、qra_ra、Blue Phoenix、大不況、駝、HEUER、白川郷の人、ホリタケ、nanashi、MP、りおりお',
-    englishContributorNames: 'Charles Goodwin, Steven Hoefel, Daniel Markstedt, David Hudson',
-    onlineContributorNames: 'Daniel Markstedt',
-    originalContributors: 'オリジナル版の貢献者', originalCommunity: '2ch「Ａ列車で行こう」スレッドの皆さん：',
-    communityThanks: 'グラフィックや音楽を制作した皆さん、そしてFreeTrainに貢献したすべての皆さんに感謝します。',
-    englishVersion: '英語版',
-    expandPanel: 'パネルを拡大', collapsePanel: 'パネルを縮小', driving: '運転中',
-    savesHint: '共有ワールドの保存・置換は所有者だけが行えます。非対応のファイルは拒否されます。空のスロットは読み込めません。',
-    leaseHint: '運転する前に操作権を取得してください。自分の操作権のみ解放できます。',
-    toolbarHelp: 'ツールバー：矢印、Home、Endで移動し、EnterまたはSpaceで実行します。Tabで次のグループに移動します。',
-    closeMenu: 'メニューを閉じる', colorScheme: 'UI配色', evergreen: 'エバーグリーン', 'classic-blue': 'クラシックブルー', slate: 'スレート', plum: 'プラム',
-    dirtyTitle: '未保存の駅名', dirtyHint: '駅名を適用して続けるか、下書きを破棄するか、編集を続けてください。',
-    discard: '下書きを破棄', keepEditing: '編集を続ける', draftConflict: '駅が変更されました。適用する前に下書きを戻し、現在の駅名を確認してください。',
-    draftInterrupted: '接続状態が変わったため、未完了の駅名の下書きを破棄しました。',
-    sharedReplacement: '全参加者の共有ワールドを置き換え、操作権と建設の下書きを解除し、一時停止で開始します。ここでは元に戻せません。',
-    observerHint: '観覧者は確認とローカル表示の変更ができます。ゲームの変更には所有者または操作者、保存には所有者の権限が必要です。',
-    game: 'ゲーム', view: '表示', settings: '設定', session: '接続情報', help: 'ヘルプ・診断', close: 'パネルを閉じる',
-    selectionInspector: '選択した対象', connectingGame: 'ゲームに接続中…', loadingGame: 'ゲームを読込中…',
-    connectionLost: '接続が切れました',
-    waitForSync: 'ワールドの同期とマップ画像の読込を待っています。', recoveryHint: '同期が完了するまでゲームを操作できません。',
-    retryNow: '今すぐ再接続', retryScheduled: '次の自動再接続：', retryLeave: '退出を再試行', reload: '再読み込み',
-    leaveFailedTitle: '退出を確認できません', signInAgain: '再認証が必要です', authenticationRequired: '認証が必要です。操作キーを入力して参加してください。',
-    incompatibleTitle: '更新が必要です', renderFailedTitle: 'マップを表示できません',
-    closePanelToTarget: 'パネルを閉じて対象を選択', unvalidatedPreview: 'プレビューです。配置と費用は確定時に判定します。',
-    snapDirection: '対象の方向合わせ', snapNone: '自由', snapFour: '4方向', snapEight: '8方向',
-    useAnchor: '方向合わせの基準にする', snapAnchor: '基準位置', alignmentHint: '確定すると選択したマスを変更します。',
-    checkingGeometry: '対象の座標を確認中…', geometryChecked: '対象はマップの範囲内です。', geometryFailed: '対象の座標を確認できませんでした。もう一度選択してください。', outsideMap: '対象はマップの範囲外です。',
-    directionLabel: '方向', distanceLabel: '距離（マス）', headingNorth: '北', headingNorthEast: '北東', headingEast: '東', headingSouthEast: '南東', headingSouth: '南', headingSouthWest: '南西', headingWest: '西', headingNorthWest: '北西',
-    temporaryReferenceWorld: '暫定参照ワールド',
-    revealPreview: 'プレビューの高さを表示', unavailableObject: 'この対象は利用できなくなりました。',
-    leaveGame: 'ゲームから退出', leavingGame: '退出中…',
-    leaveFailed: '退出を確認できませんでした。「ゲームから退出」で再試行してください。',
-    localAccessHint: 'ローカルで所有者として参加するには、キーを空欄にしてください。',
-
-    owner: '所有者', operator: '操作者', observer: '観覧者', control: '列車の操作権', unclaimed: '空き', takeControl: '操作権を取得', releaseControl: '操作権を解放',
-    controlBusy: '別の参加者がこの列車を操作中です。', leaseRequired: '操作権が失効または変更されました。再取得してください。',
-    cancel: 'キャンセル', saves: '保存と復元', saveSlot: 'スロット', checkpoint: '自動保存', emptySlot: '空',
-    saveGame: 'スロットに保存', loadGame: 'スロットを読込', downloadSave: '保存ファイルをダウンロード', uploadSave: '保存ファイルをアップロード',
-    loadHint: 'ファイルを選択して互換性を確認します。非対応のデータで現在のゲームが変更されることはありません。',
-    replaceWorld: 'この保存データで現在のゲームを置き換えますか？', confirmLoad: '読込を確定',
-    saving: '保存操作の確認待ち…', saved: '保存しました', loaded: 'ゲームを復元し一時停止しました',
-    incompatibleSave: 'この保存形式には対応していません。プロトタイプの保存データは読み込めません。現在のゲームは保持されました。',
-    referenceInspect: '確認',
-    referenceWorld: '空間参照ワールド',
-    referenceWorldHint: '8方向の環状線を確認し、時計の進行・一時停止・1分送りを操作できます。経済・列車・建設の機能はまだ利用できません。',
-    normalRail: '通常線路パターン',
-    spatialTarget: '位置を確認',
-    operationUnavailable: 'この操作は空間参照ワールドでは利用できません。',
-    savingUnavailable: 'この参照ワールドでは保存できません。',
-    invalidSave: '無効な保存データです。現在のゲームは保持されました。', saveTooLarge: '保存データは1 MiBまでです。',
-    missingSave: 'このスロットは空です。', saveFailed: '保存操作を確認できません。接続とサーバーの保存先を確認してください。',
-    enableSound: '音を有効にする', disableSound: '音を無効にする', soundOn: '駅の音が有効です', soundOff: '音は無効です', soundFailed: '音を再生できませんでした。もう一度有効にしてください。',
-
-    mapTools: 'マップ操作', inspectTool: '確認・運転', buildTool: '線路を敷設', removeTool: '線路を撤去',
-    zoomLevel: '表示倍率', zoomIn: '拡大', zoomOut: '縮小', homeMap: '視点を戻す', findTrain: '列車を表示',
-    heightCut: '高さ表示', buildLevel: '線路の高さ', trackShape: '線路の形',
-    night: '夜景', winter: '冬の地面', recolor: '色変更',
-    mapHelp: 'クリックで対象を確認。ドラッグで移動。全ツールで中ボタンまたはSpace＋ドラッグで移動できます。ホイールやボタンで拡大・縮小。',
-    constructionHelp: 'マスを選び、確定してください。時間は共有されます。必要なら一時停止ボタンを使ってください。変更1マス100、車止め延長200。撤去の返金はありません。',
-    mapCanvas: '操作マップ', assetsFailed: '画像を読み込めませんでした。再読み込みしてください。',
-    pickTile: 'マップのマスを選択', confirmTrack: '線路の変更を確定', cancelPreview: 'プレビューを取消',
-    pickObject: 'マップの対象を選択',
-    manualHelp: '手動運転：マップを選択。Shiftで通過、上で発車、下で反転、左右で分岐を選択。運転ボタンで時間が進みます。Escで取消。',
-    keysReleased: 'キーを解除', mapFocus: 'マップをクリックして操作',
-    visualSample: '桟橋付近の表示見本：水面・柵・斜面。冬の地面と色変更は表示のみの設定です。',
-    track: '線路', building: '建物', eastWest: '東西', northSouth: '南北',
-    curveSE: '曲線：南東', curveSW: '曲線：南西', curveNE: '曲線：北東', curveNW: '曲線：北西', junctionE: '東分岐',
-    title: appName, subtitle: 'ウェブ試作版', language: '言語',
-    network: '参照ゲームに接続', networkNotice: 'マップの確認、列車の運転、側線の延長ができます。操作はゲームサーバーで確定します。',
-    accessRequired: '操作キーが必要です', incompatible: 'クライアントとサーバーのバージョンが異なります。更新後に再読み込みしてください。',
-    operatorSecret: 'アクセスキーを入力してゲームに参加', connect: '接続', accessFailed: '接続できませんでした。キーを確認してください。',
-    unresolved: 'コマンドの結果を確認できません。再試行前に最新状態を確認してください。',
-    staleEpoch: 'ワールドが切り替わりました。再接続して現在のゲームを確認してください。',
-    notAuthorized: '操作権限がありません。再接続して認証してください。',
-    queueFull: 'サーバーが混雑しています。状態を確認して再試行してください。',
-    retryWindowFull: 'コマンド履歴がいっぱいです。しばらく待ってから操作してください。',
-    requestConflict: 'このリクエストIDは別のコマンドで使用済みです。',
-    invalidPlacement: 'ここには線路を敷設できません。', insufficientFunds: '資金が不足しています。',
-    trainState: '状態', moving: '走行中', buffer: '車止め', blocked: '進行不可',
-    run: '運転', pause: '一時停止', step: '1ステップ', mapTitle: '参照ワールド',
-    mapSize: '64 × 64マス · 高さ16層',
-    inspector: '列車情報', train: '列車', cars: '両数', controller: '運転方式',
-    automatic: '自動', manual: '手動', station: '駅', stationName: '駅名',
-    draft: 'ローカルの下書き · 未送信', resetDraft: '下書きを戻す', buildings: '建物一覧',
-    pier: '鉄道橋脚', condo: '集合住宅', fixed: '高さ固定', variable: '高さ可変',
-    cash: '資金', tick: '経過ステップ', paused: '一時停止中', scenario: '参照シナリオ v1',
-    running: '運転中', rename: '駅名を適用', confirmedName: '確定した駅名', position: '位置',
-    reconnect: '再接続', loading: '接続中…', ready: 'ゲームに接続済み', disconnected: '未接続',
-    idle: '準備完了', waiting: 'サーバーの確認待ち…', accepted: 'サーバーで確定しました',
-    invalidInput: 'コマンドが拒否されました。下書きは保持されます。',
-    staleRevision: '対象が変更されました。確定状態を確認して再試行してください。', unavailable: '接続できません。再接続して状態を確認してください。',
-    catalogHint: '取込済みの建物 · 高さを選択して詳細を表示。',
-    selectedBuilding: '建物の詳細', variant: 'バリエーション', height: '高さ',
-  },
-} as const;
-export type Locale = keyof typeof messages;
 export function resolveLocale(value: string | null | undefined): Locale {
-  return value?.toLowerCase().split('-')[0] === 'ja' ? 'ja' : 'en';
+  return (matchLocale(value, Object.keys(locales)) as Locale | undefined) ?? defaultLocale;
+}
+export function negotiateLocale(values: readonly string[]): Locale {
+  for (const value of values) {
+    const match = matchLocale(value, Object.keys(locales));
+    if (match) return match as Locale;
+  }
+  return defaultLocale;
 }
 export function initialLocale(): Locale {
   try {
-    const saved = localStorage.getItem('freetrain-online.locale');
-    if (saved === 'en' || saved === 'ja') return saved;
+    const match = matchLocale(localStorage.getItem('freetrain-online.locale'), Object.keys(locales));
+    if (match) return match as Locale;
   } catch { /* A blocked storage setting must not prevent startup. */ }
-  return resolveLocale(navigator.language);
+  return negotiateLocale(navigator.languages?.length ? navigator.languages : [navigator.language]);
 }
 export function persistLocale(locale: Locale): void {
   document.documentElement.lang = locale;
+  document.documentElement.dir = locales[locale].direction;
   try { localStorage.setItem('freetrain-online.locale', locale); } catch { /* Preference is optional. */ }
+}
+/** Plain text only: placeholders cannot introduce HTML or be substituted twice. */
+export function interpolate(template: string, values: Record<string, string | number | bigint>): string {
+  return template.replace(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (_, key: string) => {
+    if (!Object.hasOwn(values, key)) throw new Error(`Missing translation parameter: ${key}`);
+    return String(values[key]);
+  });
+}
+/** Each language provides the plural categories it needs, always including
+ * 'other'. Never assemble translated noun fragments around English grammar. */
+export function pluralMessage(locale: string, forms: PluralMessages, count: number): string {
+  const rule = new Intl.PluralRules(locale).select(count);
+  return interpolate(forms[rule] ?? forms.other, { count: new Intl.NumberFormat(locale).format(count) });
 }

@@ -1,0 +1,15 @@
+{
+  "weekdays": [
+    "日",
+    "月",
+    "火",
+    "水",
+    "木",
+    "金",
+    "土"
+  ],
+  "gameTime": "{year}年{month}月{day}日({weekday}) {time}",
+  "frameCount": {
+    "other": "{count}コマ"
+  }
+}

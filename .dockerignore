@@ -10,9 +10,14 @@
 !scripts/
 !scripts/prepare-bundled-content.py
 !scripts/content_bitmap.py
+!scripts/content_xml.py
+!scripts/content_recipes.py
+!scripts/prepare-optional-content.py
 !content/
 !content/bundled-v2/
 !content/bundled-v2/**
+!content/localization/
+!content/localization/**
 !prototype/
 !prototype/**
 !deploy/

@@ -3,7 +3,7 @@
   import { isReferenceWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
-  import { appName, messages, persistLocale, initialLocale, type Locale } from './lib/localization.ts';
+  import { appName, messages, persistLocale, initialLocale } from './lib/localization.ts';
   import { createShellModel, catalog } from './lib/shell-model.ts';
   import { createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
   import { createBrowserAudio } from './lib/browser-audio.ts';
@@ -12,6 +12,9 @@
   import { creditFor, type PluginPack } from './lib/optional-content.ts';
   import LicenseDialog from './LicenseDialog.svelte';
   import SchemeSelect from './SchemeSelect.svelte';
+  import LanguageSelect from './LanguageSelect.svelte';
+  import MusicControls from './MusicControls.svelte';
+  import { createMidiPlayer, type PlaybackState } from './lib/midi-player.ts';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import SaveControls from './SaveControls.svelte';
   import MapView from './MapView.svelte';
@@ -21,10 +24,12 @@
   import { panels, type Panel, type Tool } from './lib/game-ui.ts';
   const icon = '/assets/FTicon.png';
   const audio = createBrowserAudio();
+  let musicState = $state<PlaybackState>('stopped'), selectedMusic = $state('');
+  const music = createMidiPlayer(state => { musicState = state; });
   let soundEnabled = $state(false), soundFailed = $state(false), saveBusy = $state(false);
   let enabledPacks = $state<PluginPack[]>([]), optionalCredits = $state<PluginPack>();
   const model = createShellModel(() => createRemoteSessionClient((event, epoch) => { void audio.event(event, epoch).then(() => { soundEnabled = audio.enabled; }); }, content => { enabledPacks = content.packs; }), initialLocale());
-  const dispose = () => { model.dispose(); audio.dispose(); };
+  const dispose = () => { model.dispose(); audio.dispose(); music.dispose(); };
   let view = $state(model.state);
   let mapSelection = $state<Selection>();
   let map: MapView;
@@ -45,6 +50,7 @@
   let navigation = $state<(() => void) | undefined>();
   let previousEpoch: string | undefined;
   const text = $derived(messages[view.locale]);
+  $effect(() => { if (!live) music.stop(); });
   const read = $derived(view.read);
   const live = $derived(view.connection === 'ready' && !!read && !view.leaving && !view.signedOut && renderState === 'ready');
   const train = $derived(mapSelection?.kind === 'train' ? read?.trains.find(item => item.id === mapSelection?.id) : undefined);
@@ -99,7 +105,7 @@
     } else model.resetDraft();
     navigation = undefined; await tick(); action?.();
   }
-  function leaveNow() { if (saveBusy) return; audio.disable(); soundEnabled = false; map?.resetInteraction(); void model.leave(leaveGame); }
+  function leaveNow() { if (saveBusy) return; audio.disable(); music.stop(); soundEnabled = false; map?.resetInteraction(); void model.leave(leaveGame); }
   function leave() { if (!saveBusy) request(leaveNow); }
   function escape(event: KeyboardEvent) {
     if (event.key !== 'Escape' || !live || event.isComposing || event.keyCode === 229) return;
@@ -111,6 +117,8 @@
   function uiFocus(event: FocusEvent) { if (!(event.target instanceof HTMLCanvasElement)) map?.suspendInput(); }
   $effect(() => { if (live) { void tick().then(() => map?.focusMap()); } });
   onMount(() => {
+    const hidden = () => { if (document.hidden) music.stop(); };
+    document.addEventListener('visibilitychange', hidden);
     const unsubscribe = model.subscribe(next => { view = next; });
     const pagehide = (event: PageTransitionEvent) => { if (!event.persisted) dispose(); };
     const viewport = () => {
@@ -121,7 +129,7 @@
     };
     viewport(); window.addEventListener('resize', viewport); window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport);
     window.addEventListener('pagehide', pagehide); document.addEventListener('focusin', uiFocus);
-    return () => { window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
+    return () => { document.removeEventListener('visibilitychange', hidden); window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
   });
 </script>
 
@@ -199,7 +207,8 @@
           <SaveControls bind:slot={savedSlot} onmodal={() => map.resetInteraction()} locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner'} onbusy={value => { saveBusy = value; }}/>
         {:else if panel === 'settings'}
           <SchemeSelect locale={view.locale} {scheme} onchange={value => { scheme = value; }}/>
-          <label class="field">{text.language}<select aria-label={text.language} value={view.locale} onchange={event => model.setLocale(event.currentTarget.value as Locale)}><option value="en">English</option><option value="ja">日本語</option></select></label>
+          <LanguageSelect locale={view.locale} onchange={model.setLocale}/>
+          <MusicControls locale={view.locale} player={music} playback={musicState} bind:selected={selectedMusic}/>
           <button onclick={async () => { if (soundEnabled) { audio.disable(); soundEnabled = false; } else { soundEnabled = await audio.enable(); soundFailed = !soundEnabled; } }}>{soundEnabled ? text.disableSound : text.enableSound}</button><p data-testid="sound-feedback">{soundFailed ? text.soundFailed : soundEnabled ? text.soundOn : text.soundOff}</p>
         {:else if panel === 'session'}
           {#if reference}<p>{text.referenceWorldHint}</p>{/if}
