@@ -1,0 +1,338 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.rail.signal",
+    "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "鉄道用信号機",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/RailSignal.bmp",
+      "sourceSha256": "8221c3139f3400465e9600aa12b123052d8a67ba7ec1e48e4240e3174ae03e1a",
+      "sha256": "8221c3139f3400465e9600aa12b123052d8a67ba7ec1e48e4240e3174ae03e1a",
+      "bytes": 9270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/RailSignal2.bmp",
+      "sourceSha256": "62b2c4373d605e4e82ee8e266e88bd1953414c24de2ed1c66b0d36c48090bd2d",
+      "sha256": "62b2c4373d605e4e82ee8e266e88bd1953414c24de2ed1c66b0d36c48090bd2d",
+      "bytes": 4150,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "sha256": "626ca2e64ceefbfcf36fe7cf6babd98f94659ea22a88a7907f8ef58c741fa560",
+      "bytes": 1247,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "b521536a377b3a2e9dc91f8b0d6a626ee9beedbb01df6b0eebf28dbafbc59161"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/MenuContributionImpl.cs",
+      "sourceSha256": "3cdefa5a0d01f79af577027690ac777ba399f515c8de0934e70598aa514586b0",
+      "sha256": "3cdefa5a0d01f79af577027690ac777ba399f515c8de0934e70598aa514586b0",
+      "bytes": 704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+      "sourceSha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "sha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "bytes": 1532,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContributionFactory.cs",
+      "sourceSha256": "ca2bb0aaa5278b0b9da058dad2f683cef849e202b18474b28b3fba379a59bd69",
+      "sha256": "ca2bb0aaa5278b0b9da058dad2f683cef849e202b18474b28b3fba379a59bd69",
+      "bytes": 431,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.resx",
+      "sourceSha256": "f2d6e597dbfc21c0dd1d8eda78389821c3bdb5f03b2625f7306302bc4d6fed77",
+      "sha256": "f2d6e597dbfc21c0dd1d8eda78389821c3bdb5f03b2625f7306302bc4d6fed77",
+      "bytes": 5330,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{DFB5CC3B-B0B0-4421-80DC-4E9D1E39A1E8}",
+      "pluginId": "org.kohsuke.freetrain.rail.signal",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:1:{DFB5CC3B-B0B0-4421-80DC-4E9D1E39A1E8}",
+      "implementation": {
+        "name": "freetrain.world.rail.signal.MenuContributionImpl",
+        "codebase": "bin/FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{DFB5CC3B-B0B0-4421-80DC-4E9D1E39A1E8}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.signal.MenuContributionImpl",
+              "codebase": "bin/FreeTrain.RailSignal.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "pluginId": "org.kohsuke.freetrain.rail.signal",
+      "type": "railSignal",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:2:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "implementation": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railSignal",
+          "id": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "三灯式",
+            "children": []
+          },
+          {
+            "tag": "side",
+            "attributes": {},
+            "text": "left",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "RailSignal.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "pluginId": "org.kohsuke.freetrain.rail.signal",
+      "type": "railSignal",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:3:{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "implementation": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railSignal",
+          "id": "{6FA55842-E693-414f-A120-0A3D0C613B21}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "入替信号",
+            "children": []
+          },
+          {
+            "tag": "side",
+            "attributes": {},
+            "text": "right",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "RailSignal2.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.rail.signal/RailSignal.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail.signal/RailSignal2.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "鉄道用信号機",
+      "originalTextSha256": "53735f2e1f70689382f4bb4a8600325f9434f98e9168e4415d8b9a79b2ae5e3f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Rail Signals",
+        "sourceSha256": "f6fa4f7799d4b80b2ed9d2a3ee7e700225844decff86a0649427ed2e1d8ca04f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "key": "plug-in/contribution:{59465CA9-C45E-4D11-8D57-95088E16E0F1}/name[0]/text()",
+      "originalText": "railSignal",
+      "originalTextSha256": "0998f53acfcfb66258fcaa324149870fd0159155b070f049f7848676fd63c83d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+        "key": "plug-in/contribution:{59465CA9-C45E-4D11-8D57-95088E16E0F1}/name[0]/text()",
+        "text": "railSignal",
+        "sourceSha256": "f6fa4f7799d4b80b2ed9d2a3ee7e700225844decff86a0649427ed2e1d8ca04f"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "key": "plug-in/contribution:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}/name[0]/text()",
+      "originalText": "三灯式",
+      "originalTextSha256": "f6eb240cdc866e47254e3984300dd4303588f0f28f0220c3c4683412641cfa43",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+        "key": "plug-in/contribution:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}/name[0]/text()",
+        "text": "Three-aspect signal",
+        "sourceSha256": "f6fa4f7799d4b80b2ed9d2a3ee7e700225844decff86a0649427ed2e1d8ca04f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "key": "plug-in/contribution:{6FA55842-E693-414f-A120-0A3D0C613B21}/name[0]/text()",
+      "originalText": "入替信号",
+      "originalTextSha256": "b507213aaa02609f80ee8aca89e30e52f2a4a84faec3866a1e7b8fd15e2bba47",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+        "key": "plug-in/contribution:{6FA55842-E693-414f-A120-0A3D0C613B21}/name[0]/text()",
+        "text": "Change signal",
+        "sourceSha256": "f6fa4f7799d4b80b2ed9d2a3ee7e700225844decff86a0649427ed2e1d8ca04f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.eshi",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "絵師見習いさん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "sha256": "148033e50a827bc08c6f360d20e42b0ef091a6360b7f9b482a3afa021d8fed30",
+      "bytes": 1024,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "8987344239ef0b4393df431cb688bfe033ce23bc5c6e6d01b328e6c588a18841"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/yoshinoya1.bmp",
+      "sourceSha256": "6f26214fc39cceaf55faa0fae15a051a891dcc751c5d5ed81b18988c8c6a3225",
+      "sha256": "6f26214fc39cceaf55faa0fae15a051a891dcc751c5d5ed81b18988c8c6a3225",
+      "bytes": 3702,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/yosinoya2.bmp",
+      "sourceSha256": "d116d12829ca9be19af9c9f51121a4482bbb42dd483ed81b6c9356d680f1d627",
+      "sha256": "d116d12829ca9be19af9c9f51121a4482bbb42dd483ed81b6c9356d680f1d627",
+      "bytes": 5958,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}",
+      "pluginId": "org.kohsuke.freetrain.structure.eshi",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.eshi:0:{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "吉野家",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "21"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "yoshinoya1.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.RestaurantPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "35",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{19F42929-9606-4cfb-A2F0-EFE323487DC6}",
+      "pluginId": "org.kohsuke.freetrain.structure.eshi",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.eshi:1:{19F42929-9606-4cfb-A2F0-EFE323487DC6}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{19F42929-9606-4cfb-A2F0-EFE323487DC6}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "吉野家",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "4000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "yosinoya2.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.RestaurantPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "70",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.eshi/yoshinoya1.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.eshi/yosinoya2.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Structure Set",
+        "sourceSha256": "ecd1804f37744dc25cf81415f5a29b2fdd7409287c4ff1f93d5aad970082061d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "絵師見習いさん",
+      "originalTextSha256": "0e4714c11eddefc7defaa574704000b058ace8e8e0370a21a7a4dbcb5b0277f5",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "key": "plug-in/contribution:{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group[0]/text()",
+      "originalText": "吉野家",
+      "originalTextSha256": "0e9353412cf139dc894e66d5891b83242f1bafe702ed309152eb6bdca36313f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+        "key": "plug-in/contribution:{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group[0]/text()",
+        "text": "Gyudon restaurant",
+        "sourceSha256": "ecd1804f37744dc25cf81415f5a29b2fdd7409287c4ff1f93d5aad970082061d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "key": "plug-in/contribution:{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group[0]/text()",
+      "originalText": "吉野家",
+      "originalTextSha256": "0e9353412cf139dc894e66d5891b83242f1bafe702ed309152eb6bdca36313f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+        "key": "plug-in/contribution:{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group[0]/text()",
+        "text": "Gyudon restaurant",
+        "sourceSha256": "ecd1804f37744dc25cf81415f5a29b2fdd7409287c4ff1f93d5aad970082061d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

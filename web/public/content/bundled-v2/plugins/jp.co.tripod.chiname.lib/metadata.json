@@ -1,0 +1,241 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.lib",
+    "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "横断歩道",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "sha256": "58b1d98c934c5471983283f0808004cc042af9df6c89216cb7a7fefa766af9b7",
+      "bytes": 1284,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "78e5417e527161f539d386b0385dc83b037a2fc25af70f58e89e81799aabbf47"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/ControllerForm.resx",
+      "sourceSha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "sha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "bytes": 5324,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/MenuContributionImpl.cs",
+      "sourceSha256": "d2225bc622427f0d682ba6688a56c9e40d73595cdb3ae8b2561616dad4bb1423",
+      "sha256": "d2225bc622427f0d682ba6688a56c9e40d73595cdb3ae8b2561616dad4bb1423",
+      "bytes": 713,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/ControllerForm.resx",
+      "sourceSha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "sha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "bytes": 5324,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/MenuContributionImpl.cs",
+      "sourceSha256": "500a7a722e72902af39f05429cc6e7dc713682f163045743d8e493b3b2206bbb",
+      "sha256": "500a7a722e72902af39f05429cc6e7dc713682f163045743d8e493b3b2206bbb",
+      "bytes": 717,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{3773CA2C-11B5-4DCC-C477-2296E9EBEBA7}",
+      "pluginId": "jp.co.tripod.chiname.lib",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib:1:{3773CA2C-11B5-4DCC-C477-2296E9EBEBA7}",
+      "implementation": {
+        "name": "freetrain.world.road.accessory.MenuContributionImpl",
+        "codebase": "RoadAccessory.DLL",
+        "assembly": "RoadAccessory",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/FreeTrain.RoadAccessory.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/FreeTrain.RoadAccessory.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{3773CA2C-11B5-4DCC-C477-2296E9EBEBA7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.road.accessory.MenuContributionImpl",
+              "codebase": "RoadAccessory.DLL"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{BFC035E9-8B0E-41D6-C477-72F99D820290}",
+      "pluginId": "jp.co.tripod.chiname.lib",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib:3:{BFC035E9-8B0E-41D6-C477-72F99D820290}",
+      "implementation": {
+        "name": "freetrain.world.road.dummycar.MenuContributionImpl",
+        "codebase": "DummyCars.DLL",
+        "assembly": "DummyCars",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/FreeTrain.DummyCars.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/FreeTrain.DummyCars.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{BFC035E9-8B0E-41D6-C477-72F99D820290}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.road.dummycar.MenuContributionImpl",
+              "codebase": "DummyCars.DLL"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "横断歩道",
+      "originalTextSha256": "8f5ab70b827ca315bea0fd191126831309f408bba31dfdef79ce5d5eb99bf947",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Pedestrian Crossing",
+        "sourceSha256": "e4a548d0a1eeebd58925171b2213204bb52cfddf25a533110e12605e8698f70d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "key": "plug-in/title[1]/text()",
+      "originalText": "駐車場",
+      "originalTextSha256": "798fa88035fbd098079bf0cf46ed99f59cd42ff30ee10d8ddc508dcba3f753e1",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib/plugin.xml",
+        "key": "plug-in/title[1]/text()",
+        "text": "Parking Area",
+        "sourceSha256": "e4a548d0a1eeebd58925171b2213204bb52cfddf25a533110e12605e8698f70d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "key": "plug-in/contribution:{782BAFD9-2698-4C0E-C477-FFEA0F7D1B8A}/name[0]/text()",
+      "originalText": "roadAccessory",
+      "originalTextSha256": "170a83d5159fc8b3bce903ee7c134b2a32ebce57146af8d2a773eeae12e97830",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib/plugin.xml",
+        "key": "plug-in/contribution:{782BAFD9-2698-4C0E-C477-FFEA0F7D1B8A}/name[0]/text()",
+        "text": "roadAccessory",
+        "sourceSha256": "e4a548d0a1eeebd58925171b2213204bb52cfddf25a533110e12605e8698f70d"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "key": "plug-in/contribution:{0A73F9C6-BDCC-43DF-C477-E28B76058E8C}/name[0]/text()",
+      "originalText": "DummyCar",
+      "originalTextSha256": "6b268da397e5dde7ef582bde7eda31fec46f0c5459a23e6f8ee32ebabef272c7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib/plugin.xml",
+        "key": "plug-in/contribution:{0A73F9C6-BDCC-43DF-C477-E28B76058E8C}/name[0]/text()",
+        "text": "DummyCar",
+        "sourceSha256": "e4a548d0a1eeebd58925171b2213204bb52cfddf25a533110e12605e8698f70d"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

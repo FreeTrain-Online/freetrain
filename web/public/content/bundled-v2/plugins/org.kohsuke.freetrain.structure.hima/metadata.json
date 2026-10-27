@@ -1,0 +1,603 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.hima",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "暇さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/house.bmp",
+      "sourceSha256": "a9dea8f565aac107cc909e7b80d59d1be47b6d688403f6a03de0481b6d58efe1",
+      "sha256": "a9dea8f565aac107cc909e7b80d59d1be47b6d688403f6a03de0481b6d58efe1",
+      "bytes": 10350,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "sha256": "499ab428d9ab4d91ebb5d15264e370d4af0b85820abf47193b634f3c02cc184e",
+      "bytes": 2085,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "525fed4bc78e562574373aada70bf51a3cd023ea158b7ede1c62bd5c87007ad5"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}",
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.hima:0:{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "house.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3D8FA264-BE4A-4a4f-97E6-950779C89599}",
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.hima:1:{3D8FA264-BE4A-4a4f-97E6-950779C89599}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{3D8FA264-BE4A-4a4f-97E6-950779C89599}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "一戸建て",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{8B0106A0-64A4-4680-B258-232B1A5E0B0E}",
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.hima:2:{8B0106A0-64A4-4680-B258-232B1A5E0B0E}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{8B0106A0-64A4-4680-B258-232B1A5E0B0E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "一戸建て",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{982E924F-BA22-4ace-A71C-4523719A8444}",
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.hima:3:{982E924F-BA22-4ace-A71C-4523719A8444}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{982E924F-BA22-4ace-A71C-4523719A8444}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "一戸建て",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F193C000-DFEB-4588-B658-D11CD80C39D5}",
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.hima:4:{F193C000-DFEB-4588-B658-D11CD80C39D5}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{F193C000-DFEB-4588-B658-D11CD80C39D5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "一戸建て",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{2D8E28EB-4D14-4BCA-AC25-C7A210A58A14}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.hima/house.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Single House Set",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "暇さん",
+      "originalTextSha256": "525622a68fba5f37a9bdb47cc37f2dcc00a460d9ec5715c1f15c1dea7c86c9b6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/contribution:{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group[0]/text()",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/contribution:{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group[0]/text()",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/contribution:{982E924F-BA22-4ace-A71C-4523719A8444}/group[0]/text()",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{982E924F-BA22-4ace-A71C-4523719A8444}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "key": "plug-in/contribution:{F193C000-DFEB-4588-B658-D11CD80C39D5}/group[0]/text()",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{F193C000-DFEB-4588-B658-D11CD80C39D5}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

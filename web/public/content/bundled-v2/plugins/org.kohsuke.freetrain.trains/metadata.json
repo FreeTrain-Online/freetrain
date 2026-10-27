@@ -1,0 +1,1459 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.trains",
+    "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "基本車両キット",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/Train.bmp",
+      "sourceSha256": "1c22d4844b04833208c7a13f52a048b476622232f944a7980da0c2741eece44f",
+      "sha256": "1c22d4844b04833208c7a13f52a048b476622232f944a7980da0c2741eece44f",
+      "bytes": 49206,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+      "sourceSha256": "9971f4bc618f65be65529bd4fe53b29376db9bd91eca09c82ce9a67c8d2c486b",
+      "sha256": "9971f4bc618f65be65529bd4fe53b29376db9bd91eca09c82ce9a67c8d2c486b",
+      "bytes": 73782,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/Train485b.bmp",
+      "sourceSha256": "e38ea68eff5e34d86bcba0320e7179b3689a9374c424997ed384a91d200c3d30",
+      "sha256": "e38ea68eff5e34d86bcba0320e7179b3689a9374c424997ed384a91d200c3d30",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/TrainE3a.bmp",
+      "sourceSha256": "9b99fbd8f946f9296c14a5d3298bacb2c1e134ce040f6d5cbd39671769c6dfea",
+      "sha256": "9b99fbd8f946f9296c14a5d3298bacb2c1e134ce040f6d5cbd39671769c6dfea",
+      "bytes": 73784,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/TrainE3b.bmp",
+      "sourceSha256": "d2b8df879b90bfd13714ca0228bc4029d82f81ec601b634f271cfffcb5e2cb03",
+      "sha256": "d2b8df879b90bfd13714ca0228bc4029d82f81ec601b634f271cfffcb5e2cb03",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "sha256": "738cb8353052f5d349ef14aba4748d9cd6c128f507fe71b2957b8c4670bef42f",
+      "bytes": 5150,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "f09fa6e5d362744b683860761a28a4096f3af75c3b9ebe0fa6e9280924fe7f57"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:0:{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "implementation": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.SymTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "train.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "132",
+            "children": []
+          },
+          {
+            "tag": "seatedcapacity",
+            "attributes": {},
+            "text": "66",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:1:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ＦＴ１型",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "30000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "fast",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "川口耕介",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "FT",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "FreeTrain",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "架空の列車です",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "400",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:2:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ＦＴ２型",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "28000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "medium",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "川口耕介",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "FT",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "FreeTrain",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "架空の列車です",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "400",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:3:{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{F7134C8E-6B63-4780-AF16-90D33131CD07}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ＦＴ３型",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "25000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "slow",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "川口耕介",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "FT",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "FreeTrain",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "架空の列車です",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "400",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:4:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "implementation": {
+        "name": "freetrain.contributions.train.AsymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/AsymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.AsymTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "train485a.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "65",
+            "children": []
+          },
+          {
+            "tag": "seatedcapacity",
+            "attributes": {},
+            "text": "65",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:5:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "implementation": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.SymTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "train485b.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "70",
+            "children": []
+          },
+          {
+            "tag": "seatedcapacity",
+            "attributes": {},
+            "text": "70",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:6:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "implementation": {
+        "name": "freetrain.contributions.train.ReverseTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ReverseTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.ReverseTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "base",
+            "attributes": {
+              "carRef": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:7:{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "雷鳥",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "50000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "fast",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "485系",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "JR東日本",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "説明募集中",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "750",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "120",
+            "children": []
+          },
+          {
+            "tag": "triprange",
+            "attributes": {},
+            "text": "long",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "head",
+                "attributes": {
+                  "carRef": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "tail",
+                "attributes": {
+                  "carRef": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:8:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "implementation": {
+        "name": "freetrain.contributions.train.AsymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/AsymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.AsymTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "trainE3a.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "56",
+            "children": []
+          },
+          {
+            "tag": "seatedcapacity",
+            "attributes": {},
+            "text": "56",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:9:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "implementation": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.SymTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "trainE3b.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "64",
+            "children": []
+          },
+          {
+            "tag": "seatedcapacity",
+            "attributes": {},
+            "text": "64",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:10:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "implementation": {
+        "name": "freetrain.contributions.train.ReverseTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ReverseTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.train.ReverseTrainCarImpl"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "base",
+            "attributes": {
+              "carRef": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:11:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "こまち",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "70000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "superb",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "E3系",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "JR東日本",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "説明募集中",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "1000",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "140",
+            "children": []
+          },
+          {
+            "tag": "triprange",
+            "attributes": {},
+            "text": "long",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "head",
+                "attributes": {
+                  "carRef": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "tail",
+                "attributes": {
+                  "carRef": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.trains/Train.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.trains/Train485b.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.trains/TrainE3a.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.trains/TrainE3b.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "基本車両キット",
+      "originalTextSha256": "d0ba30fd1b309df39971d6a9d3ff18c6de6763312e8a8ec0ced50469f59131fa",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Standard Train Kit",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/name[0]/text()",
+      "originalText": "ＦＴ１型",
+      "originalTextSha256": "8f9b159ca7765c0a5886f018f45dcaaccce052b5003fe58a2c78d50cfdd6255b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/name[0]/text()",
+        "text": "FT1 Series",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/description[0]/text()",
+      "originalText": "架空の列車です",
+      "originalTextSha256": "0327c34820a7bd4e169a6b73ed1020a280e42f3389025183332285086ceafdd7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/description[0]/text()",
+        "text": "This is a fictional train",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/name[0]/text()",
+      "originalText": "ＦＴ２型",
+      "originalTextSha256": "c53282049d67a3b9c678f2ec34d0a3a0a58325f5861ebbca4364c0efd8f57840",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/name[0]/text()",
+        "text": "FT2 Series",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/description[0]/text()",
+      "originalText": "架空の列車です",
+      "originalTextSha256": "0327c34820a7bd4e169a6b73ed1020a280e42f3389025183332285086ceafdd7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/description[0]/text()",
+        "text": "This is a fictional train",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F7134C8E-6B63-4780-AF16-90D33131CD07}/name[0]/text()",
+      "originalText": "ＦＴ３型",
+      "originalTextSha256": "cc6da808b41c2ae7a63d1462f07e5395a008537cf273e4b73adab0a6dad3124b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F7134C8E-6B63-4780-AF16-90D33131CD07}/name[0]/text()",
+        "text": "FT3 Series",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F7134C8E-6B63-4780-AF16-90D33131CD07}/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F7134C8E-6B63-4780-AF16-90D33131CD07}/description[0]/text()",
+      "originalText": "架空の列車です",
+      "originalTextSha256": "0327c34820a7bd4e169a6b73ed1020a280e42f3389025183332285086ceafdd7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F7134C8E-6B63-4780-AF16-90D33131CD07}/description[0]/text()",
+        "text": "This is a fictional train",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/name[0]/text()",
+      "originalText": "雷鳥",
+      "originalTextSha256": "77bfc8da245a0258f33322fa324fe845059304809df8796b4cc4a12333ee8560",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/name[0]/text()",
+        "text": "Raicho",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/type[0]/text()",
+      "originalText": "485系",
+      "originalTextSha256": "a789fbf4ebbb808ffbc5ea7a78b194d6e4afa65adac27c9f1a804952fcea8915",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/company[0]/text()",
+      "originalText": "JR東日本",
+      "originalTextSha256": "26239dc95a45bd720ead8ba4ee6f60fd9da8b01e3ae1f92411fc0c4ca0d33eec",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/description[0]/text()",
+      "originalText": "説明募集中",
+      "originalTextSha256": "f33812e00b75fb7fc713737ec72987d88d81be6ba3c403b181dbd8a827366e59",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{3983B298-ADB1-4905-94E5-03B7AAE5A221}/description[0]/text()",
+        "text": "Developed and manufactured by Japanese National Railways, 485 Series was put into use in large scale between 1968 and 1979.\nUnlike other variants, the 485 Series \"Raicho\" still uses the original black rollsigns from the JNR era.",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/name[0]/text()",
+      "originalText": "こまち",
+      "originalTextSha256": "75b6e39d65c369e04a9ff4c2db8df37b9017b84c2715e486a961c369ccece74d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/name[0]/text()",
+        "text": "Komachi",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/type[0]/text()",
+      "originalText": "E3系",
+      "originalTextSha256": "eb027abceeec7eea95c063cebe4440d487f6b3a0d5525cd75775efab3a8d488d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/company[0]/text()",
+      "originalText": "JR東日本",
+      "originalTextSha256": "26239dc95a45bd720ead8ba4ee6f60fd9da8b01e3ae1f92411fc0c4ca0d33eec",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/description[0]/text()",
+      "originalText": "説明募集中",
+      "originalTextSha256": "f33812e00b75fb7fc713737ec72987d88d81be6ba3c403b181dbd8a827366e59",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+        "key": "plug-in/contribution:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/description[0]/text()",
+        "text": "Komachi is the limited express service running on Akita Shinkansen, also the line's sole service.\nThe service is named after the famous waka poet Ono-no-Komachi, who is believed to have been born in the area of Akita Prefecture",
+        "sourceSha256": "5574851793c8fb42cd9969e6b6ae37badb063f0095cc35b00fa943f905a37f1d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

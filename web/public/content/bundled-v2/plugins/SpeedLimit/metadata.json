@@ -1,0 +1,318 @@
+{
+  "plugin": {
+    "id": "SpeedLimit",
+    "path": "trunk/plugins/SpeedLimit/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "速度制限モジュール",
+    "author": "nanashi"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/SpeedLimit/FastSpeedIcon.bmp",
+      "sourceSha256": "8681dd829bfc411d89e101a4acfbd07e792d077f8135f3aaca8f9aa8048ac9d7",
+      "sha256": "8681dd829bfc411d89e101a4acfbd07e792d077f8135f3aaca8f9aa8048ac9d7",
+      "bytes": 1042,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/LowSpeedIcon.bmp",
+      "sourceSha256": "19d37bbc519a4a4bbec29a18969aa36bc4686a3138203085d970a39fe3d3d786",
+      "sha256": "19d37bbc519a4a4bbec29a18969aa36bc4686a3138203085d970a39fe3d3d786",
+      "bytes": 1042,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/MediumSpeedIcon.bmp",
+      "sourceSha256": "c7a6d3f3b80e068645e83d5790266109769e5ac04644022b392fac6a3b422744",
+      "sha256": "c7a6d3f3b80e068645e83d5790266109769e5ac04644022b392fac6a3b422744",
+      "bytes": 1042,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/MenuContributionImpl.cs",
+      "sourceSha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "bytes": 1903,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/SpeedLimitRailRoadController.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/SpeedLimitSlopeController.resx",
+      "sourceSha256": "1911a862401341a820ddf7ac6cb47fab2511598160ac18f35f79d39a00beacb4",
+      "sha256": "1911a862401341a820ddf7ac6cb47fab2511598160ac18f35f79d39a00beacb4",
+      "bytes": 6518,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/app.config",
+      "sourceSha256": "bc22384394191e57727bee7136fffd077ce8b44b15e3696f2d0e4d2910620048",
+      "sha256": "bc22384394191e57727bee7136fffd077ce8b44b15e3696f2d0e4d2910620048",
+      "bytes": 120,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/plugin.xml",
+      "sourceSha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "sha256": "cf68c854b7ca9e501eb580725fca5d963c617e295a3246385e72c9bf56f49a5a",
+      "bytes": 1190,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "25106ec08383ffd450c1361ab80464f5a8e6d4c048de9e5c1e83c12efefc9e33"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{CFC7C99B-4EDE-493B-9DD1-268633902901}",
+      "pluginId": "SpeedLimit",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/SpeedLimit/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:SpeedLimit:0:{CFC7C99B-4EDE-493B-9DD1-268633902901}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{CFC7C99B-4EDE-493B-9DD1-268633902901}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "LowSpeedIcon.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "LowSpeedIcon.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CFC7C99B-4EDE-493B-9DD1-268633902902}",
+      "pluginId": "SpeedLimit",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/SpeedLimit/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:SpeedLimit:1:{CFC7C99B-4EDE-493B-9DD1-268633902902}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{CFC7C99B-4EDE-493B-9DD1-268633902902}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "MediumSpeedIcon.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "MediumSpeedIcon.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CFC7C99B-4EDE-493B-9DD1-268633902903}",
+      "pluginId": "SpeedLimit",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/SpeedLimit/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:SpeedLimit:2:{CFC7C99B-4EDE-493B-9DD1-268633902903}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{CFC7C99B-4EDE-493B-9DD1-268633902903}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "FastSpeedIcon.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "FastSpeedIcon.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{998985DC-5A8E-4C72-96B6-56EDC545305B}",
+      "pluginId": "SpeedLimit",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/SpeedLimit/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:SpeedLimit:3:{998985DC-5A8E-4C72-96B6-56EDC545305B}",
+      "implementation": {
+        "name": "freetrain.world.rail.speedlimit.MenuContributionImpl",
+        "codebase": "bin/Debug/SpeedLimit.dll",
+        "assembly": "SpeedLimit",
+        "projects": [
+          "trunk/plugins/SpeedLimit/FreeTrain.SpeedLimit.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/SpeedLimit/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{998985DC-5A8E-4C72-96B6-56EDC545305B}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.speedlimit.MenuContributionImpl",
+              "codebase": "bin/Debug/SpeedLimit.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/SpeedLimit/FastSpeedIcon.bmp",
+    "trunk/plugins/SpeedLimit/LowSpeedIcon.bmp",
+    "trunk/plugins/SpeedLimit/MediumSpeedIcon.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/SpeedLimit/plugin.xml",
+      "sourceSha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "速度制限モジュール",
+      "originalTextSha256": "6d5da6cf207c56700c07bb4fdf637bb5d5554f55fa14938a9f5a71db38e424f1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

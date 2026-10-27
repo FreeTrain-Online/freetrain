@@ -84526,5 +84526,4602 @@
       "reviewStatus": "inventoried; wording review with implementing feature",
       "scope": "in-scope"
     }
-  ]
+  ],
+  "geometry": {
+    "sourceHashes": {
+      "core/world/rail/RailPattern.cs": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "core/world/Direction.cs": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "core/world/Traffic.cs": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "core/world/Clock.cs": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "core/util/PriorityQueue.cs": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "core/world/rail/Train.cs": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "core/views/QuarterViewDrawer.cs": "bed5946d356fb58ba79d40511a58618de3129a15dafca6e68ae2906b29566ebb"
+    },
+    "patterns": [
+      {
+        "id": 0,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          0,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": 1,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          32,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          1,
+          5
+        ]
+      },
+      {
+        "id": 2,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          64,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          1,
+          6
+        ]
+      },
+      {
+        "id": 3,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          96,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          2,
+          5
+        ]
+      },
+      {
+        "id": 4,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          128,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          2,
+          6
+        ]
+      },
+      {
+        "id": 5,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          160,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          2,
+          7
+        ]
+      },
+      {
+        "id": 6,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          192,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          3,
+          6
+        ]
+      },
+      {
+        "id": 7,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          224,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          3,
+          7
+        ]
+      },
+      {
+        "id": 8,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          256,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          3,
+          0
+        ]
+      },
+      {
+        "id": 9,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          288,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          4,
+          7
+        ]
+      },
+      {
+        "id": 10,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          320,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          4,
+          0
+        ]
+      },
+      {
+        "id": 11,
+        "family": "normal",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          352,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          5,
+          0
+        ]
+      },
+      {
+        "id": 12,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          0,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          1,
+          5,
+          4
+        ]
+      },
+      {
+        "id": 13,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          32,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          1,
+          5,
+          6
+        ]
+      },
+      {
+        "id": 14,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          64,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          2,
+          6,
+          5
+        ]
+      },
+      {
+        "id": 15,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          96,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          2,
+          6,
+          7
+        ]
+      },
+      {
+        "id": 16,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          128,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          3,
+          7,
+          6
+        ]
+      },
+      {
+        "id": 17,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          160,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          3,
+          7,
+          0
+        ]
+      },
+      {
+        "id": 18,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          192,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          4,
+          0,
+          7
+        ]
+      },
+      {
+        "id": 19,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          224,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          4,
+          0,
+          1
+        ]
+      },
+      {
+        "id": 20,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          256,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          5,
+          1,
+          0
+        ]
+      },
+      {
+        "id": 21,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          288,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          5,
+          1,
+          2
+        ]
+      },
+      {
+        "id": 22,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          320,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          6,
+          2,
+          1
+        ]
+      },
+      {
+        "id": 23,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          352,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          6,
+          2,
+          3
+        ]
+      },
+      {
+        "id": 24,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          7,
+          3,
+          2
+        ]
+      },
+      {
+        "id": 25,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          416,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          7,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 26,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          448,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          0,
+          4,
+          3
+        ]
+      },
+      {
+        "id": 27,
+        "family": "junction",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          480,
+          16,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "connections": [
+          0,
+          4,
+          5
+        ]
+      },
+      {
+        "id": 28,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          0,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 0,
+        "visible": true
+      },
+      {
+        "id": 29,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          32,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 0,
+        "visible": true
+      },
+      {
+        "id": 30,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 4,
+        "visible": false
+      },
+      {
+        "id": 31,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 0,
+        "visible": false
+      },
+      {
+        "id": 32,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          128,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 2,
+        "visible": true
+      },
+      {
+        "id": 33,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          160,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 2,
+        "visible": true
+      },
+      {
+        "id": 34,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 6,
+        "visible": false
+      },
+      {
+        "id": 35,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 2,
+        "visible": false
+      },
+      {
+        "id": 36,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          256,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 4,
+        "visible": true
+      },
+      {
+        "id": 37,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          288,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 4,
+        "visible": true
+      },
+      {
+        "id": 38,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 0,
+        "visible": false
+      },
+      {
+        "id": 39,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 4,
+        "visible": false
+      },
+      {
+        "id": 40,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 6,
+        "visible": true
+      },
+      {
+        "id": 41,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          416,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 6,
+        "visible": true
+      },
+      {
+        "id": 42,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 2,
+        "visible": false
+      },
+      {
+        "id": 43,
+        "family": "slope",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 6,
+        "visible": false
+      },
+      {
+        "id": 44,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          0,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 0,
+        "visible": true
+      },
+      {
+        "id": 45,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          32,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 0,
+        "visible": true
+      },
+      {
+        "id": 46,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 4,
+        "visible": false
+      },
+      {
+        "id": 47,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          0,
+          4
+        ],
+        "climb": 0,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 0,
+        "visible": false
+      },
+      {
+        "id": 48,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          128,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 2,
+        "visible": true
+      },
+      {
+        "id": 49,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          160,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 2,
+        "visible": true
+      },
+      {
+        "id": 50,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 6,
+        "visible": false
+      },
+      {
+        "id": 51,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          2,
+          6
+        ],
+        "climb": 2,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 2,
+        "visible": false
+      },
+      {
+        "id": 52,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          256,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 4,
+        "visible": true
+      },
+      {
+        "id": 53,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          288,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 4,
+        "visible": true
+      },
+      {
+        "id": 54,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 0,
+        "visible": false
+      },
+      {
+        "id": 55,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          4,
+          0
+        ],
+        "climb": 4,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 4,
+        "visible": false
+      },
+      {
+        "id": 56,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 0,
+        "zdiff": 0,
+        "zangle": 6,
+        "visible": true
+      },
+      {
+        "id": 57,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          416,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 1,
+        "zdiff": 1,
+        "zangle": 6,
+        "visible": true
+      },
+      {
+        "id": 58,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 2,
+        "zdiff": -1,
+        "zangle": 2,
+        "visible": false
+      },
+      {
+        "id": 59,
+        "family": "underground-slope",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          384,
+          0,
+          1,
+          1
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": [
+          6,
+          2
+        ],
+        "climb": 6,
+        "level": 3,
+        "zdiff": 0,
+        "zangle": 6,
+        "visible": false
+      },
+      {
+        "id": "underground-slope-support-2",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          64,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-3",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          96,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-6",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          192,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-7",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          224,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-10",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          320,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-11",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          352,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-14",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          448,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "underground-slope-support-15",
+        "family": "underground-slope-support",
+        "sheet": "ugslope.bmp",
+        "rectangle": [
+          480,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-2",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          64,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-3",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          96,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-6",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          192,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-7",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          224,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-10",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          320,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-11",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          352,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-14",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          448,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      },
+      {
+        "id": "slope-support-15",
+        "family": "slope-support",
+        "sheet": "RailRoads.bmp",
+        "rectangle": [
+          480,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "connections": []
+      }
+    ]
+  },
+  "geometryGallery": {
+    "sourceHashes": {
+      "core/res/BridgePier.bmp": "1353dbca453213088c60500f1baeb761ab9a4e8de3324242192eb9951a7a9548",
+      "core/res/FatPlatform.bmp": "2d285f10151c9f8f672c3fda634e4b21454ffd72b332806876f19d85f74b24db",
+      "core/res/RailRoads.bmp": "f0c0befef49745299c72990e9cc36ef8c69ea10f84f1901a511ce575af103119",
+      "core/res/RailRoads_n.bmp": "cef2bf066913e297c56dbbd4755529a48461c913c027fae308501ea227b8e7b8",
+      "core/res/YardChip.bmp": "1ca0cf7ec6af1cdfc7bbcd0484d8e4141e0bf81c08e52766a7af06391ba44707",
+      "plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp": "1825057e51800cccade701c5e8180d690eb2e6c215412aa29f1db78c6714c5fe",
+      "plugins/org.kohsuke.freetrain.trains/Train485a.bmp": "9971f4bc618f65be65529bd4fe53b29376db9bd91eca09c82ce9a67c8d2c486b",
+      "plugins/system/ThinPlatform.bmp": "e099b75aed14f458141bc550d09f832ec2f46273ba486c6f831b043653356eed",
+      "plugins/system/ThinPlatform.n.bmp": "c99569acfc136bdb354ca59fa34c70fbad1c1c2acf1deb3617fd1afc5a5c7845",
+      "plugins/system/renraku02.bmp": "109c33bffd93f3ed416bd3f34792f49b3a174050dea8cd6087dd3dd8c0cb9b70",
+      "plugins/system/renraku02.n.bmp": "93ba0c47755de41f6cfc2852dd0e9c82aa8a946996f8b4e4ffb5251c528274c7",
+      "plugins/system/renraku02brown.bmp": "9204958bdde4ce85f87f56cec1ee2fcdf47c277aca4e6e6b2923db4d50226c0d",
+      "plugins/system/renraku02brown_n.bmp": "05fc8d44bd143a6420ce417e7e65f76cc5deeb7ed9f0bd38c7808523bd3795f6",
+      "plugins/system/renraku02green.bmp": "d83df79c3dbd86ecc242e9f215b2fbf8b18e2170089e80349b52226a57abfcab",
+      "plugins/system/renraku02green_n.bmp": "a3f641bd84a331dabff48bc7fa371e0dd41cd445dca518666b044313fc02fef9"
+    },
+    "recipes": [
+      {
+        "id": "girder-0",
+        "path": "plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "StealSupportedRailContributionImpl.onInitComplete",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "girder-1",
+        "path": "plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+        "nightPath": null,
+        "rectangle": [
+          32,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "StealSupportedRailContributionImpl.onInitComplete",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "girder-2",
+        "path": "plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+        "nightPath": null,
+        "rectangle": [
+          64,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "StealSupportedRailContributionImpl.onInitComplete",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "girder-3",
+        "path": "plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+        "nightPath": null,
+        "rectangle": [
+          96,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "StealSupportedRailContributionImpl.onInitComplete",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "fat-0",
+        "path": "core/res/FatPlatform.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "FatPlatform.getSprite",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "fat-1",
+        "path": "core/res/FatPlatform.bmp",
+        "nightPath": null,
+        "rectangle": [
+          32,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "FatPlatform.getSprite",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "yard",
+        "path": "core/res/YardChip.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "FatPlatform.RailRoadImpl.drawBefore",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "pier",
+        "path": "core/res/BridgePier.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "BridgePierVoxel.defaultSprite",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-0",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          0,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-1",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          32,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-2",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          64,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-3",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          96,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-4",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          128,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-5",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          160,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-6",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          192,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "thin-7",
+        "path": "plugins/system/ThinPlatform.bmp",
+        "nightPath": "plugins/system/ThinPlatform.n.bmp",
+        "rectangle": [
+          224,
+          0,
+          32,
+          24
+        ],
+        "anchor": [
+          0,
+          8
+        ],
+        "sourceSymbol": "ThinPlatform.getSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-0",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          0,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-1",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          32,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-2",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          64,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-3",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          32,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-4",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          96,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-5",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          128,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-6",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          64,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-7",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          160,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-8",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          192,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-9",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          96,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-10",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          224,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-11",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          256,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-12",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          128,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-passage-13",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          160,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-0",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-1",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-2",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-3",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-4",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-5",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-6",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-7",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-8",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          80,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-9",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          112,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-10",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          192,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-11",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          224,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-12",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-13",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-14",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-15",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-16",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-17",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-18",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-19",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-20",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          176,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-21",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          208,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-22",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          256,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-23",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "source-invalid-crop",
+        "cropFinding": "[388, 4, 32, 36] exceeds plugins/system/renraku02.n.bmp (336x153); native draw result unverified"
+      },
+      {
+        "id": "concrete-stair-24",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-25",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-26",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-27",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-28",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-29",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-30",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "concrete-stair-31",
+        "path": "plugins/system/renraku02.bmp",
+        "nightPath": "plugins/system/renraku02.n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-0",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          0,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-1",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          32,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-2",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          64,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-3",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          32,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-4",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          96,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-5",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          128,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-6",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          64,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-7",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          160,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-8",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          192,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-9",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          96,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-10",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          224,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-11",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          256,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-12",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          128,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-passage-13",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          160,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-0",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-1",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-2",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-3",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-4",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-5",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-6",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-7",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-8",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          80,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-9",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          112,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-10",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          192,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-11",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          224,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-12",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-13",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-14",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-15",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-16",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-17",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-18",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-19",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-20",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          176,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-21",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          208,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-22",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          256,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-23",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "source-invalid-crop",
+        "cropFinding": "[388, 4, 32, 36] exceeds plugins/system/renraku02brown_n.bmp (336x153); native draw result unverified"
+      },
+      {
+        "id": "brown-stair-24",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-25",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-26",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-27",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-28",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-29",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-30",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "brown-stair-31",
+        "path": "plugins/system/renraku02brown.bmp",
+        "nightPath": "plugins/system/renraku02brown_n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-0",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          0,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-1",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          32,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-2",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          64,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-3",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          32,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-4",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          96,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-5",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          128,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-6",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          64,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-7",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          160,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-8",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          192,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-9",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          96,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-10",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          224,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-11",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          256,
+          40,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail static sprites",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-12",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          128,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-passage-13",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          160,
+          8,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getFloatingSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-0",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-1",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-2",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          10,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-3",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          42,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-4",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-5",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-6",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          0,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-7",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          32,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-8",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          80,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-9",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          112,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-10",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          192,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-11",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          224,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-12",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-13",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-14",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          90,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-15",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          122,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-16",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-17",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-18",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          166,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-19",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          198,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-20",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          176,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-21",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          208,
+          76,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-22",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          256,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-23",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "anchor": [
+          0,
+          20
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "source-invalid-crop",
+        "cropFinding": "[388, 4, 32, 36] exceeds plugins/system/renraku02green_n.bmp (336x153); native draw result unverified"
+      },
+      {
+        "id": "green-stair-24",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-25",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-26",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          256,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-27",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          288,
+          120,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-28",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-29",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-30",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          246,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "green-stair-31",
+        "path": "plugins/system/renraku02green.bmp",
+        "nightPath": "plugins/system/renraku02green_n.bmp",
+        "rectangle": [
+          278,
+          80,
+          32,
+          32
+        ],
+        "anchor": [
+          -6,
+          16
+        ],
+        "sourceSymbol": "PassagewayRail.getStairSprite",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "rail-1",
+        "path": "core/res/RailRoads.bmp",
+        "nightPath": "core/res/RailRoads_n.bmp",
+        "rectangle": [
+          32,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "RailRoad.drawBefore / pattern.draw",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "rail-2",
+        "path": "core/res/RailRoads.bmp",
+        "nightPath": "core/res/RailRoads_n.bmp",
+        "rectangle": [
+          128,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "RailRoad.drawBefore / pattern.draw",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "rail-3",
+        "path": "core/res/RailRoads.bmp",
+        "nightPath": "core/res/RailRoads_n.bmp",
+        "rectangle": [
+          224,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "RailRoad.drawBefore / pattern.draw",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "rail-0",
+        "path": "core/res/RailRoads.bmp",
+        "nightPath": "core/res/RailRoads_n.bmp",
+        "rectangle": [
+          320,
+          0,
+          32,
+          16
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "RailRoad.drawBefore / pattern.draw",
+        "nightTreatment": "authored-sheet",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-0",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-1",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          64,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-2",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          128,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-3",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          192,
+          0,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-4",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          0,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-5",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          64,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-6",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          128,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      },
+      {
+        "id": "car-7",
+        "path": "plugins/org.kohsuke.freetrain.trains/Train485a.bmp",
+        "nightPath": null,
+        "rectangle": [
+          192,
+          32,
+          32,
+          32
+        ],
+        "anchor": [
+          0,
+          0
+        ],
+        "sourceSymbol": "TrainCar.draw level: 2*heading, offset(0,-9)",
+        "nightTreatment": "RGB888 source formula; not native pixel-format capture",
+        "cropStatus": "valid"
+      }
+    ]
+  }
 }

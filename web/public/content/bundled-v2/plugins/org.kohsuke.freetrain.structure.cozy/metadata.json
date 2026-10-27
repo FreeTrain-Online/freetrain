@@ -1,0 +1,336 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.cozy",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "cozy@E.G.R.さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/FAMIMA01.bmp",
+      "sourceSha256": "0688a64f65c42287e99b38d57a506b77476e76c052be78d8e6a92a9f09c6d69b",
+      "sha256": "0688a64f65c42287e99b38d57a506b77476e76c052be78d8e6a92a9f09c6d69b",
+      "bytes": 2550,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/YAMADA01.bmp",
+      "sourceSha256": "f10b67973bb9cb852f35ee8c2ca2cdfccaa709b27ef77a740411f6c8210d421b",
+      "sha256": "f10b67973bb9cb852f35ee8c2ca2cdfccaa709b27ef77a740411f6c8210d421b",
+      "bytes": 11574,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "sha256": "919198a6ada81a1215b4ea5b56c0536d7f6f04ffeedf2ce3f93fbf0b36d43132",
+      "bytes": 1059,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "c3a0adcad5d3d8af859b3e8887657fbe21a9ded358c07e95a4e7aa12391b185c"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{487900B6-EBCA-4c98-9E28-194050E9706D}",
+      "pluginId": "org.kohsuke.freetrain.structure.cozy",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.cozy:0:{487900B6-EBCA-4c98-9E28-194050E9706D}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{487900B6-EBCA-4c98-9E28-194050E9706D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コンビニ",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ファミリーマート",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "FAMIMA01.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ShopperPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "35",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}",
+      "pluginId": "org.kohsuke.freetrain.structure.cozy",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.cozy:1:{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ヤマダ電機",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "160000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "35"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "YAMADA01.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ShopperPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "160",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.cozy/FAMIMA01.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.cozy/YAMADA01.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Family Mart & Yamada Denki",
+        "sourceSha256": "926cbe5d1fde4df03416c6ad8c63c2025ff09da30a8cdd8930b7ca5e4c362bf8"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "cozy@E.G.R.さん",
+      "originalTextSha256": "b4ee4e1b6447fc299d481c506126c364e3a3a93cbfae2bb18ff52e66bc069164",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "key": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/group[0]/text()",
+      "originalText": "コンビニ",
+      "originalTextSha256": "d15bbb2516a1113e437416ab893236488c8eab93f900010b73ac840261dbbf41",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+        "key": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/group[0]/text()",
+        "text": "Convenience store",
+        "sourceSha256": "926cbe5d1fde4df03416c6ad8c63c2025ff09da30a8cdd8930b7ca5e4c362bf8"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "key": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/name[0]/text()",
+      "originalText": "ファミリーマート",
+      "originalTextSha256": "9f29374dfa97e69d18ad9f1b84a849d79dade4ab7e617f11a781727e34630d76",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "key": "plug-in/contribution:{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}/name[0]/text()",
+      "originalText": "ヤマダ電機",
+      "originalTextSha256": "17d10244a51b463c27015f9d174a31374780efe86f0f3e39aa972b1dd17a5a62",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

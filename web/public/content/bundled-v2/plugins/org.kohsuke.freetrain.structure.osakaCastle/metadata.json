@@ -1,0 +1,380 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.osakaCastle",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "大阪城",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/osaka_castle.bmp",
+      "sourceSha256": "11f03ea2ba3c1d33d153e498a21114f15f8cc4479f91e602d6a7ad331cf361e9",
+      "sha256": "11f03ea2ba3c1d33d153e498a21114f15f8cc4479f91e602d6a7ad331cf361e9",
+      "bytes": 33848,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/osaka_castle_n.bmp",
+      "sourceSha256": "826f6052d03f839f44d8bdb70a6ede26db6ba2466f70df71fdb05d2874936ebe",
+      "sha256": "826f6052d03f839f44d8bdb70a6ede26db6ba2466f70df71fdb05d2874936ebe",
+      "bytes": 33848,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "sha256": "fb7b453a338ada6ace3029287c1fc7236d7315cd7740e1d085a38adc8d271f38",
+      "bytes": 1102,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "2af17344c8e4d42f5eb9c0a1f7c83f37c4772c5aa6ffa70e2b74f0a368922c55"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{4F129DD1-CCCF-4C2C-B317-0874AD9F77B7}",
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.osakaCastle:0:{4F129DD1-CCCF-4C2C-B317-0874AD9F77B7}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{4F129DD1-CCCF-4C2C-B317-0874AD9F77B7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "osaka_castle.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "osaka_castle_n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}",
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.osakaCastle:1:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "大阪城",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "天守閣1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "500000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "4",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "64"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{4F129DD1-CCCF-4C2C-B317-0874AD9F77B7}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}",
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.osakaCastle:2:{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "大阪城",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "天守閣2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "500000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "4",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "64"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{4F129DD1-CCCF-4C2C-B317-0874AD9F77B7}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/osaka_castle.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/osaka_castle_n.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "大阪城",
+      "originalTextSha256": "6978a6c263987fa14fc7512881095aed9678bead2490d2f46632959c2c410e1c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Osaka Castle",
+        "sourceSha256": "45f3dfb3886072758481802647423f77805cea6bcd30b6d35f4ecdc053593ad9"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group[0]/text()",
+      "originalText": "大阪城",
+      "originalTextSha256": "6978a6c263987fa14fc7512881095aed9678bead2490d2f46632959c2c410e1c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+        "key": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group[0]/text()",
+        "text": "Osaka Castle",
+        "sourceSha256": "45f3dfb3886072758481802647423f77805cea6bcd30b6d35f4ecdc053593ad9"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/name[0]/text()",
+      "originalText": "天守閣1",
+      "originalTextSha256": "77b0522d4b351e8940b0f08286e540a3629e63e5f7a04dd022ced090da1aea49",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/contribution:{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/group[0]/text()",
+      "originalText": "大阪城",
+      "originalTextSha256": "6978a6c263987fa14fc7512881095aed9678bead2490d2f46632959c2c410e1c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "key": "plug-in/contribution:{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/name[0]/text()",
+      "originalText": "天守閣2",
+      "originalTextSha256": "d210198a4cf46eb415fe56a48ef0bec9dd34346d00154c0b70fffb4551e24318",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

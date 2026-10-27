@@ -1,0 +1,551 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.station.teha",
+    "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "無人駅",
+    "author": "ては(ヘボドッタ"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/local3.bmp",
+      "sourceSha256": "5f0577a19eac32900d0135c2e9c386dab96e3df9b5ec8cbebd2dd5523e8258f8",
+      "sha256": "5f0577a19eac32900d0135c2e9c386dab96e3df9b5ec8cbebd2dd5523e8258f8",
+      "bytes": 2188,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "sha256": "4ef674ced5a4b027a598dd77776b3665818c1537d65ab1e069c064102f13e20b",
+      "bytes": 1441,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "f94862d917dab31c9b01f77c79fdcdd7f42ad02a51104326fbb829cf319588a5"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{1D4769E3-F568-4116-83FD-59333896EF5C}",
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.teha:0:{1D4769E3-F568-4116-83FD-59333896EF5C}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{1D4769E3-F568-4116-83FD-59333896EF5C}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "local3.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.teha:1:{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "無人駅",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1D4769E3-F568-4116-83FD-59333896EF5C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.teha:2:{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "無人駅",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1D4769E3-F568-4116-83FD-59333896EF5C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.teha:3:{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "無人駅",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1D4769E3-F568-4116-83FD-59333896EF5C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.teha:4:{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "無人駅",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1D4769E3-F568-4116-83FD-59333896EF5C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.station.teha/local3.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Unmanned Station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "ては(ヘボドッタ",
+      "originalTextSha256": "96c14e0806ef72b4a3b20e1a55e23fc56955559b74d4108a3582619ed1a648ed",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/contribution:{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group[0]/text()",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/contribution:{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group[0]/text()",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/contribution:{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group[0]/text()",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "key": "plug-in/contribution:{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group[0]/text()",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

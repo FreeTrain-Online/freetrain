@@ -1,0 +1,130 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.rail.garage",
+    "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "機関庫",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/garage.bmp",
+      "sourceSha256": "6259ce7b12711ee768e8998ef08a6fcd6f6ae97fe1b90f49fd1c91d359bc86c2",
+      "sha256": "6259ce7b12711ee768e8998ef08a6fcd6f6ae97fe1b90f49fd1c91d359bc86c2",
+      "bytes": 15608,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sourceSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "sha256": "2f334f984386de4a527717d497634a889ed207bab608586d767dd7144dd33f01",
+      "bytes": 399,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "fe78e1e4cc8292acd3dc54db88826674fe8e085936f4c88f016c919f90cda9c6"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+      "sourceSha256": "1505ec0b2283f13116a7b5276e859235389f5c11c67344fb76eee7e259578c76",
+      "sha256": "1505ec0b2283f13116a7b5276e859235389f5c11c67344fb76eee7e259578c76",
+      "bytes": 5747,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "pluginId": "org.kohsuke.freetrain.rail.garage",
+      "type": "specialRail",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.garage:0:{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "implementation": {
+        "name": "freetrain.world.rail.garage.TrainGarageContributionImpl",
+        "codebase": "bin/FreeTrain.TrainGarage.dll",
+        "assembly": "FreeTrain.TrainGarage",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialRail",
+          "id": "{93481807-D998-46d7-B1BE-CB2B5D086D67}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.garage.TrainGarageContributionImpl",
+              "codebase": "bin/FreeTrain.TrainGarage.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.rail.garage/garage.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sourceSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "機関庫",
+      "originalTextSha256": "2d780e5ec5cbfe6b76abf3adbdac0da84724407d6169e67bf79da73db92b86d2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Train Garage",
+        "sourceSha256": "836ea287abf909b0f557fc53872d1ca0707988a600b2f075cef7c2fea9837e25"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sourceSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

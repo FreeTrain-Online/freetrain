@@ -1,0 +1,513 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.rail.electricPole",
+    "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "架線柱",
+    "author": "綾瀬さん＆川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen1.bmp",
+      "sourceSha256": "1db3c1fedebf56cd636b0354ae600b658ad0866f128805bcb5c8cfa1386d070b",
+      "sha256": "1db3c1fedebf56cd636b0354ae600b658ad0866f128805bcb5c8cfa1386d070b",
+      "bytes": 5174,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen2.bmp",
+      "sourceSha256": "ba18dfc691025f653a7c3edf4b8782a5a86b7e848c5692c3d3e3db552eca567a",
+      "sha256": "ba18dfc691025f653a7c3edf4b8782a5a86b7e848c5692c3d3e3db552eca567a",
+      "bytes": 5174,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen3.bmp",
+      "sourceSha256": "f550207b49545cb33fd90814e68ba7308ad86d2515cc129faf9890f1fd9065ab",
+      "sha256": "f550207b49545cb33fd90814e68ba7308ad86d2515cc129faf9890f1fd9065ab",
+      "bytes": 5174,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen4.bmp",
+      "sourceSha256": "a7b26953489cdcca13c43fe256ae8cd76cdab38ed1ed955b930a45326d5c8166",
+      "sha256": "a7b26953489cdcca13c43fe256ae8cd76cdab38ed1ed955b930a45326d5c8166",
+      "bytes": 5174,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/original.bmp",
+      "sourceSha256": "b14a3a4234d4775f3a530c5b5e75e9dafba3312577618b6739a9f32f3a0283d4",
+      "sha256": "b14a3a4234d4775f3a530c5b5e75e9dafba3312577618b6739a9f32f3a0283d4",
+      "bytes": 25654,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "sha256": "a05b1c2f3fe541b85611122ad585109322d5cf86d1f7f9ff3a7356c938c4554e",
+      "bytes": 1502,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "fc968fb42454a095b33e57f60243c9b0cbed77f60250b3c35574f5ba13a54384"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ControllerForm.resx",
+      "sourceSha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "sha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
+      "bytes": 5324,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+      "sourceSha256": "3840f1b27b04a4c1bea77caa0f96b35b48c9d91c47152eb41af5eef8a762d57f",
+      "sha256": "3840f1b27b04a4c1bea77caa0f96b35b48c9d91c47152eb41af5eef8a762d57f",
+      "bytes": 2628,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/MenuContributionImpl.cs",
+      "sourceSha256": "802596b91b51e5345c616e0251f05c45f4a3c4f36c8762cd8b1c5522bd12049c",
+      "sha256": "802596b91b51e5345c616e0251f05c45f4a3c4f36c8762cd8b1c5522bd12049c",
+      "bytes": 1185,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{AA51666F-1BD1-4247-A491-F82332BFAC44}",
+      "pluginId": "org.kohsuke.freetrain.rail.electricPole",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:1:{AA51666F-1BD1-4247-A491-F82332BFAC44}",
+      "implementation": {
+        "name": "freetrain.world.rail.pole.MenuContributionImpl",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{AA51666F-1BD1-4247-A491-F82332BFAC44}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.pole.MenuContributionImpl",
+              "codebase": "bin/FreeTrain.ElectricPole.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+      "pluginId": "org.kohsuke.freetrain.rail.electricPole",
+      "type": "electricPole",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:2:{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+      "implementation": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "electricPole",
+          "id": "{DDF7F835-8100-45fd-8AE7-EC498796D387}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "両柱(1)",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "kasen1.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+      "pluginId": "org.kohsuke.freetrain.rail.electricPole",
+      "type": "electricPole",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:3:{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+      "implementation": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "electricPole",
+          "id": "{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "両柱(2)",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "kasen2.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+      "pluginId": "org.kohsuke.freetrain.rail.electricPole",
+      "type": "electricPole",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:4:{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+      "implementation": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "electricPole",
+          "id": "{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "片柱(1)",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "kasen3.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+      "pluginId": "org.kohsuke.freetrain.rail.electricPole",
+      "type": "electricPole",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:5:{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+      "implementation": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "electricPole",
+          "id": "{FD1635C1-05BF-41af-9185-4891B983E2A4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "片柱(2)",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "kasen4.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen1.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen2.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen3.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/kasen4.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/original.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "架線柱",
+      "originalTextSha256": "62bf9203d8d424e7f7d3cfa69ecd993eb49825fa352ec9b8c9fc94bc5fcc567b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Utility Poles",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "綾瀬さん＆川口耕介",
+      "originalTextSha256": "b6c75e3d9e474ec1912bc124471b495d8ee9ad7ee287f3868b10cca68781ab2d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/contribution:{6CCE619B-6D03-4784-B3EF-C53577E2C958}/name[0]/text()",
+      "originalText": "electricPole",
+      "originalTextSha256": "d43f63ff58819d9edcca4b6435743197f33852df4542b6c56e8f3ae7f65c67b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/contribution:{6CCE619B-6D03-4784-B3EF-C53577E2C958}/name[0]/text()",
+        "text": "electricPole",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/contribution:{DDF7F835-8100-45fd-8AE7-EC498796D387}/name[0]/text()",
+      "originalText": "両柱(1)",
+      "originalTextSha256": "034942278f775a550de36ea43090f2c0870bafb0edd6add8788457b18e9ad510",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/contribution:{DDF7F835-8100-45fd-8AE7-EC498796D387}/name[0]/text()",
+        "text": "Double pole (1)",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/contribution:{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}/name[0]/text()",
+      "originalText": "両柱(2)",
+      "originalTextSha256": "a0686f3bbafe1b17e73cdbdd26f827a67d2c94329af015fe6a21c1944dcec060",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/contribution:{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}/name[0]/text()",
+        "text": "Double pole (2)",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/contribution:{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}/name[0]/text()",
+      "originalText": "片柱(1)",
+      "originalTextSha256": "4c87f8d47fa550f3dd8739019219d6e60b7da7a210dd8d52943124e36ffd29d5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/contribution:{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}/name[0]/text()",
+        "text": "Single pole (1)",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "key": "plug-in/contribution:{FD1635C1-05BF-41af-9185-4891B983E2A4}/name[0]/text()",
+      "originalText": "片柱(2)",
+      "originalTextSha256": "c8aebb8caabf69e9e0741508ac2b336cd819daf0167ea6d5a91bafcf062f1df4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+        "key": "plug-in/contribution:{FD1635C1-05BF-41af-9185-4891B983E2A4}/name[0]/text()",
+        "text": "Single pole (2)",
+        "sourceSha256": "e559b8edec10ded2bc012c7590f61a8268a91708dbfb859af3431b483242936f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

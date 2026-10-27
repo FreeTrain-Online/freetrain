@@ -8,13 +8,53 @@
     "subtree": "trunk",
     "engineVersion": "2.1.1.12"
   },
-  "reviewSha256": "6992297ff6b5e39e4bb294f699bca59bc82cd8f1ec1e4b9d04f9893ba75e190f",
+  "reviewSha256": "4fb5cfab93d03a2845601218bd05d4f2480ca92c1865cbb41a669a204edb6b1b",
   "files": [
     {
       "path": "trunk/core/Properties/Resources.resx",
       "sourceSha256": "7263987e93baf4088e047f82d73a78d628e18bed376a1dad0797a8b87d64b068",
       "sha256": "7263987e93baf4088e047f82d73a78d628e18bed376a1dad0797a8b87d64b068",
       "bytes": 5817,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/common/PictureContribution.cs",
+      "sourceSha256": "9ca9ca5576c97f2b13d60581ae361d4ede975030090c6654909b8281fd297cc0",
+      "sha256": "9ca9ca5576c97f2b13d60581ae361d4ede975030090c6654909b8281fd297cc0",
+      "bytes": 556,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/land/Bulldozer.cs",
+      "sourceSha256": "cc02496764ebbd0415a67b39c3e72b2b32059691598720cf50bac25ea098df4c",
+      "sha256": "cc02496764ebbd0415a67b39c3e72b2b32059691598720cf50bac25ea098df4c",
+      "bytes": 2429,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/land/RandomLandBuilder.cs",
+      "sourceSha256": "5bc3145efbeb88fab68386cbedbda1da006d8919988be4d3e62b2f8698033d13",
+      "sha256": "5bc3145efbeb88fab68386cbedbda1da006d8919988be4d3e62b2f8698033d13",
+      "bytes": 2112,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/land/StaticLandBuilder.cs",
+      "sourceSha256": "7b45874f5213c3e50f8f18f677179476d94fa0d1260b626a09779835d4ee3119",
+      "sha256": "7b45874f5213c3e50f8f18f677179476d94fa0d1260b626a09779835d4ee3119",
+      "bytes": 1880,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/others/EmptyNewGameContributionImpl.cs",
+      "sourceSha256": "3a8c728b72a760c622adbf2b774a767a788dea77b4ed38767f68a12392e6d14d",
+      "sha256": "3a8c728b72a760c622adbf2b774a767a788dea77b4ed38767f68a12392e6d14d",
+      "bytes": 887,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -27,10 +67,130 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/contributions/rail/DepartureBellContribution.cs",
+      "sourceSha256": "f00d5253db0a12a77408750d1aae600d92b4f510ef1cc4668939361ef042b83e",
+      "sha256": "f00d5253db0a12a77408750d1aae600d92b4f510ef1cc4668939361ef042b83e",
+      "bytes": 1465,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/rail/RailStationaryContribution.cs",
+      "sourceSha256": "d1cba0511aa79df42c89c242a151cee5c74a8ec4096fcc1976bf5c8dd36d3aa8",
+      "sha256": "d1cba0511aa79df42c89c242a151cee5c74a8ec4096fcc1976bf5c8dd36d3aa8",
+      "bytes": 1082,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/rail/StationContribution.cs",
+      "sourceSha256": "b1c86dff0872f8011375cfba2b2a0d9a94c51587a3f66d1d4e788f0c4c46a0cf",
+      "sha256": "b1c86dff0872f8011375cfba2b2a0d9a94c51587a3f66d1d4e788f0c4c46a0cf",
+      "bytes": 1185,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/contributions/readme.txt",
       "sourceSha256": "79b5d5fa31f19a6d83cd23c665161886297b7d20dc4d9f74627d7b8f78004a83",
       "sha256": "79b5d5fa31f19a6d83cd23c665161886297b7d20dc4d9f74627d7b8f78004a83",
       "bytes": 55,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/road/A3RoadContribution.cs",
+      "sourceSha256": "21df1532710cd78bc02c37531d38f97d06d89681872d210a2e241a230837db7d",
+      "sha256": "21df1532710cd78bc02c37531d38f97d06d89681872d210a2e241a230837db7d",
+      "bytes": 1125,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/road/StandardRoadContribution.cs",
+      "sourceSha256": "3ec28a33627eb35cd33443dbae1ca4feaea746d67c18e79c3d61492999ae208a",
+      "sha256": "3ec28a33627eb35cd33443dbae1ca4feaea746d67c18e79c3d61492999ae208a",
+      "bytes": 1440,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/sound/BGMContribution.cs",
+      "sourceSha256": "fa715eb07557d5d579b7b85c557bdf6ff23ed301395639a41cd0251906589a08",
+      "sha256": "fa715eb07557d5d579b7b85c557bdf6ff23ed301395639a41cd0251906589a08",
+      "bytes": 830,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/sound/BGMFactoryContribution.cs",
+      "sourceSha256": "cea5af1d318d4861e3dacea23a8dc3a8bce8afdb4b5b928949a98219a7d32840",
+      "sha256": "cea5af1d318d4861e3dacea23a8dc3a8bce8afdb4b5b928949a98219a7d32840",
+      "bytes": 1296,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/structs/CommercialStructureContribution.cs",
+      "sourceSha256": "395d27b600f935054e517b5e9969eb44fb2e853f6164e12a69e5a9f3ba39ddeb",
+      "sha256": "395d27b600f935054e517b5e9969eb44fb2e853f6164e12a69e5a9f3ba39ddeb",
+      "bytes": 1492,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/structs/VarHeightBuildingContribution.cs",
+      "sourceSha256": "cabd3fc3719243059f4b5bd0bf8cec4d92237bbad7e61f0e185ce4feb8788ea5",
+      "sha256": "cabd3fc3719243059f4b5bd0bf8cec4d92237bbad7e61f0e185ce4feb8788ea5",
+      "bytes": 6417,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/AsymTrainCarImpl.cs",
+      "sourceSha256": "1e282ebfc0efdcd4607453a6da4f696022dde07649cd77e5649d7f0e7c324aa5",
+      "sha256": "1e282ebfc0efdcd4607453a6da4f696022dde07649cd77e5649d7f0e7c324aa5",
+      "bytes": 2017,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/ColoredTrainCarImpl.cs",
+      "sourceSha256": "e5f8159f56caa04c8d8565f30bd314bc177feefe7809ca6b1f0f9e406e5f448c",
+      "sha256": "e5f8159f56caa04c8d8565f30bd314bc177feefe7809ca6b1f0f9e406e5f448c",
+      "bytes": 5449,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/ParamTrainImpl.cs",
+      "sourceSha256": "d8314e062e1387a6a8ee6da308f579ee1b978b779112927747c7cd416f85747a",
+      "sha256": "d8314e062e1387a6a8ee6da308f579ee1b978b779112927747c7cd416f85747a",
+      "bytes": 2155,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/ReverseTrainCarImpl.cs",
+      "sourceSha256": "7a416b4c432b1f9a0d3dcb91134103b5adbeba8c3fb4b1b7531f260f7adfe55e",
+      "sha256": "7a416b4c432b1f9a0d3dcb91134103b5adbeba8c3fb4b1b7531f260f7adfe55e",
+      "bytes": 1484,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/SymTrainCarImpl.cs",
+      "sourceSha256": "54dbee917f03abcc7015954b590fc92df079e6f626ce988750b041c970a5c737",
+      "sha256": "54dbee917f03abcc7015954b590fc92df079e6f626ce988750b041c970a5c737",
+      "bytes": 1961,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/contributions/train/TrainContributionFactory.cs",
+      "sourceSha256": "3102ac25bafe9bb54e8f5b1b645c43231e1e8e8eba722dec87faae57264db39b",
+      "sha256": "3102ac25bafe9bb54e8f5b1b645c43231e1e8e8eba722dec87faae57264db39b",
+      "bytes": 736,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -139,10 +299,26 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/controllers/rail/TrainControllerDialog.cs",
+      "sourceSha256": "e01da0eb8e2b95d6d43943ad90d733d2f8a3a5d8f1cf86cf2351ccd2f442c3d9",
+      "sha256": "e01da0eb8e2b95d6d43943ad90d733d2f8a3a5d8f1cf86cf2351ccd2f442c3d9",
+      "bytes": 15510,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/controllers/rail/TrainControllerDialog.resx",
       "sourceSha256": "1710ea17197485f0bed2dc7bc30219af8dfe5abd03656aa87b07c455dd69d4c3",
       "sha256": "1710ea17197485f0bed2dc7bc30219af8dfe5abd03656aa87b07c455dd69d4c3",
       "bytes": 6011,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/controllers/rail/TrainInformationWindow.cs",
+      "sourceSha256": "d35a05b858bd46346c52b3c086ff974c87738f96b18095371788f6523f599288",
+      "sha256": "d35a05b858bd46346c52b3c086ff974c87738f96b18095371788f6523f599288",
+      "bytes": 12598,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -251,6 +427,14 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/framework/ResourceUtil.cs",
+      "sourceSha256": "67e0322ab6e81baa0251e2bdfef6fa655bc0d6a19aaf7583456e8587a19c2f60",
+      "sha256": "67e0322ab6e81baa0251e2bdfef6fa655bc0d6a19aaf7583456e8587a19c2f60",
+      "bytes": 3811,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/framework/Splash.resx",
       "sourceSha256": "437556279a864287522fe6b31d15212112457596f999e0ad02cc7400cbd22520",
       "sha256": "437556279a864287522fe6b31d15212112457596f999e0ad02cc7400cbd22520",
@@ -259,10 +443,98 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/framework/graphics/ColorLibrary.cs",
+      "sourceSha256": "bc24974ddbb33a6e45004ae15ae1ea89d53ff723f3b374eac61a3613cb84b2fa",
+      "sha256": "bc24974ddbb33a6e45004ae15ae1ea89d53ff723f3b374eac61a3613cb84b2fa",
+      "bytes": 1239,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/ColorMap.cs",
+      "sourceSha256": "56dd2ecdbf1ed70514f02518bf82d0ea72dc58bbc7eb9016c2dbd227562a4c49",
+      "sha256": "56dd2ecdbf1ed70514f02518bf82d0ea72dc58bbc7eb9016c2dbd227562a4c49",
+      "bytes": 874,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/ColorMappedSprite.cs",
+      "sourceSha256": "5b314df6864c58a1d9d6417e7183fcbb50583105ef4ab3cf878bf9cebaaf94a3",
+      "sha256": "5b314df6864c58a1d9d6417e7183fcbb50583105ef4ab3cf878bf9cebaaf94a3",
+      "bytes": 4049,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs",
+      "sourceSha256": "624fa9c09309717c32c74968017302e0e278519e011c290c0000c8f4cfb4f7a8",
+      "sha256": "624fa9c09309717c32c74968017302e0e278519e011c290c0000c8f4cfb4f7a8",
+      "bytes": 4456,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/DirectSprite.cs",
+      "sourceSha256": "6f7195878f7fefcae4817b75be276909284a2b051e27cb6d9d1cf8443b40bf8d",
+      "sha256": "6f7195878f7fefcae4817b75be276909284a2b051e27cb6d9d1cf8443b40bf8d",
+      "bytes": 1797,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/HueTransformSprite.cs",
+      "sourceSha256": "9f3a0787eec9d9204a6671806a0a56139b1e1789411859bfaf4f66a6dc94cb0f",
+      "sha256": "9f3a0787eec9d9204a6671806a0a56139b1e1789411859bfaf4f66a6dc94cb0f",
+      "bytes": 4261,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/SimpleSprite.cs",
+      "sourceSha256": "5c39ae5d8e2bcaf58bfb1fdc48e1faec93cfe76fa01a71d0b90fcd099aba3f61",
+      "sha256": "5c39ae5d8e2bcaf58bfb1fdc48e1faec93cfe76fa01a71d0b90fcd099aba3f61",
+      "bytes": 2412,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/graphics/SpriteFactory.cs",
+      "sourceSha256": "1388740bd0b50497a8c120c2687c3eda41ec2f5cbd995b319fde7a333f79ebf5",
+      "sha256": "1388740bd0b50497a8c120c2687c3eda41ec2f5cbd995b319fde7a333f79ebf5",
+      "bytes": 1432,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/plugin/DynamicContributionFactory.cs",
+      "sourceSha256": "940a75005caaf88bc5887cf20b6e01b727325a7feca258004a2b94b79f51d0dc",
+      "sha256": "940a75005caaf88bc5887cf20b6e01b727325a7feca258004a2b94b79f51d0dc",
+      "bytes": 1149,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/plugin/FixedClassContributionFactory.cs",
+      "sourceSha256": "b33ad8de6c3dc6c9d8f6d8e45b7ab814b758ac69def3e62ae7fe738ac26f9d6c",
+      "sha256": "b33ad8de6c3dc6c9d8f6d8e45b7ab814b758ac69def3e62ae7fe738ac26f9d6c",
+      "bytes": 942,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/framework/plugin/PluginListDialog.resx",
       "sourceSha256": "82ed7c25627261ff51c8bc57c549a925d909abdfaf1837e72e19db862f4651cb",
       "sha256": "82ed7c25627261ff51c8bc57c549a925d909abdfaf1837e72e19db862f4651cb",
       "bytes": 11344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/framework/plugin/PluginUtil.cs",
+      "sourceSha256": "4871775e93bdb3108428d99c7f5562643e032f93f847b9a5c1a77cfab3baa8d0",
+      "sha256": "4871775e93bdb3108428d99c7f5562643e032f93f847b9a5c1a77cfab3baa8d0",
+      "bytes": 3411,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -635,6 +907,22 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/world/accounting/AccountGenre.cs",
+      "sourceSha256": "8a6792ceaed54c4fcfc8d62af9373584f7d1aa61cdf7a41eb0e3e95eca7852ad",
+      "sha256": "8a6792ceaed54c4fcfc8d62af9373584f7d1aa61cdf7a41eb0e3e95eca7852ad",
+      "bytes": 2458,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/accounting/AccountSummaryWindow.cs",
+      "sourceSha256": "83723840c0ef4811e16797a8fba124f8ee9b743e3020bc3700800786ba2224dd",
+      "sha256": "83723840c0ef4811e16797a8fba124f8ee9b743e3020bc3700800786ba2224dd",
+      "bytes": 21508,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/world/accounting/AccountSummaryWindow.resx",
       "sourceSha256": "190ea68ac6ca85e298c5c86ebb601d86ed5aed1043ca52ebadbe72eff1449b73",
       "sha256": "190ea68ac6ca85e298c5c86ebb601d86ed5aed1043ca52ebadbe72eff1449b73",
@@ -675,6 +963,14 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/world/development/DevelopConfigurePlugin.cs",
+      "sourceSha256": "ae463a7e98cd0fd30d12de8c21a0e255c32eb7b954b1dd5d66284adf0663ec1a",
+      "sha256": "ae463a7e98cd0fd30d12de8c21a0e255c32eb7b954b1dd5d66284adf0663ec1a",
+      "bytes": 700,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/world/development/LandValueInspector.resx",
       "sourceSha256": "6d6e3fb3f404bd6d2b7b9cf43badfde0ec760a318926f4435244d6072bc51f83",
       "sha256": "6d6e3fb3f404bd6d2b7b9cf43badfde0ec760a318926f4435244d6072bc51f83",
@@ -683,10 +979,74 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/core/world/development/LandValueInspectorPlugin.cs",
+      "sourceSha256": "b50eb6c41f031631701bd5ac30ee6de6ca8805f90fa8b7681616fdb622b63315",
+      "sha256": "b50eb6c41f031631701bd5ac30ee6de6ca8805f90fa8b7681616fdb622b63315",
+      "bytes": 652,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/rail/BridgeRail.cs",
+      "sourceSha256": "b61ea51e9f8ec4ebe27fc076b2e5b2bca8012035aa50ea2e0f347baaa3365a8b",
+      "sha256": "b61ea51e9f8ec4ebe27fc076b2e5b2bca8012035aa50ea2e0f347baaa3365a8b",
+      "bytes": 8812,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/rail/PassagewayRail.cs",
+      "sourceSha256": "355e7cf0ae5c98f6788f9dd48966c8e97110c337b4c995ca3d75c6a57644be69",
+      "sha256": "355e7cf0ae5c98f6788f9dd48966c8e97110c337b4c995ca3d75c6a57644be69",
+      "bytes": 8820,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/rail/StealSupportedRailContributionImpl.cs",
+      "sourceSha256": "7618db89c16fb455fa6da0f2b57db922d6e34a6a71ad4d5030045efc53a35aab",
+      "sha256": "7618db89c16fb455fa6da0f2b57db922d6e34a6a71ad4d5030045efc53a35aab",
+      "bytes": 6677,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/rail/TunnelRail.cs",
+      "sourceSha256": "df1eb9b225a260f95dfa32bc24ada420c33f0e25d29bc28ddc1a9ab4d13afbd7",
+      "sha256": "df1eb9b225a260f95dfa32bc24ada420c33f0e25d29bc28ddc1a9ab4d13afbd7",
+      "bytes": 7855,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/structs/ConstructionSite.cs",
+      "sourceSha256": "01ca68c326b92a636a2993df016b549afec2a2bb4ee1b1a36d2cb50f1a88fab8",
+      "sha256": "01ca68c326b92a636a2993df016b549afec2a2bb4ee1b1a36d2cb50f1a88fab8",
+      "bytes": 15294,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/subsidiaries/MarketWindow.cs",
+      "sourceSha256": "2b57171c0ed3a6e75009ee18c992fb50c5e9ca0ba2065b7c6f1ef323b1a9bd29",
+      "sha256": "2b57171c0ed3a6e75009ee18c992fb50c5e9ca0ba2065b7c6f1ef323b1a9bd29",
+      "bytes": 11726,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/core/world/subsidiaries/MarketWindow.resx",
       "sourceSha256": "55ebdcad669d0f94074a35d052c01d9cabffc6a4f2dd80bba80b83ce4c28b1cc",
       "sha256": "55ebdcad669d0f94074a35d052c01d9cabffc6a4f2dd80bba80b83ce4c28b1cc",
       "bytes": 5510,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/core/world/terrain/MountainVoxel.cs",
+      "sourceSha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "sha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "bytes": 14108,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -755,6 +1115,14 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/lib/DirectXWraper/AlphaBlender.cpp",
+      "sourceSha256": "191fbc501117d718833692d6132037baa49d3c45f50eb2ec3d625e6d895fbafb",
+      "sha256": "191fbc501117d718833692d6132037baa49d3c45f50eb2ec3d625e6d895fbafb",
+      "bytes": 50237,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/SpeedLimit/FastSpeedIcon.bmp",
       "sourceSha256": "8681dd829bfc411d89e101a4acfbd07e792d077f8135f3aaca8f9aa8048ac9d7",
       "sha256": "8681dd829bfc411d89e101a4acfbd07e792d077f8135f3aaca8f9aa8048ac9d7",
@@ -775,6 +1143,14 @@
       "sourceSha256": "c7a6d3f3b80e068645e83d5790266109769e5ac04644022b392fac6a3b422744",
       "sha256": "c7a6d3f3b80e068645e83d5790266109769e5ac04644022b392fac6a3b422744",
       "bytes": 1042,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/SpeedLimit/MenuContributionImpl.cs",
+      "sourceSha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "bytes": 1903,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -819,6 +1195,14 @@
       "expandedSha256": "2f6c64dce8fa954d680b384d4650a897cf44dda9f365eb9344fdcb9d1a4be2e8"
     },
     {
+      "path": "trunk/plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs",
+      "sourceSha256": "f1f345e06ed294c7763c55752650e377f120832417e4af95e642de8ab2574df4",
+      "sha256": "f1f345e06ed294c7763c55752650e377f120832417e4af95e642de8ab2574df4",
+      "bytes": 653,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/foobarbazer.Mountain2/src/Mountain2Controller.resx",
       "sourceSha256": "aa1584101aec4fa22eb3e360658cf0283f8041bcff5cd1eea1551c2db4cc5140",
       "sha256": "aa1584101aec4fa22eb3e360658cf0283f8041bcff5cd1eea1551c2db4cc5140",
@@ -839,6 +1223,22 @@
       "sourceSha256": "20e0debf24e1768df0198df698081ded3688be941654e388a320d48db9697856",
       "sha256": "20e0debf24e1768df0198df698081ded3688be941654e388a320d48db9697856",
       "bytes": 10270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankPlugIn.cs",
+      "sourceSha256": "8a8c84141b65589607465846e3e3debee401c9ead90f18ecbe0fba8049715c5b",
+      "sha256": "8a8c84141b65589607465846e3e3debee401c9ead90f18ecbe0fba8049715c5b",
+      "bytes": 836,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankbookWindow.cs",
+      "sourceSha256": "f19975c09cdaef4dcd2b9cf3438de55d5c0edf28a229ad5ddf1829c932ce07db",
+      "sha256": "f19975c09cdaef4dcd2b9cf3438de55d5c0edf28a229ad5ddf1829c932ce07db",
+      "bytes": 7515,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -895,6 +1295,22 @@
       "sourceSha256": "f6bde6dc406157809b16e7d2253f944c4b1a24d1d65bc9a4cf8ac19ac396f96f",
       "sha256": "f6bde6dc406157809b16e7d2253f944c4b1a24d1d65bc9a4cf8ac19ac396f96f",
       "bytes": 10270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StockMarketPlugIn.cs",
+      "sourceSha256": "2666c9a77a3b0a03b6d798993844e54a9e1fcb7be36c5851d99ae71a6cf884c6",
+      "sha256": "2666c9a77a3b0a03b6d798993844e54a9e1fcb7be36c5851d99ae71a6cf884c6",
+      "bytes": 1044,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StocksWindow.cs",
+      "sourceSha256": "8263b382ff8cdb535df6614ccc054824d19791809a5086090a2593ae28c4a02c",
+      "sha256": "8263b382ff8cdb535df6614ccc054824d19791809a5086090a2593ae28c4a02c",
+      "bytes": 5654,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -959,6 +1375,22 @@
       "sourceSha256": "91f4c5b43c3443a91e9d7cda4aa09c2390f627b3f20b82e9ade4c8b1a21ea80a",
       "sha256": "91f4c5b43c3443a91e9d7cda4aa09c2390f627b3f20b82e9ade4c8b1a21ea80a",
       "bytes": 18870,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs",
+      "sourceSha256": "061f2a3f0f88dd6764309fade518fbf543e88f19ea6b484e3880218b3407b71a",
+      "sha256": "061f2a3f0f88dd6764309fade518fbf543e88f19ea6b484e3880218b3407b71a",
+      "bytes": 8304,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceRemover.cs",
+      "sourceSha256": "615551d95d4a49a2e8a08d4e0ec5894543ac1dc536f328e4248c2ac9f0e541f9",
+      "sha256": "615551d95d4a49a2e8a08d4e0ec5894543ac1dc536f328e4248c2ac9f0e541f9",
+      "bytes": 757,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -1131,10 +1563,34 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/CategoryTreeWnd.cs",
+      "sourceSha256": "75d306d02af35ae480a66dc0f9873f2ec5224761fd1083a4d06fe8dc4bc261d2",
+      "sha256": "75d306d02af35ae480a66dc0f9873f2ec5224761fd1083a4d06fe8dc4bc261d2",
+      "bytes": 6571,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/CategoryTreeWnd.resx",
       "sourceSha256": "84558b6379f328e4af537fb2a75a92257647a13e5a754a66f06e7a265f749742",
       "sha256": "84558b6379f328e4af537fb2a75a92257647a13e5a754a66f06e7a265f749742",
       "bytes": 5325,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/GenericStructureContribution.cs",
+      "sourceSha256": "978c938267a06309118096dbb6ee768b2e03c2003610c939123dea7fb205792d",
+      "sha256": "978c938267a06309118096dbb6ee768b2e03c2003610c939123dea7fb205792d",
+      "bytes": 10059,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.generic/MenuContributionImpl.cs",
+      "sourceSha256": "933a836e6abaac87f2a8764f6495e61c84f3e81268ccdf365db5dfe13d3ea3a1",
+      "sha256": "933a836e6abaac87f2a8764f6495e61c84f3e81268ccdf365db5dfe13d3ea3a1",
+      "bytes": 950,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -1203,6 +1659,22 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs",
+      "sourceSha256": "42a88c969c4d208ee162aacfab5f40cc41eb8ff109adb541c0ab669398e3b1f4",
+      "sha256": "42a88c969c4d208ee162aacfab5f40cc41eb8ff109adb541c0ab669398e3b1f4",
+      "bytes": 12618,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/MenuContributionImpl.cs",
+      "sourceSha256": "3634b64f272bf168d526fa6ac1f78c5568d3c3c3f41ae0d454696f44d0ff5fe2",
+      "sha256": "3634b64f272bf168d526fa6ac1f78c5568d3c3c3f41ae0d454696f44d0ff5fe2",
+      "bytes": 718,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
       "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
       "sha256": "3a6a0a75c0c20c242d9d074c0bb24642996c827cebbaea2ca2d65703a43ee87e",
@@ -1227,10 +1699,26 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/MenuContributionImpl.cs",
+      "sourceSha256": "d2225bc622427f0d682ba6688a56c9e40d73595cdb3ae8b2561616dad4bb1423",
+      "sha256": "d2225bc622427f0d682ba6688a56c9e40d73595cdb3ae8b2561616dad4bb1423",
+      "bytes": 713,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/ControllerForm.resx",
       "sourceSha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
       "sha256": "48d63a61132402c6de482ff5d9a930c2d9b29ec9f4189af75fe8647cbd827961",
       "bytes": 5324,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib/src/RoadAccessory/MenuContributionImpl.cs",
+      "sourceSha256": "500a7a722e72902af39f05429cc6e7dc713682f163045743d8e493b3b2206bbb",
+      "sha256": "500a7a722e72902af39f05429cc6e7dc713682f163045743d8e493b3b2206bbb",
+      "bytes": 717,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -1281,6 +1769,14 @@
       "bytes": 532,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "c593efa60fd880a6940d1e1e1afc977d6f3adf196c07259d430526f37a9c5cfe"
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.cs",
+      "sourceSha256": "0fdf7168fe6b11d7f1c79f429896d5555f38766d2e357303cea206c91e09221c",
+      "sha256": "0fdf7168fe6b11d7f1c79f429896d5555f38766d2e357303cea206c91e09221c",
+      "bytes": 8342,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.resx",
@@ -1363,6 +1859,14 @@
       "expandedSha256": "8d2fe44e9ff62de8aab53a08e536f9c8bafa54e2aa82d905edd705634bd2c8d0"
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs",
+      "sourceSha256": "7a9ad6755368ac44960c453b5bfc41a561e640b03f59a04c13d6d08481ac192c",
+      "sha256": "7a9ad6755368ac44960c453b5bfc41a561e640b03f59a04c13d6d08481ac192c",
+      "bytes": 4065,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.land.477/vinylhouse.bmp",
       "sourceSha256": "7f708e68b5ef227de1a02b6345c4c67b03de3f7528682ad550bf60f8d665c4e2",
       "sha256": "7f708e68b5ef227de1a02b6345c4c67b03de3f7528682ad550bf60f8d665c4e2",
@@ -1401,6 +1905,14 @@
       "bytes": 595,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "25ab634331ae325a31fe48b7e1d287a1f81e51b043d46051b9a074b24d6a2f83"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "sourceSha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "sha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "bytes": 5372,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.AUT.bmp",
@@ -1473,6 +1985,14 @@
       "bytes": 12279,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "e8923ed862030057c8cfee7e73992426544db6f9081c4c6313f685ba56ba214e"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "sourceSha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "sha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "bytes": 6343,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.AUT.bmp",
@@ -1651,12 +2171,28 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs",
+      "sourceSha256": "d3ddca4df204e7ed6d1ccf074b1fe3472e9cf420ec24cecd607caab33f83ab12",
+      "sha256": "d3ddca4df204e7ed6d1ccf074b1fe3472e9cf420ec24cecd607caab33f83ab12",
+      "bytes": 4342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.music.a4mem/plugin.xml",
       "sourceSha256": "5235a1397a0c306b57d1c443986f2117214adebbdf57684fc046a830f3a90eab",
       "sha256": "7accb7388768f7ef68da62ca125b443ed183b47c4ee76037962cf37a064114a0",
       "bytes": 538,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "384d0bfdd64bbf2b976836752e0141c88314a06af5a59ae7703658d57bebb7a8"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.a4mem/src/FactoryImpl.cs",
+      "sourceSha256": "cb1a3c3fc67bff8a523293726baa30d8fd6f2324485532fbd6117d4735befc30",
+      "sha256": "cb1a3c3fc67bff8a523293726baa30d8fd6f2324485532fbd6117d4735befc30",
+      "bytes": 1501,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/bell1.wav",
@@ -1787,6 +2323,22 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+      "sourceSha256": "3840f1b27b04a4c1bea77caa0f96b35b48c9d91c47152eb41af5eef8a762d57f",
+      "sha256": "3840f1b27b04a4c1bea77caa0f96b35b48c9d91c47152eb41af5eef8a762d57f",
+      "bytes": 2628,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/MenuContributionImpl.cs",
+      "sourceSha256": "802596b91b51e5345c616e0251f05c45f4a3c4f36c8762cd8b1c5522bd12049c",
+      "sha256": "802596b91b51e5345c616e0251f05c45f4a3c4f36c8762cd8b1c5522bd12049c",
+      "bytes": 1185,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/garage.bmp",
       "sourceSha256": "6259ce7b12711ee768e8998ef08a6fcd6f6ae97fe1b90f49fd1c91d359bc86c2",
       "sha256": "6259ce7b12711ee768e8998ef08a6fcd6f6ae97fe1b90f49fd1c91d359bc86c2",
@@ -1801,6 +2353,14 @@
       "bytes": 399,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "fe78e1e4cc8292acd3dc54db88826674fe8e085936f4c88f016c919f90cda9c6"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+      "sourceSha256": "1505ec0b2283f13116a7b5276e859235389f5c11c67344fb76eee7e259578c76",
+      "sha256": "1505ec0b2283f13116a7b5276e859235389f5c11c67344fb76eee7e259578c76",
+      "bytes": 5747,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/RailSignal.bmp",
@@ -1825,6 +2385,30 @@
       "bytes": 1247,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "b521536a377b3a2e9dc91f8b0d6a626ee9beedbb01df6b0eebf28dbafbc59161"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/MenuContributionImpl.cs",
+      "sourceSha256": "3cdefa5a0d01f79af577027690ac777ba399f515c8de0934e70598aa514586b0",
+      "sha256": "3cdefa5a0d01f79af577027690ac777ba399f515c8de0934e70598aa514586b0",
+      "bytes": 704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+      "sourceSha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "sha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "bytes": 1532,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContributionFactory.cs",
+      "sourceSha256": "ca2bb0aaa5278b0b9da058dad2f683cef849e202b18474b28b3fba379a59bd69",
+      "sha256": "ca2bb0aaa5278b0b9da058dad2f683cef849e202b18474b28b3fba379a59bd69",
+      "bytes": 431,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.resx",
@@ -1947,10 +2531,26 @@
       "expandedSha256": "5070fe553d97a1a3b69ca0254d610d722e1451f83a9020c438bbb2b1c836d1fb"
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/ContributionImpl.cs",
+      "sourceSha256": "7bd5894d60595554d09d8d63174e62db768aec43a1523f4854694995534bec69",
+      "sha256": "7bd5894d60595554d09d8d63174e62db768aec43a1523f4854694995534bec69",
+      "bytes": 598,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumPropertyDialog.resx",
       "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
       "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
       "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StructureContributionImpl.cs",
+      "sourceSha256": "81bb5eba7c2ead7f34a0290717d67507940efce052590746fdafbcb9a431bb5b",
+      "sha256": "81bb5eba7c2ead7f34a0290717d67507940efce052590746fdafbcb9a431bb5b",
+      "bytes": 1124,
       "normalization": "none",
       "expandedSha256": null
     },
@@ -2747,6 +3347,14 @@
       "expandedSha256": "97340ca8053bad6d69b26522e0c96a79c00a964504b2ac40a0de3d8fa1956e32"
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs",
+      "sourceSha256": "b08115a7518f70dbb246d1d772d8b86ac15a4c2e01ba6a6077f9ec7e084e903f",
+      "sha256": "b08115a7518f70dbb246d1d772d8b86ac15a4c2e01ba6a6077f9ec7e084e903f",
+      "bytes": 773,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
       "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
       "sha256": "36efae6112c60362c1a0394a683908e6c04d31ddf4d2611505fa21eb4c0dfd9e",
@@ -2811,6 +3419,14 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs",
+      "sourceSha256": "29f054f5de9847bf833e18e9992e789fca35cde4c75c22919afa472efcb41762",
+      "sha256": "29f054f5de9847bf833e18e9992e789fca35cde4c75c22919afa472efcb41762",
+      "bytes": 893,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/Terrace.bmp",
       "sourceSha256": "7b9400ef9553c6b096f09e9934084a861e29ba8a788ffcf387463a39e87df9af",
       "sha256": "7b9400ef9553c6b096f09e9934084a861e29ba8a788ffcf387463a39e87df9af",
@@ -2827,6 +3443,14 @@
       "expandedSha256": "c9939a9a9ee0da976a9b65d76e33096235d87fbbeb552468464a25ed7e368b4a"
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+      "sourceSha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+      "sha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+      "bytes": 759,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.resx",
       "sourceSha256": "d9309abdb0de4a261b07f8326dbdd2d12cd4a52da37ea93ddee62a1d1e888529",
       "sha256": "d9309abdb0de4a261b07f8326dbdd2d12cd4a52da37ea93ddee62a1d1e888529",
@@ -2841,6 +3465,14 @@
       "bytes": 496,
       "normalization": "EXAV-ENC-001",
       "expandedSha256": "5684ada29e3eaeb31b586c2d1774fc9651a26598d62048f13799e62fdd4e1c24"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.dbgwnd/src/TraceWindow.cs",
+      "sourceSha256": "9eb67f082dfeb817e0705f30ba708fff215d290c488d0c044299aa8065dedc6c",
+      "sha256": "9eb67f082dfeb817e0705f30ba708fff215d290c488d0c044299aa8065dedc6c",
+      "bytes": 2344,
+      "normalization": "none",
+      "expandedSha256": null
     },
     {
       "path": "trunk/plugins/org.kohsuke.freetrain.tools.dbgwnd/src/TraceWindow.resx",
@@ -2875,6 +3507,14 @@
       "expandedSha256": null
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+      "sourceSha256": "2a34df8f451587e5d10456786cdeef0dc1d2ae2026e8e8bf76cdbddb2d26c229",
+      "sha256": "2a34df8f451587e5d10456786cdeef0dc1d2ae2026e8e8bf76cdbddb2d26c229",
+      "bytes": 829,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
       "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
       "sha256": "ca0cd1611077957fc05aa58293691407347236b744ce4508fa80b8e3ff1d62f5",
@@ -2883,10 +3523,26 @@
       "expandedSha256": "fceb42540139c8e7103ae959301cf8261275735924a82b07500f1147a59eec5f"
     },
     {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs",
+      "sourceSha256": "fd5003fbb320cf295a0a585ddf2bb710ce01827372195b8381371ed91be1356c",
+      "sha256": "fd5003fbb320cf295a0a585ddf2bb710ce01827372195b8381371ed91be1356c",
+      "bytes": 923,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
       "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.resx",
       "sourceSha256": "7528fadaabdbbe84c58316fcaac32f75aee33b95b4c4cce0e7312216cb63b0ed",
       "sha256": "7528fadaabdbbe84c58316fcaac32f75aee33b95b4c4cce0e7312216cb63b0ed",
       "bytes": 5517,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+      "sourceSha256": "f739ec46cd033c793d5c94c6970bea253e3f3cc5600f0ec660b465cc0cc64c56",
+      "sha256": "f739ec46cd033c793d5c94c6970bea253e3f3cc5600f0ec660b465cc0cc64c56",
+      "bytes": 629,
       "normalization": "none",
       "expandedSha256": null
     },

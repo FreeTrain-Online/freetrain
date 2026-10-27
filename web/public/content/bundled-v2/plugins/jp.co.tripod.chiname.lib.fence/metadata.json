@@ -1,0 +1,3616 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.lib.fence",
+    "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "柵",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/ConstructionFence.bmp",
+      "sourceSha256": "91f4c5b43c3443a91e9d7cda4aa09c2390f627b3f20b82e9ade4c8b1a21ea80a",
+      "sha256": "91f4c5b43c3443a91e9d7cda4aa09c2390f627b3f20b82e9ade4c8b1a21ea80a",
+      "bytes": 18870,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs",
+      "sourceSha256": "061f2a3f0f88dd6764309fade518fbf543e88f19ea6b484e3880218b3407b71a",
+      "sha256": "061f2a3f0f88dd6764309fade518fbf543e88f19ea6b484e3880218b3407b71a",
+      "bytes": 8304,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceRemover.cs",
+      "sourceSha256": "615551d95d4a49a2e8a08d4e0ec5894543ac1dc536f328e4248c2ac9f0e541f9",
+      "sha256": "615551d95d4a49a2e8a08d4e0ec5894543ac1dc536f328e4248c2ac9f0e541f9",
+      "bytes": 757,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.remover.bmp",
+      "sourceSha256": "02220d597d1d92d60026dce65f5d16684e356126a09a8ae4153c4aefb7509323",
+      "sha256": "02220d597d1d92d60026dce65f5d16684e356126a09a8ae4153c4aefb7509323",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.trees.WIN.bmp",
+      "sourceSha256": "581af710f9eb8df39439aa219cc32c502314a61d3fa37bd6ece7d24ea9518608",
+      "sha256": "581af710f9eb8df39439aa219cc32c502314a61d3fa37bd6ece7d24ea9518608",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.trees.bmp",
+      "sourceSha256": "4429513ff083b6f08421f18a4de5bf9e85db925ac81906d39e73c07f18407e1a",
+      "sha256": "4429513ff083b6f08421f18a4de5bf9e85db925ac81906d39e73c07f18407e1a",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence0.bmp",
+      "sourceSha256": "0905dbbee21ddbdd71c69f4faba9b2804715ef5a79f459bc525968900bf28137",
+      "sha256": "0905dbbee21ddbdd71c69f4faba9b2804715ef5a79f459bc525968900bf28137",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1.bmp",
+      "sourceSha256": "3d66a71631b7199ee8d049554b566f3aba34115878fa8d1461e3fab7edf1696d",
+      "sha256": "3d66a71631b7199ee8d049554b566f3aba34115878fa8d1461e3fab7edf1696d",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1trees.WIN.bmp",
+      "sourceSha256": "18e53f077c0f2d9b15df7841b28520106cbb5d9b2a73a479dbc594e25b777ebf",
+      "sha256": "18e53f077c0f2d9b15df7841b28520106cbb5d9b2a73a479dbc594e25b777ebf",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1trees.bmp",
+      "sourceSha256": "fd26469ff19dbc57567c0a43dd31706c3380b3e3867972c4ee50df07a00ab1cf",
+      "sha256": "fd26469ff19dbc57567c0a43dd31706c3380b3e3867972c4ee50df07a00ab1cf",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence2.bmp",
+      "sourceSha256": "04406b7fd0aace00495ad2c54b08f408c271393e9807c350f949fc25d0b13eac",
+      "sha256": "04406b7fd0aace00495ad2c54b08f408c271393e9807c350f949fc25d0b13eac",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0.bmp",
+      "sourceSha256": "3331d22f3bd08ce221d10a1efa1656c0497286f904f6cee7936c74863df21d76",
+      "sha256": "3331d22f3bd08ce221d10a1efa1656c0497286f904f6cee7936c74863df21d76",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0trees.WIN.bmp",
+      "sourceSha256": "8c040f0403f7b92e7187dedf2ab4377ea6e1f6184363565ce59bfc04cf54c5f9",
+      "sha256": "8c040f0403f7b92e7187dedf2ab4377ea6e1f6184363565ce59bfc04cf54c5f9",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0trees.bmp",
+      "sourceSha256": "3d489d791a1721c2232ed3c6fdc1d9b95de284b5083ecf7d5adb5050f98277f5",
+      "sha256": "3d489d791a1721c2232ed3c6fdc1d9b95de284b5083ecf7d5adb5050f98277f5",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge1.bmp",
+      "sourceSha256": "67e1c2d415591d34004a4849e1c0f10d2b09cb16a89702cb9320ba4a979d85b9",
+      "sha256": "67e1c2d415591d34004a4849e1c0f10d2b09cb16a89702cb9320ba4a979d85b9",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge2.bmp",
+      "sourceSha256": "dacde0e5c5497cea7d8ae7c9164f50899066284c942a243028f1892492f6d393",
+      "sha256": "dacde0e5c5497cea7d8ae7c9164f50899066284c942a243028f1892492f6d393",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "sha256": "cc0e436cfe297f37c3306b1d4ae21273e6b05e2a9ff15920d9faa133e29ff2ab",
+      "bytes": 11995,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "2a7ceda785be638e8f14c6ba403e765a07f3bdfa903ad61a675219187724c8e9"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0.bmp",
+      "sourceSha256": "ddec1589c8f03407c40e4ca64173d492abc92bc2f7ee943faf90e95c65f2b80b",
+      "sha256": "ddec1589c8f03407c40e4ca64173d492abc92bc2f7ee943faf90e95c65f2b80b",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0trees.WIN.bmp",
+      "sourceSha256": "097b97b24a5116e9545523213b0f9f79a971b8cfd7d7bec51c39a6f76e3f8e56",
+      "sha256": "097b97b24a5116e9545523213b0f9f79a971b8cfd7d7bec51c39a6f76e3f8e56",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0trees.bmp",
+      "sourceSha256": "499f73ff2b362a6509586072f149c634085294b14bebb19e8cb85a25f8be5917",
+      "sha256": "499f73ff2b362a6509586072f149c634085294b14bebb19e8cb85a25f8be5917",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1.bmp",
+      "sourceSha256": "e280ca52b01e1b9847f77899baa6d353171644387734d0d9b947f6ab4dd84449",
+      "sha256": "e280ca52b01e1b9847f77899baa6d353171644387734d0d9b947f6ab4dd84449",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1trees.WIN.bmp",
+      "sourceSha256": "f62a7ff3507a2917ef0e7e8208fc0308a55dec17064344c067aea21e82c0ac08",
+      "sha256": "f62a7ff3507a2917ef0e7e8208fc0308a55dec17064344c067aea21e82c0ac08",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1trees.bmp",
+      "sourceSha256": "056467b095768b86e1e201f5b67cb56f8647caced4c2fa5dd7047140db8325bb",
+      "sha256": "056467b095768b86e1e201f5b67cb56f8647caced4c2fa5dd7047140db8325bb",
+      "bytes": 12344,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{01E8916B-4691-4618-C477-92F80E6AE3EF}",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:1:{01E8916B-4691-4618-C477-92F80E6AE3EF}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{01E8916B-4691-4618-C477-92F80E6AE3EF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence.remover.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-0",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:2:{43177B60-6CBD-4506-C477-637AE8FB0E93}-0",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "ConstructionFence.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-1",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:3:{43177B60-6CBD-4506-C477-637AE8FB0E93}-1",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence0.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-2",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:4:{43177B60-6CBD-4506-C477-637AE8FB0E93}-2",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence1.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-3",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:5:{43177B60-6CBD-4506-C477-637AE8FB0E93}-3",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence2.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-4",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:6:{43177B60-6CBD-4506-C477-637AE8FB0E93}-4",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "hedge0.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-5",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:7:{43177B60-6CBD-4506-C477-637AE8FB0E93}-5",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-5"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "hedge1.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-6",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:8:{43177B60-6CBD-4506-C477-637AE8FB0E93}-6",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-6"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "wall0.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-7",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:9:{43177B60-6CBD-4506-C477-637AE8FB0E93}-7",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-7"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "wall1.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:10:{43177B60-6CBD-4506-C477-637AE8FB0E93}-8",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence.trees.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "fence.trees.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8a",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:11:{43177B60-6CBD-4506-C477-637AE8FB0E93}-8a",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8a"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "fence1trees.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "fence1trees.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8b",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:12:{43177B60-6CBD-4506-C477-637AE8FB0E93}-8b",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8b"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "hedge0trees.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "hedge0trees.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8c",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:13:{43177B60-6CBD-4506-C477-637AE8FB0E93}-8c",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8c"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "wall0trees.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "wall0trees.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8d",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:14:{43177B60-6CBD-4506-C477-637AE8FB0E93}-8d",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8d"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "wall1trees.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "wall1trees.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{1CEA6341-70DA-4C06-C477-D67403CBD03E}",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:15:{1CEA6341-70DA-4C06-C477-D67403CBD03E}",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceRemover",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceRemover.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{1CEA6341-70DA-4C06-C477-D67403CBD03E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "削除",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceRemover",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{01E8916B-4691-4618-C477-92F80E6AE3EF}",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:16:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "工事現場",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:17:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "255,255,255"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-1",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:18:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "64,64,64"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-1",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:19:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "金網",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-2",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:20:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "柵付き塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "64,64,64"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-3",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:21:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "生垣(低)",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "64,64,64"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-4",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:22:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "生垣(高)",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "64,64,64"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-5",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:23:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "コンクリ塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "255,255,255"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-6",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:24:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ブロック塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "208,198,174"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-6",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:25:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "レンガ塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-7",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:26:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:27:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込+金網",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8a",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:28:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込+生垣",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8b",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:29:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込+コンクリ塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "255,255,255"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8c",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:30:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込+ブロック塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "spriteType",
+            "attributes": {
+              "name": "hueTransform"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "map",
+                "attributes": {
+                  "from": "*,0,0",
+                  "to": "208,198,174"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8c",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d",
+      "pluginId": "jp.co.tripod.chiname.lib.fence",
+      "type": "land",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.fence:31:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d",
+      "implementation": {
+        "name": "freetrain.contributions.fence.FenceBuilder",
+        "codebase": "bin/Fence.DLL",
+        "assembly": "Fence",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FreeTrain.Fence.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.fence/FenceBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "柵",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "植込+レンガ塀",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.fence.FenceBuilder",
+              "codebase": "bin/Fence.DLL"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{43177B60-6CBD-4506-C477-637AE8FB0E93}-8d",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "right_front",
+                "attributes": {},
+                "text": "0,0",
+                "children": []
+              },
+              {
+                "tag": "left_front",
+                "attributes": {},
+                "text": "32,0",
+                "children": []
+              },
+              {
+                "tag": "left_back",
+                "attributes": {},
+                "text": "64,0",
+                "children": []
+              },
+              {
+                "tag": "right_back",
+                "attributes": {},
+                "text": "96,0",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/ConstructionFence.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.remover.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.trees.WIN.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence.trees.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence0.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1trees.WIN.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence1trees.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/fence2.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0trees.WIN.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge0trees.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge1.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/hedge2.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0trees.WIN.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall0trees.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1trees.WIN.bmp",
+    "trunk/plugins/jp.co.tripod.chiname.lib.fence/wall1trees.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{29DD61E1-B0FD-41D8-C477-4EA0506614A8}/name[0]/text()",
+      "originalText": "fence",
+      "originalTextSha256": "87346eb282352fda74addd2a9882fb0cf557366044f1fb56579cdaf24bcc33b6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{29DD61E1-B0FD-41D8-C477-4EA0506614A8}/name[0]/text()",
+        "text": "fence",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{1CEA6341-70DA-4C06-C477-D67403CBD03E}/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{1CEA6341-70DA-4C06-C477-D67403CBD03E}/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{1CEA6341-70DA-4C06-C477-D67403CBD03E}/name[0]/text()",
+      "originalText": "削除",
+      "originalTextSha256": "e9653dc3edcbc072d033d200b3aa56539fde84e9b7cc80287fedc9f91cbe03ad",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{1CEA6341-70DA-4C06-C477-D67403CBD03E}/name[0]/text()",
+        "text": "Remove",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0/name[0]/text()",
+      "originalText": "工事現場",
+      "originalTextSha256": "58f13be81c6089fa1e547256b20f4964588814cc2470a6373770478bed9a587d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0/name[0]/text()",
+        "text": "Construction site",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a/name[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a/name[0]/text()",
+        "text": "Fence",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b/name[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b/name[0]/text()",
+        "text": "Fence",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2/name[0]/text()",
+      "originalText": "金網",
+      "originalTextSha256": "95be83768a1afe4d8f920582bb18fa7c253ec5fcbfcecc8c79eaa07fc1657e02",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2/name[0]/text()",
+        "text": "Wire netting",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3/name[0]/text()",
+      "originalText": "柵付き塀",
+      "originalTextSha256": "a9f6a8dd0ff4672a7bb52573a2b6047e07f664f1f464191ac2dc9b50e3a89639",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3/name[0]/text()",
+        "text": "Fenced wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4/name[0]/text()",
+      "originalText": "生垣(低)",
+      "originalTextSha256": "d50cf8f5a53229e3cf8f18b1eb8b259d25718026eb412fabe91cd08cf227934b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4/name[0]/text()",
+        "text": "Hedge (low)",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5/name[0]/text()",
+      "originalText": "生垣(高)",
+      "originalTextSha256": "cc703a1fba32c72c4c8a597f6cb62a2dfbfd5ff32315b6b673c7484e8ac79230",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5/name[0]/text()",
+        "text": "Hedge (high)",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a/name[0]/text()",
+      "originalText": "コンクリ塀",
+      "originalTextSha256": "04b8f8b497be141ba1fef0c4ae592f4eb5f993d167fa3f1a14b6a593962a4678",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a/name[0]/text()",
+        "text": "Concrete wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b/name[0]/text()",
+      "originalText": "ブロック塀",
+      "originalTextSha256": "5141e1b07ccaab48eb7838046c2b5384cfedfe12da69f77b519714b9ff264f7d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b/name[0]/text()",
+        "text": "Block wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7/name[0]/text()",
+      "originalText": "レンガ塀",
+      "originalTextSha256": "4344970000289aed5ec7e49192caa43d38e98457a58d8f8d1de9c5095e4a0845",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7/name[0]/text()",
+        "text": "Brick wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8/name[0]/text()",
+      "originalText": "植込",
+      "originalTextSha256": "9e1a992087fd29476367b4eddbc62a11a7cf7e34032f422f04f30351a8e4c26b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8/name[0]/text()",
+        "text": "Overgrown",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a/name[0]/text()",
+      "originalText": "植込+金網",
+      "originalTextSha256": "70b1cc994e6cad38bb8a010f7be1d0d297fbdc393c44ca8e5463b887384b55d6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a/name[0]/text()",
+        "text": "Overgrown wire netting",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b/name[0]/text()",
+      "originalText": "植込+生垣",
+      "originalTextSha256": "e11432770a7aae871875828dc8f202103e1b7b259367884c71e30085ce61dddb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b/name[0]/text()",
+        "text": "Overgrown hedge",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c/name[0]/text()",
+      "originalText": "植込+コンクリ塀",
+      "originalTextSha256": "62c1480da5e40a144cc08d2ad84fe32c756471deb28c52c74695c2b384820337",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c/name[0]/text()",
+        "text": "Overgrown concrete wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2/name[0]/text()",
+      "originalText": "植込+ブロック塀",
+      "originalTextSha256": "6fefef64fffabbadd9d9202de4311669116817fbffdbfd8ad3c98e0b5df206e4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2/name[0]/text()",
+        "text": "Overgrown block wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d/group[0]/text()",
+      "originalText": "柵",
+      "originalTextSha256": "cb73f2585296b691076de2c241068f3f7d1e6deb129f61ecad63c0b014eb67ef",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d/group[0]/text()",
+        "text": "Fencing",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d/name[0]/text()",
+      "originalText": "植込+レンガ塀",
+      "originalTextSha256": "3b6d6d083278879d2fe7c44b2323f1fea0369cf64cffd72faaad571327ebfa92",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+        "key": "plug-in/contribution:{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d/name[0]/text()",
+        "text": "Overgrown brick wall",
+        "sourceSha256": "0b459ebe53f8c128f38a69e9be8ddb357ec86be67255c784c08a6b05e8e079b4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

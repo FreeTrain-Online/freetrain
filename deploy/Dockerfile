@@ -6,7 +6,7 @@ WORKDIR /source
 COPY web/deno.json web/deno.lock web/
 RUN deno install --config web/deno.json --frozen
 COPY web/ web/
-COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/
+COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_recipes.py scripts/
 COPY prototype/ prototype/
 COPY content/bundled-v2/ content/bundled-v2/
 COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/

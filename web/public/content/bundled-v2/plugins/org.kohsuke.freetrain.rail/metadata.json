@@ -1,0 +1,253 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.rail",
+    "path": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "鉄橋・トンネル",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/BridgePier.bmp",
+      "sourceSha256": "a79410ce42911c1b0ba2c023c80bcebb9d5c863d3cf07cbce542ba053c8fe0c4",
+      "sha256": "a79410ce42911c1b0ba2c023c80bcebb9d5c863d3cf07cbce542ba053c8fe0c4",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/BridgePreview.bmp",
+      "sourceSha256": "efd71945423151b247120b5597c8d221958e983e8c5dcd11f4aac11d490fd2cb",
+      "sha256": "efd71945423151b247120b5597c8d221958e983e8c5dcd11f4aac11d490fd2cb",
+      "bytes": 17206,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/BridgeRail.bmp",
+      "sourceSha256": "5330fc6519ba85cb303157d58f0312b3ccaef62927d4e67cece19fb392da90d2",
+      "sha256": "5330fc6519ba85cb303157d58f0312b3ccaef62927d4e67cece19fb392da90d2",
+      "bytes": 43062,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+      "sourceSha256": "1825057e51800cccade701c5e8180d690eb2e6c215412aa29f1db78c6714c5fe",
+      "sha256": "1825057e51800cccade701c5e8180d690eb2e6c215412aa29f1db78c6714c5fe",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/TunnelRail.bmp",
+      "sourceSha256": "90784ceadd2006799f6ec0673516d036f2beb3feff44a399a6111ccadeca641a",
+      "sha256": "90784ceadd2006799f6ec0673516d036f2beb3feff44a399a6111ccadeca641a",
+      "bytes": 12342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "sha256": "36eb30b848f4e8e31849fb3e47b3ce3b70e97571ffcd10adda99664040010351",
+      "bytes": 704,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "dc9a4862078abb359e192ba84813ce903dddcfe8a7932db4bee60ad2d97da9c5"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "pluginId": "org.kohsuke.freetrain.rail",
+      "type": "specialRail",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:0:{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "implementation": {
+        "name": "freetrain.world.rail.BridgeRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/BridgeRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialRail",
+          "id": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.BridgeRailContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "pluginId": "org.kohsuke.freetrain.rail",
+      "type": "specialRail",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:1:{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "implementation": {
+        "name": "freetrain.world.rail.StealSupportedRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/StealSupportedRailContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialRail",
+          "id": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.StealSupportedRailContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "pluginId": "org.kohsuke.freetrain.rail",
+      "type": "specialRail",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:2:{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "implementation": {
+        "name": "freetrain.world.rail.TunnelRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/TunnelRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialRail",
+          "id": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.TunnelRailContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.rail/BridgePier.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail/BridgePreview.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail/BridgeRail.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail/StealSupportedRail.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.rail/TunnelRail.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "鉄橋・トンネル",
+      "originalTextSha256": "d671fc4548498c321f6520452e1215ebfaed4969931676f92ae08cc864293474",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Bridges & Tunnels",
+        "sourceSha256": "fdab14a81e9e2f259217b4fee79d9cd5ce5e423f16857bfcbb834b33f26b1916"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

@@ -215,3 +215,55 @@ test('invalid entity graphs report localized save errors before confirmation and
     expect(await bootstrap(page)).toEqual(before);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
   }
 });
+
+test('bundled recipe gallery renders every source frame in all season/light variants with attributed paths',async({page})=>{
+  test.setTimeout(300_000);
+  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+  const before=await bootstrap(page);
+  await page.goto('/content-gallery.html');
+  const canvas=page.locator('#composition');await expect(canvas).toHaveAttribute('data-ready','true');
+  const catalog=await (await page.request.get('/content/bundled-v2/catalog.json')).json();
+  const result=await page.evaluate(async()=>{
+    const recipe=document.getElementById('recipe') as HTMLSelectElement,season=document.getElementById('season') as HTMLSelectElement,
+      night=document.getElementById('night') as HTMLInputElement,canvas=document.getElementById('composition') as HTMLCanvasElement;
+    let variants=0,frames=0,diagnostics=0;
+    const wait=async(id:string,key:string)=>{
+      const start=performance.now();
+      while(canvas.dataset.ready!=='true'||canvas.dataset.recipe!==id||canvas.dataset.variant!==key) {
+        if(performance.now()-start>10000)throw new Error(document.getElementById('status')!.textContent??'Gallery timeout');
+        await new Promise(requestAnimationFrame);
+      }
+    };
+    for(const option of [...recipe.options]) {
+      for(const s of ['spring','summer','autumn','winter'])for(const n of [false,true]) {
+        recipe.value=option.value;season.value=s;night.checked=n;recipe.dispatchEvent(new Event('change'));
+        await wait(option.value,`${s}/${n?'night':'day'}`);variants++;
+        frames+=document.querySelectorAll('#frames canvas').length;diagnostics+=document.querySelectorAll('[data-diagnostic]').length;
+      }
+    }
+    return {variants,frames,diagnostics};
+  });
+  expect(result.variants).toBe(catalog.renderRecipes.length*8);expect(result.frames).toBeGreaterThan(20000);
+  expect(result.diagnostics).toBeGreaterThan(0);expect(errors).toEqual([]);
+  const example=catalog.renderRecipes.find((r:any)=>r.handler==='variable-height'&&r.status==='ready');
+  await page.locator('#recipe').selectOption(example.id);await expect(canvas).toHaveAttribute('data-recipe',example.id);
+  await expect(page.locator('#credits')).toContainText(example.pluginId);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'recipes');mkdirSync(directory,{recursive:true});
+  await page.screenshot({path:join(directory,'variable-night-winter.png'),fullPage:true});
+  const provenance=await(await page.request.get('/content/bundled-v2/provenance.json')).body();
+  expect(createHash('sha256').update(provenance).digest('hex')).toBe(catalog.provenance.sha256);
+  for(const metadata of catalog.pluginMetadata){const response=await page.request.get(metadata.url);expect(response.ok()).toBeTruthy();expect(createHash('sha256').update(await response.body()).digest('hex')).toBe(metadata.sha256);}
+  const land=catalog.renderRecipes.find((r:any)=>r.handler==='land-0d'&&r.status==='ready');
+  await page.locator('#recipe').selectOption(land.id);await expect(canvas).toHaveAttribute('data-recipe',land.id);
+  const sample=await canvas.evaluate(el=>{
+    const c=el as HTMLCanvasElement,rgba=c.getContext('2d')!.getImageData(0,0,c.width,c.height).data;
+    for(let i=0;i<rgba.length;i+=4)if(rgba[i]!==199||rgba[i+1]!==213||rgba[i+2]!==194)return {x:(i/4)%c.width,y:Math.floor(i/4/c.width),rgb:[...rgba.slice(i,i+3)]};
+    throw new Error('No opaque land sprite');
+  });
+  await page.locator('#effect').selectOption('alpha');await expect(canvas).toHaveAttribute('data-ready','true');
+  const pixel=()=>canvas.evaluate((el,p)=>[...(el as HTMLCanvasElement).getContext('2d')!.getImageData(p.x,p.y,1,1).data].slice(0,3),sample);
+  expect(await pixel()).toEqual(sample.rgb.map((v:number,i:number)=>(v>>1)+([199,213,194][i]>>1)));
+  await page.locator('#effect').selectOption('shape');await expect(canvas).toHaveAttribute('data-ready','true');
+  expect(await pixel()).toEqual([255,212,90]);
+  expect(await bootstrap(page)).toEqual(before);
+});

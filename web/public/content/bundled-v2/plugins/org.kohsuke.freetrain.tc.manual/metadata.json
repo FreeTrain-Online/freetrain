@@ -1,0 +1,117 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.tc.manual",
+    "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "手動運転ダイヤグラム",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sourceSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "sha256": "e115bfe959406b99420510daddeb2a62968ebf99c570b77be3eeb459bb0907aa",
+      "bytes": 442,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "97340ca8053bad6d69b26522e0c96a79c00a964504b2ac40a0de3d8fa1956e32"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs",
+      "sourceSha256": "b08115a7518f70dbb246d1d772d8b86ac15a4c2e01ba6a6077f9ec7e084e903f",
+      "sha256": "b08115a7518f70dbb246d1d772d8b86ac15a4c2e01ba6a6077f9ec7e084e903f",
+      "bytes": 773,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{5567FE11-FC2C-4a1d-836F-722EF9DC957C}",
+      "pluginId": "org.kohsuke.freetrain.tc.manual",
+      "type": "trainController",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tc.manual:0:{5567FE11-FC2C-4a1d-836F-722EF9DC957C}",
+      "implementation": {
+        "name": "freetrain.world.rail.manualtc.TrainConrollerContributionImpl",
+        "codebase": "bin/FreeTrain.ManualTrainController.dll",
+        "assembly": "FreeTrain.ManualTrainController",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/FreeTrain.ManualTrainController.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/FreeTrain.ManualTrainController.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainController",
+          "id": "{5567FE11-FC2C-4a1d-836F-722EF9DC957C}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.manualtc.TrainConrollerContributionImpl",
+              "codebase": "bin/FreeTrain.ManualTrainController.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sourceSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "手動運転ダイヤグラム",
+      "originalTextSha256": "d7e464a49c42a93f76bb231b980f223979044a1c2ed9a20de2621d2f4f50d0c2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Manually-Operated Diagram",
+        "sourceSha256": "2b8178f630b63ceec5664876d70b58a759380221bf76844e0f29d59ef74f429d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sourceSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

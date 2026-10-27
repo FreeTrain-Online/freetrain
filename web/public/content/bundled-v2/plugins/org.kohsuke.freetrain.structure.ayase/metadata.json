@@ -1,0 +1,1471 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.ayase",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物プラグイン",
+    "author": "綾瀬ヒロ"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/minato.bmp",
+      "sourceSha256": "a61db2fba7494bf12d02c4dcad608f5a197703735928c1bd9eef433ab2957856",
+      "sha256": "a61db2fba7494bf12d02c4dcad608f5a197703735928c1bd9eef433ab2957856",
+      "bytes": 10486,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/minato2.bmp",
+      "sourceSha256": "5844404af43abd5d7365c839117a5c416b4fe84c3f4e30b17cc5ad4499f694fd",
+      "sha256": "5844404af43abd5d7365c839117a5c416b4fe84c3f4e30b17cc5ad4499f694fd",
+      "bytes": 5174,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "sha256": "0840dc554558b5f7cd8f168aed075d14c2d229af4043bd36af5875aefddb8db0",
+      "bytes": 4635,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "18e02cb0f23e7ca33dbd1324d6d921da8c2c15d75cbfcfdc43c8e0e6af8eb9f8"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/sohko.bmp",
+      "sourceSha256": "b87494608ea9344834f0215d3703ed690661528148183136e7a945874bada75f",
+      "sha256": "b87494608ea9344834f0215d3703ed690661528148183136e7a945874bada75f",
+      "bytes": 7222,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{000000-2002-1212-AYASE-Structure-img01}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:0:{000000-2002-1212-AYASE-Structure-img01}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{000000-2002-1212-AYASE-Structure-img01}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "minato.bmp",
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{000000-2002-1212-AYASE-Structure-img02}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:1:{000000-2002-1212-AYASE-Structure-img02}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{000000-2002-1212-AYASE-Structure-img02}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "minato2.bmp",
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{000000-2002-1212-AYASE-Structure-img03}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:2:{000000-2002-1212-AYASE-Structure-img03}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{000000-2002-1212-AYASE-Structure-img03}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "sohko.bmp",
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:3:{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(コンテナ埠頭)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,4",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img01}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{24146DB8-A1CB-4355-8B26-705F2FB885D7}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:4:{24146DB8-A1CB-4355-8B26-705F2FB885D7}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{24146DB8-A1CB-4355-8B26-705F2FB885D7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(コンテナ埠頭)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "4,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "24"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img01}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:5:{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(鉄道桟橋)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "50000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img02}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{82B5ED65-8576-4494-BCD2-E2B9233FD787}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:6:{82B5ED65-8576-4494-BCD2-E2B9233FD787}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{82B5ED65-8576-4494-BCD2-E2B9233FD787}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(鉄道桟橋)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "50000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img02}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{E0F69A4B-A3EE-4605-8987-7E63737EA481}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:7:{E0F69A4B-A3EE-4605-8987-7E63737EA481}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{E0F69A4B-A3EE-4605-8987-7E63737EA481}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(客船埠頭)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "200000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img02}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:8:{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "港湾施設(客船埠頭)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "200000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img02}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{32D21DEE-99A5-414F-BAF7-6BBD705A7485}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:9:{32D21DEE-99A5-414F-BAF7-6BBD705A7485}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{32D21DEE-99A5-414F-BAF7-6BBD705A7485}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{6DFD12E5-505C-43CA-9E07-23D737D408FB}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:10:{6DFD12E5-505C-43CA-9E07-23D737D408FB}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{6DFD12E5-505C-43CA-9E07-23D737D408FB}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{29D7FEFA-2491-4ED0-8479-596FD805ED03}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:11:{29D7FEFA-2491-4ED0-8479-596FD805ED03}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{29D7FEFA-2491-4ED0-8479-596FD805ED03}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{76EA313D-CA8B-4C93-94FF-3452054615D4}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:12:{76EA313D-CA8B-4C93-94FF-3452054615D4}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{76EA313D-CA8B-4C93-94FF-3452054615D4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:13:{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}",
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ayase:14:{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "倉庫",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "10000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{000000-2002-1212-AYASE-Structure-img03}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.ayase/minato.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.ayase/minato2.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.ayase/sohko.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物プラグイン",
+      "originalTextSha256": "02714f02fa08957059ebe335ac61fdcb39cfde457c51bac2a74d3be3f6be43e0",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Structure Plugin",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "綾瀬ヒロ",
+      "originalTextSha256": "c9addd62237a24e133a3739a35e493759edaf585a22e0b260b48b34a42bf0ee5",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group[0]/text()",
+      "originalText": "港湾施設(コンテナ埠頭)",
+      "originalTextSha256": "47f2ecec4229cd6e2f55ef9cf52d013644259b1c6341a0a9f75ac256e24be7c7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group[0]/text()",
+        "text": "Container wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group[0]/text()",
+      "originalText": "港湾施設(コンテナ埠頭)",
+      "originalTextSha256": "47f2ecec4229cd6e2f55ef9cf52d013644259b1c6341a0a9f75ac256e24be7c7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group[0]/text()",
+        "text": "Container wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group[0]/text()",
+      "originalText": "港湾施設(鉄道桟橋)",
+      "originalTextSha256": "735a075b22f7600d7a51e38bf0afed41c77d422d692d1ccf220fb1378dcec88e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group[0]/text()",
+        "text": "Railroad pier",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group[0]/text()",
+      "originalText": "港湾施設(鉄道桟橋)",
+      "originalTextSha256": "735a075b22f7600d7a51e38bf0afed41c77d422d692d1ccf220fb1378dcec88e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group[0]/text()",
+        "text": "Railroad pier",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group[0]/text()",
+      "originalText": "港湾施設(客船埠頭)",
+      "originalTextSha256": "17446d4ba16261ecd28755644412a338a75570aaeeac664c63829d6e9359c352",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group[0]/text()",
+        "text": "Passenger wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group[0]/text()",
+      "originalText": "港湾施設(客船埠頭)",
+      "originalTextSha256": "17446d4ba16261ecd28755644412a338a75570aaeeac664c63829d6e9359c352",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group[0]/text()",
+        "text": "Passenger wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{76EA313D-CA8B-4C93-94FF-3452054615D4}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{76EA313D-CA8B-4C93-94FF-3452054615D4}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "key": "plug-in/contribution:{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group[0]/text()",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

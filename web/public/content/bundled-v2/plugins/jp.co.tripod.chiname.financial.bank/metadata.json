@@ -1,0 +1,276 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.financial.bank",
+    "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "銀行モジュール",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankCouterForm.resx",
+      "sourceSha256": "20e0debf24e1768df0198df698081ded3688be941654e388a320d48db9697856",
+      "sha256": "20e0debf24e1768df0198df698081ded3688be941654e388a320d48db9697856",
+      "bytes": 10270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankPlugIn.cs",
+      "sourceSha256": "8a8c84141b65589607465846e3e3debee401c9ead90f18ecbe0fba8049715c5b",
+      "sha256": "8a8c84141b65589607465846e3e3debee401c9ead90f18ecbe0fba8049715c5b",
+      "bytes": 836,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankbookWindow.cs",
+      "sourceSha256": "f19975c09cdaef4dcd2b9cf3438de55d5c0edf28a229ad5ddf1829c932ce07db",
+      "sha256": "f19975c09cdaef4dcd2b9cf3438de55d5c0edf28a229ad5ddf1829c932ce07db",
+      "bytes": 7515,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankbookWindow.resx",
+      "sourceSha256": "ec97ce7e78f6c54794cd926ee637dc2f8f09c74abe6edb56a001369cfa8ccafb",
+      "sha256": "ec97ce7e78f6c54794cd926ee637dc2f8f09c74abe6edb56a001369cfa8ccafb",
+      "bytes": 5324,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/bank_icon.bmp",
+      "sourceSha256": "950872406c404f1549620086e69acb27836535bf76f9c82098ff0ea0848decfc",
+      "sha256": "950872406c404f1549620086e69acb27836535bf76f9c82098ff0ea0848decfc",
+      "bytes": 3128,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "sha256": "433ad73b543b83bdf122959b5f5c528fc34487189bf8e00da723b57cec5676c3",
+      "bytes": 802,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "24c9d92947803cb7cf8b84d61d6719fdde9e151528349f5553e174482c699aae"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{8254AA45-A93B-4989-C477-3D3BD31F7A8D}",
+      "pluginId": "jp.co.tripod.chiname.financial.bank",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.financial.bank:0:{8254AA45-A93B-4989-C477-3D3BD31F7A8D}",
+      "implementation": {
+        "name": "freetrain.views.bank.BankbookWindow",
+        "codebase": "bin/Bank.dll",
+        "assembly": "Bank",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/FreeTrain.Bank.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/FreeTrain.Bank.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankbookWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{8254AA45-A93B-4989-C477-3D3BD31F7A8D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "借入金・預金一覧",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "借入金・預金一覧",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.views.bank.BankbookWindow",
+              "codebase": "bin/Bank.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{AD26D946-C86C-4904-C477-C79CDAAADBD6}",
+      "pluginId": "jp.co.tripod.chiname.financial.bank",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.financial.bank:1:{AD26D946-C86C-4904-C477-C79CDAAADBD6}",
+      "implementation": {
+        "name": "freetrain.views.bank.BankPlugIn",
+        "codebase": "bin/Bank.dll",
+        "assembly": "Bank",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/FreeTrain.Bank.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/FreeTrain.Bank.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.bank/BankPlugIn.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{AD26D946-C86C-4904-C477-C79CDAAADBD6}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.views.bank.BankPlugIn",
+              "codebase": "bin/Bank.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "settings",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "businessHour",
+                "attributes": {
+                  "open": "9",
+                  "close": "17"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "deposit",
+                "attributes": {
+                  "available": "true",
+                  "cancelable": "true"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "debt",
+                "attributes": {
+                  "available": "true",
+                  "repayable": "true"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.co.tripod.chiname.financial.bank/bank_icon.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "銀行モジュール",
+      "originalTextSha256": "891f06307266171bdb369d71871476b9aa01f1cf6a3aba09dc3756b6363b91e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Banking Module",
+        "sourceSha256": "fc34c50214548f0eb8cabd297d069e938968534e40021d1f741495646e9663b6"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "key": "plug-in/contribution:{8254AA45-A93B-4989-C477-3D3BD31F7A8D}/name[0]/text()",
+      "originalText": "借入金・預金一覧",
+      "originalTextSha256": "e6fdbd2fb90403dd17cff1954711fca2aaa48e1bf480e529b0dbb02c45ef1ba3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+        "key": "plug-in/contribution:{8254AA45-A93B-4989-C477-3D3BD31F7A8D}/name[0]/text()",
+        "text": "Bankbook",
+        "sourceSha256": "fc34c50214548f0eb8cabd297d069e938968534e40021d1f741495646e9663b6"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "key": "plug-in/contribution:{8254AA45-A93B-4989-C477-3D3BD31F7A8D}/menu[0]/@name",
+      "originalText": "借入金・預金一覧",
+      "originalTextSha256": "e6fdbd2fb90403dd17cff1954711fca2aaa48e1bf480e529b0dbb02c45ef1ba3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

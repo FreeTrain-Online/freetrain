@@ -1,0 +1,3300 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.forest",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+    "dependencies": [
+      "org.kohsuke.freetrain.land.farmland",
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "森林",
+    "author": "477@２両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_autumn.bmp",
+      "sourceSha256": "00f218eee36dd43183f79b66a10a2267c4c6a751641dc22fb17493a44d15d1f3",
+      "sha256": "00f218eee36dd43183f79b66a10a2267c4c6a751641dc22fb17493a44d15d1f3",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_spring.bmp",
+      "sourceSha256": "e5ff9256bf4384c83abb8c2d459a4bfb6ee012d3917adaa5fdfcd5e044ea6f6f",
+      "sha256": "e5ff9256bf4384c83abb8c2d459a4bfb6ee012d3917adaa5fdfcd5e044ea6f6f",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_summer.bmp",
+      "sourceSha256": "6a304652c152f20c2a401d0361f9f7f5705d0b7b2b8770b6a9e8a2ecad93b2f7",
+      "sha256": "6a304652c152f20c2a401d0361f9f7f5705d0b7b2b8770b6a9e8a2ecad93b2f7",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_winter.bmp",
+      "sourceSha256": "8389740e99b83de512a93b222a5832fe0cd5653cab700054787077094e1f99a7",
+      "sha256": "8389740e99b83de512a93b222a5832fe0cd5653cab700054787077094e1f99a7",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "sha256": "237b8850cf0314d08a1b985bb7d3401ed96110cf7f504c9fd745f58a632aa9ea",
+      "bytes": 12279,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "e8923ed862030057c8cfee7e73992426544db6f9081c4c6313f685ba56ba214e"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs",
+      "sourceSha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "sha256": "0d3a23712cd6b5d3d5b112af3001570f6a6b671b1e41d12560146c44503f1e5d",
+      "bytes": 6343,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.AUT.bmp",
+      "sourceSha256": "02ccf8edf201db67e49800c8d32075d1e757155a89cffa7acd01966b43e7ce34",
+      "sha256": "02ccf8edf201db67e49800c8d32075d1e757155a89cffa7acd01966b43e7ce34",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.SUM.bmp",
+      "sourceSha256": "2b0f80bf28a814a7be8a1ebebbf2226845d51408df9ed233e8464319dc9369b0",
+      "sha256": "2b0f80bf28a814a7be8a1ebebbf2226845d51408df9ed233e8464319dc9369b0",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.WIN.bmp",
+      "sourceSha256": "cc139ee76b98ee3e3cdc7786790773ad7b8d67a15c95836729518f72c490d082",
+      "sha256": "cc139ee76b98ee3e3cdc7786790773ad7b8d67a15c95836729518f72c490d082",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.bmp",
+      "sourceSha256": "d062299ec2eb229c409a2cf0894c1445928d6ac4f11e28bbf89309ae07085451",
+      "sha256": "d062299ec2eb229c409a2cf0894c1445928d6ac4f11e28bbf89309ae07085451",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.AUT.bmp",
+      "sourceSha256": "e88104a711ae57e569117df25cbbe7516b01fed93290dd7d09c1a5d780adb586",
+      "sha256": "e88104a711ae57e569117df25cbbe7516b01fed93290dd7d09c1a5d780adb586",
+      "bytes": 23096,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.WIN.bmp",
+      "sourceSha256": "e0a179a386289e0954c0abcfabcb793b5e54cff51817ebceb26bd53afb6ed94b",
+      "sha256": "e0a179a386289e0954c0abcfabcb793b5e54cff51817ebceb26bd53afb6ed94b",
+      "bytes": 23096,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.bmp",
+      "sourceSha256": "944c3f6c32f954492fc456cbeb5d00397bf6a50cffb46ff3b1788d0244c2878c",
+      "sha256": "944c3f6c32f954492fc456cbeb5d00397bf6a50cffb46ff3b1788d0244c2878c",
+      "bytes": 23096,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.AUT.bmp",
+      "sourceSha256": "465b588f07359300a37712a08965e1bd6d12611bd145b5826b42120e54b9cfd3",
+      "sha256": "465b588f07359300a37712a08965e1bd6d12611bd145b5826b42120e54b9cfd3",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.WIN.bmp",
+      "sourceSha256": "ee8d0c0a58942f848e4aa94bc85205fa17ca876d67b0c8302e24c42460ac0950",
+      "sha256": "ee8d0c0a58942f848e4aa94bc85205fa17ca876d67b0c8302e24c42460ac0950",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.bmp",
+      "sourceSha256": "801779e718fa99f2bfd34c554f78e04620b3c492fd5b95e8a4d6f1b0466c0afc",
+      "sha256": "801779e718fa99f2bfd34c554f78e04620b3c492fd5b95e8a4d6f1b0466c0afc",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kusu.WIN.bmp",
+      "sourceSha256": "5fffed1bd8b8e300c5665f4befff08fac6bacae57195c2a8ec0aeff50a8bee84",
+      "sha256": "5fffed1bd8b8e300c5665f4befff08fac6bacae57195c2a8ec0aeff50a8bee84",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kusu.bmp",
+      "sourceSha256": "93a9477ed90d79ad5dcaee665968f4cfd6f75284c7685591de8dc7f3d16f43bb",
+      "sha256": "93a9477ed90d79ad5dcaee665968f4cfd6f75284c7685591de8dc7f3d16f43bb",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_matsu.WIN.bmp",
+      "sourceSha256": "ce9f5ab9a7294308f1880fc6dd743916257622f82d847ed33a9368475efa9104",
+      "sha256": "ce9f5ab9a7294308f1880fc6dd743916257622f82d847ed33a9368475efa9104",
+      "bytes": 27896,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_matsu.bmp",
+      "sourceSha256": "694ce0ec5f313f500fd508c94885d39c43d7e7781897d51a5da99c97a017efc3",
+      "sha256": "694ce0ec5f313f500fd508c94885d39c43d7e7781897d51a5da99c97a017efc3",
+      "bytes": 27896,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sakura.SPR.bmp",
+      "sourceSha256": "7147d8e1fc5795c6d2ca281ed1c42688807e25cec3b4347e4f7abebff60ba3c3",
+      "sha256": "7147d8e1fc5795c6d2ca281ed1c42688807e25cec3b4347e4f7abebff60ba3c3",
+      "bytes": 9272,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sugi.WIN.bmp",
+      "sourceSha256": "60d2a3aca798b51f529a7dd8fb54d79d4c28f6a3810e77b0b8d70bea1b773c84",
+      "sha256": "60d2a3aca798b51f529a7dd8fb54d79d4c28f6a3810e77b0b8d70bea1b773c84",
+      "bytes": 41528,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sugi.bmp",
+      "sourceSha256": "c2c90babfb3ebf56c1c255a1b6099c24bb1a91a1a2a1df0ed465736a6b11ba60",
+      "sha256": "c2c90babfb3ebf56c1c255a1b6099c24bb1a91a1a2a1df0ed465736a6b11ba60",
+      "bytes": 41528,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:0:{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "ground_spring.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "summer",
+                  "src": "ground_summer.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "ground_autumn.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "ground_winter.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:1:{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "杉",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_sugi.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_sugi.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,42",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:2:{4B732903-B207-4693-9CF7-19AED4E42604}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "松",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_matsu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_matsu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,41",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:3:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楠",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kusu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kusu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,26",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:4:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楓",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kaede.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_kaede.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kaede.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "96,25",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:5:{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "銀杏",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_icho.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_icho.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_icho.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "160,43",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "5",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:6:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ブナ",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_buna.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "summer",
+                  "src": "trees_buna.SUM.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_buna.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_buna.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,40",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:7:{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "杉",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_sugi.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_sugi.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,42",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:8:{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "松",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_matsu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_matsu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,41",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:9:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楠",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kusu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kusu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,26",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:10:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楓",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kaede.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_kaede.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kaede.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "96,25",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:11:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "銀杏",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_icho.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_icho.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_icho.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "160,43",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "5",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:12:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(山肌)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ブナ",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_buna.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "summer",
+                  "src": "trees_buna.SUM.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_buna.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_buna.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-G",
+                  "origin": "0,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,40",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:13:{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "杉",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_sugi.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_sugi.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,42",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:14:{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "松",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_matsu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_matsu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,41",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:15:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楠",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kusu.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kusu.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "288,26",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "9",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:16:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "楓",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_kaede.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_kaede.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_kaede.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "96,25",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:17:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "銀杏",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_icho.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_icho.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_icho.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "160,43",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "5",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+      "pluginId": "org.kohsuke.freetrain.land.forest",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.forest:18:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+      "implementation": {
+        "name": "freetrain.world.land.forest.ForestBuilder",
+        "codebase": "bin/FreeTrain.Forest.dll",
+        "assembly": "FreeTrain.Forest",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/FreeTrain.Forest.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "森林(草原)",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ブナ",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.forest.ForestBuilder",
+              "codebase": "bin/FreeTrain.Forest.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "trees_buna.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "summer",
+                  "src": "trees_buna.SUM.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "trees_buna.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "trees_buna.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "ground",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+                  "origin": "64,0"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "192,40",
+            "children": []
+          },
+          {
+            "tag": "count",
+            "attributes": {},
+            "text": "6",
+            "children": []
+          },
+          {
+            "tag": "density",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_autumn.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_spring.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_summer.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/ground_winter.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.AUT.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.SUM.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_buna.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.AUT.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_icho.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.AUT.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kaede.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kusu.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_kusu.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_matsu.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_matsu.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sakura.SPR.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sugi.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.forest/trees_sugi.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477@２両目",
+      "originalTextSha256": "733f1be536f7659128d33c321fe51a163e9b11055195e765b311ec477ac67ab8",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}/name[0]/text()",
+      "originalText": "杉",
+      "originalTextSha256": "47b2849f634f28b4eb2a44d21b6beeb84846a9531e48149cee161bd3e95c972e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}/name[0]/text()",
+        "text": "Cedar",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}/name[0]/text()",
+      "originalText": "松",
+      "originalTextSha256": "fb82c376e9fbaa5bdb104160594986d54d762bc19c127c48e98494909f13b9e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}/name[0]/text()",
+        "text": "Pine",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}/name[0]/text()",
+      "originalText": "楠",
+      "originalTextSha256": "78954923784c2726fbc04eefcaf9a27299fc02c57d679a28d6ab29d535db7171",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}/name[0]/text()",
+        "text": "Camphor",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}/name[0]/text()",
+      "originalText": "楓",
+      "originalTextSha256": "448692683318dc8b4a6d232782198df43b13ab6141bd76367d0926863783f251",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}/name[0]/text()",
+        "text": "Maple",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}/name[0]/text()",
+      "originalText": "銀杏",
+      "originalTextSha256": "d7a816193a0cc51ff28242c1fd87efcd00ce59ecd0f9472297824bdfef5bc942",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}/name[0]/text()",
+        "text": "Ginkgo",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}/group[0]/text()",
+      "originalText": "森林",
+      "originalTextSha256": "3bfbf21e2f002bc2dcafb5e9df5fcbb1f16ea95587716d7794fa0e5c8547bbc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}/group[0]/text()",
+        "text": "Forest",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}/name[0]/text()",
+      "originalText": "ブナ",
+      "originalTextSha256": "68328d75cd46eda9d5960af0be4a4f03a5c4aaf0226bf94b190b0781e9e0b838",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}/name[0]/text()",
+        "text": "Beech",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-m/name[0]/text()",
+      "originalText": "杉",
+      "originalTextSha256": "47b2849f634f28b4eb2a44d21b6beeb84846a9531e48149cee161bd3e95c972e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-m/name[0]/text()",
+        "text": "Cedar",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-m/name[0]/text()",
+      "originalText": "松",
+      "originalTextSha256": "fb82c376e9fbaa5bdb104160594986d54d762bc19c127c48e98494909f13b9e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-m/name[0]/text()",
+        "text": "Pine",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m/name[0]/text()",
+      "originalText": "楠",
+      "originalTextSha256": "78954923784c2726fbc04eefcaf9a27299fc02c57d679a28d6ab29d535db7171",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m/name[0]/text()",
+        "text": "Camphor",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m/name[0]/text()",
+      "originalText": "楓",
+      "originalTextSha256": "448692683318dc8b4a6d232782198df43b13ab6141bd76367d0926863783f251",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m/name[0]/text()",
+        "text": "Maple",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m/name[0]/text()",
+      "originalText": "銀杏",
+      "originalTextSha256": "d7a816193a0cc51ff28242c1fd87efcd00ce59ecd0f9472297824bdfef5bc942",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m/name[0]/text()",
+        "text": "Ginkgo",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m/group[0]/text()",
+      "originalText": "森林(山肌)",
+      "originalTextSha256": "f464617c962f55cfa0c44448674ac0b13352471c6f7186bf68206a30ff0284b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m/group[0]/text()",
+        "text": "Forest (mountain)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m/name[0]/text()",
+      "originalText": "ブナ",
+      "originalTextSha256": "68328d75cd46eda9d5960af0be4a4f03a5c4aaf0226bf94b190b0781e9e0b838",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m/name[0]/text()",
+        "text": "Beech",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-g/name[0]/text()",
+      "originalText": "杉",
+      "originalTextSha256": "47b2849f634f28b4eb2a44d21b6beeb84846a9531e48149cee161bd3e95c972e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{FBD0CD06-016A-4037-AB15-02040218CBAA}-g/name[0]/text()",
+        "text": "Cedar",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-g/name[0]/text()",
+      "originalText": "松",
+      "originalTextSha256": "fb82c376e9fbaa5bdb104160594986d54d762bc19c127c48e98494909f13b9e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{4B732903-B207-4693-9CF7-19AED4E42604}-g/name[0]/text()",
+        "text": "Pine",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g/name[0]/text()",
+      "originalText": "楠",
+      "originalTextSha256": "78954923784c2726fbc04eefcaf9a27299fc02c57d679a28d6ab29d535db7171",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g/name[0]/text()",
+        "text": "Camphor",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g/name[0]/text()",
+      "originalText": "楓",
+      "originalTextSha256": "448692683318dc8b4a6d232782198df43b13ab6141bd76367d0926863783f251",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g/name[0]/text()",
+        "text": "Maple",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g/name[0]/text()",
+      "originalText": "銀杏",
+      "originalTextSha256": "d7a816193a0cc51ff28242c1fd87efcd00ce59ecd0f9472297824bdfef5bc942",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g/name[0]/text()",
+        "text": "Ginkgo",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g/group[0]/text()",
+      "originalText": "森林(草原)",
+      "originalTextSha256": "4656d596207a4852ad7bbf0f5588ef6bc04fbdbcda1daa2295297ddf39afb00c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g/group[0]/text()",
+        "text": "Forest (grassland)",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g/name[0]/text()",
+      "originalText": "ブナ",
+      "originalTextSha256": "68328d75cd46eda9d5960af0be4a4f03a5c4aaf0226bf94b190b0781e9e0b838",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+        "key": "plug-in/contribution:{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g/name[0]/text()",
+        "text": "Beech",
+        "sourceSha256": "408db7c46df0f0a6e3b235d23444bcd3eb957e7cc892289a0f045b5563890b0b"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

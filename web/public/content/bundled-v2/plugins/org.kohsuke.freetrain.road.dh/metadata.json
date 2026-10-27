@@ -1,0 +1,189 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.road.dh",
+    "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "二車線道路(15枚絵)",
+    "author": "romulanWarbird"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "sha256": "7b946d669def80cec66992474ef099f968a1c5fa5a16268ba78370eb9edd9f1c",
+      "bytes": 587,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "199bbb30d5ca726f4dcd6d9c559f79af11c7c869808268fb1ef31b2b793468f5"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/road-2-15.bmp",
+      "sourceSha256": "f635a429292db871824b2123a6b1aab99c019e789ae5d9dc0a4f73a9423e8d9d",
+      "sha256": "f635a429292db871824b2123a6b1aab99c019e789ae5d9dc0a4f73a9423e8d9d",
+      "bytes": 23096,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{7254CD19-38B1-42DB-84E3-88F9A5C88E42}",
+      "pluginId": "org.kohsuke.freetrain.road.dh",
+      "type": "road",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.road.dh:0:{7254CD19-38B1-42DB-84E3-88F9A5C88E42}",
+      "implementation": {
+        "name": "freetrain.contributions.road.StandardRoadContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/road/StandardRoadContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "road",
+          "id": "{7254CD19-38B1-42DB-84E3-88F9A5C88E42}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "style",
+            "attributes": {
+              "name": "street",
+              "sidewalk": "shoulder",
+              "lanes": "2"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.road.StandardRoadContribution"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "二車線道路(15枚絵)",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "三叉路、曲がり角等を含むニ車線の道路",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "road-2-15.bmp",
+              "size": "32,16",
+              "offset": "0"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "roads"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.road.dh/road-2-15.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "二車線道路(15枚絵)",
+      "originalTextSha256": "b514bc27cbe481e12827bcde3ff04ec86fa90a53f1a210c235a06eae33bfab40",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Two-Lane Road (15 Sprites)",
+        "sourceSha256": "0a1f879977c21fe081860eeb5e8960e7de6019865ab6c2da03686dd717355c14"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "key": "plug-in/homepage[0]/text()",
+      "originalText": "通信圏外",
+      "originalTextSha256": "dff2645db1536df328958c6d9b1d34b5e5cfafa40628bcccbd44011f16fdb100",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "key": "plug-in/contribution:{7254CD19-38B1-42DB-84E3-88F9A5C88E42}/name[0]/text()",
+      "originalText": "二車線道路(15枚絵)",
+      "originalTextSha256": "b514bc27cbe481e12827bcde3ff04ec86fa90a53f1a210c235a06eae33bfab40",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+        "key": "plug-in/contribution:{7254CD19-38B1-42DB-84E3-88F9A5C88E42}/name[0]/text()",
+        "text": "Two-lane road (15 sprites)",
+        "sourceSha256": "0a1f879977c21fe081860eeb5e8960e7de6019865ab6c2da03686dd717355c14"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "key": "plug-in/contribution:{7254CD19-38B1-42DB-84E3-88F9A5C88E42}/description[0]/text()",
+      "originalText": "三叉路、曲がり角等を含むニ車線の道路",
+      "originalTextSha256": "def175754c3ef17167e93e62c6ce7aeb924d01535f92386808384de7244032b8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+        "key": "plug-in/contribution:{7254CD19-38B1-42DB-84E3-88F9A5C88E42}/description[0]/text()",
+        "text": "Two-lane road including T-junction and curves",
+        "sourceSha256": "0a1f879977c21fe081860eeb5e8960e7de6019865ab6c2da03686dd717355c14"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

@@ -1,13 +1,14 @@
 # Content boundary
 
 `PreparedContentCatalog.Bundled` validates and indexes the prepared stable ExAV
-bundled catalog at server startup. Its 448 contribution records and 141 prepared
-picture bindings are inert metadata; executable handlers and complete recipes
-remain P2 and later gameplay work. The catalog is embedded with its exact hash,
-and original bundled notices ship in managed build/publish output. Default
-preparation reads [checked-in canonical inputs](../../content/README.md), never
-the historical `core/`/`plugins/` or an implicitly discovered archive/optional pack.
-See [P2-01 delivery and limits](../../doc/web-parity-bundled-preparation.md).
+bundled catalog at server startup. Its 448 contribution records remain inert
+for gameplay. All 159 picture bindings and 812 browser render recipes are
+available as immutable, pack-qualified metadata with exact hashes. Original
+notices ship in managed output; generated media preserve original plugin
+namespaces and per-image provenance. Default preparation reads
+[checked-in canonical inputs](../../content/README.md), never historical roots
+or an implicitly discovered archive/optional pack. See
+[P2-02 rendering, attribution and acceptance limits](../../doc/web-parity-recipes.md).
 
 `SpatialReferenceScenario.Create()` builds the default canonical reference world:
 32 source-valid normal rail cells forming an eight-heading loop, on a 32×64×8

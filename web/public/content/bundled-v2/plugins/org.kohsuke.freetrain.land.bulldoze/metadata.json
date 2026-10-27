@@ -1,0 +1,150 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.bulldoze",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "地表の整地",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "sourceSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "sha256": "f7185efd0e1b36aadd8213ab7351859a7fff80c3540502f378543044f70123e8",
+      "bytes": 429,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "3862975e4c7b5bdcc6ea37c07ed888b47935b44cb5aaf8cc615ecdfb0624fa3f"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}",
+      "pluginId": "org.kohsuke.freetrain.land.bulldoze",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.bulldoze:0:{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}",
+      "implementation": {
+        "name": "freetrain.contributions.land.Bulldozer",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/Bulldozer.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "ブルドーザー",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.Bulldozer"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "0",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "sourceSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "地表の整地",
+      "originalTextSha256": "27f8c47fb1b17d163c61ecf390f1e8186ba177190e82bddabca2e2fe33a0aac5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Terrain Modification",
+        "sourceSha256": "b436dc155ba6cb87ac80aa386f5875d2cbd2ad376a3dfd2fa044bf54a02198f4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "sourceSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "sourceSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "key": "plug-in/contribution:{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}/group[0]/text()",
+      "originalText": "ブルドーザー",
+      "originalTextSha256": "ad88460b5ea484927a4b008128dd07dc1891acf2f86ef3d80af3f68707a6c0f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+        "key": "plug-in/contribution:{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}/group[0]/text()",
+        "text": "Bulldozer",
+        "sourceSha256": "b436dc155ba6cb87ac80aa386f5875d2cbd2ad376a3dfd2fa044bf54a02198f4"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

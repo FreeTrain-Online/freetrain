@@ -1,0 +1,206 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.road.pc-9801fa",
+    "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "道路",
+    "author": "PC-9801FAさん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/a3road_d.bmp",
+      "sourceSha256": "b26bd69ffa156ca17f9cf930327fbac5e560b4f483d237700549fc975cb5cff7",
+      "sha256": "b26bd69ffa156ca17f9cf930327fbac5e560b4f483d237700549fc975cb5cff7",
+      "bytes": 3172,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/a3road_n.bmp",
+      "sourceSha256": "37ff90bba0a4d06fd039344396ac30178fe00eee0eababfd5f773484d9b57548",
+      "sha256": "37ff90bba0a4d06fd039344396ac30178fe00eee0eababfd5f773484d9b57548",
+      "bytes": 3168,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "sha256": "955a53a260bd4b5a402a3b12b86b66c77bdb25d10200d6394032c0fde2702cec",
+      "bytes": 573,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "7d8da28b5b1854b61f367db44e33314fd99f90f7636b902d8245cb599f7f99db"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}",
+      "pluginId": "org.kohsuke.freetrain.road.pc-9801fa",
+      "type": "road",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.road.pc-9801fa:0:{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}",
+      "implementation": {
+        "name": "freetrain.contributions.road.A3RoadContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/road/A3RoadContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "road",
+          "id": "{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.road.A3RoadContribution"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "style",
+            "attributes": {
+              "name": "street",
+              "sidewalk": "shoulder",
+              "lanes": "2"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "二車線道路",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "二車線の道路",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "a3road_d.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "a3road_n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "roads"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/a3road_d.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/a3road_n.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "道路",
+      "originalTextSha256": "a44c7ba211320a43e426a37960fda386d1034270704cf38a6b1bced7feb7388a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Road",
+        "sourceSha256": "232eeb7d73f82d834eadc9f76d6d0bb07b8b3c013823dc40b59ed17a51d0f312"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "PC-9801FAさん",
+      "originalTextSha256": "50a8bc7a35881bed9509c2e68804105b2a418b449b15a2d361ae218b33dcca6c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "key": "plug-in/contribution:{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}/name[0]/text()",
+      "originalText": "二車線道路",
+      "originalTextSha256": "9d6f5676d1fd71439eb3e36e87edadad551b9b6ef546ca78a1dfc4403f393bc3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+        "key": "plug-in/contribution:{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}/name[0]/text()",
+        "text": "Two-lane road",
+        "sourceSha256": "232eeb7d73f82d834eadc9f76d6d0bb07b8b3c013823dc40b59ed17a51d0f312"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "key": "plug-in/contribution:{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}/description[0]/text()",
+      "originalText": "二車線の道路",
+      "originalTextSha256": "931f4cfc8acf3f18165a587d2f53fe0288b2ce89ae504d282a6b276d00f8679f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+        "key": "plug-in/contribution:{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}/description[0]/text()",
+        "text": "Road with two lanes",
+        "sourceSha256": "232eeb7d73f82d834eadc9f76d6d0bb07b8b3c013823dc40b59ed17a51d0f312"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

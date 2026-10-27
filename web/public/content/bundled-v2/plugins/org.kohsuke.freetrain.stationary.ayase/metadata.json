@@ -1,0 +1,5139 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.stationary.ayase",
+    "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "もっともっと橋脚",
+    "author": "いっちー"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder.bmp",
+      "sourceSha256": "e5c84db9758aeef66aef2011458e80ea09a99dc8af493bf37755cf00d912480d",
+      "sha256": "e5c84db9758aeef66aef2011458e80ea09a99dc8af493bf37755cf00d912480d",
+      "bytes": 17462,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder2.bmp",
+      "sourceSha256": "75ad6cbeea7825f867cf95b2cd9e5f400f92d5ff079bc02cbbf510aad0d8eac9",
+      "sha256": "75ad6cbeea7825f867cf95b2cd9e5f400f92d5ff079bc02cbbf510aad0d8eac9",
+      "bytes": 49206,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder3.bmp",
+      "sourceSha256": "5d7ca1d5ecb70136917bfc41e0e9cacdb333bc0fc00a6825d0e4587857a349d8",
+      "sha256": "5d7ca1d5ecb70136917bfc41e0e9cacdb333bc0fc00a6825d0e4587857a349d8",
+      "bytes": 16486,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder4.bmp",
+      "sourceSha256": "fb47357a595d1b14a4c2afa33222ed172b34eed2ebe1c87065a70e5a982589d1",
+      "sha256": "fb47357a595d1b14a4c2afa33222ed172b34eed2ebe1c87065a70e5a982589d1",
+      "bytes": 16494,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder5.bmp",
+      "sourceSha256": "9045d6176a6f41d33b856675a4c37e37e2902e54c242190b76f2d5c04f9503fa",
+      "sha256": "9045d6176a6f41d33b856675a4c37e37e2902e54c242190b76f2d5c04f9503fa",
+      "bytes": 16490,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "sha256": "72d991cb2f6293ee1fd9c6eab1f93630215ac86ceede24ad0968730a4427803e",
+      "bytes": 16817,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "7e4b5a8542da8752864031731be17da12fe28f147a467b433afce4a133ba0f41"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:0:{98619BD4-46C3-4B91-85FF-11147914F2A5}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "brick-girder.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:1:{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-A"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:2:{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-B"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:3:{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:4:{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:5:{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:6:{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:7:{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:8:{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:9:{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-A"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:10:{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-B"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:11:{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:12:{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:13:{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:14:{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:15:{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:16:{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-85FF-11147914F2A5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:17:{98619BD4-46C3-4B91-1703d-kokakyo2}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "brick-girder2.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:18:{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-A"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:19:{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-B"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:20:{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:21:{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:22:{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{{98619BD4-46C3-4B90-1703d-kokakyo2}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:23:{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:24:{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:25:{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "レンガ橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:26:{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-A"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:27:{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-B"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:28:{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:29:{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:30:{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:31:{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:32:{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:33:{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(側道付)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:34:{98619BD4-46C3-4B91-1703d-kokakyo3}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "brick-girder3.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:35:{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:36:{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:37:{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:38:{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:39:{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:40:{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo3}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:41:{98619BD4-46C3-4B91-1703d-kokakyo4}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "brick-girder4.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:42:{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:43:{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:44:{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:45:{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:46:{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:47:{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo4}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:48:{98619BD4-46C3-4B91-1703d-kokakyo5}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "brick-girder5.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:49:{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-C"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:50:{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-D"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:51:{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-E"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "128,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:52:{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-F"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "160,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:53:{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-G"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "192,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+      "pluginId": "org.kohsuke.freetrain.stationary.ayase",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:54:{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-H"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "コン橋脚(複合)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "224,32",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{98619BD4-46C3-4B91-1703d-kokakyo5}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder2.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder3.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder4.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/brick-girder5.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "もっともっと橋脚",
+      "originalTextSha256": "2e00feefbd310ae69c9fba2af083612057a28b6da71a42e2e409ce8b0aae429f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "More Piers",
+        "sourceSha256": "f6d2664deee761054b9cf21c9ed40e15df572356b2b5e05991bf49d5ca269da0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "いっちー",
+      "originalTextSha256": "82c9affd1352ce6bf20c8b7d5f9d2c1b85e75a37589d305c11c08af13ccdb247",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-A/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-B/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-C/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-D/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-F/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-G/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FE-11147914F2A5}-H/group[0]/text()",
+      "originalText": "レンガ橋脚",
+      "originalTextSha256": "62f9023c22d45b2f5ace886aa2ae7b877b159b60e822eedb7f7d615db5402923",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-A/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-B/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-C/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-D/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-E/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-F/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-G/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-85FF-11147914F2A5}-H/group[0]/text()",
+      "originalText": "コン橋脚",
+      "originalTextSha256": "015d2f907640f7412c0ddfaaf391fb8dc8a1ca2932885f61603722c502ed9115",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-A/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-B/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-C/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-D/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{{98619BD4-46C3-4B90-1703d-kokakyo2}-E/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-F/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-G/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B90-1703d-kokakyo2}-H/group[0]/text()",
+      "originalText": "レンガ橋脚(側道付)",
+      "originalTextSha256": "68b2bcb33dd3abc56eb4fa31299408c0e4fc658cfbf0d99cbdbd7ea2f5eced72",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-A/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-B/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-C/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-D/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-E/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-F/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-G/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo2}-H/group[0]/text()",
+      "originalText": "コン橋脚(側道付)",
+      "originalTextSha256": "04e7ec18dd153bf6a9f6928cb18f03b48a1a28ed9433b8bb8cfec947bfeb05a2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-C/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-D/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-E/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-F/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-G/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo3}-H/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-C/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-D/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-E/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-F/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-G/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo4}-H/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-C/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-D/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-E/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-F/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-G/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "key": "plug-in/contribution:{98619BD4-46C3-4B91-1703d-kokakyo5}-H/group[0]/text()",
+      "originalText": "コン橋脚(複合)",
+      "originalTextSha256": "3fe62b31285ff9253b73c673f1ecca42915c18fdca446dbd0d09f3aeb821d698",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

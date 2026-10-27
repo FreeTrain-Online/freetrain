@@ -1,0 +1,143 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.tools.terrainloader",
+    "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "地形ローダー",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sourceSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "sha256": "28b94b995c055e3395f8aef2333445600e7a1cddb5f1d74778c2c304e1b40bd1",
+      "bytes": 995,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "1d7f9ab46a0e22a28df54f35480b03827d33a9523766f71bf7db05a9e955d372"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/src/LoadDialog.resx",
+      "sourceSha256": "6123d2c60e3f45d47874ab9243b335d060981182426b7d0aafc48a91fbd2d043",
+      "sha256": "6123d2c60e3f45d47874ab9243b335d060981182426b7d0aafc48a91fbd2d043",
+      "bytes": 5513,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs",
+      "sourceSha256": "2a34df8f451587e5d10456786cdeef0dc1d2ae2026e8e8bf76cdbddb2d26c229",
+      "sha256": "2a34df8f451587e5d10456786cdeef0dc1d2ae2026e8e8bf76cdbddb2d26c229",
+      "bytes": 829,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{9CC6E93F-06D0-4d98-8F8C-7B3CE481F62E}",
+      "pluginId": "org.kohsuke.freetrain.tools.terrainloader",
+      "type": "newGame",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tools.terrainloader:0:{9CC6E93F-06D0-4d98-8F8C-7B3CE481F62E}",
+      "implementation": {
+        "name": "freetrain.tools.terrainloader.PluginImpl",
+        "codebase": "bin/FreeTrain.TerrainLoader.dll",
+        "assembly": "FreeTrain.TerrainLoader",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/FreeTrain.TerrainLoader.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/FreeTrain.TerrainLoader.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/src/PluginImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "newGame",
+          "id": "{9CC6E93F-06D0-4d98-8F8C-7B3CE481F62E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.tools.terrainloader.PluginImpl",
+              "codebase": "bin/FreeTrain.TerrainLoader.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sourceSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "地形ローダー",
+      "originalTextSha256": "8dc5957ca915470bb4100414845f259237b4720c87b50d8921212b3aa3c3eaf3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Terrain Loader",
+        "sourceSha256": "6dc67b56160af9ab0a22d950a34f827615604a257d62c145ff3cfbe0323f3cd0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sourceSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sourceSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "key": "plug-in/contribution:{973B89C6-D7C5-4977-AEEE-70EC1DEF5BDB}/name[0]/text()",
+      "originalText": "terrainOnlyNewGame",
+      "originalTextSha256": "3dc42aac1bb710755b98d9e43c2058b69ff1ac70c25258bc2c17cdc545cf1af8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+        "key": "plug-in/contribution:{973B89C6-D7C5-4977-AEEE-70EC1DEF5BDB}/name[0]/text()",
+        "text": "terrainOnlyNewGame",
+        "sourceSha256": "6dc67b56160af9ab0a22d950a34f827615604a257d62c145ff3cfbe0323f3cd0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

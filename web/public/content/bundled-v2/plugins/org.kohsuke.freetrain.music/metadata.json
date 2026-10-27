@@ -1,0 +1,337 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.music",
+    "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "基本ＢＧＭセット",
+    "author": ""
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/S_JUTAKU.mid",
+      "sourceSha256": "4b242a0cbebcd84090e60045559b9b12c00b9b5545bb41cd54a01816713e8b09",
+      "sha256": "4b242a0cbebcd84090e60045559b9b12c00b9b5545bb41cd54a01816713e8b09",
+      "bytes": 20084,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/TOSHI.mid",
+      "sourceSha256": "918260dcf41baf840b159730207a7f89b03371e71cbc3a230f8e875f437f2002",
+      "sha256": "918260dcf41baf840b159730207a7f89b03371e71cbc3a230f8e875f437f2002",
+      "bytes": 22400,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/map.mid",
+      "sourceSha256": "ec8835dc1ca6d561f3089bff3399ebd448db48a96d190ffe066e6faf76217fd3",
+      "sha256": "ec8835dc1ca6d561f3089bff3399ebd448db48a96d190ffe066e6faf76217fd3",
+      "bytes": 3100,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "sha256": "46c5718b4c1610de106ed26544ed1731b9c68f03862eabb4a215327ba93a932e",
+      "bytes": 698,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "d5acf239e3aa63469c1dcb79df479db09b283aed774cb380b8e3fe1124e03fe6"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}",
+      "pluginId": "org.kohsuke.freetrain.music",
+      "type": "bgm",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music:0:{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}",
+      "implementation": {
+        "name": "freetrain.contributions.sound.BGMContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/sound/BGMContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "bgm",
+          "id": "{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "開拓",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "後援者Ａさん",
+            "children": []
+          },
+          {
+            "tag": "href",
+            "attributes": {},
+            "text": "map.mid",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{32A3B9EB-8E86-4F4A-A314-891115B97A9F}",
+      "pluginId": "org.kohsuke.freetrain.music",
+      "type": "bgm",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music:1:{32A3B9EB-8E86-4F4A-A314-891115B97A9F}",
+      "implementation": {
+        "name": "freetrain.contributions.sound.BGMContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/sound/BGMContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "bgm",
+          "id": "{32A3B9EB-8E86-4F4A-A314-891115B97A9F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "新興住宅地",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "915さん",
+            "children": []
+          },
+          {
+            "tag": "href",
+            "attributes": {},
+            "text": "S_JUTAKU.mid",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{4435A2E7-8B1D-4342-BA93-F2750EF48C41}",
+      "pluginId": "org.kohsuke.freetrain.music",
+      "type": "bgm",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music:2:{4435A2E7-8B1D-4342-BA93-F2750EF48C41}",
+      "implementation": {
+        "name": "freetrain.contributions.sound.BGMContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/sound/BGMContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "bgm",
+          "id": "{4435A2E7-8B1D-4342-BA93-F2750EF48C41}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "都市",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "915さん",
+            "children": []
+          },
+          {
+            "tag": "href",
+            "attributes": {},
+            "text": "TOSHI.mid",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.music/S_JUTAKU.mid",
+    "trunk/plugins/org.kohsuke.freetrain.music/TOSHI.mid",
+    "trunk/plugins/org.kohsuke.freetrain.music/map.mid"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "基本ＢＧＭセット",
+      "originalTextSha256": "3420b3bbe749511fd6fede5abf2b91689b277a9213e4962fb257e936b1921d7c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Standard BGM Set",
+        "sourceSha256": "752aae09c256973389d71ceed6b08c8b0a26b80ea6cc195b7ae1a6992f032aa2"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}/name[0]/text()",
+      "originalText": "開拓",
+      "originalTextSha256": "8366aa3dc1ac491a31e527924033b26d4108197bfda5d86279601ca9c2a63fa9",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music/plugin.xml",
+        "key": "plug-in/contribution:{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}/name[0]/text()",
+        "text": "Pioneers",
+        "sourceSha256": "752aae09c256973389d71ceed6b08c8b0a26b80ea6cc195b7ae1a6992f032aa2"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{4DFF42D2-FD4A-4d45-A18A-F2882D936C73}/author[0]/text()",
+      "originalText": "後援者Ａさん",
+      "originalTextSha256": "c9b5a740f8e734bb47a05c575699578897502490a28e7994823925b319741d53",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{32A3B9EB-8E86-4F4A-A314-891115B97A9F}/name[0]/text()",
+      "originalText": "新興住宅地",
+      "originalTextSha256": "5b3399961d03e647b7c74ab88493cffd7e4b34d4405a35e2be2e7d780c887a36",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music/plugin.xml",
+        "key": "plug-in/contribution:{32A3B9EB-8E86-4F4A-A314-891115B97A9F}/name[0]/text()",
+        "text": "Housing Boom",
+        "sourceSha256": "752aae09c256973389d71ceed6b08c8b0a26b80ea6cc195b7ae1a6992f032aa2"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{32A3B9EB-8E86-4F4A-A314-891115B97A9F}/author[0]/text()",
+      "originalText": "915さん",
+      "originalTextSha256": "1ba9abf0b92c82852e07ff2969fe7fbdebca953d8ab01aecbe4262896a0d5e2a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{4435A2E7-8B1D-4342-BA93-F2750EF48C41}/name[0]/text()",
+      "originalText": "都市",
+      "originalTextSha256": "d7eef7209e798c5878be3dd34695368fe31f9cc0f644ad9bda4525150a0a449c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music/plugin.xml",
+        "key": "plug-in/contribution:{4435A2E7-8B1D-4342-BA93-F2750EF48C41}/name[0]/text()",
+        "text": "Metropolis",
+        "sourceSha256": "752aae09c256973389d71ceed6b08c8b0a26b80ea6cc195b7ae1a6992f032aa2"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "key": "plug-in/contribution:{4435A2E7-8B1D-4342-BA93-F2750EF48C41}/author[0]/text()",
+      "originalText": "915さん",
+      "originalTextSha256": "1ba9abf0b92c82852e07ff2969fe7fbdebca953d8ab01aecbe4262896a0d5e2a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

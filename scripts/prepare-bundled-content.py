@@ -15,6 +15,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 from content_bitmap import decode, surface, png
+from content_recipes import Compiler, transform_pixel
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / 'content/bundled-v2'
@@ -102,7 +103,20 @@ def refresh(source_root, check=False):
     tree = inventory.Tree(source_root, PIN, 'trunk')
     files = {r['baselinePath']: r for r in ledger['fileInventory']}
     paths = ({r['baselinePath'] for r in review['manifests'] + review['assets']}
-             | {r['path'] for r in review['referencedFiles'] + review['notices']})
+             | {r['path'] for r in review['referencedFiles'] + review['notices']}
+             | {path for r in review['recipes'] for path in r['effectiveImplementation'].get('sources', [])}
+             | {'trunk/core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs',
+                'trunk/core/framework/graphics/SimpleSprite.cs', 'trunk/core/framework/graphics/SpriteFactory.cs',
+                'trunk/core/framework/graphics/ColorMappedSprite.cs', 'trunk/core/framework/graphics/HueTransformSprite.cs',
+                'trunk/core/framework/graphics/DirectSprite.cs', 'trunk/core/framework/ResourceUtil.cs',
+                'trunk/core/framework/graphics/ColorMap.cs', 'trunk/core/framework/plugin/PluginUtil.cs',
+                'trunk/core/world/terrain/MountainVoxel.cs',
+                'trunk/core/world/rail/PassagewayRail.cs', 'trunk/core/world/structs/ConstructionSite.cs',
+                'trunk/plugins/org.kohsuke.freetrain.land.forest/src/ForestBuilder.cs',
+                'trunk/plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs',
+                'trunk/plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs',
+                'trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs',
+                'trunk/lib/DirectXWraper/AlphaBlender.cpp'})
     payload = {}
     records = []
     for path in sorted(paths):
@@ -133,7 +147,9 @@ def refresh(source_root, check=False):
                     recipes=review['recipes'], generatedChildren=review['generatedChildren'], assets=review['assets'],
                     pictures=review['pictureRegistrations'], aliases=review['aliases'], notices=review['notices'],
                     resourceDiagnostics=review['resourceDiagnostics'], embeddedResources=review['embeddedResources'],
-                    translations=review['translationEntries'])
+                    translations=review['translationEntries'],
+                    geometry={k:v for k,v in json.loads((ROOT / 'doc/parity/exav-geometry.json').read_bytes()).items() if k in ('patterns','sourceHashes')},
+                    geometryGallery={k:v for k,v in json.loads((ROOT / 'doc/parity/exav-geometry-gallery.json').read_bytes()).items() if k in ('recipes','sourceHashes')})
     review_data = dump(selected)
     index = dict(schemaVersion=1, packId=PACK, version='1', source=review['source'],
                  reviewSha256=digest(review_data), files=records,
@@ -230,6 +246,122 @@ def picture_variants(declaration, directory, files):
     return result
 
 
+def system_recipes(catalog, review):
+    """Promote P0's source-reviewed rail crop tables into runtime records."""
+    compiler = Compiler(catalog)
+    result = []
+    pictures_by_path = {}
+    for picture in catalog['pictures']:
+        for v in picture.get('variants',[]):
+            pictures_by_path.setdefault(v['day']['path'],picture['id'])
+    # Geometry gallery includes explicit platform/stair constructors and aliases.
+    rows = list(review['geometryGallery']['recipes'])
+    for p in review['geometry']['patterns']:
+        rows.append(dict(id='pattern/'+str(p['id']), path='core/res/'+p['sheet'],
+                         rectangle=p['rectangle'],anchor=p['anchor'],sourceSymbol='RailPattern'))
+    def system(key, resource, rect, anchor, symbol):
+        rows.append(dict(id=key,path='core/res/'+resource,rectangle=rect,anchor=anchor,sourceSymbol=symbol))
+    for side in range(2):
+        for left in range(5):
+            for right in range(5):
+                system(f'cliff/{side}/{left}/{right}','Cliff.bmp',[side*16+right*32,left*24,16,24],[0,8], 'MountainVoxel.initCliffSprites')
+    for direction in range(4):
+        for door in range(2):
+            index=direction+2 if door and direction>=2 else direction
+            system(f'construction/fence/{direction}/{door}','ConstructionFence.bmp',[index*32,0,32,32],[0,16],'ConstructionSite.VoxelImpl')
+    ground=[([96,1,32,16],[0,0]),([64,17,32,16],[0,0]),([96,17,32,16],[0,0]),
+            ([64,0,32,17],[0,1]),([0,0,32,47],[0,31]),([32,0,32,47],[0,31]),([96,33,32,24],[0,8])]
+    for i,(rect,anchor) in enumerate(ground):
+        system(f'construction/ground/{i}','ConstructionGround.bmp',rect,anchor,'ConstructionSite.VoxelImpl')
+    codes=['0011','1011','1001','0000','0111','1111','1101','0101','0110','1110','1100','1010','0010','0100','1000','0001']
+    for level in range(3):
+        for i,code in enumerate(codes):
+            system(f'construction/bones/{level}/{code}','ConstructionBones.bmp',[level*128+(i%4)*32,(i//4)*32,32,32],[0,16],'ConstructionSite.VoxelImpl')
+    for i,(rect,anchor) in enumerate([([0,0,16,32],[0,16]),([16,0,16,32],[-16,16]),([16,32,16,32],[-16,16]),([0,32,16,32],[0,16])]):
+        system(f'construction/wall/{i}','ConstructionWall.bmp',rect,anchor,'ConstructionSite.VoxelImpl')
+    for i,name in enumerate(('spring','winter','water','underground')):
+        system('ground/'+name,'EmptyChip.bmp',[i*32,0,32,16],[0,0],'ResourceUtil.groundChips')
+    system('cursor','cursorChip.bmp',[0,0,32,16],[0,0],'ResourceUtil.removerChip')
+    for row in rows:
+        path='trunk/'+row['path']
+        matches=[p for p in pictures_by_path if p.casefold()==path.casefold()]
+        if len(matches)==1:
+            path=matches[0]
+        if path not in pictures_by_path:
+            # Every train crop is already supplied by its contribution recipe.
+            if row['id'].startswith('car-'):
+                continue
+            raise ValueError('Unbound system recipe path: '+path)
+        compiler.frames=[]
+        compiler.add(row['id'],pictures_by_path[path],row['rectangle'],row['anchor'])
+        result.append(dict(id='system:'+row['id'],pluginId='system',sourcePath=path,
+            handler='source-geometry',sourceSymbol=row['sourceSymbol'],fields={},frames=compiler.frames,
+            status='source-diagnostic' if compiler.frames[0]['status']!='ready' else 'ready'))
+    return result
+
+
+def render_surfaces(catalog, files, artifact):
+    """Bake source effects once per sheet; hash/mask caches follow real variants."""
+    pictures={p['id']:p for p in catalog['pictures']}
+    assets={a['path']:a for a in catalog['assets']}
+    sets, masks, decoded, surface_cache, mask_cache, mask_sources = {}, {}, {}, {}, {}, {}
+    for recipe in catalog['renderRecipes']:
+        for frame in recipe['frames']:
+            if frame['status']=='invisible':
+                continue
+            picture=pictures[frame['pictureId']]
+            settings=frame['effect']
+            set_id=digest(dump(dict(picture=frame['pictureId'],effect=settings)))
+            if set_id not in sets:
+                bindings={}
+                for variant in picture['variants']:
+                    for mode in ('day','night'):
+                        v=variant[mode]; path=v['path']; automatic=v['treatment']=='automatic-night-rgb888-v1'
+                        cache_key=(path,automatic,dump(settings),mode)
+                        if path not in decoded:
+                            decoded[path]=decode(files[path])
+                        w,h,pixels=decoded[path]
+                        if cache_key not in surface_cache:
+                            rgba=surface(pixels,automatic)
+                            if settings['kind']!='simple':
+                                rgba=[transform_pixel(p,settings,mode=='night') for p in rgba]
+                                output=artifact(png(w,h,rgba),'png',path,'effect-'+digest(dump(dict(effect=settings,night=mode=='night',automatic=automatic)))[:16])
+                                assets[path].setdefault('derivatives',[]).append(dict(image=output,effect=settings,
+                                    treatment=v['treatment'],light=mode))
+                            else:
+                                output=v['image']
+                            surface_cache[cache_key]=(rgba,output)
+                        rgba,output=surface_cache[cache_key]
+                        bindings[variant['season']+'/'+mode]=dict(image=output,width=w,height=h,sourcePath=path)
+                sets[set_id]=bindings
+            frame['surfaceSet']=set_id
+            # ColorMappedSprite/HueTransformSprite override draw only. Their
+            # inherited drawAlpha/drawShape use the original picture surface.
+            base_id=digest(dump(dict(picture=frame['pictureId'],effect=dict(kind='simple'))))
+            if base_id not in sets:
+                sets[base_id]={variant['season']+'/'+mode:dict(image=variant[mode]['image'],
+                    width=assets[variant[mode]['path']]['width'],height=assets[variant[mode]['path']]['height'],
+                    sourcePath=variant[mode]['path']) for variant in picture['variants'] for mode in ('day','night')}
+            frame['baseSurfaceSet']=base_id
+            frame['masks']={}
+            x,y,w,h=frame['rectangle']
+            for key,binding in sets[set_id].items():
+                if key in frame.get('invalidVariants',[]):
+                    continue
+                variant=next(v for v in picture['variants'] if v['season']==key.split('/')[0])
+                mode=key.split('/')[1]; v=variant[mode]
+                opacity_key=(v['path'],v['treatment']=='automatic-night-rgb888-v1')
+                if opacity_key not in mask_sources:
+                    mask_sources[opacity_key]=surface(decoded[v['path']][2],opacity_key[1])
+                rgba=mask_sources[opacity_key]; sheetw=binding['width']
+                crop_key=(opacity_key,tuple(frame['rectangle']))
+                if crop_key not in mask_cache:
+                    rows=[''.join('1' if rgba[(y+dy)*sheetw+x+dx][3] else '0' for dx in range(w)) for dy in range(h)]
+                    mask_id=digest(dump(rows)); masks[mask_id]=rows; mask_cache[crop_key]=mask_id
+                frame['masks'][key]=mask_cache[crop_key]
+    catalog['surfaceSets'],catalog['masks']=sets,masks
+
+
 def prepare(root=INPUT):
     index, review, files, index_hash = load_inputs(root)
     plugins = [p for p in review['plugins'] if p['scope'] == 'in-scope']
@@ -237,8 +369,9 @@ def prepare(root=INPUT):
     by_plugin = unique(plugins, 'id', 'plugin')
     recipes = unique(review['recipes'], 'coverageId', 'declaration coverage')
     artifacts, assets = {}, []
-    def artifact(data, extension):
-        name = 'media/' + digest(data) + '.' + extension
+    def artifact(data, extension, source_path, treatment):
+        relative = source_path.removeprefix('trunk/')
+        name = str(PurePosixPath(relative).parent) + '/media/' + PurePosixPath(relative).name + '.' + treatment + '.' + digest(data) + '.' + extension
         artifacts[name] = data
         return dict(url=URL+name, sha256=digest(data), bytes=len(data))
     for row in review['assets']:
@@ -246,17 +379,22 @@ def prepare(root=INPUT):
         raw = files[path]
         if digest(raw) != row['sha256']:
             raise ValueError('Media differs from pinned review: ' + path)
-        asset = dict(path=path, sourceSha256=row['sha256'], mediaType=row['mediaType'],
+        parts = PurePosixPath(path).parts
+        plugin_id = parts[2] if parts[1] == 'plugins' else None
+        asset = dict(path=path, pluginId=plugin_id, namespace=plugin_id or 'core', sourceSha256=row['sha256'], mediaType=row['mediaType'],
                      reachability=row['reachability'], notices=row['notices'],
-                     author=row['declaredPluginAuthor'], credits=row['directContributionCredits'])
+                     author=row['declaredPluginAuthor'], credits=row['directContributionCredits'],
+                     attribution=dict(declaredPluginAuthor=row['declaredPluginAuthor'],
+                         directContributionCredits=row['directContributionCredits'],
+                         individualImageAuthorStatus='not independently verified; preserve declared evidence'))
         if row['mediaType'] == 'bmp':
             width, height, pixels = decode(raw)
             asset.update(width=width, height=height, status='converted-surface',
-                         day=artifact(png(width, height, surface(pixels)), 'png'),
-                         night=artifact(png(width, height, surface(pixels, True)), 'png'))
+                         day=artifact(png(width, height, surface(pixels)), 'png', path, 'day'),
+                         night=artifact(png(width, height, surface(pixels, True)), 'png', path, 'night'))
         else:
             asset.update(status='retained-midi; playback-adapter-pending' if row['mediaType'] == 'mid' else 'retained-native',
-                         native=artifact(raw, row['mediaType']))
+                         native=artifact(raw, row['mediaType'], path, 'native'))
         assets.append(asset)
     assets_by_path = unique(assets, 'path', 'asset')
     factories, definitions, excluded = [], [], []
@@ -303,9 +441,28 @@ def prepare(root=INPUT):
                     value['image'] = asset['night' if value['treatment'] == 'automatic-night-rgb888-v1' else 'day']
             record.update(status='prepared-picture', variants=variants)
         else:
-            record.update(status='code-picture-binding-pending', resource=row.get('resource'))
+            resource = row.get('resource', 'terrace.bmp')
+            if row['source'] == 'cached-system-picture':
+                directory = 'trunk/core/res'
+            elif row['source'] == 'contribution-loadPicture':
+                owner = recipes[row['owner']]
+                directory = str(PurePosixPath(by_plugin[owner['pluginId']]['path']).parent)
+            elif row['source'] == 'source-picture-literal' and row['pictureId'] == '{2A333E1B-7AA0-4A96-A054-DAEEEB84F953}':
+                directory = 'trunk/plugins/org.kohsuke.freetrain.terrain.terrace'
+            else:
+                raise ValueError('Unsupported code picture binding: '+row['pictureId'])
+            path = resolve_resource(files, directory, resource)
+            authored_night = {'EmptyChip.bmp':'EmptyChip_n.bmp', 'cursorChip.bmp':'cursorChip.bmp',
+                              'RailRoads.bmp':'RailRoads_n.bmp'}.get(resource)
+            night_path = resolve_resource(files, directory, authored_night) if authored_night else path
+            record.update(status='prepared-picture', resource=resource, bindingEvidence=row.get('evidence',row['owner']),
+                          variants=[dict(season=season,
+                              day=dict(path=path,treatment='authored',image=assets_by_path[path]['day']),
+                              night=dict(path=night_path,treatment='authored' if authored_night else 'automatic-night-rgb888-v1',
+                                  image=assets_by_path[night_path]['day' if authored_night else 'night']))
+                              for season in ('spring','summer','autumn','winter')])
         if record['id'] in pictures:
-            if {k:v for k,v in record.items() if k != 'owner'} != {k:v for k,v in pictures[record['id']].items() if k != 'owner'}:
+            if {k:v for k,v in record.items() if k not in ('owner','bindingEvidence')} != {k:v for k,v in pictures[record['id']].items() if k not in ('owner','bindingEvidence')}:
                 raise ValueError('Conflicting picture ID: ' + record['id'])
         else:
             pictures[record['id']] = record
@@ -326,7 +483,7 @@ def prepare(root=INPUT):
                    dict(code='translation-review-pending', phase='P2/P9', count=len(review['translations']),
                         detail='Japanese source text and donor candidates preserved; no unreviewed English substituted.')]
     diagnostics.extend(dict(code='source-project-gap', phase='P2/P9', **r) for r in review['resourceDiagnostics'])
-    catalog = dict(schemaVersion=1, packId=PACK, version='1', source=index['source'], sourceIndexSha256=index_hash,
+    catalog = dict(schemaVersion=2, packId=PACK, version='2', source=index['source'], sourceIndexSha256=index_hash,
                    status='prepared; not selected by a world profile', pluginOrder=order,
                    plugins=[by_plugin[p] for p in order], factories=factories, contributions=definitions,
                    pictures=list(pictures.values()), selections=review['aliases'], assets=assets, notices=notices,
@@ -336,6 +493,29 @@ def prepare(root=INPUT):
                                pictures=len(pictures), preparedPictures=sum(p['status']=='prepared-picture' for p in pictures.values()),
                                assets=len(assets), convertedBitmaps=sum(a['mediaType']=='bmp' for a in assets),
                                excluded=len(excluded)))
+    catalog['renderRecipes'] = Compiler(catalog).run()
+    catalog['renderRecipes'].extend(system_recipes(catalog, review))
+    render_surfaces(catalog, files, artifact)
+    catalog['pluginMetadata'] = []
+    for plugin in catalog['plugins']:
+        path = PurePosixPath(plugin['path']).parent.as_posix().removeprefix('trunk/') + '/metadata.json'
+        data = dump(dict(plugin=plugin, source=index['source'],
+            sourceFiles=[r for r in index['files'] if r['path'].startswith(str(PurePosixPath(plugin['path']).parent)+'/')],
+            contributions=[d for d in definitions if d['pluginId']==plugin['id']],
+            assets=[a['path'] for a in assets if a['pluginId']==plugin['id']],
+            translations=[t for t in review['translations'] if t['path'].startswith(str(PurePosixPath(plugin['path']).parent)+'/')]))
+        artifacts[path] = data
+        catalog['pluginMetadata'].append(dict(pluginId=plugin['id'],url=URL+path,sha256=digest(data)))
+    provenance = dict(schemaVersion=1, packId=PACK, version='2', source=index['source'],
+        attributionPolicy='Plugin namespace and declared credits are source evidence; individual image authorship is unverified unless explicitly credited.',
+        sourceIndexSha256=index_hash, assets=assets, plugins=catalog['plugins'], pluginMetadata=catalog['pluginMetadata'], contributions=[dict(id=d['id'],pluginId=d['pluginId'],
+            sourcePath=d['sourcePath'],coverageId=d['coverageId']) for d in definitions], notices=notices)
+    artifacts['provenance.json'] = dump(provenance)
+    catalog['provenance'] = dict(url=URL+'provenance.json',sha256=digest(artifacts['provenance.json']))
+    catalog['recipeCounts'] = dict(recipes=len(catalog['renderRecipes']),
+        frames=sum(len(r['frames']) for r in catalog['renderRecipes']),
+        invalidCrops=sum(f['status']=='invalid-source-crop' for r in catalog['renderRecipes'] for f in r['frames']),
+        surfaceSets=len(catalog['surfaceSets']))
     data = dump(catalog)
     artifacts['catalog.json'] = data
     artifacts['catalog.sha256'] = (digest(data) + '\n').encode()

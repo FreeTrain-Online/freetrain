@@ -1,0 +1,182 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.syousei",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "民家",
+    "author": "syousei"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/minka.bmp",
+      "sourceSha256": "22e7142abbab7de8969b0d85b2e34398aa76d5a9eb3ec0c21be18c811c841ac8",
+      "sha256": "22e7142abbab7de8969b0d85b2e34398aa76d5a9eb3ec0c21be18c811c841ac8",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "sourceSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "sha256": "6615486f09f7ff5c56573caab484e3de8529293569f048ac573f8219488ddf12",
+      "bytes": 580,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "f024379bdca18340b5c5ed29fb582562332f6ca894539f71795446f4ff3ffded"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{D6DE0AED-AECF-4d7f-8455-488016997FFF}",
+      "pluginId": "org.kohsuke.freetrain.structure.syousei",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.syousei:0:{D6DE0AED-AECF-4d7f-8455-488016997FFF}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{D6DE0AED-AECF-4d7f-8455-488016997FFF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "民家(小)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "15000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "minka.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.syousei/minka.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "sourceSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "民家",
+      "originalTextSha256": "e17916291ffcc3d4b25d47f2405183547c92b549e0960cbb02e4556749801df8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Small Private Houses",
+        "sourceSha256": "828df230935f43aba9e73600db7186a6fe8c906bf34123e154f4e0db39fd616f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "sourceSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "key": "plug-in/contribution:{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name[0]/text()",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+        "key": "plug-in/contribution:{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name[0]/text()",
+        "text": "Private house (S)",
+        "sourceSha256": "828df230935f43aba9e73600db7186a6fe8c906bf34123e154f4e0db39fd616f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

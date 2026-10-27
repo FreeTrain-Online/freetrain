@@ -1,0 +1,194 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.ima",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "imaさん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/McDonals.bmp",
+      "sourceSha256": "5a2b1803ecfe68e193166ffa8c3dd082d0a9c69efa02eee7ba271b33bdbe3028",
+      "sha256": "5a2b1803ecfe68e193166ffa8c3dd082d0a9c69efa02eee7ba271b33bdbe3028",
+      "bytes": 2550,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "sha256": "54c4040297b0b67dd09ddbf1af5e1b570f61b92d88b6296dbd478ad66b15c983",
+      "bytes": 596,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "669c6dfb71fe33d826298b23df726b350128b64b16e15872c5f1ad141415d369"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{594D6A74-2678-4a35-9FE6-E2FFA90C207A}",
+      "pluginId": "org.kohsuke.freetrain.structure.ima",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ima:0:{594D6A74-2678-4a35-9FE6-E2FFA90C207A}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{594D6A74-2678-4a35-9FE6-E2FFA90C207A}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "マクドナルド",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1900000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.RestaurantPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "35",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "10"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "McDonals.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.ima/McDonals.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "McDonald's",
+        "sourceSha256": "922928b892c3e2cd1ad54bc7dd5e3efb976aa8589537aa2d690c563bd5e0fb1e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "imaさん",
+      "originalTextSha256": "6e1d643fa7cee0014fd90947b340598985c34ee65ab16537e2721fbd81901cd2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "key": "plug-in/contribution:{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name[0]/text()",
+      "originalText": "マクドナルド",
+      "originalTextSha256": "9439b22d77552416b4ad344768cb8a0a96da63ba375d915a4a0d3f95a20bf7b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+        "key": "plug-in/contribution:{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name[0]/text()",
+        "text": "Hamburger restaurant",
+        "sourceSha256": "922928b892c3e2cd1ad54bc7dd5e3efb976aa8589537aa2d690c563bd5e0fb1e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

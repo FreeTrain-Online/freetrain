@@ -1,0 +1,303 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.ryokounotomo",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "旅行の友さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "sha256": "d0f2dc5698b08e926c886e455e14915012b952d6b09c006ba6eaeb68b2dd5f34",
+      "bytes": 911,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "14ac97cd69dc0397f745569436ed7c77671b7a7c65f4baafc538d3e4d07575d7"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/s_c-kouen01x.bmp",
+      "sourceSha256": "5efeb17037ed0a5e695a79a010df26560b9a5540728ce16a84684129e5a41bed",
+      "sha256": "5efeb17037ed0a5e695a79a010df26560b9a5540728ce16a84684129e5a41bed",
+      "bytes": 6966,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/s_hm01x.bmp",
+      "sourceSha256": "7d4122aaa89b1f282cb03dc0a42119279e4561c609b264e523a97e026a9a540b",
+      "sha256": "7d4122aaa89b1f282cb03dc0a42119279e4561c609b264e523a97e026a9a540b",
+      "bytes": 15606,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}",
+      "pluginId": "org.kohsuke.freetrain.structure.ryokounotomo",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ryokounotomo:0:{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "分譲マンション",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "3",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "56"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "s_hm01x.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "150",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}",
+      "pluginId": "org.kohsuke.freetrain.structure.ryokounotomo",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.ryokounotomo:1:{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "公園",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "11"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "s_c-kouen01x.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/s_c-kouen01x.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/s_hm01x.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Structure Set",
+        "sourceSha256": "db34d5354a96152985e6800d2e514b3f7f73f910463749618939848094b2160e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "旅行の友さん",
+      "originalTextSha256": "8a5df4cec03ea4e27049c338775e505dd57d94f2d5c9f1a267cb9b1164583064",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "key": "plug-in/contribution:{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name[0]/text()",
+      "originalText": "分譲マンション",
+      "originalTextSha256": "189b7b31354c5a4804f6a3fb7baf515ff74b6faad7be5897cdc08a5e71020695",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+        "key": "plug-in/contribution:{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name[0]/text()",
+        "text": "Condo (2x2)",
+        "sourceSha256": "db34d5354a96152985e6800d2e514b3f7f73f910463749618939848094b2160e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "key": "plug-in/contribution:{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name[0]/text()",
+      "originalText": "公園",
+      "originalTextSha256": "d4791fb11477fe30ba4df1a8faada2b28b2b8855f65e1a06166ed650c671fc94",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+        "key": "plug-in/contribution:{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name[0]/text()",
+        "text": "Park",
+        "sourceSha256": "db34d5354a96152985e6800d2e514b3f7f73f910463749618939848094b2160e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

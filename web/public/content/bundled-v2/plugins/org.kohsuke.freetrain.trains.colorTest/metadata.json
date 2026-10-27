@@ -1,0 +1,339 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.trains.colorTest",
+    "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "色試験列車",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "sha256": "ca0cd1611077957fc05aa58293691407347236b744ce4508fa80b8e3ff1d62f5",
+      "bytes": 1136,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "fceb42540139c8e7103ae959301cf8261275735924a82b07500f1147a59eec5f"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs",
+      "sourceSha256": "fd5003fbb320cf295a0a585ddf2bb710ce01827372195b8381371ed91be1356c",
+      "sha256": "fd5003fbb320cf295a0a585ddf2bb710ce01827372195b8381371ed91be1356c",
+      "bytes": 923,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.resx",
+      "sourceSha256": "7528fadaabdbbe84c58316fcaac32f75aee33b95b4c4cce0e7312216cb63b0ed",
+      "sha256": "7528fadaabdbbe84c58316fcaac32f75aee33b95b4c4cce0e7312216cb63b0ed",
+      "bytes": 5517,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+      "sourceSha256": "f739ec46cd033c793d5c94c6970bea253e3f3cc5600f0ec660b465cc0cc64c56",
+      "sha256": "f739ec46cd033c793d5c94c6970bea253e3f3cc5600f0ec660b465cc0cc64c56",
+      "bytes": 629,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{8CA8F000-4DC6-4441-8F53-A628C952BD9F}",
+      "pluginId": "org.kohsuke.freetrain.trains.colorTest",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:0:{8CA8F000-4DC6-4441-8F53-A628C952BD9F}",
+      "implementation": {
+        "name": "freetrain.world.rail.cttrain.ColorConfigCommand",
+        "codebase": "bin/FreeTrain.ColorTestTrain.dll",
+        "assembly": "FreeTrain.ColorTestTrain",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{8CA8F000-4DC6-4441-8F53-A628C952BD9F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.cttrain.ColorConfigCommand",
+              "codebase": "bin/FreeTrain.ColorTestTrain.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "pluginId": "org.kohsuke.freetrain.trains.colorTest",
+      "type": "trainCar",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:1:{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "implementation": {
+        "name": "freetrain.world.rail.cttrain.ColorTestTrainCar",
+        "codebase": "bin/FreeTrain.ColorTestTrain.dll",
+        "assembly": "FreeTrain.ColorTestTrain",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainCar",
+          "id": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.cttrain.ColorTestTrainCar",
+              "codebase": "bin/FreeTrain.ColorTestTrain.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{719F0922-EA74-409C-B829-C4950201C226}",
+      "pluginId": "org.kohsuke.freetrain.trains.colorTest",
+      "type": "train",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:2:{719F0922-EA74-409C-B829-C4950201C226}",
+      "implementation": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "train",
+          "id": "{719F0922-EA74-409C-B829-C4950201C226}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "色設定の試験列車",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "100000000",
+            "children": []
+          },
+          {
+            "tag": "speed",
+            "attributes": {},
+            "text": "medium",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "主に477さん",
+            "children": []
+          },
+          {
+            "tag": "type",
+            "attributes": {},
+            "text": "FTct",
+            "children": []
+          },
+          {
+            "tag": "company",
+            "attributes": {},
+            "text": "FreeTrain",
+            "children": []
+          },
+          {
+            "tag": "description",
+            "attributes": {},
+            "text": "新しい列車を設計するのに使えます",
+            "children": []
+          },
+          {
+            "tag": "fare",
+            "attributes": {},
+            "text": "400",
+            "children": []
+          },
+          {
+            "tag": "amenity",
+            "attributes": {},
+            "text": "100",
+            "children": []
+          },
+          {
+            "tag": "composition",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "body",
+                "attributes": {
+                  "carRef": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "train-recipe"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "色試験列車",
+      "originalTextSha256": "ea7517aedf6f06eac034b993c8f0bcda975512e7ba7ebd8e4b29e9e1fe20e3f9",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Color Test Train",
+        "sourceSha256": "277cdd19346827a199d1217bde1ebffbcde5fd4a017033d7d4c09996ce827d4c"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "key": "plug-in/contribution:{719F0922-EA74-409C-B829-C4950201C226}/name[0]/text()",
+      "originalText": "色設定の試験列車",
+      "originalTextSha256": "04d1b6674e6b8a5883489783a80fbc9ea8ce62e899024527876c6879cd3edbda",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+        "key": "plug-in/contribution:{719F0922-EA74-409C-B829-C4950201C226}/name[0]/text()",
+        "text": "Test train with modifiable colors",
+        "sourceSha256": "277cdd19346827a199d1217bde1ebffbcde5fd4a017033d7d4c09996ce827d4c"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "key": "plug-in/contribution:{719F0922-EA74-409C-B829-C4950201C226}/author[0]/text()",
+      "originalText": "主に477さん",
+      "originalTextSha256": "e7be55dacc2dc5b87f101d73522057ac068f61491e26db34af8a1d63c92f593b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "key": "plug-in/contribution:{719F0922-EA74-409C-B829-C4950201C226}/description[0]/text()",
+      "originalText": "新しい列車を設計するのに使えます",
+      "originalTextSha256": "3822ee0d94c543c9cfd7a690d92391751006675fbbe6ff6790beb06acc392927",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+        "key": "plug-in/contribution:{719F0922-EA74-409C-B829-C4950201C226}/description[0]/text()",
+        "text": "Used when designing new trains",
+        "sourceSha256": "277cdd19346827a199d1217bde1ebffbcde5fd4a017033d7d4c09996ce827d4c"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

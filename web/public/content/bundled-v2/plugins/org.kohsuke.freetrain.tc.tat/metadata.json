@@ -1,0 +1,176 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.tc.tat",
+    "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "「Ａ列車で行こう」式ダイヤグラム設定",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "sha256": "36efae6112c60362c1a0394a683908e6c04d31ddf4d2611505fa21eb4c0dfd9e",
+      "bytes": 454,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "d1016fa81463e544e8c1a669634f28c1b6f2e9076aeca872c0a29a34d7827194"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/res/Curve.gif",
+      "sourceSha256": "20606cc23bfb5aec7b6e8adf3349f11ac6ff1c0aeae1900dc7c5a0381d9f5809",
+      "sha256": "20606cc23bfb5aec7b6e8adf3349f11ac6ff1c0aeae1900dc7c5a0381d9f5809",
+      "bytes": 176,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/res/Straight.gif",
+      "sourceSha256": "a7e60a81332011424cccd04ae07e05db1471f624be898fea8f1387d304f5a75b",
+      "sha256": "a7e60a81332011424cccd04ae07e05db1471f624be898fea8f1387d304f5a75b",
+      "bytes": 176,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/JunctionConfigDialog.resx",
+      "sourceSha256": "b4cf00791caf301cc1bc1068a26f2a52cf856b923319ab7a570367c554f63dcb",
+      "sha256": "b4cf00791caf301cc1bc1068a26f2a52cf856b923319ab7a570367c554f63dcb",
+      "bytes": 10816,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/StationConfigDialog.resx",
+      "sourceSha256": "c9daeaf610565de942aa2db1117dee0b873ff664c3a5e3e548055d956e08508f",
+      "sha256": "c9daeaf610565de942aa2db1117dee0b873ff664c3a5e3e548055d956e08508f",
+      "bytes": 5329,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs",
+      "sourceSha256": "29f054f5de9847bf833e18e9992e789fca35cde4c75c22919afa472efcb41762",
+      "sha256": "29f054f5de9847bf833e18e9992e789fca35cde4c75c22919afa472efcb41762",
+      "bytes": 893,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}",
+      "pluginId": "org.kohsuke.freetrain.tc.tat",
+      "type": "trainController",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tc.tat:0:{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}",
+      "implementation": {
+        "name": "freetrain.world.rail.tattc.TATTrainControllerPlugIn",
+        "codebase": "bin/FreeTrain.TATTrainController.dll",
+        "assembly": "FreeTrain.TATTrainController",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainController",
+          "id": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.rail.tattc.TATTrainControllerPlugIn",
+              "codebase": "bin/FreeTrain.TATTrainController.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.tc.tat/res/Curve.gif",
+    "trunk/plugins/org.kohsuke.freetrain.tc.tat/res/Straight.gif"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "「Ａ列車で行こう」式ダイヤグラム設定",
+      "originalTextSha256": "294a63bacb6b515d8e00e0ba21b2eb5e063eca6851881b74b9b260a922a601bf",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "A-Train Style Diagram Settings",
+        "sourceSha256": "c2a0cfca69650e205cb25bd4f545daa008f8ae951c68233bb7b46fb10cb47b30"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

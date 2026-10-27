@@ -1,0 +1,406 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.ricefield",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "水田",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "sha256": "e347e70f1081ac1f1fc0256d41d5a351c9ace6b9f18707f868948452058358cc",
+      "bytes": 1410,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "a45caac3c47af3f70f03e5bf4a50531c0ceebcabaf5779a5f638c9c5fa5cf06e"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_AUT.bmp",
+      "sourceSha256": "63a854beb4c5ce82a775273618a1fe1fb5ec2f93d3f7c05dfa4d4bd22843c71a",
+      "sha256": "63a854beb4c5ce82a775273618a1fe1fb5ec2f93d3f7c05dfa4d4bd22843c71a",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_SPR.bmp",
+      "sourceSha256": "762a13b06be4386f15f40d6e2d46ffdca81fa31e244ae79d168b503acea4c6c0",
+      "sha256": "762a13b06be4386f15f40d6e2d46ffdca81fa31e244ae79d168b503acea4c6c0",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_SUM.bmp",
+      "sourceSha256": "518fec78ba5236f0037ad37e810ec945dfdff248fc134122c2d032d4a967854d",
+      "sha256": "518fec78ba5236f0037ad37e810ec945dfdff248fc134122c2d032d4a967854d",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_WIN.bmp",
+      "sourceSha256": "a37e8843ac138f3cad036448b01eb70b62a8f0d00e1478e7ba8915336b90dd54",
+      "sha256": "a37e8843ac138f3cad036448b01eb70b62a8f0d00e1478e7ba8915336b90dd54",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs",
+      "sourceSha256": "d3ddca4df204e7ed6d1ccf074b1fe3472e9cf420ec24cecd607caab33f83ab12",
+      "sha256": "d3ddca4df204e7ed6d1ccf074b1fe3472e9cf420ec24cecd607caab33f83ab12",
+      "bytes": 4342,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{C08FF7F4-B891-4AAD-BD45-74800F62CA80}",
+      "pluginId": "org.kohsuke.freetrain.land.ricefield",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.ricefield:0:{C08FF7F4-B891-4AAD-BD45-74800F62CA80}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{C08FF7F4-B891-4AAD-BD45-74800F62CA80}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "ricefield_SPR.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "summer",
+                  "src": "ricefield_SUM.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "ricefield_AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "ricefield_WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{8EBBA0C5-30E1-41DE-9968-019EB816BC34}",
+      "pluginId": "org.kohsuke.freetrain.land.ricefield",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.ricefield:1:{8EBBA0C5-30E1-41DE-9968-019EB816BC34}",
+      "implementation": {
+        "name": "freetrain.world.land.rice.RiceFieldBuilder",
+        "codebase": "bin/FreeTrain.RiceField.dll",
+        "assembly": "FreeTrain.RiceField",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/FreeTrain.RiceField.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/FreeTrain.RiceField.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{8EBBA0C5-30E1-41DE-9968-019EB816BC34}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "水田",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.rice.RiceFieldBuilder",
+              "codebase": "bin/FreeTrain.RiceField.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{C08FF7F4-B891-4AAD-BD45-74800F62CA80}",
+              "origin": "0,0"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}",
+      "pluginId": "org.kohsuke.freetrain.land.ricefield",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.ricefield:2:{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}",
+      "implementation": {
+        "name": "freetrain.world.land.rice.RiceFieldBuilder",
+        "codebase": "bin/FreeTrain.RiceField.dll",
+        "assembly": "FreeTrain.RiceField",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/FreeTrain.RiceField.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/FreeTrain.RiceField.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.ricefield/src/RiceFieldBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "水田",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.rice.RiceFieldBuilder",
+              "codebase": "bin/FreeTrain.RiceField.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{C08FF7F4-B891-4AAD-BD45-74800F62CA80}",
+              "origin": "0,32"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_AUT.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_SPR.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_SUM.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.ricefield/ricefield_WIN.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "水田",
+      "originalTextSha256": "ddadb856199cced98d4bfbff324099fc10e299b04bf63b785036e100a56df061",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Paddy Field",
+        "sourceSha256": "fc600aa2552728deed555e90f7ed34265b9cbeaa7870fc3b47cc80927ad5403e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "key": "plug-in/contribution:{8EBBA0C5-30E1-41DE-9968-019EB816BC34}/group[0]/text()",
+      "originalText": "水田",
+      "originalTextSha256": "ddadb856199cced98d4bfbff324099fc10e299b04bf63b785036e100a56df061",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+        "key": "plug-in/contribution:{8EBBA0C5-30E1-41DE-9968-019EB816BC34}/group[0]/text()",
+        "text": "Paddy field",
+        "sourceSha256": "fc600aa2552728deed555e90f7ed34265b9cbeaa7870fc3b47cc80927ad5403e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "key": "plug-in/contribution:{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}/group[0]/text()",
+      "originalText": "水田",
+      "originalTextSha256": "ddadb856199cced98d4bfbff324099fc10e299b04bf63b785036e100a56df061",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+        "key": "plug-in/contribution:{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}/group[0]/text()",
+        "text": "Paddy field",
+        "sourceSha256": "fc600aa2552728deed555e90f7ed34265b9cbeaa7870fc3b47cc80927ad5403e"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

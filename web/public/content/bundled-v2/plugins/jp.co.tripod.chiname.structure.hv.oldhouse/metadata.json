@@ -1,0 +1,1712 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.structure.hv.oldhouse",
+    "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+    "dependencies": [
+      "jp.co.tripod.chiname.lib.halfvoxel",
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "半ボクセル住宅",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/oldhouses_hv.bmp",
+      "sourceSha256": "4f5cae09fee8e0452c5081d5933e95d02a2fdded1dea114b51c4475f83a85b5b",
+      "sha256": "4f5cae09fee8e0452c5081d5933e95d02a2fdded1dea114b51c4475f83a85b5b",
+      "bytes": 72632,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "sha256": "bf275b8dd9b9fcb7e6c83ac592fa1a475d861c3ad9ab24bf1ba09fcbcf0678b3",
+      "bytes": 5702,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "f1e59c05d7a1f0303a9e326c575efbed199a34194521625b21d57238bf3ca421"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:0:{170B8A99-4A14-42EE-C477-AA5C3FB3F387}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "oldhouses_hv.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:1:{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てA",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,4"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,4"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,4"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,4"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:2:{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てB",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,36"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,36"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,36"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,36"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:3:{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てC",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,68"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,68"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,68"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,68"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:4:{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てD",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,100"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,100"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,100"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,100"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:5:{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てE",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,132"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,132"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,132"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,132"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:6:{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-5"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てF",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,164"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,164"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,164"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,164"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:7:{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-6"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てG",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,196"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,196"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,196"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,196"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "type": "HalfVoxelStructure",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.structure.hv.oldhouse:8:{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.HalfVoxelContribution",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "HalfVoxelStructure",
+          "id": "{A5AD425E-BE10-4470-C477-204D881878E5}-7"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "半ボクセル建築",
+            "children": []
+          },
+          {
+            "tag": "subgroup",
+            "attributes": {},
+            "text": "古い民家",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "切妻二階建てH",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2500000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "3",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "sprite",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{170B8A99-4A14-42EE-C477-AA5C3FB3F387}"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "west",
+                  "side": "either",
+                  "origin": "0,228"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "south",
+                  "side": "either",
+                  "origin": "24,228"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "east",
+                  "side": "either",
+                  "origin": "48,228"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "pattern",
+                "attributes": {
+                  "direction": "north",
+                  "side": "either",
+                  "origin": "72,228"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "half-voxel"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/oldhouses_hv.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "半ボクセル住宅",
+      "originalTextSha256": "154b47c2f63f32a7097413fbe9866aee99c58512339513f101c6b7574fed57e6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Half-tile Houses",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/name[0]/text()",
+      "originalText": "切妻二階建てA",
+      "originalTextSha256": "517ca8e743432f6cc32cc2fd95beea18ce51c1580f193247fee5c8e4f96efbf5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/name[0]/text()",
+        "text": "gabled roof 2 floors A",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/name[0]/text()",
+      "originalText": "切妻二階建てB",
+      "originalTextSha256": "93bb04fc06ae98de9db159e819436e0913a26e12742c4ed6ca0258e9b8c82ea4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/name[0]/text()",
+        "text": "gabled roof two-story B",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/name[0]/text()",
+      "originalText": "切妻二階建てC",
+      "originalTextSha256": "f5dbb9559b7ac4642bae39601331273a8a0a9c5e2418cc2ff450080e2237f656",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/name[0]/text()",
+        "text": "gabled roof two-story C",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/name[0]/text()",
+      "originalText": "切妻二階建てD",
+      "originalTextSha256": "1e57ca6627d88cc8a891c228df4c8c029219a940da2a9ecf9af1ff77f3caebb2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/name[0]/text()",
+        "text": "gabled roof two-story D",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/name[0]/text()",
+      "originalText": "切妻二階建てE",
+      "originalTextSha256": "7b566ab6bd4986325cd2349798b4a2dee185ae1433322b12034c1aa304293bdd",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/name[0]/text()",
+        "text": "gabled roof two-story E",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/name[0]/text()",
+      "originalText": "切妻二階建てF",
+      "originalTextSha256": "c79f9d5c4ebedacec4290f2622a5442dd751b241c1870224b577ac894a580148",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/name[0]/text()",
+        "text": "gabled roof two-story F",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/name[0]/text()",
+      "originalText": "切妻二階建てG",
+      "originalTextSha256": "74a5732f394ed6fc62b0d5266099accfe3275df7cbd79bd32d1e9b53c786ee5b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/name[0]/text()",
+        "text": "gabled roof two-story G",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/group[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/group[0]/text()",
+        "text": "Half-tile structures",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup[0]/text()",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup[0]/text()",
+        "text": "Old downtown house",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/name[0]/text()",
+      "originalText": "切妻二階建てH",
+      "originalTextSha256": "d2f11d803d63e8391e8ed86d4046a40e78fe6c63d2d2b9b4ed2222aa69ba0728",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+        "key": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/name[0]/text()",
+        "text": "gabled roof two-story H",
+        "sourceSha256": "77f83189fb9cc08078d3fd1810d5858f44798c369ca32b558dcc8f62120732c1"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

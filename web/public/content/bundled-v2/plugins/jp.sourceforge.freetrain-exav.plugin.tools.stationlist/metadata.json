@@ -1,0 +1,173 @@
+{
+  "plugin": {
+    "id": "jp.sourceforge.freetrain-exav.plugin.tools.stationlist",
+    "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "駅一覧ウィンドウ",
+    "author": "FreeTrain Ex-AV Project"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.bmp",
+      "sourceSha256": "8351ddd1e5ae32be706bacfce6e93cade8c3478cb5dd67e5b6755122e0a8f274",
+      "sha256": "8351ddd1e5ae32be706bacfce6e93cade8c3478cb5dd67e5b6755122e0a8f274",
+      "bytes": 2102,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.ico",
+      "sourceSha256": "6c3de753f775d6a0fd257e12031a224ec45313ce63955a6bd89dbc3eaa1c7463",
+      "sha256": "6c3de753f775d6a0fd257e12031a224ec45313ce63955a6bd89dbc3eaa1c7463",
+      "bytes": 7886,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.png",
+      "sourceSha256": "9b30eb23dfd006c1debb0b387ac3661a9383cbc2e5e26b59f6a8140edab2947a",
+      "sha256": "9b30eb23dfd006c1debb0b387ac3661a9383cbc2e5e26b59f6a8140edab2947a",
+      "bytes": 1270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "sourceSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "sha256": "26da487d6ae68dbfd8a8929cfc8335672c5428e6c393d4780bd19c5f55c945fa",
+      "bytes": 532,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "c593efa60fd880a6940d1e1e1afc977d6f3adf196c07259d430526f37a9c5cfe"
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.cs",
+      "sourceSha256": "0fdf7168fe6b11d7f1c79f429896d5555f38766d2e357303cea206c91e09221c",
+      "sha256": "0fdf7168fe6b11d7f1c79f429896d5555f38766d2e357303cea206c91e09221c",
+      "bytes": 8342,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{6DC3BD54-6282-4522-A157-C4E15FFF21CE}",
+      "pluginId": "jp.sourceforge.freetrain-exav.plugin.tools.stationlist",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.sourceforge.freetrain-exav.plugin.tools.stationlist:0:{6DC3BD54-6282-4522-A157-C4E15FFF21CE}",
+      "implementation": {
+        "name": "freetrain.views.StationList",
+        "codebase": "bin/FreeTrain.ExAV.Plugin.Tools.StationList.dll",
+        "assembly": "FreeTrain.ExAV.Plugin.Tools.StationList",
+        "projects": [
+          "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/FreeTrain.ExAV.Plugin.Tools.StationList.2008.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/src/StationList.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{6DC3BD54-6282-4522-A157-C4E15FFF21CE}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "駅一覧",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "駅一覧",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.views.StationList",
+              "codebase": "bin/FreeTrain.ExAV.Plugin.Tools.StationList.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.bmp",
+    "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.ico",
+    "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/StationList_Icon.png"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "sourceSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "駅一覧ウィンドウ",
+      "originalTextSha256": "92b9efe8653748fa351493521ea4863ff39f3e9e0501dd32540077fc0d4db530",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "sourceSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "key": "plug-in/contribution:{6DC3BD54-6282-4522-A157-C4E15FFF21CE}/name[0]/text()",
+      "originalText": "駅一覧",
+      "originalTextSha256": "a58fd4b3c832ea12982b98ad785a441e6cc122ed1787404de769632f6aa5392c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "sourceSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "key": "plug-in/contribution:{6DC3BD54-6282-4522-A157-C4E15FFF21CE}/menu[0]/@name",
+      "originalText": "駅一覧",
+      "originalTextSha256": "a58fd4b3c832ea12982b98ad785a441e6cc122ed1787404de769632f6aa5392c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

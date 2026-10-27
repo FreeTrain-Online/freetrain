@@ -1,0 +1,108 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.tools.lvinspect",
+    "path": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "地価の検査ウィンドウ",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "sourceSha256": "95a8ad070f9994f057c193b552e9c3ae4dbd636c88e01fe2889b3445f8ab590b",
+      "sha256": "d7b03a618396fc3a9540c30db1c0c8e1120da5d761a4832a41a7aa72440810b2",
+      "bytes": 368,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "1a8ecb7c98406894fabcf7dd6a287bf06c40929832b5d85003cb32607f0d18f1"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{173B77D5-08FD-4897-BD37-FFA64CED1493}",
+      "pluginId": "org.kohsuke.freetrain.tools.lvinspect",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tools.lvinspect:0:{173B77D5-08FD-4897-BD37-FFA64CED1493}",
+      "implementation": {
+        "name": "freetrain.world.development.LandValueInspectorPlugin",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/development/LandValueInspectorPlugin.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{173B77D5-08FD-4897-BD37-FFA64CED1493}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.development.LandValueInspectorPlugin"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "sourceSha256": "95a8ad070f9994f057c193b552e9c3ae4dbd636c88e01fe2889b3445f8ab590b",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "地価の検査ウィンドウ",
+      "originalTextSha256": "58964f14c57a845835ebb441880b879174f015036a26f21177a3dd4f6684d90a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Land Value Inspector Window",
+        "sourceSha256": "0e7130f242f31772a156ec0130b21559d035ad2c8f46fc2aff63385c62884e26"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "sourceSha256": "95a8ad070f9994f057c193b552e9c3ae4dbd636c88e01fe2889b3445f8ab590b",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

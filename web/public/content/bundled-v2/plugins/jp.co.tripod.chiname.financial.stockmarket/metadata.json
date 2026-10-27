@@ -1,0 +1,1862 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.financial.stockmarket",
+    "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "株取引モジュール",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/ChartControl.resx",
+      "sourceSha256": "a446856fbda75e2f8c229a5befc90f517a93ee7509a1bf98d9bc4145b8ccfb33",
+      "sha256": "a446856fbda75e2f8c229a5befc90f517a93ee7509a1bf98d9bc4145b8ccfb33",
+      "bytes": 5322,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/NumberEditEx.resx",
+      "sourceSha256": "78d6bf82d71f44110c99d1c3d6126a5c80716a45a2bf9a12561edfa706d129f4",
+      "sha256": "78d6bf82d71f44110c99d1c3d6126a5c80716a45a2bf9a12561edfa706d129f4",
+      "bytes": 5322,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/SEC_icon.bmp",
+      "sourceSha256": "bfea06a93c06dd43a99a12a09d51b6691509b6e6657955204c31e5d6cbc42a09",
+      "sha256": "bfea06a93c06dd43a99a12a09d51b6691509b6e6657955204c31e5d6cbc42a09",
+      "bytes": 3126,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StockMarketForm.resx",
+      "sourceSha256": "f6bde6dc406157809b16e7d2253f944c4b1a24d1d65bc9a4cf8ac19ac396f96f",
+      "sha256": "f6bde6dc406157809b16e7d2253f944c4b1a24d1d65bc9a4cf8ac19ac396f96f",
+      "bytes": 10270,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StockMarketPlugIn.cs",
+      "sourceSha256": "2666c9a77a3b0a03b6d798993844e54a9e1fcb7be36c5851d99ae71a6cf884c6",
+      "sha256": "2666c9a77a3b0a03b6d798993844e54a9e1fcb7be36c5851d99ae71a6cf884c6",
+      "bytes": 1044,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StocksWindow.cs",
+      "sourceSha256": "8263b382ff8cdb535df6614ccc054824d19791809a5086090a2593ae28c4a02c",
+      "sha256": "8263b382ff8cdb535df6614ccc054824d19791809a5086090a2593ae28c4a02c",
+      "bytes": 5654,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StocksWindow.resx",
+      "sourceSha256": "7f686578aabffc0fa143766a82f0feb1651d53f75e7a561b2a2033e72524cc9e",
+      "sha256": "7f686578aabffc0fa143766a82f0feb1651d53f75e7a561b2a2033e72524cc9e",
+      "bytes": 5322,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/TimeVariedChart.resx",
+      "sourceSha256": "af20a232d2503ed86c99068f5093a062a0350d1d435dff2f1c70ef8690eeaae5",
+      "sha256": "af20a232d2503ed86c99068f5093a062a0350d1d435dff2f1c70ef8690eeaae5",
+      "bytes": 5325,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "sha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "bytes": 19987,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "sha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "bytes": 9754,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "sha256": "7e323c1870ee2f999c409bf62ea0dacc90c1bdec507622eefa3d91517ff890ac",
+      "bytes": 1008,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "c75c6f761b47525a6b160744069d1de36d8e5eaffb0ada958e7fe3ef1011beaa"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/sample.xml",
+      "sourceSha256": "ebbb4af84cd255a9e4764e8250b789c0501d96d7a976ce879c4b8db8eae98956",
+      "sha256": "ebbb4af84cd255a9e4764e8250b789c0501d96d7a976ce879c4b8db8eae98956",
+      "bytes": 2695,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "sha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "bytes": 10547,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{25FBD928-C82D-4EB3-C477-D08AC8A5504F}",
+      "pluginId": "jp.co.tripod.chiname.financial.stockmarket",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.financial.stockmarket:0:{25FBD928-C82D-4EB3-C477-D08AC8A5504F}",
+      "implementation": {
+        "name": "freetrain.finance.stock.StocksWindow",
+        "codebase": "bin/StockMarket.dll",
+        "assembly": "StockMarket",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/FreeTrain.StockMarket.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/FreeTrain.StockMarket.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StocksWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{25FBD928-C82D-4EB3-C477-D08AC8A5504F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "保有株式一覧",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "保有株式一覧",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.finance.stock.StocksWindow",
+              "codebase": "bin/StockMarket.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{7DA77890-54E8-43EB-C477-F9B7C7F6F31C}",
+      "pluginId": "jp.co.tripod.chiname.financial.stockmarket",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.financial.stockmarket:1:{7DA77890-54E8-43EB-C477-F9B7C7F6F31C}",
+      "implementation": {
+        "name": "freetrain.finance.stock.StockMarketPlugIn",
+        "codebase": "bin/StockMarket.dll",
+        "assembly": "StockMarket",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/FreeTrain.StockMarket.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/FreeTrain.StockMarket.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/StockMarketPlugIn.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{7DA77890-54E8-43EB-C477-F9B7C7F6F31C}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "StockMarket",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.finance.stock.StockMarketPlugIn",
+              "codebase": "bin/StockMarket.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "settings",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "businessHour",
+                "attributes": {
+                  "open": "9",
+                  "close": "17"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "eventSpans",
+                "attributes": {},
+                "text": "1,2,4,8,10,20,30",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "data",
+            "attributes": {
+              "file": "typelist.xml"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "data",
+            "attributes": {
+              "file": "companies.xml"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "data",
+            "attributes": {
+              "file": "events.xml"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/SEC_icon.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[0]/@name",
+      "originalText": "大製建設",
+      "originalTextSha256": "a9935c14ead8f6c0964c5cb92534219aec27f2ed3e3f9646c0dcd62b2d93d41a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[1]/@name",
+      "originalText": "雄林組",
+      "originalTextSha256": "d4e401d80dda4be76960b43ece36180aa528f3edb47a68444ee158fe90a424e6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[2]/@name",
+      "originalText": "西電工",
+      "originalTextSha256": "ece763f1aa14ff28f56b81e3334a774652e8162ab2f7cb8b36ef7e6b68cc0f91",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[3]/@name",
+      "originalText": "日進製粉グループ",
+      "originalTextSha256": "81d9b09ea0d8675c6165f7adaebe529d8461af90366d5da97b707156638436b1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[4]/@name",
+      "originalText": "雷神麦酒",
+      "originalTextSha256": "f0de519ecebbf4f181b360dbf6ad2b83742c5d31a1839c8284559b1bbd7ef54c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[5]/@name",
+      "originalText": "ユニニカ",
+      "originalTextSha256": "d400e2022d910232990861dcf9a7f15cb779146b1aebed96cfd96721d371271d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[6]/@name",
+      "originalText": "大レ",
+      "originalTextSha256": "34148b5f051e431975139901ca6dd3324c17fd7c2d7b30471decebd9ce922293",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[7]/@name",
+      "originalText": "澁澤製紙",
+      "originalTextSha256": "7a237a62178cfe138802118fb8f87a320de00cf5700aa696598d49c8bb6e3535",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[8]/@name",
+      "originalText": "五菱製紙",
+      "originalTextSha256": "5c83fa804dbd62ede3aaff7fddcea692202262f15da409e6a0687f1a5ad17e8a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[9]/@name",
+      "originalText": "暮羽化学",
+      "originalTextSha256": "4210bee9a246baff48c716a233102b222f0962596f663d44245140880fe07d22",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[10]/@name",
+      "originalText": "宇部鉱産",
+      "originalTextSha256": "0f457e2946f4605793d20209b0482d3996807a3da968f89d4d24fe740fd9a82d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[11]/@name",
+      "originalText": "濱之内製薬",
+      "originalTextSha256": "cfebdb7c00d585780671511eae75ec0faa9d37419bdfabfd4dc8e8bb8cede675",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[12]/@name",
+      "originalText": "大賞製薬",
+      "originalTextSha256": "adbfdb84d786a9eec02305fe1ef44718856c691c532fa5881a60d698c58637d2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[13]/@name",
+      "originalText": "にっぽん石油",
+      "originalTextSha256": "f84c662e4cce13a86dd3eff5cdd9a478861ccf05b1101d4bf0110f55d51fd083",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[14]/@name",
+      "originalText": "旭石油",
+      "originalTextSha256": "2d759f499bf5a494dc8bcd7c609a9ab3a3e3f340a982288959782f5d33968f5f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[15]/@name",
+      "originalText": "ブリヂエスト",
+      "originalTextSha256": "db3bb533f0d9e8b0e0212993b010dc1d7395a8889d7d3307c74eecb3a8744aa2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[16]/@name",
+      "originalText": "朝日グラス",
+      "originalTextSha256": "050d8f53295219d56f1a375aacd4cced4a0e815ba251b4f9de6b724e206e09f9",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[17]/@name",
+      "originalText": "清友関西セメント",
+      "originalTextSha256": "007575ab0737fda954cea9a87caee35a9ff5a4b39c69785f10c31d8811cd0c87",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[18]/@name",
+      "originalText": "太洋セメント",
+      "originalTextSha256": "c71505a99b0ae4d0fdbdef5d14a81e27a0ff664053fc918ee10fdae742e3c394",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[19]/@name",
+      "originalText": "清友金属工業",
+      "originalTextSha256": "dac97fc263c558233fde66962ff33e3dd2545afedc9f670df220e666343eddb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[20]/@name",
+      "originalText": "阪神製鋼",
+      "originalTextSha256": "52ca0d01643ba52800f4f9fbf6bd981a88584ded418fd1efbb981dc7dea65fe1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[21]/@name",
+      "originalText": "五菱マテリアル",
+      "originalTextSha256": "9be3f24d72242a800f5935ba81594dd86e13c32946d022aa308eabfb2a8866a5",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[22]/@name",
+      "originalText": "清友金属鉱山",
+      "originalTextSha256": "b9e70ab7e32ddb2df258ec13c5d843e9845af6316082e021ade434290360cb4d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[23]/@name",
+      "originalText": "大和製鋼所",
+      "originalTextSha256": "9d966c03842661eaf9813772bd2363184fb72a900ceff161f651b61a6a8d8237",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[24]/@name",
+      "originalText": "五菱重工業",
+      "originalTextSha256": "8c2a32adf28cfdc7e7516bd46bced60f16a12a7395c6fa8b45367094bc4322e7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[25]/@name",
+      "originalText": "森島播磨重工業",
+      "originalTextSha256": "cee53d716e24dc058c9367e43e6f6becb531dc2841a64393970cb34d93fa8f9c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[26]/@name",
+      "originalText": "常陸製作所",
+      "originalTextSha256": "576c558cb8a4f7f2c6195b6defedb3530787dbae1903a1c6fc4b9f2e7ce9590e",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[27]/@name",
+      "originalText": "芝電",
+      "originalTextSha256": "418be11fa432e1de048b11d898377ec9f2c3dc0e400b55be107cb5ed8bfe88c3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[28]/@name",
+      "originalText": "京賛製作所",
+      "originalTextSha256": "08e4241f74b2ce71837801f79a62ad3daefc9e7158e1b656c17104af3dc995dc",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[29]/@name",
+      "originalText": "松鹿電器産業",
+      "originalTextSha256": "4a0edf93357a4b8219ff6b2fd97fe3dd6b84d8f268c2b182708b520b98ac8298",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[30]/@name",
+      "originalText": "ソナ",
+      "originalTextSha256": "6343e03aa65f26e9cd771927aa85a2f239330c4db878db964f4a85c2360ea122",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[31]/@name",
+      "originalText": "日参自動車",
+      "originalTextSha256": "766544b36b92d9ad9faa621e1ef886cae24147cbc88eda7626dec76573fe856f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[32]/@name",
+      "originalText": "トヨト自動車",
+      "originalTextSha256": "2a9ecb2968c542826e5d2cf2d46913b5943a7983b9f7940136642665b5c453a1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[33]/@name",
+      "originalText": "半田技研工業",
+      "originalTextSha256": "9983861c0e58454edf69d8b9411af0533ab459811348f8f79afc28630d6f7f55",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[34]/@name",
+      "originalText": "常陸造船",
+      "originalTextSha256": "edb6c3126ecda3bcc5fcb28eed7c4c11006c634c6cefadc9bcfb1b6e4006c4c1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[35]/@name",
+      "originalText": "光井造船",
+      "originalTextSha256": "14ae454ba848b2b24602397cb2f82a9f87d16c77f18621eb6885b74c7990da5c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[36]/@name",
+      "originalText": "縞津製作所",
+      "originalTextSha256": "ee3bb37425ab9d6424c7526f942943670d33ae3bdcb0d3112ef37c711a509721",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[38]/@name",
+      "originalText": "日本凸版",
+      "originalTextSha256": "eadd2ba06fa27578dac657d1a1a2aab6cb3cd3bad6c74245c6aba7d661f92e5f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[39]/@name",
+      "originalText": "合同印刷",
+      "originalTextSha256": "f02e06f3452b964c5beabc056260c5c6507eaa8512bbee254c08fc60ad7beea9",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[40]/@name",
+      "originalText": "ヤマバ",
+      "originalTextSha256": "8526d6b75f4defe5150e1a678e2ef25860b8c7a4f3fe81f541f7292fbb4cf853",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[41]/@name",
+      "originalText": "サガ",
+      "originalTextSha256": "dc97af7529dc172e1341f5722271e99b997f216b42850404a44e9d1df3e2c49f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[42]/@name",
+      "originalText": "忠紅",
+      "originalTextSha256": "68961e4644eea60d8e4391040dbe1d960eb8d69a6f53a508b3e6aa3e71c241f5",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[43]/@name",
+      "originalText": "五菱商事",
+      "originalTextSha256": "e1fcea00174743a7e9d4c4eaa495ae8d30a3a75c649ab4562277ef7f2e5ae5ca",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[44]/@name",
+      "originalText": "鷹島屋",
+      "originalTextSha256": "185b044a3c732917dcba369ca60e06a5e7af093391a66b4b768e050afdaaac90",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[45]/@name",
+      "originalText": "パルク",
+      "originalTextSha256": "13b9e0a4fa40610c5eec4356fe70754fa9d063393e654c7cf39deb4633d54baf",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[46]/@name",
+      "originalText": "ヤハダ電機",
+      "originalTextSha256": "c4fe992c1f46c53e8b4fe183cd0b03b9e11f357d83a24c4d541235d8fbe2ce7d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[47]/@name",
+      "originalText": "GFJホールディングス",
+      "originalTextSha256": "7ceea7dae3f0bd8c889687245ffa5c6525bd1922da52b0de1267a0770adc1662",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[48]/@name",
+      "originalText": "りそうホールディングス",
+      "originalTextSha256": "6737b1873d0030cb8340382535cf5f75787beed12b842d494aeed09d6b9eba34",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[49]/@name",
+      "originalText": "むさしフィナンシャルグループ",
+      "originalTextSha256": "527c29b170c4b3e0da5ed6fb95f3068910d55f4dd00c73399ce621903ce9e2d8",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[50]/@name",
+      "originalText": "清友信託銀行",
+      "originalTextSha256": "a833bd2ceaacf99bec6f22ae556e5a14cc97c2e780db4a72c4831bdee2e6fffb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[51]/@name",
+      "originalText": "乃浦ホールディングス",
+      "originalTextSha256": "ffa5cd15703a09d45a88d0abe046ea4e74d797fd88a71f2048f6a0025a4a84fc",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[52]/@name",
+      "originalText": "光井清友海上火災保険",
+      "originalTextSha256": "08716ecf7cd0f5dcd8014036a447b7b52c8f6e0ae72d88bbaf1057da36e7ff69",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[53]/@name",
+      "originalText": "あおい損害保険",
+      "originalTextSha256": "776511aed5c5df75d4208fca08ed3f9d1309096e0924fbd0d94ffc8e6b3a03cd",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[54]/@name",
+      "originalText": "プロミネンス",
+      "originalTextSha256": "a4790c0e054bbed007f3f453969c6f1538abee345fd0f2fe608f968d87367c75",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[55]/@name",
+      "originalText": "オリエンタル",
+      "originalTextSha256": "a3783a8591f59e788ce9c754a4693b78e941fa4d1991cd9e30dd31259c37bb8e",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[56]/@name",
+      "originalText": "光井不動産",
+      "originalTextSha256": "c11351d4042fa320cba516933f4395fd07c98cd6926fe683289e68f750c52572",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[57]/@name",
+      "originalText": "日本建物",
+      "originalTextSha256": "6543e2a6f46d24c8de3dd7b572c4c7de7e35a7980e13b3a443c7dc107840be25",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[58]/@name",
+      "originalText": "全日本通運",
+      "originalTextSha256": "37d208e7e40e56c74710c99cfc80112a3df1ec8a7ed01f03fa0a931e1006c865",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[59]/@name",
+      "originalText": "ヤマネコ運輸",
+      "originalTextSha256": "7629ea55e43445c354abebca59ec3c855d118be050d1ce9bf7993e228ad43c8e",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[60]/@name",
+      "originalText": "日本汽船",
+      "originalTextSha256": "d3da7aac9a93146c4f58c93026b6940c8737f820bf7712b0183d11a68fab08b7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[61]/@name",
+      "originalText": "商船光井",
+      "originalTextSha256": "3df1e1219ec6ecfd9c0c5587bd6d82722e0d3173c8faf8f889c94144bfc4efd7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[62]/@name",
+      "originalText": "全日航",
+      "originalTextSha256": "63587e706c44b1fa8adef63d41cfb34ddf0a2fe51b3876b183553c310eec6cdf",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[63]/@name",
+      "originalText": "日本空運",
+      "originalTextSha256": "8822ccde90c071580a036392afec833fe4ae1ab542b04031983d7115e97c9961",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[64]/@name",
+      "originalText": "五菱倉庫",
+      "originalTextSha256": "a1bd6d729c32a538ea37b6863800e353f1d67228e1814ba27d549759857c26f7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[65]/@name",
+      "originalText": "清友倉庫",
+      "originalTextSha256": "0432a60dc3158bad943cef9bee83420c3f4ae7b1c9dcc6ddd9c8fe8b1b6cd0b8",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[66]/@name",
+      "originalText": "にっぽんテレビ",
+      "originalTextSha256": "8844a9290be1da74db8f998aef9fb4c5862aece40a43b6a70fb21da8696ba027",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[68]/@name",
+      "originalText": "東日本電力",
+      "originalTextSha256": "0c89baa67d98a9d8e767143cbd0dc9b2962fe5dc84e86618a851b3677682b485",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[69]/@name",
+      "originalText": "中央電力",
+      "originalTextSha256": "84043756731ee1eba78f0369fdebe4ee8b43a991903dab9d5306655f4bad2b1f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/companies.xml",
+      "sourceSha256": "7ec2eec9866195794060d8b9a60269d6f0e9b58daf2e9f7adac762b932ebf42a",
+      "key": "companies/company[70]/@name",
+      "originalText": "阪神電力",
+      "originalTextSha256": "6c04565d515b7bbceed609c15f6bee13b5fc68669c9e251d02678b3eb3162f9c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[0]/action[0]/description[0]/text()",
+      "originalText": "好景気の波",
+      "originalTextSha256": "1365cd302767f4694a8cc8fb82e445f307a77cf57903137882e151f187b8b648",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[0]/action[0]/description[0]/text()",
+        "text": "A wave of prosperity",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[1]/action[0]/description[0]/text()",
+      "originalText": "不景気の波",
+      "originalTextSha256": "c4c64a5e76d1f1da48019c71618a07aa6a7524bf1ca99319b5f7ca64718b42f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[1]/action[0]/description[0]/text()",
+        "text": "A wave of depression",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[2]/action[0]/description[0]/text()",
+      "originalText": "%target%微変動",
+      "originalTextSha256": "47de7376c0b348a46ad5f64f027e62e9cd093e3f600ca73fd4feba60fb195788",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[2]/action[0]/description[0]/text()",
+        "text": "%target% has minor fluctuations",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[3]/action[0]/description[0]/text()",
+      "originalText": "%target%好調",
+      "originalTextSha256": "c346d0d647b8b6476317c8fc07c862fc74fae9fda059633ecf2926c2c3770f10",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[3]/action[0]/description[0]/text()",
+        "text": "%target% is off a flying start",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[4]/action[0]/description[0]/text()",
+      "originalText": "%target%不振",
+      "originalTextSha256": "66846adf12128baf0c6b3223fe21ed1e627681f4ab552188cfa42ddb77a3f1e7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[4]/action[0]/description[0]/text()",
+        "text": "%target% is in a slump",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[5]/action[0]/description[0]/text()",
+      "originalText": "%target%小幅値動き",
+      "originalTextSha256": "ed845c1f9aa4862ca8dc1b143b0a5b0917a7ae1d64a5768adf9eb2691d61a680",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[5]/action[0]/description[0]/text()",
+        "text": "%target% has limited price movements",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[6]/action[0]/description[0]/text()",
+      "originalText": "%target%微動",
+      "originalTextSha256": "4535640ff90bb6e873ead68a04f4b7ec3de4558045803928bc9e8fd3032e49c2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[6]/action[0]/description[0]/text()",
+        "text": "%target% has minor fluctuation",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[7]/action[0]/description[0]/text()",
+      "originalText": "%target%の社内改革",
+      "originalTextSha256": "98c9ac09935888bd618780bf3a2961a50c8e477a80de0bbe7d7adebfbc4c196b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[7]/action[0]/description[0]/text()",
+        "text": "%target% is going through an internal reform",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+      "sourceSha256": "779118381cea6d076961fae134d60d1f2439b032b3e033bd174472d3fa108921",
+      "key": "events/define[8]/action[0]/description[0]/text()",
+      "originalText": "%target%の事故・醜聞",
+      "originalTextSha256": "1c65b6174f27019cc396fd0114d95f798c4704bc586b8b0e11b32090c384dc16",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/events.xml",
+        "key": "events/define[8]/action[0]/description[0]/text()",
+        "text": "%target% is going through a scandal",
+        "sourceSha256": "ba69d2796238b936230d730563c63c9927749f6a82b9802b4aac045bab04db95"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "株取引モジュール",
+      "originalTextSha256": "963fc52b77ff9852b44cdfa8d865911061390ba71a031d988625ecd04d7f95ba",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Stock Market Module",
+        "sourceSha256": "9f4f57d1de69003ca484bf995e1a6e94f8deadfaa5b42c3424e77bbacee3a47f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "key": "plug-in/contribution:{25FBD928-C82D-4EB3-C477-D08AC8A5504F}/name[0]/text()",
+      "originalText": "保有株式一覧",
+      "originalTextSha256": "376396041a901dbc05e987b68deb6c43545461b825c5715e68b2418a35fdb6cd",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+        "key": "plug-in/contribution:{25FBD928-C82D-4EB3-C477-D08AC8A5504F}/name[0]/text()",
+        "text": "StockPorfolio",
+        "sourceSha256": "9f4f57d1de69003ca484bf995e1a6e94f8deadfaa5b42c3424e77bbacee3a47f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "key": "plug-in/contribution:{25FBD928-C82D-4EB3-C477-D08AC8A5504F}/menu[0]/@name",
+      "originalText": "保有株式一覧",
+      "originalTextSha256": "376396041a901dbc05e987b68deb6c43545461b825c5715e68b2418a35fdb6cd",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "key": "plug-in/contribution:{7DA77890-54E8-43EB-C477-F9B7C7F6F31C}/name[0]/text()",
+      "originalText": "StockMarket",
+      "originalTextSha256": "378a19e5934c50f8d2f55d45430bfd0ee54aace0aef7a9aec6cb2f0ffc61e4c9",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+        "key": "plug-in/contribution:{7DA77890-54E8-43EB-C477-F9B7C7F6F31C}/name[0]/text()",
+        "text": "StockMarket",
+        "sourceSha256": "9f4f57d1de69003ca484bf995e1a6e94f8deadfaa5b42c3424e77bbacee3a47f"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/sample.xml",
+      "sourceSha256": "ebbb4af84cd255a9e4764e8250b789c0501d96d7a976ce879c4b8db8eae98956",
+      "key": "companies/company[0]/@name",
+      "originalText": "サンプル水産",
+      "originalTextSha256": "3ade86d9662d8e6d7f3468a83b06b10b55e2b04f06671c6209e823e498ae76f9",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/sample.xml",
+      "sourceSha256": "ebbb4af84cd255a9e4764e8250b789c0501d96d7a976ce879c4b8db8eae98956",
+      "key": "companies/business[0]/@name",
+      "originalText": "サンプル業種",
+      "originalTextSha256": "68d0bc576a9f4b9900df078ebfbf74fd9ebce62004f4c466afb89d36e2516e12",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/sample.xml",
+      "sourceSha256": "ebbb4af84cd255a9e4764e8250b789c0501d96d7a976ce879c4b8db8eae98956",
+      "key": "companies/company[1]/@name",
+      "originalText": "サンプル企業",
+      "originalTextSha256": "921eb1be5e98b2f363dacbb3f1dba666bf7d7d117bde0cb28c8da060047dadf7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[0]/@name",
+      "originalText": "水産・林業",
+      "originalTextSha256": "46e4e0c81f246da8fe201cc3a67bfc2597fb1895f5bdfc3e9267cc3c90e63aab",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[1]/@name",
+      "originalText": "農業",
+      "originalTextSha256": "72ab3fb722d074424e292b7c8c40375726ddd1a64ba68fd61f266b915fee596d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[2]/@name",
+      "originalText": "鉱業",
+      "originalTextSha256": "2e0c70c61308ddfbec5070a2c93163045163212ffaac635cf97c0223ec90c189",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[3]/@name",
+      "originalText": "建設",
+      "originalTextSha256": "16c8314d751336d39c19ddb17199b30a0ac8a0fb5963dd2d6e8b5a4549d732d2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[4]/@name",
+      "originalText": "食品",
+      "originalTextSha256": "6840b7e095496bf5dc11980d87d21ffd3eea6313f9756eb0f9609c66dca1ad8e",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[5]/@name",
+      "originalText": "繊維",
+      "originalTextSha256": "d7037e7f78b46893c16e5b0ca38a07b334def4abbf47b5be1d6f3e6178280380",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[6]/@name",
+      "originalText": "パルプ・紙",
+      "originalTextSha256": "420775e6b99769565ba8841d8565816a30be1a5d359e165bb9d962e00b258ddc",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[7]/@name",
+      "originalText": "化学",
+      "originalTextSha256": "0316d311b860e244c45a92c078033b389fad9d7ac3aabfabc2aaf5a137ca226d",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[8]/@name",
+      "originalText": "医薬品",
+      "originalTextSha256": "b3fb13c4aa914211ecf6be2328dc15304a23743da28f689377a9025ea84d1bc2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[9]/@name",
+      "originalText": "石油・石炭",
+      "originalTextSha256": "27b1409be26b8e5282b484559f9a6cca3afadef5de8d81352e6d44fe6a69f450",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[10]/@name",
+      "originalText": "ゴム",
+      "originalTextSha256": "31d83a2fa50e7be4e002ec77f0fcee83072682220695dfb14795ee8ee54bda6c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[11]/@name",
+      "originalText": "ガラス",
+      "originalTextSha256": "aba7fcaa3276ecb9099e66e1a19b7863747b1257b52a005f5bab56bebb1074d0",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[12]/@name",
+      "originalText": "窯業",
+      "originalTextSha256": "a39c5eb7931a28b2ee52648fd43dafed3bc95cc15ee9c2051abf7d68cdbc5575",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[13]/@name",
+      "originalText": "鉄鋼",
+      "originalTextSha256": "d5713df90d96da6b705e405ab2e24afe35158a4b2e18f31e1aca4fe91b53853f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[14]/@name",
+      "originalText": "非鉄",
+      "originalTextSha256": "473d58972e193416a2024b713cf00adbcba23fef646e406ae8fee65ada6174c9",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[15]/@name",
+      "originalText": "金属製品",
+      "originalTextSha256": "a955ab4e7f8c609ed7b379ff40082f7e369ae2136e7384552c59bb2d4f5347c0",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[16]/@name",
+      "originalText": "機械",
+      "originalTextSha256": "81c946eaa0779951bd08ebc4db804dc22b1d2b834bbe846f1991b279690e015a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[17]/@name",
+      "originalText": "電気機器",
+      "originalTextSha256": "9ebf31dc709cca2ab276f39f259bb2bf36dac5d9f50f7718f63e52f47563d568",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[18]/@name",
+      "originalText": "自動車",
+      "originalTextSha256": "1ab53e75814378ae826a088af1c14f7d8f8cc131207141704787bfd071c42c4c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[19]/@name",
+      "originalText": "造船",
+      "originalTextSha256": "8dd8cc3616b7edd75dc23d99383aae8d16ab6646e3fa7e1a8a01256cbaa765e6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[20]/@name",
+      "originalText": "航空機",
+      "originalTextSha256": "eae59fc2788f79b783566d01ddbd9a569feaaf840e47b64b3a3031a10c9fef44",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[21]/@name",
+      "originalText": "輸送用機器",
+      "originalTextSha256": "16c0870577ecf8fa8207eb3717245dba43fb612e2f3e95770b50959c7c0d96d0",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[22]/@name",
+      "originalText": "精密機器",
+      "originalTextSha256": "8ca2632b44c7d299dac96df7d3faa6e36ea7dcad913d495e840c1ea1b6423ff5",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[23]/@name",
+      "originalText": "印刷",
+      "originalTextSha256": "8ba60bd6375e6863ac4d6f25a12e12378a961786903b50b64c960f109c62838e",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[24]/@name",
+      "originalText": "その他製造",
+      "originalTextSha256": "c223a7603e1bdea8e52c6683cb542eada21aee279b83474d3ccdf3c50a301a10",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[25]/@name",
+      "originalText": "電力・ガス",
+      "originalTextSha256": "fdc12209be8da7e082062e05d7d0346a0e568586625260778f85143d2fd40cb7",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[26]/@name",
+      "originalText": "陸運",
+      "originalTextSha256": "709b978c658ee2c4af7c4320d3d1598469b2854d7b5099110dd18bfbadf7cd23",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[27]/@name",
+      "originalText": "海運",
+      "originalTextSha256": "8729cde91a9126e0629605d80a57219d68b79e2090c5b15ff08d65af578eded4",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[28]/@name",
+      "originalText": "空運",
+      "originalTextSha256": "ef420cc752477008b70048aca4b4a3a449b8c83cf386561bc1ff59ffccb183b0",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[29]/@name",
+      "originalText": "不動産",
+      "originalTextSha256": "58eae3523c361df39f0dc86df25bbb927b8e92c552d38fac252d3fd0383835be",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[30]/@name",
+      "originalText": "倉庫・運輸",
+      "originalTextSha256": "70a79575274e1bc7b28c595c9f3f60e38e1f7ec235391a95bcdc8a9598ba74a6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[31]/@name",
+      "originalText": "情報・通信",
+      "originalTextSha256": "dbfc9f20822b1cd39f05be4d59669c238bfcf82438c59ac869478c7d67a28666",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[32]/@name",
+      "originalText": "商業（卸売）",
+      "originalTextSha256": "e0b09e9122ad2699f693854cf1b4b8d80c2bf2fb8c5de8e5ede719d36580bcb0",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[33]/@name",
+      "originalText": "商業（小売）",
+      "originalTextSha256": "e59c2e1ac13f2d065c33fa438f8b6c5357776a737f824ed7229c23427f8076b6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[34]/@name",
+      "originalText": "金融（銀行）",
+      "originalTextSha256": "49b4b4a35c62e221ac04a1bc87de42208dcc31a8c9ac919e068f7e66ddbab3e8",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[35]/@name",
+      "originalText": "金融（証券）",
+      "originalTextSha256": "f0e8013aaaf2d3e65478341495be12f2df5b499201e35953bdf1440118e0777a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[36]/@name",
+      "originalText": "金融（保険）",
+      "originalTextSha256": "3fa4b8f69ebceda444b8c6df3b4591e91c7f8fd3964775e33f822cff6e9905af",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[37]/@name",
+      "originalText": "金融（その他）",
+      "originalTextSha256": "023c1d19aa7b7f3d917bc2f678fa80c818276250c5a30f4d7e71f6c5a59db46f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/typelist.xml",
+      "sourceSha256": "30fa8d8548b78cc3c87d09e4176e563157d7cbdb741ca44dfcee30856bce49a5",
+      "key": "companies/business[38]/@name",
+      "originalText": "サービス",
+      "originalTextSha256": "061256ee80e991170e1df7b943571e427dd2e3f7434313472d66f51953c71845",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

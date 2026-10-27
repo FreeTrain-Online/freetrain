@@ -7,12 +7,12 @@ It contains bundled content only. Optional non-free sets belong in separate
 input/output roots and are never discovered by the default preparation command.
 
 `source-index.json` records every original Git-blob SHA-256 and prepared-byte
-SHA-256. The 386 selected files include all 56 manifests, 238 loose media files,
+SHA-256. The 468 selected files include all 56 manifests, 238 loose media files,
 reviewed auxiliary resources and four notices. Manifest encoding is normalized
 to UTF-8 under EXAV-ENC-001; all expanded declarations compare exactly with P0's
 review. `expanded/` holds inert entity-expanded UTF-8 XML for normal builds.
 `source/` retains manifest entities and other source bytes, including inert
-desktop `.resx` resources for future review. No legacy DLL or C# source is loaded.
+desktop `.resx` resources for future review. Selected C# and native source files are inert hashed recipe evidence; none is compiled or activated by preparation. No legacy DLL is loaded.
 
 `review.json` selects the recipes, qualified implementation bindings, source
 exclusions, picture registrations, dependencies, translations and diagnostics
@@ -52,5 +52,10 @@ this data at server startup. This prepared registry is separate from the world
 profile registry: source declarations do not authorize executable game behavior.
 
 The default world remains `reference-spatial-4` / Save 5. Its synthetic pack is
-distinct from `exav-stable-bundled` v1. See
+distinct from `exav-stable-bundled` v2. See
 [the P2-01 delivery and remaining work](../doc/web-parity-bundled-preparation.md).
+
+P2-02 adds executable sprite recipes, variant masks, hash-checked browser rendering
+and `/content-gallery.html`. Generated media retain `plugins/<original-id>/` or
+`core/res/` directories and ship `provenance.json` plus per-plugin `metadata.json`.
+See [the attribution recommendation, implementation and open acceptance](../doc/web-parity-recipes.md).

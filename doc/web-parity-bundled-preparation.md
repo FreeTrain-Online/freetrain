@@ -1,5 +1,10 @@
 # P2-01: canonical bundled inputs and preparation — 25 October 2026
 
+**26 October follow-up:** [P2-02 recipe rendering and attribution](web-parity-recipes.md)
+advances prepared outputs to v2/schema 2, binds all 159 pictures and preserves
+plugin namespaces in generated media. The v1 counts/hash/layout below record
+the original P2-01 delivery.
+
 P2 has started with reproducible stable ExAV inputs, resource conversion and an
 inert prepared registry. Default frontend/container builds no longer read this
 repository's historical `core/` or `plugins/`, Git metadata or an archive/sibling

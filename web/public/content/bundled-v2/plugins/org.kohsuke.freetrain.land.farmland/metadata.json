@@ -1,0 +1,2991 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.farmland",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "田畑",
+    "author": "915さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.AUT.bmp",
+      "sourceSha256": "69b4c57823d913799f3c44bbd777184d6d2781bac59f5f5ebc690dc9e54a4198",
+      "sha256": "69b4c57823d913799f3c44bbd777184d6d2781bac59f5f5ebc690dc9e54a4198",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.WIN.bmp",
+      "sourceSha256": "ced58daa6c034592da2958f98e430736b3cf0d8143ed22bca2e95bb52d8d6832",
+      "sha256": "ced58daa6c034592da2958f98e430736b3cf0d8143ed22bca2e95bb52d8d6832",
+      "bytes": 30776,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.bmp",
+      "sourceSha256": "61ef194914bd346ee995f6b6d32237b5298ad792d733c9aea5203f60eac2cebe",
+      "sha256": "61ef194914bd346ee995f6b6d32237b5298ad792d733c9aea5203f60eac2cebe",
+      "bytes": 30774,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "sha256": "6ebbaaee66697859462192237654cb071e3f58216de7bb9cb47e783b2878aadb",
+      "bytes": 7832,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "08f140c759f3887ca64e7674f7a9652ed4d6133d15d158991c6be40720d58de1"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:0:{1AA12290-AC57-4388-AC62-323B813D0CAC}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "hatake.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "autumn",
+                  "src": "hatake.AUT.bmp"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "hatake.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:1:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0, 0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:2:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32, 0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:3:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64, 0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:4:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96, 0",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:5:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,16",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:6:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,16",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:7:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,16",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:8:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,16",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:9:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,32",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:10:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,32",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:11:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,32",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:12:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,32",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:13:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,48",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:14:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,48",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:15:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,48",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:16:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,48",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:17:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,64",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:18:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,64",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:19:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,64",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:20:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4",
+      "implementation": {
+        "name": "freetrain.contributions.land.StaticLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/StaticLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,64",
+              "offset": "0"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{1AA12290-AC57-4388-AC62-323B813D0CAC}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.StaticLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:21:{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}",
+      "implementation": {
+        "name": "freetrain.contributions.land.RandomLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/RandomLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑mix",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.RandomLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "lands",
+            "attributes": {},
+            "text": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:22:{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}",
+      "implementation": {
+        "name": "freetrain.contributions.land.RandomLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/RandomLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑mix",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.RandomLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "lands",
+            "attributes": {},
+            "text": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{5E37A96E-1111-44E0-B598-7F11BBB08083}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:23:{5E37A96E-1111-44E0-B598-7F11BBB08083}",
+      "implementation": {
+        "name": "freetrain.contributions.land.RandomLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/RandomLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{5E37A96E-1111-44E0-B598-7F11BBB08083}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑mix",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.RandomLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "lands",
+            "attributes": {},
+            "text": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:24:{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}",
+      "implementation": {
+        "name": "freetrain.contributions.land.RandomLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/RandomLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑mix",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.RandomLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "lands",
+            "attributes": {},
+            "text": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{8622BFD2-70AB-4867-8FB6-EC3340530F71}",
+      "pluginId": "org.kohsuke.freetrain.land.farmland",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.farmland:25:{8622BFD2-70AB-4867-8FB6-EC3340530F71}",
+      "implementation": {
+        "name": "freetrain.contributions.land.RandomLandBuilder",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/land/RandomLandBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{8622BFD2-70AB-4867-8FB6-EC3340530F71}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "畑mix",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.land.RandomLandBuilder"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "300000",
+            "children": []
+          },
+          {
+            "tag": "lands",
+            "attributes": {},
+            "text": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4\n\t\t\t{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.AUT.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.farmland/hatake.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "田畑",
+      "originalTextSha256": "199a126d00a7df2339c8ef9db63f1c1ff46ce34f5b81d67fdac9903dd4920be1",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Farmland",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "915さん",
+      "originalTextSha256": "1ba9abf0b92c82852e07ff2969fe7fbdebca953d8ab01aecbe4262896a0d5e2a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4/group[0]/text()",
+      "originalText": "畑",
+      "originalTextSha256": "ddbf48e2689e035ecb1e26db6821f51c7ac3eed0699cabc5eb8eab33ae910194",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4/group[0]/text()",
+        "text": "Field",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}/group[0]/text()",
+      "originalText": "畑mix",
+      "originalTextSha256": "3c3bc1c2cc1f5f9739cb528cd02445d0951227d169646494eb413a71b8c3cb09",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}/group[0]/text()",
+        "text": "Field mix",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}/group[0]/text()",
+      "originalText": "畑mix",
+      "originalTextSha256": "3c3bc1c2cc1f5f9739cb528cd02445d0951227d169646494eb413a71b8c3cb09",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}/group[0]/text()",
+        "text": "Field mix",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{5E37A96E-1111-44E0-B598-7F11BBB08083}/group[0]/text()",
+      "originalText": "畑mix",
+      "originalTextSha256": "3c3bc1c2cc1f5f9739cb528cd02445d0951227d169646494eb413a71b8c3cb09",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{5E37A96E-1111-44E0-B598-7F11BBB08083}/group[0]/text()",
+        "text": "Field mix",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}/group[0]/text()",
+      "originalText": "畑mix",
+      "originalTextSha256": "3c3bc1c2cc1f5f9739cb528cd02445d0951227d169646494eb413a71b8c3cb09",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}/group[0]/text()",
+        "text": "Field mix",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "key": "plug-in/contribution:{8622BFD2-70AB-4867-8FB6-EC3340530F71}/group[0]/text()",
+      "originalText": "畑mix",
+      "originalTextSha256": "3c3bc1c2cc1f5f9739cb528cd02445d0951227d169646494eb413a71b8c3cb09",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+        "key": "plug-in/contribution:{8622BFD2-70AB-4867-8FB6-EC3340530F71}/group[0]/text()",
+        "text": "Field mix",
+        "sourceSha256": "bce362fdd4d3c63fb84f8233ce24225af2ff1d9546329072cf9289c39c024f90"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

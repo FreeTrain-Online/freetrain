@@ -53,6 +53,18 @@ def run(image, platform):
                     assert hashlib.sha256(data).hexdigest() == asset[mode]['sha256'], asset['path']
                     assert len(data) == asset[mode]['bytes'], asset['path']
                     artifacts.add(asset[mode]['url'])
+        for surface_set in catalog['surfaceSets'].values():
+            for binding in surface_set.values():
+                media = binding['image']
+                if media['url'] in artifacts:
+                    continue
+                data = get(media['url'])
+                assert hashlib.sha256(data).hexdigest() == media['sha256']
+                assert len(data) == media['bytes']
+                artifacts.add(media['url'])
+        for metadata in [catalog['provenance']] + catalog['pluginMetadata']:
+            assert hashlib.sha256(get(metadata['url'])).hexdigest() == metadata['sha256']
+        assert b'Recipe composition' in get('/content-gallery.html')
         for notice in catalog['notices']:
             assert hashlib.sha256(get(notice['url'])).hexdigest() == notice['sha256']
             managed = '/app/ContentNotices/bundled-v2/' + notice['path'].removeprefix('trunk/')
@@ -75,7 +87,7 @@ def run(image, platform):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--image', default='freetrain-online:p2-01')
+    parser.add_argument('--image', default='freetrain-online:p2-02')
     parser.add_argument('--platform', default='linux/amd64')
     args = parser.parse_args()
     run(args.image, args.platform)

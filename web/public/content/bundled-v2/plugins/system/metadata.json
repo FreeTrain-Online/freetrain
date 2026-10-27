@@ -1,0 +1,3918 @@
+{
+  "plugin": {
+    "id": "system",
+    "path": "trunk/plugins/system/plugin.xml",
+    "dependencies": [],
+    "scope": "in-scope",
+    "title": "システム",
+    "author": "川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/system/LandProperty.bmp",
+      "sourceSha256": "d0faf8c4a321a7db88e60bfdbb12ba018450812ed8559736f6b2181420951be2",
+      "sha256": "d0faf8c4a321a7db88e60bfdbb12ba018450812ed8559736f6b2181420951be2",
+      "bytes": 1590,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/ThinPlatform.bmp",
+      "sourceSha256": "e099b75aed14f458141bc550d09f832ec2f46273ba486c6f831b043653356eed",
+      "sha256": "e099b75aed14f458141bc550d09f832ec2f46273ba486c6f831b043653356eed",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/ThinPlatform.n.bmp",
+      "sourceSha256": "c99569acfc136bdb354ca59fa34c70fbad1c1c2acf1deb3617fd1afc5a5c7845",
+      "sha256": "c99569acfc136bdb354ca59fa34c70fbad1c1c2acf1deb3617fd1afc5a5c7845",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain01.bmp",
+      "sourceSha256": "0af4f5973f7bbb615147109813c28046a65569b4c895def1ce563cd80682d59f",
+      "sha256": "0af4f5973f7bbb615147109813c28046a65569b4c895def1ce563cd80682d59f",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain02.bmp",
+      "sourceSha256": "a091d63cce5b7329590734e09872be8ec03b2929fb8ae02995e8650f51987d91",
+      "sha256": "a091d63cce5b7329590734e09872be8ec03b2929fb8ae02995e8650f51987d91",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain03.bmp",
+      "sourceSha256": "b7c64f53155d14c753472e55ef9484fec0b41dc4401d3cc46285f5b45363bee2",
+      "sha256": "b7c64f53155d14c753472e55ef9484fec0b41dc4401d3cc46285f5b45363bee2",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain04.bmp",
+      "sourceSha256": "aeb03d3a4cd438637ecbdd85c4f9431c082fd59af8db4ddc7e49cad0341878f7",
+      "sha256": "aeb03d3a4cd438637ecbdd85c4f9431c082fd59af8db4ddc7e49cad0341878f7",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain05.bmp",
+      "sourceSha256": "b3997765a0d502fb3f882dfc74a82e40d38fdd0f834b7a34572f64ec77da169e",
+      "sha256": "b3997765a0d502fb3f882dfc74a82e40d38fdd0f834b7a34572f64ec77da169e",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain06.bmp",
+      "sourceSha256": "7e16e0cc9f8c7fa5bdcb304854fd92cf7cbce980a9375107aa2efb2573fd3040",
+      "sha256": "7e16e0cc9f8c7fa5bdcb304854fd92cf7cbce980a9375107aa2efb2573fd3040",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/UncoloredTrain07.bmp",
+      "sourceSha256": "0d013d9d145110af51c80c7c5318481155d97f66be6ec6ca4fe7af8189a67954",
+      "sha256": "0d013d9d145110af51c80c7c5318481155d97f66be6ec6ca4fe7af8189a67954",
+      "bytes": 49208,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/crossing.bmp",
+      "sourceSha256": "744ee0d5a910ed54e9194e7f91b8f11813f50737958d642e6247c27f4afe8ba8",
+      "sha256": "744ee0d5a910ed54e9194e7f91b8f11813f50737958d642e6247c27f4afe8ba8",
+      "bytes": 6744,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/otonasi.wav",
+      "sourceSha256": "dd9165ab3909873fc83f23fb627ce58f8ad2623d8847dbfcecb8df034ac46131",
+      "sha256": "dd9165ab3909873fc83f23fb627ce58f8ad2623d8847dbfcecb8df034ac46131",
+      "bytes": 8044,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "sha256": "d6055b03b63ab70b7cda9c2e612145d511384f21c870e5e37391b381ff2aaa38",
+      "bytes": 19470,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "3dc3143b7535c1b49ae9309f326e675f114071e4e1807af1213e814a480479f2"
+    },
+    {
+      "path": "trunk/plugins/system/renraku02.bmp",
+      "sourceSha256": "109c33bffd93f3ed416bd3f34792f49b3a174050dea8cd6087dd3dd8c0cb9b70",
+      "sha256": "109c33bffd93f3ed416bd3f34792f49b3a174050dea8cd6087dd3dd8c0cb9b70",
+      "bytes": 154280,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/renraku02.n.bmp",
+      "sourceSha256": "93ba0c47755de41f6cfc2852dd0e9c82aa8a946996f8b4e4ffb5251c528274c7",
+      "sha256": "93ba0c47755de41f6cfc2852dd0e9c82aa8a946996f8b4e4ffb5251c528274c7",
+      "bytes": 154280,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/renraku02brown.bmp",
+      "sourceSha256": "9204958bdde4ce85f87f56cec1ee2fcdf47c277aca4e6e6b2923db4d50226c0d",
+      "sha256": "9204958bdde4ce85f87f56cec1ee2fcdf47c277aca4e6e6b2923db4d50226c0d",
+      "bytes": 154278,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/renraku02brown_n.bmp",
+      "sourceSha256": "05fc8d44bd143a6420ce417e7e65f76cc5deeb7ed9f0bd38c7808523bd3795f6",
+      "sha256": "05fc8d44bd143a6420ce417e7e65f76cc5deeb7ed9f0bd38c7808523bd3795f6",
+      "bytes": 154278,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/renraku02green.bmp",
+      "sourceSha256": "d83df79c3dbd86ecc242e9f215b2fbf8b18e2170089e80349b52226a57abfcab",
+      "sha256": "d83df79c3dbd86ecc242e9f215b2fbf8b18e2170089e80349b52226a57abfcab",
+      "bytes": 154278,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/renraku02green_n.bmp",
+      "sourceSha256": "a3f641bd84a331dabff48bc7fa371e0dd41cd445dca518666b044313fc02fef9",
+      "sha256": "a3f641bd84a331dabff48bc7fa371e0dd41cd445dca518666b044313fc02fef9",
+      "bytes": 154278,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/system/station.wav",
+      "sourceSha256": "c94f00ef106d34acd43f3c1ea6cf4424d269673a5d06a59455cbe3c703deb634",
+      "sha256": "c94f00ef106d34acd43f3c1ea6cf4424d269673a5d06a59455cbe3c703deb634",
+      "bytes": 28728,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{COLORLIB-NULL}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:15:{COLORLIB-NULL}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-NULL}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "NULL",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-RAINBOW}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:16:{COLORLIB-RAINBOW}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-RAINBOW}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "カラフル",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "230,0,18"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "235,97,0"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "245,232,0"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "143,195,31"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "0,153,68"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "0,160,233"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "40,73,238"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "160,37,201"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-STONES}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:17:{COLORLIB-STONES}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-STONES}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "石壁",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "149,63,55"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "129,103,103"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "210,167,117"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "231,217,170"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "210,210,210"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "129,144,136"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "149,149,167"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "80,90,106"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-WOODS}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:18:{COLORLIB-WOODS}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-WOODS}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "木材",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "207,136,34"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "241,190,109"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "197,162,144"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "95,67,31"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "138,101,48"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "190,157,38"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "218,206,138"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "98,98,98"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-METALS}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:19:{COLORLIB-METALS}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-METALS}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "金属",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "142,33,33"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "183,131,131"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "142,93,33"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "185,175,85"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "134,126,36"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "152,171,143"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "105,140,84"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "143,174,193"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "109,119,154"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "220,220,220"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "153,153,153"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "110,110,110"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-BRICKS}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:20:{COLORLIB-BRICKS}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-BRICKS}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "レンガ",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "221,99,93"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "154,31,11"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "191,112,116"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "210,108,50"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "232,193,144"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "192,123,40"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "195,178,135"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "150,144,110"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-DIRTS}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:21:{COLORLIB-DIRTS}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-DIRTS}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "土・コンクリ",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "153,108,51"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "176,136,80"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "175,151,128"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "220,200,180"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "170,164,96"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "210,210,210"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "150,157,141"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "84,73,67"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-PASTEL}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:22:{COLORLIB-PASTEL}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-PASTEL}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "パステル",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "230,175,198"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "225,170,139"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "225,222,147"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "200,220,162"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "172,222,177"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "190,220,215"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "191,202,232"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "217,187,232"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-COLPLATE}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:23:{COLORLIB-COLPLATE}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-COLPLATE}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "カラー鉄板屋根",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "164,0,91"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "248,110,158"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "188,12,24"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "90,80,33"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "35,97,30"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "154,189,184"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "113,223,185"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "84,175,210"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "92,114,127"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "61,83,156"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "210,210,210"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "98,98,98"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-ROOF}",
+      "pluginId": "system",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:24:{COLORLIB-ROOF}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-ROOF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "瓦・スレート",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "160,160,160"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "84,84,84"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "108,51,65"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "168,66,0"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "200,11,26"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "232,137,36"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "135,124,96"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "138,182,44"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "61,133,59"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "113,223,185"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "68,103,175"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "142,84,167"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+      "pluginId": "system",
+      "type": "accountGenre",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:26:{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountGenre",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountGenre.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "accountGenre",
+          "id": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "鉄道",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}",
+      "pluginId": "system",
+      "type": "accountGenre",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:27:{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountGenre",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountGenre.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "accountGenre",
+          "id": "{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "バス",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}",
+      "pluginId": "system",
+      "type": "accountGenre",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:28:{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountGenre",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountGenre.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "accountGenre",
+          "id": "{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "子会社",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}",
+      "pluginId": "system",
+      "type": "accountGenre",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:29:{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountGenre",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountGenre.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "accountGenre",
+          "id": "{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "その他",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{9B087AEA-6E9C-48cd-A1F3-1B774500752E}",
+      "pluginId": "system",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:31:{9B087AEA-6E9C-48cd-A1F3-1B774500752E}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{9B087AEA-6E9C-48cd-A1F3-1B774500752E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "プルルル",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "station.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{87B1BA1B-C18F-4E39-AD50-245255F34388}",
+      "pluginId": "system",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:32:{87B1BA1B-C18F-4E39-AD50-245255F34388}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{87B1BA1B-C18F-4E39-AD50-245255F34388}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "無音",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "otonasi.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{12DB2C30-14B2-426D-B324-639BE17268C5}",
+      "pluginId": "system",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:34:{12DB2C30-14B2-426D-B324-639BE17268C5}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountSummaryWindow",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountSummaryWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{12DB2C30-14B2-426D-B324-639BE17268C5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "売上情報",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "売上情報(&S)",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.accounting.AccountSummaryWindow"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{7A5AE360-0974-4e6a-A7BB-70A3906C406E}",
+      "pluginId": "system",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:35:{7A5AE360-0974-4e6a-A7BB-70A3906C406E}",
+      "implementation": {
+        "name": "freetrain.world.subsidiaries.MarketWindow",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/subsidiaries/MarketWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{7A5AE360-0974-4e6a-A7BB-70A3906C406E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "子会社売買",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "子会社売買(&U)",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.subsidiaries.MarketWindow"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}",
+      "pluginId": "system",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:36:{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}",
+      "implementation": {
+        "name": "freetrain.controllers.rail.TrainControllerDialog",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/controllers/rail/TrainControllerDialog.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ダイヤ設定",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "ダイヤ設定(&I)",
+              "location": "rail",
+              "position": "8"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.controllers.rail.TrainControllerDialog"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{533F5EF1-2E97-46aa-A231-49BB0D2A724D}",
+      "pluginId": "system",
+      "type": "dockingContent",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:37:{533F5EF1-2E97-46aa-A231-49BB0D2A724D}",
+      "implementation": {
+        "name": "freetrain.controllers.rail.TrainInformationWindow",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/controllers/rail/TrainInformationWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "dockingContent",
+          "id": "{533F5EF1-2E97-46aa-A231-49BB0D2A724D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "列車情報",
+            "children": []
+          },
+          {
+            "tag": "multiple",
+            "attributes": {},
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "menu",
+            "attributes": {
+              "name": "列車情報(&I)",
+              "location": "view"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.controllers.rail.TrainInformationWindow"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "spriteFactory:default",
+      "pluginId": "system",
+      "type": "spriteFactory",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:39:spriteFactory:default",
+      "implementation": {
+        "name": "freetrain.framework.graphics.SimpleSpriteFactoryContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/SimpleSprite.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "spriteFactory",
+          "id": "spriteFactory:default"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.framework.graphics.SimpleSpriteFactoryContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "spriteFactory:colorMapped",
+      "pluginId": "system",
+      "type": "spriteFactory",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:40:spriteFactory:colorMapped",
+      "implementation": {
+        "name": "freetrain.framework.graphics.ColorMappedSpriteFactoryContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorMappedSprite.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "spriteFactory",
+          "id": "spriteFactory:colorMapped"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.framework.graphics.ColorMappedSpriteFactoryContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "spriteFactory:hueTransform",
+      "pluginId": "system",
+      "type": "spriteFactory",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:41:spriteFactory:hueTransform",
+      "implementation": {
+        "name": "freetrain.framework.graphics.HueTransformSpriteFactoryContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/HueTransformSprite.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "spriteFactory",
+          "id": "spriteFactory:hueTransform"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.framework.graphics.HueTransformSpriteFactoryContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "spriteLoader:default",
+      "pluginId": "system",
+      "type": "spriteLoader",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:43:spriteLoader:default",
+      "implementation": {
+        "name": "freetrain.framework.graphics.DefaultSpriteLoaderContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/DefaultSpriteLoaderContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "spriteLoader",
+          "id": "spriteLoader:default"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.framework.graphics.DefaultSpriteLoaderContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3FF9F902-6B2A-44A4-9C5F-DE8D82CFD37D}",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:46:{3FF9F902-6B2A-44A4-9C5F-DE8D82CFD37D}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{3FF9F902-6B2A-44A4-9C5F-DE8D82CFD37D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "ThinPlatform.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "ThinPlatform.n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:47:{3197A63A-89DC-4237-8C9B-045F41F31CDB}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "renraku02.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "renraku02.n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-brown",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:48:{3197A63A-89DC-4237-8C9B-045F41F31CDB}-brown",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-brown"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "renraku02brown.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "renraku02brown_n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-green",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:49:{3197A63A-89DC-4237-8C9B-045F41F31CDB}-green",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-green"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "renraku02green.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "renraku02green_n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:51:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "汎用三色細帯",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain01.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:52:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "汎用四色太帯",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain02.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:53:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "汎用四色細帯",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain03.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:54:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "103系風",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain04.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:55:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "205系風",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain05.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:56:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "211系風",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain06.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "pluginId": "system",
+      "type": "colorMapTrainPicture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:57:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "implementation": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "colorMapTrainPicture",
+          "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "E231系風",
+            "children": []
+          },
+          {
+            "tag": "author",
+            "attributes": {},
+            "text": "477さん",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "UncoloredTrain07.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{9093E8B2-9215-42f3-A36A-5CAA7AF389FF}",
+      "pluginId": "system",
+      "type": "newGame",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:59:{9093E8B2-9215-42f3-A36A-5CAA7AF389FF}",
+      "implementation": {
+        "name": "freetrain.contributions.others.EmptyNewGameContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/others/EmptyNewGameContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "newGame",
+          "id": "{9093E8B2-9215-42f3-A36A-5CAA7AF389FF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.contributions.others.EmptyNewGameContributionImpl"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F4380415-A2F2-41d8-8FCD-ED25A470A84D}",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:60:{F4380415-A2F2-41d8-8FCD-ED25A470A84D}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{F4380415-A2F2-41d8-8FCD-ED25A470A84D}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "crossing.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{0E7A9F09-4482-4b78-8A8D-F59F02574B1B}",
+      "pluginId": "system",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:61:{0E7A9F09-4482-4b78-8A8D-F59F02574B1B}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{0E7A9F09-4482-4b78-8A8D-F59F02574B1B}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "LandProperty.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{develop-config}",
+      "pluginId": "system",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:system:62:{develop-config}",
+      "implementation": {
+        "name": "freetrain.world.development.DevelopConfigurePlugin",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/development/DevelopConfigurePlugin.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{develop-config}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "発展パラメータ調整",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.development.DevelopConfigurePlugin"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/system/LandProperty.bmp",
+    "trunk/plugins/system/ThinPlatform.bmp",
+    "trunk/plugins/system/ThinPlatform.n.bmp",
+    "trunk/plugins/system/UncoloredTrain01.bmp",
+    "trunk/plugins/system/UncoloredTrain02.bmp",
+    "trunk/plugins/system/UncoloredTrain03.bmp",
+    "trunk/plugins/system/UncoloredTrain04.bmp",
+    "trunk/plugins/system/UncoloredTrain05.bmp",
+    "trunk/plugins/system/UncoloredTrain06.bmp",
+    "trunk/plugins/system/UncoloredTrain07.bmp",
+    "trunk/plugins/system/crossing.bmp",
+    "trunk/plugins/system/otonasi.wav",
+    "trunk/plugins/system/renraku02.bmp",
+    "trunk/plugins/system/renraku02.n.bmp",
+    "trunk/plugins/system/renraku02brown.bmp",
+    "trunk/plugins/system/renraku02brown_n.bmp",
+    "trunk/plugins/system/renraku02green.bmp",
+    "trunk/plugins/system/renraku02green_n.bmp",
+    "trunk/plugins/system/station.wav"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "システム",
+      "originalTextSha256": "088462f65b7e8bc00db9fd7d87cf33cea200daceb9094dea9dc851b2a1851090",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "System",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "川口耕介",
+      "originalTextSha256": "43a62e0e9fa0957e2c26b6235c834abe1dec09f8190ec0474642c66aa19c716f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{312E3101-E7A6-4276-8AC9-617FA6D7ADEA}/name[0]/text()",
+      "originalText": "bgm",
+      "originalTextSha256": "e0ee4e4fbfb3229980b0535bce983cbee2a833156045cabcdc73eddfd126819f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{312E3101-E7A6-4276-8AC9-617FA6D7ADEA}/name[0]/text()",
+        "text": "bgm",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{5E0E178B-835A-4987-8ECC-B9E7A70EB39A}/name[0]/text()",
+      "originalText": "bgmFactory",
+      "originalTextSha256": "eee9b354090a2cb4cb01e638fbac2ff545b0d5d7ae5129bf77353441e0c4bae6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{5E0E178B-835A-4987-8ECC-B9E7A70EB39A}/name[0]/text()",
+        "text": "bgmFactory",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{32A5AFB2-B676-4A4E-A06E-917AF760FFB6}/name[0]/text()",
+      "originalText": "station",
+      "originalTextSha256": "9b4ef3e5b7b4d1759cb8f880e34dbd5ea8c3fcd79ce33b89d7357bf64fcbfc91",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{32A5AFB2-B676-4A4E-A06E-917AF760FFB6}/name[0]/text()",
+        "text": "station",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{636703FB-D70F-4AF8-9254-FBDA1DAB4344}/name[0]/text()",
+      "originalText": "land",
+      "originalTextSha256": "90eae63487cae2df5b793b07c622680d2df6c9a024891c8a9bd98d08d5bc3d92",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{636703FB-D70F-4AF8-9254-FBDA1DAB4344}/name[0]/text()",
+        "text": "land",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{6D1F34DC-F3E0-4CA8-B705-028C2F4D2F39}/name[0]/text()",
+      "originalText": "menu",
+      "originalTextSha256": "398991009da1d251792eb353a0b7b185bc83e71e12e489e73228b554fc6cebc5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{6D1F34DC-F3E0-4CA8-B705-028C2F4D2F39}/name[0]/text()",
+        "text": "menu",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{12975FE4-93CB-41D5-9947-59FF28A8C961}/name[0]/text()",
+      "originalText": "train",
+      "originalTextSha256": "116f54c41d0405dbb10e7b04ebc31e262a5b8c85c1233fcf36eaee344d91ae58",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{12975FE4-93CB-41D5-9947-59FF28A8C961}/name[0]/text()",
+        "text": "train",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{A18E14FD-1EC5-4C78-A721-42C91A864084}/name[0]/text()",
+      "originalText": "trainCar",
+      "originalTextSha256": "e800c71d4d9456ca3622a402df118d25b1d37b84eb7655af0d88ebd9f43c71a3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{A18E14FD-1EC5-4C78-A721-42C91A864084}/name[0]/text()",
+        "text": "trainCar",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{A53A5080-8F66-4CA3-A88F-8B4D5D7EC0AC}/name[0]/text()",
+      "originalText": "trainController",
+      "originalTextSha256": "c9b6d627d86f46eca70569fd897d194e703d567eed57e91a3ba7814b277626bf",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{A53A5080-8F66-4CA3-A88F-8B4D5D7EC0AC}/name[0]/text()",
+        "text": "trainController",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{9D6AC382-8A79-4CCF-BE16-15AAA5EBD5F3}/name[0]/text()",
+      "originalText": "specialRail",
+      "originalTextSha256": "a7b8fc2a9bd4e26b889df79690fdc5b962be8a5ad1dc926482fe0fdb838474f5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{9D6AC382-8A79-4CCF-BE16-15AAA5EBD5F3}/name[0]/text()",
+        "text": "specialRail",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{DE8F9D81-67D0-4F8E-810D-E53D2251E64B}/name[0]/text()",
+      "originalText": "specialStructure",
+      "originalTextSha256": "34f037568325e6e722c94eae864b7de7f15a21931c1e1130af8f0b48825a6a0e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{DE8F9D81-67D0-4F8E-810D-E53D2251E64B}/name[0]/text()",
+        "text": "specialStructure",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{C9E8E541-FD55-47DB-B2D9-222E941DDB63}/name[0]/text()",
+      "originalText": "commercial",
+      "originalTextSha256": "d01acdec3a3b87b33882a0fb8959ffda858a0642f7f54190f67aa230e04d1547",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{C9E8E541-FD55-47DB-B2D9-222E941DDB63}/name[0]/text()",
+        "text": "commercial",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{94B9070E-DEEA-4C70-AEF2-7E795312FEC3}/name[0]/text()",
+      "originalText": "road",
+      "originalTextSha256": "362a284952d3a7250e4bdd72a659ea78e8ec79804e0e6a2053dfe4c10e7d79f1",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{94B9070E-DEEA-4C70-AEF2-7E795312FEC3}/name[0]/text()",
+        "text": "road",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{BFA3A8EA-05B0-4910-907F-4F617528B7CD}/name[0]/text()",
+      "originalText": "railStationary",
+      "originalTextSha256": "2561cbd6f52ae2d34523d8b18a64d2bc749296736f4ecbf5c432c2f79bd9ce7e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{BFA3A8EA-05B0-4910-907F-4F617528B7CD}/name[0]/text()",
+        "text": "railStationary",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{8D79D146-21F9-4E9E-ACAB-5B43A003F032}/name[0]/text()",
+      "originalText": "varHeightBuilding",
+      "originalTextSha256": "6a2e14a0649b1b0db464531e1ad263f9129730f7c3d390baa61cc9bc54510097",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{8D79D146-21F9-4E9E-ACAB-5B43A003F032}/name[0]/text()",
+        "text": "varHeightBuilding",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{C6F610B7-5046-4F74-C477-049B238F262D}/name[0]/text()",
+      "originalText": "ColorLibrary",
+      "originalTextSha256": "98045fe19028185e99adbdbe7f0102686f0fbbd761e7a2082835c173cd19bcfa",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{C6F610B7-5046-4F74-C477-049B238F262D}/name[0]/text()",
+        "text": "ColorLibrary",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-NULL}/name[0]/text()",
+      "originalText": "NULL",
+      "originalTextSha256": "fb329000228cc5a24c264c57139de8bf854fc86fc18bf1c04ab61a2b5cb4b921",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-NULL}/name[0]/text()",
+        "text": "NULL",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-RAINBOW}/name[0]/text()",
+      "originalText": "カラフル",
+      "originalTextSha256": "71e6ecd707cab2f9b4dbc46fdf1a215b78d2e53f8ce1a5eaa7c2f0cdd593e2fd",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-RAINBOW}/name[0]/text()",
+        "text": "Rainbow",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-STONES}/name[0]/text()",
+      "originalText": "石壁",
+      "originalTextSha256": "f764bdfc6f39190077991e1df0b461a27fe66c3ac6a643fb4207ccafada7185c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-STONES}/name[0]/text()",
+        "text": "Stone",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-WOODS}/name[0]/text()",
+      "originalText": "木材",
+      "originalTextSha256": "30a9333b4fe5013b8dc1f253324ec88de5e70d48a7a7b42af630d4ba86f0aa3e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-WOODS}/name[0]/text()",
+        "text": "Wood",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-METALS}/name[0]/text()",
+      "originalText": "金属",
+      "originalTextSha256": "0f5534c945bee7ba1925b2d8ce2cbeb12fd8f0ce3bc9d7ab3e8cb0b29cdb5fa3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-METALS}/name[0]/text()",
+        "text": "Metal",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-BRICKS}/name[0]/text()",
+      "originalText": "レンガ",
+      "originalTextSha256": "dee9cb1bbbaf03db4dccb16dc7337fe794d71562e9b82917a3855f94eb128e50",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-BRICKS}/name[0]/text()",
+        "text": "Brick",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-DIRTS}/name[0]/text()",
+      "originalText": "土・コンクリ",
+      "originalTextSha256": "03f938b55c7c1dce9c27c4008e6aeda653c847b7813718e2b1bfd932523a87fc",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-DIRTS}/name[0]/text()",
+        "text": "Earth / Concrete",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-PASTEL}/name[0]/text()",
+      "originalText": "パステル",
+      "originalTextSha256": "ecf5114950e58662ec833f333d91e1a2cb11a13742aa12c8bb8c53ca65a2dec4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-PASTEL}/name[0]/text()",
+        "text": "Pastel",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-COLPLATE}/name[0]/text()",
+      "originalText": "カラー鉄板屋根",
+      "originalTextSha256": "9d2f734ef8c95bf85fb9f637c1485a0d0b9dee4ee490760916506cafb3fd7fbe",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-COLPLATE}/name[0]/text()",
+        "text": "Painted Iron Roof",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{COLORLIB-ROOF}/name[0]/text()",
+      "originalText": "瓦・スレート",
+      "originalTextSha256": "8798ff052bc85149b7736c2aec095298d751e07362a600bb2880b9f02df37e3b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{COLORLIB-ROOF}/name[0]/text()",
+        "text": "Tile / Slate",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{630D0CFF-FCCA-44CE-AF24-E26EFA54352B}/name[0]/text()",
+      "originalText": "accountGenre",
+      "originalTextSha256": "fc1af6b2ee5f837c3e5833a56622da7a95afe9456b506ce032d6fd3c6c5ac14e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{630D0CFF-FCCA-44CE-AF24-E26EFA54352B}/name[0]/text()",
+        "text": "accountGenre",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}/name[0]/text()",
+      "originalText": "鉄道",
+      "originalTextSha256": "d2a32cc04e3504723a1c331eacd2fa044ced02f6248db1135fd7e3e376427bb2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}/name[0]/text()",
+        "text": "Rail",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}/name[0]/text()",
+      "originalText": "バス",
+      "originalTextSha256": "2cc0af026c1155c76edd75ce4b0d00b2b91e499a712cffa4b2dadf49eb7d305e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}/name[0]/text()",
+        "text": "Bus",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}/name[0]/text()",
+      "originalText": "子会社",
+      "originalTextSha256": "d8e022fd2e5c857e1df96dc19113b525014ff533bd924172052d4950c4184c9d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}/name[0]/text()",
+        "text": "Subsidiary",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}/name[0]/text()",
+      "originalText": "その他",
+      "originalTextSha256": "f13156650ea41e28155a9af4007f6337b859a653aa71a6c2b2808111af1c3e88",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}/name[0]/text()",
+        "text": "Other",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{821FC629-4180-48a4-8B47-ECE2817D2106}/name[0]/text()",
+      "originalText": "trainDepartureBell",
+      "originalTextSha256": "089a5d27c03fa25fdc055635a6caf401c0cde9f5ab5ab6c3fc6dae0ee0fcaa34",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{821FC629-4180-48a4-8B47-ECE2817D2106}/name[0]/text()",
+        "text": "trainDepartureBell",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{9B087AEA-6E9C-48cd-A1F3-1B774500752E}/name[0]/text()",
+      "originalText": "プルルル",
+      "originalTextSha256": "f996b0c8a260c61f8ec8d1cce48326070a3a0a2d23186be4dc322d54042f0f93",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{9B087AEA-6E9C-48cd-A1F3-1B774500752E}/name[0]/text()",
+        "text": "Departure bell",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{87B1BA1B-C18F-4E39-AD50-245255F34388}/name[0]/text()",
+      "originalText": "無音",
+      "originalTextSha256": "e26f1734c56426b0fbc3ea1519f7926e622fc4f65d66d47c007cd8245ccb3498",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{87B1BA1B-C18F-4E39-AD50-245255F34388}/name[0]/text()",
+        "text": "Silence",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{B348329E-6D3B-4545-88A6-B8B368E11EED}/name[0]/text()",
+      "originalText": "dockingContent",
+      "originalTextSha256": "1c84fead866a44a235a6544a6c8743bf3071da2d01b41ec3230ff80ed2367a89",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{B348329E-6D3B-4545-88A6-B8B368E11EED}/name[0]/text()",
+        "text": "dockingContent",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{12DB2C30-14B2-426D-B324-639BE17268C5}/name[0]/text()",
+      "originalText": "売上情報",
+      "originalTextSha256": "227aea53131c7e4571c91c7f04fea52f1c9cbad74d478c9ea4637f5b0c1c36d2",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{12DB2C30-14B2-426D-B324-639BE17268C5}/name[0]/text()",
+        "text": "Sales Report",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{12DB2C30-14B2-426D-B324-639BE17268C5}/menu[0]/@name",
+      "originalText": "売上情報(&S)",
+      "originalTextSha256": "0d683e277d226c2cc5396de7f0da9f8da02bab3c045207b809d45418a752a504",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{7A5AE360-0974-4e6a-A7BB-70A3906C406E}/name[0]/text()",
+      "originalText": "子会社売買",
+      "originalTextSha256": "c50fb4a17d14062e1c7c3c4ed20c47b140cc2c05bae51628325f65542e475aa3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{7A5AE360-0974-4e6a-A7BB-70A3906C406E}/name[0]/text()",
+        "text": "Subsidiaries",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{7A5AE360-0974-4e6a-A7BB-70A3906C406E}/menu[0]/@name",
+      "originalText": "子会社売買(&U)",
+      "originalTextSha256": "e0596498a3357f40578380d0ab96fc830b29874a5ce29e5f9cfae10d992bf9d9",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}/name[0]/text()",
+      "originalText": "ダイヤ設定",
+      "originalTextSha256": "8b77dde72b13c9d69c8312c51c7b92272a8fb49e1bc9465bcca85dfb79c7c3a3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}/name[0]/text()",
+        "text": "Diagram Settings",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}/menu[0]/@name",
+      "originalText": "ダイヤ設定(&I)",
+      "originalTextSha256": "8601a2c29c22867d370f11bb35b9efc0bbe2a199de52a46f699a3edfb1f6f443",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{533F5EF1-2E97-46aa-A231-49BB0D2A724D}/name[0]/text()",
+      "originalText": "列車情報",
+      "originalTextSha256": "a86f6aed7996aad23d2fb355ac0181ad67447886b784e6f7eef412deee89a4cb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{533F5EF1-2E97-46aa-A231-49BB0D2A724D}/name[0]/text()",
+        "text": "Train Tracking",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{533F5EF1-2E97-46aa-A231-49BB0D2A724D}/menu[0]/@name",
+      "originalText": "列車情報(&I)",
+      "originalTextSha256": "b50ef999a05f6edd35be7109de4e55b7a748f4b6a93ca9db560ffd53ccf7bd9f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{DC051871-BA74-45ED-B122-247BC7EA0BFA}/name[0]/text()",
+      "originalText": "spriteFactory",
+      "originalTextSha256": "8b8f79c980bbcd0e185283e78faa6758d199a7e002f93558efbf0aba3c3074e4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{DC051871-BA74-45ED-B122-247BC7EA0BFA}/name[0]/text()",
+        "text": "spriteFactory",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{5733A3EA-7A2D-4602-B702-D63D55A0FAB9}/name[0]/text()",
+      "originalText": "spriteLoader",
+      "originalTextSha256": "e709d61f73940ab887225c6a47b6842894dda497ec063908ead8505055b95a7f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{5733A3EA-7A2D-4602-B702-D63D55A0FAB9}/name[0]/text()",
+        "text": "spriteLoader",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{8AD27BD7-FF9E-401b-B309-53BB0DFAD2C4}/name[0]/text()",
+      "originalText": "anonymous",
+      "originalTextSha256": "2f183a4e64493af3f377f745eda502363cd3e7ef6e4d266d444758de0a85fcc8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{8AD27BD7-FF9E-401b-B309-53BB0DFAD2C4}/name[0]/text()",
+        "text": "anonymous",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{A51C49BF-7C30-40B3-B371-ECDE6A7C9C0C}/name[0]/text()",
+      "originalText": "picture",
+      "originalTextSha256": "2cea274d0bedc39ec4ab6ba9e59ec889e3ed6fb56a1cf088a64d9b383378dc97",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{A51C49BF-7C30-40B3-B371-ECDE6A7C9C0C}/name[0]/text()",
+        "text": "picture",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{669FE39E-0F2B-42C1-B618-49832461448A}/name[0]/text()",
+      "originalText": "colorMapTrainPicture",
+      "originalTextSha256": "5cfa9a53c3d80cc8f86ff9613e0878d7242ef02b4878d025ff24634a3d0338c5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{669FE39E-0F2B-42C1-B618-49832461448A}/name[0]/text()",
+        "text": "colorMapTrainPicture",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1/name[0]/text()",
+      "originalText": "汎用三色細帯",
+      "originalTextSha256": "bebf2cccdee8fbb37099e2126d5e6ae9e22c06b9a9fd48b1abad28df62821f7e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1/name[0]/text()",
+        "text": "General-purpose three-color thin stripe",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2/name[0]/text()",
+      "originalText": "汎用四色太帯",
+      "originalTextSha256": "d04ea743d10f6414c231ea57ccf81896ce2ab98b04d373460c44799ebeda9931",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2/name[0]/text()",
+        "text": "General-purpose four-color thick stripe",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3/name[0]/text()",
+      "originalText": "汎用四色細帯",
+      "originalTextSha256": "38f5c3ec8537e9b2fabd365d9eab538a52ffc56e47d545526bb3811f6db50dac",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3/name[0]/text()",
+        "text": "Genral-purpose four-color thin stripe",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4/name[0]/text()",
+      "originalText": "103系風",
+      "originalTextSha256": "ae830933ee85f6a4159f3d43ba5058b3515d95ba38a4a2d7a3ce2fb130b18e9d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4/name[0]/text()",
+        "text": "103 series style",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5/name[0]/text()",
+      "originalText": "205系風",
+      "originalTextSha256": "f0ba7fe05764e27fac666716879c75c2220c639d65d9bb2f811b21cf8f06c727",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5/name[0]/text()",
+        "text": "205 series style",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6/name[0]/text()",
+      "originalText": "211系風",
+      "originalTextSha256": "08b068a352d6c77dc8c4a1fb6b293750b57d221174ffec44639ceed68c28f7e6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6/name[0]/text()",
+        "text": "211 series style",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7/name[0]/text()",
+      "originalText": "E231系風",
+      "originalTextSha256": "faee345f449daea33ba5948f115343e8357e010322658c827b22652563d59410",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7/name[0]/text()",
+        "text": "E231 series style",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{9AB5DFE3-B13A-485c-956D-996E27FDCD9F}/name[0]/text()",
+      "originalText": "newGame",
+      "originalTextSha256": "4e0ae9ee04aeb230f6e28e4ee48d6055d1f203d5aa745c0c34a674f1380f6862",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/system/plugin.xml",
+        "key": "plug-in/contribution:{9AB5DFE3-B13A-485c-956D-996E27FDCD9F}/name[0]/text()",
+        "text": "newGame",
+        "sourceSha256": "e56a079281a026dea1a99f7bb92c11fd478f41a85584fb49d17a960e693f00b0"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "key": "plug-in/contribution:{develop-config}/name[0]/text()",
+      "originalText": "発展パラメータ調整",
+      "originalTextSha256": "631ff0cc71dca6da141a1f0aa2ee2ced1b24626802e9630c5ac3ec6be4b669bd",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

@@ -24,7 +24,9 @@ public class PreparedContentTests
         var catalog = PreparedContentCatalog.Bundled;
         Assert.Equal("exav-stable-bundled", catalog.PackId);
         Assert.Equal(448, catalog.Definitions.Length); Assert.Equal(159, catalog.Pictures.Length);
-        Assert.Equal(141, catalog.Pictures.Count(p => p.HasPreparedVariants));
+        Assert.Equal(159, catalog.Pictures.Count(p => p.HasPreparedVariants));
+        Assert.Equal(812, catalog.RenderRecipes.Length);
+        Assert.All(catalog.Definitions, d => Assert.Contains(catalog.RenderRecipes, r => r.Id == d.Id));
         Assert.Equal(54, catalog.PluginOrder.Length); Assert.False(catalog.GameplayAvailable);
         var generated = catalog.FindDefinition(catalog.PackId, "null-contrib-0:0");
         Assert.NotNull(generated); Assert.Equal("generatedStructure", generated.Type);
@@ -51,6 +53,7 @@ public class PreparedContentTests
     [InlineData("duplicate-definition")][InlineData("duplicate-picture")][InlineData("unknown-pack")]
     [InlineData("unknown-source")][InlineData("broken-dependency")][InlineData("broken-order")]
     [InlineData("missing-selection")][InlineData("runtime-enabled")]
+    [InlineData("missing-recipe")][InlineData("missing-render-picture")][InlineData("missing-render-surface")]
     public void Malformed_registry_never_publishes_partial_or_fallback_content(string mutation)
     {
         var node = Catalog();
@@ -63,6 +66,9 @@ public class PreparedContentTests
             case "broken-dependency": node["plugins"]![0]!["dependencies"]!.AsArray().Add("missing"); break;
             case "broken-order": node["pluginOrder"]![1] = node["pluginOrder"]![0]!.GetValue<string>(); break;
             case "missing-selection": node["selections"]![0]!["target"] = "missing"; break;
+            case "missing-recipe": node["renderRecipes"]!.AsArray().RemoveAt(0); break;
+            case "missing-render-picture": node["renderRecipes"]!.AsArray().First(r => r!["frames"]!.AsArray().Count > 0)!["frames"]![0]!["pictureId"] = "missing"; break;
+            case "missing-render-surface": node["surfaceSets"]!.AsObject().Clear(); break;
             case "runtime-enabled": node["contributions"]![0]!["status"] = "implemented"; break;
         }
         Assert.Throws<ArgumentException>(() => Read(node));

@@ -77,14 +77,14 @@ class PreparedInputs(unittest.TestCase):
 
     def test_pinned_denominators_exclusions_registries_and_native_media_remain_explicit(self):
         self.assertEqual(dict(manifests=56, selectedPlugins=54, declarations=482, factories=33, contributions=448,
-                              pictures=159, preparedPictures=141, assets=238, convertedBitmaps=213, excluded=2),
+                              pictures=159, preparedPictures=159, assets=238, convertedBitmaps=213, excluded=2),
                          self.catalog['counts'])
         self.assertEqual(bundled.PIN, self.catalog['source']['revision'])
         self.assertTrue(all(d['status'] == 'prepared; gameplay-unavailable' for d in self.catalog['contributions']))
         self.assertEqual(1, sum('generatedFrom' in d for d in self.catalog['contributions']))
         self.assertEqual(3, sum(a['status'] == 'retained-midi; playback-adapter-pending' for a in self.catalog['assets']))
         self.assertEqual(5, sum(d['code'] == 'source-project-gap' for d in self.catalog['diagnostics']))
-        self.assertEqual(18, sum(p['status'] == 'code-picture-binding-pending' for p in self.catalog['pictures']))
+        self.assertEqual(0, sum(p['status'] == 'code-picture-binding-pending' for p in self.catalog['pictures']))
         self.assertFalse(any('A4' in p['id'] or 'dbgwnd' in p['id'] for p in self.catalog['plugins']))
         for item in self.catalog['assets']:
             self.assertTrue(item['notices'])
@@ -159,7 +159,7 @@ class PreparedInputs(unittest.TestCase):
             root = Path(folder)
             for source in ('content/bundled-v2', 'web/public/content/bundled-v2'):
                 shutil.copytree(bundled.ROOT / source, root / source)
-            paths = [Path('scripts/prepare-bundled-content.py'), Path('scripts/content_bitmap.py'),
+            paths = [Path('scripts/prepare-bundled-content.py'), Path('scripts/content_bitmap.py'), Path('scripts/content_recipes.py'),
                      Path('prototype/content-artifacts.json'), Path('src/FreeTrain.Online.Content/bundled-v2.json'),
                      Path('src/FreeTrain.Online.Content/bundled-v2.sha256')]
             frozen = json.loads((bundled.ROOT / 'prototype/content-artifacts.json').read_text())

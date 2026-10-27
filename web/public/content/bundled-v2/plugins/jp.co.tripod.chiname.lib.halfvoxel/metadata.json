@@ -1,0 +1,276 @@
+{
+  "plugin": {
+    "id": "jp.co.tripod.chiname.lib.halfvoxel",
+    "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "半ボクセル建築",
+    "author": "C477@2両目"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/ControllerForm.resx",
+      "sourceSha256": "e2556d083002c3419d9ee106c47dc3078e046bf1a1852ffd8b765d23858fbf75",
+      "sha256": "e2556d083002c3419d9ee106c47dc3078e046bf1a1852ffd8b765d23858fbf75",
+      "bytes": 5511,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HVCursor.bmp",
+      "sourceSha256": "8f58a4c6df4c2f12776a364d7c32be9675d0d7675f7e5c5873acc05b10caafef",
+      "sha256": "8f58a4c6df4c2f12776a364d7c32be9675d0d7675f7e5c5873acc05b10caafef",
+      "bytes": 5196,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HalfVoxelContribution.cs",
+      "sourceSha256": "42a88c969c4d208ee162aacfab5f40cc41eb8ff109adb541c0ab669398e3b1f4",
+      "sha256": "42a88c969c4d208ee162aacfab5f40cc41eb8ff109adb541c0ab669398e3b1f4",
+      "bytes": 12618,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/MenuContributionImpl.cs",
+      "sourceSha256": "3634b64f272bf168d526fa6ac1f78c5568d3c3c3f41ae0d454696f44d0ff5fe2",
+      "sha256": "3634b64f272bf168d526fa6ac1f78c5568d3c3c3f41ae0d454696f44d0ff5fe2",
+      "bytes": 718,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "sha256": "3a6a0a75c0c20c242d9d074c0bb24642996c827cebbaea2ca2d65703a43ee87e",
+      "bytes": 1626,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "b994453e185df847533db1f6322ffa1d925c13173ff101e52db15e006636b317"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{HALF-VOXEL-STRUCTURE-CURSOR-IMAGE}",
+      "pluginId": "jp.co.tripod.chiname.lib.halfvoxel",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.halfvoxel:0:{HALF-VOXEL-STRUCTURE-CURSOR-IMAGE}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{HALF-VOXEL-STRUCTURE-CURSOR-IMAGE}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "HVCursor.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{COLORLIB-HIGHLIGHT}",
+      "pluginId": "jp.co.tripod.chiname.lib.halfvoxel",
+      "type": "ColorLibrary",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.halfvoxel:1:{COLORLIB-HIGHLIGHT}",
+      "implementation": {
+        "name": "freetrain.framework.plugin.graphics.ColorLibrary",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/framework/graphics/ColorLibrary.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "ColorLibrary",
+          "id": "{COLORLIB-HIGHLIGHT}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ハイライト",
+            "children": []
+          },
+          {
+            "tag": "element",
+            "attributes": {
+              "color": "0,0,0"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{01AA051B-6112-4C00-C477-DE82E240F19F}",
+      "pluginId": "jp.co.tripod.chiname.lib.halfvoxel",
+      "type": "menu",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:jp.co.tripod.chiname.lib.halfvoxel:3:{01AA051B-6112-4C00-C477-DE82E240F19F}",
+      "implementation": {
+        "name": "freetrain.world.structs.hv.MenuContributionImpl",
+        "codebase": "bin/HalfVoxelStructure.DLL",
+        "assembly": "HalfVoxelStructure",
+        "projects": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.2008.csproj",
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/FreeTrain.HalfVoxelStructure.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "menu",
+          "id": "{01AA051B-6112-4C00-C477-DE82E240F19F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.structs.hv.MenuContributionImpl",
+              "codebase": "bin/HalfVoxelStructure.DLL"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/HVCursor.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "key": "plugin/title[0]/text()",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+        "key": "plugin/title[0]/text()",
+        "text": "Half-tile Structures",
+        "sourceSha256": "4a7438ff7e7596c39c0e4cdae284f5a53b57a9b6076a14c5c95012af2b137d97"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "key": "plugin/author[0]/text()",
+      "originalText": "C477@2両目",
+      "originalTextSha256": "4322db40dbc78371a65b76f78d0146496b34c105c18b80017bd5ec2ef893adb1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "key": "plugin/contribution:{COLORLIB-HIGHLIGHT}/name[0]/text()",
+      "originalText": "ハイライト",
+      "originalTextSha256": "37064567383c442ef2309e020f5518daf9e422f623f6bf04df819d43594753bb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+        "key": "plugin/contribution:{COLORLIB-HIGHLIGHT}/name[0]/text()",
+        "text": "Highlight",
+        "sourceSha256": "4a7438ff7e7596c39c0e4cdae284f5a53b57a9b6076a14c5c95012af2b137d97"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "key": "plugin/contribution:{A8454630-96EB-45AD-C477-7DA394892BE6}/name[0]/text()",
+      "originalText": "HalfVoxelStructure",
+      "originalTextSha256": "47255f99002267a875e9ebb11ecc43d9e9d3efb29722b7116ad7d2855be7876d",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+        "key": "plugin/contribution:{A8454630-96EB-45AD-C477-7DA394892BE6}/name[0]/text()",
+        "text": "HalfVoxelStructure",
+        "sourceSha256": "4a7438ff7e7596c39c0e4cdae284f5a53b57a9b6076a14c5c95012af2b137d97"
+      },
+      "comparison": "exact-text-carryover",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

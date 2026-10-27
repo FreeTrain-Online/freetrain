@@ -1,0 +1,323 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.stationary.hima",
+    "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "信号所",
+    "author": "暇さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/Signal_cabin.bmp",
+      "sourceSha256": "ad52eabd101a9774a8abbeb61821cd432d5b623ecec1c9cd27eba6beaacf8fcc",
+      "sha256": "ad52eabd101a9774a8abbeb61821cd432d5b623ecec1c9cd27eba6beaacf8fcc",
+      "bytes": 5622,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "sha256": "490cb8b86fea1af562a0353d5c61dd99972951eb4aad84c03603fb30380d9364",
+      "bytes": 940,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "3dfd582e41249d2999eebfae1cdc4c67d95568312356c2cead9e5d6373b22f31"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{54253599-5218-4EE7-828D-563A1D91FE63}",
+      "pluginId": "org.kohsuke.freetrain.stationary.hima",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:0:{54253599-5218-4EE7-828D-563A1D91FE63}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{54253599-5218-4EE7-828D-563A1D91FE63}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "signal_cabin.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+      "pluginId": "org.kohsuke.freetrain.stationary.hima",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:1:{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "信号所",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "3000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "13"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{54253599-5218-4EE7-828D-563A1D91FE63}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+      "pluginId": "org.kohsuke.freetrain.stationary.hima",
+      "type": "railStationary",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:2:{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "railStationary",
+          "id": "{FCD0126A-4B66-48D4-824A-936EB06FC44B}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "信号所",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "32,0",
+              "offset": "13"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{54253599-5218-4EE7-828D-563A1D91FE63}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.stationary.hima/Signal_cabin.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "信号所",
+      "originalTextSha256": "769db73efd3fdfd6d0095bd508448e4a3fbf8835a15c2e269412f9698c42923a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Signal Cabin",
+        "sourceSha256": "313776e46ef65ed10e3d6b9888ec0dd55f73ed35fd38d020c28cb4e7a39df712"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "暇さん",
+      "originalTextSha256": "525622a68fba5f37a9bdb47cc37f2dcc00a460d9ec5715c1f15c1dea7c86c9b6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "key": "plug-in/contribution:{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}/group[0]/text()",
+      "originalText": "信号所",
+      "originalTextSha256": "769db73efd3fdfd6d0095bd508448e4a3fbf8835a15c2e269412f9698c42923a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+        "key": "plug-in/contribution:{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}/group[0]/text()",
+        "text": "Signal cabin",
+        "sourceSha256": "313776e46ef65ed10e3d6b9888ec0dd55f73ed35fd38d020c28cb4e7a39df712"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "key": "plug-in/contribution:{FCD0126A-4B66-48D4-824A-936EB06FC44B}/group[0]/text()",
+      "originalText": "信号所",
+      "originalTextSha256": "769db73efd3fdfd6d0095bd508448e4a3fbf8835a15c2e269412f9698c42923a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+        "key": "plug-in/contribution:{FCD0126A-4B66-48D4-824A-936EB06FC44B}/group[0]/text()",
+        "text": "Signal cabin",
+        "sourceSha256": "313776e46ef65ed10e3d6b9888ec0dd55f73ed35fd38d020c28cb4e7a39df712"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

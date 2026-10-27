@@ -6,6 +6,7 @@ using System.Text.Json;
 namespace FreeTrain.Online.Content;
 
 public sealed record PreparedDefinition(string Id, string PluginId, string Type, JsonElement Declaration);
+public sealed record RenderRecipe(string Id, string PluginId, string Handler, JsonElement Data);
 public sealed record PreparedPicture(string Id, bool HasPreparedVariants, JsonElement Data);
 
 // Inert authoring data, deliberately separate from WorldProfiles. Finding a
@@ -16,6 +17,7 @@ public sealed class PreparedContentCatalog
     public const string SourceRevision = "883cf7d81cf49db25ff38cd3a25d0f140afe31a0";
     private readonly FrozenDictionary<string, PreparedDefinition> definitions;
     private readonly FrozenDictionary<string, PreparedPicture> pictures;
+    private readonly FrozenDictionary<string, RenderRecipe> renderRecipes;
     private static readonly Lazy<PreparedContentCatalog> bundled = new(LoadEmbedded);
     public static PreparedContentCatalog Bundled => bundled.Value;
     public string PackId { get; }
@@ -24,12 +26,16 @@ public sealed class PreparedContentCatalog
     public ImmutableArray<string> PluginOrder { get; }
     public ImmutableArray<PreparedDefinition> Definitions { get; }
     public ImmutableArray<PreparedPicture> Pictures { get; }
+    public ImmutableArray<RenderRecipe> RenderRecipes { get; }
     public bool GameplayAvailable => false;
 
     public PreparedDefinition? FindDefinition(string packId, string id) =>
         packId == PackId ? definitions.GetValueOrDefault(id) : null;
     public PreparedPicture? FindPicture(string packId, string id) =>
         packId == PackId ? pictures.GetValueOrDefault(id) : null;
+
+    public RenderRecipe? FindRenderRecipe(string packId, string id) =>
+        packId == PackId ? renderRecipes.GetValueOrDefault(id) : null;
 
     public static PreparedContentCatalog Read(ReadOnlyMemory<byte> data, string expectedHash)
     {
@@ -41,14 +47,14 @@ public sealed class PreparedContentCatalog
 
     private PreparedContentCatalog(JsonElement root, string hash)
     {
-        if (root.GetProperty("schemaVersion").GetInt32() != 1 ||
+        if (root.GetProperty("schemaVersion").GetInt32() != 2 ||
             root.GetProperty("packId").GetString() != BundledPackId ||
-            root.GetProperty("version").GetString() != "1" ||
+            root.GetProperty("version").GetString() != "2" ||
             root.GetProperty("source").GetProperty("revision").GetString() != SourceRevision ||
             root.GetProperty("source").GetProperty("subtree").GetString() != "trunk" ||
             root.GetProperty("status").GetString() != "prepared; not selected by a world profile")
             throw new ArgumentException("Unsupported prepared catalog identity.");
-        PackId = BundledPackId; Version = "1"; CatalogHash = hash;
+        PackId = BundledPackId; Version = "2"; CatalogHash = hash;
         PluginOrder = root.GetProperty("pluginOrder").EnumerateArray().Select(p => p.GetString()!).ToImmutableArray();
         var pluginIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var plugin in root.GetProperty("plugins").EnumerateArray())
@@ -78,6 +84,31 @@ public sealed class PreparedContentCatalog
             throw new ArgumentException("Duplicate prepared registry identity.");
         definitions = Definitions.ToFrozenDictionary(d => d.Id, StringComparer.Ordinal);
         pictures = Pictures.ToFrozenDictionary(p => p.Id, StringComparer.Ordinal);
+        RenderRecipes = root.GetProperty("renderRecipes").EnumerateArray().Select(row =>
+        {
+            var id = row.GetProperty("id").GetString()!;
+            var plugin = row.GetProperty("pluginId").GetString()!;
+            if (!pluginIds.Contains(plugin) || (!definitions.ContainsKey(id) && !id.StartsWith("system:", StringComparison.Ordinal)))
+                throw new ArgumentException("Invalid render recipe identity.");
+            foreach (var frame in row.GetProperty("frames").EnumerateArray())
+            {
+                var status = frame.GetProperty("status").GetString();
+                if (status == "invisible") continue;
+                if (status is not ("ready" or "invalid-source-crop") ||
+                    !pictures.ContainsKey(frame.GetProperty("pictureId").GetString()!) ||
+                    frame.GetProperty("rectangle").GetArrayLength() != 4 ||
+                    frame.GetProperty("anchor").GetArrayLength() != 2 ||
+                    frame.GetProperty("cell").GetArrayLength() != 3 ||
+                    !root.GetProperty("surfaceSets").TryGetProperty(frame.GetProperty("surfaceSet").GetString()!, out _) ||
+                    !root.GetProperty("surfaceSets").TryGetProperty(frame.GetProperty("baseSurfaceSet").GetString()!, out _))
+                    throw new ArgumentException("Invalid render frame binding.");
+            }
+            return new RenderRecipe(id, plugin, row.GetProperty("handler").GetString()!, row.Clone());
+        }).ToImmutableArray();
+        if (RenderRecipes.Select(r => r.Id).Distinct(StringComparer.Ordinal).Count() != RenderRecipes.Length ||
+            Definitions.Any(d => !RenderRecipes.Any(r => r.Id == d.Id)))
+            throw new ArgumentException("Missing or duplicate render recipe.");
+        renderRecipes = RenderRecipes.ToFrozenDictionary(r => r.Id, StringComparer.Ordinal);
         foreach (var alias in root.GetProperty("selections").EnumerateArray())
             if (!definitions.ContainsKey(alias.GetProperty("target").GetString()!))
                 throw new ArgumentException("Unresolved prepared selection.");

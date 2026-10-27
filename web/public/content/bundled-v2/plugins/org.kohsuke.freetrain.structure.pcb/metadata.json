@@ -1,0 +1,286 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.structure.pcb",
+    "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "建物セット",
+    "author": "ばんかれさん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/drug.bmp",
+      "sourceSha256": "d3b3acd13977fae1d81acd5cc4d9a4faa6200ae757c4f1a7760b2dbd313ea278",
+      "sha256": "d3b3acd13977fae1d81acd5cc4d9a4faa6200ae757c4f1a7760b2dbd313ea278",
+      "bytes": 6198,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/park.bmp",
+      "sourceSha256": "260336bdc1a6d9d89b12610fb14324e4e53d118a92ab755fbcecaa071311ce71",
+      "sha256": "260336bdc1a6d9d89b12610fb14324e4e53d118a92ab755fbcecaa071311ce71",
+      "bytes": 7990,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "sha256": "f08e2df4d337b81afcbd2564b027b0437637418a9a62a729e4f2157efa6c7dc8",
+      "bytes": 931,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "962704f66fa93c00a6118de8acd24c56726d208f6d59ee57b68cd6a0f92b0560"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/super.bmp",
+      "sourceSha256": "786977a3cc918a61d432269ad00e4e477428e2de659b47ec3f2a8731f52b78a3",
+      "sha256": "786977a3cc918a61d432269ad00e4e477428e2de659b47ec3f2a8731f52b78a3",
+      "bytes": 5302,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{10146B06-4D3C-40E2-BA95-AE51FA611DA5}",
+      "pluginId": "org.kohsuke.freetrain.structure.pcb",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.pcb:0:{10146B06-4D3C-40E2-BA95-AE51FA611DA5}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{10146B06-4D3C-40E2-BA95-AE51FA611DA5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "park.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{72AF542C-3251-43ad-9094-43E6FDDE9420}",
+      "pluginId": "org.kohsuke.freetrain.structure.pcb",
+      "type": "varHeightBuilding",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.structure.pcb:1:{72AF542C-3251-43ad-9094-43E6FDDE9420}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.VarHeightBuildingContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/VarHeightBuildingContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "varHeightBuilding",
+          "id": "{72AF542C-3251-43ad-9094-43E6FDDE9420}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "立体駐車場",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "24000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "minHeight",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "maxHeight",
+            "attributes": {},
+            "text": "10",
+            "children": []
+          },
+          {
+            "tag": "pictures",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "top",
+                "attributes": {
+                  "origin": "0, 0",
+                  "offset": "16"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "picture",
+                    "attributes": {
+                      "ref": "{10146B06-4D3C-40E2-BA95-AE51FA611DA5}"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "middle",
+                "attributes": {
+                  "origin": "0,40",
+                  "offset": "10"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "picture",
+                    "attributes": {
+                      "ref": "{10146B06-4D3C-40E2-BA95-AE51FA611DA5}"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "bottom",
+                "attributes": {
+                  "origin": "0,74",
+                  "offset": "10"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "picture",
+                    "attributes": {
+                      "ref": "{10146B06-4D3C-40E2-BA95-AE51FA611DA5}"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-variable"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.structure.pcb/drug.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.pcb/park.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.structure.pcb/super.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "建物セット",
+      "originalTextSha256": "f1b1a4d6ed941fbbd1b8f91ee755b30625b9e01d6ae155d4d66904506eee9d8e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Parking Garage",
+        "sourceSha256": "14223374d3e501a0eccc18ebcb2be40aed34288d4f10fc05b628864f6a60df6a"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "ばんかれさん",
+      "originalTextSha256": "ac74715ea47589b239ca9c325e8cc30ed1dc4ccdbe3eb15f0a5b57ee51880152",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "key": "plug-in/contribution:{72AF542C-3251-43ad-9094-43E6FDDE9420}/group[0]/text()",
+      "originalText": "立体駐車場",
+      "originalTextSha256": "eaedfc393f54fe28f4466d469b82bb820e3b678fd78a1f8b8da8bbb6a7ba3d50",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+        "key": "plug-in/contribution:{72AF542C-3251-43ad-9094-43E6FDDE9420}/group[0]/text()",
+        "text": "Parking garage",
+        "sourceSha256": "14223374d3e501a0eccc18ebcb2be40aed34288d4f10fc05b628864f6a60df6a"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

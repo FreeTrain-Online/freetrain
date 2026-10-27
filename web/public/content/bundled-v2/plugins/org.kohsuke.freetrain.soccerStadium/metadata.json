@@ -1,0 +1,359 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.soccerStadium",
+    "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "サッカースタジアム",
+    "author": "プレミア好きさん＆川口耕介"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "sha256": "ba6e992c310a6ced3f052dcd055b64912722d1e374ecb1fd9461c100d3a1a06f",
+      "bytes": 1559,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "5070fe553d97a1a3b69ca0254d610d722e1451f83a9020c438bbb2b1c836d1fb"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/ContributionImpl.cs",
+      "sourceSha256": "7bd5894d60595554d09d8d63174e62db768aec43a1523f4854694995534bec69",
+      "sha256": "7bd5894d60595554d09d8d63174e62db768aec43a1523f4854694995534bec69",
+      "bytes": 598,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StadiumPropertyDialog.resx",
+      "sourceSha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "sha256": "031312dd30d0f17bd38db27eb7353672d378567347c872461d281ef158c70b5a",
+      "bytes": 5814,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StructureContributionImpl.cs",
+      "sourceSha256": "81bb5eba7c2ead7f34a0290717d67507940efce052590746fdafbcb9a431bb5b",
+      "sha256": "81bb5eba7c2ead7f34a0290717d67507940efce052590746fdafbcb9a431bb5b",
+      "bytes": 1124,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/stadium.bmp",
+      "sourceSha256": "e0dcd382e57996bed33a8e939553f969d053ff727715650daa96e38eb795d1e1",
+      "sha256": "e0dcd382e57996bed33a8e939553f969d053ff727715650daa96e38eb795d1e1",
+      "bytes": 102966,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/stadium_n.bmp",
+      "sourceSha256": "16d2bbe074115bddb2ff62c79be03ac7124175875be19b39a3c4e1064d0ffeb2",
+      "sha256": "16d2bbe074115bddb2ff62c79be03ac7124175875be19b39a3c4e1064d0ffeb2",
+      "bytes": 102966,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{458C17B4-9426-4060-97B5-9A7090664175}",
+      "pluginId": "org.kohsuke.freetrain.soccerStadium",
+      "type": "specialStructure",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.soccerStadium:0:{458C17B4-9426-4060-97B5-9A7090664175}",
+      "implementation": {
+        "name": "freetrain.world.soccerstadium.ContributionImpl",
+        "codebase": "bin/FreeTrain.SoccerStadium.dll",
+        "assembly": "FreeTrain.SoccerStadium",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/FreeTrain.SoccerStadium.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/FreeTrain.SoccerStadium.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/ContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialStructure",
+          "id": "{458C17B4-9426-4060-97B5-9A7090664175}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.soccerstadium.ContributionImpl",
+              "codebase": "bin/FreeTrain.SoccerStadium.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{0EB17496-838E-43c8-941F-896EAF9396AF}",
+      "pluginId": "org.kohsuke.freetrain.soccerStadium",
+      "type": "anonymous",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.soccerStadium:1:{0EB17496-838E-43c8-941F-896EAF9396AF}",
+      "implementation": {
+        "name": "freetrain.world.soccerstadium.StructureContributionImpl",
+        "codebase": "bin/FreeTrain.SoccerStadium.dll",
+        "assembly": "FreeTrain.SoccerStadium",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/FreeTrain.SoccerStadium.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/FreeTrain.SoccerStadium.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.soccerStadium/src/StructureContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "anonymous",
+          "id": "{0EB17496-838E-43c8-941F-896EAF9396AF}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.soccerstadium.StructureContributionImpl",
+              "codebase": "bin/FreeTrain.SoccerStadium.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "サッカースタジアム",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "330000000",
+            "children": []
+          },
+          {
+            "tag": "capacity",
+            "attributes": {},
+            "text": "40000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "10,6",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "78"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "src": "stadium.bmp"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "override",
+                    "attributes": {
+                      "when": "night",
+                      "src": "stadium_n.bmp"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.world.soccerstadium.PopulationImpl",
+                  "codebase": "bin/FreeTrain.SoccerStadium.dll"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{2669F15B-66F2-4c77-8A48-1A20783EB9F5}",
+      "pluginId": "org.kohsuke.freetrain.soccerStadium",
+      "type": "accountGenre",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.soccerStadium:2:{2669F15B-66F2-4c77-8A48-1A20783EB9F5}",
+      "implementation": {
+        "name": "freetrain.world.accounting.AccountGenre",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/accounting/AccountGenre.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "accountGenre",
+          "id": "{2669F15B-66F2-4c77-8A48-1A20783EB9F5}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "サッカーチーム",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.soccerStadium/stadium.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.soccerStadium/stadium_n.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "サッカースタジアム",
+      "originalTextSha256": "2bb450a1bf272505cc6e2f3f226ccdf65d78faff781b1bae55b49cc686268537",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Soccer Stadium",
+        "sourceSha256": "2708c9a440d409d7294bc95e740dafcfa28154fb7bdb8caf12bace96bdc52183"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "プレミア好きさん＆川口耕介",
+      "originalTextSha256": "07aa54e3a3e82c68173b2552fcf3500fda6d6269c1b6afc0cf672a51790f23b1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "key": "plug-in/contribution:{0EB17496-838E-43c8-941F-896EAF9396AF}/name[0]/text()",
+      "originalText": "サッカースタジアム",
+      "originalTextSha256": "2bb450a1bf272505cc6e2f3f226ccdf65d78faff781b1bae55b49cc686268537",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+        "key": "plug-in/contribution:{0EB17496-838E-43c8-941F-896EAF9396AF}/name[0]/text()",
+        "text": "Soccer Stadium",
+        "sourceSha256": "2708c9a440d409d7294bc95e740dafcfa28154fb7bdb8caf12bace96bdc52183"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "key": "plug-in/contribution:{2669F15B-66F2-4c77-8A48-1A20783EB9F5}/name[0]/text()",
+      "originalText": "サッカーチーム",
+      "originalTextSha256": "5716284d0e1f99d84c007d78a17260d350d48d91c320244013dbc0a240b9fbdb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+        "key": "plug-in/contribution:{2669F15B-66F2-4c77-8A48-1A20783EB9F5}/name[0]/text()",
+        "text": "Soccer Team",
+        "sourceSha256": "2708c9a440d409d7294bc95e740dafcfa28154fb7bdb8caf12bace96bdc52183"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

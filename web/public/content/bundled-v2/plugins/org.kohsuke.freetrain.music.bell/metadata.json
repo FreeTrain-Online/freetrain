@@ -1,0 +1,380 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.music.bell",
+    "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "発車ベルセット",
+    "author": "915さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/bell1.wav",
+      "sourceSha256": "224c4763983e563f5bbe406bdadb35a60d863837837d469ed458ff8cd3f2c264",
+      "sha256": "224c4763983e563f5bbe406bdadb35a60d863837837d469ed458ff8cd3f2c264",
+      "bytes": 25490,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/bell2.wav",
+      "sourceSha256": "739254e91df95da22c7ccc595b45730ce1965039ea6283127f29c4b2f2b53829",
+      "sha256": "739254e91df95da22c7ccc595b45730ce1965039ea6283127f29c4b2f2b53829",
+      "bytes": 28412,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/eidan1.wav",
+      "sourceSha256": "478c36420e51ce016c9c0686d6affd0245d6bdd753fd85f4ee1a60cb9950b323",
+      "sha256": "478c36420e51ce016c9c0686d6affd0245d6bdd753fd85f4ee1a60cb9950b323",
+      "bytes": 28505,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/eidan2.wav",
+      "sourceSha256": "4c6f3b7407d0c99538795c6672812e91bf8cefb527d64632e0eef640fffdb7b7",
+      "sha256": "4c6f3b7407d0c99538795c6672812e91bf8cefb527d64632e0eef640fffdb7b7",
+      "bytes": 27273,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "sha256": "ce67a6c517b72ec9339db611fae5d9c4d25e2e2b68103db5e6636556409afe08",
+      "bytes": 849,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "22ac62f2cdee9e5c349b00821402393ccd288f822ec0f39db380595a64117ad9"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{607AA03D-4203-459E-A835-F4067A32E4B6}",
+      "pluginId": "org.kohsuke.freetrain.music.bell",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music.bell:0:{607AA03D-4203-459E-A835-F4067A32E4B6}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{607AA03D-4203-459E-A835-F4067A32E4B6}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ピリリリ",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "bell1.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{96B8B6EC-1793-445D-98B3-7F9330438CF9}",
+      "pluginId": "org.kohsuke.freetrain.music.bell",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music.bell:1:{96B8B6EC-1793-445D-98B3-7F9330438CF9}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{96B8B6EC-1793-445D-98B3-7F9330438CF9}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ポロロロ",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "bell2.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{3528F039-4F73-4592-BE7A-624877DB135A}",
+      "pluginId": "org.kohsuke.freetrain.music.bell",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music.bell:2:{3528F039-4F73-4592-BE7A-624877DB135A}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{3528F039-4F73-4592-BE7A-624877DB135A}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "プー",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "eidan1.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{FC3471E1-D104-4C31-9055-FC3B5B83B97F}",
+      "pluginId": "org.kohsuke.freetrain.music.bell",
+      "type": "trainDepartureBell",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.music.bell:3:{FC3471E1-D104-4C31-9055-FC3B5B83B97F}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.DepartureBellContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/DepartureBellContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "trainDepartureBell",
+          "id": "{FC3471E1-D104-4C31-9055-FC3B5B83B97F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "ピー",
+            "children": []
+          },
+          {
+            "tag": "sound",
+            "attributes": {
+              "href": "eidan2.wav"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "audio-segment"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.music.bell/bell1.wav",
+    "trunk/plugins/org.kohsuke.freetrain.music.bell/bell2.wav",
+    "trunk/plugins/org.kohsuke.freetrain.music.bell/eidan1.wav",
+    "trunk/plugins/org.kohsuke.freetrain.music.bell/eidan2.wav"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "発車ベルセット",
+      "originalTextSha256": "ed9532e6f156f557b292ef05ec37258cde6cecc016a95ebd2d9d3251f9111e4c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Departure Bell Set",
+        "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "915さん",
+      "originalTextSha256": "1ba9abf0b92c82852e07ff2969fe7fbdebca953d8ab01aecbe4262896a0d5e2a",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/contribution:{607AA03D-4203-459E-A835-F4067A32E4B6}/name[0]/text()",
+      "originalText": "ピリリリ",
+      "originalTextSha256": "6244a8706ed01b13c51fd65d23b52b62bddf803cb9a0af05f68cb301ce3f42a8",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+        "key": "plug-in/contribution:{607AA03D-4203-459E-A835-F4067A32E4B6}/name[0]/text()",
+        "text": "Bell 1",
+        "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/contribution:{96B8B6EC-1793-445D-98B3-7F9330438CF9}/name[0]/text()",
+      "originalText": "ポロロロ",
+      "originalTextSha256": "fa326510e62cb1f07ad7865360a3a4b22f6179bcfa648ea7145745cf4ea4f358",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+        "key": "plug-in/contribution:{96B8B6EC-1793-445D-98B3-7F9330438CF9}/name[0]/text()",
+        "text": "Bell 2",
+        "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/contribution:{3528F039-4F73-4592-BE7A-624877DB135A}/name[0]/text()",
+      "originalText": "プー",
+      "originalTextSha256": "7a6a9c5809347808eda96c886515216c6c61b4ebd4b6c939c89d81aee45ab379",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+        "key": "plug-in/contribution:{3528F039-4F73-4592-BE7A-624877DB135A}/name[0]/text()",
+        "text": "Bell 3",
+        "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "key": "plug-in/contribution:{FC3471E1-D104-4C31-9055-FC3B5B83B97F}/name[0]/text()",
+      "originalText": "ピー",
+      "originalTextSha256": "8f50762879a32c64226e83aeada5666637cf722bcb1d645b4bc96ca0da1f9f7b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+        "key": "plug-in/contribution:{FC3471E1-D104-4C31-9055-FC3B5B83B97F}/name[0]/text()",
+        "text": "Bell 4",
+        "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

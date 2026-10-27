@@ -161,10 +161,13 @@ deno task --cwd web check:content
 
 These tasks use the Python standard library and [checked-in stable ExAV inputs](content/README.md).
 They validate pinned source hashes and produce identical server/browser catalogs,
-213 native-size bitmap sheets with day/night PNGs, 141 seasonal picture bindings,
+213 native-size bitmap sheets with day/night PNGs, 159 seasonal/code picture bindings,
 other native media and original notices under `web/public/content/bundled-v2/`.
-The 448 prepared contribution records are metadata; full executable recipes and
-gameplay remain open. See [P2-01 evidence and follow-ups](doc/web-parity-bundled-preparation.md).
+The bundle has 812 executable art recipes, source effects/anchors and active
+variant masks. Gameplay registrations remain separate. Generated media preserve
+`plugins/<original-plugin-id>/` and distribute per-image provenance and plugin
+metadata. Open `/content-gallery.html` for read-only recipe/variant inspection.
+See [P2-02 attribution, rendering and acceptance limits](doc/web-parity-recipes.md).
 
 Default builds and Docker need no archive checkout, historical `core/`/`plugins/`
 trees or optional repository. To refresh or verify the source bundle explicitly:

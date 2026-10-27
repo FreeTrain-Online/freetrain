@@ -20,7 +20,7 @@ Deno.test('prepared resources keep their hashes, native dimensions and explicit 
     for (const mode of ['day', 'night', 'native']) {
       if (!asset[mode]) continue;
       const descriptor = asset[mode];
-      assert(descriptor.url.startsWith('/content/bundled-v2/media/') && !descriptor.url.includes('..'));
+      assert(descriptor.url.startsWith('/content/bundled-v2/') && descriptor.url.includes('/media/') && !descriptor.url.includes('..'));
       const bytes = await file(`web/public${descriptor.url}`);
       assert(await sha(bytes) === descriptor.sha256 && bytes.length === descriptor.bytes, asset.path);
       if (asset.mediaType === 'bmp') {
@@ -30,5 +30,5 @@ Deno.test('prepared resources keep their hashes, native dimensions and explicit 
     }
   }
   assert(catalog.assets.filter((a: {status: string}) => a.status === 'retained-midi; playback-adapter-pending').length === 3);
-  assert(catalog.pictures.filter((p: {status: string}) => p.status === 'prepared-picture').length === 141);
+  assert(catalog.pictures.filter((p: {status: string}) => p.status === 'prepared-picture').length === 159);
 });

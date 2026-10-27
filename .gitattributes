@@ -7,3 +7,5 @@ src/FreeTrain.Online.Content/bundled-v2.json text eol=lf
 src/FreeTrain.Online.Content/bundled-v2.sha256 text eol=lf
 web/public/content/bundled-v2/catalog.json text eol=lf
 web/public/content/bundled-v2/catalog.sha256 text eol=lf
+web/public/content/bundled-v2/**/*.json text eol=lf
+web/public/content/bundled-v2/provenance.json text eol=lf

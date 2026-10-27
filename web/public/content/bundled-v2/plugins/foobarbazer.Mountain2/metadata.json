@@ -1,0 +1,117 @@
+{
+  "plugin": {
+    "id": "foobarbazer.Mountain2",
+    "path": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "地形操作２",
+    "author": "foobar"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+      "sourceSha256": "1c0e98394951472b44cd553049061a6c38c01704c950c3df69bd18257a35e77f",
+      "sha256": "62329bc2edefba85cc4dcecda0ae7d432f72eff70d599b8d98cd7147b14ac430",
+      "bytes": 375,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "2f6c64dce8fa954d680b384d4650a897cf44dda9f365eb9344fdcb9d1a4be2e8"
+    },
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs",
+      "sourceSha256": "f1f345e06ed294c7763c55752650e377f120832417e4af95e642de8ab2574df4",
+      "sha256": "f1f345e06ed294c7763c55752650e377f120832417e4af95e642de8ab2574df4",
+      "bytes": 653,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/src/Mountain2Controller.resx",
+      "sourceSha256": "aa1584101aec4fa22eb3e360658cf0283f8041bcff5cd1eea1551c2db4cc5140",
+      "sha256": "aa1584101aec4fa22eb3e360658cf0283f8041bcff5cd1eea1551c2db4cc5140",
+      "bytes": 4850,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/src/app.config",
+      "sourceSha256": "bc22384394191e57727bee7136fffd077ce8b44b15e3696f2d0e4d2910620048",
+      "sha256": "bc22384394191e57727bee7136fffd077ce8b44b15e3696f2d0e4d2910620048",
+      "bytes": 120,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{67F02513-0FAE-49ec-8821-B1B90928B053}",
+      "pluginId": "foobarbazer.Mountain2",
+      "type": "specialStructure",
+      "sourcePath": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:foobarbazer.Mountain2:0:{67F02513-0FAE-49ec-8821-B1B90928B053}",
+      "implementation": {
+        "name": "freetrain.controllers.terrain.Mountain2ContributionImpl",
+        "codebase": "bin/Debug/FreeTrain.Mountain2.dll",
+        "assembly": "FreeTrain.Mountain2",
+        "projects": [
+          "trunk/plugins/foobarbazer.Mountain2/FreeTrain.Mountain2.2008.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/foobarbazer.Mountain2/src/Mountain2Contribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialStructure",
+          "id": "{67F02513-0FAE-49ec-8821-B1B90928B053}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.controllers.terrain.Mountain2ContributionImpl",
+              "codebase": "bin/Debug/FreeTrain.Mountain2.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [],
+  "translations": [
+    {
+      "path": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+      "sourceSha256": "1c0e98394951472b44cd553049061a6c38c01704c950c3df69bd18257a35e77f",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "地形操作２",
+      "originalTextSha256": "e3dcc506f6e3c3dae36ec97ecae3ffcf89fac6bb243df160d25ccca54e622eea",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

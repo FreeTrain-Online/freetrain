@@ -1,0 +1,138 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.terrain.terrace",
+    "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "雛壇と切り通し",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/Terrace.bmp",
+      "sourceSha256": "7b9400ef9553c6b096f09e9934084a861e29ba8a788ffcf387463a39e87df9af",
+      "sha256": "7b9400ef9553c6b096f09e9934084a861e29ba8a788ffcf387463a39e87df9af",
+      "bytes": 2358,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "sourceSha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "sha256": "7cfbb57e17767b9acc799520f15e05dce4eae6668332f24faa43d25ca0f2b60e",
+      "bytes": 412,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "c9939a9a9ee0da976a9b65d76e33096235d87fbbeb552468464a25ed7e368b4a"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+      "sourceSha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+      "sha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+      "bytes": 759,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.resx",
+      "sourceSha256": "d9309abdb0de4a261b07f8326dbdd2d12cd4a52da37ea93ddee62a1d1e888529",
+      "sha256": "d9309abdb0de4a261b07f8326dbdd2d12cd4a52da37ea93ddee62a1d1e888529",
+      "bytes": 5327,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}",
+      "pluginId": "org.kohsuke.freetrain.terrain.terrace",
+      "type": "specialStructure",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.terrain.terrace:0:{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}",
+      "implementation": {
+        "name": "freetrain.world.terrain.terrace.TerraceContributionImpl",
+        "codebase": "bin/FreeTrain.Terrace.dll",
+        "assembly": "FreeTrain.Terrace",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/FreeTrain.Terrace.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/FreeTrain.Terrace.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "specialStructure",
+          "id": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.terrain.terrace.TerraceContributionImpl",
+              "codebase": "bin/FreeTrain.Terrace.dll"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-effects",
+        "rail-accessories"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/Terrace.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "sourceSha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "雛壇と切り通し",
+      "originalTextSha256": "2890af09a87cf05fc660e46fe56e6e3676abff55c6991db816c7cd05600db296",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Terraces & Cuts",
+        "sourceSha256": "460dafbd986a1f38c8637df1f091cdbdc6a0070b931b45396531386dd93a3075"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "sourceSha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

@@ -1,0 +1,2051 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.477",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "農家とビニールハウス",
+    "author": "477さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse01.WIN.bmp",
+      "sourceSha256": "02b5dfc4bc93002df171a10965c675e0dfe17211122edd91542db1351a904ab3",
+      "sha256": "02b5dfc4bc93002df171a10965c675e0dfe17211122edd91542db1351a904ab3",
+      "bytes": 15416,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse01.bmp",
+      "sourceSha256": "bf88b94ca7984c49e51736e23c02c385c0c8397485c75c016e4020a5bf5ec980",
+      "sha256": "bf88b94ca7984c49e51736e23c02c385c0c8397485c75c016e4020a5bf5ec980",
+      "bytes": 15416,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse02.WIN.bmp",
+      "sourceSha256": "2197679a54b404ee378c1dcf2e8e53390c1a8e9ba4c33a18a9b624608ee71344",
+      "sha256": "2197679a54b404ee378c1dcf2e8e53390c1a8e9ba4c33a18a9b624608ee71344",
+      "bytes": 15416,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse02.bmp",
+      "sourceSha256": "9b6a15d8eed3e2b7634c9a836610b024c9a685dc39c7a24f4698db577bed1f9e",
+      "sha256": "9b6a15d8eed3e2b7634c9a836610b024c9a685dc39c7a24f4698db577bed1f9e",
+      "bytes": 15416,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse03.WIN.bmp",
+      "sourceSha256": "a0d6a4028fd24a93399831b25787e575040473d329e40bf99dd8c2a2d714589a",
+      "sha256": "a0d6a4028fd24a93399831b25787e575040473d329e40bf99dd8c2a2d714589a",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse03.bmp",
+      "sourceSha256": "fffc380cc8f84c3ca6c7aec24936b392ee8956ac7821f824e545899d3e9b5066",
+      "sha256": "fffc380cc8f84c3ca6c7aec24936b392ee8956ac7821f824e545899d3e9b5066",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse04.WIN.bmp",
+      "sourceSha256": "f5efdd5f88de45e2b9b3a5365d13ae1a3db25fb1c84893ea8a4c7df720ebdb7f",
+      "sha256": "f5efdd5f88de45e2b9b3a5365d13ae1a3db25fb1c84893ea8a4c7df720ebdb7f",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse04.bmp",
+      "sourceSha256": "c5428c4da5f318a4d78609eb3da783cec6433b7699bb94257da3baed37d76f6e",
+      "sha256": "c5428c4da5f318a4d78609eb3da783cec6433b7699bb94257da3baed37d76f6e",
+      "bytes": 27704,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "sha256": "cfe4bcdd5f31ad6bc4b69ce17ae4c1b7dc48734da3c89fe2118f2ae88107ebc1",
+      "bytes": 6200,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "8d2fe44e9ff62de8aab53a08e536f9c8bafa54e2aa82d905edd705634bd2c8d0"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs",
+      "sourceSha256": "7a9ad6755368ac44960c453b5bfc41a561e640b03f59a04c13d6d08481ac192c",
+      "sha256": "7a9ad6755368ac44960c453b5bfc41a561e640b03f59a04c13d6d08481ac192c",
+      "bytes": 4065,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/vinylhouse.bmp",
+      "sourceSha256": "7f708e68b5ef227de1a02b6345c4c67b03de3f7528682ad550bf60f8d665c4e2",
+      "sha256": "7f708e68b5ef227de1a02b6345c4c67b03de3f7528682ad550bf60f8d665c4e2",
+      "bytes": 13880,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{5981B3EA-5CCF-4DB2-94DC-B7EC854987D7}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:0:{5981B3EA-5CCF-4DB2-94DC-B7EC854987D7}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{5981B3EA-5CCF-4DB2-94DC-B7EC854987D7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "vinylhouse.bmp"
+            },
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{66B81CAD-8B41-416C-8624-137C2D8110F2}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:1:{66B81CAD-8B41-416C-8624-137C2D8110F2}",
+      "implementation": {
+        "name": "freetrain.world.land.vinylhouse.XVinylHouseBuilder",
+        "codebase": "bin/FreeTrain.VinylHouse.dll",
+        "assembly": "FreeTrain.VinylHouse",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.477/FreeTrain.VinylHouse.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.477/FreeTrain.VinylHouse.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{66B81CAD-8B41-416C-8624-137C2D8110F2}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "ビニールハウス",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.vinylhouse.XVinylHouseBuilder",
+              "codebase": "bin/FreeTrain.VinylHouse.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{5981B3EA-5CCF-4DB2-94DC-B7EC854987D7}",
+              "offset": "0"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "200000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{4F97D7DD-749E-4B65-BF13-5733B10D8570}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:2:{4F97D7DD-749E-4B65-BF13-5733B10D8570}",
+      "implementation": {
+        "name": "freetrain.world.land.vinylhouse.YVinylHouseBuilder",
+        "codebase": "bin/FreeTrain.VinylHouse.dll",
+        "assembly": "FreeTrain.VinylHouse",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.477/FreeTrain.VinylHouse.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.477/FreeTrain.VinylHouse.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.477/src/VinylHouseBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{4F97D7DD-749E-4B65-BF13-5733B10D8570}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "ビニールハウス",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.vinylhouse.YVinylHouseBuilder",
+              "codebase": "bin/FreeTrain.VinylHouse.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "ref": "{5981B3EA-5CCF-4DB2-94DC-B7EC854987D7}",
+              "offset": "32"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "200000",
+            "children": []
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.AgriculturalPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "5",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{BBDB4BE4-FAFE-490B-916F-4B11DCFB8182}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:3:{BBDB4BE4-FAFE-490B-916F-4B11DCFB8182}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{BBDB4BE4-FAFE-490B-916F-4B11DCFB8182}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "farmhouse01.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "farmhouse01.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:4:{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(大)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{BBDB4BE4-FAFE-490B-916F-4B11DCFB8182}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{B7C82C4E-015A-407D-9F10-5D198384B702}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:5:{B7C82C4E-015A-407D-9F10-5D198384B702}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{B7C82C4E-015A-407D-9F10-5D198384B702}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(大)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{BBDB4BE4-FAFE-490B-916F-4B11DCFB8182}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{29ECCBC4-BCCB-4E72-AF90-7325A811194E}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:6:{29ECCBC4-BCCB-4E72-AF90-7325A811194E}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{29ECCBC4-BCCB-4E72-AF90-7325A811194E}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "farmhouse02.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "farmhouse02.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{01799382-3860-4BF6-BE11-F2E40DA093E7}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:7:{01799382-3860-4BF6-BE11-F2E40DA093E7}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{01799382-3860-4BF6-BE11-F2E40DA093E7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(大)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": " 0,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{29ECCBC4-BCCB-4E72-AF90-7325A811194E}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{F7043E4A-402D-43D1-8732-C30F52979B08}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:8:{F7043E4A-402D-43D1-8732-C30F52979B08}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{F7043E4A-402D-43D1-8732-C30F52979B08}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(大)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "2000000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "64,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{29ECCBC4-BCCB-4E72-AF90-7325A811194E}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:9:{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "farmhouse03.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "farmhouse03.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:10:{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "32"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{D6454FB2-A717-4862-A1B2-1A5113D686E0}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:11:{D6454FB2-A717-4862-A1B2-1A5113D686E0}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{D6454FB2-A717-4862-A1B2-1A5113D686E0}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "24"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{238A1579-28EB-45FF-ADEC-71D65C067435}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:12:{238A1579-28EB-45FF-ADEC-71D65C067435}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{238A1579-28EB-45FF-ADEC-71D65C067435}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "32"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:13:{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "24"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{171F794F-5305-4DCE-8BBD-9CFEB33BC5C2}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:14:{8A2DF9AA-92CA-4760-8064-7973A52AF760}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "farmhouse04.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "farmhouse04.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:15:{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0,0",
+              "offset": "32"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{DC418AA8-1D26-4B85-92DD-22938607D708}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:16:{DC418AA8-1D26-4B85-92DD-22938607D708}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{DC418AA8-1D26-4B85-92DD-22938607D708}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "24"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{28548323-07D9-476F-8B91-99F033FE117F}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:17:{28548323-07D9-476F-8B91-99F033FE117F}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{28548323-07D9-476F-8B91-99F033FE117F}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "32"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{8D849B40-605F-4807-AB0C-5708CFA8D682}",
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "type": "commercial",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.477:18:{8D849B40-605F-4807-AB0C-5708CFA8D682}",
+      "implementation": {
+        "name": "freetrain.contributions.structs.CommercialStructureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/structs/CommercialStructureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "commercial",
+          "id": "{8D849B40-605F-4807-AB0C-5708CFA8D682}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "農家(中)",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "1500000",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "2",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "24"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{8A2DF9AA-92CA-4760-8064-7973A52AF760}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "population",
+            "attributes": {},
+            "text": "",
+            "children": [
+              {
+                "tag": "class",
+                "attributes": {
+                  "name": "freetrain.contributions.population.ResidentialPopulation"
+                },
+                "text": "",
+                "children": []
+              },
+              {
+                "tag": "base",
+                "attributes": {},
+                "text": "10",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "structure-fixed"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse01.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse01.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse02.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse02.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse03.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse03.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse04.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/farmhouse04.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.477/vinylhouse.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "農家とビニールハウス",
+      "originalTextSha256": "b3f3be23d1c5545b074c4580f5f3a06996fa67f568a80c24567e439a15b9178c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Farmhouses & Greenhouses",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "477さん",
+      "originalTextSha256": "d23cf4cda32cff71b55ab12ccfa9f98273f9fcea7522711e34700a7ae4d4e1bb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{66B81CAD-8B41-416C-8624-137C2D8110F2}/group[0]/text()",
+      "originalText": "ビニールハウス",
+      "originalTextSha256": "f8e59452048d771af4979e9ef16b586aca18f36b7bb3730971e523848c5513a6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{66B81CAD-8B41-416C-8624-137C2D8110F2}/group[0]/text()",
+        "text": "Greenhouse",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{4F97D7DD-749E-4B65-BF13-5733B10D8570}/group[0]/text()",
+      "originalText": "ビニールハウス",
+      "originalTextSha256": "f8e59452048d771af4979e9ef16b586aca18f36b7bb3730971e523848c5513a6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{4F97D7DD-749E-4B65-BF13-5733B10D8570}/group[0]/text()",
+        "text": "Greenhouse",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name[0]/text()",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name[0]/text()",
+        "text": "Farmhouse (L)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{B7C82C4E-015A-407D-9F10-5D198384B702}/name[0]/text()",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{01799382-3860-4BF6-BE11-F2E40DA093E7}/name[0]/text()",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{01799382-3860-4BF6-BE11-F2E40DA093E7}/name[0]/text()",
+        "text": "Farmhouse (L)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{F7043E4A-402D-43D1-8732-C30F52979B08}/name[0]/text()",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name[0]/text()",
+        "text": "Farmhouse (M)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{D6454FB2-A717-4862-A1B2-1A5113D686E0}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{238A1579-28EB-45FF-ADEC-71D65C067435}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name[0]/text()",
+        "text": "Farmhouse (M)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{DC418AA8-1D26-4B85-92DD-22938607D708}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{28548323-07D9-476F-8B91-99F033FE117F}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "key": "plug-in/contribution:{8D849B40-605F-4807-AB0C-5708CFA8D682}/name[0]/text()",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

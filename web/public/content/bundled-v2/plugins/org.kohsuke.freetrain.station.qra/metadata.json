@@ -1,0 +1,3162 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.station.qra",
+    "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "駅舎",
+    "author": "qra_ra"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/eki-1.bmp",
+      "sourceSha256": "f6a4cc80e5e507c1db31e09286aa222f9868b6bbb2bc676575cba82f101b9f3d",
+      "sha256": "f6a4cc80e5e507c1db31e09286aa222f9868b6bbb2bc676575cba82f101b9f3d",
+      "bytes": 6764,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/eki-1n.bmp",
+      "sourceSha256": "fdb1d3cb5514564a66de62dea1470d722ddd1c81fc314a65c29718433815786b",
+      "sha256": "fdb1d3cb5514564a66de62dea1470d722ddd1c81fc314a65c29718433815786b",
+      "bytes": 6740,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "sha256": "2e00cb1e742d5e66900a512233ffd99f757f8aadd91ec151271ce7d6061b878f",
+      "bytes": 8151,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "0b0de5abc4253f3f56583b2d0678432b3b51f0f3c84198c7794b6ba826068b58"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{136A81E5-F568-6516-83FD-001338978F2C}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "picture",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:0:{136A81E5-F568-6516-83FD-001338978F2C}",
+      "implementation": {
+        "name": "freetrain.contributions.common.PictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/common/PictureContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "picture",
+          "id": "{136A81E5-F568-6516-83FD-001338978F2C}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "eki-1.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "night",
+                  "src": "eki-1n.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:1:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0, 0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "84,114,166"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:2:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "84,114,166"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:3:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "84,114,166"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:4:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "84,114,166"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:5:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0, 0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "255,123,65"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,247,217"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:6:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "255,123,65"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,247,217"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:7:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "255,123,65"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,247,217"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:8:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "255,123,65"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,247,217"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:9:{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0, 0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "120,121,135"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "191,250,231"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:10:{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "120,121,135"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "191,250,231"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:11:{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "120,121,135"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "191,250,231"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:12:{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "120,121,135"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "191,250,231"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:13:{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0, 0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "208,98,110"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "145,110,85"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:14:{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "208,98,110"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "145,110,85"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:15:{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "208,98,110"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "145,110,85"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:16:{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "208,98,110"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "145,110,85"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:17:{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "0, 0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "122,117,109"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:18:{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（入口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "48,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "122,117,109"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:19:{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）L",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "1,2",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "96,0",
+              "offset": "8"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "122,117,109"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    },
+    {
+      "id": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "type": "station",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.station.qra:20:{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "implementation": {
+        "name": "freetrain.contributions.rail.StationContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/StationContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "station",
+          "id": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "地上駅舎1（改札口側）R",
+            "children": []
+          },
+          {
+            "tag": "size",
+            "attributes": {},
+            "text": "2,1",
+            "children": []
+          },
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "地上駅舎1",
+            "children": []
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "12000000",
+            "children": []
+          },
+          {
+            "tag": "height",
+            "attributes": {},
+            "text": "1",
+            "children": []
+          },
+          {
+            "tag": "operationCost",
+            "attributes": {},
+            "text": "1000000",
+            "children": []
+          },
+          {
+            "tag": "sprite",
+            "attributes": {
+              "origin": "144,0",
+              "offset": "16"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "spriteType",
+                "attributes": {
+                  "name": "hueTransform"
+                },
+                "text": "",
+                "children": [
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "*,0,0",
+                      "to": "122,117,109"
+                    },
+                    "text": "",
+                    "children": []
+                  },
+                  {
+                    "tag": "map",
+                    "attributes": {
+                      "from": "0,0,*",
+                      "to": "255,206,136"
+                    },
+                    "text": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "tag": "picture",
+                "attributes": {
+                  "ref": "{136A81E5-F568-6516-83FD-001338978F2C}"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "structure-fixed",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.station.qra/eki-1.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.station.qra/eki-1n.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "駅舎",
+      "originalTextSha256": "a858f12228919b6fbe832db18b3e0dd1dfafcbe60285c33b291ed91f1ceb2a3b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (entrance) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (entrance) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (ticket gate) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (ticket gate) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (entrance) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (entrance) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (ticket gate) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (ticket gate) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "key": "plug-in/contribution:{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}

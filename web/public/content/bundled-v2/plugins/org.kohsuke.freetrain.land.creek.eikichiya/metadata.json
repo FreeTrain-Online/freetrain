@@ -1,0 +1,220 @@
+{
+  "plugin": {
+    "id": "org.kohsuke.freetrain.land.creek.eikichiya",
+    "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+    "dependencies": [
+      "system"
+    ],
+    "scope": "in-scope",
+    "title": "小川",
+    "author": "永吉屋駅前店さん"
+  },
+  "source": {
+    "repository": "freetrain-exav-archive",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12"
+  },
+  "sourceFiles": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/creek.WIN.bmp",
+      "sourceSha256": "4ee9e02815ee65b3697c7199443a799645d000a14909fafea8c7dcd8e93c0cd1",
+      "sha256": "4ee9e02815ee65b3697c7199443a799645d000a14909fafea8c7dcd8e93c0cd1",
+      "bytes": 18488,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/creek.bmp",
+      "sourceSha256": "3d47bd2ff69643a9ab0b389e30a14a7a27b1710b95cb8f696ae64719a86b8646",
+      "sha256": "3d47bd2ff69643a9ab0b389e30a14a7a27b1710b95cb8f696ae64719a86b8646",
+      "bytes": 18486,
+      "normalization": "none",
+      "expandedSha256": null
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "sha256": "9082a95155c95fac82762207186b5be8b1afc8e2196e1c4ad255287827168ec1",
+      "bytes": 595,
+      "normalization": "EXAV-ENC-001",
+      "expandedSha256": "25ab634331ae325a31fe48b7e1d287a1f81e51b043d46051b9a074b24d6a2f83"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs",
+      "sourceSha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "sha256": "11899a310810c3d2da68e820cdd5b67934e67da09b457fb1df60e11a61bdba60",
+      "bytes": 5372,
+      "normalization": "none",
+      "expandedSha256": null
+    }
+  ],
+  "contributions": [
+    {
+      "id": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+      "pluginId": "org.kohsuke.freetrain.land.creek.eikichiya",
+      "type": "land",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.land.creek.eikichiya:0:{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+      "implementation": {
+        "name": "freetrain.world.land.creek.eikichiya.CreekBuilder",
+        "codebase": "bin/FreeTrain.Creek.Eikichiya.dll",
+        "assembly": "FreeTrain.Creek.Eikichiya",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/FreeTrain.Creek.Eikichiya.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/FreeTrain.Creek.Eikichiya.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/src/CreekBuilder.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "declaration": {
+        "tag": "contribution",
+        "attributes": {
+          "type": "land",
+          "id": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+        },
+        "text": "",
+        "children": [
+          {
+            "tag": "group",
+            "attributes": {},
+            "text": "河川",
+            "children": []
+          },
+          {
+            "tag": "name",
+            "attributes": {},
+            "text": "小川",
+            "children": []
+          },
+          {
+            "tag": "class",
+            "attributes": {
+              "name": "freetrain.world.land.creek.eikichiya.CreekBuilder",
+              "codebase": "bin/FreeTrain.Creek.Eikichiya.dll"
+            },
+            "text": "",
+            "children": []
+          },
+          {
+            "tag": "picture",
+            "attributes": {
+              "src": "creek.bmp"
+            },
+            "text": "",
+            "children": [
+              {
+                "tag": "override",
+                "attributes": {
+                  "when": "winter",
+                  "src": "creek.WIN.bmp"
+                },
+                "text": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "tag": "price",
+            "attributes": {},
+            "text": "400000",
+            "children": []
+          },
+          {
+            "tag": "computerCannotBuild",
+            "attributes": {},
+            "text": "",
+            "children": []
+          }
+        ]
+      },
+      "ruleIds": [
+        "registration",
+        "code-contribution",
+        "bitmap-surface",
+        "sprite-anchor",
+        "sprite-effects",
+        "land",
+        "rail-accessories",
+        "derived-overlays"
+      ],
+      "status": "prepared; gameplay-unavailable",
+      "diagnostic": "recipe-runtime-pending"
+    }
+  ],
+  "assets": [
+    "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/creek.WIN.bmp",
+    "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/creek.bmp"
+  ],
+  "translations": [
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "key": "plug-in/title[0]/text()",
+      "originalText": "小川",
+      "originalTextSha256": "2f34b28f7de08cfc8365ada7e70160c93129d64a4e2b3ed32fa335400be7c548",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+        "key": "plug-in/title[0]/text()",
+        "text": "Creek",
+        "sourceSha256": "143b6278fd3d12f004d46f0c234c301c126e8ef6dca44be3578138653d76d08d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "key": "plug-in/author[0]/text()",
+      "originalText": "永吉屋駅前店さん",
+      "originalTextSha256": "bfe78be5e1f0bbd693e0bc5de88f87832b4c0cf2de88bd0a4705bc499c57cae2",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "key": "plug-in/contribution:{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}/group[0]/text()",
+      "originalText": "河川",
+      "originalTextSha256": "33c9ae6f34404d066021758617f2ad239415ca9e50d8cc9167c7934baef1814f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+        "key": "plug-in/contribution:{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}/group[0]/text()",
+        "text": "River",
+        "sourceSha256": "143b6278fd3d12f004d46f0c234c301c126e8ef6dca44be3578138653d76d08d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    },
+    {
+      "path": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "key": "plug-in/contribution:{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}/name[0]/text()",
+      "originalText": "小川",
+      "originalTextSha256": "2f34b28f7de08cfc8365ada7e70160c93129d64a4e2b3ed32fa335400be7c548",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+        "key": "plug-in/contribution:{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}/name[0]/text()",
+        "text": "Creek",
+        "sourceSha256": "143b6278fd3d12f004d46f0c234c301c126e8ef6dca44be3578138653d76d08d"
+      },
+      "comparison": "changed-text; meaning-review-required",
+      "proposedEnglish": null,
+      "reviewStatus": "inventoried; wording review with implementing feature",
+      "scope": "in-scope"
+    }
+  ]
+}
