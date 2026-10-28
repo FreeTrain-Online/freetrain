@@ -31,5 +31,8 @@ P3-02 adds immutable Empty/Heightmap/Generated request contracts, validation,
 independent generation stage seeds, bounded work and detached job transitions.
 These are [creation contracts](../../doc/web-parity-world-creation-contract.md),
 not an enabled generator or a terrain world profile. Content readiness remains
-explicit; prepared art cannot authorize a terrain handler. P3-03 supplies the
-canonical ground/corner/water state before service or browser integration.
+explicit; prepared art cannot authorize a terrain handler. [P3-03](../../doc/web-parity-terrain-state.md) supplies immutable `TerrainWorld`,
+ground/corner/water and decoration occupancy, zero-rail worlds, atomic graph
+validation and an in-process read model. Content binds the exact prepared terrain
+recipes. Live save/transport/rendering and browser integration follow in P3-04–06;
+the reference Save 5/profile remains unchanged.

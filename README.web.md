@@ -24,8 +24,9 @@ See [the reference-world delivery](doc/web-parity-reference-world.md).
 
 P3 now has [source terrain semantics](doc/web-parity-terrain-contract.md) and
 [world-creation requests, stage seeds and measured admission budgets](doc/web-parity-world-creation-contract.md).
-World creation and terrain generation are not yet enabled; canonical terrain state
-is the next slice.
+[Canonical terrain state](doc/web-parity-terrain-state.md) now includes ground,
+quarter corners, water, decorations and zero-rail worlds. World creation and terrain
+generation remain disabled; saves and transport are the next slice (P3-04).
 
 ## Parity source policy
 

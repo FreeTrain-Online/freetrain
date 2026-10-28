@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Content;
 public static class WorldCreationCapabilities
 {
     // Inventory prepared bindings only. These must not become selectable just because
-    // art exists: P3 state/render/save handlers have not shipped yet.
+    // art exists: live P3 render/save/worker integration is not ready yet.
     public static CreationContent Inspect(PreparedContentCatalog catalog)
     {
         var capabilities = catalog.RenderRecipes.Where(r => r.Handler == "forest")

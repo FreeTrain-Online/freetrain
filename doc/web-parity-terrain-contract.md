@@ -322,3 +322,9 @@ generation defaults/ranges and seed contract, content capabilities and measured
 memory/pixel/voxel/work/transfer budgets. P3-01 deliberately sets no new supported
 world limit or save/protocol number. Deferred P2/native/cross-browser work retains
 its actual status; no application/backend/browser execution is claimed here.
+
+[P3-03 canonical terrain state](web-parity-terrain-state.md) subsequently implements
+ground/corner/water and decoration occupancy, zero-rail detached worlds, stable
+IDs and exact bundled bindings. Its runtime primitive tests are recorded separately
+from the 77 source-specification vectors here. Save/transport/rendering and playable
+creation remain P3-04–06; editor/scatter algorithms retain their later slice owners.

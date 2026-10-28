@@ -2,7 +2,9 @@
 
 P3-02 delivers executable, immutable request/validation contracts, generation-stage
 seed derivation, content capability checks, a detached job state machine and a
-repeatable resource-envelope probe. **Next: P3-03 canonical terrain state.** This
+repeatable resource-envelope probe. [P3-03 canonical terrain state](web-parity-terrain-state.md)
+subsequently adds actual ground/occupancy and in-process profile bindings;
+**next is P3-04 saves and transport.** This
 step enables no endpoint, generator, size selector or world replacement. P3 and
 existing P2/native/platform acceptance remain open.
 
