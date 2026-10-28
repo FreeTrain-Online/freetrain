@@ -117,3 +117,95 @@ Deno.test('terrain palettes match every HSV entry and raw hash in the bundled pi
     equal([...body.matchAll(/<color type="hsv">([^<]+)<\/color>/g)].map(m=>m[1].split(',').map(Number)),colors);
   }
 });
+Deno.test('pre-connection landscape uses valid continuous terrain, realized forests, coast, cuts and terraces without gameplay entities or a creek',async()=>{
+  const {demoScene,demoCamera}=await import('../src/lib/demo-scene.ts');
+  const {parseMessage}=await import('../src/lib/protocol.ts');
+  const snapshot=parseMessage(JSON.stringify({...demoScene,worldEpoch:'1'})) as Snapshot;
+  assert(snapshot.terrain&&snapshot.entities);
+  assert(Object.isFrozen(demoScene.terrain!.occupants[0]));
+  equal(snapshot.trains,[]);equal(snapshot.tracks,[]);equal(snapshot.buildings,[]);
+  const t=snapshot.terrain;
+  const {sha256}=await import('../src/lib/content-recipes.ts');
+  equal(await sha256(new TextEncoder().encode(t.provenance.requestJson)),t.provenance.requestHash);
+  assert(t.cells.some(c=>c.ground<t.waterLevel)&&t.cells.some(c=>c.ground>t.waterLevel+2));
+  assert(t.cells.filter(c=>c.surface==='natural').length>t.cells.length*.9);
+  assert(!t.occupants.some(o=>o.kind==='creek'));
+  assert(t.occupants.filter(o=>o.forest).every(o=>snapshot.entities!.find(e=>e.id===o.entityId)!.anchor.z>t.waterLevel));
+  for(const kind of ['mountain','terrace'])assert(t.occupants.some(o=>o.kind===kind));
+  assert(t.occupants.some(o=>o.ne>0&&o.ne<4));assert(t.occupants.some(o=>o.forest?.trees.length));
+  const before=JSON.stringify(demoScene),scene=await TerrainScene.prepare(demoScene,catalog,cache(),day,15);
+  assert(scene.operations.some(op=>op.target.surface==='water'));assert(scene.operations.some(op=>op.target.surface==='forest'));
+  const under=await TerrainScene.prepare(demoScene,catalog,cache(),day,4);
+  assert(under.operations.some(op=>op.target.surface==='underground'));
+  equal(JSON.stringify(demoScene),before);
+  for(const [w,h] of [[1920,1080],[1280,900],[360,800]])assert(Number.isFinite(demoCamera(w,h).zoom)&&demoCamera(w,h).zoom>0);
+});
+Deno.test('decorative loop closes with reciprocal source rail ports on a clear level bed; cars follow continuously and wrap independently',async()=>{
+  const {demoLoop,demoLoopPeriod,demoCar}=await import('../src/lib/demo-railway-path.ts');
+  const {demoScene}=await import('../src/lib/demo-scene.ts');
+  const {directionTo}=await import('../src/lib/map-geometry.ts');
+  const {default:rails}=await import('../../src/FreeTrain.Online.Content/reference-spatial.json',{with:{type:'json'}});
+  const space=new WorldSpace(48,96,16),t=demoScene.terrain!;
+  const {demoGround}=await import('../src/lib/demo-terrain.ts');
+  const {inPolygon}=await import('../src/lib/terrain-renderer.ts');
+  assert(demoLoop.length>100);equal(new Set(demoLoop.map(l=>`${l.position.x},${l.position.y}`)).size,demoLoop.length);
+  for(let i=0;i<demoLoop.length;i++) {
+    const {position:p,pattern}=demoLoop[i],a=demoLoop[(i+demoLoop.length-1)%demoLoop.length].position,b=demoLoop[(i+1)%demoLoop.length].position;
+    assert(rails.normalRailPorts[pattern].includes(directionTo(p,a))&&rails.normalRailPorts[pattern].includes(directionTo(p,b)));
+    const s=space.storage(p);equal(t.cells[s.v*48+s.h].ground,4);
+    equal(demoGround(p.x,p.y).ground,4);
+    assert([-4,-3,-2,-1,0,1,2,3,4].some(x=>[-4,-3,-2,-1,0,1,2,3,4].some(y=>demoGround(p.x+x,p.y+y).ground<4)));
+    assert(!demoScene.entities!.some(e=>e.anchor.x===p.x&&e.anchor.y===p.y&&e.anchor.z===p.z));
+  }
+  // Every dry part of the island lies inside the circuit or in its narrow
+  // outer beach strip, including the northern peninsula.
+  for(const p of space.ground())if(demoGround(p.x,p.y).ground>=4&&!inPolygon(p,demoLoop.map(l=>l.position))) {
+    assert(demoLoop.some(l=>Math.max(Math.abs(l.position.x-p.x),Math.abs(l.position.y-p.y))<=3));
+  }
+  const headings=demoLoop.map((l,i)=>directionTo(l.position,demoLoop[(i+1)%demoLoop.length].position));
+  const runs:number[]=[];
+  headings.forEach((h,i)=>{if(i===0||h!==headings[i-1])runs.push(1);else runs[runs.length-1]++;});
+  assert(runs.length<=20&&Math.min(...runs)>=4&&Math.max(...runs)>=12);
+  const angles=new Set<number>();let bentFollowers=false;
+  for(let time=0;time<demoLoopPeriod;time+=125) {
+    const head=demoCar(time,0),tail=demoCar(time,2);angles.add(head.angle);bentFollowers||=head.angle!==tail.angle;
+    assert(Math.hypot(head.position.x-tail.position.x,head.position.y-tail.position.y)>1);
+    const next=demoCar(time+.01,0);assert(Math.hypot(next.position.x-head.position.x,next.position.y-head.position.y)<.001);
+  }
+  equal(angles.size,16);assert(bentFollowers);
+  equal(demoCar(0,0),demoCar(demoLoopPeriod,0));equal(demoCar(0,2),demoCar(demoLoopPeriod,2));
+  assert(!t.occupants.some(o=>o.kind==='creek'));equal(demoScene.tracks,[]);equal(demoScene.trains,[]);
+});
+Deno.test('decorative rail and composed train use ready prepared art and reject missing car recipes',async()=>{
+  const {DemoRailway}=await import('../src/lib/demo-railway.ts');
+  await DemoRailway.prepare(catalog,cache());
+  const missing={...catalog,renderRecipes:catalog.renderRecipes.filter(r=>r.id!=='{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h')};
+  let rejected=false;try{await DemoRailway.prepare(missing,cache());}catch{rejected=true;}assert(rejected);
+});
+Deno.test('synthetic rail-bed blending has no cut exemptions and restores the northeast slope occupants',async()=>{
+  const {demoScene}=await import('../src/lib/demo-scene.ts');
+  const {demoGroundGrid,demoSpace}=await import('../src/lib/demo-terrain.ts');
+  const {demoCorridor}=await import('../src/lib/demo-railway-path.ts');
+  const {validSnapshot}=await import('../src/lib/world-identity.ts');
+  const read=structuredClone(demoScene) as Snapshot,t=read.terrain!;
+  const grid=demoGroundGrid(demoCorridor(1));let slopes=0;
+  assert(t.cells.every(c=>c.surface==='natural'||c.surface==='terrace'));
+  for(let v=29;v<=31;v++)for(let h=32;h<=33;h++) {
+    const c=t.cells[v*48+h],p=demoSpace.location({h,v,z:c.ground});
+    equal(c.surface,'natural');
+    equal(c.ground,grid[v*48+h].ground);
+    if(grid[v*48+h].corners.some(n=>n!==0)) {
+      const entity=read.entities!.find(e=>e.anchor.x===p.x&&e.anchor.y===p.y&&e.anchor.z===p.z);
+      const o=t.occupants.find(o=>o.entityId===entity?.id&&o.kind==='mountain');
+      assert(o);equal([o.ne,o.se,o.sw,o.nw],grid[v*48+h].corners);slopes++;
+    }
+  }
+  assert(slopes>0);
+  // Remove only the intentional inland Terrace garden. Validate the underlying
+  // complete natural surface so no cut/terrace exemption can conceal a seam.
+  t.cells=grid.map(c=>({ground:c.ground,surface:'natural'}));
+  const terraces=new Set(t.occupants.filter(o=>o.kind==='terrace').map(o=>o.entityId));
+  t.occupants=t.occupants.filter(o=>!terraces.has(o.entityId));read.entities=read.entities!.filter(e=>!terraces.has(e.id));
+  assert(validSnapshot(read));
+  for(const c of grid)assert(c.corners.every(n=>n>=0&&n<=4));
+});

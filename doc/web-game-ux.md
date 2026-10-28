@@ -37,7 +37,15 @@ requires deliberate canvas focus, Inspect, a selected manual train and its owned
 lease. Panel/menu focus and session transitions release held input.
 
 Before a session is usable, a mandatory localized dialog covers a separate,
-immutable bundled demo scene. Bootstrap, joining/synchronizing, sign-in,
+immutable local demo scene. Its fixed 48×96 coastal landscape uses the complete
+terrain read model and prepared recipes: continuous quarter slopes, the global
+water plane, realized forests, terraces and cliffs. A decorative railway circles
+the island near the shore, with long straight/diagonal sections and a locally
+animated train. The lowest beach level has no trees, and the backdrop has no
+creek. Static scenery/rails are cached; train animation pauses while hidden or
+when reduced motion is requested. Desktop framing shows the whole island, while
+portrait uses a closer view, independently of the live camera.
+Bootstrap, joining/synchronizing, sign-in,
 connection loss, renewed authentication, incompatibility, leaving/failed leave
 and render failure have distinct presentations. Authorized discovery/join remains
 automatic. Chrome appears only after a coherent live read, decoded images and a

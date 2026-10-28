@@ -34,8 +34,11 @@ empty-world creation is next (P3-06).
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 [https://github.com/rdmark/freetrain-exav-archive].
-The spatial reference uses source normal rail patterns. The historical demo
-assets retain prototype provenance. [P2-01 canonical preparation](doc/web-parity-bundled-preparation.md)
+The spatial reference uses source normal rail patterns. The connection screen
+shows a separate synthetic 48×96 coastal terrain landscape, using canonical
+quarter slopes, water, forests and terraces, plus a decorative coastal railway
+loop and locally animated train. The lowest beach level is tree-free; the demo
+has no creek. It never enters the game session or save path. Historical prototype assets retain prototype provenance. [P2-01 canonical preparation](doc/web-parity-bundled-preparation.md)
 now supplies pinned bundled inputs, converted surfaces and a prepared metadata
 registry. [P2-02 executable recipes and gallery](doc/web-parity-recipes.md)
 and [P2-03 runtime plugin loading](doc/web-parity-plugin-startup.md) are implemented;

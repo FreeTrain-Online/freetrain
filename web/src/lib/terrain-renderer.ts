@@ -75,7 +75,10 @@ export class TerrainScene {
         continue;
       }
       if(full&&cell.ground<t.waterLevel) {
-        const p={...base,z:t.waterLevel};addPolygon(p,target(p,'water'),diamond,terrainColor([0,114,188],variant.night));continue;
+        // Seal adjacent sea diamonds at fractional zoom: Canvas antialiasing
+        // otherwise leaves pale seams through an opaque, continuous water plane.
+        const p={...base,z:t.waterLevel},color=terrainColor([0,114,188],variant.night);
+        addPolygon(p,target(p,'water'),diamond,color,color);continue;
       }
       const mountain=surface?.kind==='mountain'?surface:undefined;
       const flat=!mountain||[mountain.ne,mountain.se,mountain.sw,mountain.nw].every(n=>n===0);

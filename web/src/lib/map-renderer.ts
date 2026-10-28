@@ -9,9 +9,11 @@ import { mapSpace } from './map-space.ts';
 import { TerrainScene, type TerrainTarget } from './terrain-renderer.ts';
 import { loadRenderCatalog, RecipeImageCache, type RenderCatalog, type Variant } from './content-recipes.ts';
 import { isTerrainWorld } from './world-identity.ts';
+import { DemoRailway } from './demo-railway.ts';
+import { demoCar, demoLoop } from './demo-railway-path.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = TerrainTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -30,11 +32,13 @@ export class MapRenderer {
   private catalog?:Promise<RenderCatalog>;
   private terrainKey='';
   private terrainScene?:TerrainScene;
+  private demoRailway?:DemoRailway;
   private terrainError?:unknown;
   private terrainView?:{x:number;y:number;zoom:number};
   constructor(private canvas: HTMLCanvasElement, private images: Map<string, HTMLImageElement>,private invalidate=()=>{}) {}
   setRead(read: ReadState) {
     this.read=read;
+    delete this.canvas.dataset.demoTrain;delete this.canvas.dataset.demoLoop;
     this.space=mapSpace(read.map);
     this.buildings=new Map(read.buildings.map(building=>[building.id,building]));
     this.items = [
@@ -60,30 +64,34 @@ export class MapRenderer {
       this.canvas.width=Math.round(width*dpr); this.canvas.height=Math.round(height*dpr);
     }
     ctx.setTransform(dpr,0,0,dpr,0,0); ctx.imageSmoothingEnabled=false;
-    ctx.fillStyle=options.night?'#17232b':'#d8e5d9'; ctx.fillRect(0,0,width,height);
+    const decorative=options.demoTime!==undefined&&this.read?.worldEpoch==='local-demo-only';
+    ctx.fillStyle=decorative?'#0072bc':options.night?'#17232b':'#d8e5d9'; ctx.fillRect(0,0,width,height);
     this.hits=[]; let drawn=0, culled=0;
     if (!this.read || !this.space) return false;
     if(isTerrainWorld(this.read)) {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
-      const key=JSON.stringify([read.worldEpoch,read.terrain!.geometryRevision,variant,options.heightCut]);
+      const key=JSON.stringify([read.worldEpoch,read.terrain!.geometryRevision,variant,options.heightCut,decorative]);
       if(this.terrainKey!==key) {
-        this.terrainKey=key;this.terrainScene=undefined;this.terrainView=undefined;this.terrainError=undefined;
+        this.terrainKey=key;this.terrainScene=undefined;this.demoRailway=undefined;this.terrainView=undefined;this.terrainError=undefined;
         this.catalog??=loadRenderCatalog(read.requiredPacks[0].catalogHash);
-        this.catalog.then(c=>TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut)).then(scene=>{
-          if(this.terrainKey===key){this.terrainScene=scene;this.invalidate();}
+        this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
+          if(this.terrainKey===key){this.terrainScene=scene;this.demoRailway=railway;this.invalidate();}
         }).catch(error=>{if(this.terrainKey===key){this.terrainError=error;this.invalidate();}});
       }
       if(this.terrainError)throw this.terrainError;
       this.canvas.dataset.assets=this.terrainScene?'ready':'loading';
       if(!this.terrainScene)return false;
       this.terrainView={x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom};
-      const count=this.terrainScene.draw(ctx,this.terrainView,width,height);
+      const count=this.demoRailway
+        ?this.demoRailway.draw(ctx,this.terrainScene,this.terrainView,width,height,dpr,options.demoTime!)
+        :this.terrainScene.draw(ctx,this.terrainView,width,height);
+      if(this.demoRailway){this.canvas.dataset.demoLoop=String(demoLoop.length);this.canvas.dataset.demoTrain=JSON.stringify(demoCar(options.demoTime!,0));}
       for(const [position,color] of [[options.preview,'#126e79'],[options.selection?.position,'#ffeaa0']] as const) {
         if(!position||position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
       }
-      this.canvas.dataset.drawn=String(count);this.canvas.dataset.culled=String(this.terrainScene.operations.length-count);
+      this.canvas.dataset.drawn=String(count);this.canvas.dataset.culled=String(Math.max(0,this.terrainScene.operations.length-count));
       this.canvas.dataset.paintMs=(performance.now()-start).toFixed(2);
       this.canvas.dataset.zoom=camera.zoom.toFixed(3);this.canvas.dataset.camera=`${camera.x.toFixed(1)},${camera.y.toFixed(1)}`;
       this.canvas.dataset.coordinateSystem=read.map.coordinateSystem;this.canvas.dataset.ruleset=read.ruleset;this.canvas.dataset.worldEpoch=read.worldEpoch;
@@ -92,7 +100,7 @@ export class MapRenderer {
       this.canvas.dataset.terrainCut=String(options.heightCut);
       return true;
     }
-    this.terrainKey='';this.terrainScene=undefined;this.terrainView=undefined;
+    this.terrainKey='';this.terrainScene=undefined;this.demoRailway=undefined;this.terrainView=undefined;
     const space=this.space;
     const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;

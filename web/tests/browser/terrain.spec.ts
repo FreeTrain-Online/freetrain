@@ -1,5 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
-import {readFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {ready,openPanel,closePanel} from './ux-helpers.ts';
 const boot='/api/bootstrap?protocolVersion=4&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
@@ -12,17 +12,17 @@ async function point(page:Page,x:number,y:number){return page.locator('canvas').
 },{x,y});}
 
 test('real terrain save replacement renders sea/cut/forest, picks independently, retains canvas and image cache across view/panel changes, then reopens',async({page})=>{
+ let sheets=0;page.on('request',r=>{if(r.url().includes('/content/bundled-v2/')&&r.url().endsWith('.png'))sheets++;});
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrain-preserved'));
- let sheets=0;page.on('request',r=>{if(r.url().includes('/content/bundled-v2/')&&r.url().endsWith('.png'))sheets++;});
  try {
   await replace(page,save);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await ready(page);
   await expect(canvas).toHaveAttribute('data-instance','terrain-preserved');await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');
   await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
   // H0,V0 at water z3: source centre 16,-40; no sprite or land at this height.
   const q=await point(page,16,-40);await page.mouse.click(q.x,q.y);await expect(page.getByTestId('selected-object')).toHaveText('Terrain · cell:0,0 · 1, 0, 3');
-  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect(canvas).toHaveAttribute('data-assets','ready');
+  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect(canvas).toHaveAttribute('data-terrain-cut','4');await expect(canvas).toHaveAttribute('data-assets','ready');
   await expect.poll(()=>sheets).toBeGreaterThan(0);
   const terrainHash=await canvas.evaluate(el=>el.toDataURL());
   await page.getByLabel('Night',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/night');await expect.poll(async()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(terrainHash);
@@ -70,4 +70,62 @@ test('late night-sheet decoding cannot replace a newer day view or its hit targe
   await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');expect(await canvas.evaluate(el=>el.toDataURL())).toBe(before);
   await closePanel(page);const q=await point(page,0,-58);await page.mouse.click(q.x,q.y);await expect(page.getByTestId('terrain-surface')).toHaveText('Forest');
  }finally{release();await replace(page,original);}
+});
+
+test('synthetic full-terrain landscape renders behind the connection gate and gives way to the real world on the same canvas',async({page})=>{
+ let release=()=>{};const held=new Promise<void>(r=>{release=r;});
+ await page.route('**/api/bootstrap?*',async route=>{await held;await route.continue();});
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ let images=0;page.on('request',r=>{if(r.url().includes('/content/bundled-v2/')&&r.url().endsWith('.png'))images++;});
+ try{
+  await page.goto('/');const canvas=page.locator('canvas');
+  await expect(canvas).toHaveAttribute('data-scene','demo');await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');
+  expect(Number(await canvas.getAttribute('data-demo-loop'))).toBeGreaterThan(100);
+  await expect(page.locator('.command-bar')).toHaveCount(0);await expect(page.getByRole('dialog')).toBeVisible();
+  expect(Number(await canvas.getAttribute('data-drawn'))).toBeGreaterThan(1000);
+  // Fractional demo zoom must not expose the pale background between sea tiles.
+  const seaError=await canvas.evaluate(el=>{
+    const data=el.getContext('2d')!.getImageData(80,60,80,60).data;
+    const expected=[0,114,188,255];let maximum=0;
+    for(let i=0;i<data.length;i++)maximum=Math.max(maximum,Math.abs(data[i]-expected[i%4]));
+    return maximum;
+  });
+  // Allow channel rounding while rejecting antialiased gaps to the backdrop.
+  expect(seaError).toBeLessThanOrEqual(3);
+  // This world-space rectangle lies inside the northeast hillside, including
+  // the former exposed ledges and rail-bed joins. Ocean must not show through.
+  expect(await canvas.evaluate(el=>{
+    const [cx,cy]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom),r=el.getBoundingClientRect(),dpr=el.width/r.width;
+    const x=Math.round((r.width/2+(1000-cx)*zoom)*dpr),y=Math.round((r.height/2+(100-cy)*zoom)*dpr);
+    const pixels=el.getContext('2d')!.getImageData(x,y,Math.round(280*zoom*dpr),Math.round(90*zoom*dpr)).data;
+    let ocean=0;
+    for(let i=0;i<pixels.length;i+=4)if(pixels[i]<=3&&Math.abs(pixels[i+1]-114)<=3&&Math.abs(pixels[i+2]-188)<=3)ocean++;
+    return ocean;
+  })).toBe(0);
+  await canvas.evaluate(el=>el.dataset.instance='synthetic-demo');
+  const train=await canvas.getAttribute('data-demo-train'),firstFrame=await canvas.evaluate(el=>el.toDataURL());
+  await expect(canvas).not.toHaveAttribute('data-demo-train',train!);
+  await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(firstFrame);
+  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+  const hiddenTrain=await canvas.getAttribute('data-demo-train');
+  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await expect(canvas).toHaveAttribute('data-demo-train',hiddenTrain!);
+  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'));});
+  await expect(canvas).not.toHaveAttribute('data-demo-train',hiddenTrain!);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  const stillTrain=await canvas.getAttribute('data-demo-train'),stillFrame=await canvas.evaluate(el=>el.toDataURL());
+  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
+  await expect(canvas).toHaveAttribute('data-demo-train',stillTrain!);expect(await canvas.evaluate(el=>el.toDataURL())).toBe(stillFrame);
+  const decoded=images,directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrain');mkdirSync(directory,{recursive:true});
+  const terrainPNG=await canvas.evaluate(el=>el.toDataURL().split(',')[1]);writeFileSync(join(directory,'island-terrain.png'),Buffer.from(terrainPNG,'base64'));
+  await page.screenshot({path:join(directory,'connection-landscape-desktop.png'),fullPage:true});
+  await page.setViewportSize({width:360,height:800});await expect.poll(async()=>Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(800/736,2);
+  await page.screenshot({path:join(directory,'connection-landscape-portrait.png'),fullPage:true});
+  expect(images).toBe(decoded);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(360);
+  await expect(page.locator('.map-viewport')).toHaveAttribute('inert','');
+  release();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-4');await expect(canvas).toHaveAttribute('data-instance','synthetic-demo');
+  expect(await canvas.getAttribute('data-demo-loop')).toBeNull();expect(await canvas.getAttribute('data-demo-train')).toBeNull();
+  expect((await state(page)).terrain).toBeUndefined();expect(errors).toEqual([]);
+ }finally{release();}
 });

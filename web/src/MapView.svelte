@@ -11,7 +11,8 @@
   import { homeLocation, mapSpace } from './lib/map-space.ts';
   import { localSpatialPreview, matchesSpatialPreview } from './lib/spatial-preview.ts';
   import type { Position, Track, SpatialPreview } from './generated/contracts.ts';
-  import { demoScene } from './lib/demo-scene.ts';
+  import { demoScene, demoCamera } from './lib/demo-scene.ts';
+  import { demoLoopPeriod } from './lib/demo-railway-path.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
   import PanelFrame from './PanelFrame.svelte';
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose }:
@@ -21,7 +22,7 @@
   let canvas: HTMLCanvasElement;
   let renderer: MapRenderer | undefined;
   const space = $derived(mapSpace(view.read?.map ?? demoScene.map));
-  let camera: Camera = { ...mapSpace(demoScene.map).center({ x: 22, y: 16, z: 0 }), zoom: 1 };
+  let camera: Camera = demoCamera(1280,900);
   let zoomPercent = $state(100);
   let width = 0, height = 0, dirty = true, lastDpr = 0;
   let level = $state(1), heightCut = $state(15);
@@ -184,6 +185,9 @@
     $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
+    let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    const motion=()=>{lastDemoTick=undefined;dirty=true;};reduced.addEventListener('change',motion);
     const compact = matchMedia('(max-width: 639px)');
     const density = () => { narrow = compact.matches; }; density(); compact.addEventListener('change', density);
     const resize = new ResizeObserver(entries => { width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
@@ -191,30 +195,35 @@
       if (!active) return;
       renderer = new MapRenderer(canvas, images,()=>{if(active)dirty=true;}); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
     }).catch(() => { if (active) renderState = 'failed'; });
-    const paint = () => {
+    const paint = (now:number) => {
       if (!active) return;
+      const animate=!liveScene&&!document.hidden&&!reduced.matches;
+      if(animate) {
+        if(lastDemoTick!==undefined)demoTime=(demoTime+now-lastDemoTick)%demoLoopPeriod;
+        if(now-lastDemoPaint>=1000/30){dirty=true;lastDemoPaint=now;}
+      }
+      lastDemoTick=animate?now:undefined;
       if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; dirty = true; }
       if (dirty && renderer && width && height && !document.hidden) {
-        const demoCamera = { ...mapSpace(demoScene.map).center({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.8, width / 850)) };
         try {
-          const ready=renderer.draw(liveScene ? camera : demoCamera, width, height, devicePixelRatio, liveScene
+          const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
             ? { heightCut, level, night, winter, recolor, selection, preview, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
-            : { heightCut: 15, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false });
+            : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // During a view change the canvas clears its old scene and hit map,
           // while the mounted panels stay available. Initial reveal still waits.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
-        } catch { renderState = 'failed'; }
+        } catch { if(liveScene)renderState = 'failed'; }
         dirty = false;
       }
       frame = requestAnimationFrame(paint);
     }; frame = requestAnimationFrame(paint);
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
     const blur = () => { clearInput(); cancelGesture(); };
-    const visibility = () => { blur(); dirty = true; };
+    const visibility = () => { lastDemoTick=undefined;blur(); dirty = true; };
     const wheel = (event: WheelEvent) => { if (!live || inputSuspended) return; event.preventDefault(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
-    return () => { compact.removeEventListener('change', density); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
+    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 

@@ -95,7 +95,7 @@ save confirmation and spatial-query contracts are retained.
 
 ## Verification
 
-[Eight client renderer cases](../web/tests/terrain-renderer.test.ts) bind literal
+[Client renderer cases](../web/tests/terrain-renderer.test.ts) bind literal
 quarter vertices/tree arithmetic/colors, independent slope/ground/water/underwater/
 cut hit points, asymmetric stored boundaries, all eight seasonal/light combinations,
 all 18 forest treatments, every Creek mask, terrace occlusion, cliff recipes,
@@ -138,3 +138,79 @@ and prepared-directory configurations each pass **3/3**. The final focused log i
 `tmp/p3-05-browser-final.log`; optional logs are
 `tmp/p3-05-browser-optional-{source,prepared}.log`. No native/device or additional
 browser engine was tested.
+
+## Synthetic connection-screen landscape
+
+The [local demo](../web/src/lib/demo-scene.ts) uses the terrain model and renderer
+instead of the historical prototype snapshot. A fixed 48×96×16 coastal landscape
+has continuous shared quarter samples, six forest species with realized tree
+positions and an inland Terrace garden. One global water plane
+covers submerged ground. The lowest dry beach level is tree-free. No decorative
+Creek occupants remain in this backdrop; ordinary terrain Creek rendering stays
+supported for loaded worlds.
+
+A [fixed coastal alignment](../web/src/lib/demo-railway-path.ts) circles the whole
+island, including the northern peninsula, with **136 rail cells and 18 bends**.
+Straight cardinal/diagonal runs are at least four cells long, with stretches up
+to twelve cells. The route sits slightly inland on the lowest beach level; tests
+check dry ground, a nearby shoreline, complete island coverage, closure, unique
+cells and reciprocal source normal rail ports. A narrow, clear level bed is
+blended into a shared corner field. Its touching neighbours are repaired until
+every cell fits quarter offsets 0…4, preserving continuous slopes throughout the
+island. The backdrop has no artificial cut cells or removed hillside occupants;
+only the intentional small Terrace garden retains its separate platform geometry.
+
+[DemoRailway](../web/src/lib/demo-railway.ts) uses prepared `system:pattern/*`
+recipes and the bundled `{3983B298-ADB1-4905-94E5-03B7AAE5A221}` three-car
+composition. Head/body/tail frames retain the prepared anchors plus the source
+Train.Car.draw nine-pixel vertical offset. Each car samples its own continuous
+path position and 16-angle tangent, so followers turn independently and the train
+wraps around the loop without jumping. Terrain and rails are cached in one
+viewport/DPR bitmap; only the train is drawn again during local animation capped at 30 fps. The bitmap is released when the reference renderer takes over.
+Animation stops while hidden or under `prefers-reduced-motion: reduce` and does
+not advance from a game clock, consume gameplay RNG or send commands.
+
+Rails and cars are presentation layers outside the frozen terrain snapshot's
+`tracks`, `trains` and spatial entities. They have no gameplay/picking/authority
+registration, session publication or save path. This implements neither a
+playable railway nor the P3-06–12 creation/generation work; the terrain profile
+continues to require zero gameplay rails/trains. The demo read retains its local
+epoch. Fixed landscape samples and presentation alignment are not generation or
+train-simulation parity evidence.
+
+Desktop framing shows the complete island/circuit; portrait uses a closer view.
+The local background extends the surrounding sea beyond stored map edges. The
+same mounted canvas changes to the synchronized live read on connection and
+removes decorative train metadata. Demo asset failure leaves session controls
+usable over the plain background. Sea diamonds seal shared edges at fractional
+zoom to avoid antialiased gaps through the opaque water plane.
+
+Client cases validate the synthetic graph, natural corner continuity, request
+hash, immutable input, zero gameplay rails/trains, beach tree exclusion, absence
+of creeks, source rail ports, long straight runs, continuous car spacing/wrapping
+and prepared recipe readiness/rejection. Chromium holds bootstrap to inspect
+1280×900 and 360×800 backdrops, checks actual canvas animation, hidden-page and
+reduced-motion pausing, image-cache reuse and a continuous sea patch, then joins
+the real world on the same canvas. Existing terrain and session-gate/lifecycle
+regressions remain part of the focused verification.
+
+Logs: `tmp/demo-railway-{build,client,browser}.log`. Browser checks use isolated
+5180/5181 and 4273/4274 ports because another local service occupies port 5080.
+Screenshots are in the run's
+`tmp/browser-evidence-*/terrain/connection-landscape-{desktop,portrait}.png`.
+
+Final coastal-loop verification: production build, generated/content/locale/type
+checks and **119 client cases** pass; all **14 Chromium terrain/session-gate/
+lifecycle cases** pass. Desktop and portrait screenshots were visually reviewed.
+No backend, native/device or additional browser-engine testing is claimed for
+this presentation-only change.
+
+Terrain seam repair: removed the deliberate northeast ledges and isolated rail-bed
+cuts. Shared corner samples now blend the level bed into neighbouring hills;
+bounded integer samples only decrease during normalization until every cell is
+representable. A client regression restores the underlying garden surface and
+validates the entire island as natural terrain, with no cut/terrace exemptions to
+hide unmatched corners. Chromium checks the former gap area for ocean-coloured
+pixels and exports `terrain/island-terrain.png` without the connection dialog.
+The production build, **120 client cases** and all **14 Chromium terrain/session
+cases** pass. Logs: `tmp/demo-terrain-mend-{build,client,browser}.log`.
