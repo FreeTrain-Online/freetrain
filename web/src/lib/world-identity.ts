@@ -1,3 +1,4 @@
+import { terrainProfile, validTerrain } from './terrain-state.ts';
 import { maximumGameMinute } from './game-time.ts';
 import canonical from '../../../prototype/protocol/canonical-profile.json' with { type: 'json' };
 import catalog from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with { type: 'json' };
@@ -14,7 +15,7 @@ export function sameIdentity(a:WorldIdentity,b:WorldIdentity):boolean {
 }
 // The server selects the whole exact profile. A browser never combines packs or
 // accepts a contribution merely because another installed pack uses the same ID.
-export function resolveProfile(identity:WorldIdentity) {return [canonical,profile].find(p=>sameIdentity(identity,p));}
+export function resolveProfile(identity:WorldIdentity) {return [canonical,profile,terrainProfile].find(p=>sameIdentity(identity,p));}
 export function supportedIdentity(identity:WorldIdentity):boolean { return !!resolveProfile(identity); }
 function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
   if(!read.entities||read.entities.length!==read.tracks.length)return false;
@@ -37,6 +38,8 @@ function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
   return used.size===entities.size;
 }
 export function validSnapshot(read:Snapshot):boolean {
+  if (sameIdentity(read,terrainProfile)) { try { return validTerrain(read); } catch { return false; } }
+  if(read.terrain!==undefined)return false;
   if (sameIdentity(read,canonical)) {
     if(read.map.coordinateSystem!=='hv'||read.map.width<1||read.map.width>64||read.map.height<1||read.map.height>128||read.map.levels<1||read.map.levels>16||
       BigInt(read.tick)>maximumGameMinute||read.cash!=='0'||read.trains.length||read.stations.length||read.buildings.length||read.tracks.length<8||read.tracks.length>1024)return false;
@@ -73,3 +76,5 @@ export function normalPorts(shape:string):readonly number[]|undefined {
   return index?catalog.normalRailPorts[Number(index[1])]:undefined;
 }
 export function isReferenceWorld(read:WorldIdentity|undefined):boolean {return !!read&&sameIdentity(read,canonical);}
+
+export function isTerrainWorld(read:WorldIdentity):boolean {return sameIdentity(read,terrainProfile);}

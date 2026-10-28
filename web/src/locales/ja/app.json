@@ -116,7 +116,7 @@
   "operationUnavailable": "この操作は空間参照ワールドでは利用できません。",
   "savingUnavailable": "この参照ワールドでは保存できません。",
   "invalidSave": "無効な保存データです。現在のゲームは保持されました。",
-  "saveTooLarge": "保存データは1 MiBまでです。",
+  "saveTooLarge": "保存データは16 MiBまでです。",
   "missingSave": "このスロットは空です。",
   "saveFailed": "保存操作を確認できません。接続とサーバーの保存先を確認してください。",
   "enableSound": "音を有効にする",

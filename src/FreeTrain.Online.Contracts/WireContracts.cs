@@ -6,7 +6,8 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 3;
+    public const int Version = 4;
+    public const int MaximumStateBytes = 16 * 1024 * 1024;
     public const string ReferenceRuleset = "reference-spatial-4";
     public const string ReferenceContent = "reference-spatial-content-2";
     public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "2", "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82")];
@@ -76,11 +77,13 @@ public sealed record RejectedMessage(string RequestId, string Code, Dictionary<s
 public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, bool Paused, long Cash,
     MapRead Map, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings, TrackRead[] Tracks,
     string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
     TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
@@ -139,3 +142,16 @@ public sealed class NestedSnapshotConverter : JsonConverter<SnapshotMessage>
     public override void Write(Utf8JsonWriter writer, SnapshotMessage value, JsonSerializerOptions options)
         => JsonSerializer.Serialize<WireMessage>(writer, value, options);
 }
+
+// H/V row-major cells. Domain enums have explicit portable string identities.
+public sealed record TerrainCellRead(int Ground, string Surface);
+public sealed record TerrainTreeRead(int X, int Y, int Sprite);
+public sealed record ForestRead(DefinitionRead Definition, TerrainTreeRead[] Trees);
+public sealed record TerrainOccupantRead(long EntityId, string Kind, int NE, int SE, int SW, int NW,
+    ForestRead? Forest, int CreekConnections);
+public sealed record TerrainProvenanceRead(string Profile, string Source, string RequestHash, string RequestJson);
+public sealed record TerrainRead(string Name, int WaterLevel, bool ConstructionMode, long GeometryRevision,
+    long NextEntityId, TerrainProvenanceRead Provenance, TerrainCellRead[] Cells, TerrainOccupantRead[] Occupants);
+public sealed record TerrainCellChangeRead(int Index, int Ground, string Surface);
+public sealed record TerrainDeltaRead(int WaterLevel, bool ConstructionMode, long GeometryRevision, long NextEntityId,
+    TerrainCellChangeRead[] Cells, TerrainOccupantRead[] Occupants);

@@ -161,7 +161,7 @@ public static class NetworkEndpoints
                 buffer.Write(chunk,0,count);
             }
             if (session.Bootstrap().WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
-            SaveCodec.Read(buffer.ToArray());
+            SaveCodec.ReadWorld(buffer.ToArray(), FreeTrain.Online.Content.TerrainProfiles.Resolve);
         }));
         app.MapPost("/api/saves/upload", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
         {

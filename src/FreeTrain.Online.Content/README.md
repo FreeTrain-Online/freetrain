@@ -32,3 +32,9 @@ and serves only hashed manifest-listed content. `PluginStartup` supplies automat
 source-set preparation and repeatable `--plugin-dir` arguments. Optional originals,
 converted output and localized credits stay in their separate repository/cache.
 See [P2-03 and the full-suite conversion boundary](../../doc/web-parity-plugin-startup.md).
+
+`TerrainProfiles.Bundled` registers the exact prepared ground/forest/Terrace/Creek
+bindings for the separate terrain state/save/transport profile. `TerrainTransportScenario`
+is a deterministic persistence/transport fixture, never a startup world or generator.
+See [P3-04](../../doc/web-parity-terrain-transport.md); terrain browser rendering and
+creation remain P3-05/06 work.

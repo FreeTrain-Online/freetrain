@@ -84,7 +84,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 3;
+  protocolVersion: 4;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -120,6 +120,7 @@ export interface Snapshot {
    * @maxItems 65536
    */
   entities?: SpatialEntity[];
+  terrain?: Terrain;
 }
 export interface Map {
   width: number;
@@ -222,6 +223,61 @@ export interface VoxelMember {
   offset: Position;
   transparent: boolean;
 }
+export interface Terrain {
+  name: string;
+  waterLevel: number;
+  constructionMode: boolean;
+  geometryRevision: Counter;
+  nextEntityId: EntityId;
+  provenance: TerrainProvenance;
+  /**
+   * @maxItems 16384
+   */
+  cells: TerrainCell[];
+  /**
+   * @maxItems 32768
+   */
+  occupants: TerrainOccupant[];
+}
+export interface TerrainProvenance {
+  profile: "terrain-generation-1";
+  source: "empty" | "heightmap" | "generated";
+  requestHash: string;
+  requestJson: string;
+}
+export interface TerrainCell {
+  ground: number;
+  surface: "natural" | "cut" | "terrace";
+}
+export interface TerrainOccupant {
+  entityId: EntityId;
+  kind: "mountain" | "terrace" | "creek";
+  ne: number;
+  se: number;
+  sw: number;
+  nw: number;
+  forest: Forest | null;
+  creekConnections: number;
+}
+export interface Forest {
+  definition: Definition;
+  /**
+   * @maxItems 6
+   */
+  trees:
+    | []
+    | [TerrainTree]
+    | [TerrainTree, TerrainTree]
+    | [TerrainTree, TerrainTree, TerrainTree]
+    | [TerrainTree, TerrainTree, TerrainTree, TerrainTree]
+    | [TerrainTree, TerrainTree, TerrainTree, TerrainTree, TerrainTree]
+    | [TerrainTree, TerrainTree, TerrainTree, TerrainTree, TerrainTree, TerrainTree];
+}
+export interface TerrainTree {
+  x: number;
+  y: number;
+  sprite: number;
+}
 export interface Command {
   type: "command";
   requestId: string;
@@ -279,6 +335,7 @@ export interface Delta {
    * @maxItems 65536
    */
   entities?: SpatialEntity[];
+  terrain?: TerrainDelta;
 }
 export interface Removed {
   trainIds: string[];
@@ -286,6 +343,25 @@ export interface Removed {
   buildingIds: string[];
   trackPositions: Position[];
   entityIds?: EntityId[];
+}
+export interface TerrainDelta {
+  waterLevel: number;
+  constructionMode: boolean;
+  geometryRevision: Counter;
+  nextEntityId: EntityId;
+  /**
+   * @maxItems 16384
+   */
+  cells: TerrainCellChange[];
+  /**
+   * @maxItems 32768
+   */
+  occupants: TerrainOccupant[];
+}
+export interface TerrainCellChange {
+  index: number;
+  ground: number;
+  surface: "natural" | "cut" | "terrace";
 }
 export interface Resync {
   type: "resync";

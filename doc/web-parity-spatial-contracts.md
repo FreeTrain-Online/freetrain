@@ -97,8 +97,8 @@ MAN/DEV handoffs and REG-02/07 coverage without closing full gameplay workflows.
 ## Save and recovery
 
 [SaveCodec](../src/FreeTrain.Online.Persistence/SaveCodec.cs),
-[the Save 5 schema](../prototype/protocol/save-v5.schema.json) and
-[the independent initial fixture](../prototype/protocol/saves/reference-v5.json)
+[the Save 5 schema](../prototype/protocol/historical/save-v5/schema.json) and
+[the independent initial fixture](../prototype/protocol/historical/save-v5/reference-v5.json)
 add rail owner IDs and `spatial: {nextEntityId, entities}`. Entity state is restored
 directly, then cross-validated against rails and the selected definition registry.
 Rails serialize in XYZ order and entities in numeric ID order. Clock, scheduler,

@@ -3,7 +3,7 @@ using FreeTrain.Online.Simulation;
 
 namespace FreeTrain.Online.Content;
 
-// P3-03 in-process state dispatch, intentionally separate from live wire/save profiles.
+// Exact terrain state/save/transport dispatch; distinct from the reference-world profile.
 // Only the reviewed bundled set is registered. Optional packs need their own handlers.
 public static class TerrainProfiles
 {

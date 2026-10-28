@@ -1,0 +1,88 @@
+{
+  "type": "delta",
+  "worldEpoch": "1",
+  "baseRevision": "6",
+  "revision": "7",
+  "tick": "130081",
+  "paused": true,
+  "cash": "0",
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "tracks": [],
+  "removed": {
+    "trainIds": [],
+    "stationIds": [],
+    "buildingIds": [],
+    "trackPositions": [],
+    "entityIds": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "ruleset": "terrain-state-1",
+  "contentVersion": "terrain-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "entities": [],
+  "terrain": {
+    "waterLevel": 0,
+    "constructionMode": false,
+    "geometryRevision": "5",
+    "nextEntityId": "7",
+    "cells": [
+      {
+        "index": 0,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 1,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 2,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 3,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 4,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 5,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 6,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 7,
+        "ground": 1,
+        "surface": "cut"
+      },
+      {
+        "index": 8,
+        "ground": 1,
+        "surface": "cut"
+      }
+    ],
+    "occupants": []
+  }
+}

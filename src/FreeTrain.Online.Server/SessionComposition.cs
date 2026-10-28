@@ -9,7 +9,7 @@ public static class SessionComposition
 {
     // Explicit contribution registration; no assembly scanning or arbitrary DLL loading.
     public static SessionHost CreateReferenceHost(long epoch = 1, TimeSpan? inputExpiry = null)
-        => new(SpatialReferenceScenario.Create(), "operator-1", worldEpoch: epoch);
+        => new(SpatialReferenceScenario.Create(), "operator-1", worldEpoch: epoch, terrainResolver: TerrainProfiles.Resolve);
 
     // Explicit historical regression harness only; never selected by server configuration.
     public static SessionHost CreatePrototypeHost(long epoch = 1, TimeSpan? inputExpiry = null) => new(ReferenceScenario.Create(), "operator-1",

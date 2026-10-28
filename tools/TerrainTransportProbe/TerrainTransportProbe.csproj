@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../eng/Build.props" />
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/FreeTrain.Online.Content/FreeTrain.Online.Content.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Persistence/FreeTrain.Online.Persistence.csproj" />
+    <ProjectReference Include="../../src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj" />
+  </ItemGroup>
+</Project>

@@ -23,7 +23,9 @@ public sealed class SessionHost
     private readonly Queue<Work> commands = new();
     private World world = null!;
     private ReferenceWorld? referenceWorld;
-    public bool SavingAvailable => referenceWorld != null;
+    private TerrainSessionState? terrainState;
+    private readonly Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver;
+    public bool SavingAvailable => referenceWorld != null || terrainState != null;
     private readonly ScenarioDefinition scenario = null!;
     private readonly Func<ITrainController>[] controllerFactories = [];
     private readonly Dictionary<string, ParticipantContext> participants = new(StringComparer.Ordinal);
@@ -118,16 +120,44 @@ public sealed class SessionHost
         world = new(scenario, this.controllerFactories.Select(factory => factory()));
     }
 
-    public SessionHost(ReferenceWorld referenceWorld, string ownerId, int queueCapacity = 256, long worldEpoch = 1)
+    public SessionHost(ReferenceWorld referenceWorld, string ownerId, int queueCapacity = 256, long worldEpoch = 1,
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null)
     {
         ArgumentNullException.ThrowIfNull(referenceWorld);
         ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
         if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
         this.referenceWorld = referenceWorld;
+        this.terrainResolver = terrainResolver;
         this.queueCapacity = queueCapacity;
         WorldEpoch = worldEpoch;
         participants.Add(ownerId, new(ownerId));
     }
+
+    public SessionHost(TerrainSessionState terrainState, string ownerId,
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?> terrainResolver, int queueCapacity = 256, long worldEpoch = 1)
+    {
+        ArgumentNullException.ThrowIfNull(terrainState);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
+        this.terrainState = terrainState; this.terrainResolver = terrainResolver;
+        this.queueCapacity = queueCapacity; WorldEpoch = worldEpoch; participants.Add(ownerId, new(ownerId));
+    }
+
+    // Trusted adapter hook for subsequent terrain tools; no public command/endpoint grants edit legality.
+    public Task ApplyTerrain(long expectedEpoch, long expectedRevision, TerrainWorld candidate, bool constructionMode,
+        ParticipantContext participant) => AtBoundary(() =>
+    {
+        if (!Current(participant) || participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+        if (WorldEpoch != expectedEpoch) throw new InvalidOperationException("staleEpoch");
+        var state = terrainState ?? throw new InvalidOperationException("operationUnavailable");
+        if (state.Revision != expectedRevision) throw new InvalidOperationException("staleRevision");
+        // Reject candidates outside persistence/transport limits before publication.
+        var proposed = new TerrainSessionState(candidate, state.Provenance, constructionMode,
+            state.Clock.Capture(), state.Paused, state.Random.Capture(), checked(state.Revision + 1));
+        SaveCodec.Write(proposed);
+        state.Replace(expectedRevision, candidate, constructionMode);
+        return true;
+    });
 
     // Persistence joins exactly the same bounded FIFO as network commands.
     private Task<T> AtBoundary<T>(Func<T> action)
@@ -144,16 +174,17 @@ public sealed class SessionHost
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        return referenceWorld != null ? SaveCodec.Write(referenceWorld) : throw new InvalidDataException("savingUnavailable");
+        return terrainState != null ? SaveCodec.Write(terrainState) : referenceWorld != null ? SaveCodec.Write(referenceWorld) : throw new InvalidDataException("savingUnavailable");
     });
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        var replacement = SaveCodec.Read(save.Span); // Validate completely before touching current state.
-        if (referenceWorld == null) throw new InvalidDataException("incompatibleSave");
+        var replacement = SaveCodec.ReadWorld(save.Span, terrainResolver); // Validate completely before touching current state.
+        if (!SavingAvailable) throw new InvalidDataException("incompatibleSave");
         var epoch = checked(WorldEpoch + 1);
-        referenceWorld = replacement;
+        referenceWorld = replacement.Reference;
+        terrainState = replacement.Terrain;
         WorldEpoch = epoch;
         resetInput = safetyPause = false;
         return Snapshot();
@@ -188,7 +219,7 @@ public sealed class SessionHost
         {
             var observedTime = now ?? DateTimeOffset.UtcNow;
             if (observedTime > boundaryTime) boundaryTime = observedTime;
-            if (referenceWorld != null) return PumpReference(tickBudget);
+            if (SavingAvailable) return PumpReference(tickBudget);
             MaintainControl();
             var events = ImmutableArray.CreateBuilder<SimulationEvent>();
             var advanced = 0;
@@ -223,6 +254,12 @@ public sealed class SessionHost
         }
     }
 
+    private bool CanonicalCanAdvance => terrainState?.CanAdvance ?? referenceWorld!.CanAdvance;
+    private bool CanonicalPaused => terrainState?.Paused ?? referenceWorld!.Paused;
+    private long CanonicalRevision => terrainState?.Revision ?? referenceWorld!.Revision;
+    private long CanonicalMinute => terrainState?.Clock.Time.AbsoluteMinute ?? referenceWorld!.Clock.Time.AbsoluteMinute;
+    private void CanonicalPause(bool paused) { if (terrainState != null) terrainState.SetPaused(paused); else referenceWorld!.SetPaused(paused); }
+    private void CanonicalAdvance() { if (terrainState != null) terrainState.AdvanceOneMinute(); else referenceWorld!.AdvanceOneMinute(); }
     private PumpResult PumpReference(int tickBudget)
     {
         var advanced = 0;
@@ -243,27 +280,27 @@ public sealed class SessionHost
                     {
                         switch (queued.Command.Payload)
                         {
-                            case RunCommand when referenceWorld!.CanAdvance: referenceWorld.SetPaused(false); break;
+                            case RunCommand when CanonicalCanAdvance: CanonicalPause(false); break;
                             case RunCommand: code = "invalidInput"; break;
-                            case PauseCommand: referenceWorld!.SetPaused(true); break;
-                            case StepCommand when referenceWorld!.Paused && referenceWorld.CanAdvance:
-                                referenceWorld.AdvanceOneMinute(); advanced++; break;
+                            case PauseCommand: CanonicalPause(true); break;
+                            case StepCommand when CanonicalPaused && CanonicalCanAdvance:
+                                CanonicalAdvance(); advanced++; break;
                             case StepCommand: code = "invalidInput"; break;
                             default: code = "operationUnavailable"; break;
                         }
                     }
                     queued.Completion.SetResult(code == null
                         ? new AcceptedMessage(queued.Command.RequestId, WorldEpoch, ++sequence,
-                            referenceWorld!.Clock.Time.AbsoluteMinute, referenceWorld.Revision)
+                            CanonicalMinute, CanonicalRevision)
                         : Reject(queued.Command, code));
                 }
                 applied++;
             }
             resetInput = false;
-            if (safetyPause) { referenceWorld!.SetPaused(true); safetyPause = false; }
-            if (!referenceWorld!.CanAdvance) referenceWorld.SetPaused(true);
-            if (advanced >= tickBudget || referenceWorld.Paused) break;
-            referenceWorld.AdvanceOneMinute(); advanced++;
+            if (safetyPause) { CanonicalPause(true); safetyPause = false; }
+            if (!CanonicalCanAdvance) CanonicalPause(true);
+            if (advanced >= tickBudget || CanonicalPaused) break;
+            CanonicalAdvance(); advanced++;
         } while (advanced < tickBudget);
         lostParticipants.Clear(); resetParticipants.Clear();
         return new(advanced, applied, []);
@@ -317,15 +354,21 @@ public sealed class SessionHost
     private static GridPosition Position(PositionRead p) => new(p.X, p.Y, p.Z);
     private static PositionRead Position(GridPosition p) => new(p.X, p.Y, p.Z);
     private static string Camel(string value) => char.ToLowerInvariant(value[0]) + value[1..];
-    public WorldState ReadState() { lock (gate) return referenceWorld == null ? world.Read() : throw new InvalidOperationException("Canonical worlds do not expose prototype state."); }
+    public WorldState ReadState() { lock (gate) return !SavingAvailable ? world.Read() : throw new InvalidOperationException("Canonical worlds do not expose prototype state."); }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query)
     {
-        lock (gate) return SpatialQueries.Preview(Snapshot(), query);
+        lock (gate)
+        {
+            var snapshot = Snapshot();
+            return SpatialQueries.Preview(snapshot, query, terrainState == null ? null :
+                new(snapshot.Ruleset, snapshot.ContentVersion, "hv", snapshot.RequiredPacks.ToImmutableArray()));
+        }
     }
     public SnapshotMessage Snapshot()
     {
         lock (gate)
         {
+            if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
                     new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),

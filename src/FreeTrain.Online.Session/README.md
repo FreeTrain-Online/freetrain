@@ -48,9 +48,16 @@ provider is part of this library.
 The default canonical `ReferenceWorld` uses the same bounded FIFO and snapshot /
 spatial query boundary. Run/Pause/Step advance its world-local source-minute clock;
 other gameplay commands return `operationUnavailable`. Economy/train behavior is pending.
-Capture writes canonical Save 5, including the entity/voxel graph, allocator, clock and random streams. Load
+Capture writes canonical Save 6, including the entity/voxel graph, allocator, clock and random streams. Load
 accepts only that current format and validates a complete replacement before
 changing the epoch; later commands/loads carrying the old epoch are fenced.
 Earlier save formats are rejected without mutation or conversion. Explicit
 prototype regression hosts cannot write saves.
 See [P1-01c](../../doc/web-parity-reference-world.md), [P1-02](../../doc/web-parity-clock.md) and [P1-04](../../doc/web-parity-spatial-contracts.md).
+
+Terrain hosts share this canonical FIFO and clock boundary. Save 6/protocol 4 carry
+actual ground/occupants, realized forests, authoring mode, provenance and revision/
+allocator continuation, with exact trusted profile resolution. Replacement snapshots
+and edited cell/occupant/removal deltas preserve epoch and stale-request fencing.
+The terrain adapter hook does not expose a gameplay editing command.
+See [P3-04 scope and limits](../../doc/web-parity-terrain-transport.md).

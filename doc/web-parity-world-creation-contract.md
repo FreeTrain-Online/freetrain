@@ -1,3 +1,5 @@
+**P3-04 measurement update — 28 October 2026:** [actual terrain serialization evidence](web-parity-terrain-transport.md) exceeds this step's provisional 512-byte/cell transfer and allocation reservations. They are not supported real-world capacities. Presets and creation readiness remain disabled. Save 6/protocol 4 now cap actual state at 16 MiB; a dense 128² stress graph is rejected. Rework/remeasure reservations and allocations before enabling applicable presets in P3-06/17. The historical probe and formulas below retain their original scope.
+
 # P3-02 world requests, profile and resource admission — 27 October 2026
 
 P3-02 delivers executable, immutable request/validation contracts, generation-stage

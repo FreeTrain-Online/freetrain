@@ -6,7 +6,7 @@ The localized Svelte app connects to an authoritative C# session over HTTP and
 WebSocket. Its default world is now a canonical H/V spatial reference: a small
 32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
-with **Save 5**. Economy, construction, trains and stations remain future slices.
+with **Save 6**. Economy, construction, trains and stations remain future slices.
 Settings offers six departure-bell previews alongside the existing sound effects.
 BGM is deferred to a [future improvement project](doc/web-audio-policy.md); the
 TinySynth feasibility experiment was removed after audible pops and crackles.
@@ -72,7 +72,7 @@ When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
 or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume. Prototype
-saves are rejected and preserved; the default world now writes canonical Save 5. Browser login and preference keys use `freetrain-online`;
+saves are rejected and preserved; the default world now writes canonical Save 6. Browser login and preference keys use `freetrain-online`;
 sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
@@ -134,7 +134,7 @@ origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings u
 `FreeTrainOnline__Network__<Property>`. See
 [NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
-Save 5 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
+Save 6 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
 restores the spatial world after restart; the server incarnation changes. Rejected
 startup checkpoints are reported and preserved, including through later automatic
 and shutdown attempts. Named slots and downloads remain available for the fresh
@@ -193,7 +193,7 @@ python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav
 python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive --check
 ```
 
-The existing synthetic live world retains its distinct pack and Save 5 identity.
+The existing synthetic live world retains its distinct pack and Save 6 identity.
 Historical demo/regression PNGs, variants, masks and notices in `web/public/assets/`
 remain frozen artifacts checked by `prototype/content-artifacts.json`; they no
 longer trigger historical source import during normal builds. Browser decode
@@ -208,17 +208,22 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-**Only canonical Save 5 is supported.** Save slot and
-Download save capture the validated H/V rail graph, stable entities/footprints and allocator, source-minute clock, paused state and all versioned random streams. Load/upload validates dimensions,
+**Only canonical Save 6 is supported.** Protocol 4 also carries actual terrain,
+realized vegetation, authoring mode and creation provenance under the exact bundled
+terrain profile. Terrain save/load/restart and transport are implemented; its browser
+renderer and creation workflow are P3-05/06 work. The application still starts with
+the spatial reference world. Save/upload and outgoing terrain data have a 16 MiB limit.
+
+Save slot and Download save capture the validated H/V rail graph, stable entities/footprints and allocator, source-minute clock, paused state and all versioned random streams. Load/upload validates dimensions,
 unique occupied cells, source patterns, reciprocal connectivity, all eight headings
 and exact ruleset/content/pack identity before replacing the world and advancing
-the epoch. Earlier formats, including Saves 2/3/4, return `incompatibleSave` without
+the epoch. Earlier formats, including Saves 2/3/4/5, return `incompatibleSave` without
 conversion; the current world and rejected files are preserved.
 
 `FreeTrainOnline__Saves__Directory` selects the save directory. An incompatible
 startup checkpoint produces a visible error and a fresh world; the rejected file
 is never overwritten. `/api/saves/status` reports availability and startup errors.
-See [the save contract](prototype/protocol/save-v5.schema.json) and
+See [the save contract](prototype/protocol/save-v6.schema.json) and
 [current policy](doc/web-parity-runtime-policy.md).
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
@@ -262,12 +267,12 @@ are historical regression checks, not canonical gameplay/capacity evidence.
 
 ## Contract changes
 
-The spatial integration now uses **protocol 3**, with explicit ruleset/content/pack
+The spatial integration now uses **protocol 4**, with explicit ruleset/content/pack
 identity, coordinate-system tags and per-car eight-direction heading indices.
-Restart/deploy matching artifacts together; protocol 2 peers receive HTTP 426.
+Restart/deploy matching artifacts together; protocol 2/3 peers receive HTTP 426.
 The default profile is `reference-spatial-4` / `reference-spatial-content-2`,
-with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 5. Unknown
-profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md).
+with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 6. Unknown
+profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md) and [terrain save/transport scope](doc/web-parity-terrain-transport.md).
 
 Edit `prototype/protocol/schema.json`, run
 `deno task --cwd web generate:contracts`, and update the C# DTOs and shared

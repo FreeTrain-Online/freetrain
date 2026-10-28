@@ -288,13 +288,18 @@ public sealed class NetworkSession
     }
     private bool Write(Peer peer, WireMessage message)
     {
-        if (peer.Output.Writer.TryWrite(message)) return true;
-        // Never discard a dependent delta or wait for the network in the host pump.
+        if (JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, Json).Length <= ProtocolIdentity.MaximumStateBytes &&
+            peer.Output.Writer.TryWrite(message)) return true;
+        // Oversized state or a full bounded queue closes this peer; never lose a dependent delta or block on network I/O.
         Disconnect(peer, DateTimeOffset.UtcNow);
         return false;
     }
     public static DeltaMessage Difference(SnapshotMessage previous, SnapshotMessage next)
     {
+        if (previous.WorldEpoch != next.WorldEpoch || previous.Map != next.Map || previous.Ruleset != next.Ruleset ||
+            previous.ContentVersion != next.ContentVersion || !previous.RequiredPacks.OrderBy(p => p.Id).SequenceEqual(next.RequiredPacks.OrderBy(p => p.Id)) ||
+            previous.Terrain?.Name != next.Terrain?.Name || previous.Terrain?.Provenance != next.Terrain?.Provenance)
+            throw new ArgumentException("World replacement requires a snapshot.");
         static T[] Changed<T, TKey>(T[] before, T[] after, Func<T, TKey> key) where TKey : notnull
         {
             var old = before.ToDictionary(key);
@@ -310,7 +315,12 @@ public sealed class NetworkSession
                 previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray(),
                 next.Entities == null ? null : (previous.Entities ?? []).Select(e => e.Id).Except(next.Entities.Select(e => e.Id)).ToArray()),
             next.Ruleset, next.ContentVersion, next.RequiredPacks,
-            next.Entities == null ? null : Changed(previous.Entities ?? [], next.Entities, e => e.Id));
+            next.Entities == null ? null : Changed(previous.Entities ?? [], next.Entities, e => e.Id),
+            next.Terrain is not {} terrain ? null : new(terrain.WaterLevel, terrain.ConstructionMode, terrain.GeometryRevision,
+                terrain.NextEntityId, terrain.Cells.Select((c, i) => (c, i))
+                    .Where(row => previous.Terrain == null || previous.Terrain.Cells[row.i] != row.c)
+                    .Select(row => new TerrainCellChangeRead(row.i, row.c.Ground, row.c.Surface)).ToArray(),
+                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)));
     }
 }
 

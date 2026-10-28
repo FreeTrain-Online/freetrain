@@ -1,0 +1,244 @@
+{
+  "ruleset": "terrain-state-1",
+  "contentVersion": "terrain-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "definitions": [
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:terrain/mountain",
+        "recipeId": "geometry:quarter-mountain-1"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 0,
+      "treeDensity": 0,
+      "price": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+        "recipeId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+      },
+      "kind": "creek",
+      "treeSpriteCount": 0,
+      "treeDensity": 0,
+      "price": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 1,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 3,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 5,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 1,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 3,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 5,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 9,
+      "treeDensity": 1,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 3,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 5,
+      "treeDensity": 2,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g"
+      },
+      "kind": "mountain",
+      "treeSpriteCount": 6,
+      "treeDensity": 3,
+      "price": 100
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}",
+        "recipeId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}"
+      },
+      "kind": "terrace",
+      "treeSpriteCount": 0,
+      "treeDensity": 0,
+      "price": 0
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+**P3-04 follow-up — 28 October 2026:** [Save 6/protocol 4 terrain integration](web-parity-terrain-transport.md) now supplies actual state encoding, provenance/mode/clock/random composition, session replacement and bounded transport. The dated P3-03 boundaries below describe its original delivery. Rendering and live creation remain P3-05/06 work.
+
 # P3-03 canonical terrain state — 28 October 2026
 
 P3-03 delivers detached canonical terrain and an immutable in-process read model.

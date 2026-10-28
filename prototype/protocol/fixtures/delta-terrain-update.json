@@ -1,0 +1,129 @@
+{
+  "type": "delta",
+  "worldEpoch": "1",
+  "baseRevision": "6",
+  "revision": "7",
+  "tick": "130081",
+  "paused": true,
+  "cash": "0",
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "tracks": [],
+  "removed": {
+    "trainIds": [],
+    "stationIds": [],
+    "buildingIds": [],
+    "trackPositions": [],
+    "entityIds": [
+      "3"
+    ]
+  },
+  "ruleset": "terrain-state-1",
+  "contentVersion": "terrain-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "entities": [
+    {
+      "id": "2",
+      "revision": "1",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:terrain/mountain",
+        "recipeId": "geometry:quarter-mountain-1"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 0,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": false
+        }
+      ],
+      "owned": false,
+      "silentlyReclaimable": false,
+      "value": "100"
+    },
+    {
+      "id": "7",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+        "recipeId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+      },
+      "anchor": {
+        "x": 2,
+        "y": 1,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": false,
+      "silentlyReclaimable": true,
+      "value": "0"
+    }
+  ],
+  "terrain": {
+    "waterLevel": 3,
+    "constructionMode": true,
+    "geometryRevision": "5",
+    "nextEntityId": "8",
+    "cells": [],
+    "occupants": [
+      {
+        "entityId": "2",
+        "kind": "mountain",
+        "ne": 1,
+        "se": 2,
+        "sw": 3,
+        "nw": 4,
+        "forest": {
+          "definition": {
+            "packId": "exav-stable-bundled",
+            "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+            "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+          },
+          "trees": [
+            {
+              "x": 17,
+              "y": 9,
+              "sprite": 1
+            }
+          ]
+        },
+        "creekConnections": 0
+      },
+      {
+        "entityId": "7",
+        "kind": "creek",
+        "ne": 0,
+        "se": 0,
+        "sw": 0,
+        "nw": 0,
+        "forest": null,
+        "creekConnections": 5
+      }
+    ]
+  }
+}

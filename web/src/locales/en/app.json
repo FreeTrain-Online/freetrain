@@ -116,7 +116,7 @@
   "operationUnavailable": "This operation is not available in the spatial reference world.",
   "savingUnavailable": "Saving is unavailable for this reference world.",
   "invalidSave": "Invalid save data. The current game was preserved.",
-  "saveTooLarge": "Save exceeds the 1 MiB limit.",
+  "saveTooLarge": "Save exceeds the 16 MiB limit.",
   "missingSave": "This slot is empty.",
   "saveFailed": "Save operation could not be confirmed. Check the connection and server storage.",
   "enableSound": "Enable sound",

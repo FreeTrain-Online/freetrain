@@ -80,7 +80,7 @@ public sealed class TerrainProfile
 }
 
 public sealed record TerrainVoxelRead(GroundRelation Relation, bool Underwater, VoxelOccupancy Occupancy);
-// In-process immutable read model. Wire encoding/digest/save dispatch belong to P3-04.
+// In-process immutable read model. TerrainWire supplies the separate versioned transport shape.
 public sealed record TerrainRead(string Ruleset, string ContentVersion, ImmutableArray<TerrainPack> RequiredPacks,
     string Name, WorldDimensions Dimensions, long Revision, int WaterLevel, ImmutableArray<TerrainCell> Cells,
     SpatialState Spatial, ImmutableArray<TerrainOccupant> Occupants);
@@ -186,7 +186,7 @@ public sealed class TerrainWorld
             {
                 if (entity with { Footprint = previous.Footprint } != previous ||
                     !entity.Footprint.Members.SequenceEqual(previous.Footprint.Members) ||
-                    candidate.occupants[entity.Id] != this.occupants[entity.Id])
+                    !SameOccupant(candidate.occupants[entity.Id], this.occupants[entity.Id]))
                     throw new ArgumentException("Changed terrain entity requires a revision.");
             }
             else if (previous.Revision == long.MaxValue || entity.Revision != previous.Revision + 1)
@@ -194,6 +194,11 @@ public sealed class TerrainWorld
         }
         return candidate;
     }
+
+    private static bool SameOccupant(TerrainOccupant a, TerrainOccupant b) =>
+        a with { Forest = null } == b with { Forest = null } &&
+        (a.Forest is null ? b.Forest is null : b.Forest is {} forest &&
+            a.Forest.Definition == forest.Definition && a.Forest.Trees.SequenceEqual(forest.Trees));
 
     private void ValidateEntity(SpatialEntity entity)
     {

@@ -106,8 +106,8 @@ Deno.test('canonical source-minute display uses fixed years and ten-minute preci
 });
 Deno.test('current save carries canonical clock state and strict source action binding boundary',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v6.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v6.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));
   for(const clock of [null,{...save.clock,absoluteMinute:130080},{...save.clock,absoluteMinute:'-1'},
@@ -124,10 +124,10 @@ Deno.test('canonical clock deltas retain geometry and reject unsupported clock r
   throws(()=>parseMessage(JSON.stringify({...read,ruleset:'reference-spatial-2'})));
 });
 
-Deno.test('Save 5 freezes complete random state and rejects malformed or incompatible streams',async()=>{
+Deno.test('Save 6 freezes complete random state and rejects malformed or incompatible streams',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v6.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v6.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);
   assert(validate(save));
   equal(save.ruleset,'reference-spatial-4');equal(save.random.streams.length,10);
@@ -188,8 +188,8 @@ Deno.test('entity delta removals and replacements preserve decimal IDs and rejec
 });
 Deno.test('current save structurally requires stable graph and old canonical saves remain unsupported',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v5.schema.json',import.meta.url)));
-  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v5.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v6.schema.json',import.meta.url)));
+  const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/reference-v6.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);assert(validate(save));
   for(const patch of [{spatial:null},{spatial:{...save.spatial,nextEntityId:33}},{saveVersion:4},{ruleset:'reference-spatial-3'},
     {requiredPacks:[...save.requiredPacks,...save.requiredPacks]}])assert(!validate({...save,...patch}));

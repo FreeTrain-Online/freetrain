@@ -1,7 +1,7 @@
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
-export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=3&contentVersion=prototype-content-1')).json()).snapshot;
+export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=4&contentVersion=prototype-content-1')).json()).snapshot;
 // Client lifecycle fixture only: no save loading or server world replacement is implied.
 export async function worldReplacementFixture(page:Page) {
   let client:WebSocketRoute|undefined,replaced=false;

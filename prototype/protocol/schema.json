@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v3.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v4.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -332,6 +332,9 @@
             "$ref": "#/$defs/SpatialEntity"
           },
           "maxItems": 65536
+        },
+        "terrain": {
+          "$ref": "#/$defs/Terrain"
         }
       },
       "required": [
@@ -424,6 +427,9 @@
             "$ref": "#/$defs/SpatialEntity"
           },
           "maxItems": 65536
+        },
+        "terrain": {
+          "$ref": "#/$defs/TerrainDelta"
         }
       },
       "required": [
@@ -802,7 +808,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 3
+          "const": 4
         },
         "contentVersion": {
           "type": "string",
@@ -1298,6 +1304,287 @@
         "owned",
         "silentlyReclaimable",
         "value"
+      ]
+    },
+    "TerrainCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ground": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "surface": {
+          "enum": [
+            "natural",
+            "cut",
+            "terrace"
+          ]
+        }
+      },
+      "required": [
+        "ground",
+        "surface"
+      ]
+    },
+    "TerrainTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "sprite": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1023
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "sprite"
+      ]
+    },
+    "Forest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "trees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainTree"
+          },
+          "maxItems": 6
+        }
+      },
+      "required": [
+        "definition",
+        "trees"
+      ]
+    },
+    "TerrainOccupant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "kind": {
+          "enum": [
+            "mountain",
+            "terrace",
+            "creek"
+          ]
+        },
+        "ne": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "se": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "sw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "nw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "forest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Forest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "creekConnections": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "entityId",
+        "kind",
+        "ne",
+        "se",
+        "sw",
+        "nw",
+        "forest",
+        "creekConnections"
+      ]
+    },
+    "TerrainProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "terrain-generation-1"
+        },
+        "source": {
+          "enum": [
+            "empty",
+            "heightmap",
+            "generated"
+          ]
+        },
+        "requestHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "requestJson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "profile",
+        "source",
+        "requestHash",
+        "requestJson"
+      ]
+    },
+    "Terrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "waterLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "constructionMode": {
+          "type": "boolean"
+        },
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "provenance": {
+          "$ref": "#/$defs/TerrainProvenance"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainCell"
+          },
+          "maxItems": 16384
+        },
+        "occupants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainOccupant"
+          },
+          "maxItems": 32768
+        }
+      },
+      "required": [
+        "name",
+        "waterLevel",
+        "constructionMode",
+        "geometryRevision",
+        "nextEntityId",
+        "provenance",
+        "cells",
+        "occupants"
+      ]
+    },
+    "TerrainCellChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16383
+        },
+        "ground": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "surface": {
+          "enum": [
+            "natural",
+            "cut",
+            "terrace"
+          ]
+        }
+      },
+      "required": [
+        "index",
+        "ground",
+        "surface"
+      ]
+    },
+    "TerrainDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "waterLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "constructionMode": {
+          "type": "boolean"
+        },
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainCellChange"
+          },
+          "maxItems": 16384
+        },
+        "occupants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainOccupant"
+          },
+          "maxItems": 32768
+        }
+      },
+      "required": [
+        "waterLevel",
+        "constructionMode",
+        "geometryRevision",
+        "nextEntityId",
+        "cells",
+        "occupants"
       ]
     }
   }

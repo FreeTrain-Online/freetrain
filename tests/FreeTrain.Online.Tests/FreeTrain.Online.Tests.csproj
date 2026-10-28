@@ -14,7 +14,7 @@
     <None Include="../../src/FreeTrain.Online.Content/reference-spatial.json" Link="Spatial/reference-spatial.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/protocol/fixtures/*.json" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/protocol/historical/save-v1/*.json" Link="RetiredSaves/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../../prototype/protocol/historical/save-v2/reference-*.json;../../prototype/protocol/historical/save-v3/reference-*.json;../../prototype/protocol/historical/save-v4/reference-*.json" Link="RetiredSaves/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../prototype/protocol/historical/save-v2/reference-*.json;../../prototype/protocol/historical/save-v3/reference-*.json;../../prototype/protocol/historical/save-v4/reference-*.json;../../prototype/protocol/historical/save-v5/reference-*.json" Link="RetiredSaves/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/scenarios/spatial-vectors.json" Link="Spatial/spatial-vectors.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/protocol/prototype-profile.json" Link="Spatial/prototype-profile.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../web/src/generated/sprites.json" Link="Spatial/sprites.json" CopyToOutputDirectory="PreserveNewest" />

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { ready, openPanel } from './ux-helpers.ts';
-const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=3&contentVersion=prototype-content-1')).json()).snapshot;
+const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=4&contentVersion=prototype-content-1')).json()).snapshot;
 const pause = async(page:any)=>{if(!(await bootstrap(page)).paused)await page.getByRole('button',{name:'Pause',exact:false}).click();};
 
 test('prototype and relabelled saves are rejected; writing is unavailable and world stays intact',async({page})=>{
@@ -24,7 +24,7 @@ test('prototype and relabelled saves are rejected; writing is unavailable and wo
 
 test('malformed and oversized data report errors without replacing the live world',async({page})=>{
   await page.goto('/');await ready(page);await pause(page);const before=await bootstrap(page);await openPanel(page,'saves');
-  for(const [buffer,message] of [[Buffer.from('{broken'),'Invalid save data'],[Buffer.alloc(1024*1024+1,'x'),'1 MiB']] as const){
+  for(const [buffer,message] of [[Buffer.from('{broken'),'Invalid save data'],[Buffer.alloc(16*1024*1024+1,'x'),'16 MiB']] as const){
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'bad.json',mimeType:'application/json',buffer});
     await expect(page.getByTestId('save-feedback')).toContainText(message);expect(await bootstrap(page)).toEqual(before);

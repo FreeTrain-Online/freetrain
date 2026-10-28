@@ -1,0 +1,56 @@
+{
+  "measuredOn": "2026-10-28",
+  "environment": {
+    "runtime": ".NET 10.0.13",
+    "os": "macOS 26.7.1",
+    "architecture": "Arm64"
+  },
+  "scope": "Actual dense canonical terrain serialization stress; allocation churn is not peak RSS; creation presets remain disabled.",
+  "samples": [
+    {
+      "side": 30,
+      "cells": 900,
+      "entities": 1800,
+      "constructedBytes": 3458768,
+      "serializedAllocatedBytes": 19112664,
+      "totalAllocatedBytes": 45463808,
+      "snapshotBytes": 1082846,
+      "saveBytes": 1089198,
+      "saveError": null,
+      "reservation": 526336,
+      "fitsProvisionalReservation": false,
+      "fitsProvisionalAllocationAllowance": false,
+      "elapsedMs": 173.5285
+    },
+    {
+      "side": 64,
+      "cells": 4096,
+      "entities": 8192,
+      "constructedBytes": 12960376,
+      "serializedAllocatedBytes": 68450976,
+      "totalAllocatedBytes": 171296520,
+      "snapshotBytes": 4934026,
+      "saveBytes": 4940378,
+      "saveError": null,
+      "reservation": 2162688,
+      "fitsProvisionalReservation": false,
+      "fitsProvisionalAllocationAllowance": false,
+      "elapsedMs": 381.9101
+    },
+    {
+      "side": 128,
+      "cells": 16384,
+      "entities": 32768,
+      "constructedBytes": 52114904,
+      "serializedAllocatedBytes": 274438136,
+      "totalAllocatedBytes": 274438400,
+      "snapshotBytes": 19817201,
+      "saveBytes": null,
+      "saveError": "saveTooLarge",
+      "reservation": 8454144,
+      "fitsProvisionalReservation": false,
+      "fitsProvisionalAllocationAllowance": false,
+      "elapsedMs": 472.5358
+    }
+  ]
+}
