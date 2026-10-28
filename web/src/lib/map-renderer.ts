@@ -6,10 +6,13 @@ import { offset, type SpatialMap, type Point } from './map-geometry.ts';
 import { normalPorts } from './world-identity.ts';
 import { ports } from './prototype/rail-geometry.ts';
 import { mapSpace } from './map-space.ts';
+import { TerrainScene, type TerrainTarget } from './terrain-renderer.ts';
+import { loadRenderCatalog, RecipeImageCache, type RenderCatalog, type Variant } from './content-recipes.ts';
+import { isTerrainWorld } from './world-identity.ts';
 export type SpriteKey = keyof typeof content.sprites;
-export type Selection = { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
-interface Item { position: Position; kind: Selection['kind'] | 'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
+export type Selection = TerrainTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
+export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
+interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
   await Promise.all(Object.values(content.sprites).flatMap(sprite => [sprite.image,sprite.nightImage,sprite.tintImage]).map(async path => {
@@ -23,7 +26,13 @@ export class MapRenderer {
   private read?: ReadState;
   private space?: SpatialMap;
   private buildings = new Map<string,ReadState['buildings'][number]>();
-  constructor(private canvas: HTMLCanvasElement, private images: Map<string, HTMLImageElement>) {}
+  private terrainCache=new RecipeImageCache();
+  private catalog?:Promise<RenderCatalog>;
+  private terrainKey='';
+  private terrainScene?:TerrainScene;
+  private terrainError?:unknown;
+  private terrainView?:{x:number;y:number;zoom:number};
+  constructor(private canvas: HTMLCanvasElement, private images: Map<string, HTMLImageElement>,private invalidate=()=>{}) {}
   setRead(read: ReadState) {
     this.read=read;
     this.space=mapSpace(read.map);
@@ -53,7 +62,37 @@ export class MapRenderer {
     ctx.setTransform(dpr,0,0,dpr,0,0); ctx.imageSmoothingEnabled=false;
     ctx.fillStyle=options.night?'#17232b':'#d8e5d9'; ctx.fillRect(0,0,width,height);
     this.hits=[]; let drawn=0, culled=0;
-    if (!this.read || !this.space) return;
+    if (!this.read || !this.space) return false;
+    if(isTerrainWorld(this.read)) {
+      const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
+      const key=JSON.stringify([read.worldEpoch,read.terrain!.geometryRevision,variant,options.heightCut]);
+      if(this.terrainKey!==key) {
+        this.terrainKey=key;this.terrainScene=undefined;this.terrainView=undefined;this.terrainError=undefined;
+        this.catalog??=loadRenderCatalog(read.requiredPacks[0].catalogHash);
+        this.catalog.then(c=>TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut)).then(scene=>{
+          if(this.terrainKey===key){this.terrainScene=scene;this.invalidate();}
+        }).catch(error=>{if(this.terrainKey===key){this.terrainError=error;this.invalidate();}});
+      }
+      if(this.terrainError)throw this.terrainError;
+      this.canvas.dataset.assets=this.terrainScene?'ready':'loading';
+      if(!this.terrainScene)return false;
+      this.terrainView={x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom};
+      const count=this.terrainScene.draw(ctx,this.terrainView,width,height);
+      for(const [position,color] of [[options.preview,'#126e79'],[options.selection?.position,'#ffeaa0']] as const) {
+        if(!position||position.z>options.heightCut)continue;
+        const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
+        ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+      }
+      this.canvas.dataset.drawn=String(count);this.canvas.dataset.culled=String(this.terrainScene.operations.length-count);
+      this.canvas.dataset.paintMs=(performance.now()-start).toFixed(2);
+      this.canvas.dataset.zoom=camera.zoom.toFixed(3);this.canvas.dataset.camera=`${camera.x.toFixed(1)},${camera.y.toFixed(1)}`;
+      this.canvas.dataset.coordinateSystem=read.map.coordinateSystem;this.canvas.dataset.ruleset=read.ruleset;this.canvas.dataset.worldEpoch=read.worldEpoch;
+      this.canvas.dataset.headings='';
+      this.canvas.dataset.terrainVariant=`${variant.season}/${variant.night?'night':'day'}`;
+      this.canvas.dataset.terrainCut=String(options.heightCut);
+      return true;
+    }
+    this.terrainKey='';this.terrainScene=undefined;this.terrainView=undefined;
     const space=this.space;
     const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;
@@ -133,8 +172,10 @@ export class MapRenderer {
     this.canvas.dataset.ruleset=this.read.ruleset;
     this.canvas.dataset.worldEpoch=this.read.worldEpoch;
     this.canvas.dataset.headings=this.read.trains.flatMap(train=>train.carHeadings).join(',');
+    return true;
   }
   pick(p:Point,zoom:number):Selection|undefined {
+    if(this.read&&isTerrainWorld(this.read))return this.terrainScene&&this.terrainView?this.terrainScene.pick(p,this.terrainView):undefined;
     for(let i=this.hits.length-1;i>=0;i--) {
       const {item,x,y}=this.hits[i]; let hit=false;
       if(item.sprite && !item.cut) {

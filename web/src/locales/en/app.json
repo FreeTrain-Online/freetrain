@@ -226,5 +226,16 @@
   "height": "Height",
   "departureBells": "Departure bells",
   "previewBell": "Preview bell",
-  "audioCredit": "Audio credits"
+  "audioCredit": "Audio credits",
+  "terrain": "Terrain",
+  "terrainWorld": "Terrain world",
+  "terrainWorldHint": "View terrain and check locations. Terrain editing and railway construction are not available yet.",
+  "terrainGround": "Ground",
+  "terrainMountain": "Slope",
+  "terrainWater": "Water surface",
+  "terrainUnderground": "Underground cut",
+  "terrainTerrace": "Terrace",
+  "terrainForest": "Forest",
+  "terrainCreek": "Creek",
+  "terrainCliff": "Cliff"
 }

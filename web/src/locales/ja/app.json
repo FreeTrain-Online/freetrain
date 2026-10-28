@@ -226,5 +226,16 @@
   "height": "高さ",
   "departureBells": "発車ベル",
   "previewBell": "ベルを試聴",
-  "audioCredit": "音源のクレジット"
+  "audioCredit": "音源のクレジット",
+  "terrain": "地形",
+  "terrainWorld": "地形ワールド",
+  "terrainWorldHint": "地形の表示と位置の確認ができます。地形編集と鉄道建設はまだ利用できません。",
+  "terrainGround": "地面",
+  "terrainMountain": "斜面",
+  "terrainWater": "水面",
+  "terrainUnderground": "地下の断面",
+  "terrainTerrace": "擁壁",
+  "terrainForest": "森林",
+  "terrainCreek": "小川",
+  "terrainCliff": "崖"
 }

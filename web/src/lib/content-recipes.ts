@@ -161,10 +161,10 @@ export function halfBlend(source:readonly number[],destination:readonly number[]
 export type DrawEffect = {kind:'normal'} | {kind:'shape';color:string} | {kind:'alpha'};
 export class ReadyScene {
   constructor(private catalog:RenderCatalog, readonly layers:readonly Layer[], readonly variant:Variant, private images:Map<string,SpriteImage>) {}
-  draw(ctx:CanvasRenderingContext2D,view:View, effect:DrawEffect={kind:'normal'}) {
+  draw(ctx:CanvasRenderingContext2D,view:View, effect:DrawEffect={kind:'normal'}, ordered=traversal(this.layers,view.heightCut)) {
     if(!Number.isFinite(view.zoom)||view.zoom<=0) throw new Error('Invalid sprite zoom');
     const key=variantKey(this.variant); ctx.imageSmoothingEnabled=false;
-    for(const l of traversal(this.layers,view.heightCut)) {
+    for(const l of ordered) {
       const f=l.frame; if(!f.masks?.[key]) continue;
       const [sx,sy,w,h]=f.rectangle!,p=placement(l,view), binding=this.catalog.surfaceSets[effect.kind==='normal'?f.surfaceSet!:(f.baseSurfaceSet??f.surfaceSet!)][key];
       const image=this.images.get(binding.image.url); if(!image) throw new Error('Scene assets not ready');
@@ -189,8 +189,8 @@ export class ReadyScene {
       }
     }
   }
-  pick(x:number,y:number,view:View):Layer|undefined {
-    const key=variantKey(this.variant), ordered=traversal(this.layers,view.heightCut);
+  pick(x:number,y:number,view:View, ordered=traversal(this.layers,view.heightCut)):Layer|undefined {
+    const key=variantKey(this.variant);
     for(let i=ordered.length-1;i>=0;i--) {
       const l=ordered[i],f=l.frame,mask=f.masks?.[key]; if(!mask) continue;
       const p=placement(l,view),ix=Math.floor((x-p.x)/view.zoom),iy=Math.floor((y-p.y)/view.zoom);

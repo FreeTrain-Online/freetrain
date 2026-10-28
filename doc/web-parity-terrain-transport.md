@@ -1,3 +1,5 @@
+**P3-05 follow-up — 28 October 2026:** [terrain rendering/picking](web-parity-terrain-rendering.md) now advertises the exact terrain profile and re-bootstraps supported profile replacements before reveal. The renderer restriction below records the original P3-04 delivery. Creation/preset admission remain disabled.
+
 # P3-04 saves and transport — 28 October 2026
 
 P3-04 integrates actual canonical terrain with **Save 6 and protocol 4**. A terrain

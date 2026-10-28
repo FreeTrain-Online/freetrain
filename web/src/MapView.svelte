@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { isReferenceWorld } from './lib/world-identity.ts';
+  import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
+  import { gameDate } from './lib/game-time.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
@@ -43,7 +44,9 @@
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; pointerId: number } | undefined;
-  const reference = $derived(isReferenceWorld(view.read));
+  const terrain = $derived(!!view.read && isTerrainWorld(view.read));
+  const reference = $derived(isReferenceWorld(view.read) || terrain);
+  const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
   const blocked = $derived(view.pending || !live || view.role === 'observer');
   const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(item => item.id === selection?.id) : undefined);
   const shapes: Exclude<Track['shape'], `normal${number}`>[] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
@@ -164,7 +167,7 @@
   $effect(() => {
     const read = view.read;
     if (liveScene && read) {
-      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; resetInteraction(); tool = 'inspect'; home(); }
+      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; renderState='loading'; heightCut=read.map.levels-1;resetInteraction(); tool = 'inspect'; home(); }
       renderer?.setRead(read); dirty = true;
     } else {
       renderer?.setRead(demoScene); resetInteraction(); tool = 'inspect';
@@ -186,7 +189,7 @@
     const resize = new ResizeObserver(entries => { width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
     loadImages().then(images => {
       if (!active) return;
-      renderer = new MapRenderer(canvas, images); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
+      renderer = new MapRenderer(canvas, images,()=>{if(active)dirty=true;}); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
     }).catch(() => { if (active) renderState = 'failed'; });
     const paint = () => {
       if (!active) return;
@@ -194,11 +197,13 @@
       if (dirty && renderer && width && height && !document.hidden) {
         const demoCamera = { ...mapSpace(demoScene.map).center({ x: 22, y: 16, z: 0 }), zoom: Math.min(1.5, Math.max(.8, width / 850)) };
         try {
-          renderer.draw(liveScene ? camera : demoCamera, width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, anchor, shape, remove: tool === 'remove' }
+          const ready=renderer.draw(liveScene ? camera : demoCamera, width, height, devicePixelRatio, liveScene
+            ? { heightCut, level, night, winter, recolor, selection, preview, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: 15, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
-          if (liveScene) { renderState = 'ready'; zoomPercent = Math.round(camera.zoom * 100); }
+          // During a view change the canvas clears its old scene and hit map,
+          // while the mounted panels stay available. Initial reveal still waits.
+          if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
         } catch { renderState = 'failed'; }
         dirty = false;
       }
@@ -246,12 +251,12 @@
       {/if}
       <p data-testid="geometry-status" aria-live="polite">{text[geometryStatus==='checking'?'checkingGeometry':geometryStatus==='failed'?'geometryFailed':geometryStatus==='ready'?(geometry?.inside?'geometryChecked':'outsideMap'):'pickTile']}</p>
       {#if geometry?.heading!==null&&geometry?.heading!==undefined}<p data-testid="preview-heading">{text.directionLabel}: {text[(['headingNorth','headingNorthEast','headingEast','headingSouthEast','headingSouth','headingSouthWest','headingWest','headingNorthWest'] as const)[geometry.heading]]} · {text.distanceLabel}: {geometry.distance}</p>{/if}
-      <p class="hint">{reference ? text.referenceWorldHint : text.unvalidatedPreview}</p>
+      <p class="hint">{reference ? worldHint : text.unvalidatedPreview}</p>
       {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
       {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
       <div class="form-actions"><button class="primary" disabled={reference || blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
   <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
-  <span id="manual-help" class="sr-only">{reference ? text.referenceWorldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
+  <span id="manual-help" class="sr-only">{reference ? worldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
 {/if}

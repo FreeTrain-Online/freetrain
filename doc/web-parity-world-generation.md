@@ -12,7 +12,9 @@ transitions and a measured admission envelope.
 [P3-03 canonical terrain state](web-parity-terrain-state.md) now delivers immutable
 ground/corner/water and decoration occupancy with zero-rail worlds and exact
 prepared bindings. [P3-04](web-parity-terrain-transport.md) adds actual Save 6/protocol 4
-persistence, terrain deltas/removals and checkpoint/session integration. Next is **P3-05**.
+persistence, terrain deltas/removals and checkpoint/session integration.
+[P3-05](web-parity-terrain-rendering.md) adds browser terrain rendering/picking,
+prepared recipe readiness and view/cache lifecycle. Next is **P3-06**.
 Real dense encoding exceeds P3-02 provisional reservations; presets remain disabled
 and require representation/allocation/capacity remeasurement before exposure.
 **Owner water policy:** retain the existing simple global plane throughout this
@@ -20,9 +22,9 @@ checklist; elevated/flowing water and fluid simulation are outside its scope.
 
 The owner has directed execution to move into P3 and requested configurable
 procedural world generation. This document specifies that work and breaks it into
-reviewable implementation slices. **Source, request and terrain-state foundations are delivered:** no new
-world generator, terrain commands, save format or browser controls are implemented
-by this change. P3 implementation and acceptance remain open. P2's deferred human,
+reviewable implementation slices. **Source, request, terrain-state, save/transport
+and viewing foundations are delivered.** World creation, generation and terrain
+editing controls remain with the later slices. Overall P3 acceptance remains open. P2's deferred human,
 native/audio, crop and optional-pack qualifications retain their existing owners;
 moving to P3 does not close them.
 

@@ -26,7 +26,9 @@ P3 now has [source terrain semantics](doc/web-parity-terrain-contract.md) and
 [world-creation requests, stage seeds and measured admission budgets](doc/web-parity-world-creation-contract.md).
 [Canonical terrain state](doc/web-parity-terrain-state.md) now includes ground,
 quarter corners, water, decorations and zero-rail worlds. World creation and terrain
-generation remain disabled; saves and transport are the next slice (P3-04).
+generation remain disabled. [Terrain saves/transport](doc/web-parity-terrain-transport.md)
+and [rendering/picking](doc/web-parity-terrain-rendering.md) are implemented;
+empty-world creation is next (P3-06).
 
 ## Parity source policy
 
@@ -210,8 +212,8 @@ links to the source code on GitHub.
 
 **Only canonical Save 6 is supported.** Protocol 4 also carries actual terrain,
 realized vegetation, authoring mode and creation provenance under the exact bundled
-terrain profile. Terrain save/load/restart and transport are implemented; its browser
-renderer and creation workflow are P3-05/06 work. The application still starts with
+terrain profile. Terrain save/load/restart, transport and browser rendering/picking
+are implemented. Empty-world creation remains P3-06 work. The application still starts with
 the spatial reference world. Save/upload and outgoing terrain data have a 16 MiB limit.
 
 Save slot and Download save capture the validated H/V rail graph, stable entities/footprints and allocator, source-minute clock, paused state and all versioned random streams. Load/upload validates dimensions,

@@ -4,7 +4,7 @@ import type { ConnectionStatus, ReadState, SessionClient } from './session-clien
 import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 
-const compatibility = 'protocolVersion=4&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1';
+const compatibility = 'protocolVersion=4&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -109,7 +109,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               break;
             case 'snapshot':
               if (!join) throw new Error('Snapshot before join');
-              if(!sameIdentity(join,message))throw new IncompatibleWorldError('World profile changed');
+              // A validated replacement may select another supported whole
+              // profile. Re-bootstrap its exact pack identity before revealing it.
+              if(!sameIdentity(join,message)){fail();break;}
               clearTimeout(connectionTimer); resyncing = false;
               if (read && read.worldEpoch !== message.worldEpoch) clearPending();
               publish(message); setStatus('ready'); break;
