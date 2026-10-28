@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "phase": "P3-02",
+  "recordedDate": "2026-10-27",
+  "scope": "Admission-envelope probe only; no terrain generation, decoding, browser, network or whole-world capacity measurement. Allocated bytes are managed allocation churn, not peak RSS.",
+  "command": "dotnet run --project tools/GenerationBudgetProbe -c Release --no-restore -m:1 -nr:false -p:UseSharedCompilation=false",
+  "sourceHashes": {
+    "src/FreeTrain.Online.Simulation/WorldCreation.cs": "5d8e015bcf69a664fbf885949b100b4bdac3963291ab2e21741e12c07a9db5b5",
+    "src/FreeTrain.Online.Simulation/GenerationWork.cs": "94155d68a96c928c1cb67dd68dc131a274150e952d4e8272536c8fbdd6323550",
+    "tools/GenerationBudgetProbe/Program.cs": "fa867815ad8673acbdc6afb715d16585be5343a8cc52daf50f21d1fac237f3c2"
+  },
+  "environment": {
+    "runtime": ".NET 10.0.13",
+    "os": "macOS 26.7.1",
+    "architecture": "Arm64",
+    "processors": 10
+  },
+  "hardwareModel": "Unavailable in sandbox",
+  "physicalMemory": "Unavailable in sandbox",
+  "imageEncodedBytes": 8388608,
+  "measurements": [
+    {
+      "side": 30,
+      "cells": 900,
+      "levels": 32,
+      "maxImagePixels": 4194304,
+      "touchedBytes": 44159488,
+      "allocatedBytes": 45238496,
+      "serializedBytes": 279301,
+      "workUnits": 8294400,
+      "elapsedMs": 23.4814,
+      "checksum": 267264,
+      "admitted": true,
+      "issues": [],
+      "noImageBudget": {
+        "Cells": 900,
+        "Voxels": 28800,
+        "WorkingBytes": 4301824,
+        "WorkUnits": 8294400,
+        "TransferBytes": 526336
+      },
+      "maxImageBudget": {
+        "Cells": 900,
+        "Voxels": 28800,
+        "WorkingBytes": 46244864,
+        "WorkUnits": 12488704,
+        "TransferBytes": 526336
+      }
+    },
+    {
+      "side": 64,
+      "cells": 4096,
+      "levels": 32,
+      "maxImagePixels": 4194304,
+      "touchedBytes": 47841280,
+      "allocatedBytes": 52223200,
+      "serializedBytes": 1272577,
+      "workUnits": 37748736,
+      "elapsedMs": 32.4635,
+      "checksum": 1179648,
+      "admitted": true,
+      "issues": [],
+      "noImageBudget": {
+        "Cells": 4096,
+        "Voxels": 131072,
+        "WorkingBytes": 11665408,
+        "WorkUnits": 37748736,
+        "TransferBytes": 2162688
+      },
+      "maxImageBudget": {
+        "Cells": 4096,
+        "Voxels": 131072,
+        "WorkingBytes": 53608448,
+        "WorkUnits": 41943040,
+        "TransferBytes": 2162688
+      }
+    },
+    {
+      "side": 128,
+      "cells": 16384,
+      "levels": 32,
+      "maxImagePixels": 4194304,
+      "touchedBytes": 61997056,
+      "allocatedBytes": 79641184,
+      "serializedBytes": 5100033,
+      "workUnits": 150994944,
+      "elapsedMs": 118.5509,
+      "checksum": 4718592,
+      "admitted": true,
+      "issues": [],
+      "noImageBudget": {
+        "Cells": 16384,
+        "Voxels": 524288,
+        "WorkingBytes": 39976960,
+        "WorkUnits": 150994944,
+        "TransferBytes": 8454144
+      },
+      "maxImageBudget": {
+        "Cells": 16384,
+        "Voxels": 524288,
+        "WorkingBytes": 81920000,
+        "WorkUnits": 155189248,
+        "TransferBytes": 8454144
+      }
+    },
+    {
+      "side": 256,
+      "cells": 65536,
+      "levels": 32,
+      "maxImagePixels": 4194304,
+      "touchedBytes": 118620160,
+      "allocatedBytes": 189294728,
+      "serializedBytes": 20456449,
+      "workUnits": 603979776,
+      "elapsedMs": 540.7523,
+      "checksum": 18874368,
+      "admitted": false,
+      "issues": [
+        "dimensions"
+      ],
+      "noImageBudget": null,
+      "maxImageBudget": null
+    }
+  ]
+}

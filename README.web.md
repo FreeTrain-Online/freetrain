@@ -22,6 +22,11 @@ Owner/Operator/Observer roles, independent reconnects, bounded queues and epoch
 fencing remain in place. Prototype Save 1 is unsupported and cannot be converted.
 See [the reference-world delivery](doc/web-parity-reference-world.md).
 
+P3 now has [source terrain semantics](doc/web-parity-terrain-contract.md) and
+[world-creation requests, stage seeds and measured admission budgets](doc/web-parity-world-creation-contract.md).
+World creation and terrain generation are not yet enabled; canonical terrain state
+is the next slice.
+
 ## Parity source policy
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive

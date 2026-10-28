@@ -26,3 +26,10 @@ Implement new rules in the canonical namespace. Keep compatibility adapters in
 subsystem through the reviewed ruleset/protocol/content/save transition, with
 source-derived tests. Existing prototype regression tests preserve compatibility;
 passing them does not establish canonical behavior.
+
+P3-02 adds immutable Empty/Heightmap/Generated request contracts, validation,
+independent generation stage seeds, bounded work and detached job transitions.
+These are [creation contracts](../../doc/web-parity-world-creation-contract.md),
+not an enabled generator or a terrain world profile. Content readiness remains
+explicit; prepared art cannot authorize a terrain handler. P3-03 supplies the
+canonical ground/corner/water state before service or browser integration.

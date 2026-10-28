@@ -5,13 +5,16 @@
 specify dimensions/bounds, terrain/corners/water, source editing/forest/creek/
 terrace behavior, source-defect adaptations, compass sectors and workflow/text
 handoffs. Forty pinned files, 77 literal fixture vectors and 59 source text
-records are checked separately from runtime verification. Next is **P3-02**.
+records are checked separately from runtime verification.
+[P3-02 requests/profile/budgets](web-parity-world-creation-contract.md) now adds
+immutable requests, validation, independent stage seeds, content readiness, job
+transitions and a measured admission envelope. Next is **P3-03**.
 **Owner water policy:** retain the existing simple global plane throughout this
 checklist; elevated/flowing water and fluid simulation are outside its scope.
 
 The owner has directed execution to move into P3 and requested configurable
 procedural world generation. This document specifies that work and breaks it into
-reviewable implementation slices. **Source research and planning only:** no new
+reviewable implementation slices. **Planning and request-contract foundations:** no new
 world generator, terrain commands, save format or browser controls are implemented
 by this change. P3 implementation and acceptance remain open. P2's deferred human,
 native/audio, crop and optional-pack qualifications retain their existing owners;
@@ -164,7 +167,7 @@ the production runtime before claiming gameplay verification.
 | Slice | Work and dependency | Required evidence before checking it complete |
 | --- | --- | --- |
 | **P3-01 — source contract and decisions** | **Source specification complete:** [contract and evidence](web-parity-terrain-contract.md) resolve dimensions, terrain/water/corners, forest variants, Mountain2/terrace rules, defects, test-train side effects, authoring mode and compass sectors; MAN/DEV/EXAV-13/text links retained. | 40 pinned source files, 12 terrain decisions plus WORLDGEN-D001, 77 literal fixtures and 59 source text records. Read-only checks pass; production/gameplay/browser acceptance remains open. |
-| **P3-02 — request/profile and budgets** | Define empty/import/generated DTOs, presets, bounds, generator identity, stage seed derivation, operation/job lifecycle and content requirements. Measure candidate size/memory before selecting exposed size limits. Depends on 01. | Validation matrix for overflow, contradictory settings, tiny maps, high water, missing packs, work limits and deterministic seed/stage vectors. Document initial supported dimensions separately from future capacity targets. |
+| **P3-02 — request/profile and budgets** | **Contract foundation complete:** [implementation and measured admission envelope](web-parity-world-creation-contract.md); immutable Empty/Heightmap/Generated DTOs, explicit defaults/ranges, isolated stage seeds, content readiness and fenced job transitions. Depends on 01. | Validation and seed/lifecycle cases pass; 64²/128² initial admission profiles are separate from the rejected 256² capacity target. Probe buffers/scan/transfer measurements do not establish actual terrain, decoder, browser or whole-world capacity; size selectors remain disabled. |
 | **P3-03 — canonical terrain state** | Add ground grid, quarter corners, global water and vegetation/terrace occupancy to canonical world/read models. Generalize the reference-loop-only invariant so a valid empty world can have zero rails. Integrate stable IDs and prepared recipes with exact profile dispatch. Depends on 01/02. | Independent flat/slope/underwater/border fixtures; invalid corners/overlap rejected without partial mutation; Simulation remains free of native/UI/image dependencies. |
 | **P3-04 — saves and transport foundation** | Serialize actual terrain, decorations, mode and generation provenance; extend snapshot/delta/removal and current-format schema/identity checks. Bound transfer/checkpoint work. Depends on 03; extend incrementally in later slices. | Save/load and restart equality, edited-terrain round trips, missing-pack/unsupported-version rejection preserving files/current world, multi-client resync and epoch fencing. |
 | **P3-05 — terrain rendering and picking** | Draw ground, mountain slopes, water/cuts/occlusion and forest ground/tree layers with P2 recipes. Ground/corner/water targeting shares source geometry. Depends on 03/04. | Reviewed asymmetric scenes and exact hit targets at land/water/cut/edge boundaries, seasonal/day-night trees, camera/panel lifecycle and decode reuse. Invalid source crops retain P2 diagnostics/deferrals. |

@@ -3,7 +3,7 @@
 **P3-01 is specified and checked.** This closes its source-contract, decision,
 workflow/text mapping and independent-fixture deliverables. It implements no
 production terrain or generator, changes no save/protocol identity, and closes no
-P3 runtime, browser, original-runtime or native acceptance gate. **Next: P3-02.**
+P3 runtime, browser, original-runtime or native acceptance gate. **P3-02 is now delivered:** [requests, profile and budgets](web-parity-world-creation-contract.md); next is P3-03.
 
 The owner confirmed retaining the simple water heuristics for this checklist:
 **one global water level**, with no flowing-water, elevated-lake or fluid-simulation
@@ -317,7 +317,7 @@ are checked. No .NET/client/browser suite was run for this specification-only
 change; those results would not establish production terrain that is not yet
 implemented.
 
-P3-02 must now define immutable requests and candidate/job lifecycle, exact
+P3-02 subsequently defines [immutable requests](web-parity-world-creation-contract.md) and candidate/job lifecycle, exact
 generation defaults/ranges and seed contract, content capabilities and measured
 memory/pixel/voxel/work/transfer budgets. P3-01 deliberately sets no new supported
 world limit or save/protocol number. Deferred P2/native/cross-browser work retains
