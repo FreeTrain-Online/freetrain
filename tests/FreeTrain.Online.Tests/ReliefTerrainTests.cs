@@ -113,7 +113,7 @@ public class ReliefTerrainTests(ITestOutputHelper output)
     public async Task Unsupported_features_sizes_roles_and_cancelled_work_fail_without_world_changes()
     {
         using var host=SessionComposition.CreateReferenceHost();host.RegisterParticipant(Owner);var r=Request();
-        foreach(var invalid in new[]{r with {Options=r.Options with {StartingArea=1}},r with {Options=r.Options with {Coast=new(CoastKind.Island,CoastSides.None,25)}},r with {Options=r.Options with {Lakes=new(1,1)}},r with {Dimensions=new(33,32,32)},r with {Options=r.Options with {Relief=new(ReliefKind.Hills,101,24,50)}}})
+        foreach(var invalid in new[]{r with {Options=r.Options with {StartingArea=1}},r with {Options=r.Options with {Coast=new(CoastKind.Island,CoastSides.None,25)}},r with {Options=r.Options with {Lakes=new(1,1)}},r with {Dimensions=new(2049,32,32)},r with {Options=r.Options with {Relief=new(ReliefKind.Hills,101,24,50)}}})
             await Assert.ThrowsAsync<ArgumentException>(()=>Drain(host,host.BeginGenerated(invalid,WorldCreationCapabilities.EmptyReady(),host.WorldEpoch,host.Snapshot().Revision,Owner)));
         foreach(var role in new[]{ParticipantRole.Observer,ParticipantRole.Operator})
         {
@@ -173,7 +173,7 @@ public class ReliefTerrainTests(ITestOutputHelper output)
             {
                 var before=await server.Bootstrap();using var first=await server.Connect();await NetworkTests.Read(first);
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
-                await http.GetStringAsync("/api/bootstrap?protocolVersion=4&contentVersion=reference-spatial-content-2");
+                await http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2");
                 using var second=await server.Connect(cookies);await NetworkTests.Read(second);
                 var r=Request(ReliefKind.Mountains,z:64);
                 var response=await Post(server.Http,"/api/worlds/generated/preview",new GeneratedPreviewRequest(r.Name,r.Dimensions,r.WaterLevel,r.Options,before.WorldEpoch,before.Snapshot.Revision));
@@ -190,7 +190,7 @@ public class ReliefTerrainTests(ITestOutputHelper output)
             }
             await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true))
             {
-                await server.Http.GetStringAsync("/api/bootstrap?protocolVersion=4&contentVersion=terrain-content-1");
+                await server.Http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=terrain-content-1");
                 Assert.Equal(saved,await server.Http.GetByteArrayAsync("/api/saves/download"));
             }
         }

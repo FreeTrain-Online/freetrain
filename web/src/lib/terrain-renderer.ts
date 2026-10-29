@@ -9,6 +9,7 @@ import type { ReadState } from './session-client.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
 type Operation = { target:TerrainTarget; points:Point[]; color:string; edge?:string } | {target:TerrainTarget; layer:Layer};
+type Bounds={left:number;top:number;right:number;bottom:number};
 const diamond=[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}];
 export function hsv([H,S,V]:readonly number[]):number[] {
   const h=H/40,s=S/240,v=V/240,i=Math.trunc(h),f=i%2?h-i:1-(h-i);
@@ -42,16 +43,36 @@ export function inPolygon(p:Point,points:readonly Point[]):boolean {
 /** A scene is built from a validated immutable read. No random draws or world
  * mutation. Operations preserve the source v/h/z traversal and sprite anchors. */
 export class TerrainScene {
-  private constructor(readonly operations:readonly Operation[],private ready:ReadyScene) {}
+  private bounds=new WeakMap<Operation,Bounds>();
+  private polygonKeys=new WeakMap<Operation,string>();
+  private polygonRasters=new Map<string,{image:OffscreenCanvas;bytes:number}>();
+  private polygonBytes=0;
+  private raster?:{image:OffscreenCanvas;spare?:OffscreenCanvas;view:View;width:number;height:number;dpr:number;drawn:number};
+  private viewKey='';
+  private constructor(public operations:readonly Operation[],private ready:ReadyScene,
+    private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
+    private background='#d8e5d9') {}
+  private prepareView(view:View,width:number,height:number) {
+    const r=this.region;if(!r)return;
+    // Projection is x=32H+16(V%2), y=8V−16Z. Include the full elevation
+    // range and sprite/realized-tree overhang before restricting stored rows.
+    const h0=Math.max(0,Math.floor((-view.x/view.zoom-r.marginX)/32)-1),h1=Math.min(r.width,Math.ceil(((width-view.x)/view.zoom+r.marginX)/32)+1);
+    const v0=Math.max(0,Math.floor((-view.y/view.zoom-r.marginY)/8)-1),v1=Math.min(r.height,Math.ceil(((height-view.y)/view.zoom+16*(r.levels-1)+r.marginY)/8)+1);
+    const key=[h0,h1,v0,v1].join(',');
+    if(key!==this.viewKey){this.operations=r.build(h0,h1,v0,v1);this.viewKey=key;}
+  }
   static async prepare(read:ReadState,catalog:RenderCatalog,cache:RecipeImageCache,variant:Variant,heightCut:number):Promise<TerrainScene> {
     // Validation only reads its argument; retain the immutable transport view.
     if(!isTerrainWorld(read)||!validSnapshot(read as Snapshot))throw new Error('Unsupported terrain read');
     if(!Number.isInteger(heightCut)||heightCut<0)throw new Error('Invalid terrain height cut');
     if(catalog.packId!==read.requiredPacks[0].id||catalog.version!==read.requiredPacks[0].version)throw new Error('Terrain catalog mismatch');
-    const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels),ops:Operation[]=[],layers:Layer[]=[];
+    const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
+    let ops:Operation[]=[],layers:Layer[]=[];
+    const cells=new Map<number,Operation[]>(),maximumCachedCells=65536,large=read.map.width*read.map.height>16384;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
-    const entities=new Map(read.entities!.map(e=>[e.id,e])),at=new Map<string,Occupant>();
-    const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
+    const entities=new Map<string,NonNullable<ReadState['entities']>[number]>(),at=new Map<number,Occupant>();
+    for(const e of read.entities!)entities.set(e.id,e);
+    const key=(p:Position)=>{const s=space.storage(p);return s.h<0||s.h>=read.map.width||s.v<0||s.v>=read.map.height||p.z<0||p.z>=read.map.levels?-1:(s.v*read.map.width+s.h)*read.map.levels+p.z;};
     for(const o of t.occupants)at.set(key(entities.get(o.entityId)!.anchor),o);
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
     const addSprite=(id:string,frameKey:string|undefined,p:Position,target:TerrainTarget,offset:Point={x:0,y:0})=>{
@@ -63,7 +84,14 @@ export class TerrainScene {
     const addPolygon=(p:Position,target:TerrainTarget,points:Point[],color:string,edge?:string)=>{
       const q=space.project(p);ops.push({target,points:points.map(a=>({x:q.x+a.x,y:q.y+a.y})),color,edge});
     };
-    for(let v=0;v<read.map.height;v++)for(let h=0;h<read.map.width;h++) {
+    const build=(h0:number,h1:number,v0:number,v1:number):Operation[]=>{
+    ops=[];layers=[];
+    const cacheCells=large&&(h1-h0)*(v1-v0)<=maximumCachedCells;
+    for(let v=v0;v<v1;v++)for(let h=h0;h<h1;h++) {
+      const index=v*read.map.width+h,cached=cacheCells?cells.get(index):undefined;
+      if(cached){ops.push(...cached);continue;}
+      const start=ops.length;
+      try {
       const cell=t.cells[v*read.map.width+h],base=space.location({h,v,z:cell.ground});
       const target=(p:Position,surface:TerrainTarget['surface'],id?:string):TerrainTarget=>({kind:'terrain',id:id??`cell:${h},${v}`,position:{...p},surface});
       const surface=at.get(key(base)),terrace=at.get(key({...base,z:base.z-1}));
@@ -104,29 +132,119 @@ export class TerrainScene {
         const id=entities.get(surface.entityId)!.definition.recipeId,frame=recipes.get(id)?.frames.find(f=>f.selector.connections===connection);
         if(!frame)throw new Error('Missing creek frame');addSprite(id,frame.key,base,target(base,'creek',surface.entityId));
       }
+      } finally {if(cacheCells)cells.set(index,ops.slice(start));}
     }
-    return new TerrainScene(ops,await cache.ready(catalog,layers,variant));
+    if(cells.size>maximumCachedCells)for(const id of cells.keys()) {
+      const h=id%read.map.width,v=Math.floor(id/read.map.width);
+      if(h<h0||h>=h1||v<v0||v>=v1)cells.delete(id);
+      if(cells.size<=maximumCachedCells)break;
+    }
+    return ops;
+    };
+    if(read.map.width*read.map.height<=16384) {
+      const all=build(0,read.map.width,0,read.map.height);
+      return new TerrainScene(all,await cache.ready(catalog,layers,variant));
+    }
+    // Decode each required frame/surface once. Terrain instances and their
+    // operations are materialized only for the current viewport, in source order.
+    const ids=new Set(read.entities!.map(e=>e.definition.recipeId));
+    for(const o of t.occupants)if(o.forest)ids.add(o.forest.definition.recipeId);
+    const templates:Layer[]=[];let marginX=32,marginY=64;
+    for(const recipe of catalog.renderRecipes)if(ids.has(recipe.id)||recipe.id.startsWith('system:ground/')||recipe.id.startsWith('system:cliff/')) {
+      for(const frame of recipe.frames)if(frame.status==='ready'&&frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`]) {
+        templates.push({entityId:'template',recipeId:recipe.id,frame,position:[0,0,0]});
+        const [ax,ay]=frame.anchor!,[,,w,h]=frame.rectangle!;
+        marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
+      }
+    }
+    return new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9');
   }
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number):number {
-    let drawn=0;
-    for(const op of this.operations) {
-      if('layer' in op) {
-        const l=op.layer,[x,y,z]=l.position,[ax,ay]=l.frame.anchor!,[,,w,h]=l.frame.rectangle!;
-        const left=view.x+(16*(x+y)-ax)*view.zoom,top=view.y+(8*(y-x)-16*z-ay)*view.zoom;
-        if(left+w*view.zoom<0||top+h*view.zoom<0||left>width||top>height)continue;
-        this.ready.draw(ctx,view,{kind:'normal'},[l]);drawn++;continue;
+    this.prepareView(view,width,height);
+    const dpr=typeof ctx.getTransform==='function'?ctx.getTransform().a:1;
+    if(this.region&&dpr>0&&Number.isFinite(dpr)&&typeof OffscreenCanvas!=='undefined'&&Math.ceil(width*dpr)*Math.ceil(height*dpr)<=16777216) {
+      const old=this.raster;
+      const reusable=old&&old.width===width&&old.height===height&&old.dpr===dpr&&old.view.zoom===view.zoom;
+      if(reusable&&old.view.x===view.x&&old.view.y===view.y){ctx.drawImage(old.image,0,0,width,height);return old.drawn;}
+      const image=reusable?(old.spare??new OffscreenCanvas(Math.round(width*dpr),Math.round(height*dpr))):new OffscreenCanvas(Math.round(width*dpr),Math.round(height*dpr)),paint=image.getContext('2d')!;
+      const dx=reusable?view.x-old.view.x:width,dy=reusable?view.y-old.view.y:height;
+      let clips:Bounds[]|undefined;
+      if(reusable&&Math.abs(dx)<width&&Math.abs(dy)<height&&Math.abs(dx*dpr-Math.round(dx*dpr))<1e-7&&Math.abs(dy*dpr-Math.round(dy*dpr))<1e-7) {
+        paint.setTransform(1,0,0,1,0,0);paint.imageSmoothingEnabled=false;paint.globalCompositeOperation='copy';paint.drawImage(old.image,Math.round(dx*dpr),Math.round(dy*dpr));paint.globalCompositeOperation='source-over';
+        clips=[];
+        if(dx)clips.push({left:dx>0?0:width+dx,top:0,right:dx>0?dx:width,bottom:height});
+        if(dy)clips.push({left:0,top:dy>0?0:height+dy,right:width,bottom:dy>0?dy:height});
       }
+      paint.setTransform(dpr,0,0,dpr,0,0);paint.save();
+      if(clips){paint.beginPath();for(const b of clips)paint.rect(b.left,b.top,b.right-b.left,b.bottom-b.top);paint.clip();}
+      // Composite antialiased terrain onto the same opaque map background once.
+      // Re-copying translucent edge pixels would otherwise accumulate rounding.
+      paint.fillStyle=this.background;paint.fillRect(0,0,width,height);
+      const drawn=this.paint(paint as unknown as CanvasRenderingContext2D,view,width,height,clips);paint.restore();
+      this.raster={image,spare:reusable?old.image:undefined,view:{...view},width,height,dpr,drawn};ctx.drawImage(image,0,0,width,height);return drawn;
+    }
+    return this.paint(ctx,view,width,height);
+  }
+  private operationBounds(op:Operation):Bounds {
+    const known=this.bounds.get(op);if(known)return known;
+    let b:Bounds;
+    if('layer' in op) {
+      const l=op.layer,[x,y,z]=l.position,[ax,ay]=l.frame.anchor!,[,,w,h]=l.frame.rectangle!;
+      const left=16*(x+y)-ax,top=8*(y-x)-16*z-ay;b={left,top,right:left+w,bottom:top+h};
+    }else {
+      let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+      for(const p of op.points){left=Math.min(left,p.x);top=Math.min(top,p.y);right=Math.max(right,p.x);bottom=Math.max(bottom,p.y);}
+      const pad=op.edge?2:1;b={left:left-pad,top:top-pad,right:right+pad,bottom:bottom+pad};
+    }
+    this.bounds.set(op,b);return b;
+  }
+  private paintPolygon(ctx:CanvasRenderingContext2D,view:View,op:Extract<Operation,{points:Point[]}>):boolean {
+    if(!this.region||typeof OffscreenCanvas==='undefined')return false;
+    const b=this.operationBounds(op),dpr=ctx.getTransform().a,scale=view.zoom*dpr;
+    const px=(view.x+b.left*view.zoom)*dpr,py=(view.y+b.top*view.zoom)*dpr;
+    const ix=Math.floor(px+1e-7),iy=Math.floor(py+1e-7),fx=Math.max(0,Math.round((px-ix)*1e7)/1e7),fy=Math.max(0,Math.round((py-iy)*1e7)/1e7);
+    let shape=this.polygonKeys.get(op);
+    if(!shape){shape=[op.color,op.edge??'',...op.points.flatMap(p=>[p.x-b.left,p.y-b.top])].join('/');this.polygonKeys.set(op,shape);}
+    const width=Math.ceil((b.right-b.left)*scale+fx),height=Math.ceil((b.bottom-b.top)*scale+fy),bytes=width*height*4;
+    if(bytes>16*1024*1024)return false;
+    const key=shape+'/'+[scale,fx,fy].join(',');let cached=this.polygonRasters.get(key);
+    if(!cached) {
+      while(this.polygonBytes+bytes>64*1024*1024&&this.polygonRasters.size) {
+        const first=this.polygonRasters.keys().next().value!;this.polygonBytes-=this.polygonRasters.get(first)!.bytes;this.polygonRasters.delete(first);
+      }
+      const image=new OffscreenCanvas(width,height),paint=image.getContext('2d')!;paint.beginPath();
+      op.points.forEach((p,i)=>{const x=(p.x-b.left)*scale+fx,y=(p.y-b.top)*scale+fy;i?paint.lineTo(x,y):paint.moveTo(x,y);});
+      paint.closePath();paint.fillStyle=op.color;paint.fill();
+      if(op.edge){paint.strokeStyle=op.edge;paint.lineWidth=scale;paint.stroke();}
+      cached={image,bytes};this.polygonRasters.set(key,cached);this.polygonBytes+=bytes;
+    }
+    ctx.drawImage(cached.image,ix/dpr,iy/dpr,width/dpr,height/dpr);return true;
+  }
+  private paint(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,clips?:Bounds[]):number {
+    let drawn=0;
+    ctx.imageSmoothingEnabled=false;
+    for(const op of this.operations) {
+      const b=this.operationBounds(op),left=view.x+b.left*view.zoom,top=view.y+b.top*view.zoom,right=view.x+b.right*view.zoom,bottom=view.y+b.bottom*view.zoom;
+      if(right<0||bottom<0||left>width||top>height)continue;
+      drawn++;
+      if(clips&&!clips.some(c=>right>=c.left&&bottom>=c.top&&left<=c.right&&top<=c.bottom))continue;
+      if('layer' in op) {
+        this.ready.paintNormal(ctx,view,op.layer,!!this.region);continue;
+      }
+      if(this.paintPolygon(ctx,view,op))continue;
       const points=op.points.map(p=>({x:view.x+p.x*view.zoom,y:view.y+p.y*view.zoom}));
       if(points.every(p=>p.x<0)||points.every(p=>p.x>width)||points.every(p=>p.y<0)||points.every(p=>p.y>height))continue;
       ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=op.color;ctx.fill();
-      if(op.edge){ctx.strokeStyle=op.edge;ctx.lineWidth=view.zoom;ctx.stroke();}drawn++;
+      if(op.edge){ctx.strokeStyle=op.edge;ctx.lineWidth=view.zoom;ctx.stroke();}
     }
     return drawn;
   }
   pick(p:Point,view:View):TerrainTarget|undefined {
+    const world={x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom};
     for(let i=this.operations.length-1;i>=0;i--) {
       const op=this.operations[i];
-      if('layer' in op ? this.ready.pick(p.x,p.y,view,[op.layer]) : inPolygon({x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom},op.points))return {...op.target,position:{...op.target.position}};
+      const b=this.operationBounds(op);if(world.x<b.left||world.x>b.right||world.y<b.top||world.y>b.bottom)continue;
+      if('layer' in op ? this.ready.pick(p.x,p.y,view,[op.layer]) : inPolygon(world,op.points))return {...op.target,position:{...op.target.position}};
     }
   }
 }

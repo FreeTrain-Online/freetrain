@@ -1,3 +1,5 @@
+**P3-16a advanced capacity slice complete — 29 October 2026:** [implementation, supported limits and measurements](web-parity-map-capacity.md) deliver the 1500×1090×45 stored target through empty, PNG heightmap and generated workflows, packed Save7/protocol5 state, bounded coherent transfer and viewport rendering/picking. The owner advanced this work before P3-09. Resume P3-09 with representative large fixtures; extend resource-heavy evidence as consumers arrive and rerun final capacity acceptance before P3-17. Overall P3 and existing native/P2/browser deferrals remain open. Earlier entries retain their historical limits and order.
+
 # P3 world creation, generation and terrain — 27 October 2026
 
 **P3-08 seeded relief complete — 29 October 2026:** [Implementation and evidence](web-parity-seeded-relief.md)
@@ -198,10 +200,10 @@ the production runtime before claiming gameplay verification.
 | **P3-14 — rectangle editing and repair** | Port Mountain2 rectangle raise/excavate and explicit repair; review modifier semantics and transaction failures. Depends on 13. | Shared-corner repair vectors, reversed selection, clipped/border/occupied regions, no partial unauthorized edits and multi-client conflict cases. |
 | **P3-15 — terraces and cliffs** | Port separate placement/removal strategies, geometry/recipes, ownership and source booking. Depends on 14. | Placement/removal/cut/picking matrices, water/ground/elevation interactions, occupancy protection and saved-state restoration. |
 | **P3-16 — map authoring mode** | Expose Owner-controlled map-authoring state and source/new-world workflows; specify entry/exit and persistence explicitly. Reuse terrain/forest/creek tools; preserve shared-world roles, draft and timing rules. Depends on 12–15. | Mode/permissions matrix, save/reopen/restart, multiple sessions, mode changes with drafts and pending work. No legality bypass or invented economic exemption inferred from the old unused flag. |
-| **P3-16a — map-size capacity parity** | Compact canonical encoding, interned definitions and sparse occupancy; bounded snapshot chunks and measured increases to request/save/upload/state/work limits. Target at least 1500×1090×45 stored cells, matching the supplied sample's 1500×1000×45 displayed extent. Foundations can start after 06; acceptance follows implemented terrain consumers and precedes 17. [Detailed scope below](#p3-16a--map-size-capacity-parity). | Large sparse and resource-heavy terrain scenes; coherent chunk assembly/atomic reveal, cancellation/stale/reconnect/roles, save/reopen/restart/checkpoints, measured memory/latency/render/pick/simulation budgets. 128²/256² are intermediate milestones; full legacy import and full-city gameplay acceptance remain P10/P11. |
+| **P3-16a — map-size capacity parity, current-consumer slice complete** | [Implementation and evidence](web-parity-map-capacity.md). Compact canonical encoding, interned definitions and sparse occupancy; bounded snapshot chunks and measured increases to request/save/upload/state/work limits. Target at least 1500×1090×45 stored cells, matching the supplied sample's 1500×1000×45 displayed extent. Foundations can start after 06; acceptance follows implemented terrain consumers and precedes 17. [Detailed scope below](#p3-16a--map-size-capacity-parity). | Large sparse and resource-heavy terrain scenes; coherent chunk assembly/atomic reveal, cancellation/stale/reconnect/roles, save/reopen/restart/checkpoints, measured memory/latency/render/pick/simulation budgets. 128²/256² are intermediate milestones; full legacy import and full-city gameplay acceptance remain P10/P11. |
 | **P3-17 — integrated acceptance and P4 handoff** | Exercise empty/import/generated/edit/reopen workflows and the topology matrix; measure terrain/render/job/transfer/checkpoint capacity. Reconcile ledgers, translations, help and supported limits. Depends on 16, 16a and all earlier slices. | Varied worlds and seeded fixtures with actual hashes/metrics; Chromium and existing regression gates, no auto-restart of deferred browsers/native checks. Give P4 ground/underwater/elevated/support queries and legal test scenes; do not claim P4 construction is already verified. |
 
-Execution order is 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 →
+Execution order is 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 16a advanced capacity → 09 → 10 → 11 →
 12, with editing 13 → 14 → 15 after 06, then 16 → 16a → 17. Capacity foundations in 16a may start after 06. Implement persistence and
 UI with each consumer; row 04/12 is not permission to defer them until phase end.
 
@@ -260,8 +262,7 @@ This step does not require executing the historical save or loading its plugins.
 P10 owns legacy import; use canonical equivalent fixtures for P3 capacity and retain
 the supplied file as an independent size/content evidence source. P3-17 consumes
 this step's actual supported limits and evidence. Full-game/native/platform gates
-retain their separate acceptance status. This addition plans work; it raises no
-runtime limit and closes no acceptance gate.
+retain their separate acceptance status. The advanced current-consumer slice is implemented and measured in [the capacity report](web-parity-map-capacity.md). P3-09 onward must extend its representative fixtures; P3-17 retains the final capacity regression and overall P3 acceptance gate.
 
 ## Acceptance matrix and completion claims
 

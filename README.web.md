@@ -6,7 +6,7 @@ The localized Svelte app connects to an authoritative C# session over HTTP and
 WebSocket. Its default world is now a canonical H/V spatial reference: a small
 32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
-with **Save 6**. Economy, construction, trains and stations remain future slices.
+with **Save 7**. Economy, construction, trains and stations remain future slices.
 Settings offers six departure-bell previews alongside the existing sound effects.
 BGM is deferred to a [future improvement project](doc/web-audio-policy.md); the
 TinySynth feasibility experiment was removed after audible pops and crackles.
@@ -17,6 +17,8 @@ and [P2 acceptance evidence](doc/web-parity-p2-acceptance.md).
 See [P1-02 clock and scheduler](doc/web-parity-clock.md) and
 [P1-03 random streams](doc/web-parity-random.md) and
 [P1-04 spatial contracts](doc/web-parity-spatial-contracts.md).
+
+[P3-16a capacity](doc/web-parity-map-capacity.md) adds packed terrain/trees and interned definitions, coherent bounded snapshot chunks and viewport caches. The concrete parity target is 1500 × 1090 × 45 stored cells. Larger requests remain subject to measured work/memory/byte/deadline admission. Save 7 is the only supported save format; Save 6 is retired without conversion under the current-format policy. Terrain content identities and source algorithms are unchanged.
 
 Owner/Operator/Observer roles, independent reconnects, bounded queues and epoch
 fencing remain in place. Prototype Save 1 is unsupported and cannot be converted.
@@ -30,10 +32,10 @@ quarter corners, water, decorations and zero-rail worlds. Owners can now use
 global water, candidate preview and explicit replacement confirmation. [Terrain saves/transport](doc/web-parity-terrain-transport.md)
 and [rendering/picking](doc/web-parity-terrain-rendering.md) are implemented;
 [P3-06 empty-world creation](doc/web-parity-empty-world.md) is implemented.
-Empty H/V dimensions are limited to 1–64 and Z to 1–64; Source defaults uses
+Empty H/V dimensions admit 1–2048, at most 1,700,000 stored cells, and Z1–64; Source defaults uses
 30 × 42 × 6 stored cells and water1. [P3-07 heightmap creation](doc/web-parity-heightmap.md)
 adds opaque single-frame PNG/JPEG/BMP/GIF imports, image/terrain preview and reviewed
-installed fixed maps. Heightmaps currently admit H/V1–32, Z1–64; image limits are
+installed fixed maps. Heightmaps admit H/V1–2048 (at most 1,700,000 stored cells), Z1–64; image limits are
 8 MiB, 4096 pixels per side and 4,194,304 total pixels. Imported terrain reopens
 without its image. The [reviewed decoder](doc/web-heightmap-decoder-review.md) is
 pinned StbImageSharp 2.30.16 source under MIT, with bounded project-owned allocation
@@ -41,7 +43,7 @@ helpers and PNG preview encoding. Server/Docker notices retain its MIT grant;
 SkiaSharp managed/native dependencies have been removed. FreeTrain's license is
 unchanged. [P3-08 seeded relief](doc/web-parity-seeded-relief.md) adds generated
 plains/hills/mountains, seed and relief/scale/smoothness controls, detached preview
-and exact confirmation. Generated admission is H/V16–32, Z8–64, water1…Z−4;
+and exact confirmation. Generated admission is H/V16–2048 (at most 1,700,000 stored cells), Z8–64, water1…Z−4;
 actual terrain and provenance reopen without regeneration. Coasts, lakes/rivers,
 vegetation/starting areas and larger size presets remain future slices.
 
@@ -92,7 +94,7 @@ When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
 or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume. Prototype
-saves are rejected and preserved; the default world now writes canonical Save 6. Browser login and preference keys use `freetrain-online`;
+saves are rejected and preserved; the default world now writes canonical Save 7. Browser login and preference keys use `freetrain-online`;
 sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
@@ -154,7 +156,7 @@ origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings u
 `FreeTrainOnline__Network__<Property>`. See
 [NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
-Save 6 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
+Save 7 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
 restores the spatial world after restart; the server incarnation changes. Rejected
 startup checkpoints are reported and preserved, including through later automatic
 and shutdown attempts. Named slots and downloads remain available for the fresh
@@ -213,7 +215,7 @@ python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav
 python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive --check
 ```
 
-The existing synthetic live world retains its distinct pack and Save 6 identity.
+The existing synthetic live world retains its distinct pack and Save 7 identity.
 Historical demo/regression PNGs, variants, masks and notices in `web/public/assets/`
 remain frozen artifacts checked by `prototype/content-artifacts.json`; they no
 longer trigger historical source import during normal builds. Browser decode
@@ -228,11 +230,11 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-**Only canonical Save 6 is supported.** Protocol 4 also carries actual terrain,
+**Only canonical Save 7 is supported.** Protocol 5 also carries actual terrain,
 realized vegetation, authoring mode and creation provenance under the exact bundled
 terrain profile. Terrain save/load/restart, transport and browser rendering/picking
 are implemented, including [empty-world creation](doc/web-parity-empty-world.md). The application still starts with
-the spatial reference world. Save/upload and outgoing terrain data have a 16 MiB limit.
+the spatial reference world. Save/upload and outgoing terrain data have a 256 MiB limit.
 
 Save slot and Download save capture the validated H/V rail graph, stable entities/footprints and allocator, source-minute clock, paused state and all versioned random streams. Load/upload validates dimensions,
 unique occupied cells, source patterns, reciprocal connectivity, all eight headings
@@ -243,7 +245,7 @@ conversion; the current world and rejected files are preserved.
 `FreeTrainOnline__Saves__Directory` selects the save directory. An incompatible
 startup checkpoint produces a visible error and a fresh world; the rejected file
 is never overwritten. `/api/saves/status` reports availability and startup errors.
-See [the save contract](prototype/protocol/save-v6.schema.json) and
+See [the save contract](prototype/protocol/save-v7.schema.json) and
 [current policy](doc/web-parity-runtime-policy.md).
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
@@ -287,11 +289,11 @@ are historical regression checks, not canonical gameplay/capacity evidence.
 
 ## Contract changes
 
-The spatial integration now uses **protocol 4**, with explicit ruleset/content/pack
+The spatial integration now uses **protocol 5**, with explicit ruleset/content/pack
 identity, coordinate-system tags and per-car eight-direction heading indices.
 Restart/deploy matching artifacts together; protocol 2/3 peers receive HTTP 426.
 The default profile is `reference-spatial-4` / `reference-spatial-content-2`,
-with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 6. Unknown
+with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 7. Unknown
 profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md) and [terrain save/transport scope](doc/web-parity-terrain-transport.md).
 
 Edit `prototype/protocol/schema.json`, run

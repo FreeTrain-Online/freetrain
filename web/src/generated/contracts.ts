@@ -2,7 +2,18 @@
 
 export type GameDocument = WireMessage | SpatialQuery | SpatialPreview;
 export type WireMessage =
-  Join | Command | Accepted | Rejected | Snapshot | Delta | Resync | Heartbeat | InputReset | SoundEvent;
+  | Join
+  | Command
+  | Accepted
+  | Rejected
+  | Snapshot
+  | Delta
+  | Resync
+  | Heartbeat
+  | InputReset
+  | SoundEvent
+  | StateChunk
+  | SessionOffer;
 export type Counter = string;
 export type Money = string;
 export type Heading = number;
@@ -84,7 +95,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 4;
+  protocolVersion: 5;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -117,7 +128,7 @@ export interface Snapshot {
    */
   requiredPacks: RequiredPack[];
   /**
-   * @maxItems 65536
+   * @maxItems 3400000
    */
   entities?: SpatialEntity[];
   terrain?: Terrain;
@@ -231,11 +242,11 @@ export interface Terrain {
   nextEntityId: EntityId;
   provenance: TerrainProvenance;
   /**
-   * @maxItems 16384
+   * @maxItems 1700000
    */
   cells: TerrainCell[];
   /**
-   * @maxItems 32768
+   * @maxItems 3400000
    */
   occupants: TerrainOccupant[];
 }
@@ -332,7 +343,7 @@ export interface Delta {
    */
   requiredPacks: RequiredPack[];
   /**
-   * @maxItems 65536
+   * @maxItems 3400000
    */
   entities?: SpatialEntity[];
   terrain?: TerrainDelta;
@@ -342,6 +353,9 @@ export interface Removed {
   stationIds: string[];
   buildingIds: string[];
   trackPositions: Position[];
+  /**
+   * @maxItems 3400000
+   */
   entityIds?: EntityId[];
 }
 export interface TerrainDelta {
@@ -350,11 +364,11 @@ export interface TerrainDelta {
   geometryRevision: Counter;
   nextEntityId: EntityId;
   /**
-   * @maxItems 16384
+   * @maxItems 1700000
    */
   cells: TerrainCellChange[];
   /**
-   * @maxItems 32768
+   * @maxItems 3400000
    */
   occupants: TerrainOccupant[];
 }
@@ -377,6 +391,32 @@ export interface SoundEvent {
   eventId: string;
   worldEpoch: Counter;
   kind: "stationArrived";
+}
+export interface StateChunk {
+  type: "stateChunk";
+  transferId: string;
+  worldEpoch: Counter;
+  revision: Counter;
+  index: number;
+  count: number;
+  totalBytes: number;
+  sha256: string;
+  data: string;
+}
+export interface SessionOffer {
+  type: "sessionOffer";
+  protocolVersion: 5;
+  contentVersion: string;
+  serverIncarnation: string;
+  sessionId: string;
+  participantId: string;
+  worldEpoch: Counter;
+  role: "owner" | "operator" | "observer";
+  ruleset: string;
+  /**
+   * @maxItems 32
+   */
+  requiredPacks: RequiredPack[];
 }
 export interface SpatialQuery {
   expectedWorldEpoch: Counter;

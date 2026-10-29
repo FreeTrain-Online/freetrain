@@ -10,14 +10,14 @@ namespace FreeTrain.Online.Persistence;
 public static class SaveCodec
 {
     public const int MaximumBytes = ProtocolIdentity.MaximumStateBytes;
-    public const int Version = 6;
+    public const int Version = 7;
     public sealed record MapData(int Width, int Height, int Levels, string CoordinateSystem);
     public sealed record RailData(int X, int Y, int Z, int Pattern, long EntityId);
     public sealed record SpatialData(long NextEntityId, SpatialEntityRead[] Entities);
     public sealed record Document(int SaveVersion, string Ruleset, string ContentVersion,
         RequiredPackRead[] RequiredPacks, MapData Map, RailData[] Rails, ClockState Clock, bool Paused, RandomStreamsState Random, SpatialData Spatial,
-        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FreeTrain.Online.Contracts.TerrainRead? Terrain = null,
-        long Revision = 0);
+        long Revision = 0,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PackedTerrainRead? PackedTerrain = null);
     public sealed record LoadedWorld(ReferenceWorld? Reference, TerrainSessionState? Terrain);
     private static readonly JsonSerializerOptions Json = new(WireJson.CreateOptions())
         { PropertyNameCaseInsensitive = false, NumberHandling = JsonNumberHandling.Strict };
@@ -34,11 +34,12 @@ public static class SaveCodec
 
     public static byte[] Write(TerrainSessionState state)
     {
-        var snapshot = TerrainWire.Snapshot(state, 1);
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(new Document(Version, snapshot.Ruleset, snapshot.ContentVersion,
-            snapshot.RequiredPacks, new(snapshot.Map.Width, snapshot.Map.Height, snapshot.Map.Levels, "hv"), [],
+        var world = state.World;
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(new Document(Version, TerrainProfile.Ruleset, TerrainProfile.ContentVersion,
+            world.Profile.Packs.Select(p => new RequiredPackRead(p.Id, p.Version, p.CatalogHash)).ToArray(),
+            new(world.Space.HorizontalSize, world.Space.VerticalSize, world.Space.Levels, "hv"), [],
             state.Clock.Capture(), state.Paused, state.Random.Capture(),
-            new(state.World.Spatial.NextEntityId, snapshot.Entities!), snapshot.Terrain, state.Revision), Json);
+            new(world.Spatial.NextEntityId, []), Revision: state.Revision, PackedTerrain: PackedTerrain.Capture(state)), Json);
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         return bytes;
     }
@@ -60,7 +61,9 @@ public static class SaveCodec
                 || ruleset.ValueKind != JsonValueKind.String
                 || ruleset.GetString() is not (ProtocolIdentity.ReferenceRuleset or TerrainProfile.Ruleset))
                 throw new InvalidDataException("incompatibleSave");
-            CheckUniqueProperties(root);
+            CheckEnvelope(root, ruleset.GetString() == TerrainProfile.Ruleset);
+            var containers = 0;
+            CheckUniqueProperties(root, ref containers);
             if (!root.TryGetProperty("revision", out _)) throw new JsonException("Missing revision.");
             var data = JsonSerializer.Deserialize<Document>(bytes, Json) ?? throw new JsonException();
             if (data.Random.Version != RandomStreams.Version || data.Random.Algorithm != GameRandom.Algorithm)
@@ -72,12 +75,12 @@ public static class SaveCodec
                     ?? throw new InvalidDataException("incompatibleSave");
                 if (!terrainProfile.Matches(data.Ruleset, data.ContentVersion,
                     data.RequiredPacks.Select(p => new TerrainPack(p.Id, p.Version, p.CatalogHash)))) throw new InvalidDataException("incompatibleSave");
-                if (data.Map.CoordinateSystem != "hv" || data.Rails.Length != 0 || data.Terrain == null ||
-                    data.Spatial.NextEntityId != data.Terrain.NextEntityId) throw new JsonException();
-                return new(null, TerrainWire.Restore(data.Terrain, new(data.Map.Width, data.Map.Height, data.Map.Levels, "hv"),
-                    terrainProfile, data.Spatial.Entities, data.Clock, data.Paused, data.Random, data.Revision));
+                if (data.Map.CoordinateSystem != "hv" || data.Rails.Length != 0 || data.PackedTerrain == null ||
+                    data.Spatial.Entities.Length != 0 || data.Spatial.NextEntityId != data.PackedTerrain.NextEntityId) throw new JsonException();
+                return new(null, data.PackedTerrain.Restore(new(data.Map.Width, data.Map.Height, data.Map.Levels, "hv"),
+                    terrainProfile, data.Clock, data.Paused, data.Random, data.Revision));
             }
-            if (data.Terrain != null || data.Revision != 0) throw new JsonException();
+            if (data.PackedTerrain != null || data.Revision != 0) throw new JsonException();
             var profile = WorldProfiles.Resolve(data.Ruleset, data.ContentVersion, data.RequiredPacks);
             if (profile != WorldProfiles.Reference || data.Map.CoordinateSystem != profile.CoordinateSystem)
                 throw new InvalidDataException("incompatibleSave");
@@ -96,15 +99,40 @@ public static class SaveCodec
         catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException or NullReferenceException or InvalidOperationException)
         { throw new InvalidDataException("invalidSave", ex); }
     }
-    private static void CheckUniqueProperties(JsonElement value)
+    private static JsonElement ArrayBound(JsonElement parent, string name, int maximum)
     {
+        if (!parent.TryGetProperty(name, out var value) || value.ValueKind != JsonValueKind.Array || value.GetArrayLength() > maximum)
+            throw new JsonException("Save array limit.");
+        return value;
+    }
+    private static JsonElement ObjectProperty(JsonElement parent, string name)
+        => parent.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Object ? value : throw new JsonException("Save object.");
+    private static void CheckEnvelope(JsonElement root, bool terrain)
+    {
+        ArrayBound(root, "requiredPacks", 32); ArrayBound(root, "rails", 1024);
+        ArrayBound(ObjectProperty(root, "spatial"), "entities", terrain ? 0 : 1024);
+        ArrayBound(ObjectProperty(root, "clock"), "pending", Clock.MaximumPending);
+        foreach (var stream in ArrayBound(ObjectProperty(root, "random"), "streams", RandomStreams.Ids.Length).EnumerateArray())
+            ArrayBound(ObjectProperty(stream, "state"), "values", 55);
+        if (terrain)
+        {
+            var packed = ObjectProperty(root, "packedTerrain");
+            ArrayBound(packed, "definitions", 64);
+            if (!packed.TryGetProperty("occupantCount", out var count) || !count.TryGetInt32(out var n) || n < 0 || n > 2 * WorldCreationProfile.MaxCells)
+                throw new JsonException("Packed occupant limit.");
+        }
+    }
+    private static void CheckUniqueProperties(JsonElement value, ref int containers)
+    {
+        if ((value.ValueKind is JsonValueKind.Object or JsonValueKind.Array) && ++containers > 1_000_000)
+            throw new JsonException("Save structure limit.");
         if (value.ValueKind == JsonValueKind.Object)
         {
             var names = new HashSet<string>(StringComparer.Ordinal);
             foreach (var property in value.EnumerateObject())
-            { if (!names.Add(property.Name)) throw new JsonException("Duplicate property."); CheckUniqueProperties(property.Value); }
+            { if (!names.Add(property.Name)) throw new JsonException("Duplicate property."); CheckUniqueProperties(property.Value, ref containers); }
         }
         else if (value.ValueKind == JsonValueKind.Array)
-            foreach (var item in value.EnumerateArray()) CheckUniqueProperties(item);
+            foreach (var item in value.EnumerateArray()) CheckUniqueProperties(item, ref containers);
     }
 }

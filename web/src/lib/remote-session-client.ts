@@ -3,8 +3,9 @@ import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
 import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
+import { StateAssembler } from './state-transfer.ts';
 
-const compatibility = 'protocolVersion=4&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1';
+const compatibility = 'protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -71,7 +72,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     retryAt = undefined; connectionStage = 'bootstrap';
     setStatus('loading');
     try {
-      const response = await fetch(`/api/bootstrap?${compatibility}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5000)]), credentials: 'same-origin' });
+      const response = await fetch(`/api/bootstrap?${compatibility}&metadataOnly=true`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5000)]), credentials: 'same-origin' });
       if (disposed) return;
       if (response.status === 401) {
         const access = await response.json().catch(() => ({}));
@@ -90,25 +91,40 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
         onContent?.(content);
       }
       const bootstrap = parseMessage(await response.text());
-      if (bootstrap.type !== 'join') throw new Error('Expected join');
+      if (bootstrap.type !== 'join' && bootstrap.type !== 'sessionOffer') throw new Error('Expected session offer');
       connectionStage = 'joining'; setStatus('loading');
       const url = new URL(`/api/session?${selectedCompatibility}`, location.href);
       url.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const current = socket = new WebSocket(url);
-      connectionTimer = setTimeout(fail, 5000);
+      connectionTimer = setTimeout(fail, 30000);
+      const assembly = new StateAssembler();
+      let receiving=Promise.resolve(),queued=0;
       current.onmessage = event => {
+        if(++queued>32){current.close(1002);return;}
+        receiving=receiving.then(async()=>{
+        queued--;
         if (disposed || socket !== current) return;
         try {
-          const message = parseMessage(event.data);
+          let message = parseMessage(event.data);
+          if(message.type==='stateChunk') {
+            if(!assembly.pending) {
+              connectionStage='synchronizing';setStatus('loading');clearTimeout(connectionTimer);
+              connectionTimer=setTimeout(fail,30000);
+            }
+            const complete=await assembly.accept(message);
+            if(!complete||disposed||socket!==current)return;
+            message=complete;
+          } else if(assembly.pending)throw new Error('State interrupted');
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 4 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 5 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               publish(message.snapshot); setStatus('ready');
               if (document.hidden) suspend();
               break;
             case 'snapshot':
               if (!join) throw new Error('Snapshot before join');
+              if(read&&(BigInt(message.worldEpoch)<BigInt(read.worldEpoch)||message.worldEpoch===read.worldEpoch&&BigInt(message.revision)<BigInt(read.revision)))throw new Error('Stale snapshot');
               // A validated replacement may select another supported whole
               // profile. Re-bootstrap its exact pack identity before revealing it.
               if(!sameIdentity(join,message)){fail();break;}
@@ -137,6 +153,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
             default: throw new Error('Unexpected server message');
           }
         } catch (error) { if(error instanceof IncompatibleWorldError)incompatible();else current.close(1002); }
+        });
       };
       current.onopen = () => { heartbeat = setInterval(() => { if (current.readyState === WebSocket.OPEN) current.send('{"type":"heartbeat"}'); }, 5000); };
       current.onclose = fail;

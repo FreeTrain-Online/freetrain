@@ -13,10 +13,12 @@ namespace FreeTrain.Online.Server;
 
 public static class NetworkEndpoints
 {
+    private static readonly SemaphoreSlim stateWriters = new(2);
     private const string CookieName = "freetrain-online.operator";
     public const int MaximumMessageBytes = 16384;
     public static void MapNetwork(this WebApplication app)
     {
+        var saveInputs = new SemaphoreSlim(2);
         var session = app.Services.GetRequiredService<NetworkSession>();
         app.Lifetime.ApplicationStopping.Register(session.PrepareShutdown);
         var secret = app.Configuration["FreeTrainOnline:OperatorSecret"];
@@ -64,7 +66,13 @@ public static class NetworkEndpoints
             if (context.Request.ContentLength is > MaximumMessageBytes) { context.Response.StatusCode = 413; return; }
             try
             {
-                var login = await JsonSerializer.DeserializeAsync<AccessRequest>(context.Request.Body, NetworkSession.Json, context.RequestAborted);
+                using var body = new MemoryStream(); var chunk = new byte[1024]; int read;
+                while ((read = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (body.Length + read > MaximumMessageBytes) { context.Response.StatusCode = 413; return; }
+                    body.Write(chunk, 0, read);
+                }
+                var login = JsonSerializer.Deserialize<AccessRequest>(body.ToArray(), NetworkSession.Json);
                 if (login == null) { context.Response.StatusCode = 401; return; }
                 ParticipantContext? participant = Equal(login.Secret, secret) ? new("operator-1")
                     : secret == null && login.Secret.Length == 0 ? new("local-" + Guid.NewGuid().ToString("N")) : null;
@@ -95,7 +103,11 @@ public static class NetworkEndpoints
                 participant = new("local-" + Guid.NewGuid().ToString("N"));
                 if (!Cookie(context, participant)) return Results.StatusCode(503); // Independent loopback identities.
             }
-            return Results.Json<WireMessage>(session.Bootstrap(participant), NetworkSession.Json);
+            var join = session.Bootstrap(participant);
+            WireMessage response = context.Request.Query["metadataOnly"] == "true" || join.Snapshot.Terrain?.Cells.Length > 4096
+                ? new SessionOfferMessage(join.ProtocolVersion, join.ContentVersion, join.ServerIncarnation, join.SessionId,
+                    join.ParticipantId, join.Role, join.WorldEpoch, join.Ruleset, join.RequiredPacks) : join;
+            return Results.Json<WireMessage>(response, NetworkSession.Json);
         });
         // Observers may query geometry; this takes one coherent read and never queues a mutation.
         app.MapPost("/api/spatial/preview", async Task<IResult> (HttpContext context) =>
@@ -146,7 +158,7 @@ public static class NetworkEndpoints
             catch (OperationCanceledException) { return Results.Json(new { code = "creationFailed" }, statusCode: 408); }
         }
         app.MapPost("/api/worlds/empty/preview", async Task<IResult> (HttpContext context) => await CreationOperation<EmptyPreviewRequest>(context,
-            async (input, participant) => await session.PreviewEmpty(input, participant)));
+            async (input, participant) => await session.PreviewEmpty(input, participant, context.RequestAborted)));
         app.MapPost("/api/worlds/empty/commit", async Task<IResult> (HttpContext context) => await CreationOperation<EmptyCommitRequest>(context,
             async (input, participant) => { await session.CommitEmpty(input, participant); return new { status = "confirmed" }; }));
         app.MapPost("/api/worlds/empty/cancel", async Task<IResult> (HttpContext context) => await CreationOperation<Guid>(context,
@@ -170,7 +182,7 @@ public static class NetworkEndpoints
                     return Results.BadRequest(new { code = "invalidInput" });
                 var options = new HeightmapPreviewOptions(query["name"].ToString(), new(h, v, z), water, epoch, revision,
                     query.ContainsKey("provider") ? query["provider"].ToString() : null);
-                if (!WorldCreationProfile.Validate(new EmptyWorldRequest(WorldCreationProfile.Id, options.Name, options.Dimensions, water)).IsEmpty || h > 32 || v > 32)
+                if (!WorldCreationProfile.Validate(new EmptyWorldRequest(WorldCreationProfile.Id, options.Name, options.Dimensions, water)).IsEmpty)
                     return Results.BadRequest(new { code = "invalidInput" });
                 byte[] bytes;
                 string? mediaType = context.Request.ContentType is "application/octet-stream" ? null : context.Request.ContentType;
@@ -234,26 +246,36 @@ public static class NetworkEndpoints
         }
         app.MapPost("/api/saves/validate", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
         {
-            if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
-            using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
-            while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+            if (!await saveInputs.WaitAsync(0)) throw new InvalidOperationException("queueFull");
+            try
             {
-                if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
-                buffer.Write(chunk,0,count);
+                if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+                using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+                    buffer.Write(chunk,0,count);
+                }
+                if (session.Bootstrap().WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
+                await session.ValidateSave(buffer.ToArray(), epoch, participant);
             }
-            if (session.Bootstrap().WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
-            SaveCodec.ReadWorld(buffer.ToArray(), FreeTrain.Online.Content.TerrainProfiles.Resolve);
+            finally { saveInputs.Release(); }
         }));
         app.MapPost("/api/saves/upload", async Task<IResult> (HttpContext context) => await SaveOperation(context, async (epoch, participant) =>
         {
-            if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
-            using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
-            while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+            if (!await saveInputs.WaitAsync(0)) throw new InvalidOperationException("queueFull");
+            try
             {
-                if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
-                buffer.Write(chunk, 0, count);
+                if (context.Request.ContentLength is > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+                using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > SaveCodec.MaximumBytes) throw new InvalidDataException("saveTooLarge");
+                    buffer.Write(chunk, 0, count);
+                }
+                await session.LoadSave(buffer.ToArray(), epoch, participant);
             }
-            await session.LoadSave(buffer.ToArray(), epoch, participant);
+            finally { saveInputs.Release(); }
         }));
         app.MapPost("/api/saves/{id}/save", (HttpContext context, string id) => SaveOperation(context, async (epoch, participant) =>
         {
@@ -303,7 +325,24 @@ public static class NetworkEndpoints
         await foreach (var message in peer.Output.Reader.ReadAllAsync(cancellationToken))
         {
             using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            timeout.CancelAfter(TimeSpan.FromSeconds(2));
+            timeout.CancelAfter(TimeSpan.FromSeconds(message is JoinMessage or SnapshotMessage ? 30 : 2));
+            if (message is JoinMessage or SnapshotMessage)
+            {
+                peer.StateTransferInProgress = true;
+                await stateWriters.WaitAsync(timeout.Token);
+                try
+                {
+                    var packed = StateTransfer.Serialize(message);
+                    var terrain = message is JoinMessage j ? j.Snapshot.Terrain : ((SnapshotMessage)message).Terrain;
+                    if (packed.Length > StateTransfer.InlineBytes || terrain?.Cells.Length > 4096)
+                    {
+                        foreach (var chunk in StateTransfer.Chunks(message, packed))
+                            await socket.SendAsync(JsonSerializer.SerializeToUtf8Bytes<WireMessage>(chunk, NetworkSession.Json), WebSocketMessageType.Text, true, timeout.Token);
+                        continue;
+                    }
+                }
+                finally { stateWriters.Release(); peer.StateTransferInProgress = false; }
+            }
             await socket.SendAsync(JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json), WebSocketMessageType.Text, true, timeout.Token);
         }
     }

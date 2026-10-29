@@ -2,9 +2,10 @@ import {test,expect,type Page} from '@playwright/test';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {ready,openPanel,closePanel} from './ux-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=4&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
+const boot='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
 const state=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
-const save=readFileSync('../prototype/protocol/saves/terrain-v6.json');
+const savedGround=(s:any)=>[...Buffer.from(s.packedTerrain.cells,'base64')].map(n=>n&63);
+const save=readFileSync('../prototype/protocol/saves/terrain-v7.json');
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function point(page:Page,x:number,y:number){return page.locator('canvas').evaluate((canvas,args)=>{
  const r=canvas.getBoundingClientRect(),[cx,cy]=(canvas as HTMLCanvasElement).dataset.camera!.split(',').map(Number),z=Number((canvas as HTMLCanvasElement).dataset.zoom);
@@ -36,7 +37,7 @@ test('real terrain save replacement renders sea/cut/forest, picks independently,
   // H0,V0's realized cedar at X0,Y0 is visible above the slope, independently of its diamond.
   const tree=await point(page,0,-58);await page.mouse.click(tree.x,tree.y);await expect(page.getByTestId('selected-object')).toContainText('Terrain · 2 · 1, 0, 2');
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrain');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'terrain-cut-en.png'),fullPage:true});
-  const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString()).terrain.occupants[1].forest.trees).toEqual([{x:0,y:0,sprite:0},{x:30,y:15,sprite:8}]);
+  const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString()).packedTerrain.occupantCount).toBe(3);
   await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
   expect(errors).toEqual([]);
  }finally{await replace(page,original);}
@@ -159,7 +160,7 @@ test('Japanese narrow empty-world form, custom limits, candidate invalidation an
  await page.goto('/');await ready(page,'ja');const original=await(await page.request.get('/api/saves/download')).body();
  try{
   await openPanel(page,'newWorld','ja');
-  await page.getByLabel('格納幅（H）',{exact:true}).fill('65');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('2049');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
   await page.getByLabel('格納幅（H）',{exact:true}).fill('1');await page.getByLabel('格納奥行（V）',{exact:true}).fill('1');await page.getByLabel('高さ（Z）',{exact:true}).fill('1');await page.getByLabel('海面高さ',{exact:true}).fill('0');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('1 × 1 × 1');
   await page.getByLabel('世界名',{exact:true}).fill('変更');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
@@ -194,7 +195,7 @@ test('empty candidate API rejects stale revisions, forged digests and late confi
   await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
   // Independent source H/V projection of stored centre H32,V32 at Z63: (1040,-744).
   expect(await page.locator('canvas').evaluate(el=>(el as HTMLCanvasElement).dataset.camera!.split(',').slice(0,2).map(Number))).toEqual([1040,-744]);
-  const captured=await(await page.request.get('/api/saves/download')).body();const data=JSON.parse(captured.toString());expect(data.terrain.cells).toHaveLength(4096);expect(data.rails).toEqual([]);
+  const captured=await(await page.request.get('/api/saves/download')).body();const data=JSON.parse(captured.toString());expect(savedGround(data)).toHaveLength(4096);expect(data.rails).toEqual([]);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
   expect((await commit(candidate)).status()).toBe(409);
  }finally{await replace(page,original);}
@@ -232,10 +233,10 @@ await expect(page.getByRole('img',{name:'Resulting terrain heights and global wa
   await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await ready(peer);
   await expect(canvas).toHaveAttribute('data-instance','heightmap-preserved');
   const captured=await(await page.request.get('/api/saves/download')).body(),saved=JSON.parse(captured.toString());
-  expect(saved.terrain.cells.map((c:any)=>c.ground)).toEqual([0,1,2,3,1,2,3,4,0,1,2,3,1,2,3,4]);expect(saved.rails).toEqual([]);
+  expect(savedGround(saved)).toEqual([0,1,2,3,1,2,3,4,0,1,2,3,1,2,3,4]);expect(saved.rails).toEqual([]);
   await closePanel(page);await page.screenshot({path:join(directory,'ramp-live-en.png'),fullPage:true});
   await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
-  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(saved.terrain.cells.map((c:any)=>c.ground));
+  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(savedGround(saved));
  }finally{await replace(page,original);await other.close();}
 });
 test('heightmap Japanese narrow form reports image failures, invalidates drafts and cancels in-flight uploads',async({browser})=>{
@@ -315,7 +316,7 @@ test('generated endpoint rejects unavailable features, roles, stale fences and f
  const options={seed:0,relief:{kind:1,amount:50,featureScale:24,smoothness:50},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0};
  const s=await state(page),input={name:'API relief',dimensions:{h:32,v:32,z:32},waterLevel:4,options,epoch:s.worldEpoch,revision:s.revision};
  try{
-  for(const invalid of [{...input,dimensions:{h:33,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:25}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
+  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:25}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
   expect((await page.request.post('/api/worlds/generated/preview',{data:{...input,revision:String(BigInt(s.revision)+1n)}})).status()).toBe(409);
   const response=await page.request.post('/api/worlds/generated/preview',{data:input});expect(response.ok()).toBe(true);const candidate=await response.json();
   expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,epoch:s.worldEpoch,revision:s.revision,candidateHash:'0'.repeat(64)}})).status()).toBe(409);

@@ -12,18 +12,37 @@
   let providers = $state<Provider[]>([]);
   let requestAbort:AbortController|undefined;
   $effect(()=>{void fetch('/api/worlds/heightmap/providers').then(r=>r.ok?r.json():[]).then(rows=>{providers=rows;}).catch(()=>{});});
-  const maxSide = $derived(source==='empty'?64:32);
+  const maxSide = $derived(2048);
   const selectedProvider = $derived(providers.find(p=>p.binding.contributionId===provider));
   let name = $state(''), h = $state<number|undefined>(30), v = $state<number|undefined>(42), z = $state<number|undefined>(6), water = $state<number|undefined>(1);
   let candidate = $state<Candidate>();
+  let previewImage=$state<string>();
+  $effect(()=>{
+    const c=candidate;if(!c?.ground){previewImage=undefined;return;}
+    const canvas=document.createElement('canvas');
+    const width=Math.min(256,c.dimensions.h),height=Math.min(256,c.dimensions.v),ctx=canvas.getContext('2d');
+    if(!ctx)return;canvas.width=width;canvas.height=height;
+    const image=ctx.createImageData(width,height);
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++) {
+      const g=c.ground[Math.floor(y*c.dimensions.v/height)*c.dimensions.h+Math.floor(x*c.dimensions.h/width)],i=4*(y*width+x);
+      // A bounded overview of this exact retained grid. Full geometry remains in
+      // the candidate; large maps do not create one DOM node per storage cell.
+      const shade=Math.round(50+170*g/c.dimensions.z);
+      image.data[i]=g<c.waterLevel?0:Math.round(shade*.7);image.data[i+1]=g<c.waterLevel?114:shade;
+      image.data[i+2]=g<c.waterLevel?188:Math.round(shade*.5);image.data[i+3]=255;
+    }
+    ctx.putImageData(image,0,0);
+    previewImage=canvas.toDataURL('image/png');
+  });
   let capturedEpoch = $state<string>(), capturedRevision = $state<string>();
   let busy = $state(false), confirmation = $state(false);
   type Feedback = 'creationFailed'|'staleCandidate'|'creationBusy'|'created'|'idle'|'imageFormat'|'imageBytes'|'imagePixels'|'imageAlpha'|'imageAnimation'|'imageInvalid';
   let feedback = $state<Feedback>('idle');
   let generation = 0;
-  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
+  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && h!*v!<=1700000 && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
   async function call(path: string, body: unknown) {
-    const response = await fetch(`/api/worlds/empty/${path}`, { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:AbortSignal.timeout(35000) });
+    const signal=path==='preview'&&requestAbort?AbortSignal.any([requestAbort.signal,AbortSignal.timeout(35000)]):AbortSignal.timeout(35000);
+    const response = await fetch(`/api/worlds/empty/${path}`, { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal });
     if (!response.ok) {
       const result = await response.json().catch(()=>({}));
       throw new Error(result.code === 'creationBusy' ? 'creationBusy' : ['staleEpoch','staleRevision','staleCandidate'].includes(result.code) ? 'staleCandidate' : 'creationFailed');
@@ -98,14 +117,14 @@
 </fieldset>
 <div class="form-actions">
   <button disabled={busy||disabled||!valid} onclick={preview}>{text.previewWorld}</button>
-  {#if busy && source!=='empty'}<button onclick={invalidate}>{text.cancel}</button>{/if}
+  {#if busy}<button onclick={invalidate}>{text.cancel}</button>{/if}
   {#if candidate}<button disabled={busy||disabled} onclick={()=>{onmodal();confirmation=true;}}>{text.createWorld}</button><button onclick={invalidate}>{text.cancel}</button>{/if}
 </div>
 {#if candidate}
   <div data-testid="empty-world-preview">
     {#if candidate.imagePreview}<img src={candidate.imagePreview} alt={text.heightmapImagePreview}/>{/if}
-    {#if candidate.ground}<svg viewBox={`0 0 ${candidate.dimensions.h} ${candidate.dimensions.v}`} role="img" aria-label={text.heightmapTerrainPreview}>{#each candidate.ground as ground,i}<rect x={i%candidate.dimensions.h} y={Math.floor(i/candidate.dimensions.h)} width="1" height="1" fill={ground<candidate.waterLevel?'#0072bc':`hsl(95 35% ${25+60*ground/candidate.dimensions.z}%)`}/>{/each}</svg>{:else}
-    <svg viewBox="0 0 240 140" role="img" aria-label={text.emptyPreviewLabel}><polygon points={`120,10 ${120+100*candidate.dimensions.h/64},${10+60*candidate.dimensions.h/64} ${120+100*(candidate.dimensions.h-candidate.dimensions.v)/64},${10+60*(candidate.dimensions.h+candidate.dimensions.v)/64} ${120-100*candidate.dimensions.v/64},${10+60*candidate.dimensions.v/64}`} fill="#6c9c55" stroke="currentColor"/></svg>{/if}
+    {#if candidate.ground}<img src={previewImage} alt={text.heightmapTerrainPreview} style="width:100%;max-height:240px;object-fit:contain;image-rendering:pixelated"/>{:else}
+    <svg viewBox="0 0 240 140" role="img" aria-label={text.emptyPreviewLabel}><polygon points={`120,10 ${120+100*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120+100*(candidate.dimensions.h-candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*(candidate.dimensions.h+candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120-100*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)}`} fill="#6c9c55" stroke="currentColor"/></svg>{/if}
     <p>{candidate.name} · {candidate.dimensions.h} × {candidate.dimensions.v} × {candidate.dimensions.z}</p>
     <p>{text.worldWater}: {candidate.waterLevel} · {text.zeroRails}</p>
     <p>{text.candidateBytes}: {candidate.saveBytes.toLocaleString(locale)} / {candidate.snapshotBytes.toLocaleString(locale)}</p>
@@ -118,4 +137,4 @@
   </DecisionModal>
 {/if}
 <p aria-live="polite" data-testid="creation-feedback">{busy?text.preparingWorld:feedback==='idle'?'':text[feedback]}</p>
-<style>fieldset{border:0;padding:0;min-width:0}input{max-width:100%;box-sizing:border-box}svg,img{width:100%;max-height:150px;object-fit:contain}select{max-width:100%}svg rect{shape-rendering:crispEdges}</style>
+<style>fieldset{border:0;padding:0;min-width:0}input{max-width:100%;box-sizing:border-box}svg,img{width:100%;max-height:150px;object-fit:contain}select{max-width:100%}</style>

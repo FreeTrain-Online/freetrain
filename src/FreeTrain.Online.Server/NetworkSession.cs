@@ -55,7 +55,13 @@ public sealed partial class NetworkSession
     public string? StartupSaveError { get; }
     private bool disconnectCheckpoint;
     public bool TakeCheckpointRequest() { lock (gate) { var requested = disconnectCheckpoint; disconnectCheckpoint = false; return requested; } }
-    public Task<byte[]> CaptureSave(long? epoch = null, ParticipantContext? participant = null) { lock (gate) return host.CaptureSave(epoch, participant); }
+    private readonly SemaphoreSlim saveWorkers = new(2);
+    public async Task<byte[]> CaptureSave(long? epoch = null, ParticipantContext? participant = null)
+    {
+        if (!await saveWorkers.WaitAsync(0)) throw new InvalidOperationException("saveFailed");
+        try { Task<byte[]> capture; lock (gate) capture = host.CaptureSave(epoch, participant); return await capture; }
+        finally { saveWorkers.Release(); }
+    }
     public async Task Checkpoint(string id = "checkpoint", long? epoch = null, ParticipantContext? participant = null)
     {
         if (!SavingAvailable) throw new InvalidDataException("savingUnavailable");
@@ -66,14 +72,53 @@ public sealed partial class NetworkSession
     }
     public async Task LoadSave(ReadOnlyMemory<byte> document, long epoch, ParticipantContext? participant = null)
     {
-        Task<SnapshotMessage> loaded;
-        lock (gate) loaded = host.LoadSave(document, epoch, participant);
-        await loaded;
-        lock (gate)
+        if (!await saveWorkers.WaitAsync(0)) throw new InvalidOperationException("saveFailed");
+        try
         {
-            disconnectCheckpoint = true;
-            foreach (var peer in peers.Values.ToArray()) Publish(peer);
+            SessionHost capturedHost;
+            lock (gate)
+            {
+                if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+                if (host.WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
+                capturedHost = host;
+            }
+            var prepared = await Task.Run(() =>
+            {
+                var world = capturedHost.PrepareSave(document);
+                if (world.Terrain is { } terrain) _ = TerrainWire.Snapshot(terrain, 1);
+                return world;
+            });
+            Task<SnapshotMessage> loaded;
+            lock (gate)
+            {
+                if (host != capturedHost) throw new InvalidOperationException("staleEpoch");
+                loaded = host.ApplyPreparedSave(prepared, epoch, participant);
+            }
+            await loaded;
+            lock (gate)
+            {
+                disconnectCheckpoint = true;
+                foreach (var peer in peers.Values.ToArray()) Publish(peer);
+            }
         }
+        finally { saveWorkers.Release(); }
+    }
+    public async Task ValidateSave(ReadOnlyMemory<byte> document, long epoch, ParticipantContext participant)
+    {
+        if (!await saveWorkers.WaitAsync(0)) throw new InvalidOperationException("saveFailed");
+        try
+        {
+            SessionHost capturedHost;
+            lock (gate)
+            {
+                if (participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+                if (host.WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch");
+                capturedHost = host;
+            }
+            await Task.Run(() => capturedHost.PrepareSave(document));
+            lock (gate) { if (host != capturedHost || host.WorldEpoch != epoch) throw new InvalidOperationException("staleEpoch"); }
+        }
+        finally { saveWorkers.Release(); }
     }
     public Task LoadSlot(string id, long epoch, ParticipantContext? participant = null) => LoadSave(storage?.Read(id) ?? throw new InvalidOperationException("unavailable"), epoch, participant);
     public object[] SaveSlots() => SaveStorage.Slots.Select(id => (object)new { id, exists = storage?.Exists(id) == true }).ToArray();
@@ -104,6 +149,7 @@ public sealed partial class NetworkSession
         { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
         public CancellationTokenSource Stop { get; } = new();
         internal SnapshotMessage? LastSnapshot;
+        internal volatile bool StateTransferInProgress;
         internal DateTimeOffset LastSeen = now;
         internal DateTimeOffset Window = now;
         internal int Messages;
@@ -281,6 +327,10 @@ public sealed partial class NetworkSession
     }
     private void Publish(Peer peer)
     {
+        // Coalesce changes while a coherent snapshot is in flight. Once its
+        // bounded writer finishes, difference the last queued revision against
+        // the latest world; never buffer an unbounded chain of follow-up deltas.
+        if (peer.StateTransferInProgress) return;
         var next = host.Snapshot();
         var previous = peer.LastSnapshot;
         if (previous?.Revision == next.Revision && previous.WorldEpoch == next.WorldEpoch) return;
@@ -289,7 +339,9 @@ public sealed partial class NetworkSession
     }
     private bool Write(Peer peer, WireMessage message)
     {
-        if (JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, Json).Length <= ProtocolIdentity.MaximumStateBytes &&
+        // Canonical saves/candidates already validate total state. Serialize/chunk
+        // snapshots on the bounded socket workers, outside the simulation gate.
+        if ((message is JoinMessage or SnapshotMessage || JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, Json).Length <= 16 * 1024 * 1024) &&
             peer.Output.Writer.TryWrite(message)) return true;
         // Oversized state or a full bounded queue closes this peer; never lose a dependent delta or block on network I/O.
         Disconnect(peer, DateTimeOffset.UtcNow);
@@ -303,6 +355,7 @@ public sealed partial class NetworkSession
             throw new ArgumentException("World replacement requires a snapshot.");
         static T[] Changed<T, TKey>(T[] before, T[] after, Func<T, TKey> key) where TKey : notnull
         {
+            if (ReferenceEquals(before, after)) return [];
             var old = before.ToDictionary(key);
             return after.Where(x => !old.TryGetValue(key(x), out var value) ||
                 JsonSerializer.Serialize(value, Json) != JsonSerializer.Serialize(x, Json)).ToArray();
@@ -314,11 +367,11 @@ public sealed partial class NetworkSession
                 previous.Stations.Select(x => x.Id).Except(next.Stations.Select(x => x.Id)).ToArray(),
                 previous.Buildings.Select(x => x.Id).Except(next.Buildings.Select(x => x.Id)).ToArray(),
                 previous.Tracks.Select(x => x.Position).Except(next.Tracks.Select(x => x.Position)).ToArray(),
-                next.Entities == null ? null : (previous.Entities ?? []).Select(e => e.Id).Except(next.Entities.Select(e => e.Id)).ToArray()),
+                next.Entities == null ? null : ReferenceEquals(previous.Entities, next.Entities) ? [] : (previous.Entities ?? []).Select(e => e.Id).Except(next.Entities.Select(e => e.Id)).ToArray()),
             next.Ruleset, next.ContentVersion, next.RequiredPacks,
             next.Entities == null ? null : Changed(previous.Entities ?? [], next.Entities, e => e.Id),
             next.Terrain is not {} terrain ? null : new(terrain.WaterLevel, terrain.ConstructionMode, terrain.GeometryRevision,
-                terrain.NextEntityId, terrain.Cells.Select((c, i) => (c, i))
+                terrain.NextEntityId, ReferenceEquals(previous.Terrain?.Cells, terrain.Cells) ? [] : terrain.Cells.Select((c, i) => (c, i))
                     .Where(row => previous.Terrain == null || previous.Terrain.Cells[row.i] != row.c)
                     .Select(row => new TerrainCellChangeRead(row.i, row.c.Ground, row.c.Surface)).ToArray(),
                 Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)));

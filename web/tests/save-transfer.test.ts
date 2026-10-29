@@ -18,7 +18,7 @@ Deno.test('oversized save input is rejected before a transfer begins',async()=>{
   const original=globalThis.fetch;let calls=0;
   try {
     globalThis.fetch=()=>{calls++;throw new Error('Unexpected transfer');};
-    await rejects(()=>saveRequest('upload','1',new File([new Uint8Array(16*1024*1024+1)],'large.json')),'saveTooLarge');
+    await rejects(()=>saveRequest('upload','1',Object.defineProperty(new File(['x'],'large.json'),'size',{value:256*1024*1024+1})),'saveTooLarge');
     assert(calls===0);
   } finally {globalThis.fetch=original;}
 });

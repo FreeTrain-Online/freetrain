@@ -217,7 +217,7 @@ public class TerrainWorldTests
     }
 
     [Theory]
-    [InlineData(0,1,4)][InlineData(129,1,4)][InlineData(1,1,65)][InlineData(int.MaxValue,int.MaxValue,int.MaxValue)]
+    [InlineData(0,1,4)][InlineData(2049,1,4)][InlineData(1,1,65)][InlineData(int.MaxValue,int.MaxValue,int.MaxValue)]
     public void Invalid_dimensions_fail_before_reading_grid(int h, int v, int z)
     {
         static IEnumerable<TerrainCell> Unexpected()

@@ -9,11 +9,78 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if (args is ["--compare-png", var first, var second])
+{
+    var a = HeightmapDecoder.Decode(File.ReadAllBytes(first)).Raster;
+    var b = HeightmapDecoder.Decode(File.ReadAllBytes(second)).Raster;
+    if (a.Width != b.Width || a.Height != b.Height) throw new ArgumentException("Image extents differ.");
+    int changed = 0, maximum = 0, left = a.Width, top = a.Height, right = -1, bottom = -1;
+    var samples = new List<object>();
+    for (var i = 0; i < a.Pixels.Length; i += 4)
+    {
+        if (a.Pixels.Span.Slice(i, 4).SequenceEqual(b.Pixels.Span.Slice(i, 4))) continue;
+        changed++; var x = i / 4 % a.Width; var y = i / 4 / a.Width;
+        left = Math.Min(left, x); right = Math.Max(right, x); top = Math.Min(top, y); bottom = Math.Max(bottom, y);
+        for (var c = 0; c < 4; c++) maximum = Math.Max(maximum, Math.Abs(a.Pixels.Span[i+c] - b.Pixels.Span[i+c]));
+        if (samples.Count < 10) samples.Add(new { x, y, a = a.Pixels.Slice(i, 4).ToArray(), b = b.Pixels.Slice(i, 4).ToArray() });
+    }
+    Console.WriteLine(JsonSerializer.Serialize(new { a.Width, a.Height, changed, maximum, left, top, right, bottom, samples }, json)); return;
+}
+if (args is ["--capacity", var hText, var vText, var zText, var mode, var directory])
+{
+    var h = int.Parse(hText); var v = int.Parse(vText); var z = int.Parse(zText);
+    Directory.CreateDirectory(directory);
+    var process = Process.GetCurrentProcess(); var start = Stopwatch.StartNew();
+    TerrainSessionState state;
+    if (mode == "dense" || mode == "heavy") state = TerrainCapacityScenario.Create(h, v, z, mode == "dense" ? 1 : 8);
+    else if (mode == "heightmap")
+    {
+        var rgba = new byte[128 * 128 * 4];
+        for (var y = 0; y < 128; y++) for (var x = 0; x < 128; x++)
+        { var i = 4 * (y * 128 + x); var c = (byte)((3 * x + 5 * y) % 256); rgba[i] = rgba[i+1] = rgba[i+2] = c; rgba[i+3] = 255; }
+        var source = Convert.FromBase64String(HeightmapDecoder.Preview(new(128, 128, rgba)).Split(',')[1]);
+        File.WriteAllBytes(Path.Combine(directory, "source.png"), source);
+        var decoded = HeightmapDecoder.Decode(source);
+        var r = new HeightmapWorldRequest(WorldCreationProfile.Id, "Capacity heightmap", new(h, v, z), 4, decoded.Input);
+        state = new(HeightmapTerrain.Create(r, decoded.Raster, TerrainProfiles.Bundled), TerrainProvenance.From(r));
+    }
+    else if (mode == "generated")
+    {
+        var r = WorldCreationProfile.Generated(int.MinValue, "Capacity relief") with { Dimensions = new(h, v, z) };
+        r = r with { Options = r.Options with { StartingArea = 0, Relief = new(ReliefKind.Mountains, 100, 4, 0) } };
+        state = new(ReliefTerrain.Create(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
+    }
+    else if (mode == "empty")
+    {
+        var r = new EmptyWorldRequest(WorldCreationProfile.Id, "Capacity empty", new(h, v, z), 1);
+        state = new(TerrainWorld.Empty(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
+    }
+    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, heavy or dense.");
+    var createMs = start.Elapsed.TotalMilliseconds; var retainedWorld = GC.GetTotalMemory(true);
+    var bytes = SaveCodec.Write(state); var saveMs = start.Elapsed.TotalMilliseconds - createMs;
+    File.WriteAllBytes(Path.Combine(directory, "world.json"), bytes);
+    var snapshot = TerrainWire.Snapshot(state, 1); var packet = StateTransfer.Serialize(snapshot);
+    File.WriteAllBytes(Path.Combine(directory, "packet.json"), packet);
+    var beforeRead = start.Elapsed.TotalMilliseconds;
+    var restored = SaveCodec.ReadWorld(bytes, TerrainProfiles.Resolve).Terrain!;
+    var readMs = start.Elapsed.TotalMilliseconds - beforeRead;
+    if (!bytes.SequenceEqual(SaveCodec.Write(restored))) throw new InvalidOperationException("Capacity round trip mismatch.");
+    var chunkCount = StateTransfer.Chunks(snapshot, packet).Count();
+    process.Refresh();
+    var report = new { mode, h, v, z, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
+        saveBytes = bytes.Length, packetBytes = packet.Length, chunkCount, retainedWorld,
+        retainedTwoWorldsAndTransport = GC.GetTotalMemory(true), peakRss = process.PeakWorkingSet64 > 0 ? (long?)process.PeakWorkingSet64 : null,
+        elapsedMs = start.Elapsed.TotalMilliseconds, runtime = RuntimeInformation.FrameworkDescription,
+        os = RuntimeInformation.OSDescription, architecture = RuntimeInformation.ProcessArchitecture.ToString(), processors = Environment.ProcessorCount };
+    var output = JsonSerializer.Serialize(report, json); Console.WriteLine(output);
+    File.WriteAllText(Path.Combine(directory, "measurement.json"), output + "\n");
+    return;
+}
 if (args is ["--write-fixtures", var root])
 {
     var state = TerrainTransportScenario.Create();
     var saved = JsonSerializer.Deserialize<SaveCodec.Document>(SaveCodec.Write(state), WireJson.CreateOptions())!;
-    File.WriteAllText(Path.Combine(root, "prototype/protocol/saves/terrain-v6.json"), JsonSerializer.Serialize(saved, json) + "\n");
+    File.WriteAllText(Path.Combine(root, "prototype/protocol/saves/terrain-v7.json"), JsonSerializer.Serialize(saved, json) + "\n");
     var before = TerrainWire.Snapshot(state, 1);
     File.WriteAllText(Path.Combine(root, "prototype/protocol/fixtures/snapshot-terrain.json"), JsonSerializer.Serialize<WireMessage>(before, json) + "\n");
     state.Replace(state.Revision, state.World.Replace(state.World.Revision,

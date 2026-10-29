@@ -1,4 +1,4 @@
-# Wire protocol 4
+# Wire protocol 5
 
 `schema.json` is the canonical draft-07 schema for current wire messages and spatial queries. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
 mean canonical decimal strings within signed Int64 or nonnegative Int64 bounds.
@@ -8,9 +8,9 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **4**, default content `reference-spatial-content-2`, canonical **Save 6**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
+Versions are independent: protocol **5**, default content `reference-spatial-content-2`, canonical **Save 7**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
 Join conveys server incarnation, participant/session identity, server-assigned role,
-epoch and initial snapshot. Commands cannot choose participant identity or authority.
+epoch and initial snapshot. A `metadataOnly=true` HTTP bootstrap returns `sessionOffer` without world geometry; large-world bootstrap always uses this bounded offer. Commands cannot choose participant identity or authority.
 
 Commands carry request ID and expected epoch; rename/controller/removal carry
 expected revision. `accepted` means committed and includes application sequence,
@@ -32,7 +32,7 @@ Protocols 1 and 2 are rejected with HTTP 426; deploy matching static and server 
 Online prototype Save 1 is unsupported. The current schema and generated types
 contain no Save 1 model. Historical data is kept only under `historical/save-v1`
 and the archived implementation. The runtime rejects unsupported input with
-`incompatibleSave`. Canonical Save 6 uses `save-v6.schema.json` and `saves/reference-v6.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3/4/5 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` `historical/save-v3` and `historical/save-v4`. Prototype writes remain unavailable. See the
+`incompatibleSave`. Canonical Save 7 uses `save-v7.schema.json` and `saves/reference-v7.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3/4/5/6 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` `historical/save-v3` and `historical/save-v4`. Prototype writes remain unavailable. See the
 [owner-directed policy](../../doc/web-parity-runtime-policy.md).
 
 Run from the repo root:
@@ -81,7 +81,7 @@ browser validates car counts/headings and the selected installed profile before
 applying reads. Source canonical geometry has shared fixtures separate from that
 compatibility world. Protocol-2 originals are preserved in `historical/v2`.
 
-`POST /api/spatial/preview?protocolVersion=4&contentVersion=reference-spatial-content-2`
+`POST /api/spatial/preview?protocolVersion=5&contentVersion=reference-spatial-content-2`
 accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
 Any authenticated role can use it. Expected epoch, position, nullable anchor and
 snap 0/4/8 select a checked read-only calculation. The result carries world
@@ -99,7 +99,7 @@ The historical prototype omits these fields. Optional schema fields preserve the
 common protocol-3 envelope; exact ruleset dispatch enforces their presence for
 canonical reads. Unknown or inconsistent graphs block reveal.
 
-Save 6 also stores `spatial.nextEntityId`; removed IDs are never allocated again.
+Save 7 also stores `spatial.nextEntityId`; removed IDs are never allocated again.
 The allocator is private durable state and is absent from public reads. See
 [P1-04](../../doc/web-parity-spatial-contracts.md) for source mappings and limits.
 
@@ -120,9 +120,7 @@ The client validates the merged graph before exposing it. Name, dimensions and
 provenance changes require an epoch replacement snapshot. Coalesced entity revision
 advances are supported, allocator rewind and removed-ID reuse are rejected.
 
-Save 6 supports reference or terrain profiles; Saves 1–5 are rejected without conversion.
-Save/upload/outgoing state frames are capped at 16 MiB; ordinary incoming commands
-remain 16 KiB. Queues retain their count/backpressure bounds; oversized output closes
-the peer instead of dropping a dependent delta. Creation/rendering remains disabled
-pending P3-05/06; the browser currently advertises reference/prototype rendering only.
-See [scope, measurements and evidence](../../doc/web-parity-terrain-transport.md).
+Save 7 supports reference or terrain profiles; Saves 1–6 are rejected without conversion.
+Save/upload/assembled state have a 256 MiB limit; ordinary incoming commands remain 16 KiB. Large terrain snapshots and joins use `stateChunk` messages, with at most 48 KiB of payload per chunk, one transfer ID/epoch/revision, declared total/count/lengths and SHA-256. The payload has `message` (the scalar snapshot/join header) and `packedTerrain`. A client checks shape, structure, integrity, exact profile and complete geometry before atomic reveal. Duplicate/conflicting/stale/corrupt transfers fail closed; out-of-order chunks are assembled by index. Missing chunks expire after 30 seconds. One assembly per socket and two server state writers bound transient transfers; live changes coalesce until the snapshot writer finishes, then resume from the last queued revision.
+
+Packed terrain uses `terrain-packed-1`: one byte per row-major ground cell, an interned definition table, 43-byte little-endian occupant headers and three bytes per realized tree. All Int64 values remain exact. The [capacity report](../../doc/web-parity-map-capacity.md) specifies the binary layout, resource bounds, current tested scenes and the later full-city qualification. The logical in-process snapshot and delta contracts retain explicit cells, occupants, ownership and geometry. Source algorithms and content identities are unchanged.

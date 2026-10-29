@@ -75,7 +75,7 @@ def run(image, platform):
                                          headers={'Content-Type': 'application/json'})
         with opener.open(request, timeout=5) as response:
             assert response.status == 204
-        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=4&contentVersion=reference-spatial-content-2'))
+        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2'))
         assert bootstrap['snapshot']['ruleset'] == 'reference-spatial-4'
         assert bootstrap['snapshot']['requiredPacks'][0]['id'] == 'reference-spatial'
         print(json.dumps(dict(health=health['status'], catalogHash=digest, assets=len(catalog['assets']),

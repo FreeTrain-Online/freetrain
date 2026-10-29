@@ -160,7 +160,39 @@ export function halfBlend(source:readonly number[],destination:readonly number[]
 }
 export type DrawEffect = {kind:'normal'} | {kind:'shape';color:string} | {kind:'alpha'};
 export class ReadyScene {
+  private normalImages=new Map<string,CanvasImageSource>();
+  private frameKeys=new WeakMap<object,string>();
+  private scaledFrames=new Map<string,{image:OffscreenCanvas;bytes:number}>();
+  private scaledBytes=0;
   constructor(private catalog:RenderCatalog, readonly layers:readonly Layer[], readonly variant:Variant, private images:Map<string,SpriteImage>) {}
+  paintNormal(ctx:CanvasRenderingContext2D,view:View,l:Layer,pixelStable=false) {
+    const f=l.frame,id=f.surfaceSet!;
+    let image=this.normalImages.get(id);
+    if(!image){const binding=this.catalog.surfaceSets[id][variantKey(this.variant)];image=this.images.get(binding.image.url)?.image;if(!image)throw new Error('Scene assets not ready');this.normalImages.set(id,image);}
+    const [x,y,z]=l.position,[ax,ay]=f.anchor!,[sx,sy,w,h]=f.rectangle!;
+    const left=view.x+(16*(x+y)-ax)*view.zoom,top=view.y+(8*(y-x)-16*z-ay)*view.zoom;
+    if(pixelStable&&typeof OffscreenCanvas!=='undefined') {
+      // Rasterize a crop at its subpixel phase once, then copy physical pixels.
+      // This avoids GPU nearest-neighbor tie rounding changing as the same
+      // scaled sprite moves across a large canvas, and makes scroll reuse exact.
+      const dpr=ctx.getTransform().a,scale=view.zoom*dpr,px=left*dpr,py=top*dpr;
+      const ix=Math.floor(px+1e-7),iy=Math.floor(py+1e-7),fx=Math.max(0,Math.round((px-ix)*1e7)/1e7),fy=Math.max(0,Math.round((py-iy)*1e7)/1e7);
+      let base=this.frameKeys.get(f);if(!base){base=id+'/'+[sx,sy,w,h].join(',');this.frameKeys.set(f,base);}
+      const key=base+'/'+[scale,fx,fy].join(','),width=Math.ceil(w*scale+fx),height=Math.ceil(h*scale+fy),bytes=width*height*4;
+      if(bytes<=16*1024*1024) {
+        let cached=this.scaledFrames.get(key);
+        if(!cached) {
+          while(this.scaledBytes+bytes>64*1024*1024&&this.scaledFrames.size) {
+            const first=this.scaledFrames.keys().next().value!;this.scaledBytes-=this.scaledFrames.get(first)!.bytes;this.scaledFrames.delete(first);
+          }
+          const raster=new OffscreenCanvas(width,height),paint=raster.getContext('2d')!;paint.imageSmoothingEnabled=false;
+          paint.drawImage(image,sx,sy,w,h,fx,fy,w*scale,h*scale);cached={image:raster,bytes};this.scaledFrames.set(key,cached);this.scaledBytes+=bytes;
+        }
+        ctx.drawImage(cached.image,ix/dpr,iy/dpr,width/dpr,height/dpr);return;
+      }
+    }
+    ctx.drawImage(image,sx,sy,w,h,left,top,w*view.zoom,h*view.zoom);
+  }
   draw(ctx:CanvasRenderingContext2D,view:View, effect:DrawEffect={kind:'normal'}, ordered=traversal(this.layers,view.heightCut)) {
     if(!Number.isFinite(view.zoom)||view.zoom<=0) throw new Error('Invalid sprite zoom');
     const key=variantKey(this.variant); ctx.imageSmoothingEnabled=false;

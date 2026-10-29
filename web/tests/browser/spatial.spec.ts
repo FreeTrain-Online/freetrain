@@ -67,7 +67,7 @@ test('an unrecognized required pack blocks reveal at the compatibility gate',asy
   await page.route('**/api/bootstrap?*',async route=>{
     const response=await route.fetch(),body=await response.json();
     body.requiredPacks[0].catalogHash='0'.repeat(64);
-    body.snapshot.requiredPacks[0].catalogHash='0'.repeat(64);
+    if(body.snapshot)body.snapshot.requiredPacks[0].catalogHash='0'.repeat(64);
     await route.fulfill({response,json:body});
   });
   await page.goto('/');await expect(page.getByRole('heading',{name:'Update required',exact:true})).toBeVisible();

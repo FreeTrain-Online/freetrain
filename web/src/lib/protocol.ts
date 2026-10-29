@@ -2,7 +2,9 @@ import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
 import type { Delta, Snapshot, SpatialPreview, WireMessage } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, sameIdentity, validSnapshot } from './world-identity.ts';
+import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
+import { maximumGameMinute } from './game-time.ts';
+const validatedReads=new WeakSet<object>(),frozenObjects=new WeakSet<object>();
 const ajv = new Ajv({ strict: true });
 for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
   ajv.addFormat(name, (value: string) => /^(0|-?[1-9][0-9]*)$/.test(value) &&
@@ -16,16 +18,23 @@ export function parseSpatialPreview(value:unknown):SpatialPreview {
 }
 export function parseMessage(text: string): WireMessage {
   if (text.length > 16 * 1024 * 1024 || new TextEncoder().encode(text).byteLength > 16 * 1024 * 1024) throw new Error('Message too large');
-  const value: unknown = JSON.parse(text);
+  return parseMessageValue(JSON.parse(text));
+}
+export function validWireShape(value:unknown):value is WireMessage { return !!validate(value); }
+export function parseMessageValue(value:unknown):WireMessage {
   if (!validate(value)) throw new Error('Invalid protocol message');
   const message=value as WireMessage;
+  if(message.type==='sessionOffer'&&!supportedIdentity(message))throw new IncompatibleWorldError('Incompatible world');
   if(message.type==='snapshot'&&!validSnapshot(message))throw new IncompatibleWorldError('Incompatible world');
   if(message.type==='join'&&(!sameIdentity(message,message.snapshot)||message.worldEpoch!==message.snapshot.worldEpoch||!validSnapshot(message.snapshot)))throw new IncompatibleWorldError('Incompatible world');
+  if(message.type==='snapshot')validatedReads.add(message);
+  if(message.type==='join')validatedReads.add(message.snapshot);
   return value as WireMessage;
 }
 export function immutable<T extends object>(value: T): T {
+  if(frozenObjects.has(value))return value;
   for (const child of Object.values(value)) if (child && typeof child === 'object') immutable(child);
-  return Object.freeze(value);
+  frozenObjects.add(value);return Object.freeze(value);
 }
 export function applyDelta(state: ReadState, delta: Delta): ReadState | undefined {
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
@@ -41,7 +50,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.terrain.cells.some(c=>c.index>=state.terrain!.cells.length)||
       new Set(delta.terrain.occupants.map(o=>o.entityId)).size!==delta.terrain.occupants.length||
       delta.terrain.occupants.some(o=>delta.removed.entityIds?.includes(o.entityId)))return;
-    const old=new Map(state.entities!.map(e=>[e.id,e]));
+    const old=new Map(delta.entities!.length||delta.terrain.occupants.length?state.entities!.map(e=>[e.id,e]):[]);
     for(const e of delta.entities!) {
       const before=old.get(e.id);
       if(!before?(BigInt(e.id)<BigInt(state.terrain.nextEntityId)||e.revision!=='0'):
@@ -49,7 +58,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
           e.revision===before.revision&&JSON.stringify(e)!==JSON.stringify(before)))return;
     }
     const changedEntities=new Map(delta.entities!.map(e=>[e.id,e]));
-    const oldOccupants=new Map(state.terrain.occupants.map(o=>[o.entityId,o]));
+    const oldOccupants=new Map(delta.terrain.occupants.length?state.terrain.occupants.map(o=>[o.entityId,o]):[]);
     for(const o of delta.terrain.occupants) {
       const before=oldOccupants.get(o.entityId);
       if(before&&JSON.stringify(o)!==JSON.stringify(before)&&
@@ -59,6 +68,19 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.terrain.waterLevel!==state.terrain.waterLevel||delta.terrain.constructionMode!==state.terrain.constructionMode)&&
       BigInt(delta.terrain.geometryRevision)<=BigInt(state.terrain.geometryRevision))return;
   } else if(delta.terrain!==undefined)return;
+  if(terrain&&delta.terrain&&state.terrain&&delta.entities!.length===0&&delta.removed.entityIds!.length===0&&
+    delta.terrain.cells.length===0&&delta.terrain.occupants.length===0&&
+    delta.terrain.geometryRevision===state.terrain.geometryRevision&&delta.terrain.nextEntityId===state.terrain.nextEntityId&&
+    delta.terrain.waterLevel===state.terrain.waterLevel&&delta.terrain.constructionMode===state.terrain.constructionMode&&
+    delta.trains.length===0&&delta.stations.length===0&&delta.buildings.length===0&&delta.tracks.length===0&&
+    delta.removed.trainIds.length===0&&delta.removed.stationIds.length===0&&delta.removed.buildingIds.length===0&&delta.removed.trackPositions.length===0) {
+    // The unchanged graph was already checked before publication. Clock/run/pause
+    // never clone or revalidate millions of terrain cells.
+    if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
+    if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!=='0'||typeof delta.paused!=='boolean')return;
+    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash});
+    validatedReads.add(next);return next;
+  }
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
     const items = new Map(before.map(item => [key(item), item]));
     for (const id of removed) items.delete(id);

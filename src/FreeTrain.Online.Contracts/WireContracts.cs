@@ -6,8 +6,9 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 4;
-    public const int MaximumStateBytes = 16 * 1024 * 1024;
+    public const int Version = 5;
+    public const int MaximumStateBytes = 256 * 1024 * 1024;
+    public const int StateChunkBytes = 48 * 1024;
     public const string ReferenceRuleset = "reference-spatial-4";
     public const string ReferenceContent = "reference-spatial-content-2";
     public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "2", "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82")];
@@ -61,7 +62,15 @@ public sealed class DecimalInt64Converter : JsonConverter<long>
 [JsonDerivedType(typeof(HeartbeatMessage), "heartbeat")]
 [JsonDerivedType(typeof(InputResetMessage), "inputReset")]
 [JsonDerivedType(typeof(SoundEventMessage), "soundEvent")]
+[JsonDerivedType(typeof(StateChunkMessage), "stateChunk")]
+[JsonDerivedType(typeof(SessionOfferMessage), "sessionOffer")]
 public abstract record WireMessage;
+
+public sealed record StateChunkMessage(string TransferId, long WorldEpoch, long Revision, int Index, int Count,
+    int TotalBytes, string Sha256, byte[] Data) : WireMessage;
+public sealed record SessionOfferMessage(int ProtocolVersion, string ContentVersion, string ServerIncarnation,
+    string SessionId, string ParticipantId, string Role, long WorldEpoch, string Ruleset, RequiredPackRead[] RequiredPacks) : WireMessage;
+public sealed record StateTransferPayload(WireMessage Message, PackedTerrainRead? PackedTerrain);
 
 public sealed record SoundEventMessage(string EventId, long WorldEpoch, string Kind) : WireMessage;
 public sealed record ResyncMessage : WireMessage;
@@ -155,3 +164,8 @@ public sealed record TerrainRead(string Name, int WaterLevel, bool ConstructionM
 public sealed record TerrainCellChangeRead(int Index, int Ground, string Surface);
 public sealed record TerrainDeltaRead(int WaterLevel, bool ConstructionMode, long GeometryRevision, long NextEntityId,
     TerrainCellChangeRead[] Cells, TerrainOccupantRead[] Occupants);
+
+// Packed actual terrain; byte arrays use canonical base64 in JSON.
+public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLevel, bool ConstructionMode,
+    long GeometryRevision, long NextEntityId, TerrainProvenanceRead Provenance,
+    DefinitionRead[] Definitions, byte[] Cells, int OccupantCount, byte[] Occupants);

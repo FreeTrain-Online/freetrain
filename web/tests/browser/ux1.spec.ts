@@ -180,6 +180,7 @@ test('UX1 rejected sign-in stays inline and version mismatch offers reload', asy
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   incompatible = true; await page.reload();
   await expect(page.getByRole('heading', { name: 'Update required', exact: true })).toBeVisible();
+  await expect(page.getByText('Client and server versions differ. Reload after updating.', { exact: true })).toHaveCount(1);
   await expect(page.getByRole('button', { name: 'Reload', exact: true })).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Retry now', exact: true })).toHaveCount(0);
   await page.screenshot({ path: `${evidence}/incompatible.png` });

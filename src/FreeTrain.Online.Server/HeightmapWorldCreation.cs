@@ -11,24 +11,27 @@ public sealed partial class NetworkSession
     // Reserve before reading an upload. Slow clients and decoders share the same four slots.
     public async Task<CreationWorkerLease> ReserveCreationWorker(ParticipantContext identity)
     {
-        ParticipantContext participant; SessionHost capturedHost;
-        lock (gate) { participant = CreationParticipant(identity); capturedHost = host; }
+        ParticipantContext participant; SessionHost capturedHost; CancellationToken disconnected;
+        lock (gate) { participant = CreationParticipant(identity); capturedHost = host; disconnected = peers[participant.ParticipantId].Stop.Token; }
         if (!await creationWorkers.WaitAsync(0)) throw new InvalidOperationException("creationBusy");
-        try { return new(creationWorkers, SessionHost.ReserveCreationInput(), participant, capturedHost); }
+        try { return new(creationWorkers, SessionHost.ReserveCreationInput(), participant, capturedHost, disconnected); }
         catch { creationWorkers.Release(); throw; }
     }
-    public sealed class CreationWorkerLease(SemaphoreSlim semaphore, SessionHost.CreationInputReservation reservation, ParticipantContext participant, SessionHost capturedHost) : IDisposable
+    public sealed class CreationWorkerLease(SemaphoreSlim semaphore, SessionHost.CreationInputReservation reservation, ParticipantContext participant, SessionHost capturedHost, CancellationToken disconnected) : IDisposable
     {
         private int disposed;
         public ParticipantContext Participant { get; } = participant;
         public SessionHost Host { get; } = capturedHost;
         public SessionHost.CreationInputReservation Reservation { get; } = reservation;
+        public CancellationToken Disconnected { get; } = disconnected;
         public void Dispose() { if (Interlocked.Exchange(ref disposed, 1) == 0) { Reservation.Dispose(); semaphore.Release(); } }
     }
 
     public async Task<EmptyCandidateRead> PreviewHeightmap(HeightmapPreviewOptions input, byte[] bytes, string? mediaType,
         OptionalPluginRegistry registry, ParticipantContext identity, CreationWorkerLease lease, CancellationToken cancellation)
     {
+        using var connection = CancellationTokenSource.CreateLinkedTokenSource(cancellation, lease.Disconnected);
+        cancellation = connection.Token;
         WorldCreationJob? started = null; Task<WorldCreationJob>? beginning = null;
         var participant = lease.Participant; var capturedHost = lease.Host;
         void CheckConnection()
@@ -36,7 +39,7 @@ public sealed partial class NetworkSession
             if (host != capturedHost || CreationParticipant(identity).ConnectionId != participant.ConnectionId) throw new UnauthorizedAccessException();
         }
         lock (gate) CheckConnection();
-        if (input.Dimensions is not { H: >= 1 and <= 32, V: >= 1 and <= 32, Z: >= 1 and <= 64 }) throw new ArgumentException("invalidInput");
+        if (input.Dimensions is not { H: >= 1 and <= WorldCreationProfile.MaxSide, V: >= 1 and <= WorldCreationProfile.MaxSide, Z: >= 1 and <= 64 }) throw new ArgumentException("invalidInput");
         try
         {
             // No metadata from the browser enters the trusted request.
@@ -53,11 +56,11 @@ public sealed partial class NetworkSession
             var request = new HeightmapWorldRequest(WorldCreationProfile.Id, input.Name, input.Dimensions, input.WaterLevel, image);
             lock (gate) { CheckConnection(); beginning = capturedHost.BeginHeightmap(request, content, input.Epoch, input.Revision, participant, lease.Reservation); }
             started = await beginning.WaitAsync(cancellation);
-            var stateBytes = await Task.Run(() => SaveCodec.Write(new TerrainSessionState(
-                HeightmapTerrain.Create(request, decoded.Raster, TerrainProfiles.Bundled, cancellation), TerrainProvenance.From(request))), cancellation);
+            var stateBytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
+                HeightmapTerrain.Create(request, decoded.Raster, TerrainProfiles.Bundled, cancellation), TerrainProvenance.From(request)))), cancellation);
             cancellation.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
-            lock (gate) { CheckConnection(); complete = capturedHost.CompleteEmpty(started, stateBytes, participant); }
+            lock (gate) { CheckConnection(); complete = capturedHost.CompletePreparedCreation(started, stateBytes, participant); }
             return (await complete.WaitAsync(cancellation)) with { ImagePreview = HeightmapDecoder.Preview(decoded.Raster) };
         }
         catch

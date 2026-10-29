@@ -35,7 +35,7 @@ Deno.test('terrain deltas reject mixed graphs, stale epochs, pack drift, duplica
 Deno.test('terrain snapshot validator rejects mismatched payloads, footprints, definitions, ownership and water',async()=>{
   const original=await read();
   const changes:((s:Snapshot)=>void)[]=[
-    s=>{delete s.terrain;},s=>{delete s.entities;},s=>{s.map.width=129;},s=>{s.requiredPacks[0].catalogHash='0'.repeat(64);},
+    s=>{delete s.terrain;},s=>{delete s.entities;},s=>{s.map.width=2049;},s=>{s.requiredPacks[0].catalogHash='0'.repeat(64);},
     s=>{s.terrain!.cells.pop();},s=>{s.terrain!.cells[0].surface='natural';},s=>{s.terrain!.waterLevel=6;},
     s=>{s.terrain!.occupants.pop();},s=>{s.terrain!.occupants[1].ne=5;},s=>{s.terrain!.occupants[1].forest!.trees[0].sprite=99;},
     s=>{s.terrain!.occupants[1].forest!.definition.packId='optional';},s=>{s.terrain!.nextEntityId='2';},
@@ -46,11 +46,11 @@ Deno.test('terrain snapshot validator rejects mismatched payloads, footprints, d
 });
 Deno.test('terrain wire and save schemas accept server fixtures including zero occupants and reject retired Save 5',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v6.schema.json',import.meta.url)));
-  const fixture=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v6.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v7.schema.json',import.meta.url)));
+  const fixture=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v7.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);assert(validate(fixture));
-  for(const patch of [{saveVersion:5},{terrain:undefined},{revision:1},{requiredPacks:[]},{map:{...fixture.map,width:129}}])assert(!validate({...fixture,...patch}));
-  const empty={...fixture,spatial:{nextEntityId:'7',entities:[]},terrain:{...fixture.terrain,occupants:[],cells:fixture.terrain.cells.map(()=>({ground:1,surface:'natural'}))}};
+  for(const patch of [{saveVersion:5},{packedTerrain:undefined},{revision:1},{requiredPacks:[]},{map:{...fixture.map,width:2049}}])assert(!validate({...fixture,...patch}));
+  const empty={...fixture,spatial:{nextEntityId:'7',entities:[]},packedTerrain:{...fixture.packedTerrain,occupantCount:0,occupants:'',definitions:[],cells:btoa(String.fromCharCode(...Array(9).fill(1))) }};
   assert(validate(empty));
 });
 Deno.test('terrain upserts keep realized forest edits and forbid reused identities or unversioned payload changes',async()=>{

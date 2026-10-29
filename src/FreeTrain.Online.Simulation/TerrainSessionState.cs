@@ -10,6 +10,7 @@ public sealed record TerrainProvenance(string Profile, string Source, string Req
         WorldCreationProfile.Fingerprint(request), JsonSerializer.Serialize(request));
     public void Validate(TerrainWorld world)
     {
+        if (RequestJson is null || RequestJson.Length > 65536) throw new ArgumentException("Invalid terrain provenance size.");
         var request = JsonSerializer.Deserialize<WorldCreationRequest>(RequestJson) ?? throw new ArgumentException("Missing provenance.");
         if (!WorldCreationProfile.Validate(request).IsEmpty || From(request) != this ||
             request.Name != world.Name || request.Dimensions != new WorldDimensions(world.Space.HorizontalSize, world.Space.VerticalSize, world.Space.Levels))

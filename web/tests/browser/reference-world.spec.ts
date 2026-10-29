@@ -3,7 +3,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ready,openPanel,closePanel } from './ux-helpers.ts';
-const bootPath='/api/bootstrap?protocolVersion=4&contentVersion=reference-spatial-content-2';
+const bootPath='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
 async function at(page:Page,p:{x:number;y:number;z:number}) {
   return page.locator('canvas').evaluate((el,p)=>{
@@ -57,9 +57,9 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-en.png'),fullPage:true});
 });
 
-test('real Save 6 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
+test('real Save 7 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','save-preserved'));
-  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(6);
+  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(7);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
   await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Confirm load',exact:true}).click();
@@ -106,7 +106,7 @@ test('new epoch clears a pending H/V preview and discards its delayed response',
 });
 
 test('unknown canonical content pack blocks reveal before the live canvas',async({page})=>{
-  await page.route('**/api/bootstrap?*',async route=>{const response=await route.fetch(),body=await response.json();body.requiredPacks[0].catalogHash='0'.repeat(64);body.snapshot.requiredPacks[0].catalogHash='0'.repeat(64);await route.fulfill({response,json:body});});
+  await page.route('**/api/bootstrap?*',async route=>{const response=await route.fetch(),body=await response.json();body.requiredPacks[0].catalogHash='0'.repeat(64);if(body.snapshot)body.snapshot.requiredPacks[0].catalogHash='0'.repeat(64);await route.fulfill({response,json:body});});
   await page.goto('/');await expect(page.getByRole('heading',{name:'Update required',exact:true})).toBeVisible();await expect(page.locator('canvas')).toHaveAttribute('data-scene','demo');
 });
 
@@ -133,7 +133,7 @@ test('canonical Observer can inspect and query geometry while save endpoints enf
     const page=await context.newPage();expect((await page.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
     await page.goto('/');await ready(page);await expect(page.getByTestId('participant-role')).toHaveText('Observer');
     const before=await bootstrap(page);
-    const response=await page.request.post('/api/spatial/preview?protocolVersion=4&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
+    const response=await page.request.post('/api/spatial/preview?protocolVersion=5&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
     expect(response.ok()).toBe(true);expect((await response.json()).storage).toEqual({h:10,v:28,z:0});
     expect((await page.request.post('/api/saves/slot1/save?expectedWorldEpoch='+before.worldEpoch)).status()).toBe(403);
     expect((await page.request.get('/api/saves/download')).status()).toBe(403);
@@ -157,7 +157,7 @@ test('save availability must be known before upload, and Cancel never sends a re
   }finally{release();}
 });
 
-test('canonical clock step, shared run/pause, panel navigation and Save 6 continuation',async({page,browser})=>{
+test('canonical clock step, shared run/pause, panel navigation and Save 7 continuation',async({page,browser})=>{
   const observerContext=await browser.newContext();
   try{
     await page.goto('/');await ready(page);
@@ -192,9 +192,10 @@ test('canonical clock step, shared run/pause, panel navigation and Save 6 contin
 });
 
 test('dangling entity ownership blocks reveal before the live canvas',async({page})=>{
-  await page.route('**/api/bootstrap?*',async route=>{
-    const response=await route.fetch(),body=await response.json();body.snapshot.tracks[0].entityId='999';
-    await route.fulfill({response,json:body});
+  await page.routeWebSocket('**/api/session?*',route=>{
+    const server=route.connectToServer();
+    server.onMessage(message=>{const body=JSON.parse(String(message));if(body.type==='join')body.snapshot.tracks[0].entityId='999';route.send(JSON.stringify(body));});
+    route.onMessage(message=>server.send(message));
   });
   await page.goto('/');await expect(page.getByRole('heading',{name:'Update required',exact:true})).toBeVisible();
   await expect(page.locator('canvas')).toHaveAttribute('data-scene','demo');

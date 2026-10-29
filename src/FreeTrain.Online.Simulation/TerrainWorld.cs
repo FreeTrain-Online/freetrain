@@ -14,7 +14,7 @@ public readonly record struct QuarterCorners
     public int NW { get; }
     public QuarterCorners(int ne, int se, int sw, int nw)
     {
-        if (new[] { ne, se, sw, nw }.Any(n => n is < 0 or > 4))
+        if (ne is < 0 or > 4 || se is < 0 or > 4 || sw is < 0 or > 4 || nw is < 0 or > 4)
             throw new ArgumentOutOfRangeException(nameof(ne));
         NE = ne; SE = se; SW = sw; NW = nw;
     }
@@ -114,11 +114,14 @@ public sealed class TerrainWorld
         Cells = cells.Take(count + 1).ToImmutableArray();
         if (Cells.Length != count || Cells.Any(c => c is null || c.Ground < 0 || c.Ground >= dimensions.Z || !Enum.IsDefined(c.Surface)))
             throw new ArgumentException("Invalid ground grid.");
-        Spatial = new(Space, spatial.NextEntityId, spatial.Entities);
         Occupants = occupants.Take(2 * count + 1).OrderBy(o => o?.EntityId).ToImmutableArray()!;
         if (Occupants.Length > 2 * count || Occupants.Any(o => o is null) ||
-            Occupants.Select(o => o.EntityId).Distinct().Count() != Occupants.Length || Spatial.Entities.Length != Occupants.Length)
+            Occupants.Select(o => o.EntityId).Distinct().Count() != Occupants.Length || spatial.Entities.Length != Occupants.Length)
             throw new ArgumentException("Invalid terrain occupants.");
+        var trees = Occupants.Sum(o => o.Forest is {} f && !f.Trees.IsDefault ? (long)f.Trees.Length : 0);
+        if (WorldCreationProfile.RealizedTerrainBytes(count, Occupants.Length, trees) > WorldCreationProfile.MaximumRealizedTerrainBytes)
+            throw new ArgumentException("Terrain graph resource limit.");
+        Spatial = new(Space, spatial.NextEntityId, spatial.Entities);
         this.occupants = Occupants.ToFrozenDictionary(o => o.EntityId);
         foreach (var entity in Spatial.Entities) ValidateEntity(entity);
         ValidateContinuity();
@@ -218,7 +221,8 @@ public sealed class TerrainWorld
         {
             // All-four geometry is preserved at its original ground. The top boundary
             // cannot contain a fine corner above the upper boundary of the world.
-            if (Enumerable.Range(0, 4).Any(i => 4 * cell.Ground + occupant.Corners[i] > 4 * Space.Levels - 1))
+            var maximum = 4 * Space.Levels - 1 - 4 * cell.Ground;
+            if (occupant.Corners.NE > maximum || occupant.Corners.SE > maximum || occupant.Corners.SW > maximum || occupant.Corners.NW > maximum)
                 throw new ArgumentException("Terrain corner exceeds world height.");
             if (occupant.CreekConnections != 0) throw new ArgumentException("Invalid mountain payload.");
         }
@@ -243,6 +247,7 @@ public sealed class TerrainWorld
 
     private void ValidateContinuity()
     {
+        Span<(Location Position, int Corner)> samples = stackalloc (Location, int)[4];
         for (var v = 0; v < Space.VerticalSize; v++)
             for (var h = 0; h < Space.HorizontalSize; h++)
             {
@@ -254,13 +259,20 @@ public sealed class TerrainWorld
                 for (var corner = 0; corner < 4; corner++)
                 {
                     var d = new Heading(2 * corner + 1);
-                    var samples = new[] { (p, corner), (p.Move(d), (corner + 2) % 4),
-                        (p.Move(d.Left), (corner + 1) % 4), (p.Move(d.Right), (corner + 3) % 4) }
-                        .Where(s => Space.ContainsHorizontal(s.Item1)).ToArray();
+                    samples[0] = (p, corner); samples[1] = (p.Move(d), (corner + 2) % 4);
+                    samples[2] = (p.Move(d.Left), (corner + 1) % 4); samples[3] = (p.Move(d.Right), (corner + 3) % 4);
                     // Discontinuity must be explicitly classified; natural mismatches
                     // elsewhere cannot be excused by a distant cut or terrace.
-                    if (samples.Any(s => Cell(s.Item1).Surface != TerrainSurface.Natural)) continue;
-                    if (samples.Select(s => FineHeight(s.Item1, s.Item2)).Distinct().Count() != 1)
+                    bool discontinuity = false; int first = -1; bool mismatch = false;
+                    foreach (var sample in samples)
+                    {
+                        if (!Space.ContainsHorizontal(sample.Position)) continue;
+                        if (Cell(sample.Position).Surface != TerrainSurface.Natural) { discontinuity = true; break; }
+                        var height = FineHeight(sample.Position, sample.Corner);
+                        if (first >= 0 && first != height) mismatch = true;
+                        first = height;
+                    }
+                    if (!discontinuity && mismatch)
                         throw new ArgumentException("Unmatched natural terrain corners.");
                 }
             }

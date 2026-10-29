@@ -2,7 +2,7 @@ export type SaveFeedback = 'idle' | 'saving' | 'saved' | 'loaded' | 'invalidSave
 export interface SaveSlot { id: string; exists: boolean }
 export class SaveError extends Error { constructor(readonly code: SaveFeedback) { super(code); } }
 export async function saveRequest(path: string, epoch: string, body?: File): Promise<void> {
-  if (body && body.size > 16 * 1024 * 1024) throw new SaveError('saveTooLarge');
+  if (body && body.size > 256 * 1024 * 1024) throw new SaveError('saveTooLarge');
   let response: Response;
   try { response = await fetch(`/api/saves/${path}?expectedWorldEpoch=${encodeURIComponent(epoch)}`, {
     method: 'POST', headers: body ? { 'Content-Type': 'application/json' } : undefined, body,

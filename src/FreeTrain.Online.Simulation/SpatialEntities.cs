@@ -1,6 +1,7 @@
 // Source contracts: ExAV 2.1.1.12, 883cf7d/trunk/core/world/{Cube,Entity,Voxel,EmptyVoxel,World}.cs.
 // Original copyright Kohsuke Kawaguchi et al., LGPL-2.1-or-later.
 using System.Collections.Immutable;
+using System.Collections.Frozen;
 
 namespace FreeTrain.Online.Simulation;
 
@@ -80,7 +81,7 @@ public sealed record SpatialEntity(long Id, long Revision, DefinitionReference D
     Footprint Footprint, bool Owned, bool SilentlyReclaimable, long Value);
 public sealed record SpatialState(long NextEntityId, ImmutableArray<SpatialEntity> Entities);
 public enum VoxelStatus { Outside, Vacant, Occupied }
-public sealed record VoxelOccupancy(VoxelStatus Status, SpatialEntity? Entity, bool Transparent)
+public readonly record struct VoxelOccupancy(VoxelStatus Status, SpatialEntity? Entity, bool Transparent)
 {
     public bool Reusable => Status == VoxelStatus.Vacant || Status == VoxelStatus.Occupied && Entity!.SilentlyReclaimable;
 }
@@ -89,26 +90,28 @@ public sealed record VoxelOccupancy(VoxelStatus Status, SpatialEntity? Entity, b
 // Commands, financial effects and gameplay-specific removal callbacks belong to later slices.
 public sealed class SpatialIndex
 {
+    public const int MaximumOccupiedCells = 2 * WorldCreationProfile.MaxCells;
     public WorldSpace Space { get; }
     public long NextEntityId { get; }
     public ImmutableArray<SpatialEntity> Entities { get; }
-    private readonly ImmutableDictionary<Location, (SpatialEntity Entity, bool Transparent)> cells;
+    private readonly FrozenDictionary<Location, (SpatialEntity Entity, bool Transparent)> cells;
     public SpatialIndex(WorldSpace space, long nextEntityId, IEnumerable<SpatialEntity> entities)
     {
         Space = space; NextEntityId = nextEntityId;
-        Entities = entities.Take(Footprint.MaximumCells + 1).OrderBy(e => e?.Id).ToImmutableArray()!;
-        if (nextEntityId < 1 || Entities.Length > Footprint.MaximumCells || Entities.Any(e => e == null || e.Id < 1 || e.Id >= nextEntityId || e.Revision < 0 || e.Definition == null || e.Footprint == null) ||
+        Entities = entities.Take(MaximumOccupiedCells + 1).OrderBy(e => e?.Id).ToImmutableArray()!;
+        if (nextEntityId < 1 || Entities.Length > MaximumOccupiedCells || Entities.Any(e => e == null || e.Id < 1 || e.Id >= nextEntityId || e.Revision < 0 || e.Definition == null || e.Footprint == null) ||
             Entities.Select(e => e.Id).Distinct().Count() != Entities.Length)
             throw new ArgumentException("Invalid entity graph.");
-        var builder = ImmutableDictionary.CreateBuilder<Location, (SpatialEntity, bool)>();
+        var builder = new Dictionary<Location, (SpatialEntity, bool)>();
+        var checkedDefinitions = new HashSet<DefinitionReference>();
         foreach (var entity in Entities)
         {
-            entity.Definition.Validate();
+            if (checkedDefinitions.Add(entity.Definition)) entity.Definition.Validate();
             foreach (var cell in entity.Footprint.At(entity.Anchor))
-                if (!space.ContainsVoxel(cell.Position) || !builder.TryAdd(cell.Position, (entity, cell.Transparent)) || builder.Count > Footprint.MaximumCells)
+                if (!space.ContainsVoxel(cell.Position) || !builder.TryAdd(cell.Position, (entity, cell.Transparent)) || builder.Count > MaximumOccupiedCells)
                     throw new ArgumentException("Outside or overlapping footprint.");
         }
-        cells = builder.ToImmutable();
+        cells = builder.ToFrozenDictionary();
     }
     public VoxelOccupancy At(Location position) => !Space.ContainsVoxel(position) ? new(VoxelStatus.Outside, null, true) :
         cells.TryGetValue(position, out var cell) ? new(VoxelStatus.Occupied, cell.Entity, cell.Transparent) : new(VoxelStatus.Vacant, null, true);

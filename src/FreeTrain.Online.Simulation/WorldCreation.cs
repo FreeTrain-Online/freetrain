@@ -46,11 +46,14 @@ public enum GenerationStage { Relief, Coast, Lakes, Rivers, StartingArea, Forest
 public static class WorldCreationProfile
 {
     public const string Id = "terrain-generation-1";
-    public const int MaxSide = 128, MaxLevels = 64, MaxCells = 16_384;
-    public const long MaxVoxels = 1_048_576, MaxWorkingBytes = 96L * 1024 * 1024;
-    public const long MaxWorkUnits = 256_000_000, MaxTransferBytes = 16L * 1024 * 1024;
+    public const int MaxSide = 2048, MaxLevels = 64, MaxCells = 1_700_000;
+    public const long MaxVoxels = 108_800_000, MaxWorkingBytes = 4096L * 1024 * 1024;
+    public const long MaxWorkUnits = 35_000_000_000, MaxTransferBytes = 256L * 1024 * 1024;
     public const long MaxImageBytes = 8L * 1024 * 1024, MaxImagePixels = 4_194_304;
     public const int MaxImageSide = 4096, MaxAttempts = 4;
+    public const long MaximumRealizedTerrainBytes = 2048L * 1024 * 1024;
+    public static long RealizedTerrainBytes(long cells, long occupants, long trees)
+        => checked(cells * 24 + occupants * 1110 + trees * 6);
     public static EmptyWorldRequest Empty(string name = "") => new(Id, name, new(30, 42, 6), 1);
     public static HeightmapWorldRequest Heightmap(HeightmapInput image, string name = "") => new(Id, name, new(64, 64, 16), 4, image);
     public static GeneratedWorldRequest Generated(int seed = 0, string name = "") => new(Id, name, new(64, 64, 16), 4,
@@ -173,17 +176,16 @@ public static class WorldCreationProfile
         var cells = (long)r.Dimensions.H * r.Dimensions.V;
         var pixels = r is HeightmapWorldRequest m ? (long)m.Image.Width * m.Image.Height : 0;
         var encoded = r is HeightmapWorldRequest image ? image.Image.EncodedBytes : 0;
-        // Reserved scratch (128/cell), two 512/cell transfer buffers, 1152/cell transient
-        // serialization allowance, two RGBA image buffers, 2MiB metadata/first-use allowance and two 64KiB
-        // headers. No dense voxel allocation. Four attempts are sequential.
-        // Natural surfaces can put a full mountain entity in every cell; reserve measured verbose encoding.
-        var cellBytes = r is HeightmapWorldRequest or GeneratedWorldRequest ? 1536 : 512;
+        // P3-16a: packed transfer plus metadata, and conservative measured working
+        // reservations for canonical geometry, restoration and immutable wire reads.
+        // No H*V*Z allocation. Four generation attempts remain sequential.
+        var cellBytes = r is HeightmapWorldRequest or GeneratedWorldRequest ? 96 : 4;
         // Decode scratch is released before terrain generation. Reserve the larger phase,
         // The hard 80MiB arena is trimmed to the single RGBA output before the managed
         // raster is allocated, so it does not overlap a full arena.
         long working = r is HeightmapWorldRequest
-            ? Math.Max(80L * 1024 * 1024, cells * 16384 + pixels * 8)
-            : r is GeneratedWorldRequest ? cells * 16384 : cells * 2304;
+            ? Math.Max(80L * 1024 * 1024, cells * 2048 + pixels * 8)
+            : r is GeneratedWorldRequest ? cells * 2048 : cells * 256;
         return new(cells, cells * r.Dimensions.Z, 2_228_224 + working + encoded,
             cells * (64L * r.Dimensions.Z + 256) * MaxAttempts + pixels, 65_536 + cells * cellBytes);
     }

@@ -175,17 +175,41 @@ public sealed partial class SessionHost : IDisposable
             return completion.Task;
         }
     }
-    public Task<byte[]> CaptureSave(long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<byte[]>(() =>
+    public async Task<byte[]> CaptureSave(long? expectedEpoch = null, ParticipantContext? participant = null)
     {
-        if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
-        if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        return terrainState != null ? SaveCodec.Write(terrainState) : referenceWorld != null ? SaveCodec.Write(referenceWorld) : throw new InvalidDataException("savingUnavailable");
-    });
+        var capture = await AtBoundary<Func<byte[]>>(() =>
+        {
+            if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+            if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
+            if (terrainState is { } state)
+            {
+                // Freeze the small mutable clock/random/session header at the FIFO
+                // boundary; immutable geometry is shared with the detached encoder.
+                var frozen = new TerrainSessionState(state.World, state.Provenance, state.ConstructionMode,
+                    state.Clock.Capture(), state.Paused, state.Random.Capture(), state.Revision);
+                return () => SaveCodec.Write(frozen);
+            }
+            var bytes = referenceWorld != null ? SaveCodec.Write(referenceWorld) : throw new InvalidDataException("savingUnavailable");
+            return () => bytes;
+        });
+        return await Task.Run(capture);
+    }
+    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver);
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
         if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        var replacement = SaveCodec.ReadWorld(save.Span, terrainResolver); // Validate completely before touching current state.
+        var replacement = PrepareSave(save); // Validate completely before touching current state.
+        return ReplacePreparedSave(replacement);
+    });
+    public Task<SnapshotMessage> ApplyPreparedSave(SaveCodec.LoadedWorld replacement, long expectedEpoch, ParticipantContext? participant) => AtBoundary(() =>
+    {
+        if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+        if (expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
+        return ReplacePreparedSave(replacement);
+    });
+    private SnapshotMessage ReplacePreparedSave(SaveCodec.LoadedWorld replacement)
+    {
         if (!SavingAvailable) throw new InvalidDataException("incompatibleSave");
         var epoch = checked(WorldEpoch + 1);
         ClearCreation();
@@ -194,7 +218,7 @@ public sealed partial class SessionHost : IDisposable
         WorldEpoch = epoch;
         resetInput = safetyPause = false;
         return Snapshot();
-    });
+    }
 
     // Bounded, coalesced lifecycle intent; only Pump mutates the world.
     public void RequestInputReset(bool pause)

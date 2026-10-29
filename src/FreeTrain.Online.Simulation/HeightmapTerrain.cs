@@ -94,6 +94,7 @@ internal static class NaturalTerrain
         }
         var entities = ImmutableArray.CreateBuilder<SpatialEntity>(); var occupants = ImmutableArray.CreateBuilder<TerrainOccupant>();
         var mountain = profile.Definitions.Single(x => x.Reference.ContributionId == TerrainProfile.MountainId).Reference;
+        var footprint = new Footprint([new(new(0, 0, 0), false)]);
         for (int v = 0; v < d.V; v++) for (int h = 0; h < d.H; h++)
         {
             work.Spend(1); int g = ground[v * d.H + h]; var p = space.ToLocation(new(h, v, g));
@@ -101,11 +102,12 @@ internal static class NaturalTerrain
                 Corner(p.X - 1, p.Y) - 4 * g, Corner(p.X - 1, p.Y - 1) - 4 * g);
             if (corners.Flat) continue;
             long id = entities.Count + 1;
-            entities.Add(new(id, 0, mountain, p, new([new(new(0, 0, 0), false)]), false, false, 0));
+            entities.Add(new(id, 0, mountain, p, footprint, false, false, 0));
             occupants.Add(new(id, TerrainOccupantKind.Mountain, corners));
         }
         cancellation.ThrowIfCancellationRequested();
-        return new(profile, request.Name, d, request.WaterLevel, ground.Select(g => new TerrainCell(g)),
+        var cellValues = Enumerable.Range(0, d.Z).Select(g => new TerrainCell(g)).ToArray();
+        return new(profile, request.Name, d, request.WaterLevel, ground.Select(g => cellValues[g]),
             new(entities.Count + 1, entities.ToImmutable()), occupants);
     }
 }

@@ -1,3 +1,5 @@
+**P3-16a capacity update — 29 October 2026:** [Current packed state, coherent transfer, admissions and evidence](web-parity-map-capacity.md) supersede the temporary size/byte/working limits and Save 6/protocol 4 statements below. Earlier measurements remain historical slice evidence. Current envelopes are H/V≤2048, at most 1,700,000 stored cells, Z≤64 (generated minimum H/V16,Z8), Save 7/protocol 5 and 256 MiB assembled state. The concrete scale target is 1500×1090×45 stored. Overall P3 and the recorded P2/native/full-game gates remain open.
+
 **P3-05 follow-up — 28 October 2026:** [terrain rendering/picking](web-parity-terrain-rendering.md) now advertises the exact terrain profile and re-bootstraps supported profile replacements before reveal. The renderer restriction below records the original P3-04 delivery. Creation/preset admission remain disabled.
 
 # P3-04 saves and transport — 28 October 2026

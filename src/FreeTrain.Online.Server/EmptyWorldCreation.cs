@@ -16,27 +16,24 @@ public sealed partial class NetworkSession
             peer.Participant.Role != identity.Role) throw new UnauthorizedAccessException();
         return peer.Participant;
     }
-    public async Task<EmptyCandidateRead> PreviewEmpty(EmptyPreviewRequest input, ParticipantContext identity)
+    public async Task<EmptyCandidateRead> PreviewEmpty(EmptyPreviewRequest input, ParticipantContext identity, CancellationToken cancellation = default)
     {
+        using var lease = await ReserveCreationWorker(identity);
         WorldCreationJob? started = null;
-        ParticipantContext participant;
-        SessionHost capturedHost;
-        lock (gate) { capturedHost = host; participant = CreationParticipant(identity); }
-        if (!await creationWorkers.WaitAsync(0)) throw new InvalidOperationException("creationBusy");
+        var participant = lease.Participant; var capturedHost = lease.Host;
         try
         {
             Task<WorldCreationJob> begin;
             lock (gate) begin = capturedHost.BeginEmpty(new(WorldCreationProfile.Id, input.Name, input.Dimensions, input.WaterLevel),
-                WorldCreationCapabilities.EmptyReady(), input.Epoch, input.Revision, participant);
+                WorldCreationCapabilities.EmptyReady(), input.Epoch, input.Revision, participant, lease.Reservation);
             started = await begin;
-            // Flat generation and canonical serialization run off the session FIFO. The
-            // admitted 4096 cells are bounded; later algorithms need cooperative work/deadline checks.
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
-            var bytes = await Task.Run(() => SaveCodec.Write(new TerrainSessionState(
-                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request))), timeout.Token);
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation, lease.Disconnected);
+            timeout.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
+            var bytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
+                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request)))), timeout.Token);
             timeout.Token.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
-            lock (gate) complete = capturedHost.CompleteEmpty(started, bytes, participant);
+            lock (gate) complete = capturedHost.CompletePreparedCreation(started, bytes, participant);
             return await complete;
         }
         catch
@@ -44,7 +41,6 @@ public sealed partial class NetworkSession
             if (started != null) { Task cancel; lock (gate) cancel = capturedHost.CancelEmpty(started.Id, participant); await cancel; }
             throw;
         }
-        finally { creationWorkers.Release(); }
     }
     public Task CancelEmpty(Guid id, ParticipantContext identity)
     { lock (gate) return host.CancelEmpty(id, CreationParticipant(identity)); }

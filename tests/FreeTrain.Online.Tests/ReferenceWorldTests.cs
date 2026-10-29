@@ -33,7 +33,7 @@ public class ReferenceWorldTests
     [Fact]
     public void Shared_save_fixture_and_asset_free_pack_hash_match_the_runtime()
     {
-        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v6.json"));
+        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/reference-v7.json"));
         Assert.Equal(SaveCodec.Write(SpatialReferenceScenario.Create()),SaveCodec.Write(SaveCodec.Read(bytes)));
         var catalog=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/reference-spatial.json"));
         Assert.Equal(ProtocolIdentity.ReferencePacks[0].CatalogHash,Convert.ToHexStringLower(SHA256.HashData(catalog)));
@@ -121,7 +121,7 @@ public class ReferenceWorldTests
             case "unknownVersion":node["saveVersion"]=99;break;
         }
         var text=node.ToJsonString();
-        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":6", "\"saveVersion\":6,\"saveVersion\":6");
+        if(mutation=="duplicateField")text=text.Replace("\"saveVersion\":7", "\"saveVersion\":7,\"saveVersion\":7");
         var result=host.LoadSave(Encoding.UTF8.GetBytes(text),1);host.Pump();
         await Assert.ThrowsAsync<InvalidDataException>(()=>result);
         Assert.Equal(before,JsonSerializer.Serialize(host.Snapshot()));
@@ -139,7 +139,7 @@ public class ReferenceWorldTests
                 var join=await server.Bootstrap(); Assert.Equal(ProtocolIdentity.ReferenceContent,join.ContentVersion);
                 using var socket=await server.Connect();await NetworkTests.Read(socket);
                 var query=new SpatialQuery(1,new(27,24,0),null,0);
-                var response=await server.Http.PostAsync("/api/spatial/preview?protocolVersion=4&contentVersion="+ProtocolIdentity.ReferenceContent,
+                var response=await server.Http.PostAsync("/api/spatial/preview?protocolVersion=5&contentVersion="+ProtocolIdentity.ReferenceContent,
                     new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(query,NetworkSession.Json)));
                 Assert.True(response.IsSuccessStatusCode);
                 var preview=JsonSerializer.Deserialize<SpatialPreviewRead>(await response.Content.ReadAsStringAsync(),NetworkSession.Json)!;

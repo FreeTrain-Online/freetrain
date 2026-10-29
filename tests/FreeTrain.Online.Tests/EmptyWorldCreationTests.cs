@@ -96,7 +96,7 @@ public class EmptyWorldCreationTests(ITestOutputHelper output)
     public async Task Admission_rejects_larger_and_invalid_inputs_before_generation()
     {
         using var host=Host();
-        foreach(var request in new[]{WorldCreationProfile.Empty() with {Dimensions=new(65,1,6)},
+        foreach(var request in new[]{WorldCreationProfile.Empty() with {Dimensions=new(2049,1,6)},
             WorldCreationProfile.Empty() with {Dimensions=new(int.MaxValue,128,64)},WorldCreationProfile.Empty() with {WaterLevel=6}})
             await Assert.ThrowsAsync<ArgumentException>(()=>Drain(host,Start(host,request)));
         Assert.Equal(1,host.WorldEpoch);

@@ -22,7 +22,7 @@ public class WorldCreationTests
         var empty = WorldCreationProfile.Empty("  名前  ");
         Assert.Equal("ab06507b54ca7d3d55f229173aa6ee5d03e313e56355895f8a8bbb4c6d841198",
             WorldCreationProfile.Fingerprint(WorldCreationProfile.Empty()));
-        Assert.Equal(new GenerationBudget(1260, 7560, 5131264, 3225600, 710656), WorldCreationProfile.Estimate(empty));
+        Assert.Equal(new GenerationBudget(1260, 7560, 2550784, 3225600, 70576), WorldCreationProfile.Estimate(empty));
         Assert.Equal(new(30, 42, 6), empty.Dimensions); Assert.Equal(1, empty.WaterLevel);
         Assert.Equal("  名前  ", empty.Name);
         Assert.Equal(new(64, 64, 16), WorldCreationProfile.Size(WorldSizePreset.Compact));
@@ -47,10 +47,13 @@ public class WorldCreationTests
     [Theory]
     [InlineData(1, 1, 1, 0, true)]
     [InlineData(128, 128, 32, 1, true)]
-    [InlineData(128, 128, 64, 1, false)] // Work bound, although dimensions/voxel bound fit.
+    [InlineData(128, 128, 64, 1, true)]
+    [InlineData(256, 256, 64, 1, true)]
+    [InlineData(1500, 1090, 45, 1, true)]
+    [InlineData(2048, 2048, 16, 1, false)]
     [InlineData(0, 2, 4, 0, false)]
     [InlineData(-1, 2, 4, 0, false)]
-    [InlineData(129, 2, 4, 0, false)]
+    [InlineData(2049, 2, 4, 0, false)]
     [InlineData(int.MaxValue, int.MaxValue, int.MaxValue, 0, false)]
     [InlineData(2, 2, 65, 0, false)]
     [InlineData(2, 2, 4, -1, false)]

@@ -37,7 +37,12 @@ function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
   }
   return used.size===entities.size;
 }
+const validatedSnapshots=new WeakSet<object>();
 export function validSnapshot(read:Snapshot):boolean {
+  if(Object.isFrozen(read)&&validatedSnapshots.has(read))return true;
+  const valid=validSnapshotUncached(read);if(valid)validatedSnapshots.add(read);return valid;
+}
+function validSnapshotUncached(read:Snapshot):boolean {
   if (sameIdentity(read,terrainProfile)) { try { return validTerrain(read); } catch { return false; } }
   if(read.terrain!==undefined)return false;
   if (sameIdentity(read,canonical)) {

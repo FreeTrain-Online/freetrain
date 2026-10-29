@@ -14,7 +14,7 @@ public sealed partial class NetworkSession
         CancellationToken cancellation)
     {
         using var lease = await ReserveCreationWorker(identity); // Same global input/worker/retained-candidate reservations.
-        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation, lease.Disconnected);
         deadline.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
         var token = deadline.Token;
         var participant = lease.Participant; var capturedHost = lease.Host;
@@ -34,11 +34,11 @@ public sealed partial class NetworkSession
                     input.Epoch, input.Revision, participant, lease.Reservation);
             }
             started = await beginning.WaitAsync(token);
-            var bytes = await Task.Run(() => SaveCodec.Write(new TerrainSessionState(
-                ReliefTerrain.Create(request, TerrainProfiles.Bundled, token), TerrainProvenance.From(request))), token);
+            var bytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
+                ReliefTerrain.Create(request, TerrainProfiles.Bundled, token), TerrainProvenance.From(request)))), token);
             token.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
-            lock (gate) { CheckConnection(); complete = capturedHost.CompleteEmpty(started, bytes, participant); }
+            lock (gate) { CheckConnection(); complete = capturedHost.CompletePreparedCreation(started, bytes, participant); }
             return await complete.WaitAsync(token);
         }
         catch

@@ -16,6 +16,9 @@ public class TerrainPersistenceTests
     private static TerrainSessionState Decode(byte[] bytes) => SaveCodec.ReadWorld(bytes, TerrainProfiles.Resolve).Terrain!;
     private static byte[] Bytes(JsonNode node) => Encoding.UTF8.GetBytes(node.ToJsonString());
 
+    private static void EditPacked(JsonNode node, string field, Func<byte[], byte[]> edit)
+    { node["packedTerrain"]![field] = Convert.ToBase64String(edit(Convert.FromBase64String(node["packedTerrain"]![field]!.GetValue<string>()))); }
+
     [Fact]
     public void Actual_state_round_trip_digest_and_continuation_preserve_edits_without_regeneration()
     {
@@ -51,25 +54,25 @@ public class TerrainPersistenceTests
             case "missingPack": node["requiredPacks"] = new JsonArray(); break;
             case "wrongHash": node["requiredPacks"]![0]!["catalogHash"] = new string('0', 64); break;
             case "extraPack": node["requiredPacks"]!.AsArray().Add(node["requiredPacks"]![0]!.DeepClone()); break;
-            case "definition": node["spatial"]!["entities"]![0]!["definition"]!["packId"] = "missing"; break;
-            case "nullCell": node["terrain"]!["cells"]![0] = null; break;
-            case "shortGrid": node["terrain"]!["cells"]!.AsArray().RemoveAt(0); break;
-            case "surface": node["terrain"]!["cells"]![0]!["surface"] = "Natural"; break;
-            case "corner": node["terrain"]!["occupants"]![1]!["ne"] = 5; break;
-            case "forest": node["terrain"]!["occupants"]![1]!["forest"]!["trees"]![0]!["sprite"] = 99; break;
-            case "overlap": node["spatial"]!["entities"]![2]!["anchor"] = node["spatial"]!["entities"]![1]!["anchor"]!.DeepClone(); break;
-            case "allocator": node["spatial"]!["nextEntityId"] = "2"; node["terrain"]!["nextEntityId"] = "2"; break;
-            case "mode": node["terrain"]!["constructionMode"] = "true"; break;
-            case "provenance": node["terrain"]!["provenance"]!["requestHash"] = new string('0', 64); break;
-            case "geometryRevision": node["terrain"]!["geometryRevision"] = "99"; break;
+            case "definition": node["packedTerrain"]!["definitions"]![0]!["packId"] = "missing"; break;
+            case "nullCell": node["packedTerrain"]!["cells"] = null; break;
+            case "shortGrid": EditPacked(node, "cells", b => b[..^1]); break;
+            case "surface": EditPacked(node, "cells", b => { b[0] = 255; return b; }); break;
+            case "corner": EditPacked(node, "occupants", b => { b[81] = 0x52; return b; }); break;
+            case "forest": EditPacked(node, "occupants", b => { b[88] = 99; return b; }); break;
+            case "overlap": EditPacked(node, "occupants", b => { b.AsSpan(61, 9).CopyTo(b.AsSpan(110, 9)); return b; }); break;
+            case "allocator": node["spatial"]!["nextEntityId"] = "2"; node["packedTerrain"]!["nextEntityId"] = "2"; break;
+            case "mode": node["packedTerrain"]!["constructionMode"] = "true"; break;
+            case "provenance": node["packedTerrain"]!["provenance"]!["requestHash"] = new string('0', 64); break;
+            case "geometryRevision": node["packedTerrain"]!["geometryRevision"] = "99"; break;
             case "clock": node["clock"]!["absoluteMinute"] = "-1"; break;
             case "random": node["random"]!["streams"]!.AsArray().RemoveAt(0); break;
             case "coordinate": node["map"]!["coordinateSystem"] = "prototypeXY"; break;
-            case "unknown": node["terrain"]!["fallback"] = true; break;
+            case "unknown": node["packedTerrain"]!["fallback"] = true; break;
             case "rails": node["rails"]!.AsArray().Add(new JsonObject()); break;
             case "dimension": node["map"]!["width"] = int.MaxValue; break;
         }
-        var bad = mutation == "duplicate" ? Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(saved).Replace("\"saveVersion\":6", "\"saveVersion\":6,\"saveVersion\":6")) : Bytes(node);
+        var bad = mutation == "duplicate" ? Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(saved).Replace("\"saveVersion\":7", "\"saveVersion\":7,\"saveVersion\":7")) : Bytes(node);
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-reject-" + Guid.NewGuid());
         try
         {
@@ -96,7 +99,9 @@ public class TerrainPersistenceTests
                 var now = DateTimeOffset.UtcNow;
                 var a = session.Connect(now, new("a"))!; var b = session.Connect(now, new("b", ParticipantRole.Observer))!;
                 a.Output.Reader.TryRead(out _); b.Output.Reader.TryRead(out _);
-                var load = session.LoadSave(SaveCodec.Write(Scene()), 1); session.Tick(now); await load;
+                var load = session.LoadSave(SaveCodec.Write(Scene()), 1);
+                while (!load.IsCompleted) { session.Tick(now); await Task.Delay(1); }
+                await load;
                 foreach (var peer in new[] { a, b })
                 {
                     var snapshot = Assert.IsType<SnapshotMessage>(await peer.Output.Reader.ReadAsync());
@@ -174,7 +179,7 @@ public class TerrainPersistenceTests
     {
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-http-" + Guid.NewGuid());
         Directory.CreateDirectory(directory); var data = SaveCodec.Write(Scene());
-        var query = "/api/bootstrap?protocolVersion=4&contentVersion=" + TerrainProfile.ContentVersion;
+        var query = "/api/bootstrap?protocolVersion=5&contentVersion=" + TerrainProfile.ContentVersion;
         try
         {
             await using (var server = await NetworkTests.Harness.Start(saveDirectory: directory, canonical: true))
@@ -183,7 +188,7 @@ public class TerrainPersistenceTests
                 using var first = await server.Connect();
                 var secondCookies = new System.Net.CookieContainer();
                 using var secondHttp = new HttpClient(new HttpClientHandler { CookieContainer = secondCookies }) { BaseAddress = server.Http.BaseAddress };
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=4&contentVersion=" + ProtocolIdentity.ReferenceContent);
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=" + ProtocolIdentity.ReferenceContent);
                 using var second = await server.Connect(secondCookies);
                 await NetworkTests.Read(first); await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1", new ByteArrayContent(data))).IsSuccessStatusCode);
@@ -232,7 +237,7 @@ public class TerrainPersistenceTests
         var options = WireJson.CreateOptions();
         var snapshot = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/snapshot-terrain.json")));
         Assert.True(JsonNode.DeepEquals(snapshot, JsonSerializer.SerializeToNode<WireMessage>(before, options)));
-        var saved = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves/terrain-v6.json"));
+        var saved = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves/terrain-v7.json"));
         Assert.Equal(SaveCodec.Write(state), SaveCodec.Write(Decode(saved)));
         state.Replace(state.Revision, TerrainTransportScenario.Edit(state), true);
         var delta = NetworkSession.Difference(before, TerrainWire.Snapshot(state, 1));

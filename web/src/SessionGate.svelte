@@ -71,7 +71,7 @@
       {:else if view.feedback === 'leaveFailed'}
         <p>{text.leaveFailed}</p><button onclick={onleave}>{text.retryLeave}</button>
       {:else if view.connection === 'incompatible'}
-        <p>{text.incompatible}</p><button onclick={() => location.reload()}>{text.reload}</button>
+        <button onclick={() => location.reload()}>{text.reload}</button>
       {:else if view.connection === 'disconnected'}
         <p>{text.recoveryHint}</p>
         {#if view.retryAt}<p>{text.retryScheduled} {new Date(view.retryAt).toLocaleTimeString(view.locale)}</p>{/if}
