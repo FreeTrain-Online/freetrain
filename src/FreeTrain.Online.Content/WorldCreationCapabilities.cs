@@ -5,6 +5,13 @@ namespace FreeTrain.Online.Content;
 
 public static class WorldCreationCapabilities
 {
+    public static CreationContent EmptyReady()
+    {
+        var profile = TerrainProfiles.Bundled; // Requires all ground recipes to be executable.
+        var pack = profile.Packs.Single();
+        return new(pack.CatalogHash, [new(new(pack.Id, pack.Version, pack.CatalogHash,
+            profile.GroundRecipes[0].ContributionId), CreationCapabilityKind.Terrain, true, true)]);
+    }
     // Inventory prepared bindings only. These must not become selectable just because
     // art exists: live P3 render/save/worker integration is not ready yet.
     public static CreationContent Inspect(PreparedContentCatalog catalog)

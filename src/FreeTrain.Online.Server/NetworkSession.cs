@@ -26,7 +26,7 @@ public sealed class NetworkOptions
 }
 
 // All transport state is bounded and guarded here. The host remains the sole world owner.
-public sealed class NetworkSession
+public sealed partial class NetworkSession
 {
     private readonly NetworkOptions options;
     private readonly SaveStorage? storage;
@@ -263,6 +263,7 @@ public sealed class NetworkSession
             }
             if (storage == null && disconnectedAt is { } idleAt && now - idleAt >= options.IdleRetention)
             {
+                host.Dispose();
                 host = hostFactory(host.WorldEpoch + 1, options.InputExpiry);
                 foreach (var peer in peers.Values) host.RegisterParticipant(peer.Participant);
                 receipts.Clear(); disconnectedAt = now;

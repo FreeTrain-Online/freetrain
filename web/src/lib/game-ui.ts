@@ -1,7 +1,7 @@
 import type { messages } from './localization.ts';
 export type Tool = 'inspect' | 'build' | 'remove';
 export const panels = {
-  inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
+  newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
 } as const satisfies Record<string, keyof typeof messages.en>;
 export type Panel = keyof typeof panels;
@@ -27,6 +27,7 @@ export const registry = {
   demolish: { kind: 'tool', tool: 'remove', labelKey: 'removeTool', icon: 'cross', availability: 'mutation' },
   inspector: { kind: 'panel', panel: 'inspector', labelKey: 'inspector', icon: 'window', availability: 'live' },
   catalog: { kind: 'panel', panel: 'catalog', labelKey: 'buildings', icon: 'window', availability: 'live' },
+  newWorld: { kind: 'panel', panel: 'newWorld', labelKey: 'newWorld', icon: 'window', availability: 'owner-save' },
   saves: { kind: 'panel', panel: 'saves', labelKey: 'saves', icon: 'window', availability: 'live' },
   view: { kind: 'panel', panel: 'view', labelKey: 'view', icon: 'window', availability: 'live' },
   settings: { kind: 'panel', panel: 'settings', labelKey: 'settings', icon: 'window', availability: 'live' },
@@ -61,6 +62,15 @@ export const registry = {
   sound: { kind: 'switch', labelKey: 'enableSound', icon: 'switch', destination: 'settings', availability: 'local' },
   language: field('language', 'settings', 'local'), // Same control also belongs in every session gate.
   'color-scheme': field('colorScheme', 'settings', 'local'), // Also available before joining.
+  'world-name': field('worldName', 'newWorld', 'owner-save'),
+  'world-h': field('worldH', 'newWorld', 'owner-save'),
+  'world-v': field('worldV', 'newWorld', 'owner-save'),
+  'world-z': field('worldZ', 'newWorld', 'owner-save'),
+  'world-water': field('worldWater', 'newWorld', 'owner-save'),
+  'world-defaults': action('sourceDefaults', 'newWorld', 'owner-save'),
+  'preview-world': action('previewWorld', 'newWorld', 'owner-save'),
+  'create-world': action('createWorld', 'replace-modal', 'owner-save'),
+  'cancel-world': action('cancel', 'newWorld', 'owner-save'),
   'save-slot': field('saveSlot', 'saves', 'owner-save'),
   'write-save': action('saveGame', 'saves', 'owner-save'),
   'load-save': action('loadGame', 'saves', 'owner-save'),

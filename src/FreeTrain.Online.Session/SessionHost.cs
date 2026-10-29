@@ -11,7 +11,7 @@ public enum ParticipantRole { Owner, Operator, Observer }
 public sealed record ParticipantContext(string ParticipantId, ParticipantRole Role = ParticipantRole.Owner, string ConnectionId = "headless");
 public sealed record PumpResult(int AdvancedTicks, int AppliedCommands, ImmutableArray<SimulationEvent> Events);
 
-public sealed class SessionHost
+public sealed partial class SessionHost : IDisposable
 {
     private abstract record Work;
     private sealed record Boundary(Action Apply) : Work;
@@ -45,7 +45,11 @@ public sealed class SessionHost
         if (!Enum.IsDefined(participant.Role)) throw new ArgumentOutOfRangeException(nameof(participant));
         lock (gate)
         {
-            if (participants.TryGetValue(participant.ParticipantId, out var previous) && previous != participant) lostParticipants.Add(previous);
+            if (participants.TryGetValue(participant.ParticipantId, out var previous) && previous != participant)
+            {
+                lostParticipants.Add(previous);
+                if (creationJob?.Fence.ParticipantId == previous.ParticipantId) ClearCreation();
+            }
             participants[participant.ParticipantId] = participant;
         }
     }
@@ -55,6 +59,7 @@ public sealed class SessionHost
         {
             if (!Current(participant)) return;
             participants.Remove(participant.ParticipantId);
+            if (creationJob?.Fence.ConnectionId == participant.ConnectionId) ClearCreation();
             lostParticipants.Add(participant);
         }
     }
@@ -183,6 +188,7 @@ public sealed class SessionHost
         var replacement = SaveCodec.ReadWorld(save.Span, terrainResolver); // Validate completely before touching current state.
         if (!SavingAvailable) throw new InvalidDataException("incompatibleSave");
         var epoch = checked(WorldEpoch + 1);
+        ClearCreation();
         referenceWorld = replacement.Reference;
         terrainState = replacement.Terrain;
         WorldEpoch = epoch;
@@ -303,6 +309,7 @@ public sealed class SessionHost
             CanonicalAdvance(); advanced++;
         } while (advanced < tickBudget);
         lostParticipants.Clear(); resetParticipants.Clear();
+        MaintainCreation();
         return new(advanced, applied, []);
     }
 

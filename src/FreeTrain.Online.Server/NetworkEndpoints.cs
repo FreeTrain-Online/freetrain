@@ -120,6 +120,36 @@ public static class NetworkEndpoints
             catch (InvalidOperationException)
             { return Results.Json(new { code = "staleEpoch" }, statusCode: 409); }
         });
+        async Task<IResult> CreationOperation<T>(HttpContext context, Func<T, ParticipantContext, Task<object>> action)
+        {
+            var participant = Identity(context);
+            if (participant == null) return Results.Unauthorized();
+            if (participant.Role != ParticipantRole.Owner) return Results.StatusCode(403);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk, 0, count);
+                }
+                var input = JsonSerializer.Deserialize<T>(buffer.ToArray(), NetworkSession.Json);
+                if (input == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(await action(input, participant), NetworkSession.Json);
+            }
+            catch (UnauthorizedAccessException) { return Results.StatusCode(403); }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidDataException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message is "staleEpoch" or "staleRevision" or "creationBusy" ? ex.Message : "staleCandidate" }, statusCode: 409); }
+            catch (OperationCanceledException) { return Results.Json(new { code = "creationFailed" }, statusCode: 408); }
+        }
+        app.MapPost("/api/worlds/empty/preview", async Task<IResult> (HttpContext context) => await CreationOperation<EmptyPreviewRequest>(context,
+            async (input, participant) => await session.PreviewEmpty(input, participant)));
+        app.MapPost("/api/worlds/empty/commit", async Task<IResult> (HttpContext context) => await CreationOperation<EmptyCommitRequest>(context,
+            async (input, participant) => { await session.CommitEmpty(input, participant); return new { status = "confirmed" }; }));
+        app.MapPost("/api/worlds/empty/cancel", async Task<IResult> (HttpContext context) => await CreationOperation<Guid>(context,
+            async (input, participant) => { await session.CancelEmpty(input, participant); return new { status = "cancelled" }; }));
         // Save HTTP requests use the same trusted owner credential and host FIFO as socket commands.
         app.MapGet("/api/saves", (HttpContext context) => Authorized(context)
             ? Results.Ok(session.SaveSlots()) : Results.Unauthorized());

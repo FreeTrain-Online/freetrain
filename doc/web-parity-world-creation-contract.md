@@ -1,3 +1,5 @@
+**P3-06 update — 29 October 2026:** [Empty-world browser creation](web-parity-empty-world.md) now enables only flat H/V1–64, Z1–64 worlds, with actual save/snapshot measurement, a hard96MiB per-job reservation, detached generation and exact Owner confirmation. Dense/128² presets and heightmap/generated routes remain disabled. The original P3-02 formulas below are historical provisional envelopes, not supported dense-world capacities.
+
 **P3-04 measurement update — 28 October 2026:** [actual terrain serialization evidence](web-parity-terrain-transport.md) exceeds this step's provisional 512-byte/cell transfer and allocation reservations. They are not supported real-world capacities. Presets and creation readiness remain disabled. Save 6/protocol 4 now cap actual state at 16 MiB; a dense 128² stress graph is rejected. Rework/remeasure reservations and allocations before enabling applicable presets in P3-06/17. The historical probe and formulas below retain their original scope.
 
 # P3-02 world requests, profile and resource admission — 27 October 2026

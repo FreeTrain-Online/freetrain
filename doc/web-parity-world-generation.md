@@ -14,7 +14,8 @@ ground/corner/water and decoration occupancy with zero-rail worlds and exact
 prepared bindings. [P3-04](web-parity-terrain-transport.md) adds actual Save 6/protocol 4
 persistence, terrain deltas/removals and checkpoint/session integration.
 [P3-05](web-parity-terrain-rendering.md) adds browser terrain rendering/picking,
-prepared recipe readiness and view/cache lifecycle. Next is **P3-06**.
+prepared recipe readiness and view/cache lifecycle. [P3-06](web-parity-empty-world.md)
+now delivers empty-world preview and Owner-confirmed creation; next is **P3-07**.
 Real dense encoding exceeds P3-02 provisional reservations; presets remain disabled
 and require representation/allocation/capacity remeasurement before exposure.
 **Owner water policy:** retain the existing simple global plane throughout this
@@ -23,7 +24,7 @@ checklist; elevated/flowing water and fluid simulation are outside its scope.
 The owner has directed execution to move into P3 and requested configurable
 procedural world generation. This document specifies that work and breaks it into
 reviewable implementation slices. **Source, request, terrain-state, save/transport
-and viewing foundations are delivered.** World creation, generation and terrain
+and viewing foundations plus empty-world creation are delivered.** Heightmap/procedural generation and terrain
 editing controls remain with the later slices. Overall P3 acceptance remains open. P2's deferred human,
 native/audio, crop and optional-pack qualifications retain their existing owners;
 moving to P3 does not close them.
@@ -179,7 +180,7 @@ the production runtime before claiming gameplay verification.
 | **P3-03 — canonical terrain state** | **Complete:** [immutable state/read model and exact bundled bindings](web-parity-terrain-state.md), ground/corners/global water, Mountain/forest/Terrace/Creek occupancy, zero rails, stable IDs and atomic replacements. Depends on 01/02. | Independent flat/slope/underwater/border and invalid geometry/overlap/identity cases pass; no native/UI/image dependencies. Live save/transport/rendering remain 04–06. |
 | **P3-04 — saves and transport foundation** | **Complete:** [Save 6/protocol 4 state and evidence](web-parity-terrain-transport.md): actual terrain/decorations/mode/provenance/clock/random, exact profiles, snapshots and changed-cell/occupant/removal deltas. Actual state capped at 16 MiB; dense 128² stress rejected. Depends on 03; extend in each later slice. | Round trips/continuation, real HTTP/WebSocket two-client replacement and checkpoint restart, missing-pack/version/invalid-graph rejection with preserved files/current world, roles and epoch/revision fences. Provisional capacity reservations exceeded; presets remain disabled. |
 | **P3-05 — terrain rendering and picking** | Draw ground, mountain slopes, water/cuts/occlusion and forest ground/tree layers with P2 recipes. Ground/corner/water targeting shares source geometry. Depends on 03/04. | Reviewed asymmetric scenes and exact hit targets at land/water/cut/edge boundaries, seasonal/day-night trees, camera/panel lifecycle and decode reuse. Invalid source crops retain P2 diagnostics/deferrals. |
-| **P3-06 — empty-world vertical slice** | Add New world panel, dimensions/name, dry flat candidate, source-default option, validation and Owner replacement through existing confirmation. Depends on 04/05. | Browser create/Cancel/Confirm/save/reopen, zero rails, multiple clients/roles, stale previews and missing content, EN/JA narrow layouts. First playable P3 milestone. |
+| **P3-06 — empty-world vertical slice, delivered** | [Delivered controls, exact candidate/Owner confirmation, empty admission and evidence](web-parity-empty-world.md); depends on 04/05. | Browser create/Cancel/Confirm/save/reopen, zero rails, multiple clients/roles, stale previews and missing content, EN/JA narrow layouts. First playable P3 milestone. |
 | **P3-07 — heightmap vertical slice** | Decode bounded image input outside Simulation; port brightness/bilinear/staggered sampling, displacement, lowering interpolation, quarter smoothing and texture generation. Add image/dimensions/water preview. Support reviewed `terrainOnlyNewGame` definitions through pack resources. Depends on 06. | Independent black/white/ramp/checker/colored-lightness fixtures, 1-pixel images, borders and steep gradients; unsupported/oversized input, cancellation and save/reopen without source image. No early world publication as in the desktop loader. |
 | **P3-08 — seeded relief** | Implement versioned terrain stage with plains/hills/mountains, relief/scale/smoothness and seed controls; add generated preview. Depends on 02/07. | Fixed expected samples/hashes, same-input replay, distinct-seed variation, quantized legal slopes, preset-specific measured relief and no live/gameplay RNG consumption. |
 | **P3-09 — islands and directional coasts** | Add inland/island/selected-side masks, sea level and approximate coverage. Specify connected land/sea predicates and hard/soft constraints. Depends on 08. | Flood-fill/connectivity oracles after normalization; island rim, four asymmetric single-coast cases and multi-side cases; reject impossible coverage/size combinations. |
@@ -190,11 +191,70 @@ the production runtime before claiming gameplay verification.
 | **P3-14 — rectangle editing and repair** | Port Mountain2 rectangle raise/excavate and explicit repair; review modifier semantics and transaction failures. Depends on 13. | Shared-corner repair vectors, reversed selection, clipped/border/occupied regions, no partial unauthorized edits and multi-client conflict cases. |
 | **P3-15 — terraces and cliffs** | Port separate placement/removal strategies, geometry/recipes, ownership and source booking. Depends on 14. | Placement/removal/cut/picking matrices, water/ground/elevation interactions, occupancy protection and saved-state restoration. |
 | **P3-16 — map authoring mode** | Expose Owner-controlled map-authoring state and source/new-world workflows; specify entry/exit and persistence explicitly. Reuse terrain/forest/creek tools; preserve shared-world roles, draft and timing rules. Depends on 12–15. | Mode/permissions matrix, save/reopen/restart, multiple sessions, mode changes with drafts and pending work. No legality bypass or invented economic exemption inferred from the old unused flag. |
-| **P3-17 — integrated acceptance and P4 handoff** | Exercise empty/import/generated/edit/reopen workflows and the topology matrix; measure terrain/render/job/transfer/checkpoint capacity. Reconcile ledgers, translations, help and supported limits. Depends on 16 and all earlier slices. | Varied worlds and seeded fixtures with actual hashes/metrics; Chromium and existing regression gates, no auto-restart of deferred browsers/native checks. Give P4 ground/underwater/elevated/support queries and legal test scenes; do not claim P4 construction is already verified. |
+| **P3-16a — map-size capacity parity** | Compact canonical encoding, interned definitions and sparse occupancy; bounded snapshot chunks and measured increases to request/save/upload/state/work limits. Target at least 1500×1090×45 stored cells, matching the supplied sample's 1500×1000×45 displayed extent. Foundations can start after 06; acceptance follows implemented terrain consumers and precedes 17. [Detailed scope below](#p3-16a--map-size-capacity-parity). | Large sparse and resource-heavy terrain scenes; coherent chunk assembly/atomic reveal, cancellation/stale/reconnect/roles, save/reopen/restart/checkpoints, measured memory/latency/render/pick/simulation budgets. 128²/256² are intermediate milestones; full legacy import and full-city gameplay acceptance remain P10/P11. |
+| **P3-17 — integrated acceptance and P4 handoff** | Exercise empty/import/generated/edit/reopen workflows and the topology matrix; measure terrain/render/job/transfer/checkpoint capacity. Reconcile ledgers, translations, help and supported limits. Depends on 16, 16a and all earlier slices. | Varied worlds and seeded fixtures with actual hashes/metrics; Chromium and existing regression gates, no auto-restart of deferred browsers/native checks. Give P4 ground/underwater/elevated/support queries and legal test scenes; do not claim P4 construction is already verified. |
 
 Execution order is 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 →
-12, with editing 13 → 14 → 15 after 06, then 16 → 17. Implement persistence and
+12, with editing 13 → 14 → 15 after 06, then 16 → 16a → 17. Capacity foundations in 16a may start after 06. Implement persistence and
 UI with each consumer; row 04/12 is not permission to defer them until phase end.
+
+## P3-16a — map-size capacity parity
+
+**Owner scope addition — 29 October 2026:** map capacity is part of ExAV capability
+parity. The 64×64 empty-world limit is temporary admission. 128²/256² are stepping
+stones, not the final parity target. Complete this step before P3-17; begin its
+representation/transport foundations after P3-06 when useful.
+
+The supplied `tmp/000-001-sample-save/データ０１.ftgd` has SHA-256
+`35b24fae1b40e5004ca46e9968dd34f3da61d5e6009f8ea1b4f60d256a7b9313` and 23,584,925 bytes.
+Inert inspection confirms **H1500,V1090,Z45**, also recorded in
+[the existing sample evidence](parity/exav-save-samples.json). Its readme recalls
+1500×1000; source empty creation adds 2×Z to stored V, giving 1090. This is an
+older ExAV 0.4-era save, not proof of a successful load in the pinned runtime.
+The pinned `883cf7d` creation dialog accepts positive Int32 dimensions without a
+smaller explicit horizontal ceiling; `SparseVoxelArray` allocates 8×8 blocks by
+level on demand. Array/memory/arithmetic/simulation constraints prevent inferring
+one practical maximum from the integer type. Treat the sample's extent as a
+minimum concrete acceptance target, not an established upper bound.
+
+Required implementation and acceptance:
+
+- **Compact representation:** intern repeated pack/contribution/recipe definitions;
+  pack terrain grids and realized tree data; preserve stable IDs, exact geometry,
+  ownership, provenance and deterministic continuation. Keep occupancy sparse;
+  avoid allocating the full H×V×Z volume. Version changed save/protocol contracts
+  deliberately under the current save policy. Compression may supplement compact
+  encoding, with separate bounded compressed and expanded sizes.
+- **Bounded transfer:** send snapshots in bounded chunks with transfer identity,
+  epoch/revision, expected counts/lengths and integrity checks. Assemble and validate
+  one coherent world before atomic replacement/reveal. Bound total bytes, retained
+  candidates, chunk metadata, concurrent transfers and buffered follow-up deltas;
+  define resynchronization when the live world advances beyond those bounds.
+  Verify missing/duplicate/out-of-order/corrupt/stale chunks, cancellation,
+  disconnect/reconnect, role checks, slow consumers and rejected-input/current-world
+  preservation. Preserve the existing canvas/readiness and uncertain-outcome rules.
+- **Coordinated admission:** rework the current dimension/cell/voxel/work/memory
+  estimates for large sparse worlds, rather than merely changing MaxSide. Raise
+  save/storage/checkpoint, HTTP upload, server state and client parsing/assembly
+  limits together after measurement. Keep ordinary command limits separate. Publish
+  tested bounds for each empty/heightmap/generated workflow; bounded decoder and
+  generator work must still hold at admitted sizes.
+- **Measured capacity:** exercise at least 1500×1090×45 with sparse and resource-heavy
+  terrain scenes using available implemented content. Measure peak/retained server
+  and browser memory separately from allocation churn, cold load and reconnect,
+  transfer/parse/assembly/reveal time, checkpoint/save/reopen/restart, viewport
+  rendering/picking and shared simulation/input responsiveness on named hardware.
+  Use spatial indexing/culling or chunk residency as needed; establish and meet
+  explicit budgets before enabling the larger sizes. A large empty world alone
+  cannot close the step. Carry representative full-city/content-density validation
+  into P4–P11 and final P11 acceptance as those systems arrive.
+
+This step does not require executing the historical save or loading its plugins.
+P10 owns legacy import; use canonical equivalent fixtures for P3 capacity and retain
+the supplied file as an independent size/content evidence source. P3-17 consumes
+this step's actual supported limits and evidence. Full-game/native/platform gates
+retain their separate acceptance status. This addition plans work; it raises no
+runtime limit and closes no acceptance gate.
 
 ## Acceptance matrix and completion claims
 

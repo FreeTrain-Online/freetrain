@@ -156,7 +156,14 @@
     return { x: Math.max(0, overlay.left - r.left) / 2, y: height / 2 };
   }
   export function zoom(factor: number) { if (!live) return; camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
-  export function home() { camera = { ...space.center(homeLocation(view.read?.map??demoScene.map)), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true; }
+  export function home() {
+    const read=view.read, location=homeLocation(read?.map??demoScene.map);
+    if(read?.terrain && isTerrainWorld(read)) {
+      const h=Math.floor(read.map.width/2),v=Math.floor(read.map.height/2);
+      location.z=Math.max(read.terrain.waterLevel,read.terrain.cells[v*read.map.width+h].ground);
+    }
+    camera = { ...space.center(location), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true;
+  }
   export function focusTrain(id = selectedTrain?.id) {
     const train = view.read?.trains.find(t => t.id === id);
     if (train && live) {

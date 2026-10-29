@@ -25,10 +25,14 @@ See [the reference-world delivery](doc/web-parity-reference-world.md).
 P3 now has [source terrain semantics](doc/web-parity-terrain-contract.md) and
 [world-creation requests, stage seeds and measured admission budgets](doc/web-parity-world-creation-contract.md).
 [Canonical terrain state](doc/web-parity-terrain-state.md) now includes ground,
-quarter corners, water, decorations and zero-rail worlds. World creation and terrain
-generation remain disabled. [Terrain saves/transport](doc/web-parity-terrain-transport.md)
+quarter corners, water, decorations and zero-rail worlds. Owners can now use
+**Game → New world** for flat empty worlds with name, stored H/V/Z dimensions,
+global water, candidate preview and explicit replacement confirmation. [Terrain saves/transport](doc/web-parity-terrain-transport.md)
 and [rendering/picking](doc/web-parity-terrain-rendering.md) are implemented;
-empty-world creation is next (P3-06).
+[P3-06 empty-world creation](doc/web-parity-empty-world.md) is implemented.
+Empty H/V dimensions are limited to 1–64 and Z to 1–64; Source defaults uses
+30 × 42 × 6 stored cells and water1. Heightmap/procedural generation and larger
+size presets remain future slices.
 
 ## Parity source policy
 
@@ -216,7 +220,7 @@ links to the source code on GitHub.
 **Only canonical Save 6 is supported.** Protocol 4 also carries actual terrain,
 realized vegetation, authoring mode and creation provenance under the exact bundled
 terrain profile. Terrain save/load/restart, transport and browser rendering/picking
-are implemented. Empty-world creation remains P3-06 work. The application still starts with
+are implemented, including [empty-world creation](doc/web-parity-empty-world.md). The application still starts with
 the spatial reference world. Save/upload and outgoing terrain data have a 16 MiB limit.
 
 Save slot and Download save capture the validated H/V rail graph, stable entities/footprints and allocator, source-minute clock, paused state and all versioned random streams. Load/upload validates dimensions,

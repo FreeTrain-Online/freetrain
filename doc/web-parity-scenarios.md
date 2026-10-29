@@ -1,5 +1,7 @@
 # Stable ExAV parity scenarios
 
+**P3-06 runtime slice — 29 October 2026:** [Empty-world creation evidence](web-parity-empty-world.md) now covers source-default and custom flat worlds, zero rails, candidate cancellation/Owner confirmation, roles, stale fences and Save6 reopening. This is empty-world runtime evidence; the broader source-scenario/city/generated/editing matrix remains open.
+
 **P0-06 source-scenario specification complete — 21 October 2026.**
 [The maintained scenario set](parity/exav-scenarios.json) contains **31 scenarios,
 38 hashed source files, six bilingual workflows, three proposed city profiles,

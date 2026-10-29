@@ -29,7 +29,7 @@ export async function closePanel(page: Page) {
   if (await close.count()) await close.click();
 }
 export async function openPanel(page: Page, id: string, language = 'en') {
-  const labels: Record<string, string[]> = { inspector: ['Selected object', '選択した対象'], catalog: ['Building catalog', '建物一覧'], saves: ['Save and restore', '保存と復元'], view: ['View', '表示'], settings: ['Settings', '設定'], session: ['Session', '接続情報'], help: ['Help / Diagnostics', 'ヘルプ・診断'] };
+  const labels: Record<string, string[]> = { newWorld: ['New world', '新しい世界'], inspector: ['Selected object', '選択した対象'], catalog: ['Building catalog', '建物一覧'], saves: ['Save and restore', '保存と復元'], view: ['View', '表示'], settings: ['Settings', '設定'], session: ['Session', '接続情報'], help: ['Help / Diagnostics', 'ヘルプ・診断'] };
   await closePanel(page);
   await page.locator('.command-bar').getByRole('button', { name: language === 'ja' ? 'ゲーム ▾' : 'Game ▾', exact: true }).click();
   await page.locator('#game-menu').getByRole('button', { name: labels[id][language === 'ja' ? 1 : 0], exact: true }).click();

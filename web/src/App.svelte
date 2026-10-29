@@ -15,6 +15,7 @@
   import LanguageSelect from './LanguageSelect.svelte';
   import BellControls from './BellControls.svelte';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
+  import EmptyWorldControls from './EmptyWorldControls.svelte';
   import SaveControls from './SaveControls.svelte';
   import MapView from './MapView.svelte';
   import PanelFrame from './PanelFrame.svelte';
@@ -200,6 +201,8 @@
             {#each catalog as item (item.id)}<li><button aria-pressed={selected.id === item.id} onclick={() => model.selectBuilding(item.id)}><img class="building-icon" src={item.family === 'pier' ? '/assets/pier.png' : '/assets/condo-top.png'} alt=""/><span><strong>{text[item.family]} {item.variant}</strong><small>{text[item.family === 'pier' ? 'fixed' : 'variable']} · {item.height}</small></span></button></li>{/each}
           </ul><h3>{text.selectedBuilding}</h3><p data-testid="building-name">{text[selected.family]} {selected.variant}</p><p>{text.height}: {selected.height}</p>
           {/if}
+        {:else if panel === 'newWorld'}
+          <EmptyWorldControls locale={view.locale} epoch={read?.worldEpoch} revision={read?.revision} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner' || !reference} onbusy={value => { saveBusy = value; }} onmodal={() => map.resetInteraction()}/>
         {:else if panel === 'saves'}
           <SaveControls bind:slot={savedSlot} onmodal={() => map.resetInteraction()} locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner'} onbusy={value => { saveBusy = value; }}/>
         {:else if panel === 'settings'}

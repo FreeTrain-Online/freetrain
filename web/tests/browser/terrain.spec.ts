@@ -129,3 +129,73 @@ test('synthetic full-terrain landscape renders behind the connection gate and gi
   expect((await state(page)).terrain).toBeUndefined();expect(errors).toEqual([]);
  }finally{release();}
 });
+
+test('empty-world preview cancellation, exact owner confirmation, zero rails, second-client epoch and save reopen',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ const other=await browser.newContext(),watcher=await other.newPage();await watcher.goto('/');await ready(watcher);
+ try{
+  const before=await state(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','empty-preserved'));
+  await openPanel(page,'newWorld');await page.getByLabel('World name',{exact:true}).fill('Empty railway');
+  await expect(page.getByLabel('Stored width (H)',{exact:true})).toHaveValue('30');await expect(page.getByLabel('Stored length (V)',{exact:true})).toHaveValue('42');
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('30 × 42 × 6');
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'empty-world');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'empty-en-preview.png'),fullPage:true});
+  expect((await state(page)).worldEpoch).toBe(before.worldEpoch);
+  await page.getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect((await state(page)).worldEpoch).toBe(before.worldEpoch);
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await expect(page.locator('dialog.decision-dialog')).toBeVisible();
+  await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();expect((await state(page)).worldEpoch).toBe(before.worldEpoch);
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await ready(watcher);
+  await expect.poll(async()=> (await state(watcher)).worldEpoch).not.toBe(before.worldEpoch);
+  await expect(canvas).toHaveAttribute('data-instance','empty-preserved');const after=await state(page);expect(after.tracks).toEqual([]);expect(after.entities).toEqual([]);expect(after.terrain.name).toBe('Empty railway');
+  const captured=await(await page.request.get('/api/saves/download')).body();
+  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.name).toBe('Empty railway');
+ }finally{await replace(page,original);await other.close();}
+});
+
+test('Japanese narrow empty-world form, custom limits, candidate invalidation and owner-only endpoint',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();
+ await page.goto('/');await ready(page,'ja');const original=await(await page.request.get('/api/saves/download')).body();
+ try{
+  await openPanel(page,'newWorld','ja');
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('65');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('1');await page.getByLabel('格納奥行（V）',{exact:true}).fill('1');await page.getByLabel('高さ（Z）',{exact:true}).fill('1');await page.getByLabel('海面高さ',{exact:true}).fill('0');
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('1 × 1 × 1');
+  await page.getByLabel('世界名',{exact:true}).fill('変更');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'empty-world');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'empty-ja-narrow.png'),fullPage:true});
+  // Advance the authoritative clock after a ready preview. It must disappear without replacement.
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
+  await page.getByRole('button',{name:'世界を作成',exact:true}).click();await expect(page.locator('dialog.decision-dialog')).toBeVisible();
+  await page.screenshot({path:join(directory,'empty-ja-confirm.png'),fullPage:true});
+  await page.locator('dialog.decision-dialog').getByRole('button',{name:'キャンセル',exact:true}).click();
+  const s=await state(page),captured=await(await page.request.get('/api/saves/download')).body();await replace(page,captured);
+  await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect((await state(page)).worldEpoch).not.toBe(s.worldEpoch);
+  const observer=await browser.newContext();try{
+   const p=await observer.newPage();await p.goto('/');await ready(p);await p.request.post('/api/leave');await p.request.post('/api/access',{data:{secret:'observer-test'}});await p.reload();await ready(p);
+   const current=await state(p);const response=await p.request.post('/api/worlds/empty/preview',{data:{name:'Denied',dimensions:{h:1,v:1,z:1},waterLevel:0,epoch:current.worldEpoch,revision:current.revision}});expect(response.status()).toBe(403);
+   await openPanel(p,'newWorld');await expect(p.getByRole('button',{name:'Preview world',exact:true})).toBeDisabled();
+  }finally{await observer.close();}
+ }finally{await replace(page,original);await context.close();}
+});
+
+test('empty candidate API rejects stale revisions, forged digests and late confirmations; maximum admitted empty world renders and reopens',async({page})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ async function preview(h=30,v=42,z=6,water=1){const s=await state(page);const response=await page.request.post('/api/worlds/empty/preview',{data:{name:'Capacity',dimensions:{h,v,z},waterLevel:water,epoch:s.worldEpoch,revision:s.revision}});expect(response.ok()).toBe(true);return {...await response.json(),epoch:s.worldEpoch,revision:s.revision};}
+ async function commit(c:any){return page.request.post('/api/worlds/empty/commit',{data:{id:c.id,requestHash:c.requestHash,candidateHash:c.candidateHash,epoch:c.epoch,revision:c.revision}});}
+ try{
+  let candidate=await preview();expect((await commit({...candidate,candidateHash:'0'.repeat(64)})).status()).toBe(409);
+  // A step is an authoritative revision change without an epoch change.
+  await page.locator('.command-bar .step').click();await expect.poll(async()=>(await state(page)).revision).not.toBe(candidate.revision);
+  expect((await commit(candidate)).status()).toBe(409);
+  candidate=await preview();await replace(page,original);expect((await commit(candidate)).status()).toBe(409);
+  candidate=await preview(64,64,64,63);expect(candidate.saveBytes).toBeLessThan(16*1024*1024);expect((await commit(candidate)).ok()).toBe(true);
+  await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
+  // Independent source H/V projection of stored centre H32,V32 at Z63: (1040,-744).
+  expect(await page.locator('canvas').evaluate(el=>(el as HTMLCanvasElement).dataset.camera!.split(',').slice(0,2).map(Number))).toEqual([1040,-744]);
+  const captured=await(await page.request.get('/api/saves/download')).body();const data=JSON.parse(captured.toString());expect(data.terrain.cells).toHaveLength(4096);expect(data.rails).toEqual([]);
+  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  expect((await commit(candidate)).status()).toBe(409);
+ }finally{await replace(page,original);}
+});

@@ -1,5 +1,7 @@
 # Manual evidence: ExAV and historical FreeTrain references
 
+**P3-06 delivery — 29 October 2026:** [New world controls and evidence](web-parity-empty-world.md) deliver the empty-map parts of MAN-M01/O02/E02/A02/A19 through the existing Game panel, bilingual fields, candidate preview, Owner confirmation and Save6 reopening. Heightmap/provider selection and the other P3 authoring journeys remain open.
+
 **Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
 
 **Baseline and authority — 21 October 2026:** the port targets **FreeTrain ExAV
