@@ -15,7 +15,7 @@ def trunc(n, d):
     return n // d if n >= 0 else -((-n) // d)
 
 
-def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4):
+def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4, shape=None, repair=None, geometry=False):
     stage = int.from_bytes(hashlib.sha256(f'freetrain.world-generation.v1\nterrain-generation-1\n{seed}\nrelief\n0'.encode()).digest()[:4], 'little') & 0x7fffffff
     def lattice(x, y, octave):
         n = stage ^ (x * 0x9e3779b9 & 0xffffffff) ^ (y * 0x85ebca6b & 0xffffffff) ^ ((octave+1) * 0xc2b2ae35 & 0xffffffff)
@@ -39,6 +39,7 @@ def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4):
         return bottom+amplitude*n//ONE
     sites = [(col-row//2+(v-1)//2,col+(row+1)//2) for row in range(v) for col in range(h)]
     heights = {xy:sample(2*(i%h),i//h)//4 for i,xy in enumerate(sites)}
+    if shape is not None: heights = shape(sites, heights)
     raw = dict(heights)
     queue = [(g,xy) for xy,g in heights.items()]
     heapq.heapify(queue)
@@ -67,12 +68,19 @@ def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4):
         assert all(0<=c<=4 for c in offsets)
         packed.append(sum(c << shift for c,shift in zip(offsets,[12,8,4,0])))
     ground=[heights[xy] for xy in sites]
-    return dict(kind=kind,seed=seed,amount=amount,featureScale=scale,smoothness=smooth,h=h,v=v,z=z,water=water,
+    if repair is not None:
+        replacement = repair(sites, ground, packed)
+        if replacement is not None:
+            return fixture(kind, seed, amount, scale, smooth, h, v, z, water,
+                           shape=lambda sites, raw: dict(zip(sites, replacement)), geometry=geometry)
+    result = dict(kind=kind,seed=seed,amount=amount,featureScale=scale,smoothness=smooth,h=h,v=v,z=z,water=water,
                 samples=[sample(hh,vv) for hh,vv in [(0,0),(1,0),(2,1),(17,9),(2*h-1,v-1)]],
                 groundHash=hashlib.sha256(bytes(ground)).hexdigest(),cornerHash=hashlib.sha256(b''.join(c.to_bytes(2,'little') for c in packed)).hexdigest(),
                 variation=sum(abs(ground[i+1]-ground[i]) for i in range(len(ground)) if i%h<h-1),
                 curvature=sum(abs(ground[i-1]-2*ground[i]+ground[i+1]) for i in range(len(ground)) if 0<i%h<h-1),
                 minimum=min(ground),maximum=max(ground),occupants=sum(c!=0 for c in packed),lowered=sum(raw[p]>heights[p] for p in sites))
+    if geometry: result.update(sites=sites,ground=ground,corners=packed)
+    return result
 
 
 def main():

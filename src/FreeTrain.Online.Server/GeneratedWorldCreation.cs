@@ -34,8 +34,9 @@ public sealed partial class NetworkSession
                     input.Epoch, input.Revision, participant, lease.Reservation);
             }
             started = await beginning.WaitAsync(token);
-            var bytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
-                ReliefTerrain.Create(request, TerrainProfiles.Bundled, token), TerrainProvenance.From(request)))), token);
+            var bytes = await Task.Run(() => capturedHost.PrepareCreation(
+                SaveCodec.Write(new TerrainSessionState(ReliefTerrain.Create(request, TerrainProfiles.Bundled, token),
+                    TerrainProvenance.From(request))), token), token);
             token.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
             lock (gate) { CheckConnection(); complete = capturedHost.CompletePreparedCreation(started, bytes, participant); }

@@ -7,7 +7,9 @@ using FreeTrain.Online.Simulation;
 namespace FreeTrain.Online.Session;
 
 public sealed record EmptyCandidateRead(Guid Id, string RequestHash, string CandidateHash, string Name,
-    WorldDimensions Dimensions, int WaterLevel, int SaveBytes, int SnapshotBytes, DateTimeOffset ExpiresAt, int[]? Ground = null, string? ImagePreview = null);
+    WorldDimensions Dimensions, int WaterLevel, int SaveBytes, int SnapshotBytes, DateTimeOffset ExpiresAt, int[]? Ground = null, string? ImagePreview = null,
+    GeographyPreview? Geography = null);
+public sealed record GeographyPreview(GeographyMetrics Metrics, string SeaMask);
 
 public sealed partial class SessionHost
 {
@@ -114,10 +116,11 @@ public sealed partial class SessionHost
         internal byte[] Bytes { get; }
         internal TerrainSessionState State { get; }
         internal int SnapshotBytes { get; }
-        internal PreparedCreation(byte[] bytes, TerrainSessionState state, int snapshotBytes)
-        { Bytes = bytes; State = state; SnapshotBytes = snapshotBytes; }
+        internal GeographyPreview? Geography { get; }
+        internal PreparedCreation(byte[] bytes, TerrainSessionState state, int snapshotBytes, GeographyPreview? geography)
+        { Bytes = bytes; State = state; SnapshotBytes = snapshotBytes; Geography = geography; }
     }
-    public PreparedCreation PrepareCreation(byte[] bytes)
+    public PreparedCreation PrepareCreation(byte[] bytes, CancellationToken cancellation = default)
     {
         var retained = bytes.ToArray();
         var state = SaveCodec.ReadWorld(retained, terrainResolver).Terrain ?? throw new ArgumentException("invalidInput");
@@ -125,7 +128,19 @@ public sealed partial class SessionHost
         var snapshotBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new StateTransferPayload(
             TerrainWire.Header(state, 1), PackedTerrain.Capture(snapshot)), WireJson.CreateOptions()).Length;
         if (snapshotBytes > ProtocolIdentity.MaximumStateBytes) throw new ArgumentException("invalidInput");
-        return new(retained, state, snapshotBytes);
+        GeographyPreview? geography = null;
+        if (state.Provenance.Source == "generated")
+        {
+            var request = (GeneratedWorldRequest)System.Text.Json.JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!;
+            // Detached verification/overview work has its own bounded pass; generation
+            // repairs share the original generator meter and never reset it.
+            var work = new GenerationWork(request, cancellation);
+            var metrics = CoastTerrain.Validate(request, state.World, work);
+            var wet = CoastTerrain.SeaMask(state.World, work); var packed = new byte[(wet.Length + 7) / 8];
+            for (int i = 0; i < wet.Length; i++) { work.Spend(1); if (wet[i]) packed[i / 8] |= (byte)(1 << (i % 8)); }
+            geography = new(metrics, Convert.ToBase64String(packed));
+        }
+        return new(retained, state, snapshotBytes, geography);
     }
     public Task<EmptyCandidateRead> CompleteEmpty(WorldCreationJob started, byte[] bytes, ParticipantContext participant)
         => CompletePreparedCreation(started, PrepareCreation(bytes), participant);
@@ -141,7 +156,8 @@ public sealed partial class SessionHost
         creationJob = started.Complete(started.RequestHash, digest, Math.Max(bytes.Length, snapshotBytes), DateTimeOffset.UtcNow, started.Fence);
         creationBytes = bytes; creationState = state;
         return new(started.Id, started.RequestHash, digest, state.World.Name, started.Request.Dimensions,
-            state.World.WaterLevel, bytes.Length, snapshotBytes, started.ExpiresAt, started.Request is HeightmapWorldRequest or GeneratedWorldRequest ? state.World.Cells.Select(c => c.Ground).ToArray() : null);
+            state.World.WaterLevel, bytes.Length, snapshotBytes, started.ExpiresAt, started.Request is HeightmapWorldRequest or GeneratedWorldRequest ? state.World.Cells.Select(c => c.Ground).ToArray() : null,
+            Geography: prepared.Geography);
     });
     private static string CandidateDigest(WorldCreationJob job, byte[] bytes)
     {

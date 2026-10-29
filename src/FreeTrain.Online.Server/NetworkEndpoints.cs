@@ -151,6 +151,7 @@ public static class NetworkEndpoints
                 return Results.Json(await action(input, participant), NetworkSession.Json);
             }
             catch (UnauthorizedAccessException) { return Results.StatusCode(403); }
+            catch (GeographyException ex) { return Results.BadRequest(new { code = "geographyImpossible", constraint = ex.Constraint }); }
             catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidDataException or OverflowException)
             { return Results.BadRequest(new { code = "invalidInput" }); }
             catch (InvalidOperationException ex)

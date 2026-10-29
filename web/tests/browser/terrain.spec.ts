@@ -316,7 +316,7 @@ test('generated endpoint rejects unavailable features, roles, stale fences and f
  const options={seed:0,relief:{kind:1,amount:50,featureScale:24,smoothness:50},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0};
  const s=await state(page),input={name:'API relief',dimensions:{h:32,v:32,z:32},waterLevel:4,options,epoch:s.worldEpoch,revision:s.revision};
  try{
-  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:25}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
+  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:0}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
   expect((await page.request.post('/api/worlds/generated/preview',{data:{...input,revision:String(BigInt(s.revision)+1n)}})).status()).toBe(409);
   const response=await page.request.post('/api/worlds/generated/preview',{data:input});expect(response.ok()).toBe(true);const candidate=await response.json();
   expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,epoch:s.worldEpoch,revision:s.revision,candidateHash:'0'.repeat(64)}})).status()).toBe(409);
@@ -324,4 +324,54 @@ test('generated endpoint rejects unavailable features, roles, stale fences and f
   await replace(page,original);expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,candidateHash:candidate.candidateHash,epoch:s.worldEpoch,revision:s.revision}})).status()).toBe(409);
   const observer=await browser.newContext();try{const p=await observer.newPage();await p.goto('/');await ready(p);await p.request.post('/api/leave');await p.request.post('/api/access',{data:{secret:'observer-test'}});await p.reload();await ready(p);expect((await p.request.post('/api/worlds/generated/preview',{data:input})).status()).toBe(403);}finally{await observer.close();}
  }finally{await replace(page,original);}
+});
+
+test('coast directions, realized preview, impossible diagnostics and exact island confirmation',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ const context=await browser.newContext(),watcher=await context.newPage();await watcher.goto('/');await ready(watcher);
+ try{
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  await page.getByLabel('Stored width (H)',{exact:true}).fill('32');await page.getByLabel('Stored length (V)',{exact:true}).fill('27');
+  await page.getByLabel('Coast layout',{exact:true}).selectOption('sides');
+  const names=['North','East','South','West'];
+  async function preview(){const waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);await expect(page.getByTestId('empty-world-preview')).toBeVisible();return response.json();}
+  for(const selected of [[0],[1],[2],[3],[0,1],[0,2]]){
+   for(let i=0;i<4;i++)await page.getByRole('checkbox',{name:names[i],exact:true}).setChecked(selected.includes(i));
+   const result=await preview();expect(result.geography.metrics.seaSides).toBe(selected.reduce((n,i)=>n|(1<<i),0));
+   expect(result.geography.metrics.landComponents).toBe(1);expect(result.geography.metrics.waterPercent).toBeGreaterThanOrEqual(35);expect(result.geography.metrics.waterPercent).toBeLessThanOrEqual(45);
+   await expect(page.getByTestId('geography-metrics')).toContainText('Sea:');
+  }
+  for(const name of names)await page.getByRole('checkbox',{name,exact:true}).uncheck();await expect(page.getByRole('button',{name:'Preview world',exact:true})).toBeDisabled();
+  await page.getByLabel('Coast layout',{exact:true}).selectOption('island');
+  await page.getByLabel('Stored width (H)',{exact:true}).fill('16');await page.getByLabel('Stored length (V)',{exact:true}).fill('16');await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('5');
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('cannot');
+  await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByLabel('Stored width (H)',{exact:true}).fill('32');await page.getByLabel('Stored length (V)',{exact:true}).fill('27');await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('40');
+  const final=await preview();expect(final.geography.metrics.seaComponents).toBe(1);expect(final.geography.metrics.seaSides).toBe(15);
+  await page.getByLabel('Generation seed',{exact:true}).fill('42');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  await page.getByLabel('Generation seed',{exact:true}).fill('0');expect((await preview()).candidateHash).toBe(final.candidateHash);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'coasts');mkdirSync(directory,{recursive:true});await page.getByTestId('geography-metrics').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'coast-en-preview.png'),fullPage:true});
+  const before=(await state(page)).worldEpoch;await page.locator('canvas').evaluate(c=>c.dataset.instance='coast-preserved');
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);
+  await expect(page.locator('canvas')).toHaveAttribute('data-instance','coast-preserved');
+  expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+  const saved=await(await page.request.get('/api/saves/download')).body();await closePanel(page);await ready(page);await page.screenshot({path:join(directory,'coast-en-live.png'),fullPage:true});
+  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+ }finally{await replace(page,original);await context.close();}
+});
+
+test('Japanese narrow coast controls and compass remain reachable and invalidate the candidate',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();await page.goto('/');await ready(page,'ja');
+ try{
+  await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('generated');
+  await page.getByLabel('海岸の配置',{exact:true}).selectOption('sides');await page.getByRole('checkbox',{name:'東',exact:true}).check();
+  await page.getByLabel('海の目標面積（%）',{exact:true}).fill('76');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
+  await page.getByLabel('海の目標面積（%）',{exact:true}).fill('40');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();
+  await expect(page.getByTestId('geography-metrics')).toContainText('海：');await expect(page.getByText('概観の方位：',{exact:false})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'coasts');mkdirSync(directory,{recursive:true});await page.getByLabel('海岸の配置',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'coast-ja-narrow.png'),fullPage:true});
+  await page.getByRole('checkbox',{name:'南',exact:true}).check();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+ }finally{await context.close();}
 });

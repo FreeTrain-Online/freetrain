@@ -1,3 +1,5 @@
+**P3-09 consumer extension — 29 October 2026:** [seven full-size coast fixtures, independent wet-edge topology and exact browser/Linux workflows](web-parity-coasts.md) extend the current capacity envelope to island, four directional, adjacent and opposite coasts. Final acceptance remains before P3-17; later consumers must extend this evidence.
+
 # P3-16a — map-size capacity parity
 
 29 October 2026. Implementation and terrain-capacity acceptance are complete; final verification is recorded below. The owner advanced this work before P3-09 so landscape heuristics can be tested on representative extents. Overall P3, later full-city gameplay/import acceptance, and recorded native/browser/P2 deferrals remain open.

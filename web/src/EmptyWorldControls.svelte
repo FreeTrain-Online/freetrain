@@ -1,14 +1,16 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import DecisionModal from './DecisionModal.svelte';
-  import { messages, type Locale } from './lib/localization.ts';
-  type Candidate = { id: string; requestHash: string; candidateHash: string; name: string; dimensions: { h: number; v: number; z: number }; waterLevel: number; saveBytes: number; snapshotBytes: number; expiresAt: string; ground?: number[]; imagePreview?: string };
+  import { messages, interpolate, type Locale } from './lib/localization.ts';
+  type Candidate = { id: string; requestHash: string; candidateHash: string; name: string; dimensions: { h: number; v: number; z: number }; waterLevel: number; saveBytes: number; snapshotBytes: number; expiresAt: string; ground?: number[]; imagePreview?: string; geography?: {metrics:{seaCells:number;landCells:number;seaComponents:number;landComponents:number;waterPercent:number};seaMask:string} };
   type Provider = { binding: { contributionId:string }; name:string; author:string; description:string; dimensions:{h:number;v:number;z:number};waterLevel:number };
   let { locale, epoch, revision, disabled, onbusy, onmodal }: { locale: Locale; epoch?: string; revision?: string; disabled: boolean; onbusy: (busy: boolean) => void; onmodal: () => void } = $props();
   const text = $derived(messages[locale]);
   let source = $state('empty'), file = $state<File>(), provider = $state('');
   let seed = $state<number|undefined>(0), relief = $state('hills'), amount = $state<number|undefined>(50), scale = $state<number|undefined>(24), smoothness = $state<number|undefined>(50);
   function reliefDefaults(kind:string) { relief=kind; [amount,scale,smoothness]=kind==='plains'?[20,32,75]:kind==='mountains'?[85,32,25]:[50,24,50]; }
+  let coast = $state('inland'), sides = $state(1), coverage = $state<number|undefined>(40);
+  const directions = [{bit:1,label:'coastNorth'},{bit:2,label:'coastEast'},{bit:4,label:'coastSouth'},{bit:8,label:'coastWest'}] as const;
   let providers = $state<Provider[]>([]);
   let requestAbort:AbortController|undefined;
   $effect(()=>{void fetch('/api/worlds/heightmap/providers').then(r=>r.ok?r.json():[]).then(rows=>{providers=rows;}).catch(()=>{});});
@@ -22,24 +24,25 @@
     const canvas=document.createElement('canvas');
     const width=Math.min(256,c.dimensions.h),height=Math.min(256,c.dimensions.v),ctx=canvas.getContext('2d');
     if(!ctx)return;canvas.width=width;canvas.height=height;
-    const image=ctx.createImageData(width,height);
+    const image=ctx.createImageData(width,height),sea=c.geography?Uint8Array.from(atob(c.geography.seaMask),s=>s.charCodeAt(0)):undefined;
     for(let y=0;y<height;y++)for(let x=0;x<width;x++) {
-      const g=c.ground[Math.floor(y*c.dimensions.v/height)*c.dimensions.h+Math.floor(x*c.dimensions.h/width)],i=4*(y*width+x);
+      const index=Math.floor(y*c.dimensions.v/height)*c.dimensions.h+Math.floor(x*c.dimensions.h/width),g=c.ground[index],i=4*(y*width+x);
+      const wet=sea?Boolean(sea[index>>3] & (1<<(index%8))):g<c.waterLevel;
       // A bounded overview of this exact retained grid. Full geometry remains in
       // the candidate; large maps do not create one DOM node per storage cell.
       const shade=Math.round(50+170*g/c.dimensions.z);
-      image.data[i]=g<c.waterLevel?0:Math.round(shade*.7);image.data[i+1]=g<c.waterLevel?114:shade;
-      image.data[i+2]=g<c.waterLevel?188:Math.round(shade*.5);image.data[i+3]=255;
+      image.data[i]=wet?0:Math.round(shade*.7);image.data[i+1]=wet?114:shade;
+      image.data[i+2]=wet?188:Math.round(shade*.5);image.data[i+3]=255;
     }
     ctx.putImageData(image,0,0);
     previewImage=canvas.toDataURL('image/png');
   });
   let capturedEpoch = $state<string>(), capturedRevision = $state<string>();
   let busy = $state(false), confirmation = $state(false);
-  type Feedback = 'creationFailed'|'staleCandidate'|'creationBusy'|'created'|'idle'|'imageFormat'|'imageBytes'|'imagePixels'|'imageAlpha'|'imageAnimation'|'imageInvalid';
+  type Feedback = 'creationFailed'|'staleCandidate'|'creationBusy'|'created'|'idle'|'imageFormat'|'imageBytes'|'imagePixels'|'imageAlpha'|'imageAnimation'|'imageInvalid'|'coastCoverageImpossible'|'coastTopologyImpossible'|'coastBoundaryImpossible';
   let feedback = $state<Feedback>('idle');
   let generation = 0;
-  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && h!*v!<=1700000 && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
+  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && h!*v!<=1700000 && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 && (coast==='inland' || Number.isInteger(coverage) && coverage!>=5 && coverage!<=75 && (coast!=='sides' || sides!==0)) || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
   async function call(path: string, body: unknown) {
     const signal=path==='preview'&&requestAbort?AbortSignal.any([requestAbort.signal,AbortSignal.timeout(35000)]):AbortSignal.timeout(35000);
     const response = await fetch(`/api/worlds/empty/${path}`, { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal });
@@ -65,8 +68,8 @@
       let result:Candidate;
       if(source==='empty')result=await call('preview',{name:name || text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r});
       else if(source==='generated') {
-        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0}})});
-        if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.code||'creationFailed');}
+        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:['inland','island','sides'].indexOf(coast),sides:coast==='sides'?sides:0,waterPercent:coast==='inland'?0:coverage},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0}})});
+        if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.code==='geographyImpossible'?(error.constraint==='coast-coverage'?'coastCoverageImpossible':['coast-boundary','coast-sector','coast-island-rim'].includes(error.constraint)?'coastBoundaryImpossible':'coastTopologyImpossible'):error.code||'creationFailed');}
         result=await response.json();
       } else {
         const query=new URLSearchParams({name:name||text.unnamedWorld,h:String(h),v:String(v),z:String(z),water:String(water),epoch:String(e),revision:String(r)});
@@ -80,7 +83,7 @@
     }catch(error){
       const code=error instanceof Error?error.message:'';
       const imageErrors:Record<string,Feedback>={'image-format':'imageFormat','image-bytes':'imageBytes','image-pixels':'imagePixels','image-alpha':'imageAlpha','image-animation':'imageAnimation','image-invalid':'imageInvalid'};
-      feedback=token!==generation?'staleCandidate':imageErrors[code]??(code==='creationBusy'?'creationBusy':['staleCandidate','staleEpoch','staleRevision'].includes(code)?'staleCandidate':'creationFailed');
+      feedback=token!==generation?'staleCandidate':imageErrors[code]??(['coastCoverageImpossible','coastTopologyImpossible','coastBoundaryImpossible'].includes(code)?code as Feedback:code==='creationBusy'?'creationBusy':['staleCandidate','staleEpoch','staleRevision'].includes(code)?'staleCandidate':'creationFailed');
     }
     finally{busy=false;onbusy(false);}
   }
@@ -107,6 +110,10 @@
     <label class="field">{text.reliefAmount}<input type="number" min="0" max="100" step="1" bind:value={amount}/></label>
     <label class="field">{text.featureScale}<input type="number" min="4" max="128" step="1" bind:value={scale}/></label>
     <label class="field">{text.reliefSmoothness}<input type="number" min="0" max="100" step="1" bind:value={smoothness}/></label>
+    <label class="field">{text.coastKind}<select aria-label={text.coastKind} bind:value={coast}><option value="inland">{text.coastInland}</option><option value="island">{text.coastIsland}</option><option value="sides">{text.coastSides}</option></select></label>
+    {#if coast==='sides'}<fieldset class="coast-directions"><legend>{text.coastSides}</legend>{#each directions as direction}<label><input type="checkbox" checked={Boolean(sides & direction.bit)} onchange={event=>{sides=event.currentTarget.checked?sides|direction.bit:sides & ~direction.bit;}}/>{text[direction.label]}</label>{/each}</fieldset>{/if}
+    {#if coast!=='inland'}<label class="field">{text.coastCoverage}<input type="number" min="5" max="75" step="1" bind:value={coverage}/></label>{/if}
+    <p class="hint">{text.coastHelp}</p>
   {/if}
   <label class="field">{text.worldName}<input maxlength="128" bind:value={name} placeholder={text.unnamedWorld}/></label>
   <label class="field">{text.worldH}<input type="number" min={source==='generated'?16:1} max={maxSide} step="1" disabled={!!provider} bind:value={h}/></label>
@@ -127,6 +134,7 @@
     <svg viewBox="0 0 240 140" role="img" aria-label={text.emptyPreviewLabel}><polygon points={`120,10 ${120+100*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120+100*(candidate.dimensions.h-candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*(candidate.dimensions.h+candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120-100*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)}`} fill="#6c9c55" stroke="currentColor"/></svg>{/if}
     <p>{candidate.name} · {candidate.dimensions.h} × {candidate.dimensions.v} × {candidate.dimensions.z}</p>
     <p>{text.worldWater}: {candidate.waterLevel} · {text.zeroRails}</p>
+    {#if candidate.geography}<p data-testid="geography-metrics">{interpolate(text.coastMetrics,{water:candidate.geography.metrics.waterPercent.toFixed(1),land:candidate.geography.metrics.landCells.toLocaleString(locale),seas:candidate.geography.metrics.seaComponents})}</p><p>{text.coastCompass}</p>{/if}
     <p>{text.candidateBytes}: {candidate.saveBytes.toLocaleString(locale)} / {candidate.snapshotBytes.toLocaleString(locale)}</p>
   </div>
 {/if}
@@ -137,4 +145,4 @@
   </DecisionModal>
 {/if}
 <p aria-live="polite" data-testid="creation-feedback">{busy?text.preparingWorld:feedback==='idle'?'':text[feedback]}</p>
-<style>fieldset{border:0;padding:0;min-width:0}input{max-width:100%;box-sizing:border-box}svg,img{width:100%;max-height:150px;object-fit:contain}select{max-width:100%}</style>
+<style>fieldset{border:0;padding:0;min-width:0}input{max-width:100%;box-sizing:border-box}svg,img{width:100%;max-height:150px;object-fit:contain}select{max-width:100%}.coast-directions{display:flex;flex-wrap:wrap;gap:.75rem}.coast-directions label{display:flex;align-items:center;gap:.35rem;min-height:44px}</style>

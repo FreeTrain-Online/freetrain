@@ -21,6 +21,7 @@ parser.add_argument('--base', default='http://127.0.0.1:5698')
 parser.add_argument('--secret', default='capacity-smoke')
 parser.add_argument('--save', type=Path, required=True)
 parser.add_argument('--restart', action='store_true')
+parser.add_argument('--generate-coast', action='store_true', help='Preview/confirm the saved coast request before exact reopen checks.')
 args = parser.parse_args()
 url = urllib.parse.urlsplit(args.base)
 if url.scheme != 'http' or url.hostname not in ('127.0.0.1', 'localhost'):
@@ -168,7 +169,30 @@ def state():
 try:
     joined, _, _ = state()
     assert joined['type'] == 'join'
-    call('/api/saves/upload?expectedWorldEpoch=' + identity['worldEpoch'], expected).read()
+    generation = None
+    if args.generate_coast:
+        def camel(value):
+            if isinstance(value, dict):
+                return {key[:1].lower()+key[1:]: camel(item) for key, item in value.items()}
+            if isinstance(value, list):
+                return [camel(item) for item in value]
+            return value
+        request = camel(json.loads(saved['packedTerrain']['provenance']['requestJson']))
+        assert request['source'] == 'generated' and request['options']['coast']['kind'] in (1, 2)
+        request = {key: request[key] for key in ('name', 'dimensions', 'waterLevel', 'options')}
+        initial = joined['snapshot']
+        request.update(epoch=initial['worldEpoch'], revision=initial['revision'])
+        previous_hash = hashlib.sha256(call('/api/saves/download').read()).hexdigest()
+        start = time.monotonic()
+        candidate = json.load(call('/api/worlds/generated/preview', request))
+        generation = {'previewMs': (time.monotonic()-start)*1000, 'metrics': candidate['geography']['metrics']}
+        assert generation['previewMs'] < 30000
+        assert hashlib.sha256(call('/api/saves/download').read()).hexdigest() == previous_hash
+        commit = {key: candidate[key] for key in ('id', 'requestHash', 'candidateHash')}
+        commit.update(epoch=request['epoch'], revision=request['revision'])
+        call('/api/worlds/empty/commit', commit).read()
+    else:
+        call('/api/saves/upload?expectedWorldEpoch=' + identity['worldEpoch'], expected).read()
     snapshot, terrain, chunks = state()
     assert snapshot['type'] == 'snapshot' and chunks > 1
     assert snapshot['map'] == saved['map']
@@ -180,7 +204,7 @@ try:
     assert reopened['type'] == 'snapshot' and reopened_terrain == terrain
     assert hashlib.sha256(call('/api/saves/download').read()).hexdigest() == expected_hash
     print(json.dumps({'result': 'Linux chunked publication/save/reopen exact', 'saveBytes': len(expected), 'chunks': chunks,
-                      'sha256': expected_hash, 'map': saved['map'], 'occupants': terrain['occupantCount']}))
+                      'sha256': expected_hash, 'map': saved['map'], 'occupants': terrain['occupantCount'], 'generation': generation}))
 finally:
     stop.set()
     sock.close()

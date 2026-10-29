@@ -8,8 +8,7 @@ public static class ReliefTerrain
 
     // Later geography stages are explicitly unavailable until their own slices ship.
     public static bool Supports(GeneratedWorldRequest request) => WorldCreationProfile.Validate(request).IsEmpty &&
-        request.Options is { Coast: { Kind: CoastKind.Inland, Sides: CoastSides.None, WaterPercent: 0 },
-            Lakes: { Count: 0 }, Rivers: { Count: 0 }, Forests: { CoveragePercent: 0 }, StartingArea: 0 };
+        request.Options is { Lakes: { Count: 0 }, Rivers: { Count: 0 }, Forests: { CoveragePercent: 0 }, StartingArea: 0 };
 
     // Public literal-sample boundary for profile compatibility fixtures. h2 is twice
     // stored H; odd V rows have an additional half-cell stagger, matching the loader.
@@ -68,6 +67,18 @@ public static class ReliefTerrain
         var ground = new int[d.H * d.V];
         for (int v = 0; v < d.V; v++) for (int h = 0; h < d.H; h++)
         { work.Spend(64); ground[v * d.H + h] = Sample(request, seed, 2 * h, v) / 4; }
-        return NaturalTerrain.Normalize(request, profile, ground, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+        if (request.Options.Coast.Kind == CoastKind.Inland)
+            return NaturalTerrain.Normalize(request, profile, ground, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+        GeographyException? failure = null;
+        for (int attempt = 0; attempt < WorldCreationProfile.MaxAttempts; attempt++)
+        {
+            var shaped = CoastTerrain.Shape(request, ground, attempt, work);
+            var world = NaturalTerrain.Normalize(request, profile, shaped, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+            if (CoastTerrain.FillEnclosedSea(world, work) is { } repaired)
+                world = NaturalTerrain.Normalize(request, profile, repaired, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+            try { CoastTerrain.Validate(request, world, work); return world; }
+            catch (GeographyException error) { failure = error; }
+        }
+        throw failure!;
     }
 }

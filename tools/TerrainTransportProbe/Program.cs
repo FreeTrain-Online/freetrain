@@ -44,10 +44,17 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new HeightmapWorldRequest(WorldCreationProfile.Id, "Capacity heightmap", new(h, v, z), 4, decoded.Input);
         state = new(HeightmapTerrain.Create(r, decoded.Raster, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else if (mode == "generated")
+    else if (mode == "generated" || mode.StartsWith("coast-", StringComparison.Ordinal))
     {
         var r = WorldCreationProfile.Generated(int.MinValue, "Capacity relief") with { Dimensions = new(h, v, z) };
         r = r with { Options = r.Options with { StartingArea = 0, Relief = new(ReliefKind.Mountains, 100, 4, 0) } };
+        if (mode.StartsWith("coast-", StringComparison.Ordinal))
+        {
+            var sides = mode[6..] switch { "north" => CoastSides.North, "east" => CoastSides.East, "south" => CoastSides.South,
+                "west" => CoastSides.West, "adjacent" => CoastSides.North | CoastSides.East, "opposite" => CoastSides.North | CoastSides.South,
+                "island" => CoastSides.None, _ => throw new ArgumentException("Unknown coast capacity mode.") };
+            r = r with { Options = r.Options with { Coast = new(sides == CoastSides.None ? CoastKind.Island : CoastKind.Sides, sides, 40) } };
+        }
         state = new(ReliefTerrain.Create(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
     else if (mode == "empty")
@@ -55,7 +62,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new EmptyWorldRequest(WorldCreationProfile.Id, "Capacity empty", new(h, v, z), 1);
         state = new(TerrainWorld.Empty(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, heavy or dense.");
+    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, coast-{island,north,east,south,west,adjacent,opposite}, heavy or dense.");
     var createMs = start.Elapsed.TotalMilliseconds; var retainedWorld = GC.GetTotalMemory(true);
     var bytes = SaveCodec.Write(state); var saveMs = start.Elapsed.TotalMilliseconds - createMs;
     File.WriteAllBytes(Path.Combine(directory, "world.json"), bytes);
@@ -67,7 +74,9 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
     if (!bytes.SequenceEqual(SaveCodec.Write(restored))) throw new InvalidOperationException("Capacity round trip mismatch.");
     var chunkCount = StateTransfer.Chunks(snapshot, packet).Count();
     process.Refresh();
-    var report = new { mode, h, v, z, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
+    var geography = mode.StartsWith("coast-", StringComparison.Ordinal) ? CoastTerrain.Validate(
+        (GeneratedWorldRequest)JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!, state.World) : null;
+    var report = new { mode, h, v, z, geography, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
         saveBytes = bytes.Length, packetBytes = packet.Length, chunkCount, retainedWorld,
         retainedTwoWorldsAndTransport = GC.GetTotalMemory(true), peakRss = process.PeakWorkingSet64 > 0 ? (long?)process.PeakWorkingSet64 : null,
         elapsedMs = start.Elapsed.TotalMilliseconds, runtime = RuntimeInformation.FrameworkDescription,

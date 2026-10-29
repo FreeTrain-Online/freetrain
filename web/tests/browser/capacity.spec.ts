@@ -8,7 +8,7 @@ import {openPanel,closePanel} from './ux-helpers.ts';
 const digest=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 
 const serverURL='http://127.0.0.1:5420',webURL='http://127.0.0.1:4493';
-const directory=resolve('../tmp/p3-capacity/browser-capacity'),saves=mkdtempSync(join(tmpdir(),'freetrain-capacity-'));
+const directory=resolve(process.env.FREETRAIN_ONLINE_PROFILE_EVIDENCE??'../tmp/p3-capacity/browser-capacity'),saves=mkdtempSync(join(tmpdir(),'freetrain-capacity-'));
 const dll=resolve('../src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll');
 const probe=resolve('../tools/TerrainTransportProbe/bin/Release/net10.0/TerrainTransportProbe.dll');
 const boot='/api/bootstrap?protocolVersion=5&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&metadataOnly=true';
@@ -231,4 +231,45 @@ test('minimum parity extent is admitted through empty, heightmap and generated p
     const saved=await(await page.request.get('/api/saves/download',{timeout:60000})).body();expect(digest(saved)).toBe(digest(expected));
     writeFileSync(join(directory,`creation-${mode}.json`),JSON.stringify({mode,h:1500,v:1090,z:45,elapsedMs:Date.now()-start,saveBytes:saved.length},null,2)+'\n');
   }
+});
+
+test('minimum parity extent coast: exact island preview, bounded publication and checkpoint restart',async({page,browser})=>{
+ const memory=await memorySampler(browser),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ const fixture=resolve('../tmp/p3-09/capacity/island');
+ try{
+  execFileSync('dotnet',[probe,'--capacity','1500','1090','45','coast-island',fixture],{stdio:'pipe',timeout:60000});
+  const expected=digest(readFileSync(join(fixture,'world.json')));await page.goto('/');await ready(page);
+  await page.locator('canvas').evaluate(c=>c.dataset.instance='coast-large');
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  await page.getByLabel('Terrain style',{exact:true}).selectOption('mountains');await page.getByLabel('Generation seed',{exact:true}).fill('-2147483648');
+  await page.getByLabel('Relief (0–100)',{exact:true}).fill('100');await page.getByLabel('Feature scale (cells)',{exact:true}).fill('4');await page.getByLabel('Smoothness (0–100)',{exact:true}).fill('0');
+  await page.getByLabel('Coast layout',{exact:true}).selectOption('island');await page.getByLabel('World name',{exact:true}).fill('Capacity relief');
+  await page.getByLabel('Stored width (H)',{exact:true}).fill('1500');await page.getByLabel('Stored length (V)',{exact:true}).fill('1090');await page.getByLabel('Levels (Z)',{exact:true}).fill('45');
+  const before=await epoch(page),start=Date.now(),waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);
+  const candidate=await response.json();expect(candidate.geography.metrics).toMatchObject({seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000});
+  const previewMs=Date.now()-start;expect(previewMs).toBeLessThan(30000);expect(await epoch(page)).toBe(before);
+  await expect(page.getByTestId('geography-metrics')).toContainText('40.0%');
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await expect(page.locator('canvas')).not.toHaveAttribute('data-world-epoch',before);await closePanel(page);await ready(page);
+  const readyMs=Date.now()-start;expect(readyMs).toBeLessThan(60000);await expect(page.locator('canvas')).toHaveAttribute('data-instance','coast-large');
+  expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(expected);
+  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-refinement','ready');
+  const panBox=(await canvas.boundingBox())!,paints:number[]=[];
+  for(let i=0;i<20;i++){
+   await page.mouse.move(panBox.x+panBox.width/2,panBox.y+panBox.height/2);await page.mouse.down({button:'middle'});
+   await page.mouse.move(panBox.x+panBox.width/2+32,panBox.y+panBox.height/2+8);await page.mouse.up({button:'middle'});
+   await page.evaluate(()=>new Promise(requestAnimationFrame));paints.push(Number(await canvas.getAttribute('data-paint-ms')));
+  }
+  paints.sort((a,b)=>a-b);
+  expect(paints[Math.ceil(paints.length*.95)-1]).toBeLessThan(33.4);
+  const box=(await canvas.boundingBox())!;await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await expect(page.getByTestId('selected-object')).toContainText('Terrain');await closePanel(page);
+  await page.screenshot({path:join(directory,'coast-island-large.png'),fullPage:true});
+  await page.reload();await ready(page);expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(expected);
+  await stop(server);await startServer();await page.request.post('/api/access',{data:{secret:''}});await page.reload();await ready(page);
+  expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(expected);
+  const rss=memory.values();expect(rss.sampledServerPeakRss).toBeLessThan(6*1024**3);expect(rss.sampledBrowserPeakRss).toBeLessThan(6*1024**3);
+  writeFileSync(join(directory,'coast-island-large.json'),JSON.stringify({previewMs,readyMs,paintP95:paints[Math.ceil(paints.length*.95)-1],...rss,...await resident(page),metrics:candidate.geography.metrics,saveBytes:candidate.saveBytes,snapshotBytes:candidate.snapshotBytes},null,2)+'\n');
+  expect(errors).toEqual([]);
+ }finally{await memory.stop();}
 });

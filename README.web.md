@@ -44,8 +44,10 @@ SkiaSharp managed/native dependencies have been removed. FreeTrain's license is
 unchanged. [P3-08 seeded relief](doc/web-parity-seeded-relief.md) adds generated
 plains/hills/mountains, seed and relief/scale/smoothness controls, detached preview
 and exact confirmation. Generated admission is H/V16–2048 (at most 1,700,000 stored cells), Z8–64, water1…Z−4;
-actual terrain and provenance reopen without regeneration. Coasts, lakes/rivers,
-vegetation/starting areas and larger size presets remain future slices.
+actual terrain and provenance reopen without regeneration. [P3-09 coasts](doc/web-parity-coasts.md) adds islands,
+independent world-compass coast directions, sea coverage targets (±5 percentage points),
+actual surface-water metrics and bounded topology diagnostics, including full-size fixtures.
+Lakes/rivers, vegetation/starting areas and generation UX completion remain later slices.
 
 ## Parity source policy
 
