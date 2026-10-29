@@ -30,7 +30,7 @@ public sealed partial class NetworkSession
             lock (gate)
             {
                 CheckConnection();
-                beginning = capturedHost.BeginGenerated(request, WorldCreationCapabilities.EmptyReady(),
+                beginning = capturedHost.BeginGenerated(request, WorldCreationCapabilities.GeneratedReady(),
                     input.Epoch, input.Revision, participant, lease.Reservation);
             }
             started = await beginning.WaitAsync(token);

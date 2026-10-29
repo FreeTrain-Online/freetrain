@@ -1,3 +1,5 @@
+**P3-11 forest consumer extension — 29 October 2026:** [Dense six-species and combined coastal-water forests](web-parity-forests.md#current-consumer-capacity-evidence) verify two1500×1090×45 exact generation/publication/reopen/checkpoint workflows. Repeated immutable terrain-read values are shared after an observed6GiB budget failure; both consecutive cases now pass unchanged budgets. Final P3 capacity acceptance remains before P3-17.
+
 **P3-09 consumer extension — 29 October 2026:** [seven full-size coast fixtures, independent wet-edge topology and exact browser/Linux workflows](web-parity-coasts.md) extend the current capacity envelope to island, four directional, adjacent and opposite coasts. Final acceptance remains before P3-17; later consumers must extend this evidence.
 
 # P3-16a — map-size capacity parity

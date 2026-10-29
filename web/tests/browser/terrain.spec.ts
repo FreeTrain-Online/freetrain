@@ -316,7 +316,7 @@ test('generated endpoint rejects unavailable features, roles, stale fences and f
  const options={seed:0,relief:{kind:1,amount:50,featureScale:24,smoothness:50},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0};
  const s=await state(page),input={name:'API relief',dimensions:{h:32,v:32,z:32},waterLevel:4,options,epoch:s.worldEpoch,revision:s.revision};
  try{
-  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:0}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
+  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:257}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:0}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
   expect((await page.request.post('/api/worlds/generated/preview',{data:{...input,revision:String(BigInt(s.revision)+1n)}})).status()).toBe(409);
   const response=await page.request.post('/api/worlds/generated/preview',{data:input});expect(response.ok()).toBe(true);const candidate=await response.json();
   expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,epoch:s.worldEpoch,revision:s.revision,candidateHash:'0'.repeat(64)}})).status()).toBe(409);
@@ -428,6 +428,63 @@ test('Japanese narrow water controls reject contradictory outlets, show impossib
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'water');mkdirSync(directory,{recursive:true});await page.getByLabel('川の流出口',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'water-ja-narrow.png'),fullPage:true});
   await page.getByLabel('蛇行（0〜100）',{exact:true}).fill('80');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+ }finally{release();await context.close();}
+});
+
+test('forest controls reserve connected level land, show realized cover and confirm exact trees to both clients and Save7',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ const context=await browser.newContext(),watcher=await context.newPage();await watcher.goto('/');await ready(watcher);
+ try{
+  await page.locator('canvas').evaluate(c=>c.dataset.instance='forest-preserved');
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  await page.getByLabel('Stored length (V)',{exact:true}).fill('27');await page.getByLabel('Levels (Z)',{exact:true}).fill('32');
+  await page.getByLabel('Connected flat starting area (cells)',{exact:true}).fill('64');
+  async function preview(){const waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);await expect(page.getByTestId('empty-world-preview')).toBeVisible();return response.json();}
+  const bare=await preview();expect(bare.geography.forests).toMatchObject({forestCells:0,reservedCells:64});
+  await page.getByLabel('Forest cover',{exact:true}).selectOption('70');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  await expect(page.getByRole('checkbox',{name:'Cedar',exact:true})).toBeChecked();
+  const first=await preview();expect(first.ground).toEqual(bare.ground);expect(first.geography.seaMask).toBe(bare.geography.seaMask);expect(first.geography.startingMask).toBe(bare.geography.startingMask);expect(first.geography.forests.forestCells).toBeGreaterThan(400);
+  await page.getByLabel('Forest clustering (0–100)',{exact:true}).fill('100');const clustered=await preview();expect(clustered.geography.forestMask).not.toBe(first.geography.forestMask);
+  for(const tree of ['Pine','Camphor','Maple','Ginkgo','Beech'])await page.getByRole('checkbox',{name:tree,exact:true}).uncheck();
+  await page.getByLabel('Forest ground appearance',{exact:true}).selectOption('grass');const final=await preview();
+  expect(final.ground).toEqual(bare.ground);expect(final.geography.startingMask).toBe(bare.geography.startingMask);
+  await expect(page.getByTestId('forest-metrics')).toContainText('Reserved: 64');
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'forests');mkdirSync(directory,{recursive:true});await page.getByTestId('forest-metrics').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'forest-en-preview.png'),fullPage:true});
+  const before=(await state(page)).worldEpoch;expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);await expect(page.locator('canvas')).toHaveAttribute('data-instance','forest-preserved');
+  const actual=(await state(page)).terrain;expect(actual.occupants.filter((o:any)=>o.forest).length).toBe(final.geography.forests.forestCells);
+  expect((await state(watcher)).terrain.occupants).toEqual(actual.occupants);
+  expect(actual.occupants.filter((o:any)=>o.forest).every((o:any)=>o.forest.definition.contributionId==='{FBD0CD06-016A-4037-AB15-02040218CBAA}-g')).toBe(true);
+  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);
+  await closePanel(page);await ready(page);await page.screenshot({path:join(directory,'forest-en-live.png'),fullPage:true});
+  const pixels=await page.locator('canvas').evaluate(c=>c.toDataURL());await openPanel(page,'view');await page.getByLabel('Winter ground',{exact:true}).check();await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','winter/day');await closePanel(page);
+  expect(await page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+ }finally{await replace(page,original);await context.close();}
+});
+
+test('Japanese narrow forests validate species and starting-area failure, invalidate drafts and cancel late results',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();await page.goto('/');await ready(page,'ja');
+ let release=()=>{};
+ try{
+  const original=await(await page.request.get('/api/saves/download')).body();await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('generated');
+  await page.getByLabel('森林の被覆',{exact:true}).selectOption('35');
+  for(const tree of ['杉','松','楠','楓','銀杏','ブナ'])await page.getByRole('checkbox',{name:tree,exact:true}).uncheck();
+  await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByRole('checkbox',{name:'楓',exact:true}).check();
+  await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('91');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('35');
+  await page.getByLabel('格納奥行（V）',{exact:true}).fill('27');await page.getByLabel('高さ（Z）',{exact:true}).fill('32');
+  await page.getByLabel('海岸の配置',{exact:true}).selectOption('island');await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('200');
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('開始区域が見つかりません');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('forest-metrics')).toContainText('開始区域：16');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'forests');mkdirSync(directory,{recursive:true});await page.getByLabel('森林の地面表示',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'forest-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('森林のまとまり（0〜100）',{exact:true}).fill('100');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  const held=new Promise<void>(r=>release=r);let seen=false;await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
  }finally{release();await context.close();}

@@ -19,15 +19,38 @@ public static class TerrainWire
             if (!values.TryGetValue(c, out var read)) values.Add(c, read = new(c.Ground, Name(c.Surface)));
             return read;
         }).ToArray();
+        // Forest-heavy worlds contain millions of repeated immutable triples and
+        // exact definitions. Share values within this geometry, with no global value cache.
+        var definitions = new Dictionary<DefinitionReference, DefinitionRead>();
+        DefinitionRead DefinitionFor(DefinitionReference reference)
+        {
+            if (!definitions.TryGetValue(reference, out var read)) definitions.Add(reference, read = Definition(reference));
+            return read;
+        }
+        var trees = new Dictionary<TerrainTree, TerrainTreeRead>();
+        TerrainTreeRead TreeFor(TerrainTree tree)
+        {
+            if (!trees.TryGetValue(tree, out var read)) trees.Add(tree, read = new(tree.X, tree.Y, tree.Sprite));
+            return read;
+        }
         return new(Entities(world.Spatial), cells,
             world.Occupants.Select(o => new TerrainOccupantRead(o.EntityId, Name(o.Kind), o.Corners.NE, o.Corners.SE, o.Corners.SW, o.Corners.NW,
-                o.Forest is {} f ? new(Definition(f.Definition), f.Trees.Select(t => new TerrainTreeRead(t.X, t.Y, t.Sprite)).ToArray()) : null,
+                o.Forest is {} f ? new(DefinitionFor(f.Definition), f.Trees.Select(TreeFor).ToArray()) : null,
                 o.CreekConnections)).ToArray());
     });
-    public static SpatialEntityRead[] Entities(SpatialIndex spatial) => spatial.Entities.Select(e => new SpatialEntityRead(e.Id, e.Revision,
-        Definition(e.Definition), new(e.Anchor.X, e.Anchor.Y, e.Anchor.Z),
-        e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X, m.Offset.Y, m.Offset.Z), m.Transparent)).ToArray(),
-        e.Owned, e.SilentlyReclaimable, e.Value)).ToArray();
+    public static SpatialEntityRead[] Entities(SpatialIndex spatial)
+    {
+        var definitions = new Dictionary<DefinitionReference, DefinitionRead>();
+        var footprints = new Dictionary<Footprint, VoxelMemberRead[]>();
+        return spatial.Entities.Select(e =>
+        {
+            if (!definitions.TryGetValue(e.Definition, out var definition)) definitions.Add(e.Definition, definition = Definition(e.Definition));
+            if (!footprints.TryGetValue(e.Footprint, out var footprint)) footprints.Add(e.Footprint, footprint = e.Footprint.Members
+                .Select(m => new VoxelMemberRead(new(m.Offset.X, m.Offset.Y, m.Offset.Z), m.Transparent)).ToArray());
+            return new SpatialEntityRead(e.Id, e.Revision, definition, new(e.Anchor.X, e.Anchor.Y, e.Anchor.Z), footprint,
+                e.Owned, e.SilentlyReclaimable, e.Value);
+        }).ToArray();
+    }
     public static SpatialState Spatial(long nextEntityId, SpatialEntityRead[] entities) => new(nextEntityId, entities.Select(e =>
         new SpatialEntity(e.Id, e.Revision, Definition(e.Definition), new(e.Anchor.X, e.Anchor.Y, e.Anchor.Z),
             new(e.Footprint.Select(m => new VoxelMember(new(m.Offset.X, m.Offset.Y, m.Offset.Z), m.Transparent))),

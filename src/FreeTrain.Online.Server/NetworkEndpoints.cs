@@ -167,6 +167,7 @@ public static class NetworkEndpoints
         app.MapPost("/api/worlds/generated/preview", async Task<IResult> (HttpContext context) => await CreationOperation<GeneratedPreviewRequest>(context,
             async (input, participant) => await session.PreviewGenerated(input, participant, context.RequestAborted)));
         app.MapGet("/api/worlds/heightmap/providers", () => Results.Json(FixedHeightmaps.Read(plugins), NetworkSession.Json));
+        app.MapGet("/api/worlds/generated/forests", () => Results.Json(WorldCreationCapabilities.ForestChoices(), NetworkSession.Json));
         app.MapPost("/api/worlds/heightmap/preview", async Task<IResult> (HttpContext context) =>
         {
             var identity = Identity(context);

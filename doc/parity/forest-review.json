@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "status": "P3-11-slice-complete",
+  "basedOnGitRevision": "c1b00643574ca69982727ee7918d92d900d2ea40",
+  "report": "../web-parity-forests.md",
+  "profile": "terrain-generation-1",
+  "algorithm": "WORLDGEN-FOREST-1",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "engine": "FreeTrain ExAV 2.1.1.12",
+    "gitRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "sourceReview": "terrain-review.json",
+    "scope": "Source forest scatter/appearance semantics; distribution/reservation are new WORLDGEN behavior. No original-runtime capture or manual forest-authoring acceptance claimed."
+  },
+  "sourceSha256": {
+    "src/FreeTrain.Online.Simulation/ForestTerrain.cs": "27dd6528c4d1a377fa9a26942104e51f0f04e1dc015648e983447f0fe73317df",
+    "src/FreeTrain.Online.Simulation/ReliefTerrain.cs": "706959f7af29e05dd92fc0faf8e225d96ca0ee4687cf093423623038f2ef292a",
+    "src/FreeTrain.Online.Content/WorldCreationCapabilities.cs": "078bac1e1f1ab9be46430a585250b1c30ee71b30980ff14f78023a637de422e1",
+    "src/FreeTrain.Online.Persistence/TerrainWire.cs": "20e88d968a1675a5f27be78bca9b24660c027b95f1d2f9b98e387c5e4d2abe97",
+    "src/FreeTrain.Online.Session/WorldCreationSession.cs": "bc5d259fc08f3a456b24f28173251801fb709f58821e4e4d24121bd54a35d655",
+    "src/FreeTrain.Online.Server/GeneratedWorldCreation.cs": "b2e2a36285216302f14658a8caea8c4e27a08ea0b3f8b3a8545b065bf88d7108",
+    "src/FreeTrain.Online.Server/NetworkEndpoints.cs": "894b519484e57b298b16bfa964cef856db82c16612ec79ab317bad83bf83b1dc",
+    "web/src/EmptyWorldControls.svelte": "c3ab5318c5caf67ffd64ea0b2532a7cea3d617552c8e8fae5109609b01867fb9",
+    "web/src/locales/en/app.json": "5d6a2bb6dd17982d44a9f12903f676bc963b0d540fb53173034d0ffcb5c0d482",
+    "web/src/locales/ja/app.json": "ed50ddb10346512ea573f122f920672a723a0b262534f961199328b004d6eaff",
+    "tests/FreeTrain.Online.Tests/ForestTerrainTests.cs": "04ddcce21e0aabded692eacec6f2e43d298988ad0a9056da131fb67f40948a2b",
+    "tests/FreeTrain.Online.Tests/ReliefTerrainTests.cs": "f5148c4a22d9a30033bb29151d24f39ec40d98f3848d13583fdc46bf71b5684c",
+    "web/tests/browser/terrain.spec.ts": "efe19fa6bb157416e76bf387c86481bdb85e7aaa508379e9a0aeb3498ef5f67c",
+    "web/tests/browser/capacity.spec.ts": "963a33a83b9b76b1ecc14403672892cf2131bfa752320d3474fae0b12090d6dc",
+    "scripts/forest-fixtures.py": "eca905f77e4ccb6487c51caeb3bd94af2f5a1e6ea507ba75d780c4e03580123c",
+    "scripts/check-forest-topology.py": "f9661f810ed576384f6ca66ccb56da61659dc17f0e44566847f5e3a10ccdc5bd",
+    "scripts/check-water-topology.py": "12a16776a88a1139517b63085f31453adf0af6ccd92b0c40a589d2fd6a2c1b3d",
+    "scripts/check-map-capacity.py": "229619cf4c3b4484c6e4dcdcb8c69b6d0f473241411d2510021704e74f4f13e8",
+    "scripts/check-web-prototype.sh": "ed11b8ba07e6eb706cda0601aba790d9413939363aca3fe68c96d25a29fda7da",
+    "doc/parity/forest-fixtures.json": "002ad4249cd5554a85be9a0e171c7f2d3b05ce14588b403ae515e5676415ca5e",
+    "tools/TerrainTransportProbe/Program.cs": "028aa3eddedc4f306d206f86e7b5cbc7f6e3090a4c5f138bbd83addafb631d8a"
+  },
+  "contract": {
+    "species": 6,
+    "treatments": 18,
+    "coverage": [
+      0,
+      90
+    ],
+    "clustering": [
+      0,
+      100
+    ],
+    "startingArea": "0..floor(cells/4); existing same-height flat dry canonical-face component",
+    "coverageDenominator": "Dry natural/Mountain cells minus reservation; mask=floor(eligible*percent/100). Binomial zero outcomes stay empty.",
+    "scatter": "2*density binary draws; original diamond coordinates; position-only source sort; per-cell stage-isolated xorshift32/multiply-high sequence",
+    "reservation": "Largest level component, minimum starting-stage hash root/tie, fixed row-major BFS prefix; never changes terrain/water",
+    "content": "Only explicit reviewed bundled pack/version/hash forest capabilities; optional prepared inventory grants no runtime permission",
+    "retentionSeconds": 600,
+    "workerDeadlineSeconds": 30,
+    "resourceEnvelope": "Existing P3-16a; no changed budgets"
+  },
+  "verification": {
+    "dotnetPassed": 599,
+    "clientPassed": 129,
+    "pythonRun": 142,
+    "pythonPassed": 141,
+    "pythonSkipped": 1,
+    "ordinaryChromiumPassed": 90,
+    "terrainChromiumPassed": 18,
+    "forestCapacityChromiumPassed": 2,
+    "optionalSourceChromiumPassed": 4,
+    "optionalPreparedChromiumPassed": 4,
+    "independentForestFixtures": 27,
+    "unchangedReliefFixtures": 11,
+    "unchangedCoastFixtures": 21,
+    "unchangedWaterFixtures": 20,
+    "sourcePinnedFiles": 40,
+    "sourceLiteralFixtures": 77,
+    "sourceTextRecords": 59
+  },
+  "capacity": [
+    {
+      "mode": "forest-dense",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "geography": {
+        "seaCells": 0,
+        "landCells": 1635000,
+        "seaComponents": 0,
+        "landComponents": 1,
+        "seaSides": 0,
+        "waterPercent": 0,
+        "lakeCells": 0,
+        "lakeComponents": 0,
+        "riverCount": 0
+      },
+      "forests": {
+        "eligibleCells": 1634936,
+        "maskCells": 1471442,
+        "forestCells": 1356851,
+        "trees": 3187085,
+        "reservedCells": 64,
+        "largestFlatArea": 1316
+      },
+      "entities": 1520547,
+      "createMs": 7528.3293,
+      "saveMs": 1227.4003999999995,
+      "readMs": 3346.4642999999996,
+      "saveBytes": 102116959,
+      "packetBytes": 102110616,
+      "chunkCount": 2078,
+      "retainedWorld": "676182312",
+      "retainedTwoWorldsAndTransport": "2236346936",
+      "peakRss": null,
+      "elapsedMs": 15351.33,
+      "runtime": ".NET 10.0.13",
+      "os": "macOS 26.7.1",
+      "architecture": "Arm64",
+      "processors": 10
+    },
+    {
+      "mode": "forest-coast",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "geography": {
+        "seaCells": 499461,
+        "landCells": 1037856,
+        "seaComponents": 1,
+        "landComponents": 1,
+        "seaSides": 1,
+        "waterPercent": 36.52256880733945,
+        "lakeCells": 97683,
+        "lakeComponents": 2,
+        "riverCount": 2
+      },
+      "forests": {
+        "eligibleCells": 1037837,
+        "maskCells": 934053,
+        "forestCells": 861488,
+        "trees": 2023925,
+        "reservedCells": 16,
+        "largestFlatArea": 3561
+      },
+      "entities": 1041283,
+      "createMs": 16225.9979,
+      "saveMs": 690.1128000000008,
+      "readMs": 2569.3604000000014,
+      "saveBytes": 69986519,
+      "packetBytes": 69980176,
+      "chunkCount": 1424,
+      "retainedWorld": "451945992",
+      "retainedTwoWorldsAndTransport": "1605974696",
+      "peakRss": null,
+      "elapsedMs": 21636.1706,
+      "runtime": ".NET 10.0.13",
+      "os": "macOS 26.7.1",
+      "architecture": "Arm64",
+      "processors": 10
+    }
+  ],
+  "actualPackedForestTopology": [
+    {
+      "saveSha256": "bcc623ea1c730c18015aa7d4370ebc073be6268e1e49320e9f0356ed69395ed5",
+      "map": [
+        1500,
+        1090,
+        45
+      ],
+      "eligibleCells": 1634936,
+      "maskCells": 1471442,
+      "forestCells": 1356851,
+      "trees": 3187085,
+      "reservedCells": 64,
+      "largestFlatArea": 1316,
+      "species": {
+        "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m": 241114,
+        "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m": 229787,
+        "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m": 230254,
+        "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m": 241027,
+        "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m": 184114,
+        "{4B732903-B207-4693-9CF7-19AED4E42604}-m": 230555
+      }
+    },
+    {
+      "saveSha256": "6298d7128d7248e9cceb8cbaaed0c5f1e9fcbf13e52d2314deae223ccedc0a89",
+      "map": [
+        1500,
+        1090,
+        45
+      ],
+      "eligibleCells": 1037837,
+      "maskCells": 934053,
+      "forestCells": 861488,
+      "trees": 2023925,
+      "reservedCells": 16,
+      "largestFlatArea": 3561,
+      "species": {
+        "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m": 116772,
+        "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m": 153327,
+        "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m": 153064,
+        "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m": 146049,
+        "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m": 146082,
+        "{4B732903-B207-4693-9CF7-19AED4E42604}-m": 146194
+      }
+    }
+  ],
+  "actualPackedWaterTopology": {
+    "path": "tmp/p3-11/capacity/forest-coast/world.json",
+    "sha256": "6298d7128d7248e9cceb8cbaaed0c5f1e9fcbf13e52d2314deae223ccedc0a89",
+    "h": 1500,
+    "v": 1090,
+    "water": 4,
+    "seaCells": 499461,
+    "landCells": 1037856,
+    "seaComponents": 1,
+    "landComponents": 1,
+    "seaSides": 1,
+    "waterPercent": 36.52256880733945,
+    "lakeCells": 97683,
+    "lakeComponents": 2,
+    "enclosedSizes": [
+      48849,
+      48834
+    ],
+    "openContacts": [
+      1
+    ],
+    "buriedLowCells": 597147,
+    "surfaceMaskHash": "9bf13c9a52b805029f33750becdaf0f12eab1db981e26a30ebd663390beaa2cb"
+  },
+  "browserCapacity": {
+    "forest-dense": {
+      "previewMs": 14833,
+      "readyMs": 38483,
+      "paintP95": 9.7,
+      "sampledServerPeakRss": 4843765760,
+      "sampledBrowserPeakRss": 3465068544,
+      "sampleIntervalMs": 250,
+      "Timestamp": 663424.386662,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 120,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 569,
+      "Resources": 51,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 18,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 7e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 8e-06,
+      "TaskOtherDuration": 1e-06,
+      "ThreadTime": 3.2e-05,
+      "ProcessTime": 58.483096,
+      "JSHeapUsedSize": 1299770272,
+      "JSHeapTotalSize": 1362231296,
+      "FirstMeaningfulPaint": 663408.930197,
+      "DomContentLoaded": 663408.918306,
+      "NavigationStart": 663408.656585,
+      "retainedJSHeapAfterGC": 720021960,
+      "metrics": {
+        "seaCells": 0,
+        "landCells": 1635000,
+        "seaComponents": 0,
+        "landComponents": 1,
+        "seaSides": 0,
+        "waterPercent": 0,
+        "lakeCells": 0,
+        "lakeComponents": 0,
+        "riverCount": 0
+      },
+      "forests": {
+        "eligibleCells": 1634936,
+        "maskCells": 1471442,
+        "forestCells": 1356851,
+        "trees": 3187085,
+        "reservedCells": 64,
+        "largestFlatArea": 1316
+      },
+      "saveBytes": 102116959,
+      "snapshotBytes": 102110616
+    },
+    "forest-coast": {
+      "previewMs": 18642,
+      "readyMs": 29349,
+      "paintP95": 5.3,
+      "sampledServerPeakRss": 5943443456,
+      "sampledBrowserPeakRss": 3889119232,
+      "sampleIntervalMs": 250,
+      "Timestamp": 663520.851216,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 120,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 569,
+      "Resources": 51,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 19,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 9e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 1.2e-05,
+      "TaskOtherDuration": 3e-06,
+      "ThreadTime": 4.9e-05,
+      "ProcessTime": 54.294283,
+      "JSHeapUsedSize": 869990964,
+      "JSHeapTotalSize": 930037760,
+      "FirstMeaningfulPaint": 663520.100561,
+      "DomContentLoaded": 663509.293892,
+      "NavigationStart": 663509.002659,
+      "retainedJSHeapAfterGC": 522474196,
+      "metrics": {
+        "seaCells": 499461,
+        "landCells": 1037856,
+        "seaComponents": 1,
+        "landComponents": 1,
+        "seaSides": 1,
+        "waterPercent": 36.52256880733945,
+        "lakeCells": 97683,
+        "lakeComponents": 2,
+        "riverCount": 2
+      },
+      "forests": {
+        "eligibleCells": 1037837,
+        "maskCells": 934053,
+        "forestCells": 861488,
+        "trees": 2023925,
+        "reservedCells": 16,
+        "largestFlatArea": 3561
+      },
+      "saveBytes": 69986519,
+      "snapshotBytes": 69980176
+    }
+  },
+  "initialCapacityFailure": {
+    "serverPeakRss": 6506659840,
+    "budgetBytes": 6442450944,
+    "scope": "Combined coastal forest after dense forest replacement exceeded the unchanged budget. Fixed per-world read-model sharing of repeated exact definitions, footprints and tree triples. Both consecutive workflows rerun with fresh evidence; no forced production-server GC, budget relaxation or extra per-case server reset."
+  },
+  "linux": {
+    "image": "sha256:108bae30ca9db09225ccd40d581bed72831b3a69a0f5dc4a1fd652e13be884d0",
+    "os": "linux",
+    "architecture": "arm64",
+    "cpus": 4,
+    "memoryLimitBytes": 6442450944,
+    "scenes": [
+      {
+        "result": "Linux chunked publication/save/reopen exact",
+        "saveBytes": 102116959,
+        "chunks": 2078,
+        "sha256": "bcc623ea1c730c18015aa7d4370ebc073be6268e1e49320e9f0356ed69395ed5",
+        "map": {
+          "width": 1500,
+          "height": 1090,
+          "levels": 45,
+          "coordinateSystem": "hv"
+        },
+        "occupants": 1520547,
+        "generation": {
+          "previewMs": 15390.38541703485,
+          "metrics": {
+            "seaCells": 0,
+            "landCells": 1635000,
+            "seaComponents": 0,
+            "landComponents": 1,
+            "seaSides": 0,
+            "waterPercent": 0,
+            "lakeCells": 0,
+            "lakeComponents": 0,
+            "riverCount": 0
+          },
+          "forests": {
+            "eligibleCells": 1634936,
+            "maskCells": 1471442,
+            "forestCells": 1356851,
+            "trees": 3187085,
+            "reservedCells": 64,
+            "largestFlatArea": 1316
+          }
+        },
+        "cgroupCurrentAndPeakBeforeRestart": "3897057280\n4814962688",
+        "restart": {
+          "result": "checkpoint restart exact",
+          "saveBytes": 102116959,
+          "sha256": "bcc623ea1c730c18015aa7d4370ebc073be6268e1e49320e9f0356ed69395ed5",
+          "map": {
+            "width": 1500,
+            "height": 1090,
+            "levels": 45,
+            "coordinateSystem": "hv"
+          },
+          "epoch": "2"
+        }
+      },
+      {
+        "result": "Linux chunked publication/save/reopen exact",
+        "saveBytes": 69986519,
+        "chunks": 1424,
+        "sha256": "6298d7128d7248e9cceb8cbaaed0c5f1e9fcbf13e52d2314deae223ccedc0a89",
+        "map": {
+          "width": 1500,
+          "height": 1090,
+          "levels": 45,
+          "coordinateSystem": "hv"
+        },
+        "occupants": 1041283,
+        "generation": {
+          "previewMs": 25476.463707978837,
+          "metrics": {
+            "seaCells": 499461,
+            "landCells": 1037856,
+            "seaComponents": 1,
+            "landComponents": 1,
+            "seaSides": 1,
+            "waterPercent": 36.52256880733945,
+            "lakeCells": 97683,
+            "lakeComponents": 2,
+            "riverCount": 2
+          },
+          "forests": {
+            "eligibleCells": 1037837,
+            "maskCells": 934053,
+            "forestCells": 861488,
+            "trees": 2023925,
+            "reservedCells": 16,
+            "largestFlatArea": 3561
+          }
+        },
+        "cgroupCurrentAndPeakBeforeRestart": "4330344448\n4849963008",
+        "restart": {
+          "result": "checkpoint restart exact",
+          "saveBytes": 69986519,
+          "sha256": "6298d7128d7248e9cceb8cbaaed0c5f1e9fcbf13e52d2314deae223ccedc0a89",
+          "map": {
+            "width": 1500,
+            "height": 1090,
+            "levels": 45,
+            "coordinateSystem": "hv"
+          },
+          "epoch": "2"
+        }
+      }
+    ],
+    "decoderDistribution": "Reviewed MIT notice present; Skia dependencies/artifacts absent.",
+    "dataFiles": "/data/saves/.writer.lock\n/data/saves/checkpoint.json",
+    "contentDistribution": {
+      "catalogSha256": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21",
+      "assets": 238,
+      "uniqueCheckedMediaAndNotices": 509,
+      "notices": 4,
+      "baseContentRoots": [
+        "bundled-v2"
+      ],
+      "serverBrowserCatalogsIdentical": true
+    }
+  },
+  "evidenceRoot": "tmp/p3-11",
+  "qualifications": [
+    "P3-12 generation UX completion remains open.",
+    "Interactive authoring/terrain editing P3-13..16 remains open.",
+    "Final P3 capacity regression and P3-17 remain open.",
+    "Existing P2 fidelity/crop/optional-source, native/deferred-browser, original-runtime/full-city/import gates retain scope.",
+    "BGM remains deferred."
+  ],
+  "evidenceLogSha256": {
+    "tmp/p3-11/full-build.log": "a623493e990513ac1c9f0a4149d305c8e9876369ed0ed17e95bfc39ce1f3309d",
+    "tmp/p3-11/dotnet-tests.log": "4b59a616b24190caed86b68e32bcb2c517a0f046fc562a1b6c7cedf93a302ec5",
+    "tmp/p3-11/web-build.log": "a0a3bda698571cd01022ffcfb5adf5a7770a3101aaed5eb4a201ae6693b275e0",
+    "tmp/p3-11/client-tests.log": "ad909822ba1365f421a2c943ef67de911aa0c19f5483385d36ee2cdb55615e77",
+    "tmp/p3-11/python-tests.log": "79dbf27cafe3e4be6720eccef66e7002911b3716c089e70c0ae8fa832bfd4570",
+    "tmp/p3-11/browser-final.log": "37145b2e787e25034c0e4d934772a2e5bc7755942eab16f2b87de36b44caa27f",
+    "tmp/p3-11/optional-source.log": "ad8f158a842327483b36945359e2fc46011d1b05f762f541e096f7ce1d5a3156",
+    "tmp/p3-11/optional-prepared.log": "caf649dc8e07382a3ff3a2db97b3b656670a2bb1e96ebaceed6e3612ebe57c45",
+    "tmp/p3-11/capacity-browser-final.log": "34bd9477245ef16b8e0181b41a072272877cf26cabc2ea00e137aaac55052dbb",
+    "tmp/p3-11/fixture-checks.log": "4c4df9cda34c587005005b4dbd4f8210ffd4fc14a242b8c171cb82344928b88d",
+    "tmp/p3-11/terrain-review.log": "9b7c1c3854598fe36d29fcb74b691bf4b929ccf4d8472606017024f83c986fc0",
+    "tmp/p3-11/decoder-review.log": "8a04009e832456a94452adf1b7c422c5f3a30cec6417f52aed563a67e99197f9",
+    "tmp/p3-11/docker-build-final.log": "89a0d735460158f3d4cf8f59f7a1ddbe1c7b20c211173d4dffd9c74ad44def81",
+    "tmp/p3-11/linux.log": "3176d0d84da694f32bccfafb43e10f274e43703c12c1fedac879d6ff412078e3"
+  },
+  "visualEvidence": {
+    "tmp/p3-11/browser-final/forests/forest-en-preview.png": "5cc91a526425bceec731a0cd6c7785ab852103c9630b3e21d7f6494357314149",
+    "tmp/p3-11/browser-final/forests/forest-en-live.png": "f570679e0044fd4483a5a73eecd556dec62d940dec0204f979d674567757ad57",
+    "tmp/p3-11/browser-final/forests/forest-ja-narrow.png": "b377d3b9c4480dd8f39add0f545ba64bf842e65ba55aba0c5ef73d1f80e059c9",
+    "tmp/p3-11/capacity-browser-final/forest-dense-large.png": "d060a8df2c041834369d93708970ccd8dfcf3e2cb3508327ce9177e10d639faa",
+    "tmp/p3-11/capacity-browser-final/forest-coast-large.png": "6c9477d3004476ce859c3d3982660cd0302a91ae4896847751761574821d137e"
+  }
+}

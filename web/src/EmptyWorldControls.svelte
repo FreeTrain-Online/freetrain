@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import DecisionModal from './DecisionModal.svelte';
   import { messages, interpolate, type Locale } from './lib/localization.ts';
-  type Candidate = { id: string; requestHash: string; candidateHash: string; name: string; dimensions: { h: number; v: number; z: number }; waterLevel: number; saveBytes: number; snapshotBytes: number; expiresAt: string; ground?: number[]; imagePreview?: string; geography?: {metrics:{seaCells:number;landCells:number;seaComponents:number;landComponents:number;waterPercent:number;lakeCells:number;lakeComponents:number;riverCount:number};seaMask:string} };
+  type Candidate = { id: string; requestHash: string; candidateHash: string; name: string; dimensions: { h: number; v: number; z: number }; waterLevel: number; saveBytes: number; snapshotBytes: number; expiresAt: string; ground?: number[]; imagePreview?: string; geography?: {metrics:{seaCells:number;landCells:number;seaComponents:number;landComponents:number;waterPercent:number;lakeCells:number;lakeComponents:number;riverCount:number};seaMask:string;forestMask?:string;startingMask?:string;forests?:{eligibleCells:number;maskCells:number;forestCells:number;trees:number;reservedCells:number;largestFlatArea:number}} };
   type Provider = { binding: { contributionId:string }; name:string; author:string; description:string; dimensions:{h:number;v:number;z:number};waterLevel:number };
   let { locale, epoch, revision, disabled, onbusy, onmodal }: { locale: Locale; epoch?: string; revision?: string; disabled: boolean; onbusy: (busy: boolean) => void; onmodal: () => void } = $props();
   const text = $derived(messages[locale]);
@@ -13,13 +13,21 @@
   let lakeCount=$state<number|undefined>(0), lakeArea=$state<number|undefined>(3), riverCount=$state<number|undefined>(0), riverWidth=$state<number|undefined>(1), riverMeander=$state<number|undefined>(30), riverOutlet=$state('automatic');
   const outlets=['automatic','north','east','south','west','edgeToEdge'] as const;
   const directions = [{bit:1,label:'coastNorth'},{bit:2,label:'coastEast'},{bit:4,label:'coastSouth'},{bit:8,label:'coastWest'}] as const;
+  type ForestChoice = {binding:{packId:string;version:string;catalogHash:string;contributionId:string};species:string;variant:string};
+  let forestChoices=$state<ForestChoice[]>([]), forestCoverage=$state<number|undefined>(0), clustering=$state<number|undefined>(50), startingArea=$state<number|undefined>(0), forestVariant=$state('natural');
+  const species=['cedar','pine','camphor','maple','ginkgo','beech'] as const;
+  const speciesLabels={cedar:'treeCedar',pine:'treePine',camphor:'treeCamphor',maple:'treeMaple',ginkgo:'treeGinkgo',beech:'treeBeech'} as const;
+  let treeSet=$state<string[]>([...species]);
+  const palette=$derived(forestChoices.filter(c=>c.variant===forestVariant && treeSet.includes(c.species)).map(c=>c.binding));
   let providers = $state<Provider[]>([]);
   let requestAbort:AbortController|undefined;
   $effect(()=>{void fetch('/api/worlds/heightmap/providers').then(r=>r.ok?r.json():[]).then(rows=>{providers=rows;}).catch(()=>{});});
+  $effect(()=>{const controller=new AbortController();void fetch('/api/worlds/generated/forests',{signal:controller.signal}).then(r=>r.ok?r.json():[]).then(rows=>{forestChoices=rows;}).catch(()=>{});return()=>controller.abort();});
   const maxSide = $derived(2048);
   const selectedProvider = $derived(providers.find(p=>p.binding.contributionId===provider));
   let name = $state(''), h = $state<number|undefined>(30), v = $state<number|undefined>(42), z = $state<number|undefined>(6), water = $state<number|undefined>(1);
-  const waterValid=$derived([lakeCount,lakeArea,riverCount,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverCount!>=0 && riverCount!<=4 && riverWidth!>=1 && riverWidth!<=4 && riverMeander!>=0 && riverMeander!<=100 && (riverCount===0 || (riverOutlet==='edgeToEdge'?coast==='inland' && lakeCount===0:riverOutlet==='automatic'?coast!=='inland' || lakeCount!>0:coast==='island' || coast==='sides' && Boolean(sides & (1<<(['north','east','south','west'].indexOf(riverOutlet)))))) && (coast==='inland'?0:coverage!)+lakeCount!*lakeArea!+100*riverCount!*riverWidth!*Math.min(h??0,v??0)/((h??1)*(v??1))<=75);
+  const forestValid=$derived([forestCoverage,clustering,startingArea].every(Number.isInteger) && forestCoverage!>=0 && forestCoverage!<=90 && clustering!>=0 && clustering!<=100 && startingArea!>=0 && startingArea!<=Math.floor((h??0)*(v??0)/4) && (forestCoverage===0 || palette.length===treeSet.length && palette.length>0));
+  const waterValid=$derived([lakeCount,lakeArea,riverCount,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverCount!>=0 && riverCount!<=4 && riverWidth!>=1 && riverWidth!<=4 && riverMeander!>=0 && riverMeander!<=100 && (riverCount===0 || (riverOutlet==='edgeToEdge'?coast==='inland' && lakeCount===0:riverOutlet==='automatic'?coast!=='inland' || lakeCount!>0:coast==='island' || coast==='sides' && Boolean(sides & (1<<(['north','east','south','west'].indexOf(riverOutlet)))))) && (coast==='inland'?0:coverage!)+100*(startingArea??0)/((h??1)*(v??1))+lakeCount!*lakeArea!+100*riverCount!*riverWidth!*Math.min(h??0,v??0)/((h??1)*(v??1))<=75);
   let candidate = $state<Candidate>();
   let previewImage=$state<string>();
   $effect(()=>{
@@ -28,6 +36,7 @@
     const width=Math.min(256,c.dimensions.h),height=Math.min(256,c.dimensions.v),ctx=canvas.getContext('2d');
     if(!ctx)return;canvas.width=width;canvas.height=height;
     const image=ctx.createImageData(width,height),sea=c.geography?Uint8Array.from(atob(c.geography.seaMask),s=>s.charCodeAt(0)):undefined;
+    const forests=c.geography?.forestMask?Uint8Array.from(atob(c.geography.forestMask),s=>s.charCodeAt(0)):undefined, starting=c.geography?.startingMask?Uint8Array.from(atob(c.geography.startingMask),s=>s.charCodeAt(0)):undefined;
     for(let y=0;y<height;y++)for(let x=0;x<width;x++) {
       const index=Math.floor(y*c.dimensions.v/height)*c.dimensions.h+Math.floor(x*c.dimensions.h/width),g=c.ground[index],i=4*(y*width+x);
       const wet=sea?Boolean(sea[index>>3] & (1<<(index%8))):g<c.waterLevel;
@@ -36,16 +45,18 @@
       const shade=Math.round(50+170*g/c.dimensions.z);
       image.data[i]=wet?0:Math.round(shade*.7);image.data[i+1]=wet?114:shade;
       image.data[i+2]=wet?188:Math.round(shade*.5);image.data[i+3]=255;
+      if(!wet && forests && (forests[index>>3] & (1<<(index%8)))) {image.data[i]=24;image.data[i+1]=82;image.data[i+2]=38;}
+      if(!wet && starting && (starting[index>>3] & (1<<(index%8)))) {image.data[i]=238;image.data[i+1]=198;image.data[i+2]=82;}
     }
     ctx.putImageData(image,0,0);
     previewImage=canvas.toDataURL('image/png');
   });
   let capturedEpoch = $state<string>(), capturedRevision = $state<string>();
   let busy = $state(false), confirmation = $state(false);
-  type Feedback = 'creationFailed'|'staleCandidate'|'creationBusy'|'created'|'idle'|'imageFormat'|'imageBytes'|'imagePixels'|'imageAlpha'|'imageAnimation'|'imageInvalid'|'coastCoverageImpossible'|'coastTopologyImpossible'|'coastBoundaryImpossible'|'lakeImpossible'|'riverImpossible';
+  type Feedback = 'creationFailed'|'staleCandidate'|'creationBusy'|'created'|'idle'|'imageFormat'|'imageBytes'|'imagePixels'|'imageAlpha'|'imageAnimation'|'imageInvalid'|'coastCoverageImpossible'|'coastTopologyImpossible'|'coastBoundaryImpossible'|'lakeImpossible'|'riverImpossible'|'startingAreaImpossible';
   let feedback = $state<Feedback>('idle');
   let generation = 0;
-  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && h!*v!<=1700000 && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 && waterValid && (coast==='inland' || Number.isInteger(coverage) && coverage!>=5 && coverage!<=75 && (coast!=='sides' || sides!==0)) || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
+  const valid = $derived([h,v,z,water].every(Number.isInteger) && h!>=1 && h!<=maxSide && v!>=1 && v!<=maxSide && h!*v!<=1700000 && z!>=1 && z!<=64 && water!>=0 && water!<z! && name.length<=128 && !/[\u0000-\u001f\u007f-\u009f]/.test(name) && (source==='empty' || source==='generated' && h!>=16 && v!>=16 && z!>=8 && water!>=1 && water!<=z!-4 && [seed,amount,scale,smoothness].every(Number.isInteger) && seed!>=-2147483648 && seed!<=2147483647 && amount!>=0 && amount!<=100 && scale!>=4 && scale!<=128 && smoothness!>=0 && smoothness!<=100 && waterValid && forestValid && (coast==='inland' || Number.isInteger(coverage) && coverage!>=5 && coverage!<=75 && (coast!=='sides' || sides!==0)) || source==='heightmap' && Boolean(provider || file && file.size>0 && file.size<=8388608)));
   async function call(path: string, body: unknown) {
     const signal=path==='preview'&&requestAbort?AbortSignal.any([requestAbort.signal,AbortSignal.timeout(35000)]):AbortSignal.timeout(35000);
     const response = await fetch(`/api/worlds/empty/${path}`, { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal });
@@ -71,8 +82,8 @@
       let result:Candidate;
       if(source==='empty')result=await call('preview',{name:name || text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r});
       else if(source==='generated') {
-        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:['inland','island','sides'].indexOf(coast),sides:coast==='sides'?sides:0,waterPercent:coast==='inland'?0:coverage},lakes:{count:lakeCount,areaPercent:lakeCount?lakeArea:0},rivers:{count:riverCount,width:riverWidth,meander:riverMeander,outlet:outlets.indexOf(riverOutlet as typeof outlets[number])},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0}})});
-        if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.code==='geographyImpossible'?(String(error.constraint).startsWith('lake-')?'lakeImpossible':String(error.constraint).startsWith('river-')?'riverImpossible':error.constraint==='coast-coverage'?'coastCoverageImpossible':['coast-boundary','coast-sector','coast-island-rim'].includes(error.constraint)?'coastBoundaryImpossible':'coastTopologyImpossible'):error.code||'creationFailed');}
+        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:['inland','island','sides'].indexOf(coast),sides:coast==='sides'?sides:0,waterPercent:coast==='inland'?0:coverage},lakes:{count:lakeCount,areaPercent:lakeCount?lakeArea:0},rivers:{count:riverCount,width:riverWidth,meander:riverMeander,outlet:outlets.indexOf(riverOutlet as typeof outlets[number])},forests:{coveragePercent:forestCoverage,clustering,palette:forestCoverage?palette:[]},startingArea}})});
+        if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.code==='geographyImpossible'?(error.constraint==='starting-area'?'startingAreaImpossible':String(error.constraint).startsWith('lake-')?'lakeImpossible':String(error.constraint).startsWith('river-')?'riverImpossible':error.constraint==='coast-coverage'?'coastCoverageImpossible':['coast-boundary','coast-sector','coast-island-rim'].includes(error.constraint)?'coastBoundaryImpossible':'coastTopologyImpossible'):error.code||'creationFailed');}
         result=await response.json();
       } else {
         const query=new URLSearchParams({name:name||text.unnamedWorld,h:String(h),v:String(v),z:String(z),water:String(water),epoch:String(e),revision:String(r)});
@@ -86,7 +97,7 @@
     }catch(error){
       const code=error instanceof Error?error.message:'';
       const imageErrors:Record<string,Feedback>={'image-format':'imageFormat','image-bytes':'imageBytes','image-pixels':'imagePixels','image-alpha':'imageAlpha','image-animation':'imageAnimation','image-invalid':'imageInvalid'};
-      feedback=token!==generation?'staleCandidate':imageErrors[code]??(['coastCoverageImpossible','coastTopologyImpossible','coastBoundaryImpossible','lakeImpossible','riverImpossible'].includes(code)?code as Feedback:code==='creationBusy'?'creationBusy':['staleCandidate','staleEpoch','staleRevision'].includes(code)?'staleCandidate':'creationFailed');
+      feedback=token!==generation?'staleCandidate':imageErrors[code]??(['coastCoverageImpossible','coastTopologyImpossible','coastBoundaryImpossible','lakeImpossible','riverImpossible','startingAreaImpossible'].includes(code)?code as Feedback:code==='creationBusy'?'creationBusy':['staleCandidate','staleEpoch','staleRevision'].includes(code)?'staleCandidate':'creationFailed');
     }
     finally{busy=false;onbusy(false);}
   }
@@ -127,6 +138,16 @@
     {/if}
     <p class="hint">{text.waterFeaturesHelp}</p>
     {#if !waterValid}<p role="status">{text.waterSettingsInvalid}</p>{/if}
+    <label class="field">{text.forestPreset}<select aria-label={text.forestPreset} value={forestCoverage===0?'0':forestCoverage===15?'15':forestCoverage===35?'35':forestCoverage===70?'70':'custom'} onchange={event=>{if(event.currentTarget.value!=='custom')forestCoverage=Number(event.currentTarget.value);}}><option value="0">{text.forestNone}</option><option value="15">{text.forestSparse}</option><option value="35">{text.forestStandard}</option><option value="70">{text.forestDense}</option><option value="custom">{text.forestCustom}</option></select></label>
+    <label class="field">{text.forestCoverage}<input type="number" min="0" max="90" step="1" bind:value={forestCoverage}/></label>
+    {#if forestCoverage}
+      <label class="field">{text.forestClustering}<input type="number" min="0" max="100" step="1" bind:value={clustering}/></label>
+      <label class="field">{text.forestGround}<select aria-label={text.forestGround} bind:value={forestVariant}><option value="natural">{text.forestNatural}</option><option value="mountain">{text.forestMountain}</option><option value="grass">{text.forestGrass}</option></select></label>
+      <fieldset class="coast-directions"><legend>{text.forestSpecies}</legend>{#each species as tree}<label><input type="checkbox" bind:group={treeSet} value={tree}/>{text[speciesLabels[tree]]}</label>{/each}</fieldset>
+      {#if !palette.length}<p role="status">{text.forestUnavailable}</p>{/if}
+    {/if}
+    <label class="field">{text.startingArea}<input type="number" min="0" max={Math.floor((h??0)*(v??0)/4)} step="1" bind:value={startingArea}/></label>
+    <p class="hint">{text.forestHelp}</p>
   {/if}
   <label class="field">{text.worldName}<input maxlength="128" bind:value={name} placeholder={text.unnamedWorld}/></label>
   <label class="field">{text.worldH}<input type="number" min={source==='generated'?16:1} max={maxSide} step="1" disabled={!!provider} bind:value={h}/></label>
@@ -146,8 +167,9 @@
     {#if candidate.ground}<img src={previewImage} alt={text.heightmapTerrainPreview} style="width:100%;max-height:240px;object-fit:contain;image-rendering:pixelated"/>{:else}
     <svg viewBox="0 0 240 140" role="img" aria-label={text.emptyPreviewLabel}><polygon points={`120,10 ${120+100*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.h/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120+100*(candidate.dimensions.h-candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*(candidate.dimensions.h+candidate.dimensions.v)/Math.max(candidate.dimensions.h,candidate.dimensions.v)} ${120-100*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)},${10+60*candidate.dimensions.v/Math.max(candidate.dimensions.h,candidate.dimensions.v)}`} fill="#6c9c55" stroke="currentColor"/></svg>{/if}
     <p>{candidate.name} · {candidate.dimensions.h} × {candidate.dimensions.v} × {candidate.dimensions.z}</p>
-    <p>{text.worldWater}: {candidate.waterLevel} · {text.zeroRails}</p>
+    <p>{text.worldWater}: {candidate.waterLevel} · {source==='empty'?text.zeroRails:text.noRails}</p>
     {#if candidate.geography}<p data-testid="geography-metrics">{interpolate(text.coastMetrics,{water:candidate.geography.metrics.waterPercent.toFixed(1),land:candidate.geography.metrics.landCells.toLocaleString(locale),seas:candidate.geography.metrics.seaComponents})}</p><p data-testid="water-metrics">{interpolate(text.waterMetrics,{lakes:candidate.geography.metrics.lakeComponents,lakeCells:candidate.geography.metrics.lakeCells,rivers:candidate.geography.metrics.riverCount})}</p><p>{text.coastCompass}</p>{/if}
+    {#if candidate.geography?.forests}<p data-testid="forest-metrics">{interpolate(text.forestMetrics,{eligible:candidate.geography.forests.eligibleCells,mask:candidate.geography.forests.maskCells,forests:candidate.geography.forests.forestCells,trees:candidate.geography.forests.trees,reserved:candidate.geography.forests.reservedCells,flat:candidate.geography.forests.largestFlatArea})}</p><p>{text.forestLegend}</p>{/if}
     <p>{text.candidateBytes}: {candidate.saveBytes.toLocaleString(locale)} / {candidate.snapshotBytes.toLocaleString(locale)}</p>
   </div>
 {/if}

@@ -185,7 +185,8 @@ try:
         previous_hash = hashlib.sha256(call('/api/saves/download').read()).hexdigest()
         start = time.monotonic()
         candidate = json.load(call('/api/worlds/generated/preview', request))
-        generation = {'previewMs': (time.monotonic()-start)*1000, 'metrics': candidate['geography']['metrics']}
+        generation = {'previewMs': (time.monotonic()-start)*1000, 'metrics': candidate['geography']['metrics'],
+                      'forests': candidate['geography'].get('forests')}
         assert generation['previewMs'] < 30000
         assert hashlib.sha256(call('/api/saves/download').read()).hexdigest() == previous_hash
         commit = {key: candidate[key] for key in ('id', 'requestHash', 'candidateHash')}

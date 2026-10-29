@@ -27,12 +27,14 @@ def check(path):
         x, y = struct.unpack_from('<ii', occupants, offset+18)
         col, row = (x-center+y)//2, y-x+center
         assert 0 <= col < h and 0 <= row < v
-        assert occupants[offset+36] == 0 and occupants[offset+42] == 0  # coast-only mountains
+        assert occupants[offset+36] == 0  # Mountain geometry, optionally decorated with realized forest.
+        trees = occupants[offset+42]
+        assert trees <= 6
         corners = struct.unpack_from('<H', occupants, offset+37)[0]
         corners_wet[row*h+col] = sum(1 << index for index,shift in enumerate((12,8,4,0))
                                       if 4*(ground[row*h+col] & 63)+((corners >> shift) & 15) < 4*water)
         wet[row*h+col] = corners_wet[row*h+col] != 0
-        offset += 43
+        offset += 43 + 3*trees
     assert offset == len(occupants)
     del occupants
     # Canonical bounds derived independently from each stored row's extrema.

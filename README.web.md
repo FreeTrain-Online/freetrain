@@ -47,7 +47,7 @@ and exact confirmation. Generated admission is H/V16–2048 (at most 1,700,000 s
 actual terrain and provenance reopen without regeneration. [P3-09 coasts](doc/web-parity-coasts.md) adds islands,
 independent world-compass coast directions, sea coverage targets (±5 percentage points),
 actual surface-water metrics and bounded topology diagnostics, including full-size fixtures.
-[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river count/width/meander/outlet controls, EN/JA feedback and exact Save7 confirmation. Vegetation/starting areas and generation UX completion remain later slices.
+[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river count/width/meander/outlet controls, EN/JA feedback and exact Save7 confirmation. Forests and starting areas are delivered in [P3-11](doc/web-parity-forests.md): six species/18 ground treatments, source scatter, coverage/clustering/palette controls, connected level reservation and actual preview metrics. Generation UX completion remains P3-12.
 
 ## Parity source policy
 

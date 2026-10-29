@@ -233,9 +233,9 @@ test('minimum parity extent is admitted through empty, heightmap and generated p
   }
 });
 
-for(const mode of ['coast-island','water-coast'] as const) test(`minimum parity extent ${mode==='coast-island'?'coast: exact island':'water: lakes and rivers'} preview, bounded publication and checkpoint restart`,async({page,browser})=>{
+for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] as const) test(`minimum parity extent ${mode==='coast-island'?'coast: exact island':mode.startsWith('forest-')?'forest: '+mode:'water: lakes and rivers'} preview, bounded publication and checkpoint restart`,async({page,browser})=>{
  const memory=await memorySampler(browser),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const fixture=resolve(`../tmp/p3-10/capacity/${mode}`);
+ const fixture=resolve(`../tmp/${mode.startsWith('forest-')?'p3-11':'p3-10'}/capacity/${mode}`);
  try{
   execFileSync('dotnet',[probe,'--capacity','1500','1090','45',mode,fixture],{stdio:'pipe',timeout:60000});
   const expected=digest(readFileSync(join(fixture,'world.json')));await page.goto('/');await ready(page);
@@ -243,8 +243,13 @@ for(const mode of ['coast-island','water-coast'] as const) test(`minimum parity 
   await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
   await page.getByLabel('Terrain style',{exact:true}).selectOption('mountains');await page.getByLabel('Generation seed',{exact:true}).fill('-2147483648');
   await page.getByLabel('Relief (0–100)',{exact:true}).fill('100');await page.getByLabel('Feature scale (cells)',{exact:true}).fill('4');await page.getByLabel('Smoothness (0–100)',{exact:true}).fill('0');
-  await page.getByLabel('Coast layout',{exact:true}).selectOption(mode==='coast-island'?'island':'sides');
-  if(mode==='water-coast'){
+  if(mode==='forest-dense')await page.getByLabel('Terrain style',{exact:true}).selectOption('hills');
+  await page.getByLabel('Coast layout',{exact:true}).selectOption(mode==='coast-island'?'island':mode==='forest-dense'?'inland':'sides');
+  if(mode.startsWith('forest-')){
+   await page.getByLabel('Forest mask coverage (0–90%)',{exact:true}).fill('90');await page.getByLabel('Forest clustering (0–100)',{exact:true}).fill('80');
+   await page.getByLabel('Forest ground appearance',{exact:true}).selectOption('mountain');await page.getByLabel('Connected flat starting area (cells)',{exact:true}).fill(mode==='forest-dense'?'64':'16');
+  }
+  if(mode==='water-coast'||mode==='forest-coast'){
    await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('30');await page.getByLabel('Lake count (0–8)',{exact:true}).fill('2');
    await page.getByLabel('River count (0–4)',{exact:true}).fill('2');await page.getByLabel('Channel width (cells)',{exact:true}).fill('3');await page.getByLabel('Meander (0–100)',{exact:true}).fill('80');
   }
@@ -252,7 +257,7 @@ for(const mode of ['coast-island','water-coast'] as const) test(`minimum parity 
   await page.getByLabel('Stored width (H)',{exact:true}).fill('1500');await page.getByLabel('Stored length (V)',{exact:true}).fill('1090');await page.getByLabel('Levels (Z)',{exact:true}).fill('45');
   const before=await epoch(page),start=Date.now(),waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));
   await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);
-  const candidate=await response.json();expect(candidate.geography.metrics).toMatchObject(mode==='coast-island'?{seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000}:{seaSides:1,seaComponents:1,lakeComponents:2,riverCount:2});
+  const candidate=await response.json();if(mode.startsWith('forest-'))expect(candidate.geography.forests).toMatchObject({reservedCells:mode==='forest-dense'?64:16});expect(candidate.geography.metrics).toMatchObject(mode==='forest-dense'?{seaCells:0,lakeComponents:0,riverCount:0}:mode==='coast-island'?{seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000}:{seaSides:1,seaComponents:1,lakeComponents:2,riverCount:2});
   const previewMs=Date.now()-start;expect(previewMs).toBeLessThan(30000);expect(await epoch(page)).toBe(before);
   await expect(page.getByTestId('geography-metrics')).toContainText(mode==='coast-island'?'40.0%':'Surface water:');
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
@@ -274,7 +279,7 @@ for(const mode of ['coast-island','water-coast'] as const) test(`minimum parity 
   await stop(server);await startServer();await page.request.post('/api/access',{data:{secret:''}});await page.reload();await ready(page);
   expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(expected);
   const rss=memory.values();expect(rss.sampledServerPeakRss).toBeLessThan(6*1024**3);expect(rss.sampledBrowserPeakRss).toBeLessThan(6*1024**3);
-  writeFileSync(join(directory,`${mode}-large.json`),JSON.stringify({previewMs,readyMs,paintP95:paints[Math.ceil(paints.length*.95)-1],...rss,...await resident(page),metrics:candidate.geography.metrics,saveBytes:candidate.saveBytes,snapshotBytes:candidate.snapshotBytes},null,2)+'\n');
+  writeFileSync(join(directory,`${mode}-large.json`),JSON.stringify({previewMs,readyMs,paintP95:paints[Math.ceil(paints.length*.95)-1],...rss,...await resident(page),metrics:candidate.geography.metrics,forests:candidate.geography.forests,saveBytes:candidate.saveBytes,snapshotBytes:candidate.snapshotBytes},null,2)+'\n');
   expect(errors).toEqual([]);
  }finally{await memory.stop();}
 });

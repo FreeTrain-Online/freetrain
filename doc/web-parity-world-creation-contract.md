@@ -1,3 +1,5 @@
+**P3-11 forest update — 29 October 2026:** [Forests and connected level reservation](web-parity-forests.md) now execute coverage0–90, clustering0–100, exact reviewed bundled palettes and starting-area0…floor(cells/4). Reservation selects existing same-height flat land; it does not reshape water/terrain. Actual tree/reservation masks and metrics accompany retained candidate preview. Save7/protocol5 and existing size/resource/fence limits remain. P3-12 and overall P3 remain open; earlier entries retain their historical scope.
+
 **P3-09/10 geography update — 29 October 2026:** [Coasts](web-parity-coasts.md) and [lakes/rivers](web-parity-water.md) now execute the reserved geography options. Current generated admission is H/V16–2048, at most1,700,000 stored cells, Z8–64, water1…Z−4, with forests0 and starting-area0. Coast coverage is checked before water features; lake rims/area and channel width/banks/outlets are checked after normalization. Whole-land connectivity applies before channels, which can divide the landmass. Later forest/starting-area/UX slices remain open; historical admissions below retain their original scope.
 
 **P3-16a capacity update — 29 October 2026:** [Current packed state, coherent transfer, admissions and evidence](web-parity-map-capacity.md) supersede the temporary size/byte/working limits and Save 6/protocol 4 statements below. Earlier measurements remain historical slice evidence. Current envelopes are H/V≤2048, at most 1,700,000 stored cells, Z≤64 (generated minimum H/V16,Z8), Save 7/protocol 5 and 256 MiB assembled state. The concrete scale target is 1500×1090×45 stored. Overall P3 and the recorded P2/native/full-game gates remain open.
@@ -160,15 +162,15 @@ catalog hash, contribution ID and capability kind. Missing packs, changed hashes
 wrong handlers and prepared-only content fail explicitly. No GUID/case fallback,
 optional-pack discovery or unprepared resource execution occurs in Simulation.
 
-[WorldCreationCapabilities.Inspect](../src/FreeTrain.Online.Content/WorldCreationCapabilities.cs)
-binds all18 existing forest recipes and their six species/base/`-m`/`-g` declarations
-to the bundled catalog's pack/version/hash. It checks frame readiness and deliberately
-marks every entry runtime-unavailable. There is no ready Terrain capability yet,
-so even Empty cannot launch against today's prepared catalog. Fake ready
-capabilities exist only in contract tests. Ordinary providers retain their ExAV
-IDs from the P3-01 review; fixed maps must resolve reviewed prepared resources in
-P3-07. Optional capability registration remains on the separate installed pack set;
-no non-free asset or derivative enters this change.
+[WorldCreationCapabilities](../src/FreeTrain.Online.Content/WorldCreationCapabilities.cs)
+keeps `Inspect` as prepared-only inventory; it grants no execution permission.
+`EmptyReady` requires the reviewed bundled terrain profile, and `GeneratedReady`
+adds only the18 explicitly reviewed six-species forest handlers. `ForestChoices`
+returns exact bindings and the source species/ground-treatment mapping to the UI.
+Fixed heightmaps resolve their separately reviewed providers. Optional capability
+registration remains separate; prepared optional art cannot become procedural
+foliage without reviewed handlers, and no non-free asset or derivative enters this
+change.
 
 For bundled-only requests the catalog-set hash is its catalog hash. Once multiple
 packs participate, the service must freeze a deterministic hash of sorted exact

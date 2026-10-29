@@ -6,9 +6,7 @@ public static class ReliefTerrain
 {
     private const int One = 65536;
 
-    // Vegetation and starting-area constraints ship in the following slice.
-    public static bool Supports(GeneratedWorldRequest request) => WorldCreationProfile.Validate(request).IsEmpty &&
-        request.Options is { Forests: { CoveragePercent: 0 }, StartingArea: 0 };
+    public static bool Supports(GeneratedWorldRequest request) => WorldCreationProfile.Validate(request).IsEmpty;
 
     // Public literal-sample boundary for profile compatibility fixtures. h2 is twice
     // stored H; odd V rows have an additional half-cell stagger, matching the loader.
@@ -67,8 +65,12 @@ public static class ReliefTerrain
         var ground = new int[d.H * d.V];
         for (int v = 0; v < d.V; v++) for (int h = 0; h < d.H; h++)
         { work.Spend(64); ground[v * d.H + h] = Sample(request, seed, 2 * h, v) / 4; }
-        TerrainWorld Finish(TerrainWorld world) => request.Options.Lakes.Count + request.Options.Rivers.Count == 0 ? world
-            : WaterTerrain.Create(request, world, profile, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+        TerrainWorld Finish(TerrainWorld world)
+        {
+            if (request.Options.Lakes.Count + request.Options.Rivers.Count > 0)
+                world = WaterTerrain.Create(request, world, profile, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+            return ForestTerrain.Create(request, world, work, cancellation);
+        }
         if (request.Options.Coast.Kind == CoastKind.Inland)
             return Finish(NaturalTerrain.Normalize(request, profile, ground, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation));
         GeographyException? failure = null;

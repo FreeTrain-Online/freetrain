@@ -1,5 +1,12 @@
 # Natural terrain generation research — 29 October 2026
 
+**Planning follow-up — 29 October 2026:** the owner added two independent optional
+stretch goals to the parity plan:
+[STRETCH-TERRAIN — natural landscape generation](../tmp/web-feature-parity-port-plan.md#stretch-terrain--natural-landscape-generation)
+and [STRETCH-WATER — variable water levels and streams](../tmp/web-feature-parity-port-plan.md#stretch-water--variable-water-levels-and-streams).
+They do not add parity exit requirements or implement a new water model. The
+research and implementation qualifications below retain their scope.
+
 Recommendation: prototype a drainage-aware terrain pipeline using a mature noise
 library and a river-network-first method, then evaluate the result through
 FreeTrain's actual tile conversion and renderer. The strongest initial candidates

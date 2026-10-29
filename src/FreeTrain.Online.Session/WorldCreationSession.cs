@@ -9,7 +9,8 @@ namespace FreeTrain.Online.Session;
 public sealed record EmptyCandidateRead(Guid Id, string RequestHash, string CandidateHash, string Name,
     WorldDimensions Dimensions, int WaterLevel, int SaveBytes, int SnapshotBytes, DateTimeOffset ExpiresAt, int[]? Ground = null, string? ImagePreview = null,
     GeographyPreview? Geography = null);
-public sealed record GeographyPreview(GeographyMetrics Metrics, string SeaMask);
+public sealed record GeographyPreview(GeographyMetrics Metrics, string SeaMask, ForestMetrics? Forests = null,
+    string? ForestMask = null, string? StartingMask = null);
 
 public sealed partial class SessionHost
 {
@@ -138,7 +139,19 @@ public sealed partial class SessionHost
             var metrics = WaterTerrain.Validate(request, state.World, work);
             var wet = CoastTerrain.SeaMask(state.World, work); var packed = new byte[(wet.Length + 7) / 8];
             for (int i = 0; i < wet.Length; i++) { work.Spend(1); if (wet[i]) packed[i / 8] |= (byte)(1 << (i % 8)); }
-            geography = new(metrics, Convert.ToBase64String(packed));
+            var layout = ForestTerrain.Layout(request, state.World, work);
+            var forests = ForestTerrain.Measure(request, state.World, layout, work);
+            var forestBits = new byte[packed.Length]; var startingBits = new byte[packed.Length];
+            for (int k = 0; k < state.World.Occupants.Length; k++)
+            {
+                work.Spend(1); if (state.World.Occupants[k].Forest is null) continue;
+                var p = state.World.Space.ToStorage(state.World.Spatial.Entities[k].Anchor); int i = p.V * request.Dimensions.H + p.H;
+                forestBits[i / 8] |= (byte)(1 << (i % 8));
+            }
+            for (int i = 0; i < layout.Reserved.Length; i++)
+            { work.Spend(1); if (layout.Reserved[i]) startingBits[i / 8] |= (byte)(1 << (i % 8)); }
+            geography = new(metrics, Convert.ToBase64String(packed), forests,
+                Convert.ToBase64String(forestBits), Convert.ToBase64String(startingBits));
         }
         return new(retained, state, snapshotBytes, geography);
     }

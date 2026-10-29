@@ -44,7 +44,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new HeightmapWorldRequest(WorldCreationProfile.Id, "Capacity heightmap", new(h, v, z), 4, decoded.Input);
         state = new(HeightmapTerrain.Create(r, decoded.Raster, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else if (mode == "generated" || mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal))
+    else if (mode == "generated" || mode.StartsWith("forest-", StringComparison.Ordinal) || mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal))
     {
         var r = WorldCreationProfile.Generated(int.MinValue, "Capacity relief") with { Dimensions = new(h, v, z) };
         r = r with { Options = r.Options with { StartingArea = 0, Relief = new(ReliefKind.Mountains, 100, 4, 0) } };
@@ -62,6 +62,17 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
                 Rivers = new(mode == "water-lakes" ? 0 : 2, 3, 80, mode == "water-edge" ? RiverOutlet.EdgeToEdge : RiverOutlet.Automatic),
                 Coast = mode == "water-coast" ? new(CoastKind.Sides, CoastSides.North, 30) : new(CoastKind.Inland, CoastSides.None, 0) } };
         }
+        if (mode.StartsWith("forest-", StringComparison.Ordinal))
+        {
+            if (mode is not ("forest-dense" or "forest-coast" or "forest-sparse")) throw new ArgumentException("Unknown forest capacity mode.");
+            var palette = WorldCreationCapabilities.ForestChoices().Where(c => c.Variant == "mountain").Select(c => c.Binding).ToImmutableArray();
+            r = r with { Options = r.Options with { StartingArea = mode == "forest-coast" ? 16 : 64,
+                Forests = new(mode == "forest-sparse" ? 15 : 90, 80, palette),
+                Relief = mode == "forest-coast" ? r.Options.Relief : new(ReliefKind.Hills, 50, 24, 50),
+                Coast = mode == "forest-coast" ? new(CoastKind.Sides, CoastSides.North, 30) : r.Options.Coast,
+                Lakes = mode == "forest-coast" ? new(2, 3) : r.Options.Lakes,
+                Rivers = mode == "forest-coast" ? new(2, 3, 80, RiverOutlet.Automatic) : r.Options.Rivers } };
+        }
         state = new(ReliefTerrain.Create(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
     else if (mode == "empty")
@@ -69,7 +80,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new EmptyWorldRequest(WorldCreationProfile.Id, "Capacity empty", new(h, v, z), 1);
         state = new(TerrainWorld.Empty(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, coast-{island,north,east,south,west,adjacent,opposite}, water-{lakes,inland,coast,edge}, heavy or dense.");
+    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, coast-{island,north,east,south,west,adjacent,opposite}, water-{lakes,inland,coast,edge}, forest-{sparse,dense,coast}, heavy or dense.");
     var createMs = start.Elapsed.TotalMilliseconds; var retainedWorld = GC.GetTotalMemory(true);
     var bytes = SaveCodec.Write(state); var saveMs = start.Elapsed.TotalMilliseconds - createMs;
     File.WriteAllBytes(Path.Combine(directory, "world.json"), bytes);
@@ -81,9 +92,12 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
     if (!bytes.SequenceEqual(SaveCodec.Write(restored))) throw new InvalidOperationException("Capacity round trip mismatch.");
     var chunkCount = StateTransfer.Chunks(snapshot, packet).Count();
     process.Refresh();
-    var geography = mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal) ? WaterTerrain.Validate(
+    var geography = mode.StartsWith("forest-", StringComparison.Ordinal) || mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal) ? WaterTerrain.Validate(
         (GeneratedWorldRequest)JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!, state.World) : null;
-    var report = new { mode, h, v, z, geography, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
+    var forests = mode.StartsWith("forest-", StringComparison.Ordinal) ? ForestTerrain.Measure(
+        (GeneratedWorldRequest)JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!, state.World,
+        ForestTerrain.Layout((GeneratedWorldRequest)JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!, state.World)) : null;
+    var report = new { mode, h, v, z, geography, forests, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
         saveBytes = bytes.Length, packetBytes = packet.Length, chunkCount, retainedWorld,
         retainedTwoWorldsAndTransport = GC.GetTotalMemory(true), peakRss = process.PeakWorkingSet64 > 0 ? (long?)process.PeakWorkingSet64 : null,
         elapsedMs = start.Elapsed.TotalMilliseconds, runtime = RuntimeInformation.FrameworkDescription,

@@ -1,0 +1,1890 @@
+{
+  "profile": "terrain-generation-1",
+  "algorithm": "WORLDGEN-FOREST-1",
+  "oracle": "Independent Python XYZ components, source manifest density/count, fixed-point mask and cell-local realized scatter. UTF-8 row-index:contribution:x,y,sprite forest records; byte reservation grid.",
+  "cases": [
+    {
+      "id": "WORLDGEN-FOREST-001",
+      "seed": 0,
+      "coverage": 0,
+      "clustering": 50,
+      "starting": 0,
+      "variant": 0,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 864,
+      "maskCells": 0,
+      "forestCells": 0,
+      "trees": 0,
+      "reservedCells": 0,
+      "largestFlatArea": 242,
+      "forestHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "startingHash": "0ed9e26c3f1435e498beb2369bdf5a04a7fe4f0e302068ef2c308e1ff872b5f7",
+      "examples": []
+    },
+    {
+      "id": "WORLDGEN-FOREST-002",
+      "seed": 0,
+      "coverage": 15,
+      "clustering": 0,
+      "starting": 64,
+      "variant": 0,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 800,
+      "maskCells": 120,
+      "forestCells": 107,
+      "trees": 261,
+      "reservedCells": 64,
+      "largestFlatArea": 242,
+      "forestHash": "7ed7ce6108ddae88272a7af69fe90b4734909256d1ecc2aa8b2104034b033828",
+      "startingHash": "006ae87e27b96fb9678a765e2d1cab36239ed78b13f2b4ce51239fc265e00ff5",
+      "examples": [
+        {
+          "index": 12,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+          "trees": [
+            [
+              14,
+              5,
+              2
+            ],
+            [
+              7,
+              9,
+              3
+            ],
+            [
+              16,
+              14,
+              5
+            ]
+          ]
+        },
+        {
+          "index": 14,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              14,
+              4,
+              3
+            ],
+            [
+              7,
+              5,
+              1
+            ],
+            [
+              24,
+              11,
+              1
+            ],
+            [
+              17,
+              14,
+              3
+            ],
+            [
+              12,
+              14,
+              6
+            ]
+          ]
+        },
+        {
+          "index": 16,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              11,
+              12,
+              5
+            ],
+            [
+              13,
+              12,
+              7
+            ],
+            [
+              14,
+              15,
+              8
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-003",
+      "seed": 0,
+      "coverage": 70,
+      "clustering": 100,
+      "starting": 64,
+      "variant": 1,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 800,
+      "maskCells": 560,
+      "forestCells": 515,
+      "trees": 1189,
+      "reservedCells": 64,
+      "largestFlatArea": 242,
+      "forestHash": "d391a3869692d1c6998e2996f975acab1422def8b0a02fe9c1a24a721120f00f",
+      "startingHash": "006ae87e27b96fb9678a765e2d1cab36239ed78b13f2b4ce51239fc265e00ff5",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+          "trees": [
+            [
+              12,
+              2,
+              6
+            ],
+            [
+              17,
+              2,
+              6
+            ],
+            [
+              15,
+              4,
+              7
+            ],
+            [
+              8,
+              9,
+              5
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+          "trees": [
+            [
+              4,
+              10,
+              2
+            ],
+            [
+              23,
+              11,
+              1
+            ],
+            [
+              20,
+              12,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+          "trees": [
+            [
+              15,
+              2,
+              5
+            ],
+            [
+              17,
+              5,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-004",
+      "seed": 42,
+      "coverage": 35,
+      "clustering": 50,
+      "starting": 0,
+      "variant": 2,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 864,
+      "maskCells": 302,
+      "forestCells": 277,
+      "trees": 685,
+      "reservedCells": 0,
+      "largestFlatArea": 141,
+      "forestHash": "5185572d34ca46d70264bfe8f0f65a214d49b0d530d439a4ea6602124f1db0bd",
+      "startingHash": "0ed9e26c3f1435e498beb2369bdf5a04a7fe4f0e302068ef2c308e1ff872b5f7",
+      "examples": [
+        {
+          "index": 2,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+          "trees": [
+            [
+              20,
+              13,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+          "trees": [
+            [
+              15,
+              5,
+              4
+            ],
+            [
+              22,
+              7,
+              3
+            ],
+            [
+              14,
+              7,
+              4
+            ],
+            [
+              8,
+              8,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 16,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+          "trees": [
+            [
+              11,
+              9,
+              4
+            ],
+            [
+              17,
+              10,
+              3
+            ],
+            [
+              9,
+              11,
+              0
+            ],
+            [
+              10,
+              13,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-005",
+      "seed": -2147483648,
+      "coverage": 90,
+      "clustering": 100,
+      "starting": 16,
+      "variant": 0,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 848,
+      "maskCells": 763,
+      "forestCells": 696,
+      "trees": 1637,
+      "reservedCells": 16,
+      "largestFlatArea": 210,
+      "forestHash": "3a9e4e019bf910c747bcf69c6b5e479778f1b869f4dcb38afadc550a8b1c963f",
+      "startingHash": "1552787883d4ee3babc56011e6b45c004f6e500e1afeb18b71ed3247f679c708",
+      "examples": [
+        {
+          "index": 1,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              5,
+              7,
+              3
+            ],
+            [
+              7,
+              9,
+              8
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              8,
+              5,
+              3
+            ]
+          ]
+        },
+        {
+          "index": 4,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+          "trees": [
+            [
+              20,
+              3,
+              3
+            ],
+            [
+              13,
+              11,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-006",
+      "seed": 2147483647,
+      "coverage": 90,
+      "clustering": 0,
+      "starting": 0,
+      "variant": 0,
+      "island": false,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 864,
+      "maskCells": 777,
+      "forestCells": 709,
+      "trees": 1691,
+      "reservedCells": 0,
+      "largestFlatArea": 207,
+      "forestHash": "c37a17b7952d82c568037ef32a4e9b92f520add9f7b1d496f396b62f7b35a418",
+      "startingHash": "0ed9e26c3f1435e498beb2369bdf5a04a7fe4f0e302068ef2c308e1ff872b5f7",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              21,
+              11,
+              0
+            ],
+            [
+              13,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              3,
+              8,
+              3
+            ],
+            [
+              20,
+              10,
+              1
+            ],
+            [
+              19,
+              11,
+              2
+            ],
+            [
+              14,
+              12,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              13,
+              14,
+              2
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-007",
+      "seed": 0,
+      "coverage": 35,
+      "clustering": 50,
+      "starting": 16,
+      "variant": 0,
+      "island": true,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 503,
+      "maskCells": 176,
+      "forestCells": 159,
+      "trees": 371,
+      "reservedCells": 16,
+      "largestFlatArea": 53,
+      "forestHash": "63b7a01853b6b645e05c5d3cc59a2118917ff5f7c63f50a900fcec78e7fae559",
+      "startingHash": "4156fc08d4f99d26f7c44f45fbf915ca3eb01bb97af20326fb63afb3571df9f9",
+      "examples": [
+        {
+          "index": 80,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              7,
+              8,
+              2
+            ],
+            [
+              9,
+              10,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 84,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+          "trees": [
+            [
+              16,
+              1,
+              4
+            ],
+            [
+              23,
+              11,
+              3
+            ]
+          ]
+        },
+        {
+          "index": 105,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              9,
+              12,
+              3
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-008",
+      "seed": 42,
+      "coverage": 70,
+      "clustering": 100,
+      "starting": 0,
+      "variant": 2,
+      "island": true,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 519,
+      "maskCells": 363,
+      "forestCells": 330,
+      "trees": 835,
+      "reservedCells": 0,
+      "largestFlatArea": 45,
+      "forestHash": "2a4949dfe848efc5e35788031f3405f6057e359fdd032a9b1b15571d4629cdd5",
+      "startingHash": "0ed9e26c3f1435e498beb2369bdf5a04a7fe4f0e302068ef2c308e1ff872b5f7",
+      "examples": [
+        {
+          "index": 83,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+          "trees": [
+            [
+              2,
+              9,
+              2
+            ],
+            [
+              6,
+              9,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 84,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+          "trees": [
+            [
+              13,
+              1,
+              2
+            ],
+            [
+              15,
+              4,
+              1
+            ],
+            [
+              14,
+              8,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 105,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+          "trees": [
+            [
+              17,
+              3,
+              0
+            ],
+            [
+              16,
+              7,
+              2
+            ],
+            [
+              14,
+              8,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-009",
+      "seed": 0,
+      "coverage": 35,
+      "clustering": 50,
+      "starting": 200,
+      "variant": 0,
+      "island": true,
+      "h": 32,
+      "v": 27,
+      "z": 32,
+      "water": 4,
+      "error": "starting-area"
+    },
+    {
+      "id": "WORLDGEN-FOREST-010",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "086a9c49ef7246ed9e2f2c3228ad04ae0c000b0c2720b4e585410c8cfddc227a",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              5,
+              6,
+              6
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              14,
+              3,
+              1
+            ],
+            [
+              7,
+              6,
+              8
+            ],
+            [
+              1,
+              7,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+          "trees": [
+            [
+              14,
+              1,
+              7
+            ],
+            [
+              8,
+              6,
+              8
+            ],
+            [
+              15,
+              7,
+              6
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-011",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "2c2fde5577233c09f7e748ae306ac475ef1feaf1ef8da155b4624ff2fb72c987",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+          "trees": [
+            [
+              6,
+              8,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+          "trees": [
+            [
+              18,
+              5,
+              3
+            ],
+            [
+              19,
+              10,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-012",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 149,
+      "trees": 196,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "64713fed5ac0eaae42b5a3e35032df774601250ea1833bfa767d9c38bcdcf14a",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+          "trees": [
+            [
+              22,
+              12,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+          "trees": [
+            [
+              19,
+              8,
+              6
+            ],
+            [
+              14,
+              9,
+              4
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+          "trees": [
+            [
+              12,
+              5,
+              6
+            ],
+            [
+              12,
+              11,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-013",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "ce7ac969bc060766379af7d78b58859a1f419401757c37cb6c9449f2c2fbfd49",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              19,
+              9,
+              1
+            ],
+            [
+              15,
+              14,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+          "trees": [
+            [
+              18,
+              5,
+              1
+            ],
+            [
+              19,
+              10,
+              2
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-014",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "2c3a932b08ee5bb24556a4565f7669cff0bbe7111d29626242aa69db268f5a04",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+          "trees": [
+            [
+              18,
+              5,
+              2
+            ],
+            [
+              19,
+              10,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-015",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "f84f3c383f3ac3f8dd8a3ad769d107a3063130fdf513f0e55d00f0b71cdd38b6",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+          "trees": [
+            [
+              5,
+              6,
+              4
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+          "trees": [
+            [
+              14,
+              3,
+              0
+            ],
+            [
+              7,
+              6,
+              5
+            ],
+            [
+              1,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+          "trees": [
+            [
+              14,
+              1,
+              4
+            ],
+            [
+              8,
+              6,
+              5
+            ],
+            [
+              15,
+              7,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-016",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "0eb61944e81c506a679ec03ada8bfcafc9e88a556327f86bfa6a191ad2d87003",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+          "trees": [
+            [
+              5,
+              6,
+              6
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+          "trees": [
+            [
+              14,
+              3,
+              1
+            ],
+            [
+              7,
+              6,
+              8
+            ],
+            [
+              1,
+              7,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+          "trees": [
+            [
+              14,
+              1,
+              7
+            ],
+            [
+              8,
+              6,
+              8
+            ],
+            [
+              15,
+              7,
+              6
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-017",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "af1aa5f82872998c3300fdab69a5e1a3ae72b0fc2393503b0b350a7324ad6178",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+          "trees": [
+            [
+              6,
+              8,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+          "trees": [
+            [
+              18,
+              5,
+              3
+            ],
+            [
+              19,
+              10,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-018",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 149,
+      "trees": 196,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "5394c3acd4742dba6870c8bf26eaa9567af85ab77705125a1cb2376f1b9a7572",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+          "trees": [
+            [
+              22,
+              12,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+          "trees": [
+            [
+              19,
+              8,
+              6
+            ],
+            [
+              14,
+              9,
+              4
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+          "trees": [
+            [
+              12,
+              5,
+              6
+            ],
+            [
+              12,
+              11,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-019",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "cd8bfdb459423c73ba30cf5f66807bfdafabfbd6dce50550fabc8cbc331a1943",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+          "trees": [
+            [
+              19,
+              9,
+              1
+            ],
+            [
+              15,
+              14,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+          "trees": [
+            [
+              18,
+              5,
+              1
+            ],
+            [
+              19,
+              10,
+              2
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-020",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "2e5dee306014855a08b1967d58805eb9e6cdb1ede8ab73e9ea1840384d2f7a7e",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+          "trees": [
+            [
+              18,
+              5,
+              2
+            ],
+            [
+              19,
+              10,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-021",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "0ea193e361822d62953f5de1bad4ef9622f56a002f41f93060ee6ea250a63815",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+          "trees": [
+            [
+              5,
+              6,
+              4
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+          "trees": [
+            [
+              14,
+              3,
+              0
+            ],
+            [
+              7,
+              6,
+              5
+            ],
+            [
+              1,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+          "trees": [
+            [
+              14,
+              1,
+              4
+            ],
+            [
+              8,
+              6,
+              5
+            ],
+            [
+              15,
+              7,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-022",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "73d50766030c6b57e6cf1cc37cc7c0894c2da30248eea3d2534c91d4a03fc373",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+          "trees": [
+            [
+              5,
+              6,
+              6
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+          "trees": [
+            [
+              14,
+              3,
+              1
+            ],
+            [
+              7,
+              6,
+              8
+            ],
+            [
+              1,
+              7,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+          "trees": [
+            [
+              14,
+              1,
+              7
+            ],
+            [
+              8,
+              6,
+              8
+            ],
+            [
+              15,
+              7,
+              6
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-023",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "6020ad14d0f12472afc8c871998003858f40337327fabb93b4d142b180e339ae",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+          "trees": [
+            [
+              6,
+              8,
+              2
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+          "trees": [
+            [
+              18,
+              5,
+              3
+            ],
+            [
+              19,
+              10,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-024",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 149,
+      "trees": 196,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "01e5806a7ddb65a606b92b8bbaeaa699f4536ea09c2e02e3c7e8c8b330182561",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+          "trees": [
+            [
+              22,
+              12,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+          "trees": [
+            [
+              19,
+              8,
+              6
+            ],
+            [
+              14,
+              9,
+              4
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "id": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+          "trees": [
+            [
+              12,
+              5,
+              6
+            ],
+            [
+              12,
+              11,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-025",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "63049475b3721e9da732fc8dfd3fc22533c13bbe58f649533b12d24889a6f580",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+          "trees": [
+            [
+              19,
+              9,
+              1
+            ],
+            [
+              15,
+              14,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+          "trees": [
+            [
+              18,
+              5,
+              1
+            ],
+            [
+              19,
+              10,
+              2
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-026",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 173,
+      "trees": 379,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "fa908d7d08a7736a7ef8ad15a6a158c482603fecbdb9ca69ce7ed174682c96f6",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+          "trees": [
+            [
+              19,
+              9,
+              3
+            ],
+            [
+              15,
+              14,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+          "trees": [
+            [
+              6,
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+          "trees": [
+            [
+              18,
+              5,
+              2
+            ],
+            [
+              19,
+              10,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WORLDGEN-FOREST-027",
+      "seed": -1,
+      "coverage": 90,
+      "clustering": 50,
+      "starting": 64,
+      "tree": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+      "h": 16,
+      "v": 17,
+      "z": 32,
+      "water": 4,
+      "eligibleCells": 208,
+      "maskCells": 187,
+      "forestCells": 184,
+      "trees": 581,
+      "reservedCells": 64,
+      "largestFlatArea": 272,
+      "forestHash": "249370273dfe1e2fb72e424e861eaeb650e2f5deff5b542dafb10223f1e25748",
+      "startingHash": "013838460412ad52936923444802deb97b3c0934cf9b47684d526fc463e80b86",
+      "examples": [
+        {
+          "index": 0,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+          "trees": [
+            [
+              5,
+              6,
+              4
+            ],
+            [
+              17,
+              7,
+              0
+            ],
+            [
+              16,
+              7,
+              0
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+          "trees": [
+            [
+              14,
+              3,
+              0
+            ],
+            [
+              7,
+              6,
+              5
+            ],
+            [
+              1,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "id": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+          "trees": [
+            [
+              14,
+              1,
+              4
+            ],
+            [
+              8,
+              6,
+              5
+            ],
+            [
+              15,
+              7,
+              4
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
