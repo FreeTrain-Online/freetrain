@@ -44,7 +44,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new HeightmapWorldRequest(WorldCreationProfile.Id, "Capacity heightmap", new(h, v, z), 4, decoded.Input);
         state = new(HeightmapTerrain.Create(r, decoded.Raster, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else if (mode == "generated" || mode.StartsWith("coast-", StringComparison.Ordinal))
+    else if (mode == "generated" || mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal))
     {
         var r = WorldCreationProfile.Generated(int.MinValue, "Capacity relief") with { Dimensions = new(h, v, z) };
         r = r with { Options = r.Options with { StartingArea = 0, Relief = new(ReliefKind.Mountains, 100, 4, 0) } };
@@ -55,6 +55,13 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
                 "island" => CoastSides.None, _ => throw new ArgumentException("Unknown coast capacity mode.") };
             r = r with { Options = r.Options with { Coast = new(sides == CoastSides.None ? CoastKind.Island : CoastKind.Sides, sides, 40) } };
         }
+        if (mode.StartsWith("water-", StringComparison.Ordinal))
+        {
+            if (mode is not ("water-lakes" or "water-coast" or "water-edge" or "water-inland")) throw new ArgumentException("Unknown water capacity mode.");
+            r = r with { Options = r.Options with { Lakes = new(mode == "water-edge" ? 0 : 2, mode == "water-edge" ? 0 : 3),
+                Rivers = new(mode == "water-lakes" ? 0 : 2, 3, 80, mode == "water-edge" ? RiverOutlet.EdgeToEdge : RiverOutlet.Automatic),
+                Coast = mode == "water-coast" ? new(CoastKind.Sides, CoastSides.North, 30) : new(CoastKind.Inland, CoastSides.None, 0) } };
+        }
         state = new(ReliefTerrain.Create(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
     else if (mode == "empty")
@@ -62,7 +69,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         var r = new EmptyWorldRequest(WorldCreationProfile.Id, "Capacity empty", new(h, v, z), 1);
         state = new(TerrainWorld.Empty(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }
-    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, coast-{island,north,east,south,west,adjacent,opposite}, heavy or dense.");
+    else throw new ArgumentException("Capacity mode must be empty, heightmap, generated, coast-{island,north,east,south,west,adjacent,opposite}, water-{lakes,inland,coast,edge}, heavy or dense.");
     var createMs = start.Elapsed.TotalMilliseconds; var retainedWorld = GC.GetTotalMemory(true);
     var bytes = SaveCodec.Write(state); var saveMs = start.Elapsed.TotalMilliseconds - createMs;
     File.WriteAllBytes(Path.Combine(directory, "world.json"), bytes);
@@ -74,7 +81,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
     if (!bytes.SequenceEqual(SaveCodec.Write(restored))) throw new InvalidOperationException("Capacity round trip mismatch.");
     var chunkCount = StateTransfer.Chunks(snapshot, packet).Count();
     process.Refresh();
-    var geography = mode.StartsWith("coast-", StringComparison.Ordinal) ? CoastTerrain.Validate(
+    var geography = mode.StartsWith("coast-", StringComparison.Ordinal) || mode.StartsWith("water-", StringComparison.Ordinal) ? WaterTerrain.Validate(
         (GeneratedWorldRequest)JsonSerializer.Deserialize<WorldCreationRequest>(state.Provenance.RequestJson)!, state.World) : null;
     var report = new { mode, h, v, z, geography, entities = state.World.Occupants.Length, createMs, saveMs, readMs,
         saveBytes = bytes.Length, packetBytes = packet.Length, chunkCount, retainedWorld,

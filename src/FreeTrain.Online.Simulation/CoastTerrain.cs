@@ -6,7 +6,7 @@ public sealed class GeographyException(string constraint) : ArgumentException(co
 }
 
 public sealed record GeographyMetrics(int SeaCells, int LandCells, int SeaComponents, int LandComponents,
-    CoastSides SeaSides, double WaterPercent);
+    CoastSides SeaSides, double WaterPercent, int LakeCells = 0, int LakeComponents = 0, int RiverCount = 0);
 
 // WORLDGEN-COAST-1. New procedural policy; compass sectors follow WORLDGEN-D001.
 // Connectivity uses shared XYZ cell faces, never H/V image neighbors or diagonal contact.
@@ -29,7 +29,7 @@ public static class CoastTerrain
             : qx < 0 ? CoastSides.West : CoastSides.East;
     }
 
-    private static int Neighbors(int index, WorldDimensions d, Span<int> result)
+    internal static int Neighbors(int index, WorldDimensions d, Span<int> result)
     {
         int h = index % d.H, v = index / d.H, count = 0, right = h + v % 2;
         for (int row = v - 1; row <= v + 1; row += 2)
@@ -43,7 +43,7 @@ public static class CoastTerrain
 
     // Smooth value noise in canonical XY; three octaves add broad bays and smaller
     // headlands. Fixed-point interpolation and uint overflow are part of v1.
-    private static int Noise(int seed, int x, int y, int scale, int octave)
+    internal static int Noise(int seed, int x, int y, int scale, int octave)
     {
         static int Lattice(int seed, int x, int y, int octave)
         {
@@ -161,7 +161,7 @@ public static class CoastTerrain
     public static bool[] SeaMask(TerrainWorld world, GenerationWork? work = null)
         => UnderwaterCorners(world, work).Select(c => c != 0).ToArray();
 
-    private static byte[] UnderwaterCorners(TerrainWorld world, GenerationWork? work)
+    internal static byte[] UnderwaterCorners(TerrainWorld world, GenerationWork? work)
     {
         int water = 4 * world.WaterLevel;
         var wet = new byte[world.Cells.Length];
@@ -179,7 +179,7 @@ public static class CoastTerrain
         return wet;
     }
 
-    private static bool WetFace(int i, int n, WorldDimensions d, byte[] corners)
+    internal static bool WetFace(int i, int n, WorldDimensions d, byte[] corners)
     {
         int h = i % d.H, v = i / d.H;
         // North: NE/NW; east: NE/SE; south: SE/SW; west: SW/NW.

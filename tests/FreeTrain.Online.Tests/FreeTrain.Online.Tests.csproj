@@ -13,6 +13,7 @@
     <None Include="../fixtures/heightmaps/*" Link="Heightmaps/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/protocol/saves/*.json" Link="Saves/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/relief-fixtures.json" Link="Spatial/relief-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../doc/parity/water-fixtures.json" Link="Spatial/water-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/coast-fixtures.json" Link="Spatial/coast-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../src/FreeTrain.Online.Content/reference-spatial.json" Link="Spatial/reference-spatial.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../prototype/protocol/fixtures/*.json" Link="Fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

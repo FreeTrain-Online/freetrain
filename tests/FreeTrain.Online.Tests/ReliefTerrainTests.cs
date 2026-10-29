@@ -113,7 +113,7 @@ public class ReliefTerrainTests(ITestOutputHelper output)
     public async Task Unsupported_features_sizes_roles_and_cancelled_work_fail_without_world_changes()
     {
         using var host=SessionComposition.CreateReferenceHost();host.RegisterParticipant(Owner);var r=Request();
-        foreach(var invalid in new[]{r with {Options=r.Options with {StartingArea=1}},r with {Options=r.Options with {Lakes=new(1,1)}},r with {Dimensions=new(2049,32,32)},r with {Options=r.Options with {Relief=new(ReliefKind.Hills,101,24,50)}}})
+        foreach(var invalid in new[]{r with {Options=r.Options with {StartingArea=1}},r with {Options=r.Options with {Lakes=new(1,21)}},r with {Dimensions=new(2049,32,32)},r with {Options=r.Options with {Relief=new(ReliefKind.Hills,101,24,50)}}})
             await Assert.ThrowsAsync<ArgumentException>(()=>Drain(host,host.BeginGenerated(invalid,WorldCreationCapabilities.EmptyReady(),host.WorldEpoch,host.Snapshot().Revision,Owner)));
         foreach(var role in new[]{ParticipantRole.Observer,ParticipantRole.Operator})
         {
@@ -162,8 +162,8 @@ public class ReliefTerrainTests(ITestOutputHelper output)
         finally{foreach(var host in hosts)host.Dispose();}
     }
     [Theory]
-    [InlineData(false)][InlineData(true)]
-    public async Task Generated_http_confirmation_publishes_to_two_sockets_and_checkpoint_restart_restores_realized_state(bool coast)
+    [InlineData(0)][InlineData(1)][InlineData(2)][InlineData(3)]
+    public async Task Generated_http_confirmation_publishes_to_two_sockets_and_checkpoint_restart_restores_realized_state(int mode)
     {
         var directory=Path.Combine(Path.GetTempPath(),"freetrain-relief-"+Guid.NewGuid());byte[] saved;
         async Task<HttpResponseMessage> Post(HttpClient http,string path,object input)=>await http.PostAsync(path,
@@ -176,12 +176,13 @@ public class ReliefTerrainTests(ITestOutputHelper output)
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
                 await http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2");
                 using var second=await server.Connect(cookies);await NetworkTests.Read(second);
-                var r=coast ? CoastTerrainTests.Request(CoastKind.Island) : Request(ReliefKind.Mountains,z:64);
+                var r=mode switch { 1 => CoastTerrainTests.Request(CoastKind.Island), 2 => WaterTerrainTests.Request(1,1), 3 => WaterTerrainTests.Request(1,1,RiverOutlet.North,CoastKind.Sides,CoastSides.North), _ => Request(ReliefKind.Mountains,z:64) };
                 var response=await Post(server.Http,"/api/worlds/generated/preview",new GeneratedPreviewRequest(r.Name,r.Dimensions,r.WaterLevel,r.Options,before.WorldEpoch,before.Snapshot.Revision));
                 Assert.True(response.IsSuccessStatusCode,await response.Content.ReadAsStringAsync());
                 var candidate=JsonSerializer.Deserialize<EmptyCandidateRead>(await response.Content.ReadAsStringAsync(),NetworkSession.Json)!;
                 Assert.NotNull(candidate.Geography);
-                Assert.Equal(coast, candidate.Geography.Metrics.SeaCells > 0);
+                Assert.Equal(mode is 1 or 3, candidate.Geography.Metrics.SeaCells > 0);
+                Assert.Equal(mode >= 2 ? 1 : 0, candidate.Geography.Metrics.LakeComponents);
                 var commit=new EmptyCommitRequest(candidate.Id,candidate.RequestHash,candidate.CandidateHash,before.WorldEpoch,before.Snapshot.Revision);
                 Assert.True((await Post(server.Http,"/api/worlds/empty/commit",commit)).IsSuccessStatusCode);
                 foreach(var socket in new[]{first,second})

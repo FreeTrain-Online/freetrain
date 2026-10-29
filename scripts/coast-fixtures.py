@@ -14,7 +14,7 @@ spec.loader.exec_module(relief)
 OUTPUT = ROOT / 'doc/parity/coast-fixtures.json'
 
 
-def fixture(sides, island=False, seed=0, percent=40, h=32, v=27, z=32, water=4):
+def fixture(sides, island=False, seed=0, percent=40, h=32, v=27, z=32, water=4, geometry=False):
     sites = [(col-row//2+(v-1)//2, col+(row+1)//2) for row in range(v) for col in range(h)]
     domain = set(sites)
     xmin, xmax = min(x for x, y in sites), max(x for x, y in sites)
@@ -111,6 +111,7 @@ def fixture(sides, island=False, seed=0, percent=40, h=32, v=27, z=32, water=4):
         if isinstance(result, dict): break
     inputs = dict(sides=sides,island=island,seed=seed,percent=percent,h=h,v=v,z=z,water=water)
     if isinstance(result, str): return dict(**inputs,error=result)
+    if geometry: return row
     return dict(**inputs,groundHash=row['groundHash'],cornerHash=row['cornerHash'],**result)
 
 

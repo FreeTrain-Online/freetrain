@@ -21,7 +21,7 @@ parser.add_argument('--base', default='http://127.0.0.1:5698')
 parser.add_argument('--secret', default='capacity-smoke')
 parser.add_argument('--save', type=Path, required=True)
 parser.add_argument('--restart', action='store_true')
-parser.add_argument('--generate-coast', action='store_true', help='Preview/confirm the saved coast request before exact reopen checks.')
+parser.add_argument('--generate-coast', '--generate-world', dest='generate_coast', action='store_true', help='Preview/confirm the saved generated request before exact reopen checks.')
 args = parser.parse_args()
 url = urllib.parse.urlsplit(args.base)
 if url.scheme != 'http' or url.hostname not in ('127.0.0.1', 'localhost'):
@@ -178,7 +178,7 @@ try:
                 return [camel(item) for item in value]
             return value
         request = camel(json.loads(saved['packedTerrain']['provenance']['requestJson']))
-        assert request['source'] == 'generated' and request['options']['coast']['kind'] in (1, 2)
+        assert request['source'] == 'generated'
         request = {key: request[key] for key in ('name', 'dimensions', 'waterLevel', 'options')}
         initial = joined['snapshot']
         request.update(epoch=initial['worldEpoch'], revision=initial['revision'])

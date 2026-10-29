@@ -135,7 +135,7 @@ public sealed partial class SessionHost
             // Detached verification/overview work has its own bounded pass; generation
             // repairs share the original generator meter and never reset it.
             var work = new GenerationWork(request, cancellation);
-            var metrics = CoastTerrain.Validate(request, state.World, work);
+            var metrics = WaterTerrain.Validate(request, state.World, work);
             var wet = CoastTerrain.SeaMask(state.World, work); var packed = new byte[(wet.Length + 7) / 8];
             for (int i = 0; i < wet.Length; i++) { work.Spend(1); if (wet[i]) packed[i / 8] |= (byte)(1 << (i % 8)); }
             geography = new(metrics, Convert.ToBase64String(packed));
