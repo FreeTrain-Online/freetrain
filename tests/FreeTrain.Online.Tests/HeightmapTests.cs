@@ -160,21 +160,21 @@ public class HeightmapTests(ITestOutputHelper output)
     {
         var session=new NetworkSession(new());var identity=new ParticipantContext("upload-owner",ParticipantRole.Owner);
         var peer=session.Connect(DateTimeOffset.UtcNow,identity)!;
-        var leases=new List<NetworkSession.HeightmapInputLease>();
+        var leases=new List<NetworkSession.CreationWorkerLease>();
         try
         {
-            for(int i=0;i<4;i++)leases.Add(await session.ReserveHeightmap(identity));
-            await Assert.ThrowsAsync<InvalidOperationException>(()=>session.ReserveHeightmap(identity));
+            for(int i=0;i<4;i++)leases.Add(await session.ReserveCreationWorker(identity));
+            await Assert.ThrowsAsync<InvalidOperationException>(()=>session.ReserveCreationWorker(identity));
             session.Disconnect(peer,DateTimeOffset.UtcNow);session.Connect(DateTimeOffset.UtcNow,identity);
             await Assert.ThrowsAsync<UnauthorizedAccessException>(()=>session.PreviewHeightmap(new("stale",new(1,1,1),0,1,0),
                 Bmp(1,1,(_,_)=>((byte)0,(byte)0,(byte)0)),"image/bmp",OptionalPluginRegistry.Empty,identity,leases[0],CancellationToken.None));
         }
         finally{foreach(var lease in leases)lease.Dispose();}
-        using var released=await session.ReserveHeightmap(identity);
+        using var released=await session.ReserveCreationWorker(identity);
         foreach(var role in new[]{ParticipantRole.Observer,ParticipantRole.Operator})
         {
             var other=new ParticipantContext(role.ToString(),role);session.Connect(DateTimeOffset.UtcNow,other);
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(()=>session.ReserveHeightmap(other));
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(()=>session.ReserveCreationWorker(other));
         }
     }
     [Fact]

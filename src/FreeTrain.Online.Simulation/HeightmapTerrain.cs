@@ -35,8 +35,24 @@ public static class HeightmapTerrain
         var work = new GenerationWork(request, cancellation);
         for (var i = 0; i < image.Pixels.Length; i += 4)
         { work.Spend(1); if (image.Pixels.Span[i + 3] != 255) throw new ArgumentException("image-alpha"); }
+        var d = request.Dimensions;
+        var ground = new int[d.H * d.V];
+        for (int v = 0; v < d.V; v++) for (int h = 0; h < d.H; h++)
+        { work.Spend(8); ground[v * d.H + h] = (int)Math.Min(d.Z - 1, d.Z * image.Depth(h, v, d)); }
+        return NaturalTerrain.Normalize(request, profile, ground,
+            (h, v) => (int)Math.Min(4 * d.Z - 1, 4 * d.Z * image.Depth(h + 0.5f, v, d)), work, cancellation);
+    }
+}
+
+// Shared source lowering and quarter-corner conversion. The caller supplies bounded
+// whole heights and the fine height at each cell's half-H sample.
+internal static class NaturalTerrain
+{
+    internal static TerrainWorld Normalize(WorldCreationRequest request, TerrainProfile profile, int[] ground,
+        Func<int, int, int> fineHeight, GenerationWork work, CancellationToken cancellation)
+    {
         var d = request.Dimensions; var space = new WorldSpace(d.H, d.V, d.Z);
-        var ground = new int[d.H * d.V]; var smooth = new byte[ground.Length];
+        var smooth = new byte[ground.Length];
         int Index(Location p) { var s = space.ToStorage(p); return s.V * d.H + s.H; }
         (int Min, int Max) Range(Location p, int size)
         {
@@ -49,8 +65,6 @@ public static class HeightmapTerrain
             }
             return (min, max);
         }
-        for (int v = 0; v < d.V; v++) for (int h = 0; h < d.H; h++)
-        { work.Spend(8); ground[v * d.H + h] = (int)Math.Min(d.Z - 1, d.Z * image.Depth(h, v, d)); }
         bool changed; var scans = 0;
         do
         {
@@ -70,7 +84,7 @@ public static class HeightmapTerrain
         {
             var p = space.ToLocation(new(h, v, 0)); var r = Range(p, 2);
             if (r.Min != r.Max || Range(new(p.X - 1, p.Y - 1, 0), 4).Max == r.Max) continue;
-            work.Spend(8); smooth[v * d.H + h] = (byte)((int)Math.Min(4 * d.Z - 1, 4 * d.Z * image.Depth(h + 0.5f, v, d)) % 4);
+            work.Spend(8); smooth[v * d.H + h] = (byte)(fineHeight(h, v) % 4);
         }
         int Corner(int x, int y)
         {

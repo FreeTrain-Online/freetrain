@@ -1,3 +1,12 @@
+**P3-08 seeded relief — 29 October 2026:** [Implementation and evidence](web-parity-seeded-relief.md)
+enable generated dry plains/hills/mountains with integer seed/relief/scale/smoothness,
+detached exact-candidate preview/confirmation and realized Save6 restoration.
+Live admission is H/V16–32, Z8–64, water1…Z−4 with starting-area0 and no coast,
+lake, river or forest features. Generated reservations are1536 transfer bytes/cell
+and `2,228,224 + 16,384×C` working bytes, with the shared hard96MiB/four-job limit.
+Generated128² is now rejected by the working estimate; the original P3-02 dense
+formula remains historical. Empty and heightmap admissions are unchanged.
+
 **P3-07 replacement complete — 29 October 2026:** [Heightmap creation and evidence](web-parity-heightmap.md)
 retain PNG/JPEG/BMP/GIF and fixed maps at H/V1–32, Z1–64 using a reviewed MIT
 StbImageSharp 2.30.16 source build and project-owned PNG thumbnails. SkiaSharp is

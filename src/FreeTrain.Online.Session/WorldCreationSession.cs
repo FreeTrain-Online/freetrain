@@ -44,13 +44,16 @@ public sealed partial class SessionHost
         long revision, ParticipantContext participant) => BeginCreation(request, content, epoch, revision, participant);
     public Task<WorldCreationJob> BeginHeightmap(HeightmapWorldRequest request, CreationContent content, long epoch,
         long revision, ParticipantContext participant, CreationInputReservation? reservation = null) => BeginCreation(request, content, epoch, revision, participant, reservation);
+    public Task<WorldCreationJob> BeginGenerated(GeneratedWorldRequest request, CreationContent content, long epoch,
+        long revision, ParticipantContext participant, CreationInputReservation? reservation = null) => BeginCreation(request, content, epoch, revision, participant, reservation);
     private Task<WorldCreationJob> BeginCreation(WorldCreationRequest request, CreationContent content, long epoch,
         long revision, ParticipantContext participant, CreationInputReservation? reservation = null) => AtBoundary(() =>
     {
         CheckCreationOwner(participant, epoch, revision);
-        // Separate measured admissions: empty 64²; heightmap 32². Larger presets await P3-16a.
+        // Separate measured admissions: empty 64²; heightmap/generated 32². Larger presets await P3-16a.
         if (request is null || !WorldCreationProfile.Validate(request).IsEmpty || request.Dimensions.H > 64 || request.Dimensions.V > 64 ||
-            request is HeightmapWorldRequest && (request.Dimensions.H > 32 || request.Dimensions.V > 32))
+            request is HeightmapWorldRequest or GeneratedWorldRequest && (request.Dimensions.H > 32 || request.Dimensions.V > 32) ||
+            request is GeneratedWorldRequest generated && !ReliefTerrain.Supports(generated))
             throw new ArgumentException("invalidInput");
         if (creationJob is { } existing && DateTimeOffset.UtcNow < existing.ExpiresAt && existing.Fence.Epoch == WorldEpoch &&
             existing.Fence.Revision == CanonicalRevision && (existing.Fence.ConnectionId != participant.ConnectionId || existing.Fence.ParticipantId != participant.ParticipantId))
@@ -71,7 +74,7 @@ public sealed partial class SessionHost
         CheckCreationOwner(participant, started.Fence.Epoch, started.Fence.Revision);
         if (started.Fence.ParticipantId != participant.ParticipantId || started.Fence.ConnectionId != participant.ConnectionId || creationJob != started) throw new InvalidOperationException("staleCandidate");
         var state = SaveCodec.ReadWorld(bytes, terrainResolver).Terrain ?? throw new ArgumentException("invalidInput");
-        if (state.Provenance != TerrainProvenance.From(started.Request) || started.Request is EmptyWorldRequest && state.World.Occupants.Length != 0 ||
+        if (state.Provenance != TerrainProvenance.From(started.Request) || state.World.WaterLevel != started.Request.WaterLevel || started.Request is EmptyWorldRequest && state.World.Occupants.Length != 0 ||
             started.Request is EmptyWorldRequest && state.World.Cells.Any(c => c.Ground != started.Request.WaterLevel)) throw new ArgumentException("invalidInput");
         var snapshotBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes<WireMessage>(TerrainWire.Snapshot(state, 1), WireJson.CreateOptions()).Length;
         if (snapshotBytes > ProtocolIdentity.MaximumStateBytes) throw new ArgumentException("invalidInput");
@@ -79,7 +82,7 @@ public sealed partial class SessionHost
         creationJob = started.Complete(started.RequestHash, digest, Math.Max(bytes.Length, snapshotBytes), DateTimeOffset.UtcNow, started.Fence);
         creationBytes = bytes.ToArray();
         return new(started.Id, started.RequestHash, digest, state.World.Name, started.Request.Dimensions,
-            state.World.WaterLevel, bytes.Length, snapshotBytes, started.ExpiresAt, started.Request is HeightmapWorldRequest ? state.World.Cells.Select(c => c.Ground).ToArray() : null);
+            state.World.WaterLevel, bytes.Length, snapshotBytes, started.ExpiresAt, started.Request is HeightmapWorldRequest or GeneratedWorldRequest ? state.World.Cells.Select(c => c.Ground).ToArray() : null);
     });
     private static string CandidateDigest(WorldCreationJob job, byte[] bytes)
     {

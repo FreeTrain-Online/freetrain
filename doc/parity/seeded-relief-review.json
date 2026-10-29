@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "slice": "P3-08",
+  "status": "implemented-and-verified-at-slice-scope",
+  "baseRevision": "7aed3595ff30667f8bf58f30c75f984dcf463c52",
+  "report": "../web-parity-seeded-relief.md",
+  "classification": "New WORLDGEN procedural addition; shared ExAV normalization retains its source bindings. Not additional ExAV source-fixture coverage.",
+  "profile": "terrain-generation-1",
+  "algorithm": "WORLDGEN-RELIEF-1",
+  "arithmetic": "Q16 integer value noise; UInt32 wrapping lattice hash; signed integer interpolation division truncates toward zero; doubled H with odd-V half-cell stagger. Exact operation order is frozen by independent fixtures.",
+  "stages": {
+    "relief": "StageSeed(root,Relief,attempt0), stateless domain-separated octave lattice",
+    "gameplayRandomBank": "unchanged version1; no live bank accepted or consumed",
+    "futureFeatureStages": "existing coast/lakes/rivers/starting-area/forest-mask/forest-scatter/cover seed domains retained"
+  },
+  "admission": {
+    "h": [
+      16,
+      32
+    ],
+    "v": [
+      16,
+      32
+    ],
+    "z": [
+      8,
+      64
+    ],
+    "water": "1..Z-4",
+    "seed": "signed Int32",
+    "relief": [
+      0,
+      100
+    ],
+    "featureScale": [
+      4,
+      128
+    ],
+    "smoothness": [
+      0,
+      100
+    ],
+    "workingBytes": "2228224 + 16384*cells",
+    "transferBytes": "65536 + 1536*cells",
+    "hardReservationBytes": 100663296,
+    "globalRetainedOrActiveJobs": 4,
+    "deadlineSeconds": 30,
+    "laterFeatures": "Only dry inland relief with zero lakes/rivers/forest coverage/starting-area; unsupported requests fail explicitly."
+  },
+  "fixtures": {
+    "path": "relief-fixtures.json",
+    "count": 11,
+    "idPrefix": "WORLDGEN-RELIEF-",
+    "method": "Independent Python sampling with multi-source shortest paths for normalized ground and separate shared-corner evaluator. SHA256 of ground bytes and UInt16LE packed corner arrays."
+  },
+  "persistence": {
+    "save": 6,
+    "protocol": 4,
+    "ruleset": "terrain-state-1",
+    "restore": "Actual state and provenance; no regeneration. Exact retained candidate bytes committed."
+  },
+  "measurements": [
+    {
+      "dimensions": [
+        16,
+        16,
+        8
+      ],
+      "water": 1,
+      "seed": 0,
+      "occupants": 167,
+      "saveBytes": 84124,
+      "snapshotBytes": 77773,
+      "managedAllocationBytes": 10542720,
+      "elapsedMs": 65.49
+    },
+    {
+      "dimensions": [
+        32,
+        32,
+        64
+      ],
+      "water": 1,
+      "seed": -2147483648,
+      "occupants": 978,
+      "saveBytes": 442300,
+      "snapshotBytes": 435949,
+      "managedAllocationBytes": 46791120,
+      "elapsedMs": 122.46
+    },
+    {
+      "dimensions": [
+        32,
+        32,
+        64
+      ],
+      "water": 60,
+      "seed": 0,
+      "occupants": 48,
+      "saveBytes": 62210,
+      "snapshotBytes": 55860,
+      "managedAllocationBytes": 19525536,
+      "elapsedMs": 49.19
+    }
+  ],
+  "measurementQualification": "Warmed synchronous pipeline thread-local allocation churn and elapsed observations, not per-job peak RSS, percentiles or full-city capacity. macOS26.7/Arm64 .NET10.0.13 SDK10.0.402.",
+  "retention": {
+    "candidates": 4,
+    "saveBytesEach": 429613,
+    "snapshotBytesEach": 423262,
+    "fifth": "Rejected until cancel releases a slot; live saves unchanged."
+  },
+  "linux": {
+    "image": "sha256:d66fe08d6625806d021c1ac5d100f4562f859c4139c7846d4a072f9f9553d043",
+    "architecture": "Arm64",
+    "scenario": "32x32x64, seed Int32.MinValue, mountains100/scale4/smoothness0, water1",
+    "saveBytes": 442280,
+    "snapshotBytes": 435929,
+    "previewCommitReopenCheckpointRestart": "pass, byte-identical Save6",
+    "postWorkflowCgroupCurrentBytes": 187154432,
+    "postWorkflowCgroupPeakBytes": 187154432,
+    "memoryQualification": "Whole container including startup/content/runtime/GC, not isolated per-job peak",
+    "temporaryContainerRemoved": true
+  },
+  "localization": {
+    "classification": "New WORLDGEN EN/JA wording, reviewed in report; shared creation labels retain P3-06 source links",
+    "keys": [
+      "generatedSource",
+      "generatedHelp",
+      "reliefKind",
+      "reliefPlains",
+      "reliefHills",
+      "reliefMountains",
+      "generationSeed",
+      "reliefAmount",
+      "featureScale",
+      "reliefSmoothness"
+    ]
+  },
+  "verification": {
+    "dotnet": {
+      "passed": 484,
+      "newReliefCases": 10
+    },
+    "clientPassed": 120,
+    "python": {
+      "run": 142,
+      "passed": 141,
+      "existingSkipped": 1
+    },
+    "chromiumFull": {
+      "passed": 84,
+      "canonical": 30,
+      "historical": 54
+    },
+    "chromiumFinalTerrainPassed": 12,
+    "optionalSourcePassed": 4,
+    "optionalPreparedPassed": 4,
+    "releaseAndFrontendBuild": "pass, zero warnings/errors",
+    "independentFixtureCheck": "pass",
+    "pinnedTerrainReview": "pass,40 files/77 source fixtures/59 text records",
+    "decoderReview": "pass, unchanged MIT source/Skia-free locks",
+    "projectBoundaries": "pass",
+    "whitespace": "pass",
+    "screenshots": "Visually inspected EN actual height preview/live quarter-slope mountains and Japanese390px form; final capture waits through profile rebootstrap."
+  },
+  "remaining": [
+    "P3-09 coasts",
+    "P3-10 lakes/rivers",
+    "P3-11 vegetation and starting areas",
+    "P3-12 preview completion",
+    "P3-13..16 editing/authoring",
+    "P3-16a capacity",
+    "P3-17 acceptance",
+    "Existing P2/native/device/GDI/deferred-browser gates"
+  ],
+  "files": [
+    {
+      "path": "src/FreeTrain.Online.Simulation/ReliefTerrain.cs",
+      "sha256": "5abca8ac1d5a32fb63c95ac3ad403736702c730a277d5258c34d7473dfd49528"
+    },
+    {
+      "path": "src/FreeTrain.Online.Simulation/HeightmapTerrain.cs",
+      "sha256": "2b73a620ba6f58e1afb2aee744983a4a59aef495423b1059ff9fc703bdad62c5"
+    },
+    {
+      "path": "src/FreeTrain.Online.Simulation/WorldCreation.cs",
+      "sha256": "7d5b098ddba99be5ef803875e875d8660e68f95f5a3d3935a5be93617ebdbbd2"
+    },
+    {
+      "path": "src/FreeTrain.Online.Session/WorldCreationSession.cs",
+      "sha256": "121815521d7a559a764a6591451326ff74c92a36115b6648eb8f7c38f52c382a"
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/GeneratedWorldCreation.cs",
+      "sha256": "f2a0637bed08902607994332be9b9631ef073f36d978c4c83e68e5a42e4060cd"
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/HeightmapWorldCreation.cs",
+      "sha256": "8f811ceb33b3b0aedee3e48c59d5571768522c8e98374c2f8e9fdfd2163d524e"
+    },
+    {
+      "path": "src/FreeTrain.Online.Server/NetworkEndpoints.cs",
+      "sha256": "3ed6ce5628989c405c79b79ddf5c9e1ad8dfe10b8d2baffb1cdd932b21c9d5ab"
+    },
+    {
+      "path": "tests/FreeTrain.Online.Tests/ReliefTerrainTests.cs",
+      "sha256": "9461207715f09d40cd8fb969599981a34175bfae3614c5b0c7a35b349c475b42"
+    },
+    {
+      "path": "web/src/EmptyWorldControls.svelte",
+      "sha256": "57f899191ced67d9957118f650d5f0d96b9b0ceff5d113ce5ea86419ab681c6b"
+    },
+    {
+      "path": "web/src/locales/en/app.json",
+      "sha256": "137ed7a0e989caa2e7ceb5b424b17ba98b2137335f5ebbe16a09d3c4827eb9ae"
+    },
+    {
+      "path": "web/src/locales/ja/app.json",
+      "sha256": "4ff0bf696318eb478409fb894110fb2a26e6a93bd89148dd124766156ab020fc"
+    },
+    {
+      "path": "web/tests/browser/terrain.spec.ts",
+      "sha256": "40590e5b05da2a1a0ba68f64f3de8d0bb3f38a5fe77e9600862f1878323cf7da"
+    },
+    {
+      "path": "scripts/relief-fixtures.py",
+      "sha256": "2babf8e89374719c285b6030439a63fc8e09fadbcf11e8eb45f1f52d862c9381"
+    },
+    {
+      "path": "doc/parity/relief-fixtures.json",
+      "sha256": "2ad3f6b269595e162096eb24ef447c37719d274e61488241cb09b4f3d6bfee4f"
+    }
+  ]
+}

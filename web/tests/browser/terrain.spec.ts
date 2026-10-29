@@ -257,3 +257,70 @@ test('heightmap Japanese narrow form reports image failures, invalidates drafts 
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
  }finally{await replace(page,original);await context.close();}
 });
+
+test('seeded relief controls preview reproducibly, commit exact mountains to both clients and reopen realized Save6',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body(),before=await state(page);
+ const context=await browser.newContext(),watcher=await context.newPage();await watcher.goto('/');await ready(watcher);
+ try{
+  const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='relief-preserved');
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  await page.getByLabel('Terrain style',{exact:true}).selectOption('mountains');
+  await expect(page.getByLabel('Relief (0–100)',{exact:true})).toHaveValue('85');
+  await page.getByLabel('Levels (Z)',{exact:true}).fill('32');await page.getByLabel('World name',{exact:true}).fill('Seeded mountain railway');
+  async function preview(){const response=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:'Preview world',exact:true}).click();const result=await(await response).json();await expect(page.getByTestId('empty-world-preview')).toBeVisible();return result;}
+  const first=await preview();expect(first.ground).toHaveLength(1024);expect(new Set(first.ground).size).toBeGreaterThan(4);
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'Cancel',exact:true}).click();const second=await preview();expect(second.candidateHash).toBe(first.candidateHash);expect(second.ground).toEqual(first.ground);
+  await page.getByLabel('Generation seed',{exact:true}).fill('42');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  const varied=await preview();expect(varied.ground).not.toEqual(first.ground);
+  await page.getByLabel('Relief (0–100)',{exact:true}).fill('0');const flat=await preview();expect(new Set(flat.ground).size).toBe(1);expect(flat.ground[0]).toBe(5);
+  await page.getByLabel('Relief (0–100)',{exact:true}).fill('85');await page.getByLabel('Feature scale (cells)',{exact:true}).fill('8');const scaled=await preview();expect(scaled.ground).not.toEqual(varied.ground);await page.getByLabel('Feature scale (cells)',{exact:true}).fill('32');
+  await page.getByLabel('Generation seed',{exact:true}).fill('0');const final=await preview();expect(final.candidateHash).toBe(first.candidateHash);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'relief');mkdirSync(directory,{recursive:true});await page.getByTestId('empty-world-preview').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'relief-en-preview.png'),fullPage:true});
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await ready(page);await ready(watcher);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-instance','relief-preserved');
+  await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before.worldEpoch);
+  const committed=await state(page);expect(committed.terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);expect(committed.tracks).toEqual([]);
+  const captured=await(await page.request.get('/api/saves/download')).body();expect(captured.length).toBe(final.saveBytes);
+  await closePanel(page);await ready(page);await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');await page.screenshot({path:join(directory,'relief-en-live.png'),fullPage:true});
+  await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+ }finally{await replace(page,original);await context.close();}
+});
+
+test('Japanese narrow seeded relief form validates ranges, changes presets, invalidates drafts and cancels late responses',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();await page.goto('/');await ready(page,'ja');
+ const original=await(await page.request.get('/api/saves/download')).body();
+ let release=()=>{};
+ try{
+  await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('generated');
+  await page.getByLabel('地形の種類',{exact:true}).selectOption('plains');await expect(page.getByLabel('起伏（0～100）',{exact:true})).toHaveValue('20');
+  await page.getByLabel('生成シード',{exact:true}).fill('2147483648');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
+  await page.getByLabel('生成シード',{exact:true}).fill('-2147483648');await page.getByLabel('格納幅（H）',{exact:true}).fill('15');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
+  await page.getByLabel('滑らかさ（0～100）',{exact:true}).fill('100');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'relief');mkdirSync(directory,{recursive:true});await page.getByLabel('地形の種類',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'relief-ja-narrow.png'),fullPage:true});
+  // Let the server finish a job but hold its response while the user cancels.
+  const held=new Promise<void>(r=>release=r);let seen=false;
+  await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();
+  await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+ }finally{release();await replace(page,original);await context.close();}
+});
+
+test('generated endpoint rejects unavailable features, roles, stale fences and forged digests without changing the world',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ const options={seed:0,relief:{kind:1,amount:50,featureScale:24,smoothness:50},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{count:0,width:1,meander:30,outlet:0},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0};
+ const s=await state(page),input={name:'API relief',dimensions:{h:32,v:32,z:32},waterLevel:4,options,epoch:s.worldEpoch,revision:s.revision};
+ try{
+  for(const invalid of [{...input,dimensions:{h:33,v:32,z:32}},{...input,options:{...options,startingArea:1}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:25}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
+  expect((await page.request.post('/api/worlds/generated/preview',{data:{...input,revision:String(BigInt(s.revision)+1n)}})).status()).toBe(409);
+  const response=await page.request.post('/api/worlds/generated/preview',{data:input});expect(response.ok()).toBe(true);const candidate=await response.json();
+  expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,epoch:s.worldEpoch,revision:s.revision,candidateHash:'0'.repeat(64)}})).status()).toBe(409);
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await replace(page,original);expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,candidateHash:candidate.candidateHash,epoch:s.worldEpoch,revision:s.revision}})).status()).toBe(409);
+  const observer=await browser.newContext();try{const p=await observer.newPage();await p.goto('/');await ready(p);await p.request.post('/api/leave');await p.request.post('/api/access',{data:{secret:'observer-test'}});await p.reload();await ready(p);expect((await p.request.post('/api/worlds/generated/preview',{data:input})).status()).toBe(403);}finally{await observer.close();}
+ }finally{await replace(page,original);}
+});

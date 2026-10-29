@@ -272,5 +272,15 @@
   "imagePixels": "The image exceeds 4096 pixels per side or 4,194,304 total pixels.",
   "imageAlpha": "Transparent pixels are unsupported. Choose an opaque image.",
   "imageAnimation": "Animated images are unsupported. Choose a single-frame image.",
-  "imageInvalid": "The image is damaged or cannot be decoded. Choose another image."
+  "imageInvalid": "The image is damaged or cannot be decoded. Choose another image.",
+  "generatedSource": "Generated relief",
+  "generatedHelp": "Generate reproducible dry plains, hills or mountains from a signed integer seed. Relief sets height variation; feature scale sets the wavelength in cells; smoothness reduces fine detail. Stored H/V: 16–32; Z: 8–64; water: 1–Z−4. This creates dry terrain without water features or vegetation. Preview never changes the shared world; confirmation uses the exact previewed terrain.",
+  "reliefKind": "Terrain style",
+  "reliefPlains": "Plains",
+  "reliefHills": "Hills",
+  "reliefMountains": "Mountains",
+  "generationSeed": "Generation seed",
+  "reliefAmount": "Relief (0–100)",
+  "featureScale": "Feature scale (cells)",
+  "reliefSmoothness": "Smoothness (0–100)"
 }

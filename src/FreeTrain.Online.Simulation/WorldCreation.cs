@@ -42,7 +42,7 @@ public sealed record CreationIssue(string Code, string Field);
 public sealed record GenerationBudget(long Cells, long Voxels, long WorkingBytes, long WorkUnits, long TransferBytes);
 public enum GenerationStage { Relief, Coast, Lakes, Rivers, StartingArea, ForestMask, ForestScatter, Cover }
 
-// WORLDGEN policy, not desktop source behavior. No endpoint/profile is enabled by these contracts.
+// WORLDGEN policy, not desktop source behavior. Service admissions are narrower than these structural contracts.
 public static class WorldCreationProfile
 {
     public const string Id = "terrain-generation-1";
@@ -176,14 +176,14 @@ public static class WorldCreationProfile
         // Reserved scratch (128/cell), two 512/cell transfer buffers, 1152/cell transient
         // serialization allowance, two RGBA image buffers, 2MiB metadata/first-use allowance and two 64KiB
         // headers. No dense voxel allocation. Four attempts are sequential.
-        // Heightmaps can put a full mountain entity in every cell; reserve measured verbose encoding.
-        var cellBytes = r is HeightmapWorldRequest ? 1536 : 512;
+        // Natural surfaces can put a full mountain entity in every cell; reserve measured verbose encoding.
+        var cellBytes = r is HeightmapWorldRequest or GeneratedWorldRequest ? 1536 : 512;
         // Decode scratch is released before terrain generation. Reserve the larger phase,
         // The hard 80MiB arena is trimmed to the single RGBA output before the managed
         // raster is allocated, so it does not overlap a full arena.
         long working = r is HeightmapWorldRequest
             ? Math.Max(80L * 1024 * 1024, cells * 16384 + pixels * 8)
-            : cells * 2304;
+            : r is GeneratedWorldRequest ? cells * 16384 : cells * 2304;
         return new(cells, cells * r.Dimensions.Z, 2_228_224 + working + encoded,
             cells * (64L * r.Dimensions.Z + 256) * MaxAttempts + pixels, 65_536 + cells * cellBytes);
     }

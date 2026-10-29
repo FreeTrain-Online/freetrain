@@ -9,7 +9,7 @@ public sealed record HeightmapPreviewOptions(string Name, WorldDimensions Dimens
 public sealed partial class NetworkSession
 {
     // Reserve before reading an upload. Slow clients and decoders share the same four slots.
-    public async Task<HeightmapInputLease> ReserveHeightmap(ParticipantContext identity)
+    public async Task<CreationWorkerLease> ReserveCreationWorker(ParticipantContext identity)
     {
         ParticipantContext participant; SessionHost capturedHost;
         lock (gate) { participant = CreationParticipant(identity); capturedHost = host; }
@@ -17,7 +17,7 @@ public sealed partial class NetworkSession
         try { return new(creationWorkers, SessionHost.ReserveCreationInput(), participant, capturedHost); }
         catch { creationWorkers.Release(); throw; }
     }
-    public sealed class HeightmapInputLease(SemaphoreSlim semaphore, SessionHost.CreationInputReservation reservation, ParticipantContext participant, SessionHost capturedHost) : IDisposable
+    public sealed class CreationWorkerLease(SemaphoreSlim semaphore, SessionHost.CreationInputReservation reservation, ParticipantContext participant, SessionHost capturedHost) : IDisposable
     {
         private int disposed;
         public ParticipantContext Participant { get; } = participant;
@@ -27,7 +27,7 @@ public sealed partial class NetworkSession
     }
 
     public async Task<EmptyCandidateRead> PreviewHeightmap(HeightmapPreviewOptions input, byte[] bytes, string? mediaType,
-        OptionalPluginRegistry registry, ParticipantContext identity, HeightmapInputLease lease, CancellationToken cancellation)
+        OptionalPluginRegistry registry, ParticipantContext identity, CreationWorkerLease lease, CancellationToken cancellation)
     {
         WorldCreationJob? started = null; Task<WorldCreationJob>? beginning = null;
         var participant = lease.Participant; var capturedHost = lease.Host;
@@ -64,7 +64,7 @@ public sealed partial class NetworkSession
         {
             // A cancelled wait may race the FIFO start. Observe its eventual result
             // and cancel by job ID so it cannot strand a retained reservation.
-            if (started == null && beginning != null) _ = AbandonHeightmapStart(beginning, capturedHost, participant);
+            if (started == null && beginning != null) _ = AbandonCreationStart(beginning, capturedHost, participant);
             if (started != null)
             {
                 Task? cancel = null; lock (gate) { if (host == capturedHost) cancel = capturedHost.CancelEmpty(started.Id, participant); }
@@ -73,7 +73,7 @@ public sealed partial class NetworkSession
             throw;
         }
     }
-    private async Task AbandonHeightmapStart(Task<WorldCreationJob> beginning, SessionHost capturedHost, ParticipantContext participant)
+    private async Task AbandonCreationStart(Task<WorldCreationJob> beginning, SessionHost capturedHost, ParticipantContext participant)
     {
         try
         {

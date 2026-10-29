@@ -151,6 +151,8 @@ public static class NetworkEndpoints
             async (input, participant) => { await session.CommitEmpty(input, participant); return new { status = "confirmed" }; }));
         app.MapPost("/api/worlds/empty/cancel", async Task<IResult> (HttpContext context) => await CreationOperation<Guid>(context,
             async (input, participant) => { await session.CancelEmpty(input, participant); return new { status = "cancelled" }; }));
+        app.MapPost("/api/worlds/generated/preview", async Task<IResult> (HttpContext context) => await CreationOperation<GeneratedPreviewRequest>(context,
+            async (input, participant) => await session.PreviewGenerated(input, participant, context.RequestAborted)));
         app.MapGet("/api/worlds/heightmap/providers", () => Results.Json(FixedHeightmaps.Read(plugins), NetworkSession.Json));
         app.MapPost("/api/worlds/heightmap/preview", async Task<IResult> (HttpContext context) =>
         {
@@ -159,7 +161,7 @@ public static class NetworkEndpoints
             if (identity.Role != ParticipantRole.Owner) return Results.StatusCode(403);
             try
             {
-                using var lease = await session.ReserveHeightmap(identity);
+                using var lease = await session.ReserveCreationWorker(identity);
                 using var deadline = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
                 deadline.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
                 var query = context.Request.Query;

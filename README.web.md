@@ -39,7 +39,11 @@ without its image. The [reviewed decoder](doc/web-heightmap-decoder-review.md) i
 pinned StbImageSharp 2.30.16 source under MIT, with bounded project-owned allocation
 helpers and PNG preview encoding. Server/Docker notices retain its MIT grant;
 SkiaSharp managed/native dependencies have been removed. FreeTrain's license is
-unchanged. Procedural generation and larger size presets remain future slices.
+unchanged. [P3-08 seeded relief](doc/web-parity-seeded-relief.md) adds generated
+plains/hills/mountains, seed and relief/scale/smoothness controls, detached preview
+and exact confirmation. Generated admission is H/V16–32, Z8–64, water1…Z−4;
+actual terrain and provenance reopen without regeneration. Coasts, lakes/rivers,
+vegetation/starting areas and larger size presets remain future slices.
 
 ## Parity source policy
 
