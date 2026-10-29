@@ -31,8 +31,15 @@ global water, candidate preview and explicit replacement confirmation. [Terrain 
 and [rendering/picking](doc/web-parity-terrain-rendering.md) are implemented;
 [P3-06 empty-world creation](doc/web-parity-empty-world.md) is implemented.
 Empty H/V dimensions are limited to 1–64 and Z to 1–64; Source defaults uses
-30 × 42 × 6 stored cells and water1. Heightmap/procedural generation and larger
-size presets remain future slices.
+30 × 42 × 6 stored cells and water1. [P3-07 heightmap creation](doc/web-parity-heightmap.md)
+adds opaque single-frame PNG/JPEG/BMP/GIF imports, image/terrain preview and reviewed
+installed fixed maps. Heightmaps currently admit H/V1–32, Z1–64; image limits are
+8 MiB, 4096 pixels per side and 4,194,304 total pixels. Imported terrain reopens
+without its image. The [reviewed decoder](doc/web-heightmap-decoder-review.md) is
+pinned StbImageSharp 2.30.16 source under MIT, with bounded project-owned allocation
+helpers and PNG preview encoding. Server/Docker notices retain its MIT grant;
+SkiaSharp managed/native dependencies have been removed. FreeTrain's license is
+unchanged. Procedural generation and larger size presets remain future slices.
 
 ## Parity source policy
 

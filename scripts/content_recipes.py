@@ -337,7 +337,7 @@ class Compiler:
             handler='terrace'; self.add('terrace','{2A333E1B-7AA0-4A96-A054-DAEEEB84F953}',[0,1,32,23],[0,7])
         elif t=='specialStructure' and name in ('Mountain2ContributionImpl','ContributionImpl'):
             handler='procedural-world'; fields['diagnostic']='Source uses procedural terrain/PThreeDimStructure geometry, not a bitmap recipe; world construction belongs to P3/P7'
-        elif t not in {'picture','colorMapTrainPicture','ColorLibrary','trainDepartureBell','bgm','bgmFactory','trainController','newGame','menu','dockingContent','accountGenre','anonymous','spriteFactory','spriteLoader'}:
+        elif t not in {'picture','colorMapTrainPicture','ColorLibrary','trainDepartureBell','bgm','bgmFactory','trainController','newGame','terrainOnlyNewGame','menu','dockingContent','accountGenre','anonymous','spriteFactory','spriteLoader'}:
             raise ValueError('Unsupported visual contribution: '+d['id']+' / '+name)
         return dict(id=d['id'],pluginId=d['pluginId'],sourcePath=d['sourcePath'],handler=handler,frames=self.frames,fields=fields,
                     status='source-diagnostic' if any(f['status']=='invalid-source-crop' for f in self.frames) else 'ready')

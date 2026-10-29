@@ -1,3 +1,4 @@
+using FreeTrain.Online.Simulation;
 using System.Net;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
@@ -150,6 +151,54 @@ public static class NetworkEndpoints
             async (input, participant) => { await session.CommitEmpty(input, participant); return new { status = "confirmed" }; }));
         app.MapPost("/api/worlds/empty/cancel", async Task<IResult> (HttpContext context) => await CreationOperation<Guid>(context,
             async (input, participant) => { await session.CancelEmpty(input, participant); return new { status = "cancelled" }; }));
+        app.MapGet("/api/worlds/heightmap/providers", () => Results.Json(FixedHeightmaps.Read(plugins), NetworkSession.Json));
+        app.MapPost("/api/worlds/heightmap/preview", async Task<IResult> (HttpContext context) =>
+        {
+            var identity = Identity(context);
+            if (identity == null) return Results.Unauthorized();
+            if (identity.Role != ParticipantRole.Owner) return Results.StatusCode(403);
+            try
+            {
+                using var lease = await session.ReserveHeightmap(identity);
+                using var deadline = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
+                deadline.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
+                var query = context.Request.Query;
+                if (!int.TryParse(query["h"], out var h) || !int.TryParse(query["v"], out var v) || !int.TryParse(query["z"], out var z) ||
+                    !int.TryParse(query["water"], out var water) || !long.TryParse(query["epoch"], out var epoch) || !long.TryParse(query["revision"], out var revision))
+                    return Results.BadRequest(new { code = "invalidInput" });
+                var options = new HeightmapPreviewOptions(query["name"].ToString(), new(h, v, z), water, epoch, revision,
+                    query.ContainsKey("provider") ? query["provider"].ToString() : null);
+                if (!WorldCreationProfile.Validate(new EmptyWorldRequest(WorldCreationProfile.Id, options.Name, options.Dimensions, water)).IsEmpty || h > 32 || v > 32)
+                    return Results.BadRequest(new { code = "invalidInput" });
+                byte[] bytes;
+                string? mediaType = context.Request.ContentType is "application/octet-stream" ? null : context.Request.ContentType;
+                if (options.Provider != null)
+                {
+                    var map = FixedHeightmaps.Read(plugins).SingleOrDefault(m => m.Binding.ContributionId == options.Provider);
+                    if (map == null || map.Bytes > WorldCreationProfile.MaxImageBytes) return Results.BadRequest(new { code = "invalidInput" });
+                    bytes = plugins.ReadFile(map.ImageUrl, WorldCreationProfile.MaxImageBytes) ?? throw new ArgumentException(); mediaType = null;
+                }
+                else
+                {
+                    if (context.Request.ContentLength is > WorldCreationProfile.MaxImageBytes) return Results.Json(new { code = "image-bytes" }, statusCode: 413);
+                    using var buffer = new MemoryStream(); var chunk = new byte[8192]; int count;
+                    while ((count = await context.Request.Body.ReadAsync(chunk, deadline.Token)) > 0)
+                    {
+                        if (buffer.Length + count > WorldCreationProfile.MaxImageBytes) return Results.Json(new { code = "image-bytes" }, statusCode: 413);
+                        buffer.Write(chunk, 0, count);
+                    }
+                    bytes = buffer.ToArray();
+                }
+                return Results.Json(await session.PreviewHeightmap(options, bytes, mediaType, plugins, identity, lease, deadline.Token), NetworkSession.Json);
+            }
+            catch (HeightmapException ex) { return Results.BadRequest(new { code = ex.Code }); }
+            catch (UnauthorizedAccessException) { return Results.StatusCode(403); }
+            catch (Exception ex) when (ex is ArgumentException or InvalidDataException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message is "creationBusy" or "staleEpoch" or "staleRevision" ? ex.Message : "staleCandidate" }, statusCode: 409); }
+            catch (OperationCanceledException) { return Results.Json(new { code = "creationFailed" }, statusCode: 408); }
+        });
         // Save HTTP requests use the same trusted owner credential and host FIFO as socket commands.
         app.MapGet("/api/saves", (HttpContext context) => Authorized(context)
             ? Results.Ok(session.SaveSlots()) : Results.Unauthorized());

@@ -53,6 +53,19 @@ class OptionalPreparation(unittest.TestCase):
         for name,entry in manifest['files'].items(): self.assertEqual(entry['sha256'],optional.b.digest((pack/name).read_bytes()))
         (pack/'catalog.json').write_text('changed')
         with self.assertRaisesRegex(ValueError,'cache drift'): self.prepare([root])
+    def test_fixed_heightmap_retains_source_raster_and_source_metadata_without_sprite_color_key(self):
+        root=fixture(self.root);path=root/'plugins/synthetic-one/plugin.xml'
+        path.write_text(path.read_text().replace('</plug-in>', '<contribution type="terrainOnlyNewGame" id="fixture-map"><name>Test terrain</name><author>Fixture author</author><description>  Source map  </description><image href="sheet.bmp"/><size>3,2</size><height>6</height><waterLevel>1</waterLevel></contribution></plug-in>'))
+        prepared=Path(self.prepare([root])[0]);catalog=json.loads((prepared/'catalog.json').read_bytes())
+        row=catalog['fixedHeightmaps'][0]
+        self.assertEqual(dict(h=3,v=2,z=6),row['dimensions']);self.assertEqual(1,row['waterLevel'])
+        self.assertEqual('Fixture author',row['author']);self.assertEqual('Source map',row['description'])
+        image=row['image'];manifest=json.loads((prepared/'prepared-pack.json').read_bytes())
+        prefix='/api/content/'+manifest['id']+'/'+manifest['contentKey']+'/'
+        raw=(prepared/image['url'][len(prefix):]).read_bytes()
+        self.assertEqual((root/'plugins/synthetic-one/sheet.bmp').read_bytes(),raw)
+        self.assertEqual(optional.b.digest(raw),image['sha256'])
+
     def test_multiple_directories_dependency_order_and_argument_order_independence(self):
         one=fixture(self.root);two=fixture(self.root,'fixture-two','synthetic-two','synthetic-one')
         paths=self.prepare([two,one]);self.assertEqual(paths,self.prepare([one,two]))
@@ -136,6 +149,8 @@ if __name__=='__main__':
     import sys
     if len(sys.argv)==3 and sys.argv[1]=='--write-fixtures':
         parent=Path(sys.argv[2]);parent.mkdir(parents=True,exist_ok=True)
-        fixture(parent);fixture(parent,'fixture-two','synthetic-two','synthetic-one')
+        one=fixture(parent);fixture(parent,'fixture-two','synthetic-two','synthetic-one')
+        manifest=one/'plugins/synthetic-one/plugin.xml'
+        manifest.write_text(manifest.read_text().replace('</plug-in>', '<contribution type="terrainOnlyNewGame" id="fixture-map"><name>Prepared terrain</name><author>Fixture author</author><description>Original synthetic fixed map</description><image href="sheet.bmp"/><size>3,2</size><height>6</height><waterLevel>1</waterLevel></contribution></plug-in>'))
     else: unittest.main()
 

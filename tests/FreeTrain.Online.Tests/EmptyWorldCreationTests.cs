@@ -7,6 +7,7 @@ using FreeTrain.Online.Simulation;
 using Xunit;
 using Xunit.Abstractions;
 
+[Collection("World creation")]
 public class EmptyWorldCreationTests(ITestOutputHelper output)
 {
     private static readonly ParticipantContext Owner = new("owner", ParticipantRole.Owner, "connection1");

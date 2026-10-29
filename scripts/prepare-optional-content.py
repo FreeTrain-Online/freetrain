@@ -249,7 +249,7 @@ def prepare(roots, bundled_catalog, bundled_input, output=None, reference_catalo
     completed = []
     for s in sets:
         prefix = '/api/content/' + s['id'] + '/' + context_hash + '/'
-        artifacts, assets, pictures = {}, [], []
+        artifacts, assets, pictures, fixed_maps = {}, [], [], []
         def artifact(data, extension, source_path, treatment):
             name = str(PurePosixPath(source_path).parent) + '/media/' + PurePosixPath(source_path).name + '.' + treatment + '.' + b.digest(data) + '.' + extension
             artifacts[name] = data
@@ -270,6 +270,23 @@ def prepare(roots, bundled_catalog, bundled_input, output=None, reference_catalo
                 assets_by_path[path] = a; assets.append(a)
             return assets_by_path[path]
         for d in s['contributions']:
+            if d['type'] == 'terrainOnlyNewGame':
+                try:
+                    e = d['declaration']
+                    path = resolve_optional(resource_files, str(PurePosixPath(d['sourcePath']).parent), child(e, 'image')['attributes']['href'])
+                    raw = resource_files[path] if resource_files[path] is not None else b.checked_read(bundled_input, 'source/'+path)
+                    if not 0 < len(raw) <= 8*1024*1024: raise ValueError('fixed heightmap exceeds encoded limit')
+                    # Retain encoded raster verbatim. Runtime verifies signatures, dimensions,
+                    # animation and alpha; sprite color keys never apply to heightmaps.
+                    size = [int(n.strip()) for n in text(e, 'size').split(',')]
+                    height, water = int(text(e, 'height')), int(text(e, 'waterLevel'))
+                    if len(size) != 2 or min(size) < 1 or max(size) > 128 or not 1 <= height <= 64 or not 0 <= water < height:
+                        raise ValueError('fixed heightmap dimensions/water exceed contract')
+                    fixed_maps.append(dict(id=d['id'], name=text(e,'name'), author=text(e,'author'),
+                        description=text(e,'description').strip(), dimensions=dict(h=size[0],v=size[1],z=height),
+                        waterLevel=water,image=artifact(raw, PurePosixPath(path).suffix.lstrip('.'),path,'heightmap')))
+                except (ValueError, KeyError) as e:
+                    errors.append(f'{d["sourcePath"]} ({d["id"]}): {e}')
             inline=inline_pictures(d['declaration'])
             if not inline: continue
             try:
@@ -289,7 +306,7 @@ def prepare(roots, bundled_catalog, bundled_input, output=None, reference_catalo
                     status='retained-audio; playback-adapter-pending',native=artifact(raw,extension,path,'native')))
         catalog = dict(schemaVersion=2,packId=s['id'],version=s['version'],source=dict(revision=s['sourceRevision'],profile=s['profile']),
                        status='prepared; not selected by a world profile',plugins=s['plugins'],pluginOrder=[p for p in order if p in {r['id'] for r in s['plugins']}],
-                       contributions=s['contributions'],factories=[],pictures=pictures,selections=[],assets=assets)
+                       contributions=s['contributions'],factories=[],pictures=pictures,selections=[],assets=assets, **({'fixedHeightmaps':fixed_maps} if fixed_maps else {}))
         s['catalog'], s['artifacts'] = catalog, artifacts
     if errors:
         raise ValueError('Optional content validation failed (no packs published):\n'+'\n'.join(sorted(set(errors))))

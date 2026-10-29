@@ -21,10 +21,11 @@ COPY eng/ eng/
 COPY src/ src/
 COPY scripts/prepare-optional-content.py scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/content_xml.py scripts/content_recipes.py scripts/
 COPY content/bundled-v2/ content/bundled-v2/
+COPY doc/notices/StbImageSharp/ doc/notices/StbImageSharp/
 RUN dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode \
  && dotnet publish src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore -p:UseAppHost=false -o /release
 
-# Portable managed publish; the target image supplies the Linux x64 runtime.
+# Decoder is compiled from reviewed bounded managed source; no native image assets.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.13@sha256:d5633778c754e89a386882eddf8dbee6942447a8a4b8267c19cf1e1158d0b0ac AS release
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*

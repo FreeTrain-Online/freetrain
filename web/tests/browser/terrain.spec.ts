@@ -199,3 +199,61 @@ test('empty candidate API rejects stale revisions, forged digests and late confi
   expect((await commit(candidate)).status()).toBe(409);
  }finally{await replace(page,original);}
 });
+
+// Hand-authored BMP rows. No browser image decoder supplies the height oracle.
+function heightmapBmp(){
+ const b=Buffer.alloc(70);b.write('BM');b.writeInt32LE(70,2);b.writeInt32LE(54,10);b.writeInt32LE(40,14);b.writeInt32LE(2,18);b.writeInt32LE(2,22);b.writeInt16LE(1,26);b.writeInt16LE(24,28);
+ for(const row of [54,62])for(let c=0;c<3;c++)b[row+3+c]=255;return b;
+}
+test('heightmap browser preview is detached, confirms exact terrain to both clients and reopens without the image',async({page,browser})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ const other=await browser.newContext(),peer=await other.newPage();await peer.goto('/');await ready(peer);
+ try{
+  const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='heightmap-preserved');
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('heightmap');
+  await page.getByLabel('Terrain image',{exact:true}).setInputFiles({name:'ramp.bmp',mimeType:'image/bmp',buffer:heightmapBmp()});
+  await page.getByLabel('World name',{exact:true}).fill('Image terrain');
+  await page.getByLabel('Stored width (H)',{exact:true}).fill('4');await page.getByLabel('Stored length (V)',{exact:true}).fill('4');
+  await page.getByLabel('Levels (Z)',{exact:true}).fill('8');await page.getByLabel('Water level',{exact:true}).fill('1');
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();
+  await expect(page.getByRole('img',{name:'Decoded source image',exact:true})).toBeVisible();
+  // Independent browser PNG decoder validates our thumbnail encoder and pixels.
+  const decoded=page.getByRole('img',{name:'Decoded source image',exact:true});
+  await expect.poll(()=>decoded.evaluate((image:HTMLImageElement)=>image.naturalWidth)).toBe(2);
+  expect(await decoded.evaluate((image:HTMLImageElement)=>{
+   const canvas=document.createElement('canvas');canvas.width=2;canvas.height=2;
+   const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);return Array.from(ctx.getImageData(0,0,2,2).data);
+  })).toEqual([0,0,0,255,255,255,255,255,0,0,0,255,255,255,255,255]);
+await expect(page.getByRole('img',{name:'Resulting terrain heights and global water',exact:true})).toBeVisible();
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'heightmap');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'ramp-preview-en.png'),fullPage:true});
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await ready(peer);
+  await expect(canvas).toHaveAttribute('data-instance','heightmap-preserved');
+  const captured=await(await page.request.get('/api/saves/download')).body(),saved=JSON.parse(captured.toString());
+  expect(saved.terrain.cells.map((c:any)=>c.ground)).toEqual([0,1,2,3,1,2,3,4,0,1,2,3,1,2,3,4]);expect(saved.rails).toEqual([]);
+  await closePanel(page);await page.screenshot({path:join(directory,'ramp-live-en.png'),fullPage:true});
+  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+  await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(saved.terrain.cells.map((c:any)=>c.ground));
+ }finally{await replace(page,original);await other.close();}
+});
+test('heightmap Japanese narrow form reports image failures, invalidates drafts and cancels in-flight uploads',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();
+ await page.goto('/');await ready(page,'ja');const original=await(await page.request.get('/api/saves/download')).body();
+ try{
+  await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('heightmap');
+  const input=page.getByLabel('地形画像ファイル',{exact:true});await input.setInputFiles({name:'invalid.bmp',mimeType:'image/bmp',buffer:Buffer.from('invalid')});
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('画像形式が未対応');
+  await input.setInputFiles({name:'ramp.bmp',mimeType:'image/bmp',buffer:heightmapBmp()});
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('4');await page.getByLabel('格納奥行（V）',{exact:true}).fill('4');
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'heightmap');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'ramp-preview-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('世界名',{exact:true}).fill('変更');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  let release=()=>{};const held=new Promise<void>(r=>{release=r;});await page.route('**/api/worlds/heightmap/preview?*',async route=>{await held;await route.continue().catch(()=>{});});
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();
+  await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+ }finally{await replace(page,original);await context.close();}
+});

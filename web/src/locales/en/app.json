@@ -257,5 +257,20 @@
   "staleCandidate": "This preview is out of date. Preview again.",
   "creationBusy": "Another world preview is active. Cancel it or retry after it expires.",
   "created": "World created.",
-  "confirmEmptyWorld": "Replace the current world?"
+  "confirmEmptyWorld": "Replace the current world?",
+  "worldSource": "World source",
+  "emptySource": "Empty world",
+  "heightmapSource": "Heightmap image",
+  "heightmapHelp": "Import an opaque, single-frame PNG, JPEG, BMP or GIF (up to 8 MiB, 4096 pixels per side and 4 million pixels). Stored H/V: 1–32. Brightness sets height; steep steps are lowered and slopes smoothed. Water uses one global level.",
+  "fixedHeightmap": "Prepared map",
+  "uploadHeightmap": "Upload an image",
+  "heightmapImage": "Terrain image",
+  "heightmapImagePreview": "Decoded source image",
+  "heightmapTerrainPreview": "Resulting terrain heights and global water",
+  "imageFormat": "Unsupported image or mismatched file type. Choose PNG, JPEG, BMP or GIF.",
+  "imageBytes": "Choose an image between 1 byte and 8 MiB.",
+  "imagePixels": "The image exceeds 4096 pixels per side or 4,194,304 total pixels.",
+  "imageAlpha": "Transparent pixels are unsupported. Choose an opaque image.",
+  "imageAnimation": "Animated images are unsupported. Choose a single-frame image.",
+  "imageInvalid": "The image is damaged or cannot be decoded. Choose another image."
 }

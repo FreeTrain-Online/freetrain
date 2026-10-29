@@ -24,7 +24,9 @@ for name, dependencies in allowed.items():
     assert refs <= permitted, f'{name}: forbidden project dependency {refs - permitted}'
     assert not list(project.iter('Reference')), f'{name}: raw assembly references are not allowed'
     assert not list(project.iter('COMReference')), f'{name}: COM references are not allowed'
-    assert not list(project.iter('PackageReference')), f'{name}: review new package dependencies explicitly'
+    packages = {n.attrib['Include']: n.attrib.get('Version') for n in project.iter('PackageReference')}
+    reviewed = {}
+    assert packages == reviewed, f'{name}: unreviewed package dependency {packages}'
     if name != 'Server':
         assert project.attrib['Sdk'] == 'Microsoft.NET.Sdk', f'{name}: server/UI SDK in portable slice'
     for source in path.parent.rglob('*.cs'):

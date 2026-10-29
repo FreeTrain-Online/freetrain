@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "scope": "P3-07 expanded heightmap decoder replacement; P3 overall remains open",
+  "baseRevision": "257212c4663af4771dadf99d88464c735f99b201",
+  "revisionQualification": "Verified uncommitted working-tree inputs below; not a new exact-HEAD commit claim",
+  "decoder": {
+    "name": "StbImageSharp",
+    "version": "2.30.16",
+    "sourceCommit": "125af70cb557033f2c46aec8e82eaaf72ac49817",
+    "selectedLicense": "MIT",
+    "adoption": "bounded source build; not the unmodified NuGet binary",
+    "packageSha256": "7bc69c8fe8a2c764d07de320aa2009bb15603928ae004cde45686c0106ca849b",
+    "runtime": "project-owned helpers; upstream Hebron.Runtime and generator excluded",
+    "notice": "doc/notices/StbImageSharp/LICENSE.txt"
+  },
+  "limits": {
+    "encodedBytes": 8388608,
+    "imageSide": 4096,
+    "imagePixels": 4194304,
+    "browserHV": 32,
+    "browserZ": 64,
+    "jobReservedBytes": 100663296,
+    "decoderNativeBytes": 83886080,
+    "decoderOutstandingPointers": 256,
+    "globalJobsAndRetainedCandidates": 4,
+    "decoderProbes": 256000000,
+    "decoderInnerDeadlineSeconds": 20,
+    "requestDeadlineSeconds": 30
+  },
+  "checks": {
+    "dotnet": {
+      "passed": 474
+    },
+    "client": {
+      "passed": 120
+    },
+    "python": {
+      "total": 142,
+      "passed": 141,
+      "skipped": 1
+    },
+    "chromiumFullFinal": {
+      "passed": 81
+    },
+    "chromiumTerrainFinal": {
+      "passed": 9
+    },
+    "optionalSource": {
+      "passed": 4
+    },
+    "optionalPrepared": {
+      "passed": 4
+    },
+    "buildGeneratedContentLocaleTerrainBoundaryWhitespace": "pass",
+    "cleanPublishAndContainerSkiaScan": "no Skia files/dependency entries; exact replacement notice"
+  },
+  "maximumImageSamples": [
+    {
+      "bitDepth": 16,
+      "encodedBytes": 8388608,
+      "pixels": 4194304,
+      "occupants": 512,
+      "saveBytes": 250042,
+      "snapshotBytes": 243691,
+      "managedAllocationChurn": 33067976,
+      "decoderNativePeakBytes": 67143680,
+      "elapsedMs": 921.9
+    },
+    {
+      "bitDepth": 8,
+      "encodedBytes": 8388608,
+      "pixels": 4194304,
+      "occupants": 512,
+      "saveBytes": 250042,
+      "snapshotBytes": 243691,
+      "managedAllocationChurn": 32113592,
+      "decoderNativePeakBytes": 33572864,
+      "elapsedMs": 352.44
+    }
+  ],
+  "retainedCandidates": {
+    "actualCandidates": 4,
+    "saveBytesEach": 250031,
+    "snapshotBytesEach": 243680,
+    "fifth": "rejected until cancellation releases capacity",
+    "currentWorlds": "unchanged"
+  },
+  "linuxArm64": {
+    "imageId": "sha256:d085e773d3d237d00436f4e34eab2ff045bb9e3f8b8e7f0b4d088ce247984a11",
+    "input": "exactly8MiB,2048²,RGBA16 PNG",
+    "world": "32x32x64",
+    "saveBytes": 250022,
+    "cells": 1024,
+    "importCommitReloadCheckpointRestart": "pass; byte-identical Save6; source image neither mounted nor persisted",
+    "cgroupEarlyCurrentBytes": 18030592,
+    "cgroupEarlyPeakBytes": 18030592,
+    "cgroupAfterCurrentBytes": 173772800,
+    "cgroupAfterPeakBytes": 203354112,
+    "memoryQualification": "Whole container including runtime/content/startup/GC, not isolated job RSS or four-job measurement",
+    "temporaryContainerRemoved": true
+  },
+  "jpegComparison": {
+    "fixture": "temporary synthetic16² color grid",
+    "differingChannels": 110,
+    "maximumAbsoluteChannelDelta": 2,
+    "groundCellsChanged": 0,
+    "quarterPatternsAtMatchedLocationsChanged": 5,
+    "occupantsBeforeAndAfter": 1022,
+    "qualification": "Reviewed lossy decoder rounding adaptation; all existing terrain oracles and orientation fixture unchanged; not universal JPEG pixel parity"
+  },
+  "inputSha256": {
+    ".dockerignore": "f08187650881a02435394ed859d08bae80ff687a9cc5cc964e22b1ba41264371",
+    "COPYING.txt": "49b07772b218bd3837383e6af3761166ea68914ed00fe0312ab561715a35ed5d",
+    "deploy/Dockerfile": "9f4f07de0c1b13c8ef4fe58d39023c76784d2125603a789ce79fc63fb70fd39e",
+    "doc/notices/StbImageSharp/LICENSE.txt": "42fda7e9614b8ce9e9e8cd53b8f48a8b0042e2384487bf9c700a34a4757cd50c",
+    "readme.txt": "92a5f4bf0429d2dedb22c9d920885b3ffad8962a59d8c86fe91cb95e68608deb",
+    "scripts/check-heightmap-decoder.py": "b114b0ff6aa855676a3d5703da3f97695dedf39c44431e7d34bc3449acdb65dc",
+    "scripts/check-project-boundaries.py": "cf2d632349330158dce0355bc4124e48db94fbfd58f5ab41d53bab28e65baf2c",
+    "src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj": "bb14dfe9a160f13b701e201985c98eafe0a9e6de3861a7d32c8f466821a96266",
+    "src/FreeTrain.Online.Server/HeightmapDecoder.cs": "e2e8c5769c7e8312320238dea84358db73627f4f21ee105cf350094bb38bd830",
+    "src/FreeTrain.Online.Server/Imaging/DecodeBudget.cs": "7fab57e72a3179d3c323b2a04d71868e9fff9816f6e756d8ecd87d4d31f9f496",
+    "src/FreeTrain.Online.Server/Imaging/DecoderRuntime.cs": "f977c41aa347e3f0362916ddd10fd368e0f1a1028ee3c6f8e65a182e8312875b",
+    "src/FreeTrain.Online.Server/Imaging/PngInflate.cs": "0922a06f01e03e3b64c535c734b0313f0e26d4f2bb9db61f044864295140a742",
+    "src/FreeTrain.Online.Server/Imaging/PngPreview.cs": "0ded495586758749296d019d76f0779e7ebe73d8b4f35879ea9c318810b7d788",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/SOURCE.json": "1f597959c89ef32e4d6dc475c338d00f5671aa7597df888212719ab5fe8bdd6a",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Bmp.cs": "a942d1f330613ef224e7e3703ae037b82f695cab8b2d337e57fe70b06e143051",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Common.cs": "f51ff8ec8235e7f1dc61e0033cc37706377d80e57e0baa0d1bf62aa874b57177",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Gif.cs": "21ff8bf60d91517d85929f74369d961c6f780e039b23b0a536082894908a3f98",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Hdr.cs": "00eef80af694f0e9a1bd025bfc5742bfcad5ea1fc4dabbc7f407cc06a0a9fbd6",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Jpg.cs": "c175bb7640741620e1556f9e6580093b582a3fd5753d6ffafbe5d8dbe5a2d3f0",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Png.cs": "9c574ddf422b33f5902efe8e3aa66a4c8e7530b7cf3ca704e7728eabcde20e15",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Psd.cs": "8cb0c074a94de146f4913a38d3ee6441d7cfd313abb92f1df31b777afb576b5f",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Tga.cs": "c275354034e9febda13b29ff11de9665885c6236192b894af9808fcf3bc08f55",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.Generated.Zlib.cs": "2b0ae1225ba0a088f1ad0cad381377f56acb3c505cf95a80be094c51615370e4",
+    "src/FreeTrain.Online.Server/Imaging/StbImageSharp/StbImage.cs": "e6ecc58dd1d2a5971a1c67ee645645a3851f43549f2ff0fb269a7c4fc49c6341",
+    "src/FreeTrain.Online.Server/packages.lock.json": "aa1751d0bfd1e93bd7de7b262d5474170bf74f7a95c60b41e9e7e478d35ed33b",
+    "src/FreeTrain.Online.Simulation/WorldCreation.cs": "dc0b106c16016bbe54e8579d667cf5d7d0e513d53b8c7599ecec7d5faa39798a",
+    "tests/FreeTrain.Online.Tests/HeightmapDecoderTests.cs": "ce8b1da8a8d10d4317df3449a20a1fb24e972b9ab23c33b57fc3608ade8f4fad",
+    "tests/FreeTrain.Online.Tests/HeightmapTests.cs": "dad33eb9b0ee1a24a5f84b7e9ec9f2bf8091b2fb008e55342a55c8c82a812a14",
+    "tests/FreeTrain.Online.Tests/packages.lock.json": "1ca2822b56e2c96120d8330b2555d9f637b8d529e939d6d043ae3ba421031b60",
+    "web/tests/browser/terrain.spec.ts": "8081ab417603cf720a6ae27d0731274308ad7ca53e5063c38b176a720fe04844"
+  },
+  "logs": "local tmp/p3-07-replacement/",
+  "remainingGates": [
+    "P3-08 onward",
+    "P3-16a larger/dense capacity",
+    "overall P3",
+    "native/device/Windows-GDI comparison",
+    "owner-deferred browsers",
+    "existing P2 crop/fidelity/optional repair"
+  ]
+}

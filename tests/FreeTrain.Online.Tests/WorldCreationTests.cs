@@ -126,7 +126,7 @@ public class WorldCreationTests
             _ => throw new ArgumentException()
         };
         Assert.NotEmpty(WorldCreationProfile.Validate(WorldCreationProfile.Heightmap(image)));
-        Assert.Empty(WorldCreationProfile.Validate(WorldCreationProfile.Heightmap(Image with { Width = 2048, Height = 2048, EncodedBytes = 8_388_608 })));
+        Assert.Empty(WorldCreationProfile.Validate(WorldCreationProfile.Heightmap(Image with { Width = 2048, Height = 2048, EncodedBytes = 8_388_608 }) with { Dimensions = new(32,32,16) }));
     }
 
     [Fact]

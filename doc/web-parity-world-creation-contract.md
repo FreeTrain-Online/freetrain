@@ -1,3 +1,15 @@
+**P3-07 replacement complete — 29 October 2026:** [Heightmap creation and evidence](web-parity-heightmap.md)
+retain PNG/JPEG/BMP/GIF and fixed maps at H/V1–32, Z1–64 using a reviewed MIT
+StbImageSharp 2.30.16 source build and project-owned PNG thumbnails. SkiaSharp is
+removed without changing FreeTrain's license. Heightmaps reserve1536 transfer
+bytes/cell; working bytes are `2,228,224 + max(80MiB, 16,384×C + 8×P) + encodedBytes`.
+The bounded80MiB decoder arena is trimmed to output before managed RGBA allocation
+and released before generation. The live route reserves96MiB; maximal-image32²
+estimates94,502,912 bytes, while maximal-image64² remains outside that envelope.
+Fresh maximum RGBA8/16, four-decoder/retention, malformed/cancel, browser and Linux
+checks are in the report. Empty admission is unchanged; generated/larger presets
+remain disabled. The earlier P3-02 formulas below are historical provisional evidence.
+
 **P3-06 update — 29 October 2026:** [Empty-world browser creation](web-parity-empty-world.md) now enables only flat H/V1–64, Z1–64 worlds, with actual save/snapshot measurement, a hard96MiB per-job reservation, detached generation and exact Owner confirmation. Dense/128² presets and heightmap/generated routes remain disabled. The original P3-02 formulas below are historical provisional envelopes, not supported dense-world capacities.
 
 **P3-04 measurement update — 28 October 2026:** [actual terrain serialization evidence](web-parity-terrain-transport.md) exceeds this step's provisional 512-byte/cell transfer and allocation reservations. They are not supported real-world capacities. Presets and creation readiness remain disabled. Save 6/protocol 4 now cap actual state at 16 MiB; a dense 128² stress graph is rejected. Rework/remeasure reservations and allocations before enabling applicable presets in P3-06/17. The historical probe and formulas below retain their original scope.

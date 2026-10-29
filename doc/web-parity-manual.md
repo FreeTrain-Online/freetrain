@@ -1,5 +1,7 @@
 # Manual evidence: ExAV and historical FreeTrain references
 
+**P3-07 delivery — 29 October 2026:** [Heightmap and fixed-map controls/evidence](web-parity-heightmap.md) add the terrain-loader/provider portions of MAN-M01/O02/E02/A02/A19 and DEV-P09/P17. Bilingual upload, dimensions/water, image/result preview, cancellation, exact Owner confirmation and Save6 reopen without input image are delivered within temporary32² admission. Other authoring/capacity/native journeys remain open.
+
 **P3-06 delivery — 29 October 2026:** [New world controls and evidence](web-parity-empty-world.md) deliver the empty-map parts of MAN-M01/O02/E02/A02/A19 through the existing Game panel, bilingual fields, candidate preview, Owner confirmation and Save6 reopening. Heightmap/provider selection and the other P3 authoring journeys remain open.
 
 **Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.

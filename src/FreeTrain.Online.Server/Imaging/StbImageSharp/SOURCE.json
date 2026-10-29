@@ -1,0 +1,57 @@
+{
+  "version": "2.30.16",
+  "commit": "125af70cb557033f2c46aec8e82eaaf72ac49817",
+  "licenseSelected": "MIT",
+  "source": "https://github.com/StbSharp/StbImageSharp/tree/125af70cb557033f2c46aec8e82eaaf72ac49817",
+  "packageSha256": "7bc69c8fe8a2c764d07de320aa2009bb15603928ae004cde45686c0106ca849b",
+  "files": {
+    "StbImage.Generated.Hdr.cs": {
+      "upstreamSha256": "cb552a6fb0dfe91ee315271570b6a769879d64c844fa73e3de8dc10c17907a93",
+      "localSha256": "00eef80af694f0e9a1bd025bfc5742bfcad5ea1fc4dabbc7f407cc06a0a9fbd6"
+    },
+    "StbImage.Generated.Zlib.cs": {
+      "upstreamSha256": "d6ed7c94b32608a583648b88d548781b7435026b9bcec62e92fe25f089f86ba6",
+      "localSha256": "2b0ae1225ba0a088f1ad0cad381377f56acb3c505cf95a80be094c51615370e4"
+    },
+    "StbImage.Generated.Bmp.cs": {
+      "upstreamSha256": "85aa40c91c78ada74fa3d3c3877bdbbfad3bf79c8308c73dd17f553315d4c336",
+      "localSha256": "a942d1f330613ef224e7e3703ae037b82f695cab8b2d337e57fe70b06e143051"
+    },
+    "StbImage.Generated.Png.cs": {
+      "upstreamSha256": "ea449a1d306856ae94b4da1da1f1d955cb7b2808adf126987d8f6609001a2546",
+      "localSha256": "9c574ddf422b33f5902efe8e3aa66a4c8e7530b7cf3ca704e7728eabcde20e15"
+    },
+    "StbImage.Generated.Common.cs": {
+      "upstreamSha256": "90d318d66fc0e83947c76d36b94eeabf58a11b0c1855c8753b1883d798bfbd8c",
+      "localSha256": "f51ff8ec8235e7f1dc61e0033cc37706377d80e57e0baa0d1bf62aa874b57177"
+    },
+    "StbImage.Generated.Psd.cs": {
+      "upstreamSha256": "c5c38bad3beb238c7c22955e4f00c6ebe9b797358e52bbef83cbaf4f4d707ef7",
+      "localSha256": "8cb0c074a94de146f4913a38d3ee6441d7cfd313abb92f1df31b777afb576b5f"
+    },
+    "StbImage.Generated.Jpg.cs": {
+      "upstreamSha256": "05dbd73a19bb801743a251090116c6f36013234c0923b8f471872d4cefac55a7",
+      "localSha256": "c175bb7640741620e1556f9e6580093b582a3fd5753d6ffafbe5d8dbe5a2d3f0"
+    },
+    "StbImage.Generated.Gif.cs": {
+      "upstreamSha256": "2d1f554fb2c4786b45008d2c04713fd5dcac2757ff789703baee56665f76be3f",
+      "localSha256": "21ff8bf60d91517d85929f74369d961c6f780e039b23b0a536082894908a3f98"
+    },
+    "StbImage.Generated.Tga.cs": {
+      "upstreamSha256": "67d4744324afc3cfda3ba7e9191e16074c6dc07d8f344b05827fb095e1ec0d5f",
+      "localSha256": "c275354034e9febda13b29ff11de9665885c6236192b894af9808fcf3bc08f55"
+    },
+    "StbImage.cs": {
+      "upstreamSha256": "e269cff300a895f80e53ab1d14fc1c2a3db37c38a8dcde2292bd7c0e064e45e7",
+      "localSha256": "e6ecc58dd1d2a5971a1c67ee645645a3851f43549f2ff0fb269a7c4fc49c6341"
+    }
+  },
+  "excluded": "No upstream Hebron.Runtime, wrappers, generator, test code or native binaries. Project-owned runtime in ../DecodeBudget.cs and ../DecoderRuntime.cs.",
+  "modifications": [
+    "Decoder method and braced-loop work/cancellation probes",
+    "Strict span reads with no expanded temporary array; thread-local failure state",
+    "Exact bounded PNG scanline inflation including Adam7",
+    "Iterative bounded GIF prefix expansion",
+    "Project-owned runtime and 80MiB arena, trimmed to output before managed RGBA allocation"
+  ]
+}

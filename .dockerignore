@@ -20,6 +20,10 @@
 !content/localization/**
 !prototype/
 !prototype/**
+!doc/
+!doc/notices/
+!doc/notices/StbImageSharp/
+!doc/notices/StbImageSharp/**
 !deploy/
 !deploy/**
 **/bin

@@ -1,5 +1,7 @@
 # Stable ExAV parity scenarios
 
+**P3-07 runtime slice — 29 October 2026:** [Heightmap runtime and independent-image evidence](web-parity-heightmap.md) add primary-color/one-pixel/ramp/checker/border/quarter terrain, bounded image failures/cancellation, exact preview commit, two-client publication and save/checkpoint continuation without source image. Source/prepared synthetic fixed maps are verified separately; the broader scenario/capacity/generated/editing matrix remains open.
+
 **P3-06 runtime slice — 29 October 2026:** [Empty-world creation evidence](web-parity-empty-world.md) now covers source-default and custom flat worlds, zero rails, candidate cancellation/Owner confirmation, roles, stale fences and Save6 reopening. This is empty-world runtime evidence; the broader source-scenario/city/generated/editing matrix remains open.
 
 **P0-06 source-scenario specification complete — 21 October 2026.**

@@ -31,10 +31,14 @@ public sealed class OptionalPluginRegistry
 
     public string? ContentType(string url) => files.TryGetValue(url, out var entry) ? entry.File.ContentType : null;
 
-    public byte[]? ReadFile(string url)
+    public byte[]? ReadFile(string url, long maximumBytes = int.MaxValue)
     {
         if (!files.TryGetValue(url, out var entry)) return null;
-        var data = File.ReadAllBytes(entry.Path);
+        if (entry.File.Bytes < 0 || entry.File.Bytes > maximumBytes || entry.File.Bytes > int.MaxValue) throw new InvalidDataException("Optional resource exceeds byte limit.");
+        using var stream = File.OpenRead(entry.Path);
+        if (stream.Length != entry.File.Bytes) throw new InvalidDataException("Optional resource changed length.");
+        var data = new byte[(int)entry.File.Bytes]; stream.ReadExactly(data);
+        if (stream.ReadByte() != -1) throw new InvalidDataException("Optional resource changed length.");
         Verify(data, entry.File); // A mounted volume changed after startup: fail closed.
         return data;
     }

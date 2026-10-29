@@ -38,3 +38,25 @@ test('changed authoritative catalog blocks join and never reveals a ready world'
   await expect(page.getByRole('button',{name:'Game ▾',exact:true})).toBeHidden();
   await expect(page.locator('.session-dialog')).toBeVisible({timeout:15000});
 });
+
+test('reviewed fixed map uses exact prepared source bytes and metadata and reopens as realized terrain',async({page})=>{
+ await page.goto('/');await expect(page.getByTestId('connection')).toHaveText('Connected to game',{timeout:30000});
+ const original=await(await page.request.get('/api/saves/download')).body();
+ try{
+  await page.getByRole('button',{name:'Game ▾',exact:true}).click();await page.getByRole('button',{name:'New world',exact:true}).click();
+  await page.getByLabel('World source',{exact:true}).selectOption('heightmap');await page.getByLabel('Prepared map',{exact:true}).selectOption('fixture-map');
+  await expect(page.getByLabel('World name',{exact:true})).toHaveValue('Prepared terrain');await expect(page.getByLabel('Stored width (H)',{exact:true})).toHaveValue('3');await expect(page.getByLabel('Stored width (H)',{exact:true})).toBeDisabled();
+  await expect(page.getByRole('dialog',{name:'New world',exact:true})).toContainText('Fixture author');
+  await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('3 × 2 × 6');
+  await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await expect(page.getByTestId('connection')).toHaveText('Connected to game');
+  const captured=await(await page.request.get('/api/saves/download')).body(),data=JSON.parse(captured.toString());
+  // The resulting terrain uses bundled geometry. The exact source pack/resource
+  // remains provenance; reopening cannot require or decode its image again.
+  expect(JSON.parse(data.terrain.provenance.requestJson).Image.Provider.PackId).toBe('fixture-one');
+  await page.reload();await expect(page.getByTestId('connection')).toHaveText('Connected to game',{timeout:30000});expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
+ }finally{
+  const state=await(await page.request.get('/api/bootstrap?protocolVersion=4&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2')).json();
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+state.worldEpoch,{data:original})).ok()).toBe(true);
+ }
+});

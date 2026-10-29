@@ -257,5 +257,20 @@
   "staleCandidate": "このプレビューは無効です。再度プレビューしてください。",
   "creationBusy": "別のプレビューが有効です。取り消すか、有効期限後に再試行してください。",
   "created": "世界を作成しました。",
-  "confirmEmptyWorld": "現在の世界を置き換えますか？"
+  "confirmEmptyWorld": "現在の世界を置き換えますか？",
+  "worldSource": "世界の作成方法",
+  "emptySource": "空の世界",
+  "heightmapSource": "地形画像",
+  "heightmapHelp": "不透明な静止画像（PNG・JPEG・BMP・GIF、8 MiB以下、各辺4096ピクセル以下、合計約400万ピクセル以下）を読み込みます。保存H/Vは1〜32です。明るさから高さを計算し、急な段差を下げて斜面を滑らかにします。水面は世界共通の高さです。",
+  "fixedHeightmap": "準備済みの地図",
+  "uploadHeightmap": "画像を選択",
+  "heightmapImage": "地形画像ファイル",
+  "heightmapImagePreview": "読み込んだ元画像",
+  "heightmapTerrainPreview": "生成した地形の高さと共通水面",
+  "imageFormat": "画像形式が未対応か、内容と種類が一致しません。PNG・JPEG・BMP・GIFを選択してください。",
+  "imageBytes": "1バイト〜8 MiBの画像を選択してください。",
+  "imagePixels": "画像が各辺4096ピクセル、または合計4,194,304ピクセルを超えています。",
+  "imageAlpha": "透明なピクセルには対応していません。不透明な画像を選択してください。",
+  "imageAnimation": "アニメーション画像には対応していません。静止画像を選択してください。",
+  "imageInvalid": "画像が破損しているか読み込めません。別の画像を選択してください。"
 }
