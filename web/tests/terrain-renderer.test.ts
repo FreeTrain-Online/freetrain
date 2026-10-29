@@ -2,6 +2,7 @@ import { TerrainScene, mountainPoints, treeOffset, mountainColor, terrainColor, 
 import { RecipeImageCache, type RenderCatalog, type Variant } from '../src/lib/content-recipes.ts';
 import type { Snapshot } from '../src/generated/contracts.ts';
 import { WorldSpace } from '../src/lib/map-geometry.ts';
+import { TerrainViewport } from '../src/lib/terrain-viewport.ts';
 function assert(v:unknown,message='Assertion failed'):asserts v {if(!v)throw new Error(message);}
 function equal(a:unknown,b:unknown){assert(JSON.stringify(a)===JSON.stringify(b),`${JSON.stringify(a)} != ${JSON.stringify(b)}`);}
 const catalog=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url))) as RenderCatalog;
@@ -20,6 +21,54 @@ function mountain(cs=[4,0,0,0],forest=false) {
   s.entities=[e];s.terrain!.occupants=[o];return s;
 }
 const view={x:0,y:0,zoom:1};
+async function withViewport(run:(scene:TerrainScene,viewport:TerrainViewport,ctx:CanvasRenderingContext2D,canvases:{width:number;height:number}[])=>void) {
+  const descriptor=Object.getOwnPropertyDescriptor(globalThis,'OffscreenCanvas'),canvases:{width:number;height:number}[]=[];
+  const context=()=>{
+    let scale=1;
+    return new Proxy({setTransform:(a:number)=>{scale=a;},getTransform:()=>({a:scale})},{get:(target,key)=>Reflect.get(target,key)??(()=>{})}) as unknown as CanvasRenderingContext2D;
+  };
+  class Canvas {
+    private ctx=context();
+    constructor(public width:number,public height:number){canvases.push(this);}
+    getContext(){return this.ctx;}
+  }
+  Object.defineProperty(globalThis,'OffscreenCanvas',{configurable:true,writable:true,value:Canvas});
+  try {
+    const scene=await TerrainScene.prepare(flat(200,100),catalog,cache(),day,5);
+    run(scene,new TerrainViewport(scene),context(),canvases);
+  }finally{
+    if(descriptor)Object.defineProperty(globalThis,'OffscreenCanvas',descriptor);else Reflect.deleteProperty(globalThis,'OffscreenCanvas');
+  }
+}
+Deno.test('progressive terrain publishes matching picks atomically and cancels a newer camera when returning to the completed view',async()=>{
+  await withViewport((scene,viewport,ctx)=>{
+    const a={x:0,y:32,zoom:1},b={x:-64,y:32,zoom:1};
+    const settle=(v:typeof a)=>{for(let n=0;n<1000;n++)if(!viewport.draw(ctx,v,128,96,1).pending)return;throw new Error('Viewport never settled');};
+    assert(!viewport.draw(ctx,a,128,96,1).ready);assert(!viewport.pick({x:16,y:24},a));
+    settle(a);const operations=scene.operations;
+    equal(viewport.pick({x:16,y:24},a)?.position,{x:49,y:0,z:1});
+    assert(viewport.draw(ctx,b,128,96,1).pending);
+    assert(scene.operations===operations,'Unfinished work must not replace pick operations');
+    // x120 in the shifted camera is newly exposed beyond the old image.
+    assert(!viewport.pick({x:120,y:24},b));
+    assert(!viewport.draw(ctx,a,128,96,1).pending,'Returning Home must cancel obsolete work');
+    for(let n=0;n<5;n++)assert(!viewport.draw(ctx,a,128,96,1).pending);
+    assert(scene.operations===operations);
+    settle(b);assert(scene.operations!==operations);
+    equal(viewport.pick({x:16,y:24},b)?.position,{x:51,y:2,z:1});
+  });
+});
+Deno.test('progressive viewport keeps continuous camera picking and bounds backing images on fractional-DPI and large windows',async()=>{
+  await withViewport((_scene,viewport,ctx,canvases)=>{
+    const v={x:0,y:32,zoom:1.15};
+    for(let n=0;n<1000;n++)if(!viewport.draw(ctx,v,128,96,1.3).pending)break;
+    equal(viewport.pick({x:16*1.15,y:32-8*1.15},v)?.position,{x:49,y:0,z:1});
+    viewport.draw(ctx,v,5000,3000,3);
+    viewport.draw(ctx,{...v,zoom:1.2},5100,3100,3);
+    assert(canvases.length<100,'Camera requests must reuse viewport images');
+    assert(canvases.every(c=>c.width*c.height<=16_777_216),'Backing images must stay within the pixel bound');
+  });
+});
 Deno.test('terrain projection uses diagonal NE/SE/SW/NW quarters and source tree slope arithmetic',()=>{
   equal(mountainPoints({ne:4,se:1,sw:0,nw:2}),[{x:16,y:-16},{x:32,y:4},{x:16,y:16},{x:0,y:0}]);
   equal(treeOffset({ne:4,sw:0},{x:30,y:15}),{x:30,y:22});

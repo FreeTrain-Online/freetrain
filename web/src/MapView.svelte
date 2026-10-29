@@ -221,7 +221,7 @@
           // while the mounted panels stay available. Initial reveal still waits.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
         } catch { if(liveScene)renderState = 'failed'; }
-        dirty = false;
+        dirty = renderer.needsFrame;
       }
       frame = requestAnimationFrame(paint);
     }; frame = requestAnimationFrame(paint);

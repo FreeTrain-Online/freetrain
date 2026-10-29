@@ -7,6 +7,7 @@ import { normalPorts } from './world-identity.ts';
 import { ports } from './prototype/rail-geometry.ts';
 import { mapSpace } from './map-space.ts';
 import { TerrainScene, type TerrainTarget } from './terrain-renderer.ts';
+import { TerrainViewport } from './terrain-viewport.ts';
 import { loadRenderCatalog, RecipeImageCache, type RenderCatalog, type Variant } from './content-recipes.ts';
 import { isTerrainWorld } from './world-identity.ts';
 import { DemoRailway } from './demo-railway.ts';
@@ -32,6 +33,8 @@ export class MapRenderer {
   private catalog?:Promise<RenderCatalog>;
   private terrainKey='';
   private terrainScene?:TerrainScene;
+  private terrainViewport?:TerrainViewport;
+  needsFrame=false;
   private demoRailway?:DemoRailway;
   private terrainError?:unknown;
   private terrainView?:{x:number;y:number;zoom:number};
@@ -59,6 +62,7 @@ export class MapRenderer {
   }
   private layer(item: Item) { return {track:0,sample:1,building:1,station:2,train:3}[item.kind]; }
   draw(camera: Camera, width: number, height: number, dpr: number, options: MapOptions) {
+    this.needsFrame=false;
     const start=performance.now(), ctx=this.canvas.getContext('2d')!;
     if (this.canvas.width!==Math.round(width*dpr) || this.canvas.height!==Math.round(height*dpr)) {
       this.canvas.width=Math.round(width*dpr); this.canvas.height=Math.round(height*dpr);
@@ -72,19 +76,24 @@ export class MapRenderer {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
       const key=JSON.stringify([read.worldEpoch,read.terrain!.geometryRevision,variant,options.heightCut,decorative]);
       if(this.terrainKey!==key) {
-        this.terrainKey=key;this.terrainScene=undefined;this.demoRailway=undefined;this.terrainView=undefined;this.terrainError=undefined;
+        this.terrainKey=key;this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;this.terrainError=undefined;
         this.catalog??=loadRenderCatalog(read.requiredPacks[0].catalogHash);
         this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
-          if(this.terrainKey===key){this.terrainScene=scene;this.demoRailway=railway;this.invalidate();}
+          if(this.terrainKey===key){this.terrainScene=scene;this.terrainViewport=!decorative&&scene.supportsViewport&&typeof OffscreenCanvas!=='undefined'?new TerrainViewport(scene):undefined;this.demoRailway=railway;this.invalidate();}
         }).catch(error=>{if(this.terrainKey===key){this.terrainError=error;this.invalidate();}});
       }
       if(this.terrainError)throw this.terrainError;
       this.canvas.dataset.assets=this.terrainScene?'ready':'loading';
       if(!this.terrainScene)return false;
       this.terrainView={x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom};
-      const count=this.demoRailway
+      const progressive=this.terrainViewport?.draw(ctx,this.terrainView,width,height,dpr);
+      this.needsFrame=progressive?.pending??false;
+      this.canvas.dataset.refinement=progressive?.pending?'pending':'ready';
+      this.canvas.dataset.renderZoom=String(progressive?.renderZoom??camera.zoom);
+      if(progressive&&!progressive.ready){this.canvas.dataset.assets='loading';return false;}
+      const count=progressive?.drawn??(this.demoRailway
         ?this.demoRailway.draw(ctx,this.terrainScene,this.terrainView,width,height,dpr,options.demoTime!)
-        :this.terrainScene.draw(ctx,this.terrainView,width,height);
+        :this.terrainScene.draw(ctx,this.terrainView,width,height));
       if(this.demoRailway){this.canvas.dataset.demoLoop=String(demoLoop.length);this.canvas.dataset.demoTrain=JSON.stringify(demoCar(options.demoTime!,0));}
       for(const [position,color] of [[options.preview,'#126e79'],[options.selection?.position,'#ffeaa0']] as const) {
         if(!position||position.z>options.heightCut)continue;
@@ -100,7 +109,7 @@ export class MapRenderer {
       this.canvas.dataset.terrainCut=String(options.heightCut);
       return true;
     }
-    this.terrainKey='';this.terrainScene=undefined;this.demoRailway=undefined;this.terrainView=undefined;
+    this.terrainKey='';this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;
     const space=this.space;
     const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;
@@ -183,7 +192,10 @@ export class MapRenderer {
     return true;
   }
   pick(p:Point,zoom:number):Selection|undefined {
-    if(this.read&&isTerrainWorld(this.read))return this.terrainScene&&this.terrainView?this.terrainScene.pick(p,this.terrainView):undefined;
+    if(this.read&&isTerrainWorld(this.read)) {
+      if(!this.terrainScene||!this.terrainView)return;
+      return this.terrainViewport?this.terrainViewport.pick(p,this.terrainView):this.terrainScene.pick(p,this.terrainView);
+    }
     for(let i=this.hits.length-1;i>=0;i--) {
       const {item,x,y}=this.hits[i]; let hit=false;
       if(item.sprite && !item.cut) {

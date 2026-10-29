@@ -64,9 +64,31 @@ These are coordinated request envelopes, with actual bytes, expansion estimates,
 
 Large scenes build source-ordered operations only for the viewport, including the complete elevation range and sprite overhang. A bounded65,536-cell operation cache avoids rebuilding unchanged instances. Picking checks operation bounds before exact polygons/alpha masks. Only needed prepared surfaces are decoded; variants/cuts/epoch/geometry changes invalidate scenes through the existing lifecycle.
 
-Two viewport rasters, each capped at16,777,216 pixels, reuse physical pixels for integral pixel pans. Separate 64 MiB sprite-crop and polygon raster caches fix subpixel phases before copying physical pixels. This removes GPU sampling-tie and polygon anti-alias variation as geometry moves across a large canvas. The two viewport rasters include the opaque scene background to preserve edge compositing exactly. The measured1.5× case now compares cached output byte-for-byte with a fresh redraw after resize. Other pans/zoom/DPR/size changes repaint safely. These are portable browser rendering decisions, not new claims of native GDI pixel identity. Small-scene/gallery rendering retains its established path.
+Large live scenes use two viewport rasters, each capped at16,777,216 pixels: the completed image and a replacement under construction. Camera movement immediately transforms the completed image. Replacement work builds source-ordered batches of at most128 cells and paints batches of64 operations, yielding after an approximately5 ms CPU budget per animation frame. Only a complete replacement and its matching picking operations are published. New camera requests replace unfinished work; returning to the completed camera cancels it. Geometry/epoch/variant/cut changes discard the viewport through the existing scene lifecycle. Hidden or unmounted views schedule no independent refinement work.
+
+Rendering uses a bounded set of physical-pixel scales, preserving reusable sprite/polygon phases at fractional device-pixel ratios and on large windows with capped backing resolution. The displayed camera retains continuous50–400% zoom and cursor anchoring. The completed raster is sampled with nearest-neighbor scaling at intermediate camera zooms; those pixels can differ from the earlier arbitrary-scale, per-sprite paint. This is a display sampling choice; terrain, realized trees, entity IDs, saves and command geometry stay exact. Picking uses the published operations with the displayed camera and ignores newly exposed background outside the completed image. The measured1.5× DPR1/2 cases compare byte-for-byte with the synchronous reference and a fresh redraw after resize. Separate64 MiB sprite-crop and polygon raster caches preserve stable sampling within each render scale. Small scenes, galleries and the decorative landscape keep their synchronous path. These are portable browser rendering decisions, not new claims of native GDI pixel identity.
 
 Candidate overviews are bounded256×256 PNG images rather than one SVG element per cell. The exact full candidate grid remains authoritative for confirmation. The mounted primary canvas remains stable.
+
+### Zoom responsiveness follow-up — 29 October 2026
+
+The initial capacity acceptance measured warm panning and missed arbitrary-scale zoom stalls. A local renderer diagnostic reproduced12.8-second frames in both zoom directions on the full-size forest/terrace fixture, with no resource requests during zoom. Two wheel sweeps created642,525 offscreen canvases; context creation and garbage collection were major sampled CPU costs. Fixed scales alone reduced the maximum to354 ms, which still required yielding work to protect interaction.
+
+Five final real-UI checks cover50% and400%, rapid reversal, cancellation back to Home, fractional-zoom picking and byte-exact cached/fresh images at150%. They record no tasks over50 ms during zoom/refinement after the world is ready. Wheel-to-canvas feedback and the last-view catch-up after the rapid gesture are measured separately:
+
+| Scene | DPR | Wheel feedback p95 / maximum (ms) | Last view settled after input (ms) |
+| --- | ---: | ---: | ---: |
+| Forest/terrace |1 |17.1 /17.6 |107.2 |
+| Forest/terrace |1.25 |17.4 /17.7 |98.2 |
+| Forest/terrace |2 |18.8 /21.3 |130.1 |
+| Mountains |1 |16.8 /16.9 |57.7 |
+| Mountains |2 |18.0 /21.0 |99.6 |
+
+The isolated renderer additionally compares completed150% pixels against the synchronous reference. Cold wide forest views can take about0.9 seconds to finish refinement while the camera remains responsive; newly exposed edges show the scene background until completion. The owner reviewed the local full-size forest/terrace preview for rapid zoom, direction reversal and panning after zoom, and reported **“Responsive and visually smooth.”** This accepts the prototype’s feel in that tested setup; broader native/device coverage retains its existing gates. The original capacity results below retain their historical measurements; the opt-in capacity suite now also exercises zoom responsiveness, including fractional DPR.
+
+Local follow-up evidence and reproduction: `tmp/zoom-analysis/README.md`, `summary.json`, per-case renderer/CPU captures, and `tmp/p3-capacity/browser-capacity/zoom-*.json`. Run the current capacity suite with `--grep 'responsive zoom refinement'` for the UI zoom checks, or `--grep-invert 'responsive zoom refinement'` for the original capacity cases.
+
+Frontend follow-up verification: **129 client tests,84 ordinary Chromium cases,5 zoom cases and4 original capacity cases pass**. Build/generated/content/locale checks pass with zero Svelte errors/warnings. Unit coverage also checks atomic picking, cancellation back to the completed camera, fractional-DPI camera geometry and the backing-pixel bound. Owner smoothness review passed on the local forest/terrace preview.
 
 ## Measurements and acceptance
 

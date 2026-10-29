@@ -81,10 +81,11 @@ test(`${h}×${v}×${z} ${mode}: atomic transfer, viewport picking, reconnect, ex
   }
   const intervals=await page.evaluate(()=>{const w=window as any;w.capacityRecording=false;return w.capacityFrames as number[];});intervals.sort((a,b)=>a-b);
   writeFileSync(join(directory,`${h}-${mode}-pan.json`),JSON.stringify({samples},null,2)+'\n');
+  await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
   const image=await page.locator('canvas').evaluate(c=>c.toDataURL()),size=page.viewportSize()!;
   const cachedCamera=await page.locator('canvas').getAttribute('data-camera');
   await page.setViewportSize({...size,width:size.width+2});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
-  await page.setViewportSize(size);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  await page.setViewportSize(size);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
   const fresh=await page.locator('canvas').evaluate(c=>c.toDataURL());
   writeFileSync(join(directory,`${h}-${mode}-cached.png`),Buffer.from(image.split(',')[1],'base64'));
   writeFileSync(join(directory,`${h}-${mode}-fresh.png`),Buffer.from(fresh.split(',')[1],'base64'));
@@ -126,6 +127,83 @@ test(`${h}×${v}×${z} ${mode}: atomic transfer, viewport picking, reconnect, ex
     await page.screenshot({path:join(directory,`${h}-${mode}.png`),fullPage:true});expect(errors).toEqual([]);
   }finally{await observer.close();}
   }finally{await memory.stop();}
+});
+}
+
+for(const mode of ['heavy','generated'] as const)for(const dpr of mode==='heavy'?[1,1.25,2]:[1,2]) {
+test(`${mode} DPR${dpr}: responsive zoom refinement, latest camera, picking and fresh pixels`,async({browser})=>{
+  const context=await browser.newContext({baseURL:webURL,viewport:{width:1880,height:1040},deviceScaleFactor:dpr});
+  const page=await context.newPage(),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+  try {
+    const fixture=resolve(`../tmp/p3-capacity/1500-${mode}`);
+    execFileSync('dotnet',[probe,'--capacity','1500','1090','45',mode,fixture],{stdio:'pipe',timeout:60000});
+    await page.goto('/');await ready(page);
+    const response=await page.request.post('/api/saves/upload?expectedWorldEpoch='+await epoch(page),{data:readFileSync(join(fixture,'world.json')),timeout:60000});
+    expect(response.ok()).toBe(true);
+    const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-world-epoch',await epoch(page));await ready(page);
+    await expect(canvas).toHaveAttribute('data-refinement','ready');
+    const initialCamera=await canvas.getAttribute('data-camera');
+    await canvas.evaluate(canvas=>{
+      const w=window as any;
+      w.zoomDiagnostics={lastInput:0,settled:0,paints:[],longTasks:[]};
+      w.zoomPaintObserver=new MutationObserver(()=>{
+        w.zoomDiagnostics.paints.push(Number(canvas.dataset.paintMs));
+        if(canvas.dataset.refinement==='ready')w.zoomDiagnostics.settled=performance.now();
+      });w.zoomPaintObserver.observe(canvas,{attributes:true,attributeFilter:['data-paint-ms']});
+      w.zoomTaskObserver=new PerformanceObserver(list=>{w.zoomDiagnostics.longTasks.push(...list.getEntries().map(t=>t.duration));});
+      w.zoomTaskObserver.observe({type:'longtask'});
+    });
+    const samples=await canvas.evaluate(async canvas=>{
+      const box=canvas.getBoundingClientRect(),samples:{feedbackMs:number;paintMs:number;zoom:number;pending:boolean}[]=[];
+      for(const deltaY of [...Array(9).fill(-1),...Array(17).fill(1),...Array(8).fill(-1)]) {
+        const before=Number(canvas.dataset.zoom);
+        if(deltaY<0&&before>=4||deltaY>0&&before<=.5)continue;
+        const start=performance.now();
+        (window as any).zoomDiagnostics.lastInput=start;
+        await new Promise<void>((resolve,reject)=>{
+          const timeout=setTimeout(()=>{observer.disconnect();reject(new Error('Zoom feedback deadline'));},3000);
+          const observer=new MutationObserver(()=>{
+            if(Number(canvas.dataset.zoom)!==before){clearTimeout(timeout);observer.disconnect();resolve();}
+          });observer.observe(canvas,{attributes:true,attributeFilter:['data-zoom']});
+          canvas.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY,clientX:box.x+box.width*.37,clientY:box.y+box.height*.42}));
+        });
+        samples.push({feedbackMs:performance.now()-start,paintMs:Number(canvas.dataset.paintMs),zoom:Number(canvas.dataset.zoom),pending:canvas.dataset.refinement==='pending'});
+      }
+      return samples;
+    });
+    expect(samples.some(s=>s.zoom===4)).toBe(true);expect(samples.some(s=>s.zoom===.5)).toBe(true);
+    expect(samples.every(s=>s.pending)).toBe(true);
+    await expect(canvas).toHaveAttribute('data-refinement','ready');
+    const refinement=await page.evaluate(()=>{
+      const w=window as any,d=w.zoomDiagnostics;
+      d.longTasks.push(...w.zoomTaskObserver.takeRecords().map((t:PerformanceEntry)=>t.duration));
+      w.zoomPaintObserver.disconnect();w.zoomTaskObserver.disconnect();
+      return {lastSettleMs:d.settled-d.lastInput,paints:d.paints as number[],longTasks:d.longTasks as number[]};
+    });
+    expect(refinement.lastSettleMs).toBeGreaterThan(0);expect(refinement.lastSettleMs).toBeLessThan(1000);
+    const sort=(values:number[])=>values.sort((a,b)=>a-b),feedback=sort(samples.map(s=>s.feedbackMs)),paint=sort(samples.map(s=>s.paintMs));
+    const p95=(values:number[])=>values[Math.ceil(values.length*.95)-1];
+    expect(p95(feedback)).toBeLessThan(100);expect(Math.max(...feedback)).toBeLessThan(250);expect(p95(paint)).toBeLessThan(33.4);
+    const fractionalBox=(await canvas.boundingBox())!;
+    await page.mouse.click(fractionalBox.x+fractionalBox.width/2,fractionalBox.y+fractionalBox.height/2);
+    await expect(page.getByTestId('selected-object')).toContainText('Terrain');await closePanel(page);
+    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',initialCamera!);await expect(canvas).toHaveAttribute('data-refinement','ready');
+    // Cancel an unfinished request by returning to the already published Home view.
+    await canvas.dispatchEvent('wheel',{deltaY:-1,clientX:900,clientY:500});await expect(canvas).toHaveAttribute('data-refinement','pending');
+    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',initialCamera!);await expect(canvas).toHaveAttribute('data-zoom','1.500');await expect(canvas).toHaveAttribute('data-refinement','ready');
+    const box=(await canvas.boundingBox())!;
+    await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await expect(page.getByTestId('selected-object')).toContainText('Terrain');
+    const selected=await page.getByTestId('selected-object').textContent();
+    await page.getByRole('button',{name:'Close panel',exact:true}).click();
+    // A fresh rebuild must produce the same settled image and pick at fixed scale.
+    const before=await canvas.evaluate(c=>c.toDataURL());
+    await page.setViewportSize({width:1882,height:1040});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(canvas).toHaveAttribute('data-refinement','ready');
+    await page.setViewportSize({width:1880,height:1040});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await expect(canvas).toHaveAttribute('data-refinement','ready');
+    expect(digest(Buffer.from(await canvas.evaluate(c=>c.toDataURL())))).toBe(digest(Buffer.from(before)));
+    await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await expect(page.getByTestId('selected-object')).toHaveText(selected!);
+    writeFileSync(join(directory,`zoom-${mode}-dpr${dpr}.json`),JSON.stringify({mode,dpr,samples,feedbackP95:p95(feedback),paintP95:p95(paint),refinement},null,2)+'\n');
+    expect(errors).toEqual([]);
+  }finally{await context.close();}
 });
 }
 

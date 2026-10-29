@@ -9,6 +9,7 @@ import type { ReadState } from './session-client.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
 type Operation = { target:TerrainTarget; points:Point[]; color:string; edge?:string } | {target:TerrainTarget; layer:Layer};
+export type TerrainOperation = Operation;
 type Bounds={left:number;top:number;right:number;bottom:number};
 const diamond=[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}];
 export function hsv([H,S,V]:readonly number[]):number[] {
@@ -52,12 +53,29 @@ export class TerrainScene {
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
     private background='#d8e5d9') {}
+  get supportsViewport():boolean {return !!this.region;}
+  get backgroundColor():string {return this.background;}
+  private viewBounds(view:View,width:number,height:number) {
+    const r=this.region!;
+    return {
+      h0:Math.max(0,Math.floor((-view.x/view.zoom-r.marginX)/32)-1),
+      h1:Math.min(r.width,Math.ceil(((width-view.x)/view.zoom+r.marginX)/32)+1),
+      v0:Math.max(0,Math.floor((-view.y/view.zoom-r.marginY)/8)-1),
+      v1:Math.min(r.height,Math.ceil(((height-view.y)/view.zoom+16*(r.levels-1)+r.marginY)/8)+1),
+    };
+  }
+  /** Bounded source-ordered batches let the live viewport yield between cells. */
+  *viewportOperations(view:View,width:number,height:number):Generator<readonly Operation[]> {
+    if(!this.region){yield this.operations;return;}
+    const {h0,h1,v0,v1}=this.viewBounds(view,width,height);
+    for(let v=v0;v<v1;v++)for(let h=h0;h<h1;h+=128)
+      yield this.region.build(h,Math.min(h+128,h1),v,v+1);
+  }
   private prepareView(view:View,width:number,height:number) {
     const r=this.region;if(!r)return;
     // Projection is x=32H+16(V%2), y=8V−16Z. Include the full elevation
     // range and sprite/realized-tree overhang before restricting stored rows.
-    const h0=Math.max(0,Math.floor((-view.x/view.zoom-r.marginX)/32)-1),h1=Math.min(r.width,Math.ceil(((width-view.x)/view.zoom+r.marginX)/32)+1);
-    const v0=Math.max(0,Math.floor((-view.y/view.zoom-r.marginY)/8)-1),v1=Math.min(r.height,Math.ceil(((height-view.y)/view.zoom+16*(r.levels-1)+r.marginY)/8)+1);
+    const {h0,h1,v0,v1}=this.viewBounds(view,width,height);
     const key=[h0,h1,v0,v1].join(',');
     if(key!==this.viewKey){this.operations=r.build(h0,h1,v0,v1);this.viewKey=key;}
   }
@@ -221,9 +239,12 @@ export class TerrainScene {
     ctx.drawImage(cached.image,ix/dpr,iy/dpr,width/dpr,height/dpr);return true;
   }
   private paint(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,clips?:Bounds[]):number {
+    return this.paintOperations(ctx,view,width,height,this.operations,clips);
+  }
+  paintOperations(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,operations:readonly Operation[],clips?:Bounds[]):number {
     let drawn=0;
     ctx.imageSmoothingEnabled=false;
-    for(const op of this.operations) {
+    for(const op of operations) {
       const b=this.operationBounds(op),left=view.x+b.left*view.zoom,top=view.y+b.top*view.zoom,right=view.x+b.right*view.zoom,bottom=view.y+b.bottom*view.zoom;
       if(right<0||bottom<0||left>width||top>height)continue;
       drawn++;
@@ -240,9 +261,12 @@ export class TerrainScene {
     return drawn;
   }
   pick(p:Point,view:View):TerrainTarget|undefined {
+    return this.pickOperations(p,view,this.operations);
+  }
+  pickOperations(p:Point,view:View,operations:readonly Operation[]):TerrainTarget|undefined {
     const world={x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom};
-    for(let i=this.operations.length-1;i>=0;i--) {
-      const op=this.operations[i];
+    for(let i=operations.length-1;i>=0;i--) {
+      const op=operations[i];
       const b=this.operationBounds(op);if(world.x<b.left||world.x>b.right||world.y<b.top||world.y>b.bottom)continue;
       if('layer' in op ? this.ready.pick(p.x,p.y,view,[op.layer]) : inPolygon(world,op.points))return {...op.target,position:{...op.target.position}};
     }
