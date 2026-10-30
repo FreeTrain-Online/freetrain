@@ -183,7 +183,7 @@ def main():
     args = parser.parse_args()
     counts = validate(read('railway-review.json'), read('railway-localization-review.json'), args.source_root)
     print('P4-01 review passed: %d pinned files, %d operations, %d decisions, '
-          '%d bundled definitions, %d source texts. P4-02 fixtures/runtime remain open; '
+          '%d bundled definitions, %d source texts. P4-02 fixtures checked separately; runtime remains open; '
           'GEO-004 retains owner-confirmed teardown regardless of pier owner; no pending approval gates.' % counts)
 
 

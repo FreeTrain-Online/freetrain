@@ -1,6 +1,7 @@
 # P4-01 railway source contract — 30 October 2026
 
-**P4-01 is complete at source-contract scope. Next: P4-02 independent fixtures.**
+**P4-01 is complete at source-contract scope. [P4-02 independent fixtures](web-parity-railway-fixtures.md)
+are now complete; next: P4-03 mixed terrain/rail state and handler profile.**
 This specifies railway behavior; it adds no live handler, command, UI, save or
 protocol version. P4 remains open. The separate synthetic reference loop and the
 accepted zero-rail terrain profile retain their invariants.
@@ -25,8 +26,8 @@ Reuse the [P0 geometry tables](web-parity-geometry.md),
 [manual reconciliation](web-parity-manual.md#p4-01-railway-source-reconciliation)
 and [P3 support handoff](web-parity-p3-acceptance.md#p4-terrain-and-support-handoff).
 The new review supplements these records without changing their source pins or
-granting runtime parity credit. P4-02 will make the independent expectations
-executable; this step does not manufacture fixtures from production output.
+granting runtime parity credit. P4-02 now makes the independent expectations
+executable without manufacturing fixtures from production output.
 
 ## Shared state, geometry and transactions
 
@@ -339,8 +340,9 @@ discovered implicitly. The explicit-source mode verifies raw pinned Git hashes,
 symbols, excerpts and localization line bindings, without executing desktop code.
 Integrity checks establish source/review coverage, not runtime geometry, native
 render fidelity, browser interaction, performance or save continuation. P4-02
-owns independent literal vectors, followed by mixed state/booking/persistence
-in P4-03–05 and the first playable normal-rail slice in P4-06–09.
+delivers [independent literal vectors](parity/railway-fixtures.json), followed by
+mixed state/booking/persistence in P4-03–05 and the first playable normal-rail slice
+in P4-06–09.
 
 Fresh verification on 30 October 2026: default and explicit pinned-Git railway
 checks pass; **150 Python cases complete, with one existing skip** (including

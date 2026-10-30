@@ -37,6 +37,14 @@ the phase's runtime and original-runtime acceptance stay open.
 
 ## Independent expectations
 
+**P4-02 fixture handoff — 30 October 2026:** [Railway fixtures and review](web-parity-railway-fixtures.md)
+bind EXAV-SCN-001–003/031 to 1,484 literal cases, all 60 serialized patterns/eight
+directions and 26 pinned source files. Normal/slope/support/special-rail geometry,
+source booking/endpoints, trusted component interfaces and checked boundary
+decisions are executable independently of production. The checker verifies exact
+SCN-002 inputs and SCN-003 per-cell-to-route cost expansion. This leaves the 31
+P0 scenario records and their runtime status unchanged; P4-03 mixed state is next.
+
 Each `EXAV-SCN-*` record has inputs, expected outcomes, a derivation, phase owner,
 source symbols/hashes and `specified` status. Expected values are maintained
 separately from the modern implementation. The checker verifies provenance,
