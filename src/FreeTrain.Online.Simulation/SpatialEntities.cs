@@ -95,6 +95,9 @@ public sealed class SpatialIndex
     public long NextEntityId { get; }
     public ImmutableArray<SpatialEntity> Entities { get; }
     private readonly FrozenDictionary<Location, (SpatialEntity Entity, bool Transparent)> cells;
+    // Persistent edits share the initial frozen index without retaining earlier worlds.
+    private readonly ImmutableDictionary<Location, (SpatialEntity Entity, bool Transparent)?> edits =
+        ImmutableDictionary<Location, (SpatialEntity, bool)?>.Empty;
     public SpatialIndex(WorldSpace space, long nextEntityId, IEnumerable<SpatialEntity> entities)
     {
         Space = space; NextEntityId = nextEntityId;
@@ -113,8 +116,22 @@ public sealed class SpatialIndex
         }
         cells = builder.ToFrozenDictionary();
     }
-    public VoxelOccupancy At(Location position) => !Space.ContainsVoxel(position) ? new(VoxelStatus.Outside, null, true) :
-        cells.TryGetValue(position, out var cell) ? new(VoxelStatus.Occupied, cell.Entity, cell.Transparent) : new(VoxelStatus.Vacant, null, true);
+    internal SpatialIndex(SpatialIndex original, long nextEntityId, ImmutableArray<SpatialEntity> entities,
+        IReadOnlyDictionary<Location, (SpatialEntity Entity, TerrainOccupant Occupant)?> changes)
+    {
+        Space = original.Space; NextEntityId = nextEntityId; Entities = entities; cells = original.cells;
+        var builder = original.edits.ToBuilder();
+        foreach (var (position, pair) in changes)
+            builder[position] = pair is {} p ? (p.Entity, p.Entity.Footprint.Members[0].Transparent) : null;
+        edits = builder.ToImmutable();
+    }
+    public VoxelOccupancy At(Location position)
+    {
+        if (!Space.ContainsVoxel(position)) return new(VoxelStatus.Outside, null, true);
+        if (edits.TryGetValue(position, out var edited)) return edited is {} e
+            ? new(VoxelStatus.Occupied, e.Entity, e.Transparent) : new(VoxelStatus.Vacant, null, true);
+        return cells.TryGetValue(position, out var cell) ? new(VoxelStatus.Occupied, cell.Entity, cell.Transparent) : new(VoxelStatus.Vacant, null, true);
+    }
     public SpatialState Capture() => new(NextEntityId, Entities);
     public SpatialIndex Add(DefinitionReference definition, Location anchor, Footprint footprint, bool owned, bool silentlyReclaimable, long value) =>
         new(Space, checked(NextEntityId + 1), Entities.Add(new(NextEntityId, 0, definition, anchor, footprint, owned, silentlyReclaimable, value)));

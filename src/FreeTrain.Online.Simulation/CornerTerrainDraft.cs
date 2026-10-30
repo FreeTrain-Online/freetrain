@@ -77,6 +77,10 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
     internal void ReplaceTerrainSite(CornerTerrainChange c,TerrainOccupantKind kind,TerrainSurface surface)
     {
         var s=Space.ToStorage(c.Position);
+        // A cut/restored Mountain above an existing terrace leaves its backing
+        // surface intact. Only removing the terrace lowers/removes that surface.
+        if(kind==TerrainOccupantKind.Mountain&&Cell(s.H,s.V).Surface==TerrainSurface.Terrace&&c.AfterGround==Cell(s.H,s.V).Ground)
+            surface=TerrainSurface.Terrace;
         cells[s.V*Space.HorizontalSize+s.H]=new(c.AfterGround,surface);
         if(At(c.Position).Entity!=null){entityCount--;treeCount-=OccupantAt(c.Position)?.Forest?.Trees.Length??0;}
         entities[c.Position]=null;
@@ -104,13 +108,5 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
             forest==null?0:original.Profile.Resolve(forest.Definition).Price);
         entities[p]=(entity,new(id,mountain?TerrainOccupantKind.Mountain:TerrainOccupantKind.Creek,corners,forest,creekConnections??0));
     }
-    public TerrainWorld Finish()
-    {
-        var grid=original.Cells.ToBuilder();foreach(var (i,cell) in cells)grid[i]=cell;
-        var removed=entities.Keys.Select(p=>original.Spatial.At(p).Entity?.Id).Where(id=>id!=null).Select(id=>id!.Value).ToHashSet();
-        var changed=entities.Values.Where(v=>v!=null).Select(v=>v!.Value).ToArray();
-        return original.Replace(original.Revision,grid,original.WaterLevel,
-            new(nextId,original.Spatial.Entities.Where(e=>!removed.Contains(e.Id)).Concat(changed.Select(p=>p.Entity)).ToImmutableArray()),
-            original.Occupants.Where(o=>!removed.Contains(o.EntityId)).Concat(changed.Select(p=>p.Occupant)));
-    }
+    public TerrainWorld Finish() => new(original, cells, entities, nextId, treeCount);
 }

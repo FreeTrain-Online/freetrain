@@ -350,6 +350,7 @@ public sealed partial class NetworkSession
     }
     public static DeltaMessage Difference(SnapshotMessage previous, SnapshotMessage next)
     {
+        if (TerrainWire.TryDifference(previous,next,out var terrainDelta)) return terrainDelta;
         if (previous.WorldEpoch != next.WorldEpoch || previous.Map != next.Map || previous.Ruleset != next.Ruleset ||
             previous.ContentVersion != next.ContentVersion || !previous.RequiredPacks.OrderBy(p => p.Id).SequenceEqual(next.RequiredPacks.OrderBy(p => p.Id)) ||
             previous.Terrain?.Name != next.Terrain?.Name || previous.Terrain?.Provenance != next.Terrain?.Provenance)
@@ -359,7 +360,7 @@ public sealed partial class NetworkSession
             if (ReferenceEquals(before, after)) return [];
             var old = before.ToDictionary(key);
             return after.Where(x => !old.TryGetValue(key(x), out var value) ||
-                JsonSerializer.Serialize(value, Json) != JsonSerializer.Serialize(x, Json)).ToArray();
+                !ReferenceEquals(value,x) && JsonSerializer.Serialize(value, Json) != JsonSerializer.Serialize(x, Json)).ToArray();
         }
         return new(next.WorldEpoch, previous.Revision, next.Revision, next.Tick, next.Paused, next.Cash,
             Changed(previous.Trains, next.Trains, x => x.Id), Changed(previous.Stations, next.Stations, x => x.Id),

@@ -9,7 +9,7 @@ const maximumPixels=16_777_216;
 export function terrainRasterZoom(zoom:number):number {
   return scales.reduce((best,scale)=>Math.abs(Math.log(scale/zoom))<Math.abs(Math.log(best/zoom))?scale:best);
 }
-type Raster={image:OffscreenCanvas;view:View;width:number;height:number;operations:TerrainOperation[];drawn:number};
+type Raster={image:OffscreenCanvas;scene:TerrainScene;view:View;width:number;height:number;operations:TerrainOperation[];drawn:number};
 type Work={key:string;image:OffscreenCanvas;steps:Generator<void,Raster>};
 
 /** Two bounded viewport images. Camera motion presents the last completed image
@@ -21,6 +21,13 @@ export class TerrainViewport {
   private work?:Work;
   private completedKey='';
   constructor(private scene:TerrainScene) {}
+
+  setScene(scene:TerrainScene) {
+    // Reuse the displayed image until the new geometry is fully rendered.
+    // Its picks must keep using the scene that produced those visible pixels.
+    if(this.work)this.spare=this.work.image;
+    this.work=undefined;this.completedKey='';this.scene=scene;
+  }
 
   private *render(image:OffscreenCanvas,view:View,width:number,height:number,dpr:number):Generator<void,Raster> {
     const paint=image.getContext('2d')!;
@@ -34,7 +41,7 @@ export class TerrainViewport {
       drawn+=this.scene.paintOperations(paint as unknown as CanvasRenderingContext2D,view,width,height,operations.slice(i,i+64));
       yield;
     }
-    return {image,view,width,height,operations,drawn};
+    return {image,scene:this.scene,view,width,height,operations,drawn};
   }
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,dpr:number) {
     // The nearest-scale ratio squared is at most 1.5. Reserve that headroom
@@ -81,6 +88,6 @@ export class TerrainViewport {
     // Newly exposed background has no visible terrain yet. Do not pick an
     // offscreen overhang retained in the old image's operation array.
     if(x<0||y<0||x>=raster.width||y>=raster.height)return;
-    return this.scene.pickOperations(p,view,raster.operations);
+    return raster.scene.pickOperations(p,view,raster.operations);
   }
 }

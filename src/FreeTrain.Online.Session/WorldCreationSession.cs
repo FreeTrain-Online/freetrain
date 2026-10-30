@@ -126,6 +126,21 @@ public sealed partial class SessionHost
     {
         var retained = bytes.ToArray();
         var state = SaveCodec.ReadWorld(retained, terrainResolver).Terrain ?? throw new ArgumentException("invalidInput");
+        return PrepareCreationCore(retained,state,cancellation);
+    }
+    // Generated/decoded terrain is already validated immutable domain state. Do
+    // not keep a second decoded world alive beside the current shared world.
+    // Copy mutable headers and require the exact registered handler profile.
+    public PreparedCreation PrepareCreation(TerrainSessionState created, CancellationToken cancellation = default)
+    {
+        if (!ReferenceEquals(terrainResolver?.Invoke(TerrainProfile.Ruleset,TerrainProfile.ContentVersion,created.World.Profile.Packs),created.World.Profile))
+            throw new ArgumentException("invalidInput");
+        var state = new TerrainSessionState(created.World,created.Provenance,created.ConstructionMode,
+            created.Clock.Capture(),created.Paused,created.Random.Capture(),created.Revision);
+        return PrepareCreationCore(SaveCodec.Write(state),state,cancellation);
+    }
+    private static PreparedCreation PrepareCreationCore(byte[] retained,TerrainSessionState state,CancellationToken cancellation)
+    {
         var snapshot = TerrainWire.Snapshot(state, 1); // Build immutable wire geometry on the detached worker too.
         var snapshotBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new StateTransferPayload(
             TerrainWire.Header(state, 1), PackedTerrain.Capture(snapshot)), WireJson.CreateOptions()).Length;

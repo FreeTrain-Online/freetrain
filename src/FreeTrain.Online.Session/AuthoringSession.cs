@@ -16,7 +16,7 @@ public sealed partial class SessionHost
             // Increment geometry even without a shape change: entry/exit fences all
             // participants' captured tool previews and in-flight confirmations.
             var candidate=new CornerTerrainDraft(state.World).Finish();
-            SaveCodec.Write(new TerrainSessionState(candidate,state.Provenance,command.Enabled,
+            SaveCodec.ValidateTerrainAdmission(new TerrainSessionState(candidate,state.Provenance,command.Enabled,
                 state.Clock.Capture(),state.Paused,state.Random.Capture(),checked(state.Revision+1)));
             state.Replace(state.Revision,candidate,command.Enabled);return null;
         }
@@ -52,7 +52,7 @@ public sealed partial class SessionHost
         {
             var (plan,random)=PlanAuthoring(query);if(!plan.Sites.Any(p=>p.Legal))return "invalidPlacement";
             var candidate=plan.Draft.Finish();var state=terrainState!;
-            SaveCodec.Write(new TerrainSessionState(candidate,state.Provenance,state.ConstructionMode,
+            SaveCodec.ValidateTerrainAdmission(new TerrainSessionState(candidate,state.Provenance,state.ConstructionMode,
                 state.Clock.Capture(),state.Paused,random,checked(state.Revision+1)));
             state.Replace(state.Revision,candidate,state.ConstructionMode,random);return null;
         }

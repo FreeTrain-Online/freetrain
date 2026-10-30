@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createTerrainPainter, type PaintState, type PaintTarget } from './lib/terrain-painter.ts';
   import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
   import { pickTerrainStrategy } from './lib/terrain-edit.ts';
   import { gameDate } from './lib/game-time.ts';
@@ -34,7 +35,10 @@
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let cornerControls=$state<{cancelDraft:()=>boolean}>();
   let rectangleMode=false;
-  let terrainStrategy:string|undefined;
+  let terrainStrategy=$state<string>();
+  let paintState=$state<PaintState>({active:false,completed:0,status:'idle'});
+  const painter=createTerrainPainter({get state(){return model.state;},previewCorner:(q,s)=>model.previewCorner(q,s),send:p=>model.send(p)},state=>{paintState=state;});
+  const paintingMode=()=>terrainStrategy==='paintRaise'||terrainStrategy==='paintLower';
   let rectangleEnd=$state<Position>();
   let terrainSites=$state<{position:Position;skipped:boolean}[]>();
   let cornerGeneration=$state(0);
@@ -54,7 +58,7 @@
   let spaceHeld = false, sendingInput = false, inputDirty = false;
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
-  let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; pointerId: number } | undefined;
+  let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
   const terrain = $derived(!!view.read && isTerrainWorld(view.read));
   const reference = $derived(isReferenceWorld(view.read) || terrain);
   const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
@@ -70,6 +74,7 @@
   }
   function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; spaceHeld = false; if (had) void flushInput(); }
   function cancelGesture() {
+    if(painter.state.active)painter.stop();
     if (drag && canvas.hasPointerCapture(drag.pointerId)) canvas.releasePointerCapture(drag.pointerId);
     drag = undefined;
   }
@@ -99,11 +104,11 @@
     if(tool==='terrain'&&cornerControls?.cancelDraft()) { /* First Escape clears the review. */ }
     else if (selectedPosition) cancelDraft();
     else if (tool !== 'inspect') activateTool('inspect');
-    clearInput();
+    cancelGesture();clearInput();
   }
   function key(event: KeyboardEvent, down: boolean) {
     if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
-    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat) spaceHeld = down; return; }
+    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat){if(down)cancelGesture();spaceHeld = down;} return; }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
     event.preventDefault();
@@ -121,6 +126,13 @@
   function move(event: PointerEvent) {
     if (!live || inputSuspended) return;
     const p = point(event);
+    if(drag?.paint){
+      if(event.pointerId!==drag.pointerId)return;
+      if(event.buttons!==1){cancelGesture();return;}
+      const target=paintTarget(event);if(!target){cancelGesture();return;}
+      painter.move(target);preview=target.position;dirty=true;drag.moved=true;return;
+    }
+    if(tool==='terrain'&&paintingMode()&&!drag&&!panel){preview=paintTarget(event)?.position;dirty=true;}
     if(tool==='terrain'&&!rectangleMode&&event.shiftKey&&event.buttons===1&&drag&&!drag.pan&&!panel&&!view.pending){drag.moved=true;pickCorner(event,true);return;}
     if (drag) {
       if (Math.hypot(p.x - drag.x, p.y - drag.y) > 3) drag.moved = true;
@@ -134,6 +146,13 @@
       preview=selectedPosition??(anchor?snap(raw,anchor,snapMode):raw);dirty=true;
     }
   }
+  function paintTarget(event:PointerEvent):PaintTarget|undefined {
+    const p=point(event),read=view.read;if(!read?.terrain||p.x<0||p.y<0||p.x>=width||p.y>=height)return;
+    const world={x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y};
+    const position=pickTerrainStrategy(read,world,heightCut);if(!position)return;
+    const projected=space.project(position);
+    return {position,offsetX:Math.max(0,Math.min(31,Math.floor(world.x-projected.x))),offsetY:Math.max(-32,Math.min(32,Math.floor(world.y-projected.y))),reverse:event.shiftKey};
+  }
   function pickCorner(event:PointerEvent,append:boolean){
     const p=point(event),read=view.read;if(!read?.terrain)return;
     const world={x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y};
@@ -145,13 +164,16 @@
   function down(event: PointerEvent) {
     if (!live || inputSuspended || (event.button !== 0 && event.button !== 1)) return;
     event.preventDefault(); focusMap();
-    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, pointerId: event.pointerId };
+    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, paint: false, pointerId: event.pointerId };
     canvas.setPointerCapture(event.pointerId);
+    if(tool==='terrain'&&paintingMode()&&!drag.pan&&!blocked&&!panel){
+      drag.paint=true;const target=paintTarget(event);if(target){preview=target.position;dirty=true;painter.start(target,terrainStrategy==='paintLower'?'lower':'raise');}return;
+    }
     if(tool==='terrain'&&!rectangleMode&&event.shiftKey&&!drag.pan&&!blocked&&!panel)pickCorner(event,false);
   }
   function up(event: PointerEvent) {
     const was = drag; cancelGesture();
-    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.moved || was.panOnly || event.button !== 0 || spaceHeld) return;
+    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.paint || was.moved || was.panOnly || event.button !== 0 || spaceHeld) return;
     const p = point(event);
     if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
@@ -177,8 +199,9 @@
     if (overlay.width >= r.width * .8) return { x: width / 2, y: Math.max(0, overlay.top - r.top) / 2 };
     return { x: Math.max(0, overlay.left - r.left) / 2, y: height / 2 };
   }
-  export function zoom(factor: number) { if (!live) return; camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
+  export function zoom(factor: number) { if (!live) return;cancelGesture(); camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
   export function home() {
+    cancelGesture();
     const read=view.read, location=homeLocation(read?.map??demoScene.map);
     if(read?.terrain && isTerrainWorld(read)) {
       const h=Math.floor(read.map.width/2),v=Math.floor(read.map.height/2);
@@ -211,6 +234,7 @@
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
+    $effect(() => { void heightCut;cancelGesture(); });
     $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
@@ -219,7 +243,7 @@
     const motion=()=>{lastDemoTick=undefined;dirty=true;};reduced.addEventListener('change',motion);
     const compact = matchMedia('(max-width: 639px)');
     const density = () => { narrow = compact.matches; }; density(); compact.addEventListener('change', density);
-    const resize = new ResizeObserver(entries => { width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
+    const resize = new ResizeObserver(entries => { cancelGesture();width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
     loadImages().then(images => {
       if (!active) return;
       renderer = new MapRenderer(canvas, images,()=>{if(active)dirty=true;}); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
@@ -239,8 +263,8 @@
             ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
-          // During a view change the canvas clears its old scene and hit map,
-          // while the mounted panels stay available. Initial reveal still waits.
+          // Terrain revisions keep the completed scene visible while preparing
+          // its replacement. Initial reveal still waits for a complete image.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
         } catch { if(liveScene)renderState = 'failed'; }
         dirty = renderer.needsFrame;
@@ -250,14 +274,14 @@
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
     const blur = () => { clearInput(); cancelGesture(); };
     const visibility = () => { lastDemoTick=undefined;blur(); dirty = true; };
-    const wheel = (event: WheelEvent) => { if (!live || inputSuspended) return; event.preventDefault(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
+    const wheel = (event: WheelEvent) => { if (!live || inputSuspended) return; event.preventDefault();cancelGesture(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
     return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
 <div class="map-viewport" class:demo={!live} inert={!live} aria-hidden={!live}>
-  <canvas bind:this={canvas} class="world-canvas" tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={() => { drag = undefined; }} onpointerleave={() => { if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={clearInput}></canvas>
+  <canvas bind:this={canvas} class="world-canvas" style:cursor={tool==='terrain'&&paintingMode()?'crosshair':undefined} tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={cancelGesture} onpointerleave={() => { if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={()=>{clearInput();cancelGesture();}}></canvas>
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
@@ -276,7 +300,7 @@
     </PanelFrame>
   {/if}
   {#if tool === 'terrain' && terrain && !panel}
-    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end,sites)=>{preview=p;rectangleEnd=end;terrainSites=sites;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
+    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} {paintState} onpaintstop={cancelGesture} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end,sites)=>{preview=p;rectangleEnd=end;terrainSites=sites;dirty=true;}} onreset={()=>{cornerPicked=undefined;cancelGesture();}}/>{/key}
   {/if}
   {#if tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>

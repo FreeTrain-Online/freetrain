@@ -32,6 +32,7 @@ export class MapRenderer {
   private terrainCache=new RecipeImageCache();
   private catalog?:Promise<RenderCatalog>;
   private terrainKey='';
+  private terrainPresentationKey='';
   private terrainScene?:TerrainScene;
   private terrainViewport?:TerrainViewport;
   needsFrame=false;
@@ -74,12 +75,23 @@ export class MapRenderer {
     if (!this.read || !this.space) return false;
     if(isTerrainWorld(this.read)) {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
-      const key=JSON.stringify([read.worldEpoch,read.terrain!.geometryRevision,variant,options.heightCut,decorative]);
+      const presentationKey=JSON.stringify([read.worldEpoch,variant,options.heightCut,decorative]);
+      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision]);
       if(this.terrainKey!==key) {
-        this.terrainKey=key;this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;this.terrainError=undefined;
+        // Keep the last complete scene during edits in this world. Preparation
+        // is asynchronous, so clearing it here exposes a background-only frame.
+        if(this.terrainPresentationKey!==presentationKey){this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;}
+        this.terrainKey=key;this.terrainPresentationKey=presentationKey;this.terrainError=undefined;
         this.catalog??=loadRenderCatalog(read.requiredPacks[0].catalogHash);
         this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
-          if(this.terrainKey===key){this.terrainScene=scene;this.terrainViewport=!decorative&&scene.supportsViewport&&typeof OffscreenCanvas!=='undefined'?new TerrainViewport(scene):undefined;this.demoRailway=railway;this.invalidate();}
+          if(this.terrainKey===key){
+            this.terrainScene=scene;
+            if(!decorative&&scene.supportsViewport&&typeof OffscreenCanvas!=='undefined') {
+              if(this.terrainViewport)this.terrainViewport.setScene(scene);
+              else this.terrainViewport=new TerrainViewport(scene);
+            }else this.terrainViewport=undefined;
+            this.demoRailway=railway;this.invalidate();
+          }
         }).catch(error=>{if(this.terrainKey===key){this.terrainError=error;this.invalidate();}});
       }
       if(this.terrainError)throw this.terrainError;
@@ -120,7 +132,7 @@ export class MapRenderer {
       this.canvas.dataset.terrainCut=String(options.heightCut);
       return true;
     }
-    this.terrainKey='';this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;
+    this.terrainKey='';this.terrainPresentationKey='';this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;
     const space=this.space;
     const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;

@@ -157,3 +157,17 @@ Deno.test('authoring mode uses a fenced boolean command and definitions are expl
   assert(validWireShape(command));
   for(const patch of [{enabled:'true'},{expectedGeometryRevision:'-1'},{unlimitedMoney:true}])assert(!validWireShape({...command,payload:{...command.payload,...patch}}));
 });
+
+Deno.test('incremental terrain validation equals independent full validation, preserves predecessor and rejects local graph corruption',async()=>{
+ const {validTerrain}=await import('../src/lib/terrain-state.ts');
+ const before=immutable(await read()),delta=parseMessage(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/delta-terrain-update.json',import.meta.url))) as Delta;
+ const saved=JSON.stringify(before),next=applyDelta(before,delta);assert(next);
+ assert(validTerrain(structuredClone(next) as Snapshot));equal(JSON.stringify(before),saved);
+ for(const mutate of [
+  (d:Delta)=>{d.entities![0].footprint[0].transparent=!d.entities![0].footprint[0].transparent;},
+  (d:Delta)=>{d.entities![0].anchor.z=5;},
+  (d:Delta)=>{d.entities![0].definition.recipeId='missing';},
+  (d:Delta)=>{d.terrain!.occupants[0].forest!.trees[0].sprite=99;},
+  (d:Delta)=>{d.terrain!.cells=[{index:0,ground:0,surface:'natural'}];},
+ ]){const bad=structuredClone(delta);mutate(bad);assert(!applyDelta(before,bad));equal(JSON.stringify(before),saved);}
+});

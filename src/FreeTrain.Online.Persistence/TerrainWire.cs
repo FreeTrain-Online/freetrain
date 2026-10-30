@@ -8,11 +8,43 @@ namespace FreeTrain.Online.Persistence;
 public static class TerrainWire
 {
     private sealed record Geometry(SpatialEntityRead[] Entities, TerrainCellRead[] Cells, TerrainOccupantRead[] Occupants);
-    private static readonly ConditionalWeakTable<TerrainWorld, Geometry> geometry = new();
+    private sealed record Publication(object Identity, object? Previous, TerrainCellChangeRead[] Cells,
+        SpatialEntityRead[] Entities, TerrainOccupantRead[] Occupants, long[] Removed);
+    private static readonly ConditionalWeakTable<SnapshotMessage, Publication> publications = new();
+    private static readonly ConditionalWeakTable<object, Geometry> geometry = new();
     private sealed class Published { public SnapshotMessage? Snapshot; }
     private static readonly ConditionalWeakTable<TerrainSessionState, Published> published = new();
-    private static Geometry GeometryFor(TerrainWorld w) => geometry.GetValue(w, world =>
+    private static Geometry GeometryFor(TerrainWorld w) => geometry.GetValue(w.GeometryIdentity, _ =>
     {
+        var world = w;
+        if (w.PreviousGeometryIdentity is {} predecessor && geometry.TryGetValue(predecessor, out var before))
+        {
+            var editedCells = before.Cells;
+            if (!w.ChangedCells.IsEmpty)
+            {
+                editedCells = (TerrainCellRead[])editedCells.Clone();
+                foreach (var i in w.ChangedCells) editedCells[i] = new(w.Cells[i].Ground,Name(w.Cells[i].Surface));
+            }
+            if (w.ChangedEntities.IsEmpty) return before with { Cells = editedCells };
+            var changed = w.ChangedEntities.ToHashSet();
+            var entities = new SpatialEntityRead[w.Spatial.Entities.Length];
+            var occupants = new TerrainOccupantRead[w.Occupants.Length];
+            int j = 0;
+            for (int i = 0; i < entities.Length; i++)
+            {
+                var e = w.Spatial.Entities[i]; var o = w.Occupants[i];
+                while (j < before.Entities.Length && before.Entities[j].Id < e.Id) j++;
+                if (!changed.Contains(e.Id) && j < before.Entities.Length && before.Entities[j].Id == e.Id)
+                { entities[i] = before.Entities[j]; occupants[i] = before.Occupants[j]; }
+                else
+                {
+                    entities[i] = Entity(e);
+                    occupants[i] = new(o.EntityId,Name(o.Kind),o.Corners.NE,o.Corners.SE,o.Corners.SW,o.Corners.NW,
+                        o.Forest is {} f ? new(Definition(f.Definition),f.Trees.Select(t => new TerrainTreeRead(t.X,t.Y,t.Sprite)).ToArray()) : null,o.CreekConnections);
+                }
+            }
+            return new(entities,editedCells,occupants);
+        }
         var values = new Dictionary<TerrainCell, TerrainCellRead>();
         var cells = world.Cells.Select(c =>
         {
@@ -38,6 +70,21 @@ public static class TerrainWire
                 o.Forest is {} f ? new(DefinitionFor(f.Definition), f.Trees.Select(TreeFor).ToArray()) : null,
                 o.CreekConnections)).ToArray());
     });
+    private static SpatialEntityRead Entity(SpatialEntity e) => new(e.Id,e.Revision,Definition(e.Definition),
+        new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
+        e.Owned,e.SilentlyReclaimable,e.Value);
+    public static bool TryDifference(SnapshotMessage before, SnapshotMessage after, out DeltaMessage delta)
+    {
+        delta = null!;
+        if (before.WorldEpoch != after.WorldEpoch || !publications.TryGetValue(before,out var a) ||
+            !publications.TryGetValue(after,out var b) || (a.Identity != b.Identity && a.Identity != b.Previous)) return false;
+        var same = a.Identity == b.Identity; var t = after.Terrain!;
+        delta = new(after.WorldEpoch,before.Revision,after.Revision,after.Tick,after.Paused,after.Cash,[],[],[],[],
+            new([],[],[],[],same ? [] : b.Removed),after.Ruleset,after.ContentVersion,after.RequiredPacks,
+            same ? [] : b.Entities,new(t.WaterLevel,t.ConstructionMode,t.GeometryRevision,t.NextEntityId,
+                same ? [] : b.Cells,same ? [] : b.Occupants));
+        return true;
+    }
     public static SpatialEntityRead[] Entities(SpatialIndex spatial)
     {
         var definitions = new Dictionary<DefinitionReference, DefinitionRead>();
@@ -85,7 +132,17 @@ public static class TerrainWire
         {
             if (cache.Snapshot is { } previous && previous.WorldEpoch == epoch && previous.Revision == state.Revision) return previous;
             var w = state.World;
-            return cache.Snapshot = Header(state, epoch) with { Entities = GeometryFor(w).Entities, Terrain = Read(state) };
+            var g = GeometryFor(w);
+            var snapshot = Header(state, epoch) with { Entities = g.Entities, Terrain = Read(state) };
+            if (cache.Snapshot is {} prior && publications.TryGetValue(prior,out var publication) && publication.Identity == w.GeometryIdentity)
+            { publications.Add(snapshot,publication); return cache.Snapshot = snapshot; }
+            var ids = w.ChangedEntities.ToHashSet();
+            var changedEntities = g.Entities.Where(e => ids.Contains(e.Id)).ToArray();
+            var changedOccupants = g.Occupants.Where(o => ids.Contains(o.EntityId)).ToArray();
+            publications.Add(snapshot,new(w.GeometryIdentity,w.PreviousGeometryIdentity,
+                w.ChangedCells.Select(i => new TerrainCellChangeRead(i,g.Cells[i].Ground,g.Cells[i].Surface)).ToArray(),
+                changedEntities,changedOccupants,w.ChangedEntities.Except(changedEntities.Select(e => e.Id)).ToArray()));
+            return cache.Snapshot = snapshot;
         }
     }
     public static SnapshotMessage Header(TerrainSessionState state, long epoch)

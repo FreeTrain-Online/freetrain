@@ -10,6 +10,7 @@ COPY scripts/prepare-bundled-content.py scripts/content_bitmap.py scripts/conten
 COPY prototype/ prototype/
 COPY content/bundled-v2/ content/bundled-v2/
 COPY content/localization/ content/localization/
+COPY doc/notices/StbImageSharp/ doc/notices/StbImageSharp/
 COPY src/FreeTrain.Online.Content/reference-spatial.json src/FreeTrain.Online.Content/
 COPY src/FreeTrain.Online.Content/bundled-v2.json src/FreeTrain.Online.Content/bundled-v2.sha256 src/FreeTrain.Online.Content/
 RUN deno task --cwd web build

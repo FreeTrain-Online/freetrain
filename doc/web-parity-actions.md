@@ -397,3 +397,16 @@ join the existing terrain Confirm/Cancel and coordinate actions. EN/JA keyboard,
 map targeting and narrow forms use the existing tool card and canvas lifecycle.
 Owned forest purchases/booking, land acquisition and generic demolition retain
 their later subsystem scope; mode entry does not bypass their rules.
+
+## P3-17 integrated terrain and paint
+
+[Integrated acceptance and P4 handoff](web-parity-p3-acceptance.md) reconcile the
+new-world, corner/rectangle/repair, terrace/cut, forest/creek and picking/water
+workflow bindings above. Their MAN/DEV IDs retain their existing meanings; no new
+EXAV-SCN IDs are allocated for procedural geography. The owner-requested Paint
+terrain mode immediately repeats validated quarter-corner Raise/Lower while the
+left button is held. It is a new gesture extension of `terrain-action`,
+`terrain-preview` and `terrain-confirm`, with `terrain-paint-stop` as its explicit
+stop action. Ordinary Shift strokes keep their preview/confirmation behavior.
+EN/JA help explains immediate changes, possible forest/ownership loss and stop
+conditions; numeric coordinates preserve the keyboard alternative.

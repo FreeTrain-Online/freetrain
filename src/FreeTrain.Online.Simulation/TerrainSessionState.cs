@@ -84,7 +84,7 @@ public sealed class TerrainSessionState
             replacement.Space.Levels != World.Space.Levels || replacement.Revision != World.Revision + 1)
             throw new ArgumentException("Invalid terrain replacement.");
         var next = checked(Revision + 1);
-        var validated = World.Replace(World.Revision, replacement.Cells, replacement.WaterLevel,
+        var validated = replacement.IsValidatedSuccessorOf(World) ? replacement : World.Replace(World.Revision, replacement.Cells, replacement.WaterLevel,
             new(replacement.Spatial.NextEntityId, replacement.Spatial.Entities), replacement.Occupants);
         var validatedRandom = random == null ? Random : RandomStreams.Restore(random);
         World = validated; ConstructionMode = constructionMode; Random = validatedRandom; Revision = next;

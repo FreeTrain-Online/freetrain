@@ -113,3 +113,15 @@ cover English/Japanese audio controls, a 360-pixel Japanese screen, gallery lang
 switch/reload, preserved canvas/selection and localized optional credits. Adding
 another language requires its own linguistic/layout review; a matching key set
 alone is not translation acceptance.
+
+## P3 terrain delivery reconciliation — 30 October 2026
+
+The [P3-17 review](parity/terrain-acceptance-review.json) assigns all59 pinned
+`TERRAIN-TEXT-*` records to shipped EN/JA keys, prepared-map metadata presentation,
+or an explicit portable adaptation. The P3-01 source-text ledger retains its
+historical wording-review status; current delivery is the separate execution
+overlay. The original Mountain-only terrace message is superseded by the owner's
+bare-ground extension. Paint instructions/statuses are new owner-requested UI
+text and do not inflate source translation totals. Help and limits in each
+creation/terrain tool are checked with generated locale keys and the ordinary
+EN/JA keyboard/narrow browser workflows.

@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { PaintState } from './lib/terrain-painter.ts';
   import RectangleTerrainControls from './RectangleTerrainControls.svelte';
   import { terrainReasons } from './lib/terrain-edit.ts';
   import { untrack } from 'svelte';
   import type { CornerTerrainQuery, CornerTerrainPreview, CornerTerrainSite, Position } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
-  let {model,view,picked,onpreview,onreset,onmode}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position,sites?:{position:Position;skipped:boolean}[])=>void;onreset:()=>void;onmode:(rectangle:boolean,strategy?:string)=>void}=$props();
-  let scope=$state<'corner'|'rectangle'|'terrace'|'authoring'>('corner');
+  let {model,view,picked,onpreview,onreset,onmode,paintState,onpaintstop}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position,sites?:{position:Position;skipped:boolean}[])=>void;onreset:()=>void;onmode:(rectangle:boolean,strategy?:string)=>void;paintState:PaintState;onpaintstop:()=>void}=$props();
+  let scope=$state<'corner'|'rectangle'|'terrace'|'authoring'|'paint'>('corner');
   let terraceBatch=$state(false);
   let modeReview=$state(false);
   let modeFence=$state<string>();
@@ -30,7 +31,7 @@
   let requestFence=$state<string>();
   let version=0,request:AbortController|undefined;
   const blocked=$derived(view.pending||view.connection!=='ready'||view.role==='observer'||uncertain);
-  export function cancelDraft(){if(modeReview){modeReview=false;modeFence=undefined;onreset();return true;}if(scope==='rectangle'||scope==='authoring'||scope==='terrace'&&terraceBatch)return rectangleControls?.cancelDraft()??false;if(count||status!=='idle'){clear();onreset();return true;}return false;}
+  export function cancelDraft(){if(scope==='paint'&&paintState.active){onpaintstop();return true;}if(modeReview){modeReview=false;modeFence=undefined;onreset();return true;}if(scope==='rectangle'||scope==='authoring'||scope==='terrace'&&terraceBatch)return rectangleControls?.cancelDraft()??false;if(count||status!=='idle'){clear();onreset();return true;}return false;}
   function clear(){sites=[];count=0;reset();}
   function reset(){requestFence=undefined;version++;request?.abort();result=undefined;query=undefined;status='idle';uncertain=false;onpreview(undefined);}
   async function check(p?:typeof picked,append=false) {
@@ -60,7 +61,7 @@
     else if(view.feedback==='unresolved')uncertain=true;
     else {status='stale';result=undefined;onpreview(undefined);}
   }
-  $effect(()=>{const p=picked;if(p&&scope!=='rectangle'&&scope!=='authoring'&&!(scope==='terrace'&&terraceBatch)&&!modeReview)untrack(()=>void check(p));});
+  $effect(()=>{const p=picked;if(p&&scope!=='paint'&&scope!=='rectangle'&&scope!=='authoring'&&!(scope==='terrace'&&terraceBatch)&&!modeReview)untrack(()=>void check(p));});
   $effect(()=>{
     if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`){clear();status='stale';}
     if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||view.read?.terrain?.geometryRevision!==result.geometryRevision)){
@@ -84,7 +85,7 @@
     {/if}
   {/if}
 </section>
-<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending||modeReview} onchange={()=>{terraceBatch=false;clear();onreset();onmode(scope!=='corner',scope==='terrace'?terraceAction:undefined);}}><option value="corner">{text.terrainCorners}</option><option value="rectangle">{text.rectangleTool}</option><option value="terrace">{text.terraceTool}</option><option value="authoring" disabled={!activeMode}>{text.authoringDecorations}</option></select></label></div>
+<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending||modeReview} onchange={()=>{terraceBatch=false;clear();onreset();onmode(scope!=='corner'&&scope!=='paint',scope==='terrace'?terraceAction:scope==='paint'?(action==='raise'?'paintRaise':'paintLower'):undefined);}}><option value="corner">{text.terrainCorners}</option><option value="paint">{text.terrainPaint}</option><option value="rectangle">{text.rectangleTool}</option><option value="terrace">{text.terraceTool}</option><option value="authoring" disabled={!activeMode}>{text.authoringDecorations}</option></select></label></div>
 {#if !modeReview}
 {#if scope==='terrace'&&terraceAction==='placeTerrace'}
   <label><input type="checkbox" bind:checked={terraceBatch} disabled={view.pending} onchange={()=>{clear();rectangleControls?.cancelDraft();onreset();onmode(true,'placeTerrace');}}/>{text.terraceBatch}</label>
@@ -93,8 +94,13 @@
   {#key scope}<RectangleTerrainControls bind:this={rectangleControls} {model} {view} {picked} {onpreview} {onreset} authoring={scope==='authoring'} terrace={scope==='terrace'}/>{/key}
 {:else}
 <section aria-label={text.terrainTool}>
-  <h2>{scope==='terrace'?text.terraceTool:text.terrainTool}</h2>
-  <p class="hint">{scope==='terrace'?text.terraceHelp:text.cornerHelp}</p>
+  <h2>{scope==='paint'?text.terrainPaint:scope==='terrace'?text.terraceTool:text.terrainTool}</h2>
+  <p class="hint">{scope==='paint'?text.terrainPaintHelp:scope==='terrace'?text.terraceHelp:text.cornerHelp}</p>
+  {#if scope==='paint'}
+    <p role="status" data-testid="paint-status" data-active={paintState.active}>{text[paintState.status==='painting'?'paintActive':paintState.status==='blocked'?'paintBlocked':paintState.status==='failed'?'paintFailed':'paintReady']} · {text.paintChanges}: {paintState.completed}</p>
+    {#if paintState.status==='blocked'&&paintState.reason&&paintState.reason in terrainReasons}<p>{text[terrainReasons[paintState.reason as keyof typeof terrainReasons]]}</p>{/if}
+    <button type="button" disabled={!paintState.active} onclick={onpaintstop}>{text.paintStop}</button>
+  {/if}
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     <div class="form-actions">
       {#if scope==='terrace'}
@@ -102,7 +108,7 @@
         <option value="placeTerrace">{text.placeTerrace}</option><option value="removeTerrace">{text.removeTerrace}</option><option value="placeCut">{text.placeCut}</option><option value="removeCut">{text.removeCut}</option>
       </select></label>
       {:else}
-      <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={action} disabled={view.pending} onchange={clear}><option value="raise">{text.cornerRaise}</option><option value="lower">{text.cornerLower}</option></select></label>
+      <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={action} disabled={view.pending} onchange={()=>{clear();if(scope==='paint'){onreset();onmode(false,action==='raise'?'paintRaise':'paintLower');}}}><option value="raise">{scope==='paint'?text.paintRaise:text.cornerRaise}</option><option value="lower">{scope==='paint'?text.paintLower:text.cornerLower}</option></select></label>
       {/if}
       <label>X<input aria-label={text.cornerX} type="number" step="1" bind:value={x} oninput={reset} disabled={view.pending}/></label>
       <label>Y<input aria-label={text.cornerY} type="number" step="1" bind:value={y} oninput={reset} disabled={view.pending}/></label>

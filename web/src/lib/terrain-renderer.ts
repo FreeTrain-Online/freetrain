@@ -1,3 +1,4 @@
+import { terrainLookup } from './terrain-state.ts';
 // Stable ExAV 2.1.1.12: QuarterViewDrawer, MountainVoxel.drawGround/drawTrees,
 // TerraceVoxel.draw and ColorMap. Original authors; LGPL-2.1-or-later.
 import type { Position, Snapshot, TerrainOccupant } from '../generated/contracts.ts';
@@ -88,10 +89,8 @@ export class TerrainScene {
     let ops:Operation[]=[],layers:Layer[]=[];
     const cells=new Map<number,Operation[]>(),maximumCachedCells=65536,large=read.map.width*read.map.height>16384;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
-    const entities=new Map<string,NonNullable<ReadState['entities']>[number]>(),at=new Map<number,Occupant>();
-    for(const e of read.entities!)entities.set(e.id,e);
+    const lookup=terrainLookup(read as Snapshot),entities={get:(id:string)=>lookup.entity(id)},at={get:(key:number)=>lookup.occupant(key)};
     const key=(p:Position)=>{const s=space.storage(p);return s.h<0||s.h>=read.map.width||s.v<0||s.v>=read.map.height||p.z<0||p.z>=read.map.levels?-1:(s.v*read.map.width+s.h)*read.map.levels+p.z;};
-    for(const o of t.occupants)at.set(key(entities.get(o.entityId)!.anchor),o);
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
     const addSprite=(id:string,frameKey:string|undefined,p:Position,target:TerrainTarget,offset:Point={x:0,y:0})=>{
       const recipe=recipes.get(id),frame=frameKey===undefined?recipe?.frames[0]:recipe?.frames.find(f=>f.key===frameKey);
@@ -165,8 +164,7 @@ export class TerrainScene {
     }
     // Decode each required frame/surface once. Terrain instances and their
     // operations are materialized only for the current viewport, in source order.
-    const ids=new Set(read.entities!.map(e=>e.definition.recipeId));
-    for(const o of t.occupants)if(o.forest)ids.add(o.forest.definition.recipeId);
+    const ids=lookup.recipes();
     const templates:Layer[]=[];let marginX=32,marginY=64;
     for(const recipe of catalog.renderRecipes)if(ids.has(recipe.id)||recipe.id.startsWith('system:ground/')||recipe.id.startsWith('system:cliff/')) {
       for(const frame of recipe.frames)if(frame.status==='ready'&&frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`]) {

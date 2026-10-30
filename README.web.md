@@ -20,6 +20,17 @@ See [P1-02 clock and scheduler](doc/web-parity-clock.md) and
 
 [P3-16a capacity](doc/web-parity-map-capacity.md) adds packed terrain/trees and interned definitions, coherent bounded snapshot chunks and viewport caches. The concrete parity target is 1500 × 1090 × 45 stored cells. Larger requests remain subject to measured work/memory/byte/deadline admission. Save 7 is the only supported save format; Save 6 is retired without conversion under the current-format policy. Terrain content identities and source algorithms are unchanged.
 
+[P3 integrated acceptance and P4 handoff](doc/web-parity-p3-acceptance.md) covers
+source terrain workflows and the separate seeded-world topology matrix. For
+continuous editing, choose **Modify terrain → Terrain selection → Paint terrain**,
+select **Raise terrain** or **Lower terrain**, and hold the left mouse button while
+moving over the map. Holding still repeats quarter-level changes; Shift + left drag reverses
+the action. Release or Escape stops further edits. Painting changes the shared
+world immediately; source slope/occupancy/height limits still apply. Existing
+coordinate preview/confirmation remains available. Current dense edit latency is
+accepted by the owner; the earlier250 ms target is not claimed as met. Native,
+deferred-browser and later full-game/import gates keep their recorded status.
+
 Owner/Operator/Observer roles, independent reconnects, bounded queues and epoch
 fencing remain in place. Prototype Save 1 is unsupported and cannot be converted.
 See [the reference-world delivery](doc/web-parity-reference-world.md).

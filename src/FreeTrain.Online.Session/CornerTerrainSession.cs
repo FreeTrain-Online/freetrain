@@ -84,7 +84,7 @@ public sealed partial class SessionHost
             var candidate = draft.Finish();
             var state = terrainState!;
             // Validate durable admission before publication. No financial booking or RNG draws.
-            SaveCodec.Write(new TerrainSessionState(candidate,state.Provenance,state.ConstructionMode,
+            SaveCodec.ValidateTerrainAdmission(new TerrainSessionState(candidate,state.Provenance,state.ConstructionMode,
                 state.Clock.Capture(),state.Paused,state.Random.Capture(),checked(state.Revision+1)));
             state.Replace(state.Revision,candidate,state.ConstructionMode);
             return null;

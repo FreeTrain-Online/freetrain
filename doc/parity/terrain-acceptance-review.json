@@ -1,0 +1,4663 @@
+{
+  "schemaVersion": 1,
+  "slice": "P3-17",
+  "reviewedOn": "2026-10-30",
+  "status": "browser/portable terrain acceptance and P4 handoff complete with explicit owner edit-latency disposition",
+  "baseRevision": "d76a3ed9257a953fe0ce0552fa43afe0da5d4e2f",
+  "method": "Working-tree implementation hashes and fresh execution artifacts; no new Git commit or native/Windows execution is inferred.",
+  "sourceParity": {
+    "decisions": [
+      "P3-TERRAIN-001",
+      "P3-TERRAIN-002",
+      "P3-TERRAIN-003",
+      "P3-TERRAIN-004",
+      "P3-TERRAIN-005",
+      "P3-TERRAIN-006",
+      "P3-TERRAIN-007",
+      "P3-TERRAIN-008",
+      "P3-TERRAIN-009",
+      "P3-TERRAIN-010",
+      "P3-TERRAIN-011",
+      "P3-TERRAIN-012"
+    ],
+    "evidence": [
+      "terrain-review.json",
+      "terrain-fixtures.json",
+      "terrain-localization-review.json",
+      "corner-terrain-review.json",
+      "rectangle-terrain-review.json",
+      "terrace-terrain-review.json",
+      "authoring-terrain-review.json"
+    ],
+    "tests": "TerrainAcceptanceTests plus the existing creation/heightmap/corner/rectangle/terrace/authoring/state/transport suites and Chromium workflows.",
+    "manual": [
+      "MAN-M01",
+      "MAN-O02",
+      "MAN-E02",
+      "MAN-A02",
+      "MAN-A19",
+      "MAN-T09",
+      "MAN-M05",
+      "MAN-O06",
+      "MAN-A14",
+      "MAN-A18",
+      "MAN-A16",
+      "MAN-M02",
+      "MAN-W11",
+      "MAN-D02"
+    ],
+    "developer": [
+      "DEV-P07",
+      "DEV-P09",
+      "DEV-P10",
+      "DEV-P15",
+      "DEV-P17",
+      "DEV-P28"
+    ],
+    "integration": [
+      "EXAV-13"
+    ]
+  },
+  "newBehavior": [
+    "WORLDGEN landscape/topology/cover/reservation/overview",
+    "Owner direct and rectangle bare-ground terraces",
+    "Owner continuous mouse-held quarter-corner paint"
+  ],
+  "ownerDecisions": [
+    {
+      "date": "2026-10-30",
+      "decision": "Existing terrain edit UX latency is acceptable; do not claim the 250ms authoritative edit target was met. Add continuous mouse-held raise/lower paint as an authoring extension."
+    }
+  ],
+  "translations": [
+    {
+      "sourceText": "TERRAIN-TEXT-001",
+      "runtimeKeys": [],
+      "disposition": "catalog metadata presentation",
+      "note": "Fixed-map author metadata is rendered from the prepared catalog; author names are preserved."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-002",
+      "runtimeKeys": [],
+      "disposition": "catalog metadata presentation",
+      "note": "Fixed-map description metadata is rendered from the prepared catalog, not a generic editor field."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-003",
+      "runtimeKeys": [
+        "createWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Portable confirmation labels replace the native OK button."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-004",
+      "runtimeKeys": [
+        "cancelPreview"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Portable cancel/back workflow."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-005",
+      "runtimeKeys": [
+        "newWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-006",
+      "runtimeKeys": [
+        "emptySource"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-007",
+      "runtimeKeys": [
+        "emptyWorldHelp"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-008",
+      "runtimeKeys": [
+        "worldName"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-009",
+      "runtimeKeys": [
+        "worldH",
+        "worldV",
+        "worldZ"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Explicit stored dimensions replace the combined source size label."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-010",
+      "runtimeKeys": [
+        "worldH",
+        "worldV",
+        "worldZ"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Separate labeled fields replace the native multiplication separator."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-011",
+      "runtimeKeys": [
+        "createWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-012",
+      "runtimeKeys": [
+        "cancelPreview"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-013",
+      "runtimeKeys": [
+        "worldH",
+        "worldV",
+        "worldZ"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Separate labeled fields replace the native multiplication separator."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-014",
+      "runtimeKeys": [
+        "createWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-015",
+      "runtimeKeys": [
+        "unnamedWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-016",
+      "runtimeKeys": [
+        "heightmapImage"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-017",
+      "runtimeKeys": [
+        "heightmapImage"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Accessible native file input replaces source Choose button."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-018",
+      "runtimeKeys": [
+        "heightmapImagePreview",
+        "heightmapTerrainPreview"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-019",
+      "runtimeKeys": [
+        "createWorld"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-020",
+      "runtimeKeys": [
+        "cancelPreview"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-021",
+      "runtimeKeys": [
+        "worldH",
+        "worldV",
+        "worldZ"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-022",
+      "runtimeKeys": [
+        "worldWater"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-023",
+      "runtimeKeys": [
+        "worldZ"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-024",
+      "runtimeKeys": [
+        "worldV"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-025",
+      "runtimeKeys": [
+        "worldH"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-026",
+      "runtimeKeys": [
+        "heightmapSource"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-027",
+      "runtimeKeys": [
+        "cornerRaise"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-028",
+      "runtimeKeys": [
+        "cornerLower"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-029",
+      "runtimeKeys": [
+        "terrainTool"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-030",
+      "runtimeKeys": [
+        "rectangleRaise"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-031",
+      "runtimeKeys": [
+        "rectangleLower"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-032",
+      "runtimeKeys": [
+        "rectangleTool"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-033",
+      "runtimeKeys": [
+        "cornerOccupied",
+        "cornerSkipped"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Localized changed/skipped rows replace console diagnostics."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-034",
+      "runtimeKeys": [
+        "rectangleRepair",
+        "accepted"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Previewed repair rows and authoritative receipt replace console text."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-035",
+      "runtimeKeys": [
+        "heightmapSource"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-036",
+      "runtimeKeys": [
+        "heightmapHelp"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-037",
+      "runtimeKeys": [
+        "rectangleTool"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-038",
+      "runtimeKeys": [
+        "terraceTool"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-039",
+      "runtimeKeys": [
+        "placeTerrace",
+        "placeCut"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-040",
+      "runtimeKeys": [
+        "removeTerrace",
+        "removeCut"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-041",
+      "runtimeKeys": [
+        "placeTerrace",
+        "removeTerrace"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-042",
+      "runtimeKeys": [
+        "placeCut",
+        "removeCut"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-043",
+      "runtimeKeys": [
+        "terraceTool"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-044",
+      "runtimeKeys": [
+        "terraceHelp"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Owner extension permits bare ground as well as Mountains; original Mountain-only message is intentionally superseded."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-045",
+      "runtimeKeys": [
+        "terraceRequired"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-046",
+      "runtimeKeys": [
+        "cornerOccupied"
+      ],
+      "disposition": "delivered/adapted",
+      "note": "Upper-occupancy blocking is diagnosed by the shared terrain error."
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-047",
+      "runtimeKeys": [
+        "mountainRequired"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-048",
+      "runtimeKeys": [
+        "higherNeighbor"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-049",
+      "runtimeKeys": [
+        "cornerOccupied"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-050",
+      "runtimeKeys": [
+        "cornerOccupied"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-051",
+      "runtimeKeys": [
+        "forestNatural"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-052",
+      "runtimeKeys": [
+        "forestMountain"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-053",
+      "runtimeKeys": [
+        "forestGrass"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-054",
+      "runtimeKeys": [
+        "treeCedar"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-055",
+      "runtimeKeys": [
+        "treePine"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-056",
+      "runtimeKeys": [
+        "treeCamphor"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-057",
+      "runtimeKeys": [
+        "treeMaple"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-058",
+      "runtimeKeys": [
+        "treeGinkgo"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    },
+    {
+      "sourceText": "TERRAIN-TEXT-059",
+      "runtimeKeys": [
+        "treeBeech"
+      ],
+      "disposition": "delivered/adapted",
+      "note": ""
+    }
+  ],
+  "matrix": [
+    {
+      "id": "WORLDGEN-ACCEPT-01",
+      "kind": "plains",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "2456d2bf6280ae2df472541926332511480a841ce92e1c92d52200c1c91fb41e",
+      "editedSha256": "faa9b42d5618fb4f4e86509eb420de44e79251aa3af1dc2e7c340b513d869c78",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 2
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-01",
+      "kind": "plains",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "f2a08cae2303306650e3a10fbf61c199d10d0d89ea203e4e845e0ee7d5d79957",
+      "editedSha256": "933d7907213d3953ad3d880c509393824f9a6627b3258f16dacbbb80996a647b",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-01",
+      "kind": "plains",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "50b1f49f7e883f42e2cfda713f0cdf1fbe6adab84c09c96d7f0c1833eedea60e",
+      "editedSha256": "ac217f133359ea2b9a0ff691e756a8101b929d028cc0c91314bb25db09fb8893",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 2
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-01",
+      "kind": "plains",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "2db4614105fe2cd29932f989a81d846041c702bc5a96430b4c539e0f230f866a",
+      "editedSha256": "b8ea934719e811ac73691611916361fe85380a7fad83e662bd9462adc3d3ff09",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-02",
+      "kind": "mountains",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "56bb3d243b261dbc77d189ade73d5f21ac2dab6fb2a77023fa2270f3007c20e2",
+      "editedSha256": "4b011c4621d3ce41829b064805571e7c28c33abcea3c4d057f80c985901c5d3a",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 28
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 10
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-02",
+      "kind": "mountains",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "50180c1326880db094cc4ca9851d33a20fb891d87e1674bec27683f76de9c250",
+      "editedSha256": "3ee81d820778b34ca1e9d752f170db7982354b7fd67a9ad5bfcfe2d6bceaa1b6",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 4831
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 22
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-02",
+      "kind": "mountains",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "96b8d05cbb169029b37ac57b5fb1202accf13a90c356d5f12b7ec880a4f50758",
+      "editedSha256": "0a211b76c6ca0bb42c0b19f408fa771b6809aa1ce9f43f877011d0472cd637b2",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 36
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 10
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-02",
+      "kind": "mountains",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "3ec145e800a7767cf2532711e6176412245c03f40d85f10f4b9dcaa85ad2e567",
+      "editedSha256": "ae6f8c6a2de82949ad89324b32d1afd599824130524e9eb04aa462ccb5ce3c81",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 19397
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 22
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-03",
+      "kind": "island",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "ced591a174995fe823bbf37a36dfec8119f57cfa5c87c1d51788ea9e0722a7c4",
+      "editedSha256": "549cac7b6174d7c8ba14d7540b4debfdd6bfa2a496c742ef2edfb5e87d273611",
+      "geography": {
+        "SeaCells": 2048,
+        "LandCells": 3072,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 15,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 601
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-03",
+      "kind": "island",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "803d66bc50924a16a077c2177604ee96087f04ade8b12119f393934617a9485e",
+      "editedSha256": "5dba965c632ffa9a123f91b03e8c7e3bcc257bca0a2dbfeac72ab8c37ff67e61",
+      "geography": {
+        "SeaCells": 2048,
+        "LandCells": 3072,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 15,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2252
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-03",
+      "kind": "island",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "ba121daa41715644af0a53d0d38f5776bbfce5787ea1fbfe400ce0428a4e2bf0",
+      "editedSha256": "d6278ec4aee41ee58126301939c05e8ab1855f34d704117dd4aae8aee876a4e3",
+      "geography": {
+        "SeaCells": 8192,
+        "LandCells": 12288,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 15,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1758
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-03",
+      "kind": "island",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "91983e917e0688d3192d5f203d69810a68a1207a0cc652be8c2f862bbf8620e4",
+      "editedSha256": "352d223d91f54977a30a8eed192090bdef64e45c122c4bbe5501848d125113fa",
+      "geography": {
+        "SeaCells": 8192,
+        "LandCells": 12288,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 15,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10570
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-04",
+      "kind": "north",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "dda7e40fea3cf83b16d97b7b40e08c38d54c74c716585a0a18b416db046484b7",
+      "editedSha256": "6f1b56cba980631a280e436f61c32173f10ea5dac7030ff49c81204a7889a9a8",
+      "geography": {
+        "SeaCells": 2047,
+        "LandCells": 3073,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 1,
+        "WaterPercent": 39.98046875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 534
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-04",
+      "kind": "north",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "a55c480f3cff0e683bfa554f2e6aa2fc1cd1ff287ee0a1c6643a4d30ca6de6cf",
+      "editedSha256": "da45aeb14ebc7de6702d322edaeb9387736243b5bad9fbaaead97632c18a8f0c",
+      "geography": {
+        "SeaCells": 2047,
+        "LandCells": 3073,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 1,
+        "WaterPercent": 39.98046875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2330
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-04",
+      "kind": "north",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "770cc9079799ff406f5f44ab3ce02643ee2c2847c01d2b1b0db7b36d08f4b4ef",
+      "editedSha256": "d8fb1d887e3ddfc5509386419971b87c76e744fb889253c3015b6940030fd494",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 1,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1003
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-04",
+      "kind": "north",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "f4aa47050dbd8400be5b26ff6cd60475829b4493bed36eb014da312ee5535573",
+      "editedSha256": "8bf5e9e24e8a2f0a2c392a014648b80d474d1d19f4e7ec4f1a4c9c889364272e",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 1,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10866
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-05",
+      "kind": "east",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "f58a119f98e3cf34915da6f7058f7a73ca9218dd0227f5c2dcbcd07607ad9d38",
+      "editedSha256": "96a4358c616eb56bcee95fa5dc7a48d11e4f664161fcb687512dc4ad418a1374",
+      "geography": {
+        "SeaCells": 2046,
+        "LandCells": 3074,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 2,
+        "WaterPercent": 39.9609375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 563
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-05",
+      "kind": "east",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "39216df51b3744fb3e207582f38a9b1158ec5cb777cd787410a1ae1e4eef63d9",
+      "editedSha256": "8b2149f42d254b14c0c9984258023845e6f9d339b70531011b37dd0a2940bea5",
+      "geography": {
+        "SeaCells": 2046,
+        "LandCells": 3074,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 2,
+        "WaterPercent": 39.9609375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2282
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-05",
+      "kind": "east",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "4025255cea266a3a187aae0e9142f480d943b47e388f4d2523e65edefa201495",
+      "editedSha256": "f22928e7aab0c772300cbd8a068927b92000452dd147b0981580d735fef1079e",
+      "geography": {
+        "SeaCells": 8192,
+        "LandCells": 12288,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 2,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1025
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-05",
+      "kind": "east",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "08879ab188f9b0cb93744c120f1a3d40847c5b2fe4f9adfefc4d6a68f14c7098",
+      "editedSha256": "8d7ddf7e50c0196bc6f93ff9dda5dfb5bbbef44cfbe5356d539cbbc5a21cbbac",
+      "geography": {
+        "SeaCells": 8192,
+        "LandCells": 12288,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 2,
+        "WaterPercent": 40,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10821
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-06",
+      "kind": "south",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "7d5ae6f689086aa49935c76c869fe950feaa8cc2a3eeb523f0be06e85a3ebe56",
+      "editedSha256": "18c61f313b615ef3b8de1e2e9319afe4b2f2ac9e30007c5aa331aa235c87ae15",
+      "geography": {
+        "SeaCells": 2045,
+        "LandCells": 3075,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 4,
+        "WaterPercent": 39.94140625,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 530
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-06",
+      "kind": "south",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "1fa8d09871349822035626379c0df411de8a99d587bac9350c3fb6524956f8c0",
+      "editedSha256": "15fa957cd88669bccd3e2b963783c5bc854649c8135957494222d00c6894cbf2",
+      "geography": {
+        "SeaCells": 2045,
+        "LandCells": 3075,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 4,
+        "WaterPercent": 39.94140625,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2335
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-06",
+      "kind": "south",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "c46340be141c27dc0e58f96ed8a28a12e2f0a88e3339704ba5353fe30380f6a6",
+      "editedSha256": "c50dd6f95f093f23cd0081d0dfa3d8cbd4b91ae5c17d0c7d373d87f68b7773dc",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 4,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1159
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-06",
+      "kind": "south",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "6ef02df530d5917b748ef76f24ee91abd6c9acb5cc866394761c5bd461e95e40",
+      "editedSha256": "c3f289864e310d11e8a8f629edcc9a05102ed3ea3c75d908fa833c2e1bc9083c",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 4,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10925
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-07",
+      "kind": "west",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "570d5bec0efe32e952b97b6e609f547f3b1c4514864f568904bfe43c6a188113",
+      "editedSha256": "ddb2a0e240bc3b4bd740b8b47cf9b6d9d5c9a44dcfb1aabeb9cecb19849703fa",
+      "geography": {
+        "SeaCells": 2046,
+        "LandCells": 3074,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 8,
+        "WaterPercent": 39.9609375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 622
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-07",
+      "kind": "west",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "69d890ef0c14a0e8a1afa76d6fd0f36396378a00d95a0e9102aaacb119cd636b",
+      "editedSha256": "d5ccbb99289077b359597652dfbca0206d03770d6a61e0a79bdc0e84a6cc7c9b",
+      "geography": {
+        "SeaCells": 2046,
+        "LandCells": 3074,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 8,
+        "WaterPercent": 39.9609375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3072,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2406
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-07",
+      "kind": "west",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "922cbf1083e7731bad1369d0743bc1cb81fe2ad2c77dff437ed3b94dcf0bb7f3",
+      "editedSha256": "136dba9bee393c7c5a3647ae6a33b67b1fd9e7f9e82598af61fed17dce20f4ee",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 8,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1378
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-07",
+      "kind": "west",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "ad813c65d01eb0c7b6c7a9730f1e15050f3dea27985d88b77f1314c025f4d576",
+      "editedSha256": "9dd02c14b12bc63c08b9adcdbe0de730fc9f7a1b89c264c063ba7fa0d4dfec34",
+      "geography": {
+        "SeaCells": 8191,
+        "LandCells": 12289,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 8,
+        "WaterPercent": 39.9951171875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12288,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10928
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-08",
+      "kind": "adjacent",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "425ecc1e010f81c393482e999191cddc5cc89a1370545b16bbe81522d6a44875",
+      "editedSha256": "4bc3b9e51bc646114b985a512358b5da1ac57fbec3af91241471348f808a99dd",
+      "geography": {
+        "SeaCells": 2104,
+        "LandCells": 3016,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 3,
+        "WaterPercent": 41.09375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3016,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 537
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-08",
+      "kind": "adjacent",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "2a3ec6953c982e17c49c31df47f98e7b76142155ede6c02b740986cac7742a9d",
+      "editedSha256": "dd77c2dec3dcae363632572d7ea14fd6b797038a8ab72fcc6e96eb1fa7ece215",
+      "geography": {
+        "SeaCells": 2104,
+        "LandCells": 3016,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 3,
+        "WaterPercent": 41.09375,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3016,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2244
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-08",
+      "kind": "adjacent",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "6800d6201a6f5ecad6ff9d01b828f3cc8033abd8a82529b7da00f3b27ed375db",
+      "editedSha256": "a7d681ff878f3046288a4ae239cd7033b90ea7404fbf4426a9183588f6d03273",
+      "geography": {
+        "SeaCells": 8250,
+        "LandCells": 12230,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 3,
+        "WaterPercent": 40.283203125,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12224,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1260
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-08",
+      "kind": "adjacent",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "62fe956a643d34df9313699b22b3a0cee0aed401342645558ff291d697d18475",
+      "editedSha256": "5af4ee830c4f1c545cb4eccbcbf333fe4daef83c5da646ffd66f8e891e595351",
+      "geography": {
+        "SeaCells": 8250,
+        "LandCells": 12230,
+        "SeaComponents": 1,
+        "LandComponents": 1,
+        "SeaSides": 3,
+        "WaterPercent": 40.283203125,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12224,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 10158
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-09",
+      "kind": "opposite",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "46e43589369866e678371dd3dc8c5cb36492ab2dfe18702ca74e92ff96b1f6cf",
+      "editedSha256": "63f91035584c81a76b2c58afe6224642ba304045e7fc9ce0184ea424d7dcd062",
+      "geography": {
+        "SeaCells": 2032,
+        "LandCells": 3088,
+        "SeaComponents": 2,
+        "LandComponents": 1,
+        "SeaSides": 5,
+        "WaterPercent": 39.6875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3071,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 975
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-09",
+      "kind": "opposite",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "9ffd29bd3a9ffa4d6c51a44b936ba58bc1b9b3ffd9288d42d24c101007530249",
+      "editedSha256": "24870352afe6803c0a81ae15dc9b63ad78b74a759572833245d1c00c849fe2d1",
+      "geography": {
+        "SeaCells": 2032,
+        "LandCells": 3088,
+        "SeaComponents": 2,
+        "LandComponents": 1,
+        "SeaSides": 5,
+        "WaterPercent": 39.6875,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 3071,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1108
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-09",
+      "kind": "opposite",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "7a979db30a8369881510784339ba7e46f1ca112e079b6183eec3f05a07fdc582",
+      "editedSha256": "be5ba71f1bb4f808765305945529d9b9e79515771eee2b7b4a6f5840a55225e1",
+      "geography": {
+        "SeaCells": 8274,
+        "LandCells": 12206,
+        "SeaComponents": 2,
+        "LandComponents": 1,
+        "SeaSides": 5,
+        "WaterPercent": 40.400390625,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12197,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1656
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-09",
+      "kind": "opposite",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "3e942c82396ab2155bd80a5b1d8ac66b7f8990c578cb8a87fc05e4f22aa809ff",
+      "editedSha256": "92e388a797a1cc42b7c4b865b9380e432fef03ac005afe7d9b5ba51a035327be",
+      "geography": {
+        "SeaCells": 8274,
+        "LandCells": 12206,
+        "SeaComponents": 2,
+        "LandComponents": 1,
+        "SeaSides": 5,
+        "WaterPercent": 40.400390625,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 12197,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 6462
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-10",
+      "kind": "lakes",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "3e76e3ddac216e86462bd7034ee43aeb6cee71bf0f99768299d8b3a1576e1177",
+      "editedSha256": "242badac8a83646b16545bc2248ec84bcebd31e54d9abc2d1873462ca8447ce1",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 4866,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 4.9609375,
+        "LakeCells": 254,
+        "LakeComponents": 2,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 4866,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 723
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-10",
+      "kind": "lakes",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "276b9cdbbc1d939159adb3c776c73ea6605f49e79451891efe39b21bd8232189",
+      "editedSha256": "759560d45735e3b64a5f114e54da13472d17c8de67f382744646d054250e986d",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 4866,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 4.9609375,
+        "LakeCells": 254,
+        "LakeComponents": 2,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 4866,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 4383
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-10",
+      "kind": "lakes",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "eb85d0ae5d8ed8e0fdea9850c26ac9b36014332a67da9fa972e9e1670bc95e32",
+      "editedSha256": "25ad57d60f5f12b024edea67f1f2c3e85aa1bda7901dbaabf0dcc5f68b12d51a",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 19326,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 5.634765625,
+        "LakeCells": 1154,
+        "LakeComponents": 2,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 19326,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2148
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-10",
+      "kind": "lakes",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "455be980375da5d63ec3957beee4e513468f4e97438533b618dfa49cf60f58ea",
+      "editedSha256": "5a493f5eb5ccd8f271c783f9d0a1913e4e3cf89c4bc0e04106047b9cf97d07bf",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 19326,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 5.634765625,
+        "LakeCells": 1154,
+        "LakeComponents": 2,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 19326,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 18485
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-11",
+      "kind": "combined",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "dca388bbce6cab1487948fee5965ba53f86e695b59b6348f146dae0e2ddf0a28",
+      "editedSha256": "cbcf8cb090105340db941d9a136cd345700cba3e902594f8b728ebb4ffb1c9cf",
+      "geography": {
+        "SeaCells": 1886,
+        "LandCells": 3107,
+        "SeaComponents": 1,
+        "LandComponents": 2,
+        "SeaSides": 5,
+        "WaterPercent": 39.31640625,
+        "LakeCells": 127,
+        "LakeComponents": 1,
+        "RiverCount": 1
+      },
+      "forests": {
+        "EligibleCells": 3104,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 530
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-11",
+      "kind": "combined",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "9115277f4f6f507d8d453234b7123d182fff8ede60b9fcb741478740dae4e1e4",
+      "editedSha256": "ab39494c53ddce3946b921ed7c49d86c18fa3ce98e154f4305de7ed945300454",
+      "geography": {
+        "SeaCells": 1886,
+        "LandCells": 3107,
+        "SeaComponents": 1,
+        "LandComponents": 2,
+        "SeaSides": 5,
+        "WaterPercent": 39.31640625,
+        "LakeCells": 127,
+        "LakeComponents": 1,
+        "RiverCount": 1
+      },
+      "forests": {
+        "EligibleCells": 3104,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1327
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-11",
+      "kind": "combined",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "44181aad1a04810a02e4c68226f1bd522995d5b4b4141f41e38550c6c44c60b6",
+      "editedSha256": "f18ed066ff4d752898e1ec9ed406ecd143ffbce2cec413cde25163f9bb74afb8",
+      "geography": {
+        "SeaCells": 7129,
+        "LandCells": 12772,
+        "SeaComponents": 1,
+        "LandComponents": 2,
+        "SeaSides": 5,
+        "WaterPercent": 37.63671875,
+        "LakeCells": 579,
+        "LakeComponents": 1,
+        "RiverCount": 1
+      },
+      "forests": {
+        "EligibleCells": 12767,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 887
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 0
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-11",
+      "kind": "combined",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "0d7487c93d8229fd0223f70a0f74257aa9f4aef8659b98d90c613ba5bd111c6c",
+      "editedSha256": "c11e9b3e8b443d022f5a8508d7a566748c1b403769a5d4ead99c7a6aff5087de",
+      "geography": {
+        "SeaCells": 7129,
+        "LandCells": 12772,
+        "SeaComponents": 1,
+        "LandComponents": 2,
+        "SeaSides": 5,
+        "WaterPercent": 37.63671875,
+        "LakeCells": 579,
+        "LakeComponents": 1,
+        "RiverCount": 1
+      },
+      "forests": {
+        "EligibleCells": 12767,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 5480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 19
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-12",
+      "kind": "sparse",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "fb0a056113ab27ea9a62247f587cc61b9254d4791d12f8a82b9eeae4b302cd8c",
+      "editedSha256": "1bd8656b209abbe9487f75056d0b0d4eac503a052b822b90a8a4a61ca4243182",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 765,
+        "ForestCells": 754,
+        "Trees": 2310,
+        "ReservedCells": 16,
+        "LargestFlatArea": 1679
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-12",
+      "kind": "sparse",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "e747f1f177df9863185357bb55e57c3522f43601bc62c9cc794dfa9b599a4613",
+      "editedSha256": "09962de4126f170c9b92b5480982465dd23dbcffcc868b76b43f2031573f5a86",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 765,
+        "ForestCells": 754,
+        "Trees": 2311,
+        "ReservedCells": 16,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-12",
+      "kind": "sparse",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "ef3e8ce6a52b7be822746fc12e9c9bbfb534f4b348bc38fa087121c936d9ec2a",
+      "editedSha256": "268a994ca266015319bdaa17b87eb9ff990c0b39c6e87c8a14e0f36d72d9f721",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 3069,
+        "ForestCells": 3023,
+        "Trees": 9274,
+        "ReservedCells": 16,
+        "LargestFlatArea": 2522
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-12",
+      "kind": "sparse",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "3df3504d4f97b19cae42365e4dfe65d5a44fe5dddd0f912104c2e295a86eed53",
+      "editedSha256": "771681a36fe47043c8e5f0debcc160e2e74dce44a1e6e1d10db99d4f445fbeed",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 3069,
+        "ForestCells": 3023,
+        "Trees": 9277,
+        "ReservedCells": 16,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-13",
+      "kind": "dense",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "501f2eb1eee5033b58b53c2c6f04782c110a7eba2b5473b62ab8cc6812b85d79",
+      "editedSha256": "b841d5b675f0f23582621bc1016c1763aa708f52378eb5c743f23bf8198f46e5",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 4593,
+        "ForestCells": 4517,
+        "Trees": 13640,
+        "ReservedCells": 16,
+        "LargestFlatArea": 1679
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-13",
+      "kind": "dense",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "5dc74ede7a692a85bf0810dd6a4f6272d6de453a924715c6801b4e20b41eaeb4",
+      "editedSha256": "401a0aa4290db1bb1c6036a904e66a5d6eb44c9e9204fc26caa3bcdccaeceb02",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 4593,
+        "ForestCells": 4517,
+        "Trees": 13641,
+        "ReservedCells": 16,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-13",
+      "kind": "dense",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "fafb74ecb45eeca5222068765f9d1224970a997a5597cbb27533605496465525",
+      "editedSha256": "fb0577563512bd52cd53ba7f31e9aeb826dc0a17bef20a8d043e41e6ab76a14b",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 18417,
+        "ForestCells": 18121,
+        "Trees": 55133,
+        "ReservedCells": 16,
+        "LargestFlatArea": 2522
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-13",
+      "kind": "dense",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "e177f0ebd71438b321418136c0e7751f8b6c22cfeebaf029197ef007b91ea937",
+      "editedSha256": "60dc206c900e920bd4e345642f04d604e7e1605e2a5e4461e580c34d2a218e43",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 18417,
+        "ForestCells": 18121,
+        "Trees": 55130,
+        "ReservedCells": 16,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-14",
+      "kind": "mixed",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "8b819cba74b9ab32c733c786aa14024b5387fe269fe409727e217cc3736c672b",
+      "editedSha256": "5095f3faa0f92215ca138cd8e6e6aefc88f94f95e7f9978dd89de7544041a302",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 4593,
+        "ForestCells": 4208,
+        "Trees": 9828,
+        "ReservedCells": 16,
+        "LargestFlatArea": 1679
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-14",
+      "kind": "mixed",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "209263abd3a0cc27f66d55f4ce2f0852e5f206ffb41e0625ab20caa51f198fc9",
+      "editedSha256": "e9c93169ef1738362d0c66216bffe75c6f6b6d41df4580a4c33a298c7c53a586",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5104,
+        "MaskCells": 4593,
+        "ForestCells": 4207,
+        "Trees": 9826,
+        "ReservedCells": 16,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-14",
+      "kind": "mixed",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "67d928970caecd3263518d4218081af185a157842460b738ea0a7255521cee46",
+      "editedSha256": "7900cc9ee402e8112ea9270e9a243966489f16c4f09cf7975457fb4bf02b3170",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 18417,
+        "ForestCells": 16960,
+        "Trees": 39803,
+        "ReservedCells": 16,
+        "LargestFlatArea": 2522
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-14",
+      "kind": "mixed",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "9bd6b35ecbd639bd5266462a5c8e6b287840a998661bbdf95d2a3a555164b653",
+      "editedSha256": "3ead865e5c90943e49e45b7929a0fb66d6373dd186982dcbcca9f1c5785b9479",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20464,
+        "MaskCells": 18417,
+        "ForestCells": 16960,
+        "Trees": 39792,
+        "ReservedCells": 16,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-15",
+      "kind": "bare",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "ac9f7d9945e18e0d90630226a86cbf230c3ae662f171a6e09c71f638d1da98f7",
+      "editedSha256": "8b90b895e3203b5ad29d398781a7ec754efc326e5d8b730f26a5f5cc012e3853",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 1679
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-15",
+      "kind": "bare",
+      "h": 64,
+      "v": 80,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "aa3b0343dbdef75b11093928dde38e9cbf3a902fb8da93fa37fbdcdb29cde8b1",
+      "editedSha256": "941191378bf9af8e74bd0f1e21f2957f832051a918833cb01f52673328e3df79",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 5120,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 5120,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 5120
+      },
+      "site": {
+        "X": 39,
+        "Y": 0,
+        "Z": 21
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-15",
+      "kind": "bare",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 1,
+      "beforeSha256": "20d2a0b401a017276aea098bd55d75dc110404bbb420f76b25d4e3e4b667f41b",
+      "editedSha256": "bc71eb645f8f767accf6203c38253f7c56990706787bd65d65948b8afb460252",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 2522
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 4
+      }
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-15",
+      "kind": "bare",
+      "h": 128,
+      "v": 160,
+      "z": 24,
+      "water": 20,
+      "beforeSha256": "693be39111b8903b15ec7607e49902b37ff0c2f5e66fe63b0438f50579fc7218",
+      "editedSha256": "9ba738bbe905cbc8bfea90fa477aa93e4e83abc0fb00ab4124f263a6fe94bdb2",
+      "geography": {
+        "SeaCells": 0,
+        "LandCells": 20480,
+        "SeaComponents": 0,
+        "LandComponents": 1,
+        "SeaSides": 0,
+        "WaterPercent": 0,
+        "LakeCells": 0,
+        "LakeComponents": 0,
+        "RiverCount": 0
+      },
+      "forests": {
+        "EligibleCells": 20480,
+        "MaskCells": 0,
+        "ForestCells": 0,
+        "Trees": 0,
+        "ReservedCells": 0,
+        "LargestFlatArea": 20480
+      },
+      "site": {
+        "X": 79,
+        "Y": 0,
+        "Z": 21
+      }
+    }
+  ],
+  "verification": {
+    "dotnet": 727,
+    "client": 147,
+    "python": {
+      "cases": 142,
+      "existingSkips": 1
+    },
+    "ordinaryChromium": 120,
+    "finalCanonicalChromium": 66,
+    "paintChromium": 3,
+    "capacityChromium": 16,
+    "optionalSourceChromium": 4,
+    "optionalPreparedChromium": 4,
+    "integratedWorldgenRequests": 60,
+    "packedBeforeAfterTopologyOracles": 120,
+    "chronology": "Ordinary suite and focused paint use the final frontend. The later creation-memory fix has fresh .NET, canonical follow-up, capacity and Linux coverage. Earlier failing attempts remain separate local logs."
+  },
+  "capacity": {
+    "1500-generated-pan": {
+      "samples": [
+        5,
+        10.2,
+        5.1,
+        5.1,
+        5.2,
+        5,
+        8.7,
+        5.1,
+        5.1,
+        5,
+        9.3,
+        5.2,
+        5.1,
+        8.7,
+        5.2,
+        11.1,
+        5.1,
+        5.2,
+        5.2,
+        9.2
+      ]
+    },
+    "1500-generated": {
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "mode": "generated",
+      "applyMs": 3690,
+      "rejoinMs": 9581,
+      "pickMs": 6,
+      "stepP95": 150.39999997615814,
+      "injectedCommandRttMs": 100,
+      "restartMs": 14895,
+      "paintP95": 11.1,
+      "frameIntervalP95": 16.700000000000728,
+      "elapsedMs": 73727,
+      "chrome": {
+        "Timestamp": 697058.588084,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 3,
+        "Frames": 2,
+        "JSEventListeners": 58,
+        "LayoutObjects": 124,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 585,
+        "Resources": 42,
+        "ContextLifecycleStateObservers": 9,
+        "V8PerContextDatas": 2,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 3,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 4,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 0,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0,
+        "DevToolsCommandDuration": 5e-06,
+        "ScriptDuration": 0,
+        "V8CompileDuration": 0,
+        "TaskDuration": 6e-06,
+        "TaskOtherDuration": 1e-06,
+        "ThreadTime": 2.4e-05,
+        "ProcessTime": 39.491283,
+        "JSHeapUsedSize": 523323636,
+        "JSHeapTotalSize": 606011392,
+        "FirstMeaningfulPaint": 697048.216718,
+        "DomContentLoaded": 697048.204902,
+        "NavigationStart": 697047.917541,
+        "retainedJSHeapAfterGC": 390889288
+      },
+      "sampledServerPeakRss": 4591763456,
+      "sampledBrowserPeakRss": 3726983168,
+      "sampleIntervalMs": 250
+    },
+    "1500-heavy-pan": {
+      "samples": [
+        5.2,
+        5.1,
+        5.2,
+        5.1,
+        5.4,
+        5.2,
+        5.1,
+        8.9,
+        5,
+        5.1,
+        9.5,
+        5.1,
+        8.2,
+        5.1,
+        5.1,
+        9.4,
+        7.7,
+        5.1,
+        5,
+        9.3
+      ]
+    },
+    "1500-heavy": {
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "mode": "heavy",
+      "applyMs": 926,
+      "rejoinMs": 3921,
+      "pickMs": 5,
+      "stepP95": 151.19999992847443,
+      "injectedCommandRttMs": 100,
+      "restartMs": 6482,
+      "paintP95": 9.5,
+      "frameIntervalP95": 16.799999999999272,
+      "elapsedMs": 32754,
+      "chrome": {
+        "Timestamp": 696974.360986,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 3,
+        "Frames": 2,
+        "JSEventListeners": 58,
+        "LayoutObjects": 124,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 585,
+        "Resources": 42,
+        "ContextLifecycleStateObservers": 9,
+        "V8PerContextDatas": 2,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 3,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 4,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 0,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0,
+        "DevToolsCommandDuration": 8e-06,
+        "ScriptDuration": 3.8e-05,
+        "V8CompileDuration": 0,
+        "TaskDuration": 0.000227,
+        "TaskOtherDuration": 0.000181,
+        "ThreadTime": 0.000301,
+        "ProcessTime": 16.778811,
+        "JSHeapUsedSize": 377370568,
+        "JSHeapTotalSize": 449855488,
+        "FirstMeaningfulPaint": 696973.969821,
+        "DomContentLoaded": 696969.997385,
+        "NavigationStart": 696969.86275,
+        "retainedJSHeapAfterGC": 280988148
+      },
+      "sampledServerPeakRss": 1543438336,
+      "sampledBrowserPeakRss": 3023519744,
+      "sampleIntervalMs": 250
+    },
+    "256-dense-pan": {
+      "samples": [
+        5.1,
+        8.3,
+        5.1,
+        5.2,
+        5.1,
+        5.1,
+        7.6,
+        5.2,
+        5.4,
+        8.6,
+        5.1,
+        5,
+        7.2,
+        5.1,
+        5.1,
+        7.3,
+        5.1,
+        5.2,
+        5,
+        5.1
+      ]
+    },
+    "256-dense": {
+      "h": 256,
+      "v": 256,
+      "z": 64,
+      "mode": "dense",
+      "applyMs": 701,
+      "rejoinMs": 2105,
+      "pickMs": 7,
+      "stepP95": 149.10000002384186,
+      "injectedCommandRttMs": 100,
+      "restartMs": 4442,
+      "paintP95": 8.6,
+      "frameIntervalP95": 16.700000000000728,
+      "elapsedMs": 20524,
+      "chrome": {
+        "Timestamp": 696938.091468,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 3,
+        "Frames": 2,
+        "JSEventListeners": 58,
+        "LayoutObjects": 124,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 585,
+        "Resources": 42,
+        "ContextLifecycleStateObservers": 9,
+        "V8PerContextDatas": 2,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 3,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 7,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 0,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0,
+        "DevToolsCommandDuration": 5e-06,
+        "ScriptDuration": 0,
+        "V8CompileDuration": 0,
+        "TaskDuration": 7e-06,
+        "TaskOtherDuration": 2e-06,
+        "ThreadTime": 4.8e-05,
+        "ProcessTime": 9.366265,
+        "JSHeapUsedSize": 147451824,
+        "JSHeapTotalSize": 202457088,
+        "FirstMeaningfulPaint": 696937.622522,
+        "DomContentLoaded": 696935.817421,
+        "NavigationStart": 696935.652914,
+        "retainedJSHeapAfterGC": 101228116
+      },
+      "sampledServerPeakRss": 660062208,
+      "sampledBrowserPeakRss": 2045476864,
+      "sampleIntervalMs": 250
+    },
+    "coast-island-large": {
+      "previewMs": 4457,
+      "readyMs": 10673,
+      "overviewSwitchMs": 89.5,
+      "overview": {
+        "cells": 1635000,
+        "wetCells": 654000,
+        "forestCells": 0,
+        "clearFlatCells": 92232,
+        "largestBuildableArea": 11300,
+        "minimumQuarterHeight": 12,
+        "maximumQuarterHeight": 116
+      },
+      "paintP95": 10.9,
+      "sampledServerPeakRss": 5889327104,
+      "sampledBrowserPeakRss": 2325807104,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697274.840002,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 124,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 585,
+      "Resources": 42,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 11,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 6e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 7e-06,
+      "TaskOtherDuration": 1e-06,
+      "ThreadTime": 3.7e-05,
+      "ProcessTime": 32.395975,
+      "JSHeapUsedSize": 467811368,
+      "JSHeapTotalSize": 530726912,
+      "FirstMeaningfulPaint": 697274.538421,
+      "DomContentLoaded": 697268.14458,
+      "NavigationStart": 697267.982586,
+      "retainedJSHeapAfterGC": 247417016,
+      "metrics": {
+        "seaCells": 654000,
+        "landCells": 981000,
+        "seaComponents": 1,
+        "landComponents": 1,
+        "seaSides": 15,
+        "waterPercent": 40,
+        "lakeCells": 0,
+        "lakeComponents": 0,
+        "riverCount": 0
+      },
+      "forests": {
+        "eligibleCells": 981000,
+        "maskCells": 0,
+        "forestCells": 0,
+        "trees": 0,
+        "reservedCells": 0,
+        "largestFlatArea": 11300
+      },
+      "saveBytes": 53785272,
+      "snapshotBytes": 53778930
+    },
+    "creation-empty": {
+      "mode": "empty",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "elapsedMs": 2135,
+      "saveBytes": 2187404
+    },
+    "creation-generated": {
+      "mode": "generated",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "elapsedMs": 14751,
+      "saveBytes": 87516594
+    },
+    "creation-heightmap": {
+      "mode": "heightmap",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "elapsedMs": 9977,
+      "saveBytes": 49297351
+    },
+    "edited-empty": {
+      "mode": "empty",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "samples": [
+        111.19999992847443,
+        119.5,
+        123.5,
+        124.29999995231628,
+        124.60000002384186,
+        124.70000004768372,
+        125.10000002384186,
+        143.20000004768372,
+        146.70000004768372,
+        172.69999992847443
+      ],
+      "feedbackP95": 172.69999992847443,
+      "injectedRttMs": 100,
+      "saveBytes": 2192147,
+      "sha256": "63ac8b0c6785fd1ae3ac7a115b500c8ab45a797ab2cc7fbeb058a419243ac70a",
+      "sampledServerPeakRss": 2836217856,
+      "sampledBrowserPeakRss": 2508144640,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697551.751218,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 9,
+      "Frames": 8,
+      "JSEventListeners": 236,
+      "LayoutObjects": 7030,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 10196,
+      "Resources": 109,
+      "ContextLifecycleStateObservers": 50,
+      "V8PerContextDatas": 6,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 9,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 4,
+      "ArrayBufferContents": 219,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 6e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 7e-06,
+      "TaskOtherDuration": 1e-06,
+      "ThreadTime": 5e-05,
+      "ProcessTime": 22.912211,
+      "JSHeapUsedSize": 810453476,
+      "JSHeapTotalSize": 870088704,
+      "FirstMeaningfulPaint": 697550.147408,
+      "DomContentLoaded": 697548.66134,
+      "NavigationStart": 697548.358984,
+      "retainedJSHeapAfterGC": 27942196
+    },
+    "edited-heavy": {
+      "mode": "heavy",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "samples": [
+        249.20000004768372,
+        263.10000002384186,
+        263.2000000476837,
+        265.3000000715256,
+        271.2000000476837,
+        285.2000000476837,
+        295,
+        314,
+        476.39999997615814,
+        506.5
+      ],
+      "feedbackP95": 506.5,
+      "injectedRttMs": 100,
+      "saveBytes": 30531590,
+      "sha256": "aba68fde04ef32e31bee0490f902c0c2fa1fb871e94e197fa4571259af55fc38",
+      "sampledServerPeakRss": 1397800960,
+      "sampledBrowserPeakRss": 2810855424,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697586.456217,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 56,
+      "LayoutObjects": 83,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 457,
+      "Resources": 40,
+      "ContextLifecycleStateObservers": 7,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 0,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 7e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 1e-05,
+      "TaskOtherDuration": 3e-06,
+      "ThreadTime": 4e-05,
+      "ProcessTime": 20.609965,
+      "JSHeapUsedSize": 288377400,
+      "JSHeapTotalSize": 355598336,
+      "FirstMeaningfulPaint": 697582.321192,
+      "DomContentLoaded": 697578.554809,
+      "NavigationStart": 697578.354462,
+      "retainedJSHeapAfterGC": 282074200
+    },
+    "forest-coast-large": {
+      "previewMs": 16512,
+      "readyMs": 27436,
+      "overviewSwitchMs": 76.5,
+      "overview": {
+        "cells": 1635000,
+        "wetCells": 587589,
+        "forestCells": 869476,
+        "clearFlatCells": 17043,
+        "largestBuildableArea": 71,
+        "minimumQuarterHeight": 12,
+        "maximumQuarterHeight": 120
+      },
+      "paintP95": 5.5,
+      "sampledServerPeakRss": 5779537920,
+      "sampledBrowserPeakRss": 3459301376,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697520.261086,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 124,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 589,
+      "Resources": 50,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 12,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 7e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 8e-06,
+      "TaskOtherDuration": 1e-06,
+      "ThreadTime": 3.8e-05,
+      "ProcessTime": 51.594849,
+      "JSHeapUsedSize": 627608796,
+      "JSHeapTotalSize": 684703744,
+      "FirstMeaningfulPaint": 697519.474866,
+      "DomContentLoaded": 697509.136286,
+      "NavigationStart": 697508.965514,
+      "retainedJSHeapAfterGC": 543157380,
+      "metrics": {
+        "seaCells": 538740,
+        "landCells": 1047411,
+        "seaComponents": 1,
+        "landComponents": 2,
+        "seaSides": 5,
+        "waterPercent": 35.93816513761468,
+        "lakeCells": 48849,
+        "lakeComponents": 1,
+        "riverCount": 1
+      },
+      "forests": {
+        "eligibleCells": 1047392,
+        "maskCells": 942652,
+        "forestCells": 869476,
+        "trees": 2042753,
+        "reservedCells": 16,
+        "largestFlatArea": 6704
+      },
+      "saveBytes": 70089618,
+      "snapshotBytes": 70083275
+    },
+    "forest-dense-large": {
+      "previewMs": 9566,
+      "readyMs": 24174,
+      "overviewSwitchMs": 76.5,
+      "overview": {
+        "cells": 1635000,
+        "wetCells": 0,
+        "forestCells": 1356851,
+        "clearFlatCells": 114453,
+        "largestBuildableArea": 456,
+        "minimumQuarterHeight": 22,
+        "maximumQuarterHeight": 64
+      },
+      "paintP95": 9,
+      "sampledServerPeakRss": 5509955584,
+      "sampledBrowserPeakRss": 3391602688,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697425.955007,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 124,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 589,
+      "Resources": 50,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 18,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 5e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 6e-06,
+      "TaskOtherDuration": 1e-06,
+      "ThreadTime": 3.1e-05,
+      "ProcessTime": 55.11549,
+      "JSHeapUsedSize": 1248024300,
+      "JSHeapTotalSize": 1311080448,
+      "FirstMeaningfulPaint": 697410.997264,
+      "DomContentLoaded": 697410.976454,
+      "NavigationStart": 697410.798314,
+      "retainedJSHeapAfterGC": 728631724,
+      "metrics": {
+        "seaCells": 0,
+        "landCells": 1635000,
+        "seaComponents": 0,
+        "landComponents": 1,
+        "seaSides": 0,
+        "waterPercent": 0,
+        "lakeCells": 0,
+        "lakeComponents": 0,
+        "riverCount": 0
+      },
+      "forests": {
+        "eligibleCells": 1634936,
+        "maskCells": 1471442,
+        "forestCells": 1356851,
+        "trees": 3187085,
+        "reservedCells": 64,
+        "largestFlatArea": 1316
+      },
+      "saveBytes": 102116942,
+      "snapshotBytes": 102110599
+    },
+    "paint-large": {
+      "feedbackMs": 1.0999999046325684,
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "saveBytes": 2187752,
+      "sha256": "0a25ccb5fbdb442a215820cecd8581493ac03c7358b06ef6a3408d98ba45a0d7",
+      "sampledServerPeakRss": 1399717888,
+      "sampledBrowserPeakRss": 1268170752,
+      "sampleIntervalMs": 250
+    },
+    "water-coast-large": {
+      "previewMs": 14599,
+      "readyMs": 21266,
+      "overviewSwitchMs": 88.69999992847443,
+      "overview": {
+        "cells": 1635000,
+        "wetCells": 587589,
+        "forestCells": 0,
+        "clearFlatCells": 105793,
+        "largestBuildableArea": 6704,
+        "minimumQuarterHeight": 12,
+        "maximumQuarterHeight": 120
+      },
+      "paintP95": 8.2,
+      "sampledServerPeakRss": 3855663104,
+      "sampledBrowserPeakRss": 2651045888,
+      "sampleIntervalMs": 250,
+      "Timestamp": 697340.905765,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 2,
+      "JSEventListeners": 58,
+      "LayoutObjects": 124,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 585,
+      "Resources": 42,
+      "ContextLifecycleStateObservers": 9,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 0,
+      "ArrayBufferContents": 11,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "DevToolsCommandDuration": 6e-06,
+      "ScriptDuration": 0,
+      "V8CompileDuration": 0,
+      "TaskDuration": 8e-06,
+      "TaskOtherDuration": 2e-06,
+      "ThreadTime": 4.3e-05,
+      "ProcessTime": 30.326586,
+      "JSHeapUsedSize": 562146108,
+      "JSHeapTotalSize": 643416064,
+      "FirstMeaningfulPaint": 697340.55228,
+      "DomContentLoaded": 697334.023164,
+      "NavigationStart": 697333.7468,
+      "retainedJSHeapAfterGC": 309013620,
+      "metrics": {
+        "seaCells": 538740,
+        "landCells": 1047411,
+        "seaComponents": 1,
+        "landComponents": 2,
+        "seaSides": 5,
+        "waterPercent": 35.93816513761468,
+        "lakeCells": 48849,
+        "lakeComponents": 1,
+        "riverCount": 1
+      },
+      "forests": {
+        "eligibleCells": 1047408,
+        "maskCells": 0,
+        "forestCells": 0,
+        "trees": 0,
+        "reservedCells": 0,
+        "largestFlatArea": 6704
+      },
+      "saveBytes": 56827780,
+      "snapshotBytes": 56821438
+    },
+    "zoom-generated-dpr1": {
+      "mode": "generated",
+      "dpr": 1,
+      "samples": [
+        {
+          "feedbackMs": 2.3000000715255737,
+          "paintMs": 0.2,
+          "zoom": 1.725,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.40000009536743,
+          "paintMs": 0.1,
+          "zoom": 1.984,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.59999990463257,
+          "paintMs": 0.2,
+          "zoom": 2.281,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.800000071525574,
+          "paintMs": 0.2,
+          "zoom": 2.624,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.600000023841858,
+          "paintMs": 0.3,
+          "zoom": 3.017,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.799999952316284,
+          "paintMs": 0.2,
+          "zoom": 3.47,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.5,
+          "paintMs": 0.2,
+          "zoom": 3.99,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.100000023841858,
+          "paintMs": 0.2,
+          "zoom": 4,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.199999928474426,
+          "paintMs": 0.3,
+          "zoom": 3.478,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.800000071525574,
+          "paintMs": 0.4,
+          "zoom": 3.025,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.2,
+          "zoom": 2.63,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.399999976158142,
+          "paintMs": 0.2,
+          "zoom": 2.287,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.100000023841858,
+          "paintMs": 0.3,
+          "zoom": 1.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.100000023841858,
+          "paintMs": 0.3,
+          "zoom": 1.729,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.199999928474426,
+          "paintMs": 0.3,
+          "zoom": 1.504,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.399999976158142,
+          "paintMs": 0.2,
+          "zoom": 1.308,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.90000009536743,
+          "paintMs": 0.3,
+          "zoom": 1.137,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.2,
+          "zoom": 0.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.3,
+          "zoom": 0.86,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.200000047683716,
+          "paintMs": 0.2,
+          "zoom": 0.748,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.199999928474426,
+          "paintMs": 0.2,
+          "zoom": 0.65,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.3,
+          "zoom": 0.565,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.5,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.59999990463257,
+          "paintMs": 0.2,
+          "zoom": 0.575,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.661,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.3,
+          "zoom": 0.76,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.1,
+          "zoom": 0.875,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.199999928474426,
+          "paintMs": 0.2,
+          "zoom": 1.006,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.200000047683716,
+          "paintMs": 0.3,
+          "zoom": 1.157,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.899999976158142,
+          "paintMs": 0.2,
+          "zoom": 1.33,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.5,
+          "paintMs": 0.2,
+          "zoom": 1.53,
+          "pending": true
+        }
+      ],
+      "feedbackP95": 17.5,
+      "paintP95": 0.3,
+      "refinement": {
+        "lastSettleMs": 59.200000047683716,
+        "paints": [
+          0.2,
+          0.1,
+          0.2,
+          0.2,
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.4,
+          0.2,
+          0.2,
+          0.3,
+          0.3,
+          0.3,
+          0.2,
+          0.3,
+          0.2,
+          0.3,
+          0.2,
+          0.2,
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.1,
+          0.2,
+          0.3,
+          0.2,
+          0.2,
+          5.1,
+          8.7
+        ],
+        "longTasks": []
+      }
+    },
+    "zoom-generated-dpr2": {
+      "mode": "generated",
+      "dpr": 2,
+      "samples": [
+        {
+          "feedbackMs": 11.399999976158142,
+          "paintMs": 0.7,
+          "zoom": 1.725,
+          "pending": true
+        },
+        {
+          "feedbackMs": 19,
+          "paintMs": 0.4,
+          "zoom": 1.984,
+          "pending": true
+        },
+        {
+          "feedbackMs": 18.399999976158142,
+          "paintMs": 0.6,
+          "zoom": 2.281,
+          "pending": true
+        },
+        {
+          "feedbackMs": 18.5,
+          "paintMs": 0.6,
+          "zoom": 2.624,
+          "pending": true
+        },
+        {
+          "feedbackMs": 18.799999952316284,
+          "paintMs": 0.9,
+          "zoom": 3.017,
+          "pending": true
+        },
+        {
+          "feedbackMs": 10.400000095367432,
+          "paintMs": 0.6,
+          "zoom": 3.47,
+          "pending": true
+        },
+        {
+          "feedbackMs": 14.299999952316284,
+          "paintMs": 0.6,
+          "zoom": 3.99,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.6,
+          "zoom": 4,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.59999990463257,
+          "paintMs": 0.6,
+          "zoom": 3.478,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.90000009536743,
+          "paintMs": 0.9,
+          "zoom": 3.025,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.199999928474426,
+          "paintMs": 0.4,
+          "zoom": 2.63,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.100000023841858,
+          "paintMs": 0.8,
+          "zoom": 2.287,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.399999976158142,
+          "paintMs": 0.5,
+          "zoom": 1.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.6,
+          "zoom": 1.729,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.6,
+          "zoom": 1.504,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.5,
+          "zoom": 1.308,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17,
+          "paintMs": 0.9,
+          "zoom": 1.137,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.200000047683716,
+          "paintMs": 0.5,
+          "zoom": 0.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.6,
+          "zoom": 0.86,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.4,
+          "zoom": 0.748,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.7,
+          "zoom": 0.65,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.9,
+          "zoom": 0.565,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.5,
+          "zoom": 0.5,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.6,
+          "zoom": 0.575,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.6,
+          "zoom": 0.661,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.8,
+          "zoom": 0.76,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.5,
+          "zoom": 0.875,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.6,
+          "zoom": 1.006,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.6,
+          "zoom": 1.157,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.5,
+          "zoom": 1.33,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.6,
+          "zoom": 1.53,
+          "pending": true
+        }
+      ],
+      "feedbackP95": 18.799999952316284,
+      "paintP95": 0.9,
+      "refinement": {
+        "lastSettleMs": 100.79999995231628,
+        "paints": [
+          0.7,
+          0.4,
+          0.6,
+          0.6,
+          0.9,
+          0.6,
+          0.6,
+          0.6,
+          0.6,
+          0.9,
+          0.4,
+          0.8,
+          0.5,
+          0.6,
+          0.6,
+          0.5,
+          0.9,
+          0.5,
+          0.6,
+          0.4,
+          0.7,
+          0.9,
+          0.5,
+          0.6,
+          0.6,
+          0.8,
+          0.5,
+          0.6,
+          0.6,
+          0.5,
+          0.6,
+          5.1,
+          5,
+          5.2,
+          18.9
+        ],
+        "longTasks": []
+      }
+    },
+    "zoom-heavy-dpr1.25": {
+      "mode": "heavy",
+      "dpr": 1.25,
+      "samples": [
+        {
+          "feedbackMs": 13.600000023841858,
+          "paintMs": 0.4,
+          "zoom": 1.725,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.799999952316284,
+          "paintMs": 0.2,
+          "zoom": 1.984,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.5,
+          "paintMs": 0.4,
+          "zoom": 2.281,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.700000047683716,
+          "paintMs": 0.3,
+          "zoom": 2.624,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.5,
+          "paintMs": 0.3,
+          "zoom": 3.017,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.899999976158142,
+          "paintMs": 0.2,
+          "zoom": 3.47,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.399999976158142,
+          "paintMs": 0.3,
+          "zoom": 3.99,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.40000009536743,
+          "paintMs": 0.3,
+          "zoom": 4,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.09999990463257,
+          "paintMs": 0.2,
+          "zoom": 3.478,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 3.025,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 2.63,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.2,
+          "zoom": 2.287,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.59999990463257,
+          "paintMs": 0.3,
+          "zoom": 1.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.800000071525574,
+          "paintMs": 0.3,
+          "zoom": 1.729,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 1.504,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.59999990463257,
+          "paintMs": 0.2,
+          "zoom": 1.308,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.1,
+          "zoom": 1.137,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.2,
+          "zoom": 0.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.86,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.2,
+          "zoom": 0.748,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.65,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.565,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.2,
+          "zoom": 0.5,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.1,
+          "zoom": 0.575,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 0.661,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.1,
+          "zoom": 0.76,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.1,
+          "zoom": 0.875,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.2,
+          "zoom": 1.006,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.3,
+          "zoom": 1.157,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.1,
+          "zoom": 1.33,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 1.53,
+          "pending": true
+        }
+      ],
+      "feedbackP95": 17.5,
+      "paintP95": 0.4,
+      "refinement": {
+        "lastSettleMs": 96.5,
+        "paints": [
+          0.4,
+          0.2,
+          0.4,
+          0.3,
+          0.3,
+          0.2,
+          0.3,
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.3,
+          0.2,
+          0.2,
+          0.1,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.1,
+          0.2,
+          0.1,
+          0.1,
+          0.2,
+          0.3,
+          0.1,
+          0.2,
+          5.1,
+          9.3,
+          5,
+          7.3
+        ],
+        "longTasks": []
+      }
+    },
+    "zoom-heavy-dpr1": {
+      "mode": "heavy",
+      "dpr": 1,
+      "samples": [
+        {
+          "feedbackMs": 14.299999952316284,
+          "paintMs": 0.3,
+          "zoom": 1.725,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.600000023841858,
+          "paintMs": 0.2,
+          "zoom": 1.984,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.199999928474426,
+          "paintMs": 0.2,
+          "zoom": 2.281,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.2,
+          "zoom": 2.624,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17,
+          "paintMs": 0.2,
+          "zoom": 3.017,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.09999990463257,
+          "paintMs": 0.2,
+          "zoom": 3.47,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.90000009536743,
+          "paintMs": 0.3,
+          "zoom": 3.99,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.299999952316284,
+          "paintMs": 0.3,
+          "zoom": 4,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.200000047683716,
+          "paintMs": 0.2,
+          "zoom": 3.478,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.199999928474426,
+          "paintMs": 0.2,
+          "zoom": 3.025,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.100000023841858,
+          "paintMs": 0.2,
+          "zoom": 2.63,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.200000047683716,
+          "paintMs": 0.3,
+          "zoom": 2.287,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.2,
+          "zoom": 1.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.100000023841858,
+          "paintMs": 0.2,
+          "zoom": 1.729,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17,
+          "paintMs": 0.2,
+          "zoom": 1.504,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.299999952316284,
+          "paintMs": 0.2,
+          "zoom": 1.308,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.3,
+          "zoom": 1.137,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.1,
+          "zoom": 0.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.2,
+          "zoom": 0.86,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.2,
+          "zoom": 0.748,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.700000047683716,
+          "paintMs": 0.3,
+          "zoom": 0.65,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.4,
+          "zoom": 0.565,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16,
+          "paintMs": 0.3,
+          "zoom": 0.5,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.2,
+          "zoom": 0.575,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.1,
+          "zoom": 0.661,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.2,
+          "zoom": 0.76,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.800000071525574,
+          "paintMs": 0.2,
+          "zoom": 0.875,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.09999990463257,
+          "paintMs": 0.1,
+          "zoom": 1.006,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.900000095367432,
+          "paintMs": 0.1,
+          "zoom": 1.157,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.399999976158142,
+          "paintMs": 0.1,
+          "zoom": 1.33,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.3,
+          "zoom": 1.53,
+          "pending": true
+        }
+      ],
+      "feedbackP95": 17.299999952316284,
+      "paintP95": 0.3,
+      "refinement": {
+        "lastSettleMs": 154.19999992847443,
+        "paints": [
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.3,
+          0.1,
+          0.2,
+          0.2,
+          0.3,
+          0.4,
+          0.3,
+          0.2,
+          0.1,
+          0.2,
+          0.2,
+          0.1,
+          0.1,
+          0.1,
+          0.3,
+          5,
+          5.4,
+          5,
+          8,
+          5.2,
+          5.1,
+          5,
+          5
+        ],
+        "longTasks": []
+      }
+    },
+    "zoom-heavy-dpr2": {
+      "mode": "heavy",
+      "dpr": 2,
+      "samples": [
+        {
+          "feedbackMs": 14.600000023841858,
+          "paintMs": 1,
+          "zoom": 1.725,
+          "pending": true
+        },
+        {
+          "feedbackMs": 19.100000023841858,
+          "paintMs": 0.5,
+          "zoom": 1.984,
+          "pending": true
+        },
+        {
+          "feedbackMs": 18.299999952316284,
+          "paintMs": 0.6,
+          "zoom": 2.281,
+          "pending": true
+        },
+        {
+          "feedbackMs": 18.200000047683716,
+          "paintMs": 0.6,
+          "zoom": 2.624,
+          "pending": true
+        },
+        {
+          "feedbackMs": 19.299999952316284,
+          "paintMs": 0.8,
+          "zoom": 3.017,
+          "pending": true
+        },
+        {
+          "feedbackMs": 10.200000047683716,
+          "paintMs": 0.3,
+          "zoom": 3.47,
+          "pending": true
+        },
+        {
+          "feedbackMs": 14.399999976158142,
+          "paintMs": 0.4,
+          "zoom": 3.99,
+          "pending": true
+        },
+        {
+          "feedbackMs": 15.899999976158142,
+          "paintMs": 0.5,
+          "zoom": 4,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.5,
+          "paintMs": 0.6,
+          "zoom": 3.478,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.100000023841858,
+          "paintMs": 0.7,
+          "zoom": 3.025,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.3,
+          "zoom": 2.63,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.6,
+          "zoom": 2.287,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.3,
+          "zoom": 1.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.199999928474426,
+          "paintMs": 0.3,
+          "zoom": 1.729,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.40000009536743,
+          "paintMs": 0.4,
+          "zoom": 1.504,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.6,
+          "zoom": 1.308,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.5,
+          "zoom": 1.137,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.600000023841858,
+          "paintMs": 0.5,
+          "zoom": 0.989,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.299999952316284,
+          "paintMs": 0.6,
+          "zoom": 0.86,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.100000023841858,
+          "paintMs": 0.5,
+          "zoom": 0.748,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.7,
+          "zoom": 0.65,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.899999976158142,
+          "paintMs": 0.9,
+          "zoom": 0.565,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.300000071525574,
+          "paintMs": 0.5,
+          "zoom": 0.5,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.799999952316284,
+          "paintMs": 0.6,
+          "zoom": 0.575,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.5,
+          "paintMs": 0.6,
+          "zoom": 0.661,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.800000071525574,
+          "paintMs": 0.6,
+          "zoom": 0.76,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.59999990463257,
+          "paintMs": 0.6,
+          "zoom": 0.875,
+          "pending": true
+        },
+        {
+          "feedbackMs": 17.300000071525574,
+          "paintMs": 1.2,
+          "zoom": 1.006,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16,
+          "paintMs": 0.6,
+          "zoom": 1.157,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.699999928474426,
+          "paintMs": 0.5,
+          "zoom": 1.33,
+          "pending": true
+        },
+        {
+          "feedbackMs": 16.800000071525574,
+          "paintMs": 0.8,
+          "zoom": 1.53,
+          "pending": true
+        }
+      ],
+      "feedbackP95": 19.100000023841858,
+      "paintP95": 1,
+      "refinement": {
+        "lastSettleMs": 117.90000009536743,
+        "paints": [
+          1,
+          0.5,
+          0.6,
+          0.6,
+          0.8,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.3,
+          0.6,
+          0.3,
+          0.3,
+          0.4,
+          0.6,
+          0.5,
+          0.5,
+          0.6,
+          0.5,
+          0.7,
+          0.9,
+          0.5,
+          0.6,
+          0.6,
+          0.6,
+          0.6,
+          1.2,
+          0.6,
+          0.5,
+          0.8,
+          5.1,
+          5.1,
+          16.8,
+          5.2,
+          17.1
+        ],
+        "longTasks": []
+      }
+    }
+  },
+  "linux": {
+    "image": "sha256:be8a8a33c6c3d277d848e2187a9377bb7b4587787bf329fbfbeb01d1d7fa8d44",
+    "platform": "linux/arm64",
+    "cpus": 4,
+    "memoryLimit": 6442450944,
+    "peakBytes": 1451286528,
+    "scene": "tmp/p3-17/capacity/fixtures/edited-heavy/edited.json",
+    "workflow": {
+      "result": "Linux chunked publication/save/reopen exact",
+      "saveBytes": 30531590,
+      "chunks": 622,
+      "sha256": "aba68fde04ef32e31bee0490f902c0c2fa1fb871e94e197fa4571259af55fc38",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "occupants": 408805,
+      "generation": null
+    },
+    "restart": {
+      "result": "checkpoint restart exact",
+      "saveBytes": 30531590,
+      "sha256": "aba68fde04ef32e31bee0490f902c0c2fa1fb871e94e197fa4571259af55fc38",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "epoch": "2"
+    }
+  },
+  "failedAttempts": [
+    {
+      "artifact": "tmp/p3-17-capacity-final.log",
+      "result": "13/15; island server RSS 7017021440 and dense-forest server RSS 7357644800 exceed unchanged 6 GiB target. Resolved by preparing validated created domain state without decoding its own canonical save; uploads retain full restore validation."
+    },
+    {
+      "artifact": "tmp/p3-17-capacity-edits.log",
+      "result": "Resource-heavy edit p95 512.4 ms exceeded the previous 250 ms edit target. Owner accepts current terrain-edit UX latency; no clock/render/memory target waiver."
+    },
+    {
+      "artifact": "tmp/p3-17-browser-final.log",
+      "result": "118/120; asynchronous Japanese keyboard-confirm test corrected to wait for enablement, and initial reveal rerun against frozen build. Retain actual earlier failure status."
+    }
+  ],
+  "deferred": [
+    "Windows runtime capture equivalence",
+    "native device certification",
+    "previously deferred browsers",
+    "P2 visual/crop/optional-suite gates",
+    "P4 railway legality and support placement",
+    "P10 historical save import",
+    "P11 full-city capacity",
+    "STRETCH-ROTATION",
+    "STRETCH-TERRAIN",
+    "STRETCH-WATER"
+  ],
+  "p4": "doc/web-parity-p3-acceptance.md#p4-terrain-and-support-handoff",
+  "implementationHashes": {
+    "README.web.md": "9bb183f548efa19ba09cff33141ffa0ec88105021ca31f55d0f45ef8060ec614",
+    "deploy/Dockerfile": "74e39ba7040a98db6e970a3227fc04e9add45bd0d0ae9b30e0d42e672b3f4cb7",
+    "doc/parity/README.md": "95d6131c927798cb8249e9a2d29e09470908d91bc81519db8131158addf16f60",
+    "doc/parity/terrain-acceptance.json": "ddd93107942ecccc10d59bf8abd69547e16777a73a0bfa579e22186b7895faea",
+    "doc/web-parity-actions.md": "359f80dfc79d136a1ea56084329c6bdb345e9bd78200dc52257fac5a8ff2b61e",
+    "doc/web-parity-localization.md": "b1d92e3444e0e0483a11084e25a66488e5e7141012084dd6ae079acea98f96b1",
+    "doc/web-parity-map-capacity.md": "7168f178bee503062f0b150e337ab6f21f54a4f5bc0f6487849375b70035b8a9",
+    "doc/web-parity-p3-acceptance.md": "69c651b4b6b4a91994b4d4b653a847a30fbad51cd6820804c174c4269ce7b5a5",
+    "doc/web-parity-world-generation.md": "6c63cb7bcaba3e49be97ce1f3c6ccc293a0f53a4bd861ffb7d0fc8050d21689b",
+    "scripts/check-terrain-acceptance.py": "e37e4ad3dc14bcb14970e0ac235a59be92789ca4cb84b90660186c94b6817188",
+    "src/FreeTrain.Online.Persistence/SaveCodec.cs": "1b5e5bfa8c49c381d4663f1518370197d940252e035e1c57e8e12120634adaef",
+    "src/FreeTrain.Online.Persistence/TerrainWire.cs": "2cd9ddc21f766542ed71eec7be01ff6e1b10761cd7337c0ec3f34dd2235e9b8d",
+    "src/FreeTrain.Online.Server/EmptyWorldCreation.cs": "ef427f930864283aa1c754e1fd8b75885003b302c6cff232f0aae7aae7e64783",
+    "src/FreeTrain.Online.Server/GeneratedWorldCreation.cs": "fcf5becdcd58ac1c13977a9bf76bbb621d91a96f541370df1eabab5ea42515de",
+    "src/FreeTrain.Online.Server/HeightmapWorldCreation.cs": "cb13b27bc202556f22cf1a2d5b0467fc44cff4647856ddc2d22f32234bb29204",
+    "src/FreeTrain.Online.Server/NetworkSession.cs": "13e1c729cd2625d730da23ea277033821c5a5f92e171f225cbb7d20bf8dde726",
+    "src/FreeTrain.Online.Session/AuthoringSession.cs": "2aff7ceedb8d218a7931608888ad8116728ae4d0dd9fc275dfb0ed025cdc9df9",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "450f23b036dfb162fdd65733195ba2e12ce25d1dcf9778776347b4ed91c6c2e3",
+    "src/FreeTrain.Online.Session/README.md": "d0120008f3543994b83cf65d2996e24529a2f14267ec403942062f416db7e022",
+    "src/FreeTrain.Online.Session/WorldCreationSession.cs": "bf9c6420b52b485891f3f7f8ae5050c1f33df34b27c18a35f671a4a9b045cb46",
+    "src/FreeTrain.Online.Simulation/CornerTerrainDraft.cs": "2011755faf98acfb71b0cbd51e9b7f9e10dba19172d37fe935a0c788dc106300",
+    "src/FreeTrain.Online.Simulation/SpatialEntities.cs": "526a1e31c83934526aa5c2c55829f1bf582d6e143c842dadc6b825ccd5cfe906",
+    "src/FreeTrain.Online.Simulation/TerrainSessionState.cs": "0aaf9a45fbfb83f350f2316798f41b8dba1a1518fa535a7511c5d878c7f96297",
+    "src/FreeTrain.Online.Simulation/TerrainWorld.cs": "030adeea1a1d46b6a4911d0332886efc04497ea3be4e948ff86b3ab977c8dcf0",
+    "tests/FreeTrain.Online.Tests/TerrainAcceptanceTests.cs": "ef1564116a1167e182f1d3fddeb32b850ace3feab38425b2f24a5d3c5148e469",
+    "tools/TerrainTransportProbe/Program.cs": "d42a303eff1d0fe80b8de47987b1732d0ab4946000796ec6ff77bf3ac48a41a9",
+    "tools/TerrainTransportProbe/TerrainAcceptance.cs": "1df6e767c484b0b7f4876d8a66194accf4a6664d5db5a6b9f8303618ed5ebda9",
+    "web/deno.json": "5a1738412a4b5d050006d419a961f48b4d28430fe8d3c052b447ebf5483f245e",
+    "web/playwright.config.ts": "a2b299f0c1393092506ff1df94655b7187c88e6df3111953743582a4d69ca5ce",
+    "web/src/CornerTerrainControls.svelte": "c59f0e5dd4d23099e0048f5c26b8cb4fec07a10c38403b420ad0ace7dce7c47c",
+    "web/src/MapView.svelte": "8ac177d4cde85fe8e9616866d8d8877e930dcde97d531b75fda5546549a287c5",
+    "web/src/lib/game-ui.ts": "7dad9eefd8ac75779c45890e068d0f247508b8df0dfa8dd793afdda32f3e992d",
+    "web/src/lib/protocol.ts": "117f89f16fb0ec2e31d08b325e88fd9a31da2ae292e2217ebf8de9a58b6edb45",
+    "web/src/lib/terrain-painter.ts": "ac630b549a5dbe7d5df5888143a0bdcfad2f201c8d2050889ce807b5377a28c6",
+    "web/src/lib/terrain-renderer.ts": "0bdfa998e9fe28bac36ef13af1f73a683a15516ae16cd7998cdf961ba59d1aef",
+    "web/src/lib/terrain-state.ts": "04d835e6368ed920f1407c07667b3058d1b2a43bcfd632392068bbb9a77c263d",
+    "web/src/lib/world-identity.ts": "b4a1fd018d478e9ce4b3e7443f6e8f7bd59f2dbb61a4b7f3b7728ddd20582a0d",
+    "web/src/locales/en/app.json": "925de93114b41ffb2e153e273a04f76108e9b94de48c895fae0d67248e88ef65",
+    "web/src/locales/ja/app.json": "78328c700be912f2449e5835480b4634c98926ee994d893af896b83c448e17ea",
+    "web/tests/browser/capacity.spec.ts": "51b7bd0a70911764f90e5e5eb3c9b840205ead1fdf92ab22426c7fc02d7a67e3",
+    "web/tests/browser/paint-terrain.spec.ts": "657c28636922a3cd2da4c7d8e690d7659a2fbe2e5554846d56eb7bfa41ee9706",
+    "web/tests/terrain-painter.test.ts": "122227a822b44f34fc9b3c00900b366d3c15243b3bf4d6741ee4296fc89147cd",
+    "web/tests/terrain.test.ts": "49c63504feeac976cd9f9f346bf64f39389501b7b9bd05bec7b4219a2cd6f716"
+  },
+  "artifactHashes": {
+    "tmp/p3-17-build.log": "bfedd5597b9499cdc6c862e48bc0e113722bb5fa953bc4a9c26912dc6076445f",
+    "tmp/p3-17-dotnet.log": "7bb1b730971632e8456beeb0819566c7818324be7d6b4a7e73c73362a7c5ccfb",
+    "tmp/p3-17-web-build.log": "ba218a9091ef4bc7388705f5e88e7e5075ff4cda97f52b7f745ba4933becab65",
+    "tmp/p3-17-client.log": "de888fcaf41c97bc8e793a50ba01506ca638f6a6e8f8d4bfc626423798e7f774",
+    "tmp/p3-17-python.log": "8ad0808cfe184979be91dfb89d85f3befcd5cb7ce81435f5f70b4f6379f3576e",
+    "tmp/p3-17-browser-verified.log": "c7a8129ecebf1d6ba03027510f42da33c7d42b1002b5bd2b9714255700a86a82",
+    "tmp/p3-17-capacity-verified.log": "76e3cd115a6335ba5f2e65eaf036c2d0cab2ab176955c80af3f447fcf95bc317",
+    "tmp/p3-17-paint-final.log": "614db6593a50d9998da39a57bb99e0be8f290b836278754bf88706ddc307dd92",
+    "tmp/p3-17-optional-source.log": "b328c4130fbf94baec115c9553186f1ab5a8f7ace2f1d286014bba1b1949b27b",
+    "tmp/p3-17-optional-prepared.log": "00f1e91fd34abbbfc002968ccafe11bbfa2c3ce8f3b3a7932c07fde39ad2589d",
+    "tmp/p3-17-topology.log": "3dabd44bdc4c811392a1d73dd4639dd8559154137de15b3bf2040e11bfca0d13",
+    "tmp/p3-17-probe-build.log": "30058a81161e184e56d36a059d2a1f41514f597d3ccdfe6287b283e3feedc1fb",
+    "tmp/p3-17-docker-build.log": "298879319ece6440539bdad7c7f9b2b39160d7afa4e76bf89a2b8d22180abc37",
+    "tmp/p3-17-boundaries.log": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6",
+    "tmp/p3-17-source.log": "9b7c1c3854598fe36d29fcb74b691bf4b929ccf4d8472606017024f83c986fc0",
+    "tmp/p3-17-decoder.log": "8a04009e832456a94452adf1b7c422c5f3a30cec6417f52aed563a67e99197f9",
+    "tmp/p3-17-relief.log": "f862b73625ef23f7dabeb46e093e60b9b11c610366980c860f98bdbdb75bd267",
+    "tmp/p3-17-coasts.log": "962061e8b94a84f8331c539b6e2046ddaa83acae2791d158391b1583ec2480ef",
+    "tmp/p3-17-water.log": "885e09e078948a07853f52cb39ddd0079076edc011cd11b4fc445e90ec0a8a91",
+    "tmp/p3-17-forests.log": "88e71311de9bf26ebc157657b981991cac0ca564ae04dd90a9cfbe3bb269a85d",
+    "tmp/p3-17-distribution.log": "6322b391bf541da7868d97c51c226b1d0b5f7b75800a95a88c55af6e1edf6041",
+    "tmp/p3-17-linux.log": "5a7115d30f0fa21b924489259915f68733de5f6cc98d544b0eaac8919cbb0bb8",
+    "tmp/p3-17/matrix/report.json": "167119a21fd28856fa37adc7f881edaee623dd7011e1a34f4c025a836e5acf21",
+    "tmp/p3-17/matrix/topology.json": "c99840878eca2b6f681a2cabb7ff4a6752da9adba9e05059deb90368bd707a20",
+    "tmp/p3-17/linux.json": "d3a120dde1f2f8ae555b89e3755100d022c79de05b609d718a49789c093620ea",
+    "tmp/p3-17/capacity-verified/1500-generated-pan.json": "48fbd8534ae708ad58aa692d66719b98a2d1a89c63b939c9d7c0db02b143b753",
+    "tmp/p3-17/capacity-verified/1500-generated.json": "d4a7fe55ba30b8a4f46a2f7b57da0ffbfb8a949ec27bad5e5d3b5ef7adc39779",
+    "tmp/p3-17/capacity-verified/1500-heavy-pan.json": "ba278203094661b5c38479027af095d29371a049d437e1b159de8fce97b94141",
+    "tmp/p3-17/capacity-verified/1500-heavy.json": "d30f1b07bafa9836a22e939982dd8baada4ecf2887b8f699769d6746ab10eb52",
+    "tmp/p3-17/capacity-verified/256-dense-pan.json": "c56d4c1a5dc8c788ac6fff2699504118bed30c35e2190f48b7ade652fc93ece0",
+    "tmp/p3-17/capacity-verified/256-dense.json": "07edbca0afe34083a09881f4cb0f6207431e346b7195b8c11b246907cf72e313",
+    "tmp/p3-17/capacity-verified/coast-island-large.json": "e13634ba50d3c8493b1e2803a048d124cd988d8f63f12a7741e0be355e46e9bc",
+    "tmp/p3-17/capacity-verified/creation-empty.json": "6b5e0e8d04fed97e03174b384e0fa83db003ede9d3464996167e44a8509c5358",
+    "tmp/p3-17/capacity-verified/creation-generated.json": "405ba976460c63b52e9bfca78d203ca62ddcd6a949662486fb39a96475cea683",
+    "tmp/p3-17/capacity-verified/creation-heightmap.json": "d5f483101b9e456f91dbc88b1cba858dfa199ed06214c4e755aeda1747db1b3a",
+    "tmp/p3-17/capacity-verified/edited-empty.json": "1cdfda2a15c20507580856bb967af0e391965cf73e23f57ef48c22e37f56ae4c",
+    "tmp/p3-17/capacity-verified/edited-heavy.json": "825057d5b84239a692b737b30402a18a528ed91621f46b5500fe575d2dec0548",
+    "tmp/p3-17/capacity-verified/forest-coast-large.json": "37fb562b0a1f9a871d16ba17c26882ddc8ea2fec8763f717b99e0f8033f37ea9",
+    "tmp/p3-17/capacity-verified/forest-dense-large.json": "f49dea5da393ecc876767057509300498e1ef5ee465372b9c14844ed096887de",
+    "tmp/p3-17/capacity-verified/paint-large.json": "be00fe4a8e6744de70779d9f7264abd92565902bd06a3102a0a19f5fa2db3a47",
+    "tmp/p3-17/capacity-verified/water-coast-large.json": "48f4c01cf9a71d904571e5a921315f29062726f121d36c326a1f8e963a56b1fa",
+    "tmp/p3-17/capacity-verified/zoom-generated-dpr1.json": "46c996971a739897aaba78d38f9c83df68a1548d146f9185d2f129b6ed149502",
+    "tmp/p3-17/capacity-verified/zoom-generated-dpr2.json": "c807879776ba42e0995992cf72c88a3e54b327d61f8a68d5627357d408fd58d3",
+    "tmp/p3-17/capacity-verified/zoom-heavy-dpr1.25.json": "d7d7de02789b6f481a0c7eec207d1bb7d880c8f389b0fe28e388e2b0521c1de1",
+    "tmp/p3-17/capacity-verified/zoom-heavy-dpr1.json": "fb370cc7c09bbedd650d566fd354c249a5dd5bc0a9564f096eb71afc64a2cbb8",
+    "tmp/p3-17/capacity-verified/zoom-heavy-dpr2.json": "bcc598770c3bca0587b40fdf7934687320936a18463d0cea1cfdf1228d5196d4",
+    "tmp/p3-17/edit-probes/authoring.json": "2f2ca628d69e7e6e8559e2fdb837bc986f1ca0cc28960b865f36c4457ff78bbd",
+    "tmp/p3-17/edit-probes/corner.json": "fa246897df64ed96a38b804149b0789da1713fc024e408c122bf3b908fea6ed8",
+    "tmp/p3-17/edit-probes/rectangle.json": "3ac52f417ae9ebc8f0d2aadacf098a51cb49cafc013b51c9916aa82f78b1e9aa",
+    "tmp/p3-17/edit-probes/terrace.json": "c700a0bb08c35407f7053ad61ead21122d7a68e2e44b0bf14a5efb2a4896479f",
+    "tmp/p3-17/paint-output/paint-terrain-Japanese-nar-70081-s-and-shared-time-continues-canonical/paint-ja.png": "606fda672b6c469bf9793da79cff51b4be3fb01329e87c249f90f4007b8a75fd",
+    "tmp/p3-17/paint-output/paint-terrain-holding-left-560e5-ower-reduces-surface-height-canonical/paint-en.png": "c2e708b51028020332a8eb275130c489a423af046e309d4135eade72d5dc4438",
+    "tmp/p3-17-canonical-final.log": "191b0ddc40e8064c270d0947be8d4ab1e8ea0e71e36fd3050771c5268ed01c3d"
+  }
+}

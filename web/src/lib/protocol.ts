@@ -4,6 +4,7 @@ import type { Delta, Snapshot, SpatialPreview, CornerTerrainPreview, WireMessage
 import type { ReadState } from './session-client.ts';
 import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
 import { maximumGameMinute } from './game-time.ts';
+import { terrainById, validTerrainDelta, shareTerrainValidation } from './terrain-state.ts';
 const validatedReads=new WeakSet<object>(),frozenObjects=new WeakSet<object>();
 const ajv = new Ajv({ strict: true });
 for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
@@ -57,7 +58,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.terrain.cells.some(c=>c.index>=state.terrain!.cells.length)||
       new Set(delta.terrain.occupants.map(o=>o.entityId)).size!==delta.terrain.occupants.length||
       delta.terrain.occupants.some(o=>delta.removed.entityIds?.includes(o.entityId)))return;
-    const old=new Map(delta.entities!.length||delta.terrain.occupants.length?state.entities!.map(e=>[e.id,e]):[]);
+    const old={get:(id:string)=>terrainById(state.entities!,id,e=>e.id)};
     for(const e of delta.entities!) {
       const before=old.get(e.id);
       if(!before?(BigInt(e.id)<BigInt(state.terrain.nextEntityId)||e.revision!=='0'):
@@ -65,7 +66,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
           e.revision===before.revision&&JSON.stringify(e)!==JSON.stringify(before)))return;
     }
     const changedEntities=new Map(delta.entities!.map(e=>[e.id,e]));
-    const oldOccupants=new Map(delta.terrain.occupants.length?state.terrain.occupants.map(o=>[o.entityId,o]):[]);
+    const oldOccupants={get:(id:string)=>terrainById(state.terrain!.occupants,id,o=>o.entityId)};
     for(const o of delta.terrain.occupants) {
       const before=oldOccupants.get(o.entityId);
       if(before&&JSON.stringify(o)!==JSON.stringify(before)&&
@@ -86,25 +87,43 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!=='0'||typeof delta.paused!=='boolean')return;
     const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash});
-    validatedReads.add(next);return next;
+    shareTerrainValidation(state,next);validatedReads.add(next);return next;
   }
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
+    if(!changed.length&&!removed.length)return before as T[];
     const items = new Map(before.map(item => [key(item), item]));
     for (const id of removed) items.delete(id);
     for (const item of changed) items.set(key(item), item);
     return [...items.values()];
   }
   const position = (p: { readonly x: number; readonly y: number; readonly z: number }) => `${p.x},${p.y},${p.z}`;
-  const cellChanges=new Map(delta.terrain?.cells.map(c=>[c.index,c]));
+  // Only changed records need recursive freezing. All retained records came
+  // from the immutable validated predecessor.
+  if(terrain)immutable(delta);
+  function terrainMerge<T>(before:readonly T[],changed:readonly T[],removed:readonly string[],key:(item:T)=>string):T[] {
+    if(!changed.length&&!removed.length)return before as T[];
+    const changes=new Map(changed.map(item=>[key(item),item])),deleted=new Set(removed),result:T[]=[];
+    for(const item of before){const id=key(item);if(!deleted.has(id))result.push(changes.get(id)??item);changes.delete(id);}
+    result.push(...[...changes.values()].sort((a,b)=>{const x=key(a),y=key(b);return x.length-y.length||(x<y?-1:x>y?1:0);}));
+    Object.freeze(result);frozenObjects.add(result);return result;
+  }
+  const terrainCells=terrain&&delta.terrain!.cells.length?state.terrain!.cells.slice():undefined;
+  if(terrainCells){for(const c of delta.terrain!.cells)terrainCells[c.index]=immutable({ground:c.ground,surface:c.surface});Object.freeze(terrainCells);frozenObjects.add(terrainCells);}
+
   const terrainState=terrain?{...state.terrain!,...delta.terrain!,
-    cells:state.terrain!.cells.map((c,i)=>{const change=cellChanges.get(i);return change?{ground:change.ground,surface:change.surface}:c;}),
-    occupants:merge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
+    cells:delta.terrain!.cells.length?terrainCells!:state.terrain!.cells,
+    occupants:terrainMerge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
   const next={ ...state, ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash,
-    ...(state.entities?{entities:merge(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
+    ...(state.entities?{entities:(terrain?terrainMerge:merge)(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),
     buildings: merge(state.buildings, delta.buildings, delta.removed.buildingIds, x => x.id),
     tracks: merge(state.tracks, delta.tracks, delta.removed.trackPositions.map(position), x => position(x.position)),
   } as Snapshot;
+  if(terrain) {
+    if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
+    try {if(!validTerrainDelta(state as Snapshot,next,delta))return;}catch{return;}
+    const frozen=immutable(next);validatedReads.add(frozen);return frozen;
+  }
   return validSnapshot(next)?immutable(next):undefined;
 }

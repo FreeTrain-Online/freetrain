@@ -9,6 +9,7 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if(args is ["--acceptance",var acceptanceManifest,var acceptanceDirectory]){await TerrainAcceptance.Run(acceptanceManifest,acceptanceDirectory);return;}
 if(args is ["--authoring-capacity",var authorH,var authorV,var authorZ,var authorDirectory])
 {
     int h=int.Parse(authorH),v=int.Parse(authorV),z=int.Parse(authorZ);Directory.CreateDirectory(authorDirectory);

@@ -98,9 +98,19 @@ public sealed class TerrainWorld
     public ImmutableArray<TerrainCell> Cells { get; }
     public SpatialIndex Spatial { get; }
     public ImmutableArray<TerrainOccupant> Occupants { get; }
-    internal long RealizedTreeCount { get; }
+    public long RealizedTreeCount { get; }
     public ImmutableArray<ReferenceRail> Rails => [];
     private readonly FrozenDictionary<long, TerrainOccupant> occupants;
+    private readonly ImmutableDictionary<long, TerrainOccupant?> occupantEdits = ImmutableDictionary<long, TerrainOccupant?>.Empty;
+    // Tokens certify validation against an exact immutable predecessor, without a world history chain.
+    public object GeometryIdentity { get; } = new();
+    public object? PreviousGeometryIdentity { get; }
+    public ImmutableArray<int> ChangedCells { get; } = [];
+    public ImmutableArray<long> ChangedEntities { get; } = [];
+    internal bool IsValidatedSuccessorOf(TerrainWorld previous) => PreviousGeometryIdentity == previous.GeometryIdentity;
+    private TerrainOccupant Occupant(long id) =>
+        (occupantEdits.TryGetValue(id, out var value) ? value : occupants.GetValueOrDefault(id))
+        ?? throw new ArgumentException("Missing terrain occupant.");
 
     public TerrainWorld(TerrainProfile profile, string name, WorldDimensions dimensions, int waterLevel,
         IEnumerable<TerrainCell> cells, SpatialState spatial, IEnumerable<TerrainOccupant> occupants, long revision = 0)
@@ -129,6 +139,93 @@ public sealed class TerrainWorld
         ValidateContinuity();
     }
 
+    // Only the bounded source tool draft can enter this path. Validate changed
+    // columns and all touching corner neighborhoods; untouched immutable state
+    // already passed exactly the same invariants at construction.
+    internal TerrainWorld(TerrainWorld previous, IReadOnlyDictionary<int, TerrainCell> cellChanges,
+        IReadOnlyDictionary<Location, (SpatialEntity Entity, TerrainOccupant Occupant)?> changes,
+        long nextId, long treeCount)
+    {
+        Profile = previous.Profile; Name = previous.Name; Space = previous.Space;
+        WaterLevel = previous.WaterLevel; Revision = checked(previous.Revision + 1);
+        PreviousGeometryIdentity = previous.GeometryIdentity;
+        ChangedCells = cellChanges.Where(p => previous.Cells[p.Key] != p.Value).Select(p => p.Key).Order().ToImmutableArray();
+        var removed = changes.Keys.Select(p => previous.Spatial.At(p).Entity?.Id)
+            .Where(id => id != null).Select(id => id!.Value).ToHashSet();
+        var added = changes.Values.Where(p => p != null).Select(p => p!.Value).OrderBy(p => p.Entity.Id).ToArray();
+        ChangedEntities = removed.Concat(added.Select(p => p.Entity.Id)).Distinct().Order().ToImmutableArray();
+        if (nextId < previous.Spatial.NextEntityId || treeCount < 0) throw new ArgumentException("Invalid terrain allocator.");
+        var grid = previous.Cells;
+        if (!ChangedCells.IsEmpty)
+        {
+            var builder = grid.ToBuilder();
+            foreach (var (i, cell) in cellChanges)
+            {
+                if (i < 0 || i >= grid.Length || cell.Ground < 0 || cell.Ground >= Space.Levels || !Enum.IsDefined(cell.Surface))
+                    throw new ArgumentException("Invalid ground grid.");
+                builder[i] = cell;
+            }
+            grid = builder.ToImmutable();
+        }
+        Cells = grid;
+        static ImmutableArray<T> Merge<T>(ImmutableArray<T> before, HashSet<long> removed, T[] added, Func<T,long> key)
+        {
+            if (removed.Count == 0 && added.Length == 0) return before;
+            var builder = ImmutableArray.CreateBuilder<T>(before.Length - removed.Count + added.Length);
+            int j = 0;
+            foreach (var value in before)
+            {
+                if (removed.Contains(key(value))) continue;
+                while (j < added.Length && key(added[j]) < key(value)) builder.Add(added[j++]);
+                builder.Add(value);
+            }
+            while (j < added.Length) builder.Add(added[j++]);
+            return builder.MoveToImmutable();
+        }
+        var entities = Merge(previous.Spatial.Entities, removed, added.Select(p => p.Entity).ToArray(), e => e.Id);
+        Occupants = Merge(previous.Occupants, removed, added.Select(p => p.Occupant).ToArray(), o => o.EntityId);
+        RealizedTreeCount = treeCount;
+        if (Occupants.Length > 2L * Cells.Length ||
+            WorldCreationProfile.RealizedTerrainBytes(Cells.Length, Occupants.Length, treeCount) > WorldCreationProfile.MaximumRealizedTerrainBytes)
+            throw new ArgumentException("Terrain graph resource limit.");
+        occupants = previous.occupants;
+        var edits = previous.occupantEdits.ToBuilder();
+        foreach (var id in removed) edits[id] = null;
+        foreach (var pair in added)
+        {
+            var e = pair.Entity;
+            if (e.Id < 1 || e.Id >= nextId || !Space.ContainsVoxel(e.Anchor) ||
+                e.Footprint.Members.Length != 1 || e.Footprint.Members[0].Offset != new Location(0,0,0) ||
+                !changes.TryGetValue(e.Anchor, out var actual) || actual?.Entity != e)
+                throw new ArgumentException("Invalid terrain entity.");
+            var old = previous.Spatial.At(e.Anchor).Entity;
+            if (e.Id >= previous.Spatial.NextEntityId ? e.Revision != 0 :
+                old?.Id != e.Id || e.Revision != checked(old.Revision + 1))
+                throw new ArgumentException("Invalid terrain identity/revision.");
+            if (pair.Occupant.EntityId != e.Id) throw new ArgumentException("Invalid terrain occupant identity.");
+            edits[e.Id] = pair.Occupant;
+        }
+        occupantEdits = edits.ToImmutable();
+        Spatial = changes.Count == 0 ? previous.Spatial : new(previous.Spatial, nextId, entities, changes);
+        var columns = new HashSet<(int H,int V)>();
+        foreach (var i in cellChanges.Keys) columns.Add((i % Space.HorizontalSize, i / Space.HorizontalSize));
+        foreach (var p in changes.Keys) { var s = Space.ToStorage(p); columns.Add((s.H,s.V)); }
+        var neighborhoods = new HashSet<(int H,int V)>();
+        foreach (var (h,v) in columns)
+        {
+            var p = Space.ToLocation(new(h,v,Cell(h,v).Ground));
+            foreach (var z in new[] { previous.Cell(h,v).Ground, previous.Cell(h,v).Ground-1, Cell(h,v).Ground, Cell(h,v).Ground-1 })
+                if (Spatial.At(p with { Z = z }).Entity is {} e) ValidateEntity(e);
+            neighborhoods.Add((h,v));
+            for (int d = 0; d < 8; d++)
+            {
+                var neighbor = p.Move(new Heading(d));
+                if (Space.ContainsHorizontal(neighbor)) { var s = Space.ToStorage(neighbor); neighborhoods.Add((s.H,s.V)); }
+            }
+        }
+        foreach (var (h,v) in neighborhoods) ValidateContinuityAt(h,v);
+    }
+
     public static TerrainWorld Empty(EmptyWorldRequest request, TerrainProfile profile)
     {
         if (!WorldCreationProfile.Validate(request).IsEmpty) throw new ArgumentException("Invalid empty world request.");
@@ -147,11 +244,11 @@ public sealed class TerrainWorld
         if (!Space.ContainsHorizontal(p)) return -1;
         var ground = Cell(p).Ground;
         var owner = Spatial.At(new(p.X, p.Y, ground)).Entity;
-        var offset = owner is not null && this.occupants[owner.Id].Kind == TerrainOccupantKind.Mountain
-            ? this.occupants[owner.Id].Corners[corner] : 0;
+        var offset = owner is not null && Occupant(owner.Id).Kind == TerrainOccupantKind.Mountain
+            ? Occupant(owner.Id).Corners[corner] : 0;
         return 4 * ground + offset;
     }
-    public TerrainOccupant? OccupantAt(Location p) => Spatial.At(p).Entity is {} entity ? occupants[entity.Id] : null;
+    public TerrainOccupant? OccupantAt(Location p) => Spatial.At(p).Entity is {} entity ? Occupant(entity.Id) : null;
     public TerrainVoxelRead At(Location p)
     {
         if (!Space.ContainsVoxel(p)) return new(GroundRelation.Outside, false, Spatial.At(p));
@@ -192,7 +289,7 @@ public sealed class TerrainWorld
             {
                 if (entity with { Footprint = previous.Footprint } != previous ||
                     !entity.Footprint.Members.SequenceEqual(previous.Footprint.Members) ||
-                    !SameOccupant(candidate.occupants[entity.Id], this.occupants[entity.Id]))
+                    !SameOccupant(candidate.Occupant(entity.Id), Occupant(entity.Id)))
                     throw new ArgumentException("Changed terrain entity requires a revision.");
             }
             else if (previous.Revision == long.MaxValue || entity.Revision != previous.Revision + 1)
@@ -208,7 +305,8 @@ public sealed class TerrainWorld
 
     private void ValidateEntity(SpatialEntity entity)
     {
-        if (!occupants.TryGetValue(entity.Id, out var occupant) || !Enum.IsDefined(occupant.Kind))
+        var occupant = Occupant(entity.Id);
+        if (occupant is null || !Enum.IsDefined(occupant.Kind))
             throw new ArgumentException("Missing terrain occupant.");
         var binding = Profile.Resolve(entity.Definition);
         var cell = Cell(entity.Anchor);
@@ -250,34 +348,36 @@ public sealed class TerrainWorld
 
     private void ValidateContinuity()
     {
-        Span<(Location Position, int Corner)> samples = stackalloc (Location, int)[4];
         for (var v = 0; v < Space.VerticalSize; v++)
             for (var h = 0; h < Space.HorizontalSize; h++)
+                ValidateContinuityAt(h, v);
+    }
+    private void ValidateContinuityAt(int h, int v)
+    {
+        Span<(Location Position, int Corner)> samples = stackalloc (Location, int)[4];
+        var cell = Cell(h, v); var p = Space.ToLocation(new(h, v, cell.Ground));
+        if (cell.Surface == TerrainSurface.Terrace &&
+            (Spatial.At(new(p.X, p.Y, p.Z - 1)).Entity is not { } owner || Occupant(owner.Id).Kind != TerrainOccupantKind.Terrace))
+            throw new ArgumentException("Terrace surface has no backing entity.");
+        if (cell.Surface != TerrainSurface.Natural) return;
+        for (var corner = 0; corner < 4; corner++)
+        {
+            var d = new Heading(2 * corner + 1);
+            samples[0] = (p, corner); samples[1] = (p.Move(d), (corner + 2) % 4);
+            samples[2] = (p.Move(d.Left), (corner + 1) % 4); samples[3] = (p.Move(d.Right), (corner + 3) % 4);
+            // Discontinuity must be explicitly classified; natural mismatches
+            // elsewhere cannot be excused by a distant cut or terrace.
+            bool discontinuity = false; int first = -1; bool mismatch = false;
+            foreach (var sample in samples)
             {
-                var cell = Cell(h, v); var p = Space.ToLocation(new(h, v, cell.Ground));
-                if (cell.Surface == TerrainSurface.Terrace &&
-                    (Spatial.At(new(p.X, p.Y, p.Z - 1)).Entity is not { } owner || occupants[owner.Id].Kind != TerrainOccupantKind.Terrace))
-                    throw new ArgumentException("Terrace surface has no backing entity.");
-                if (cell.Surface != TerrainSurface.Natural) continue;
-                for (var corner = 0; corner < 4; corner++)
-                {
-                    var d = new Heading(2 * corner + 1);
-                    samples[0] = (p, corner); samples[1] = (p.Move(d), (corner + 2) % 4);
-                    samples[2] = (p.Move(d.Left), (corner + 1) % 4); samples[3] = (p.Move(d.Right), (corner + 3) % 4);
-                    // Discontinuity must be explicitly classified; natural mismatches
-                    // elsewhere cannot be excused by a distant cut or terrace.
-                    bool discontinuity = false; int first = -1; bool mismatch = false;
-                    foreach (var sample in samples)
-                    {
-                        if (!Space.ContainsHorizontal(sample.Position)) continue;
-                        if (Cell(sample.Position).Surface != TerrainSurface.Natural) { discontinuity = true; break; }
-                        var height = FineHeight(sample.Position, sample.Corner);
-                        if (first >= 0 && first != height) mismatch = true;
-                        first = height;
-                    }
-                    if (!discontinuity && mismatch)
-                        throw new ArgumentException("Unmatched natural terrain corners.");
-                }
+                if (!Space.ContainsHorizontal(sample.Position)) continue;
+                if (Cell(sample.Position).Surface != TerrainSurface.Natural) { discontinuity = true; break; }
+                var height = FineHeight(sample.Position, sample.Corner);
+                if (first >= 0 && first != height) mismatch = true;
+                first = height;
             }
+            if (!discontinuity && mismatch)
+                throw new ArgumentException("Unmatched natural terrain corners.");
+        }
     }
 }

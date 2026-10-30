@@ -29,8 +29,8 @@ public sealed partial class NetworkSession
             lock (gate) begin = capturedHost.BeginEmpty(new(WorldCreationProfile.Id, input.Name, input.Dimensions, input.WaterLevel),
                 WorldCreationCapabilities.EmptyReady(), input.Epoch, input.Revision, participant, lease.Reservation);
             started = await begin.WaitAsync(timeout.Token);
-            var bytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
-                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request))), timeout.Token), timeout.Token);
+            var bytes = await Task.Run(() => capturedHost.PrepareCreation(new TerrainSessionState(
+                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request)), timeout.Token), timeout.Token);
             timeout.Token.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
             lock (gate) complete = capturedHost.CompletePreparedCreation(started, bytes, participant);

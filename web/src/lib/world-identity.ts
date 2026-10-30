@@ -1,4 +1,4 @@
-import { terrainProfile, validTerrain } from './terrain-state.ts';
+import { terrainProfile, validTerrain, isValidatedTerrain } from './terrain-state.ts';
 import { maximumGameMinute } from './game-time.ts';
 import canonical from '../../../prototype/protocol/canonical-profile.json' with { type: 'json' };
 import catalog from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with { type: 'json' };
@@ -39,7 +39,7 @@ function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
 }
 const validatedSnapshots=new WeakSet<object>();
 export function validSnapshot(read:Snapshot):boolean {
-  if(Object.isFrozen(read)&&validatedSnapshots.has(read))return true;
+  if(Object.isFrozen(read)&&validatedSnapshots.has(read)||sameIdentity(read,terrainProfile)&&isValidatedTerrain(read))return true;
   const valid=validSnapshotUncached(read);if(valid)validatedSnapshots.add(read);return valid;
 }
 function validSnapshotUncached(read:Snapshot):boolean {

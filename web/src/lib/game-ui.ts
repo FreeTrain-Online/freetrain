@@ -50,6 +50,7 @@ export const registry = {
   'authoring-ground': field('forestGround', 'tool-card', 'mutation'),
   'authoring-preview': action('previewDecorations', 'tool-card', 'mutation'),
   'terrain-action': field('cornerAction', 'tool-card', 'mutation'),
+  'terrain-paint-stop': action('paintStop', 'tool-card', 'live'),
   'terrain-preview': action('cornerCheck', 'tool-card', 'mutation'),
   'terrain-add-site': action('cornerAdd', 'tool-card', 'mutation'),
   'terrain-confirm': action('confirmTerrain', 'tool-card', 'mutation'),

@@ -36,3 +36,8 @@ See the [source policy](../web-feature-parity.md) and
 [ExAV inventory report](../web-parity-exav-inventory.md) for review boundaries
 and reproduction commands. New ExAV artifacts belong at this level with an
 `exav-` name; historical records remain under `historical/`.
+
+[P3 integrated terrain acceptance](../web-parity-p3-acceptance.md) has a separate
+[scenario manifest](terrain-acceptance.json) and [execution review](terrain-acceptance-review.json).
+WORLDGEN IDs, source-rule delivery, owner extensions, translation dispositions and
+native/later-system deferrals are recorded separately.

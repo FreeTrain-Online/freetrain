@@ -43,6 +43,27 @@ public static class SaveCodec
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         return bytes;
     }
+    // An upper bound on canonical JSON, without encoding the immutable grid on
+    // the command FIFO. Every possible trusted definition is included; the two
+    // base64 buffers have exact lengths. Save/write still enforces actual bytes.
+    public static long TerrainSaveUpperBound(TerrainSessionState state)
+    {
+        var w = state.World; var p = state.Provenance;
+        var packed = new PackedTerrainRead(PackedTerrain.Format, w.Name, w.WaterLevel, state.ConstructionMode,
+            w.Revision, w.Spatial.NextEntityId, new(p.Profile,p.Source,p.RequestHash,p.RequestJson),
+            w.Profile.Definitions.Select(d => new DefinitionRead(d.Reference.PackId,d.Reference.ContributionId,d.Reference.RecipeId)).ToArray(),
+            [], w.Occupants.Length, []);
+        var header = new Document(Version,TerrainProfile.Ruleset,TerrainProfile.ContentVersion,
+            w.Profile.Packs.Select(p => new RequiredPackRead(p.Id,p.Version,p.CatalogHash)).ToArray(),
+            new(w.Space.HorizontalSize,w.Space.VerticalSize,w.Space.Levels,"hv"),[],state.Clock.Capture(),state.Paused,
+            state.Random.Capture(),new(w.Spatial.NextEntityId,[]),state.Revision,packed);
+        return checked(JsonSerializer.SerializeToUtf8Bytes(header,Json).LongLength +
+            4 * ((w.Cells.Length + 2L) / 3) + 4 * ((PackedTerrain.HeaderBytes * (long)w.Occupants.Length + 3 * w.RealizedTreeCount + 2) / 3));
+    }
+    public static void ValidateTerrainAdmission(TerrainSessionState state)
+    {
+        if (TerrainSaveUpperBound(state) > MaximumBytes) throw new InvalidDataException("saveTooLarge");
+    }
     // Canonical candidate bytes include actual state and metadata; no generator is run on load/commit.
     public static string Digest(TerrainSessionState state) => Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(Write(state)));
     public static ReferenceWorld Read(ReadOnlySpan<byte> bytes) => ReadWorld(bytes).Reference ?? throw new InvalidDataException("incompatibleSave");

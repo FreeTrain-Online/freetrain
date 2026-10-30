@@ -428,5 +428,15 @@
   "terraceBatchHelp": "Select two map corners or enter start and end coordinates, including both endpoints (up to 64 cells). Bare ground and existing slopes at the selected height become terraces, without a corner stroke first. Occupied or otherwise ineligible cells are skipped. Review the highlighted cells and forest/ownership loss, then confirm once.",
   "terraceBatchInvalid": "Use integer coordinates inside the map at one height, with at most 64 cells in the inclusive rectangle.",
   "terraceBatchReady": "Terraces are ready to place. Review changed and skipped cells, then confirm.",
-  "terraceBatchCount": "Terraces to place"
+  "terraceBatchCount": "Terraces to place",
+  "terrainPaint": "Paint terrain",
+  "terrainPaintHelp": "Hold the left mouse button and move over the map to raise or lower the corner under the brush in quarter-level steps. Holding still repeats the change. Shift + left drag reverses the action. Painting changes the shared world immediately and can remove forests or ownership. Release or press Escape to stop; completed changes remain. Coordinates below offer a preview-and-confirm alternative.",
+  "paintRaise": "Raise terrain",
+  "paintLower": "Lower terrain",
+  "paintReady": "Hold and drag on the map to paint.",
+  "paintActive": "Painting terrain…",
+  "paintBlocked": "This point cannot change further. Move the brush.",
+  "paintFailed": "Painting stopped. Check the connection or terrain, then start a new stroke.",
+  "paintChanges": "Changes",
+  "paintStop": "Stop painting"
 }

@@ -56,8 +56,8 @@ public sealed partial class NetworkSession
             var request = new HeightmapWorldRequest(WorldCreationProfile.Id, input.Name, input.Dimensions, input.WaterLevel, image);
             lock (gate) { CheckConnection(); beginning = capturedHost.BeginHeightmap(request, content, input.Epoch, input.Revision, participant, lease.Reservation); }
             started = await beginning.WaitAsync(cancellation);
-            var stateBytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
-                HeightmapTerrain.Create(request, decoded.Raster, TerrainProfiles.Bundled, cancellation), TerrainProvenance.From(request))), cancellation), cancellation);
+            var stateBytes = await Task.Run(() => capturedHost.PrepareCreation(new TerrainSessionState(
+                HeightmapTerrain.Create(request, decoded.Raster, TerrainProfiles.Bundled, cancellation), TerrainProvenance.From(request)), cancellation), cancellation);
             cancellation.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
             lock (gate) { CheckConnection(); complete = capturedHost.CompletePreparedCreation(started, stateBytes, participant); }

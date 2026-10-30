@@ -59,5 +59,13 @@ Terrain hosts share this canonical FIFO and clock boundary. Save 7/protocol 5 ca
 actual ground/occupants, realized forests, authoring mode, provenance and revision/
 allocator continuation, with exact trusted profile resolution. Replacement snapshots
 and edited cell/occupant/removal deltas preserve epoch and stale-request fencing.
-The terrain adapter hook does not expose a gameplay editing command.
-See [P3-04 scope and limits](../../doc/web-parity-terrain-transport.md).
+Authoritative `editCorner` commands support corner/rectangle/repair, terrace/cut
+and mode-gated unowned forest/creek tools. Read-only previews and FIFO commits
+recheck roles, world/geometry revisions, occupancy and durable admission. Validated
+source drafts share unchanged immutable state and validate touching neighborhoods;
+full save uploads keep complete graph validation. Owner mode entry/exit fences
+previews without changing shared time. Continuous paint is a paced client gesture
+over these same commands, with no held-input server state or automatic replay.
+Created immutable worlds are prepared without decoding their own save again;
+mutable headers are copied and the exact registered profile is required.
+See [P3 acceptance and P4 handoff](../../doc/web-parity-p3-acceptance.md).

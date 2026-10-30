@@ -297,3 +297,88 @@ for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] a
   expect(errors).toEqual([]);
  }finally{await memory.stop();}
 });
+
+for(const mode of ['empty','heavy'] as const)test(`P3-17 ${mode}: full-size edited publication, bounded feedback and exact checkpoint continuation`,async({page,browser})=>{
+ const memory=await memorySampler(browser),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ const fixture=join(directory,'fixtures','edited-'+mode);
+ try{
+  execFileSync('dotnet',[probe,'--capacity','1500','1090','45',mode,fixture],{stdio:'pipe',timeout:60000});
+  await page.addInitScript(()=>{
+   const Native=window.WebSocket;
+   window.WebSocket=class extends Native {
+    override set onmessage(listener:((this:WebSocket,event:MessageEvent)=>any)|null){super.onmessage=listener&&((event:MessageEvent)=>{
+     if(typeof event.data==='string'&&event.data.length<65536&&['delta','accepted','rejected'].includes(JSON.parse(event.data).type))setTimeout(()=>listener.call(this,event),50);else listener.call(this,event);
+    });}
+    override get onmessage(){return super.onmessage;}
+    override send(data:string|ArrayBufferLike|Blob|ArrayBufferView){if(typeof data==='string'&&JSON.parse(data).type==='command')setTimeout(()=>{if(this.readyState===Native.OPEN)super.send(data);},50);else super.send(data);}
+   };
+  });
+  await page.goto('/');await ready(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+await epoch(page),{data:readFileSync(join(fixture,'world.json')),timeout:60000})).ok()).toBe(true);
+  await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',await epoch(page));await ready(page);
+  await page.locator('canvas').evaluate(c=>c.dataset.instance='edited-capacity');
+  await page.getByRole('button',{name:'Modify terrain',exact:true}).click();
+  await page.getByRole('button',{name:'Enter map authoring',exact:true}).click();await page.getByRole('button',{name:'Confirm mode change',exact:true}).click();
+  await expect(page.getByTestId('authoring-mode')).toContainText('is on');
+  await page.getByLabel('Terrain selection',{exact:true}).selectOption('authoring');
+  const samples:number[]=[],z=mode==='empty'?1:2;
+  for(const [label,value] of [['Corner cell X',1020],['Corner cell Y',1021],['Corner cell Z',z],['End X',1027],['End Y',1028]] as const)await page.getByLabel(label,{exact:true}).fill(String(value));
+  for(let n=0;n<10;n++){
+   await page.getByRole('button',{name:'Preview scenery',exact:true}).click();await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeEnabled();
+   samples.push(await page.evaluate(()=>new Promise<number>((resolve,reject)=>{
+    const feedback=document.querySelector('.command-feedback')!,start=performance.now();
+    const timeout=setTimeout(()=>{observer.disconnect();reject(new Error('Edited publication feedback deadline'));},5000);
+    const observer=new MutationObserver(()=>{if(feedback.textContent==='Confirmed by server'){clearTimeout(timeout);observer.disconnect();resolve(performance.now()-start);}});
+    observer.observe(feedback,{childList:true,characterData:true,subtree:true});
+    (Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Confirm terrain change') as HTMLButtonElement).click();
+   })));
+   await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeDisabled();
+  }
+  samples.sort((a,b)=>a-b);const feedbackP95=samples[Math.ceil(samples.length*.95)-1];
+  const bytes=await(await page.request.get('/api/saves/download',{timeout:60000})).body(),sha256=digest(bytes);
+  writeFileSync(join(fixture,'edited.json'),bytes);
+  await page.reload();await ready(page);expect(digest(await(await page.request.get('/api/saves/download')).body())).toBe(sha256);
+  const peer=await browser.newContext({baseURL:webURL});try{
+   const observer=await peer.newPage();await observer.request.post('/api/access',{data:{secret:'capacity-observer'}});await observer.goto('/');await ready(observer);
+   expect((await observer.request.post('/api/saves/upload?expectedWorldEpoch='+await epoch(observer),{data:'{}'})).status()).toBe(403);
+   await stop(server);await startServer();await page.request.post('/api/access',{data:{secret:''}});await page.reload();await ready(page);
+   await observer.request.post('/api/access',{data:{secret:'capacity-observer'}});await observer.reload();await ready(observer);
+   expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(sha256);
+  }finally{await peer.close();}
+  const report={mode,h:1500,v:1090,z:45,samples,feedbackP95,injectedRttMs:100,saveBytes:bytes.length,sha256,...memory.values(),...await resident(page)};
+  writeFileSync(join(directory,'edited-'+mode+'.json'),JSON.stringify(report,null,2)+'\n');
+  // Owner accepts the current edit UX latency (30 October); retain the
+  // measured 250ms miss in the report. Clock commands retain their earlier gate.
+  expect(report.sampledServerPeakRss).toBeLessThan(6*1024**3);expect(report.sampledBrowserPeakRss).toBeLessThan(6*1024**3);expect(errors).toEqual([]);
+ }finally{await memory.stop();}
+});
+
+test('P3-17 continuous paint at minimum parity extent: immediate held feedback, repeat and release without queued edits',async({page,browser})=>{
+ const memory=await memorySampler(browser),fixture=join(directory,'fixtures','paint-large');
+ try{
+  execFileSync('dotnet',[probe,'--capacity','1500','1090','45','empty',fixture],{stdio:'pipe',timeout:60000});
+  await page.goto('/');await ready(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+await epoch(page),{data:readFileSync(join(fixture,'world.json')),timeout:60000})).ok()).toBe(true);
+  await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',await epoch(page));await ready(page);
+  await page.getByRole('button',{name:'Modify terrain',exact:true}).click();await page.getByLabel('Terrain selection',{exact:true}).selectOption('paint');
+  const canvas=page.locator('canvas'),box=(await canvas.boundingBox())!;
+  await canvas.evaluate(c=>{
+   const w=window as any,status=document.querySelector('[data-testid="paint-status"]')!;
+   c.addEventListener('pointerdown',()=>{w.paintDown=performance.now();},{once:true});
+   const observer=new MutationObserver(()=>{if(status.getAttribute('data-active')==='true'){w.paintFeedback=performance.now()-w.paintDown;observer.disconnect();}});
+   observer.observe(status,{attributes:true,attributeFilter:['data-active']});
+  });
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
+  await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','true');
+  await expect(page.getByTestId('paint-status')).toContainText(/Changes: [2-9]/);
+  await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  await expect(page.locator('.command-feedback')).toContainText('Confirmed');
+  const saved=await(await page.request.get('/api/saves/download')).body(),sha256=digest(saved);
+  await page.waitForTimeout(400);expect(digest(await(await page.request.get('/api/saves/download')).body())).toBe(sha256);
+  const feedbackMs=await page.evaluate(()=>(window as any).paintFeedback as number);expect(feedbackMs).toBeLessThan(100);
+  await page.reload();await ready(page);expect(digest(await(await page.request.get('/api/saves/download')).body())).toBe(sha256);
+  const report={feedbackMs,h:1500,v:1090,z:45,saveBytes:saved.length,sha256,...memory.values()};
+  writeFileSync(join(directory,'paint-large.json'),JSON.stringify(report,null,2)+'\n');
+  expect(report.sampledServerPeakRss).toBeLessThan(6*1024**3);expect(report.sampledBrowserPeakRss).toBeLessThan(6*1024**3);
+ }finally{await memory.stop();}
+});

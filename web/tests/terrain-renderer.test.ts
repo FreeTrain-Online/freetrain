@@ -21,7 +21,7 @@ function mountain(cs=[4,0,0,0],forest=false) {
   s.entities=[e];s.terrain!.occupants=[o];return s;
 }
 const view={x:0,y:0,zoom:1};
-async function withViewport(run:(scene:TerrainScene,viewport:TerrainViewport,ctx:CanvasRenderingContext2D,canvases:{width:number;height:number}[])=>void) {
+async function withViewport(run:(scene:TerrainScene,viewport:TerrainViewport,ctx:CanvasRenderingContext2D,canvases:{width:number;height:number}[])=>void|Promise<void>) {
   const descriptor=Object.getOwnPropertyDescriptor(globalThis,'OffscreenCanvas'),canvases:{width:number;height:number}[]=[];
   const context=()=>{
     let scale=1;
@@ -35,7 +35,7 @@ async function withViewport(run:(scene:TerrainScene,viewport:TerrainViewport,ctx
   Object.defineProperty(globalThis,'OffscreenCanvas',{configurable:true,writable:true,value:Canvas});
   try {
     const scene=await TerrainScene.prepare(flat(200,100),catalog,cache(),day,5);
-    run(scene,new TerrainViewport(scene),context(),canvases);
+    await run(scene,new TerrainViewport(scene),context(),canvases);
   }finally{
     if(descriptor)Object.defineProperty(globalThis,'OffscreenCanvas',descriptor);else Reflect.deleteProperty(globalThis,'OffscreenCanvas');
   }
@@ -56,6 +56,26 @@ Deno.test('progressive terrain publishes matching picks atomically and cancels a
     assert(scene.operations===operations);
     settle(b);assert(scene.operations!==operations);
     equal(viewport.pick({x:16,y:24},b)?.position,{x:51,y:2,z:1});
+  });
+});
+Deno.test('geometry replacement retains the completed viewport and matching picks until the new buffer is complete',async()=>{
+  await withViewport(async(_scene,viewport,ctx,canvases)=>{
+    const camera={x:0,y:32,zoom:1},point={x:16,y:24};
+    const settle=()=>{for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)return;throw new Error('Viewport never settled');};
+    settle();assert(viewport.pick(point,camera)?.position.z===1);
+    const raised=await TerrainScene.prepare(flat(200,100,2),catalog,cache(),day,5);
+    viewport.setScene(raised);
+    const pending=viewport.draw(ctx,camera,128,96,1);
+    assert(pending.ready&&pending.pending,'Replacement must keep displaying the completed image');
+    assert(viewport.pick(point,camera)?.position.z===1,'Pending geometry must not replace visible picks');
+    // A newer revision discards unfinished work, while preserving the front buffer.
+    const newer=await TerrainScene.prepare(flat(200,100,3),catalog,cache(),day,5);
+    viewport.setScene(newer);
+    assert(viewport.draw(ctx,camera,128,96,1).ready);
+    settle();assert(viewport.pick(point,camera)?.position.z===3);
+    viewport.setScene(raised);assert(viewport.draw(ctx,camera,128,96,1).ready);
+    settle();assert(viewport.pick(point,camera)?.position.z===2);
+    assert(canvases.filter(c=>c.width===128&&c.height===96).length===2,'Geometry revisions must reuse the two viewport buffers');
   });
 });
 Deno.test('progressive viewport keeps continuous camera picking and bounds backing images on fractional-DPI and large windows',async()=>{

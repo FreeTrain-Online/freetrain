@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "scope": "P3-17; source terrain acceptance and requested WORLDGEN coverage remain separate",
+  "sourceEvidence": [
+    "terrain-review.json",
+    "terrain-fixtures.json",
+    "terrain-localization-review.json",
+    "corner-terrain-review.json",
+    "rectangle-terrain-review.json",
+    "terrace-terrain-review.json",
+    "authoring-terrain-review.json"
+  ],
+  "sizes": [
+    {
+      "h": 64,
+      "v": 80,
+      "z": 24
+    },
+    {
+      "h": 128,
+      "v": 160,
+      "z": 24
+    }
+  ],
+  "waterLevels": [
+    1,
+    20
+  ],
+  "seed": -2147483648,
+  "scenarios": [
+    {
+      "id": "WORLDGEN-ACCEPT-01",
+      "kind": "plains"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-02",
+      "kind": "mountains"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-03",
+      "kind": "island"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-04",
+      "kind": "north"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-05",
+      "kind": "east"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-06",
+      "kind": "south"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-07",
+      "kind": "west"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-08",
+      "kind": "adjacent"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-09",
+      "kind": "opposite"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-10",
+      "kind": "lakes"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-11",
+      "kind": "combined"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-12",
+      "kind": "sparse"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-13",
+      "kind": "dense"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-14",
+      "kind": "mixed"
+    },
+    {
+      "id": "WORLDGEN-ACCEPT-15",
+      "kind": "bare"
+    }
+  ],
+  "sourceAcceptance": [
+    {
+      "id": "P3-ACCEPT-EMPTY",
+      "coverage": "EmptyWorldCreationTests; terrain.spec.ts; capacity.spec.ts"
+    },
+    {
+      "id": "P3-ACCEPT-IMAGE",
+      "coverage": "HeightmapTests; HeightmapDecoderTests; terrain.spec.ts; capacity.spec.ts"
+    },
+    {
+      "id": "P3-ACCEPT-EDIT",
+      "coverage": "CornerTerrainTests; RectangleTerrainTests; TerraceTerrainTests; AuthoringTerrainTests; TerrainAcceptanceTests; corresponding Chromium workflows"
+    },
+    {
+      "id": "P3-ACCEPT-CAPACITY",
+      "coverage": "capacity.spec.ts; TerrainTransportProbe; independent packed-state topology oracles"
+    },
+    {
+      "id": "P3-ACCEPT-P4",
+      "coverage": "TerrainAcceptanceTests.P4_queries; web-parity-p3-acceptance.md"
+    }
+  ],
+  "deferred": [
+    "Windows runtime capture equivalence",
+    "native device certification",
+    "previously deferred browsers",
+    "P2 visual/crop/optional-suite gates",
+    "P4 railway legality and support placement",
+    "P10 historical save import",
+    "P11 full-city capacity",
+    "STRETCH-ROTATION",
+    "STRETCH-TERRAIN",
+    "STRETCH-WATER"
+  ],
+  "ownerDecisions": [
+    {
+      "date": "2026-10-30",
+      "decision": "Existing terrain edit UX latency is acceptable; do not claim the 250ms authoritative edit target was met. Add continuous mouse-held raise/lower paint as an authoring extension."
+    }
+  ]
+}
