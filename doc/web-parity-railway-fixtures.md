@@ -1,7 +1,7 @@
 # P4-02 independent railway fixtures — 30 October 2026
 
-**P4-02 is complete at independent-fixture scope. Next: P4-03 mixed terrain/rail
-state and handler profile.** The [literal vectors](parity/railway-fixtures.json)
+**P4-02 is complete at independent-fixture scope. [P4-03 detached mixed state](web-parity-railway-state.md)
+is now delivered. Next: P4-04 atomic booking.** The [literal vectors](parity/railway-fixtures.json)
 and [read-only evaluator](../scripts/railway-fixtures.py) make the
 [P4-01 source contract](web-parity-railway-contract.md) executable before railway
 implementation. No live railway handler, save, content or protocol version changes.

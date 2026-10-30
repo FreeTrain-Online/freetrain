@@ -39,3 +39,9 @@ validation and an in-process read model. Content binds the exact prepared terrai
 recipes. [P3-04](../../doc/web-parity-terrain-transport.md) adds composed terrain
 session state and Save 7/protocol 5 while preserving the distinct reference profile.
 Rendering and browser creation follow in P3-05/06.
+
+P4-03 adds detached `MixedWorld`/`RailwayState` composition: one combined occupancy
+index/allocator, Traffic component slots, eight-cell slope ownership and exact
+state-handler validation. Zero rails/open ends/disconnected networks are legal.
+See [state contract and handoff](../../doc/web-parity-railway-state.md). Live mixed
+session/save/wire dispatch follows P4-04 booking and P4-05 persistence.

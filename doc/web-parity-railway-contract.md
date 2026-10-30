@@ -1,7 +1,8 @@
 # P4-01 railway source contract — 30 October 2026
 
 **P4-01 is complete at source-contract scope. [P4-02 independent fixtures](web-parity-railway-fixtures.md)
-are now complete; next: P4-03 mixed terrain/rail state and handler profile.**
+are complete; [P4-03 detached mixed state](web-parity-railway-state.md) is now delivered.
+Next: P4-04 atomic booking.**
 This specifies railway behavior; it adds no live handler, command, UI, save or
 protocol version. P4 remains open. The separate synthetic reference loop and the
 accepted zero-rail terrain profile retain their invariants.

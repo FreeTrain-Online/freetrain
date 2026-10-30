@@ -38,3 +38,7 @@ bindings for the separate terrain state/save/transport profile. `TerrainTranspor
 is a deterministic persistence/transport fixture, never a startup world or generator.
 See [P3-04](../../doc/web-parity-terrain-transport.md); terrain browser rendering and
 creation remain P3-05/06 work.
+
+`RailwayProfiles.Bundled` registers P4-03's 87 exact railway **state** bindings
+against the prepared pack. It does not enable live railway operations, rendering
+or save/wire dispatch. See [mixed-state handoff](../../doc/web-parity-railway-state.md).
