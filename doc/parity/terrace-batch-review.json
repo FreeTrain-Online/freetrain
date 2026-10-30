@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "terrace rectangle placement implemented and verified; final capacity gate unchanged",
+  "report": "../web-parity-terraces.md#rectangle-terrace-placement-follow-up--30-october-2026",
+  "basedOnGitRevision": "283e817aa2854ee12098d17be5836f0edba42c33",
+  "revisionScope": "Uncommitted working tree after P3-16 and rail-icon follow-ups; this record verifies terrace batching only. Earlier slice manifests retain historical scope.",
+  "contract": {
+    "action": "placeTerrace",
+    "selection": "optional inclusive normalized rectangle, up to64 cells at one Z, x-major/y-minor ordering; source per-cell checks and explicit skips",
+    "atomicity": "one preview, one revalidated Owner/Operator commit, one geometry revision; all-skipped commands reject without mutation",
+    "geometry": "exact original corners per Terrace backup; fresh unowned IDs; forest/ownership loss preview; no money, clock, mode, water or role bypass",
+    "scope": "other terrace/cut strategies retain single-cell targeting; offsets, strokes, forest fields and soft profile cannot mix with terrace rectangle",
+    "ux": "optional checkbox, two map corners or start/end coordinates, changed/skipped diamonds, count/reasons/loss preview, Confirm/Cancel, Escape and peer invalidation, EN/JA narrow keyboard workflows",
+    "formats": "existing CornerTerrainQuery.rectangle; Save7/protocol5/content unchanged"
+  },
+  "results": {
+    "dotnetPassed": 719,
+    "newBatchDotnetCases": 4,
+    "clientPassed": 142,
+    "targetedChromiumPassed": 19,
+    "newBatchBrowserJourneys": 3,
+    "browserScope": [
+      "corner-terrain.spec.ts",
+      "rectangle-terrain.spec.ts",
+      "terrace-terrain.spec.ts",
+      "authoring-terrain.spec.ts"
+    ],
+    "builds": "Release solution and production web; zero Svelte errors/warnings; generated/content/locales and git diff --check pass",
+    "coverage": [
+      "64-site admission",
+      "four-cell corner backup and exact saved restoration",
+      "fresh IDs/forest/ownership losses",
+      "partial and all skipped",
+      "roof",
+      "reversed rectangle",
+      "oversized/mixed inputs",
+      "role/revision contention",
+      "two-point map picking",
+      "read-only preview and one confirmation",
+      "save/reopen",
+      "Escape/peer invalidation",
+      "Japanese390px DPR2 keyboard workflow"
+    ],
+    "visualQA": "English desktop map rectangle and sticky Confirm/Cancel screenshot inspected",
+    "qualifications": "No fresh full Chromium113 or optional/Python run claimed for this follow-up; prior results remain historical. No full-size batch latency/dense-publication acceptance claimed."
+  },
+  "commands": {
+    "build": "dotnet build FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "dotnet": "dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore -m:1 --disable-build-servers --blame-hang-timeout 60s",
+    "webBuild": "deno task --cwd web build",
+    "client": "deno task --cwd web test",
+    "browser": "FREETRAIN_ONLINE_TEST_SERVER_PORT=5880 FREETRAIN_ONLINE_TEST_WEB_PORT=4973 FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/terrace-batch-browser deno run -A npm:@playwright/test@1.64.1 test tests/browser/terrace-terrain.spec.ts tests/browser/rectangle-terrain.spec.ts tests/browser/authoring-terrain.spec.ts tests/browser/corner-terrain.spec.ts --project canonical (cwd web)"
+  },
+  "environment": {
+    "dotnet": "10.0.402",
+    "deno": "2.9.8; repo pin2.9.7; component commands only",
+    "browser": "installed Playwright Chromium, local macOS Arm64"
+  },
+  "files": {
+    "src/FreeTrain.Online.Simulation/TerraceTerrain.cs": "44e0a847ff40abac3c1034e9c4b29d0e5637a14127433e4959a2daa6a824d63f",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "d5c3f4e510a5e38bfa1d331ec33df5febd6850b35444d0b96f154de398db1015",
+    "web/src/CornerTerrainControls.svelte": "2ff5a1b97e37189c7b141fcefc57f01b4c2030a7aebd6e80bd5262cdb24c6d51",
+    "web/src/RectangleTerrainControls.svelte": "b52864664a84d1b12ff440cacf0e423b87508b28089703f79435bd414a7942a7",
+    "web/src/locales/en/app.json": "652c67a86e68870dc4821e1d87c6c737c5e41309260d170ca6ffca579dc71118",
+    "web/src/locales/ja/app.json": "1f020618d610cb83bc363fa2d4aa50c48a43fe2bc92d3a0887029b2266caaa15",
+    "tests/FreeTrain.Online.Tests/TerraceTerrainTests.cs": "090e0f0699cd5378dca9722f45699549aa43b98c466c86d71ea85fa6672abd83",
+    "web/tests/browser/terrace-terrain.spec.ts": "7d816974070e7230bad4fc1b08cc5e709d0e71c9a3cad33aed12b868b2065734",
+    "doc/web-parity-terraces.md": "52a3c76665ddaefca5d980ced2d6753b8ada5c77477e6b0d7518bd00af9f373a",
+    "tmp/web-feature-parity-checklist.md": "87fdf1200e46cba29febb10e1ec70c42f42c7f69d9e5963b63c8b882245c19ca"
+  },
+  "artifacts": {
+    "../../tmp/terrace-batch-build.log": "6e4a141666168eacffa1341789536b6b3f84b6c2ce7e092e66e3e1cf66f89394",
+    "../../tmp/terrace-batch-dotnet.log": "bbd7c62430b3273c29a4e554191145c380c583cf5cdb2c7361111f58e3eda608",
+    "../../tmp/terrace-batch-web-build.log": "2601d10e46206f8de1b40dacde9a8a911a01fe519dac7a54752177ff1f138c69",
+    "../../tmp/terrace-batch-client.log": "f820bf27f2dfb487d9a65cf340d2cbd2b83e9329ed1efde82067a0f12a7543ed",
+    "../../tmp/terrace-batch-browser.log": "3bc5a23869bdcbd71e4c26d95678a4fee50451756eda04eda2fea3bb937d1714",
+    "../../tmp/terrace-batch-browser/terrace-batch/terrace-batch-en.png": "8282f9f7bbaac714071aa51d8755bad645d6af7c7295a5b79331e1888ad03dc8"
+  }
+}

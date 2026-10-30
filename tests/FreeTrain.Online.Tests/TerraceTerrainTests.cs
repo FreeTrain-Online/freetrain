@@ -124,4 +124,103 @@ public class TerraceTerrainTests
         var cut=Edit(w,"placeCut");Assert.Null(cut.OccupantAt(P));Assert.Equal(0x0400,Edit(cut,"removeCut").OccupantAt(P)!.Corners.Packed);
     }
 
+    private static TerrainWorld BatchScene()
+    {
+        var w=Scene(forest:true);var definition=w.Spatial.Entities[0].Definition;
+        var entities=w.Spatial.Entities.ToBuilder();var occupants=w.Occupants.ToBuilder();long id=2;
+        foreach(var p in new[]{P with{Y=P.Y+1},P with{X=P.X+1},P with{X=P.X+1,Y=P.Y+1}})
+        {
+            entities.Add(new(id,0,definition,p,new([new(new(0,0,0),false)]),false,false,0));
+            occupants.Add(new(id++,TerrainOccupantKind.Mountain,new(1,2,3,4)));
+        }
+        return new(w.Profile,w.Name,new(16,24,6),1,w.Cells,new(id,entities.ToImmutable()),occupants);
+    }
+    private static CornerTerrainQuery BatchQuery(TerrainWorld w)=>Query(w,"placeTerrace") with{Rectangle=new(new(P.X+1,P.Y+1,P.Z))};
+    [Fact]
+    public async Task Rectangle_terraces_preview_exact_losses_and_commit_once_with_fresh_ids_and_saved_backups()
+    {
+        var w=BatchScene();using var host=Host(w);var q=BatchQuery(w);var before=host.Snapshot();
+        var preview=host.PreviewCorner(q);Assert.True(preview.Legal);Assert.Equal(4,preview.Changes.Length);Assert.Empty(preview.Skipped);
+        Assert.Single(preview.Changes,c=>c.LosesForest&&c.LosesOwnership);Assert.Equal(before,host.Snapshot());
+        Assert.Equal(new[]{(10,8),(10,9),(11,8),(11,9)},preview.Changes.Select(c=>(c.Position.X,c.Position.Y)));
+        var reversed=host.PreviewCorner(q with{Position=q.Rectangle!.End,Rectangle=new(q.Position)});Assert.Equal(preview.Changes,reversed.Changes);
+        var commit=host.Enqueue(new("owner"),new("batch",1,new EditCornerCommand(q)));host.Pump(0);Assert.IsType<AcceptedMessage>(await commit);
+        var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;var restored=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+        Assert.Equal(bytes,SaveCodec.Write(restored));Assert.Equal(1,restored.World.Revision);Assert.Equal(9,restored.World.Spatial.NextEntityId);
+        Assert.All(restored.World.Occupants,o=>{Assert.Equal(TerrainOccupantKind.Terrace,o.Kind);Assert.Equal(0x1234,o.Corners.Packed);Assert.Null(o.Forest);});
+        Assert.Equal(new long[]{5,6,7,8},restored.World.Spatial.Entities.Select(e=>e.Id));Assert.All(restored.World.Spatial.Entities,e=>Assert.False(e.Owned));
+        Assert.Equal(before.Tick,host.Snapshot().Tick);Assert.Equal(before.Paused,host.Snapshot().Paused);Assert.Equal(before.Cash,host.Snapshot().Cash);
+        // Each source removal restores its own backed-up corners after a batch save/reopen.
+        var draft=new CornerTerrainDraft(restored.World);
+        foreach(var c in preview.Changes){var plan=TerraceTerrain.Preview(draft,new(c.Position.X,c.Position.Y,c.Position.Z),"removeTerrace");TerraceTerrain.Apply(draft,plan);}
+        Assert.All(draft.Finish().Occupants,o=>Assert.Equal(0x1234,o.Corners.Packed));
+    }
+    [Fact]
+    public void Rectangle_terraces_report_ineligible_cells_without_bypassing_source_rules()
+    {
+        var w=Scene();var cells=w.Cells.ToBuilder();
+        foreach(var p in new[]{P with{Y=P.Y+1},P with{X=P.X+1},P with{X=P.X+1,Y=P.Y+1}}){var t=w.Space.ToStorage(p);cells[t.V*16+t.H]=new(2,TerrainSurface.Cut);}
+        w=new(w.Profile,w.Name,new(16,24,6),1,cells,w.Spatial.Capture(),w.Occupants);
+        using var host=Host(w);var result=host.PreviewCorner(BatchQuery(w));
+        Assert.True(result.Legal);Assert.Single(result.Changes);Assert.Equal(3,result.Skipped.Length);Assert.All(result.Skipped,s=>Assert.Equal("groundLevel",s.Reason));
+        var roof=Scene(5,corners:new(1,2,3,3));using var roofHost=Host(roof);var q=BatchQuery(roof) with{Position=new(P.X,P.Y,5),Rectangle=new(new(P.X+1,P.Y+1,5))};
+        var blocked=roofHost.PreviewCorner(q);Assert.False(blocked.Legal);Assert.Empty(blocked.Changes);Assert.Contains(blocked.Skipped,s=>s.Reason=="roof");
+        Assert.Equal(0,roofHost.Snapshot().Terrain!.GeometryRevision);
+    }
+    [Fact]
+    public void Rectangle_terraces_admit_64_cells_and_reject_oversized_or_mixed_selections()
+    {
+        var p=TerrainProfiles.Bundled;var definition=p.Definitions.Single(d=>d.Reference.ContributionId==TerrainProfile.MountainId).Reference;
+        var entities=new List<SpatialEntity>();var occupants=new List<TerrainOccupant>();long id=1;
+        for(int x=20;x<28;x++)for(int y=20;y<28;y++){entities.Add(new(id,0,definition,new(x,y,1),new([new(new(0,0,0),true)]),false,false,0));occupants.Add(new(id++,TerrainOccupantKind.Mountain,default));}
+        var w=new TerrainWorld(p,"Batch limit",new(30,42,6),1,Enumerable.Repeat(new TerrainCell(1),30*42),new(id,entities.ToImmutableArray()),occupants);
+        var draft=new CornerTerrainDraft(w);var plans=TerraceTerrain.PlaceRectangle(draft,new(20,20,1),new(27,27,1));Assert.Equal(64,plans.Length);Assert.All(plans,s=>Assert.True(s.Legal));Assert.Equal(64,draft.Finish().Occupants.Length);
+        using var host=Host(BatchScene());var q=BatchQuery(BatchScene());
+        foreach(var bad in new[]{q with{Rectangle=new(new(P.X+8,P.Y+7,1))},q with{Rectangle=new(new(P.X,P.Y,2))},q with{Rectangle=new(q.Position,true)},q with{OffsetX=0,OffsetY=0},q with{Stroke=[new(q.Position,"raise")]},q with{Action="removeTerrace"},q with{Action="placeCut"},q with{Action="removeCut"}})
+            Assert.Throws<ArgumentException>(()=>host.PreviewCorner(bad));
+        Assert.Equal(0,host.Snapshot().Terrain!.GeometryRevision);
+    }
+    [Fact]
+    public async Task Rectangle_terraces_revalidate_role_revision_and_all_skipped_commits()
+    {
+        var w=BatchScene();using var host=Host(w);var op=new ParticipantContext("op",ParticipantRole.Operator);var observer=new ParticipantContext("viewer",ParticipantRole.Observer);host.RegisterParticipant(op);host.RegisterParticipant(observer);var q=BatchQuery(w);
+        var denied=host.Enqueue(observer,new("denied",1,new EditCornerCommand(q)));var accepted=host.Enqueue(op,new("operator",1,new EditCornerCommand(q)));var stale=host.Enqueue(new("owner"),new("stale",1,new EditCornerCommand(q)));host.Pump(0);
+        Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await denied).Code);Assert.IsType<AcceptedMessage>(await accepted);Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await stale).Code);
+        var current=q with{ExpectedGeometryRevision=1};var before=host.Snapshot();Assert.False(host.PreviewCorner(current).Legal);
+        var noChange=host.Enqueue(op,new("none",1,new EditCornerCommand(current)));host.Pump(0);Assert.Equal("invalidPlacement",Assert.IsType<RejectedMessage>(await noChange).Code);Assert.Equal(before,host.Snapshot());
+    }
+
+    [Theory][InlineData(TerrainSurface.Natural)][InlineData(TerrainSurface.Cut)]
+    public async Task Bare_ground_terrace_needs_no_stroke_and_restores_flat_corners_after_save(TerrainSurface surface)
+    {
+        var w=TerrainWorld.Empty(new(WorldCreationProfile.Id,"Direct terrace",new(16,24,6),1),TerrainProfiles.Bundled);
+        if(surface==TerrainSurface.Cut)w=new(w.Profile,w.Name,new(16,24,6),1,Enumerable.Repeat(new TerrainCell(1,surface),16*24),w.Spatial.Capture(),[]);
+        using var host=Host(w);var before=host.Snapshot();var q=Query(w,"placeTerrace");var preview=host.PreviewCorner(q);
+        var change=Assert.Single(preview.Changes);Assert.True(preview.Legal);Assert.Equal(1,change.BeforeGround);Assert.Equal(2,change.AfterGround);
+        Assert.Equal((0,0,0,0),(change.BeforeNE,change.BeforeSE,change.BeforeSW,change.BeforeNW));Assert.Equal(before,host.Snapshot());
+        var command=host.Enqueue(new("owner"),new("direct",1,new EditCornerCommand(q)));host.Pump(0);Assert.IsType<AcceptedMessage>(await command);
+        var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;var state=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+        Assert.Equal(bytes,SaveCodec.Write(state));Assert.Equal(1,state.World.OccupantAt(P)!.EntityId);Assert.True(state.World.OccupantAt(P)!.Corners.Flat);
+        Assert.Equal(TerrainOccupantKind.Terrace,state.World.OccupantAt(P)!.Kind);Assert.Equal(2,state.World.Spatial.NextEntityId);
+        Assert.Equal("occupied",TerraceTerrain.Preview(state.World,P with{Z=2},"placeTerrace").Reason);
+        var restored=Edit(state.World,"removeTerrace");Assert.Equal(1,restored.Cell(restored.Space.ToStorage(P).H,restored.Space.ToStorage(P).V).Ground);
+        Assert.True(restored.OccupantAt(P)!.Corners.Flat);Assert.Equal(TerrainOccupantKind.Mountain,restored.OccupantAt(P)!.Kind);
+        Assert.Equal(before.Tick,host.Snapshot().Tick);Assert.Equal(before.Paused,host.Snapshot().Paused);Assert.Equal(before.Cash,host.Snapshot().Cash);
+    }
+    [Fact]
+    public void Bare_ground_rectangle_admits_64_cells_but_roof_occupancy_and_allocator_still_apply()
+    {
+        var point=new Location(20,20,1);
+        var w=TerrainWorld.Empty(new(WorldCreationProfile.Id,"Bare batch",new(30,42,6),1),TerrainProfiles.Bundled);
+        var draft=new CornerTerrainDraft(w);var plans=TerraceTerrain.PlaceRectangle(draft,new(20,20,1),new(27,27,1));
+        Assert.Equal(64,plans.Length);Assert.All(plans,p=>Assert.True(p.Legal));var placed=draft.Finish();Assert.Equal(64,placed.Occupants.Length);Assert.Equal(65,placed.Spatial.NextEntityId);
+        Assert.All(placed.Occupants,o=>{Assert.True(o.Corners.Flat);Assert.Equal(TerrainOccupantKind.Terrace,o.Kind);});
+        Assert.Equal("roof",TerraceTerrain.Preview(TerrainWorld.Empty(new(WorldCreationProfile.Id,"Roof",new(30,42,6),5),w.Profile),point with{Z=5},"placeTerrace").Reason);
+        var exhausted=new TerrainWorld(w.Profile,w.Name,new(30,42,6),1,w.Cells,new(long.MaxValue,[]),[]);
+        Assert.Equal("capacityLimit",TerraceTerrain.Preview(exhausted,point,"placeTerrace").Reason);
+        var creek=w.Profile.Definitions.Single(d=>d.Kind==TerrainOccupantKind.Creek).Reference;
+        var occupied=new TerrainWorld(w.Profile,w.Name,new(30,42,6),1,w.Cells,new(2,[new(1,0,creek,point,new([new(new(0,0,0),true)]),false,true,0)]),[new(1,TerrainOccupantKind.Creek,default)]);
+        Assert.Equal("occupied",TerraceTerrain.Preview(occupied,point,"placeTerrace").Reason);Assert.Equal("mountainRequired",TerraceTerrain.Preview(w,point,"placeCut").Reason);
+    }
+
 }

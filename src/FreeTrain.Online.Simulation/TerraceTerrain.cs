@@ -5,6 +5,23 @@ namespace FreeTrain.Online.Simulation;
 public static class TerraceTerrain
 {
     public static bool IsAction(string action) => action is "placeTerrace" or "removeTerrace" or "placeCut" or "removeCut";
+    // Browser batch policy: inclusive normalized selection, source per-cell rules,
+    // bounded work and explicit skips, published as one atomic terrain edit.
+    public static CornerTerrainPlan[] PlaceRectangle(CornerTerrainDraft world, Location start, Location end)
+    {
+        if(start.Z!=end.Z||!world.Space.ContainsVoxel(start)||!world.Space.ContainsVoxel(end)||
+            (Math.Abs((long)end.X-start.X)+1)*(Math.Abs((long)end.Y-start.Y)+1)>64)
+            throw new ArgumentException("invalidInput");
+        var plans=new List<CornerTerrainPlan>();
+        for(int x=Math.Min(start.X,end.X);x<=Math.Max(start.X,end.X);x++)
+        for(int y=Math.Min(start.Y,end.Y);y<=Math.Max(start.Y,end.Y);y++)
+        {
+            var plan=Preview(world,new(x,y,start.Z),"placeTerrace");
+            if(plan.Legal)Apply(world,plan);
+            plans.Add(plan);
+        }
+        return plans.ToArray();
+    }
     public static CornerTerrainPlan Preview(TerrainWorld world, Location p, string action) => Preview(new CornerTerrainDraft(world),p,action);
     public static CornerTerrainPlan Preview(CornerTerrainDraft world, Location p, string action)
     {
@@ -41,15 +58,20 @@ public static class TerraceTerrain
             }
             else
             {
-                if(occupant?.Kind!=TerrainOccupantKind.Mountain)return Reject("mountainRequired");
                 if(action=="placeTerrace")
                 {
+                    // Owner-requested authoring extension: bare ground has flat
+                    // backup corners and needs no preparatory Mountain stroke.
+                    // The column model supports one backed-up terrace per cell.
+                    if(cell.Surface==TerrainSurface.Terrace||entity!=null&&occupant?.Kind!=TerrainOccupantKind.Mountain)
+                        return Reject("occupied");
                     if(ground>=world.Space.Levels-1)return Reject("roof");
                     if(world.At(p with{Z=p.Z+1}).Status!=VoxelStatus.Vacant)return Reject("occupied");
                     ground++;
                 }
                 else
                 {
+                    if(occupant?.Kind!=TerrainOccupantKind.Mountain)return Reject("mountainRequired");
                     for(int i=0;i<4;i++)
                     {
                         var q=p.Move(new Heading(i*2));

@@ -12,12 +12,19 @@ public sealed partial class SessionHost
         var world = terrainState?.World ?? throw new InvalidOperationException("operationUnavailable");
         if (query.ExpectedGeometryRevision != world.Revision) throw new InvalidOperationException("staleRevision");
         if (terrainState!.Revision == long.MaxValue) throw new InvalidOperationException("operationUnavailable");
+        if (query.Forest != null) throw new ArgumentException("invalidInput");
         if (query.Stroke?.Length > 63) throw new ArgumentException("invalidInput");
         var draft = new CornerTerrainDraft(world);
         if(TerraceTerrain.IsAction(query.Action))
         {
-            if(query.Position==null||query.Rectangle!=null||query.OffsetX!=null||query.OffsetY!=null||query.Stroke?.Length>0)
+            if(query.Position==null||query.OffsetX!=null||query.OffsetY!=null||query.Stroke?.Length>0)
                 throw new ArgumentException("invalidInput");
+            if(query.Rectangle is {} selection)
+            {
+                if(query.Action!="placeTerrace"||selection.End==null||selection.Soft)throw new ArgumentException("invalidInput");
+                return(world,draft,TerraceTerrain.PlaceRectangle(draft,new(query.Position.X,query.Position.Y,query.Position.Z),
+                    new(selection.End.X,selection.End.Y,selection.End.Z)));
+            }
             var plan=TerraceTerrain.Preview(draft,new(query.Position.X,query.Position.Y,query.Position.Z),query.Action);
             if(plan.Legal)TerraceTerrain.Apply(draft,plan);
             return(world,draft,[plan]);
@@ -57,6 +64,7 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
+            if(AuthoringTerrain.IsAction(query.Action))return PreviewAuthoring(query);
             var (world,_,plans) = PlanCorner(query);
             var first = plans[0];
             return new(WorldEpoch,world.Revision,new(first.Position.X,first.Position.Y,first.Position.Z),first.Action,plans.Any(p=>p.Legal),

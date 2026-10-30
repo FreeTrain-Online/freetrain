@@ -9,6 +9,41 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if(args is ["--authoring-capacity",var authorH,var authorV,var authorZ,var authorDirectory])
+{
+    int h=int.Parse(authorH),v=int.Parse(authorV),z=int.Parse(authorZ);Directory.CreateDirectory(authorDirectory);
+    var request=new EmptyWorldRequest(WorldCreationProfile.Id,"Authoring capacity",new(h,v,z),1);
+    var world=TerrainWorld.Empty(request,TerrainProfiles.Bundled);
+    using var host=new FreeTrain.Online.Session.SessionHost(new TerrainSessionState(world,TerrainProvenance.From(request)),"owner",TerrainProfiles.Resolve);
+    var p=world.Space.ToLocation(new(h/2,v/2,1));var measurements=new List<object>();
+    foreach(var action in new[]{"enter","plantForest","placeCreek","exit"})
+    {
+        long revision=host.Snapshot().Terrain!.GeometryRevision;CornerTerrainPreviewRead? preview=null;
+        var tree=world.Profile.Definitions.First(d=>d.TreeSpriteCount>0);
+        var query=new CornerTerrainQuery(1,revision,new(p.X,p.Y,p.Z),action,
+            Rectangle:new(new(p.X+(action=="placeCreek"?63:7),p.Y+(action=="placeCreek"?12:7),1)),
+            Forest:action=="plantForest"?new(tree.Reference.PackId,tree.Reference.ContributionId,tree.Reference.RecipeId):null);
+        // The creek is a separate 64-cell straight route, outside the forest block.
+        if(action=="placeCreek")query=query with{Position=new(p.X,p.Y+12,1)};
+        var watch=Stopwatch.StartNew();
+        if(action is "plantForest" or "placeCreek")preview=host.PreviewCorner(query);
+        var previewMs=watch.Elapsed.TotalMilliseconds;if(preview is {Legal:false})throw new Exception("Authoring preview rejected.");
+        CommandPayload payload=action is "enter" or "exit"?new SetAuthoringModeCommand(revision,action=="enter"):new EditCornerCommand(query);
+        watch.Restart();var command=host.Enqueue(new("owner"),new(action,1,payload));host.Pump(0);
+        if(await command is not AcceptedMessage)throw new Exception("Authoring commit rejected.");var commitMs=watch.Elapsed.TotalMilliseconds;
+        watch.Restart();var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;var reopened=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+        if(!bytes.SequenceEqual(SaveCodec.Write(reopened))||reopened.ConstructionMode!=(action!="exit"))throw new Exception("Authoring continuation mismatch.");
+        foreach(var decoration in preview?.Decorations??[])
+        {
+            var position=decoration.Position;var actual=reopened.World.OccupantAt(new(position.X,position.Y,position.Z))!;
+            if(actual.CreekConnections!=decoration.CreekConnections||
+                decoration.Forest is {} f&&!f.Trees.Select(t=>(t.X,t.Y,t.Sprite)).SequenceEqual(actual.Forest!.Trees.Select(t=>(t.X,t.Y,t.Sprite))))throw new Exception("Authoring preview mismatch.");
+        }
+        File.WriteAllBytes(Path.Combine(authorDirectory,action+"-v7.json"),bytes);
+        measurements.Add(new{h,v,z,action,changed=preview?.Changes.Length??0,previewMs,commitMs,saveReopenMs=watch.Elapsed.TotalMilliseconds,saveBytes=bytes.Length,managedBytes=GC.GetTotalMemory(true)});
+    }
+    Console.WriteLine(JsonSerializer.Serialize(measurements,json));return;
+}
 if (args is ["--terrace-capacity",var terraceH,var terraceV,var terraceZ,var terraceDirectory])
 {
     int h=int.Parse(terraceH),v=int.Parse(terraceV),z=int.Parse(terraceZ);Directory.CreateDirectory(terraceDirectory);

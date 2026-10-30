@@ -19,8 +19,10 @@ Authority is ExAV 2.1.1.12, archive Git
 and P3-TERRAIN-009/010/012 bind these behaviors. This is source-derived evidence;
 no original Windows runtime or native GDI comparison is claimed.
 
-* Terrace placement requires a Mountain at the selected ground. It removes that
-  entity, backs up only its four NE/SE/SW/NW offsets, raises ground by one and
+* Source terrace placement requires a Mountain at the selected ground. The
+  browser also accepts bare ground under the owner-requested extension below.
+  Existing Mountain placement removes that entity, backs up only its four
+  NE/SE/SW/NW offsets, raises ground by one and
   installs a fresh unowned, non-reclaimable, zero-value Terrace at the old Z.
   Forest decoration and ownership loss are explicit in preview. Roof and
   obstruction guards run before any mutation.
@@ -46,9 +48,10 @@ consumption is introduced: these source methods book no money. Replaced entities
 get fresh monotonically allocated IDs; removed IDs are never reused.
 
 `TerraceTerrain` implements four separate strategies through the sparse
-`CornerTerrainDraft`. The existing `CornerTerrainQuery.action` gains four values;
-rectangle selectors, screen-corner offsets and nonempty strokes cannot be mixed
-with these single-site operations. State, Save7/protocol5 and content identity do
+`CornerTerrainDraft`. The existing `CornerTerrainQuery.action` gains four values. Placement also
+accepts the bounded rectangle described in the follow-up below. Screen-corner
+offsets and nonempty strokes cannot be mixed with terrace/cut strategies;
+removal and cuts remain single-site operations. State, Save7/protocol5 and content identity do
 not change. The strict schema, generated client types and network command filter
 agree on the actions and diagnostics. Owner/Operator commits revalidate current
 connection/role, epoch, geometry revision, complete candidate and durable Save7
@@ -119,3 +122,73 @@ provisional 250ms authoritative target. Retain terrace/cut editing alongside
 corner/rectangle editing and dense edited-world publication in final P3-16a
 capacity acceptance before P3-17. No native/device/deferred-browser acceptance or
 full-city/import capability is inferred from these measurements.
+
+
+## Rectangle terrace placement follow-up — 30 October 2026
+
+Owner request extends **Game → Modify terrain → Terraces and cuts → Place
+terraces in a rectangle**. The optional checkbox retains existing single-cell
+placement/removal/cut controls. Select two opposite map corners or enter start
+X/Y/Z and end X/Y, then preview and confirm once. Inclusive normalized rectangles
+admit up to 64 cells at the first selected Z; reversing endpoints produces the
+same x-major/y-minor plan. Ctrl/Shift do not turn terrace selection into repair
+or upper-profile terrain editing.
+
+This batching is browser workflow policy layered over the original per-voxel
+strategy. Every cell must independently satisfy eligible ground/roof/occupancy
+and allocation rules. The later bare-ground extension below removes the need for
+a preparatory Mountain stroke. Invalid cells, including outside cells within a skew-grid
+bounding rectangle, are shown as skips. Source corner backups, forest/ownership
+loss, fresh unowned identities and zero booking are unchanged. Eligible cells
+appear as highlighted map diamonds and a terrace count; skipped cells have
+separate highlights/reasons. If every cell is skipped, Confirm stays disabled.
+All eligible sites publish in one revalidated atomic edit and one geometry
+revision, preserving existing roles, clock, mode and no-replay handling. The
+saved world contains the actual backed-up terraces; reopening needs no rectangle
+request. This extends existing Save7/protocol5 contracts without new fields.
+
+Backend cases cover four-cell exact backup/loss/identity/save restoration,
+reversed normalization, partial/all skips, roof rejection, 64-cell admission,
+oversized/mixed selections and role/revision contention. Browser cases cover
+coordinate and two-map-point rectangles, one confirmation, read-only preview,
+exact save/reopen, Escape and peer invalidation, plus Japanese narrow keyboard
+confirmation. The shared corner/rectangle/forest/creek regressions also run.
+Validation passes **719 .NET cases, 142 client cases and 19 targeted Chromium
+journeys** (corner, rectangle, terrace and scenery controls). Release solution
+and production web builds pass with zero Svelte errors/warnings. The desktop
+batch screenshot was inspected. Fresh logs and file hashes are in
+[the batch review](parity/terrace-batch-review.json); the earlier P3-15 evidence
+above retains its original slice scope. Full-size batch latency/publication
+acceptance remains in final P3-16a; the single-cell measurements above are not
+new batch capacity evidence.
+
+
+## Direct bare-ground terraces — 30 October 2026
+
+Owner request removes the preparatory corner-stroke requirement from **Place
+terrace**, both for single cells and the optional rectangle. Natural or Cut
+bare ground at the selected Z is directly eligible. Preview raises the ground
+one level and backs up four zero corner offsets; existing slopes retain their
+actual offsets. This is an explicit browser authoring extension to the pinned
+source's Mountain-only eligibility, not a change to the source fixture claims.
+
+Roof, bounds, occupancy, allocation/resource admission, roles and stale-preview
+checks still apply. Creek cells and already backed-up terrace columns are
+occupied; no stacking or overwriting unrelated occupants is introduced. Make
+cut still requires Mountain. Placement uses the ground ray so a neighboring
+slope cannot take precedence over the bare ground under the pointer. EN/JA help
+now states that no corner stroke is needed.
+
+Confirmation remains one atomic edit. The ordinary Save7 Terrace record already
+stores all-zero backups, so no format/content version changes are needed.
+Removing a bare-ground terrace after save/reopen lowers it to its original level
+and restores a flat, unowned, undecorated Mountain with zero offsets, using the
+existing removal representation. Shared clock, mode and zero booking remain
+unchanged. Tests cover Natural/Cut direct placement and exact saved restoration,
+64 initially bare cells, roof/creek/stacking/allocation rejection, pointer picking,
+read-only preview, direct rectangle creation and Japanese narrow confirmation.
+Validation passes **722 .NET cases, 142 client cases and all seven terrace
+Chromium journeys**, including direct bare-ground map targeting and EN/JA
+rectangles without prior strokes. Release and production web builds pass with
+zero Svelte errors/warnings. Fresh logs and hashes are recorded in [the direct-placement review](parity/terrace-direct-review.json).
+Final capacity acceptance and earlier native/deferred-platform gates remain open.

@@ -57,7 +57,7 @@ public sealed class TerrainSessionState
     public TerrainProvenance Provenance { get; }
     public bool ConstructionMode { get; private set; }
     public Clock Clock { get; private set; }
-    public RandomStreams Random { get; }
+    public RandomStreams Random { get; private set; }
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
@@ -76,7 +76,7 @@ public sealed class TerrainSessionState
     public void AdvanceOneMinute()
     { var next = checked(Revision + 1); Clock.Advance(); Revision = next; }
     // Trusted session-boundary integration. Gameplay legality/booking belongs to the tool slice.
-    public void Replace(long expectedRevision, TerrainWorld replacement, bool constructionMode)
+    public void Replace(long expectedRevision, TerrainWorld replacement, bool constructionMode, RandomStreamsState? random = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("staleRevision");
         if (replacement.Profile != World.Profile || replacement.Name != World.Name ||
@@ -86,6 +86,7 @@ public sealed class TerrainSessionState
         var next = checked(Revision + 1);
         var validated = World.Replace(World.Revision, replacement.Cells, replacement.WaterLevel,
             new(replacement.Spatial.NextEntityId, replacement.Spatial.Entities), replacement.Occupants);
-        World = validated; ConstructionMode = constructionMode; Revision = next;
+        var validatedRandom = random == null ? Random : RandomStreams.Restore(random);
+        World = validated; ConstructionMode = constructionMode; Random = validatedRandom; Revision = next;
     }
 }

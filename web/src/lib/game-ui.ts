@@ -43,6 +43,12 @@ export const registry = {
   'rail-shape': field('trackShape', 'tool-card', 'live'),
   'rail-alignment': field('snapDirection', 'tool-card', 'live'),
   'rail-anchor': action('useAnchor', 'tool-card', 'live'),
+  'authoring-enter': action('enterAuthoring', 'tool-card', 'owner-save'),
+  'authoring-exit': action('exitAuthoring', 'tool-card', 'owner-save'),
+  'authoring-confirm': action('confirmAuthoringMode', 'tool-card', 'owner-save'),
+  'authoring-species': field('authoringSpecies', 'tool-card', 'mutation'),
+  'authoring-ground': field('forestGround', 'tool-card', 'mutation'),
+  'authoring-preview': action('previewDecorations', 'tool-card', 'mutation'),
   'terrain-action': field('cornerAction', 'tool-card', 'mutation'),
   'terrain-preview': action('cornerCheck', 'tool-card', 'mutation'),
   'terrain-add-site': action('cornerAdd', 'tool-card', 'mutation'),
@@ -94,7 +100,7 @@ export type ActionId = keyof typeof registry;
 
 export const tools = [
   { id: 'inspect', label: registry.inspect.labelKey, icon: '↖' },
-  { id: 'build', label: registry.rail.labelKey, icon: '╫' },
+  { id: 'build', label: registry.rail.labelKey, icon: 'rail' },
   { id: 'terrain', label: registry.terrain.labelKey, icon: '⛰' },
   { id: 'remove', label: registry.demolish.labelKey, icon: '×' },
 ] as const satisfies readonly { id: Tool; label: keyof typeof messages.en; icon: string }[];

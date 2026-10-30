@@ -382,3 +382,18 @@ Raise/Excavate/Repair, coordinate or two-point selection and reviewed Ctrl/Shift
 semantics, with authoritative skips/loss preview and atomic confirmation. This
 source-derived slice does not close terrace/map-construction or broader P3/P9
 workflow/native acceptance.
+
+
+## P3-16 map authoring workflow
+
+[Delivered authoring mode and scenery controls](web-parity-authoring.md) live in
+Game → Modify terrain. Owner entry/exit uses captured world/geometry confirmation;
+Terrain selection → Author forests and creeks provides unowned initialization,
+all six tree species × three ground treatments, and source decorative creek
+routes. Existing corner/rectangle/repair/terrace/cut actions remain available
+outside this mode. Registry IDs `authoring-enter`, `authoring-exit`,
+`authoring-confirm`, `authoring-species`, `authoring-ground` and `authoring-preview`
+join the existing terrain Confirm/Cancel and coordinate actions. EN/JA keyboard,
+map targeting and narrow forms use the existing tool card and canvas lifecycle.
+Owned forest purchases/booking, land acquisition and generic demolition retain
+their later subsystem scope; mode entry does not bypass their rules.

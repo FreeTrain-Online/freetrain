@@ -720,6 +720,26 @@
             "kind",
             "query"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "setAuthoringMode"
+            },
+            "expectedGeometryRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "expectedGeometryRevision",
+            "enabled"
+          ]
         }
       ]
     },
@@ -1819,7 +1839,9 @@
             "placeTerrace",
             "removeTerrace",
             "placeCut",
-            "removeCut"
+            "removeCut",
+            "plantForest",
+            "placeCreek"
           ]
         },
         "offsetX": {
@@ -1864,6 +1886,16 @@
           "anyOf": [
             {
               "$ref": "#/$defs/RectangleTerrainSelection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
             },
             {
               "type": "null"
@@ -1986,7 +2018,9 @@
             "placeTerrace",
             "removeTerrace",
             "placeCut",
-            "removeCut"
+            "removeCut",
+            "plantForest",
+            "placeCreek"
           ]
         },
         "legal": {
@@ -2033,6 +2067,13 @@
           "maxItems": 64,
           "items": {
             "$ref": "#/$defs/CornerTerrainSkip"
+          }
+        },
+        "decorations": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/AuthoringDecoration"
           }
         }
       },
@@ -2139,6 +2180,35 @@
       "required": [
         "end",
         "soft"
+      ]
+    },
+    "AuthoringDecoration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "forest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Forest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "creekConnections": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "position",
+        "forest",
+        "creekConnections"
       ]
     }
   }

@@ -95,6 +95,11 @@ export type CommandPayload =
   | {
       kind: "editCorner";
       query: CornerTerrainQuery;
+    }
+  | {
+      kind: "setAuthoringMode";
+      expectedGeometryRevision: Counter;
+      enabled: boolean;
     };
 
 export interface Join {
@@ -303,11 +308,21 @@ export interface CornerTerrainQuery {
   expectedWorldEpoch: Counter;
   expectedGeometryRevision: Counter;
   position: Position;
-  action: "raise" | "lower" | "repair" | "placeTerrace" | "removeTerrace" | "placeCut" | "removeCut";
+  action:
+    | "raise"
+    | "lower"
+    | "repair"
+    | "placeTerrace"
+    | "removeTerrace"
+    | "placeCut"
+    | "removeCut"
+    | "plantForest"
+    | "placeCreek";
   offsetX: number | null;
   offsetY: number | null;
   stroke: CornerTerrainSite[] | null;
   rectangle?: RectangleTerrainSelection | null;
+  forest?: Definition | null;
 }
 export interface CornerTerrainSite {
   position: Position;
@@ -477,7 +492,16 @@ export interface CornerTerrainPreview {
   worldEpoch: Counter;
   geometryRevision: Counter;
   position: Position;
-  action: "raise" | "lower" | "repair" | "placeTerrace" | "removeTerrace" | "placeCut" | "removeCut";
+  action:
+    | "raise"
+    | "lower"
+    | "repair"
+    | "placeTerrace"
+    | "removeTerrace"
+    | "placeCut"
+    | "removeCut"
+    | "plantForest"
+    | "placeCreek";
   legal: boolean;
   reason:
     | (
@@ -507,6 +531,10 @@ export interface CornerTerrainPreview {
    * @maxItems 64
    */
   skipped: CornerTerrainSkip[];
+  /**
+   * @maxItems 64
+   */
+  decorations?: AuthoringDecoration[];
 }
 export interface CornerTerrainChange {
   position: Position;
@@ -542,4 +570,9 @@ export interface CornerTerrainSkip {
     | "mountainRequired"
     | "terraceRequired"
     | "higherNeighbor";
+}
+export interface AuthoringDecoration {
+  position: Position;
+  forest: Forest | null;
+  creekConnections: number;
 }

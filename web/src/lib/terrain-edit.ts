@@ -21,7 +21,7 @@ export const terrainReasons = {invalidInput:'cornerInvalid',outside:'outsideMap'
 // One compact column index per immutable entity array; no scene rebuild or sprite-alpha dependency.
 const strategyIndexes=new WeakMap<object,{mountain:Uint8Array;terrace:Uint8Array}>();
 export function pickTerrainStrategy(read:ReadState,point:Point,heightCut:number,strategy?:string):Position|undefined {
-  if(!strategy||strategy==='removeCut'||!read.terrain||!read.entities)return pickTerrainGround(read,point,heightCut);
+  if(!strategy||strategy==='placeTerrace'||strategy==='removeCut'||!read.terrain||!read.entities)return pickTerrainGround(read,point,heightCut);
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   let index=strategyIndexes.get(read.entities);
   if(!index){

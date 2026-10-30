@@ -130,6 +130,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(SetControllerCommand), "setController")]
 [JsonDerivedType(typeof(ControllerInputCommand), "controllerInput")]
 [JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
+[JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 public abstract record CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
@@ -173,13 +174,17 @@ public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLe
 
 // Additive terrain tool contract; durable state remains Save7 / protocol5.
 public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
-    string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null);
+    string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DefinitionRead? Forest = null);
 public sealed record RectangleTerrainSelection(PositionRead End, bool Soft = false);
 public sealed record CornerTerrainSite(PositionRead Position, string Action, int? OffsetX = null, int? OffsetY = null);
 public sealed record EditCornerCommand(CornerTerrainQuery Query) : CommandPayload;
+public sealed record SetAuthoringModeCommand(long ExpectedGeometryRevision, bool Enabled) : CommandPayload;
 public sealed record CornerTerrainChangeRead(PositionRead Position, int BeforeGround, int AfterGround,
     int BeforeNE, int BeforeSE, int BeforeSW, int BeforeNW, int AfterNE, int AfterSE, int AfterSW, int AfterNW,
     bool Remove, bool LosesForest, bool LosesOwnership);
 public sealed record CornerTerrainPreviewRead(long WorldEpoch, long GeometryRevision, PositionRead Position,
-    string Action, bool Legal, string? Reason, long Cost, CornerTerrainChangeRead[] Changes, CornerTerrainSkipRead[] Skipped);
+    string Action, bool Legal, string? Reason, long Cost, CornerTerrainChangeRead[] Changes, CornerTerrainSkipRead[] Skipped,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AuthoringDecorationRead[]? Decorations = null);
+public sealed record AuthoringDecorationRead(PositionRead Position, ForestRead? Forest, int CreekConnections);
 public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason);

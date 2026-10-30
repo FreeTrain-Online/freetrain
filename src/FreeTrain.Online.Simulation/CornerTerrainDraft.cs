@@ -85,6 +85,25 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
         var entity=new SpatialEntity(nextId++,0,definition,c.Position,new([new(new(0,0,0),kind==TerrainOccupantKind.Mountain&&c.After.Flat)]),false,false,0);
         entities[c.Position]=(entity,new(entity.Id,kind,c.After));entityCount++;
     }
+    // Source land initialization: retain Mountain corners/identity; reclaim only
+    // vacant or silently reusable ground. TerrainWorld validates final capacity.
+    internal void SetDecoration(Location p, ForestDecoration? forest, int? creekConnections = null)
+    {
+        var previous=At(p).Entity;var occupant=OccupantAt(p);
+        bool mountain=creekConnections==null;
+        bool retain=mountain&&occupant?.Kind==TerrainOccupantKind.Mountain;
+        var definition=original.Profile.Definitions.Single(d=>d.Kind==(mountain?TerrainOccupantKind.Mountain:TerrainOccupantKind.Creek)&&d.TreeSpriteCount==0).Reference;
+        var corners=retain?occupant!.Corners:default;
+        long id=retain?previous!.Id:nextId++;
+        if(id<=0||id==long.MaxValue)throw new ArgumentException("Terrain allocator exhausted.");
+        long revision=retain?checked(previous!.Revision+1):0;
+        entityCount+=previous==null?1:0;treeCount+=(forest?.Trees.Length??0)-(occupant?.Forest?.Trees.Length??0);
+        if(WorldCreationProfile.RealizedTerrainBytes(original.Cells.Length,entityCount,treeCount)>WorldCreationProfile.MaximumRealizedTerrainBytes)
+            throw new ArgumentException("Terrain graph resource limit.");
+        var entity=new SpatialEntity(id,revision,definition,p,new([new(new(0,0,0),!mountain||corners.Flat)]),false,!mountain,
+            forest==null?0:original.Profile.Resolve(forest.Definition).Price);
+        entities[p]=(entity,new(id,mountain?TerrainOccupantKind.Mountain:TerrainOccupantKind.Creek,corners,forest,creekConnections??0));
+    }
     public TerrainWorld Finish()
     {
         var grid=original.Cells.ToBuilder();foreach(var (i,cell) in cells)grid[i]=cell;

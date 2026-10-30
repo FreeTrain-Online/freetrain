@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "P3-16-functional-slice-complete; final P3-16a editing latency/dense publication gate open",
+  "basedOnGitRevision": "283e817aa2854ee12098d17be5836f0edba42c33",
+  "revisionScope": "Uncommitted working tree; file hashes below. Full Chromium followed by focused final authoring after mode-review/feedback refinements; final .NET includes later route literals. No commit created.",
+  "report": "../web-parity-authoring.md",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "authority": {
+      "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+      "subtree": "trunk",
+      "version": "ExAV 2.1.1.12 / V2"
+    },
+    "references": [
+      "terrain-review.json",
+      "terrain-fixtures.json",
+      "terrain-localization-review.json"
+    ],
+    "bindings": [
+      "Core construction flag",
+      "World.isReusable",
+      "ForestBuilder.create/createRandomTrees",
+      "CreekBuilder.computeRoute/apply",
+      "LandBuilderContribution.create"
+    ],
+    "verification": "40 pinned source blobs, 77 literal fixtures and 59 text bindings; independently derived seeded diagonal route literals in AuthoringTerrainTests; source-derived, no original runtime/native GDI comparison"
+  },
+  "contract": {
+    "mode": "world-owned default-off persisted boolean; Owner-confirmed FIFO entry/exit with current connection/epoch/geometry revalidation",
+    "fences": "mode changes advance geometry revision to invalidate all participant previews/pending confirmations; no shared-time, RNG, allocator, geometry, legality or role bypass; ordinary terrain tools remain available off-mode",
+    "authoringPolicy": "Owner/Operator scenery initialization only while Owner enables mode; explicit unowned source branch books0; forest entity value remains declared price; owned rectangle/SUBSIDIARIES booking is later economy scope",
+    "forest": "all6 species/18 prepared treatments; inclusive normalized x-major/y-minor up to64 cells; source eligibility including underwater; copied saved forest stream for exact preview and atomic confirmation; zero-tree leaves cell unchanged while consuming committed draws",
+    "creek": "up to64 inclusive fixed-Z route cells; preserved endpoint order, frozen source seed/axis draws, N8/E4/S2/W1 bits, reusable joins and local skips without rerouting; no water/ground changes",
+    "preview": "read-only compatible Observer access, exact realized decorations and loss/skip/cost details; affected/skipped map diamonds and named compass connections",
+    "publication": "detached candidate, full graph/allocator/resource and Save7 admission; atomic world/random publish; Save7/protocol5/content unchanged",
+    "lifecycle": "captured mode review fence, explicit Confirm/Cancel, Escape/panel/tool resets, pending/mode/role/connection/epoch/geometry/late-response fences; existing no-replay handling"
+  },
+  "results": {
+    "dotnet": {
+      "passed": 715,
+      "failed": 0,
+      "authoringCases": 15
+    },
+    "client": {
+      "passed": 142,
+      "failed": 0
+    },
+    "python": {
+      "total": 142,
+      "skipped": 1,
+      "failed": 0
+    },
+    "chromium": {
+      "fullPassed": 113,
+      "failed": 0,
+      "finalFocusedAuthoringPassed": 4
+    },
+    "optionalSource": {
+      "passed": 4,
+      "failed": 0
+    },
+    "optionalPrepared": {
+      "passed": 4,
+      "failed": 0
+    },
+    "builds": "Release solution/probe and production web; zero errors/warnings",
+    "checks": [
+      "generated contracts",
+      "bundled content",
+      "EN/JA locale completeness",
+      "40 pinned source blobs/77 literal fixtures/59 text records",
+      "project boundaries",
+      "git diff --check"
+    ],
+    "durable": "byte-exact authored save/reopen, saved forest-stream continuation, two-network-peer mode deltas and actual checkpoint restart",
+    "visualQA": "English desktop creek preview and Japanese390px DPR2 screenshots inspected; source sprites, affected-cell diamonds, internal scrolling and sticky actions visible"
+  },
+  "capacity": {
+    "command": "dotnet run --project tools/TerrainTransportProbe -c Release --no-build --no-restore -- --authoring-capacity 1500 1090 45 tmp/p3-16-capacity",
+    "results": [
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "enter",
+        "changed": 0,
+        "previewMs": 0.0022,
+        "commitMs": 787.4437,
+        "saveReopenMs": 503.4091,
+        "saveBytes": 2187411,
+        "managedBytes": "78122384"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "plantForest",
+        "changed": 63,
+        "previewMs": 6.422,
+        "commitMs": 1105.8545,
+        "saveReopenMs": 487.639,
+        "saveBytes": 2192046,
+        "managedBytes": "91605248"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "placeCreek",
+        "changed": 64,
+        "previewMs": 1.5884,
+        "commitMs": 901.4146,
+        "saveReopenMs": 507.7512,
+        "saveBytes": 2195864,
+        "managedBytes": "91987152"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "exit",
+        "changed": 0,
+        "previewMs": 0,
+        "commitMs": 918.6477,
+        "saveReopenMs": 443.5959,
+        "saveBytes": 2195865,
+        "managedBytes": "92349512"
+      }
+    ],
+    "qualification": "Sequential empty full-size entry,64 selected forest cells(63 realized),64-cell separate creek and exit; four exact realized save/reopen oracles. Commit787–1106ms exceeds250ms target. No dense edited-world publication/final capacity acceptance claim."
+  },
+  "commands": {
+    "build": "dotnet build FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "dotnet": "dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore --disable-build-servers -m:1 --blame-hang-timeout 60s",
+    "client": "deno task --cwd web test",
+    "webBuild": "deno task --cwd web build",
+    "python": "python3 -m unittest discover -s scripts/tests",
+    "source": "python3 scripts/review-terrain.py --source-root /Users/dmark/dev/freetrain-exav-archive --check",
+    "boundaries": "python3 scripts/check-project-boundaries.py",
+    "chromiumFull": "FREETRAIN_ONLINE_TEST_SERVER_PORT=5480 FREETRAIN_ONLINE_TEST_WEB_PORT=4573 FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/p3-16-browser-final deno run -A npm:@playwright/test@1.64.1 test (cwd web)",
+    "chromiumFocused": "FREETRAIN_ONLINE_TEST_SERVER_PORT=5780 FREETRAIN_ONLINE_TEST_WEB_PORT=4873 FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/p3-16-browser-last deno run -A npm:@playwright/test@1.64.1 test tests/browser/authoring-terrain.spec.ts --project canonical (cwd web)",
+    "optional": "FREETRAIN_ONLINE_OPTIONAL_TEST_PORT=5592 deno run -A npm:@playwright/test@1.64.1 test --config playwright.optional.config.ts; repeat with FREETRAIN_ONLINE_OPTIONAL_PREPARED=1 (cwd web)"
+  },
+  "environment": {
+    "dotnet": "10.0.402",
+    "deno": "2.9.8; repository pin2.9.7; component commands, no exact-version aggregate-script claim",
+    "browser": "installed Playwright Chromium, local macOS Arm64"
+  },
+  "developmentCorrections": [
+    "Disabled MSBuild servers and used local socket access for the test runner.",
+    "Selected unused browser-test ports after detecting an existing development service.",
+    "Used exact forest definition fields, keyed scope controls, preserved creek endpoint order and accepted source zero-tree previews.",
+    "Network test uses normal Reply publication when repeatedly pumping the same time slot; bounded reads prevent a silent test hang.",
+    "Final mode review clears stale/role/connection/Escape targeting and displays localized scenery feedback."
+  ],
+  "openGates": [
+    "final P3-16a edit latency/dense edited-world publication before P3-17",
+    "P3-17 topology/acceptance/handoff",
+    "overall P3 and existing native/P2/deferred-browser/full-city/import gates"
+  ],
+  "files": {
+    "doc/web-parity-actions.md": "4ea8613ad8b6fa7128a9b4bfe9447be920d7a526f495a5c5399cf416a0911b70",
+    "doc/web-parity-authoring.md": "c7cfe2de9e1d98ea0d43acdfde1b53c970406dab1f67eb15ee640e75e15fa5eb",
+    "doc/web-parity-terrain-contract.md": "73df8e659104fc890a6f49bf992d2b777632d23ba0dbd9b8a0d47e60a7e5f9ab",
+    "doc/web-parity-world-generation.md": "062c1b599010ababad71c17dfc5a6bf0605286bcc289d2ac180aec5ee3759654",
+    "prototype/protocol/schema.json": "3bb784139f1f45dde0d05a331895fe19e1bd2c091d746db0d8abce71ef263205",
+    "src/FreeTrain.Online.Contracts/WireContracts.cs": "fda90b19fe9cbe793d8bd73593c67cc142195ca513b7c400e35d549a55227ea3",
+    "src/FreeTrain.Online.Server/NetworkEndpoints.cs": "5f98fe1e0916a370e1b0ba64d919e4085d51caf6bb31e0b01d8ea3fa9ed2792f",
+    "src/FreeTrain.Online.Session/AuthoringSession.cs": "d1a8723f6f928b043882c0631780f02c6ec6339bc962b7af919ba8fb1f0e1f92",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "b7085763876c576336bacd4ac271fe3bef4fdba958414a283a184ccdd1205d54",
+    "src/FreeTrain.Online.Session/SessionHost.cs": "99ce6e89a078b51b2614f6ca0297f6d4f88db35b6f28d2341f08ba3b8a120907",
+    "src/FreeTrain.Online.Simulation/AuthoringTerrain.cs": "8adb20f920e007a775fbc169bd54ff9a3f32afde67694382b8f0f746919e5b67",
+    "src/FreeTrain.Online.Simulation/CornerTerrainDraft.cs": "387b4093b4c7b8c4962b15d80816c8981da094c17b2c85c7972101ab5acbe72a",
+    "src/FreeTrain.Online.Simulation/TerrainSessionState.cs": "354d98242fd89d83c55e9af0a23b520114cba66d7dfe785cc30a5368233e49b1",
+    "tests/FreeTrain.Online.Tests/AuthoringTerrainTests.cs": "96b2dfba00410dc6dc2a383335c3f28cf4bbd5d61365225717f427e615f04a8c",
+    "tmp/web-feature-parity-checklist.md": "bb8a0b05893e7b38f3702f7f12c5662197835530172847002b65f2173246a020",
+    "tools/TerrainTransportProbe/Program.cs": "7e022fa0b892ea02e969cdc5dd69c5534246353dedfc2636baf5a40fa2a976af",
+    "web/playwright.config.ts": "36568babe2888b1a18de51bb28b7a4b43e02dd8e50c9b3251993d4ae8005d5cd",
+    "web/src/CornerTerrainControls.svelte": "a91edfda392a3de9a848b8b284e0deb6b92779ba880952453670ecdda87d9e00",
+    "web/src/MapView.svelte": "d944c6ceb1e4d30ca4dc1a66b5d9f7aca1214fa6ecb426cc732b168f0976a9db",
+    "web/src/RectangleTerrainControls.svelte": "e424c08e5fe4aa8e6460f2096ba16dc99ef8521973fd00874591d753d5aa502f",
+    "web/src/generated/contracts.ts": "b1c09d1fb56e9118bf16b86ba77de94c916045b9003db2125f7d437c329cd23d",
+    "web/src/lib/game-ui.ts": "48b2c2a420c3ad13d234939806bf23cf720397794f1074f2b64aa161fb935754",
+    "web/src/lib/map-renderer.ts": "3aabdf68257bc3126e5cf84b0e8a5eb2ba40ad978cefee68ca95074f4bdf1308",
+    "web/src/lib/protocol.ts": "ea1ade4264d7fe9552711b12480299ede25bd7ac95176dbb1c1c36024c97953b",
+    "web/src/lib/remote-session-client.ts": "e6d1a6e441a2da88c9d7c51fe3449b9100c8f1a29cd44b9c9fbbfd1e3ae2f63d",
+    "web/src/locales/en/app.json": "8d4d4d3c0bed98bffb2a2555becfec8212dbf57658787ebc2f6b2008ed4cb5d9",
+    "web/src/locales/ja/app.json": "026b062b03a7baa48f7f1ecf66eec2d40bd68479bc98c3f151bfd920f019b4c5",
+    "web/tests/browser/authoring-terrain.spec.ts": "2ed6928c486575f9d8461a8585b8b6e3942eb54ff04db5687f4246d659dd5f0a",
+    "web/tests/terrain.test.ts": "d6bedfc8ce68160879b18cc1ca35a89f8087eef2072b89af9446a6e2b2ca38f7"
+  },
+  "artifacts": [
+    "../../tmp/p3-16-build.log",
+    "../../tmp/p3-16-dotnet-tests.log",
+    "../../tmp/p3-16-web-build.log",
+    "../../tmp/p3-16-client-tests.log",
+    "../../tmp/p3-16-python-tests.log",
+    "../../tmp/p3-16-source-check.log",
+    "../../tmp/p3-16-boundaries.log",
+    "../../tmp/p3-16-browser-full.log",
+    "../../tmp/p3-16-browser-focused.log",
+    "../../tmp/p3-16-optional-source.log",
+    "../../tmp/p3-16-optional-prepared.log",
+    "../../tmp/p3-16-probe-build.log",
+    "../../tmp/p3-16-capacity.log",
+    "../../tmp/p3-16-capacity/enter-v7.json",
+    "../../tmp/p3-16-capacity/plantForest-v7.json",
+    "../../tmp/p3-16-capacity/placeCreek-v7.json",
+    "../../tmp/p3-16-capacity/exit-v7.json",
+    "../../tmp/p3-16-browser-last/authoring-terrain/authoring-ja-narrow.png",
+    "../../tmp/p3-16-browser-last/authoring-terrain/authoring-creek-en.png"
+  ],
+  "artifactHashes": {
+    "../../tmp/p3-16-build.log": "de1499913fdd24aa5204a134abc9c0edc93c28764583fc5ee16f0d76b436d216",
+    "../../tmp/p3-16-dotnet-tests.log": "8f194479dd9163fb96a00fd4243c806ce952a2dc37e4ddd949807ee52ff6e139",
+    "../../tmp/p3-16-web-build.log": "5c6bd1a80cc123794e8cdf32289d4b822498946cebb162b97a92da7825ceb0e0",
+    "../../tmp/p3-16-client-tests.log": "f9f0d0b80f228839f330534fb56d254aea4d63a4f5aad04084772d08ed7b7163",
+    "../../tmp/p3-16-python-tests.log": "22a9f3553ea784c41cf1aa449472379b7ba29fc286ba31e1019cfd5d7f74189b",
+    "../../tmp/p3-16-source-check.log": "9b7c1c3854598fe36d29fcb74b691bf4b929ccf4d8472606017024f83c986fc0",
+    "../../tmp/p3-16-boundaries.log": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6",
+    "../../tmp/p3-16-browser-full.log": "ed64e0fe10c6891543453d5f9f3f069a6c136358d9ec05a127af33e6cb0dfa33",
+    "../../tmp/p3-16-browser-focused.log": "506593604e40ee1eccdeca802bc5bfaaac753d3a5462dacbd6d2002ea16be50e",
+    "../../tmp/p3-16-optional-source.log": "1dd8fe31c5716963db11f8cbecf15f768375eff5b351df7bc84bfe7e5bcd498e",
+    "../../tmp/p3-16-optional-prepared.log": "aad97acd30d71ea94599ede9ad34f33e651ffa81075a75962045f7f63395694f",
+    "../../tmp/p3-16-probe-build.log": "ddb41261d65f5348e022d38a13f282b3b732b1b220b90559d32c8c733415b911",
+    "../../tmp/p3-16-capacity.log": "570e2a9313d354de5ba40b138220b516b9491b549f0f9d8e00678fc82b566f98",
+    "../../tmp/p3-16-capacity/enter-v7.json": "ede388e726f69fe5275e422cd4d759594a4d437c5c98edfb58a1ff88221c2518",
+    "../../tmp/p3-16-capacity/plantForest-v7.json": "2d5f535b11bfab521d2454462ce9b8500981b97952ae22f22de7afb9669c3fb6",
+    "../../tmp/p3-16-capacity/placeCreek-v7.json": "1edc4f8f0a40640b4b3cc5775651915eb7fd96c0f010ffa3cc6098e226c26b6c",
+    "../../tmp/p3-16-capacity/exit-v7.json": "2900bcb75ce3d142a0a34f76c22c2e1e1c12b85b7f530fc77e4f00b132957297",
+    "../../tmp/p3-16-browser-last/authoring-terrain/authoring-ja-narrow.png": "141f00c159dd27c19bb16d47404db9d3ce1d18c3dcb10d9efe409e81cc0aa7e2",
+    "../../tmp/p3-16-browser-last/authoring-terrain/authoring-creek-en.png": "29b7d0467f0ca6ee0cb428d2be112c2fd0d625b0d8f95aca1061ae4bd61cedf2"
+  }
+}

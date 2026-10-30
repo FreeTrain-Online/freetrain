@@ -16,6 +16,7 @@
   import { demoLoopPeriod } from './lib/demo-railway-path.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
   import CornerTerrainControls from './CornerTerrainControls.svelte';
+  import RailToolIcon from './RailToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose }:
     { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void } = $props();
@@ -35,6 +36,7 @@
   let rectangleMode=false;
   let terrainStrategy:string|undefined;
   let rectangleEnd=$state<Position>();
+  let terrainSites=$state<{position:Position;skipped:boolean}[]>();
   let cornerGeneration=$state(0);
   let cornerPicked=$state<{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean}>();
   let rawPosition:Position|undefined;
@@ -72,7 +74,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -209,7 +211,7 @@
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
-    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void anchor; void tool; dirty = true; });
+    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -234,7 +236,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // During a view change the canvas clears its old scene and hit map,
@@ -259,7 +261,7 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools.filter(item=>item.id!=='terrain'||terrain) as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
+    {#each tools.filter(item=>item.id!=='terrain'||terrain) as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else}{item.icon}{/if}</button>{/each}
   </div>
   <div class="map-navigation" class:beside-panel={!!panel}>
     <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
@@ -274,7 +276,7 @@
     </PanelFrame>
   {/if}
   {#if tool === 'terrain' && terrain && !panel}
-    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end)=>{preview=p;rectangleEnd=end;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
+    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end,sites)=>{preview=p;rectangleEnd=end;terrainSites=sites;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
   {/if}
   {#if tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>

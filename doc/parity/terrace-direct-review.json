@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "direct bare-ground terrace authoring implemented and verified; final capacity gate unchanged",
+  "report": "../web-parity-terraces.md#direct-bare-ground-terraces--30-october-2026",
+  "revisionScope": "Uncommitted working tree after map-authoring, rail-icon and terrace-batch follow-ups. Earlier manifests retain their historical tested scope.",
+  "policy": "Owner-requested extension: Place terrace accepts empty Natural/Cut ground without a preparatory Mountain/corner stroke. Existing Mountain corner backups remain exact. The pinned original source remains Mountain-only; its fixtures are not relabeled.",
+  "behavior": {
+    "singleAndRectangle": "same preview/confirmation path; up to64 initially bare cells admitted in a rectangle",
+    "bareGround": "ground+1, four zero corner backups, fresh unowned Terrace; save/reopen and removal restore flat ground through existing zero-offset Mountain representation",
+    "guards": "ground equality, roof, bounds, occupancy, allocator/resource admission and current roles/revisions; occupied creeks and existing Terrace columns rejected, no stacking",
+    "picking": "Place terrace uses the ground ray so bare foreground is not displaced by a neighboring Mountain ray",
+    "unchanged": "Save7/protocol5/content, shared clock, mode, zero booking and Make cut Mountain prerequisite"
+  },
+  "results": {
+    "dotnetPassed": 722,
+    "newDirectCases": 3,
+    "clientPassed": 142,
+    "terraceChromiumPassed": 7,
+    "browserScope": "terrace-terrain.spec.ts; new direct map placement/removal, and coordinate/JA rectangles now start from empty worlds",
+    "builds": "Release solution and production web pass; Svelte zero errors/warnings; generated/content/locales/whitespace checks pass",
+    "qualification": "No fresh full-browser, optional, Python or full-size capacity acceptance claimed for this follow-up."
+  },
+  "commands": {
+    "build": "dotnet build FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "dotnet": "dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore -m:1 --disable-build-servers --blame-hang-timeout 60s",
+    "webBuild": "deno task --cwd web build",
+    "client": "deno task --cwd web test",
+    "browser": "FREETRAIN_ONLINE_TEST_SERVER_PORT=5980 FREETRAIN_ONLINE_TEST_WEB_PORT=5073 FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/terrace-direct-browser deno run -A npm:@playwright/test@1.64.1 test tests/browser/terrace-terrain.spec.ts --project canonical (cwd web)"
+  },
+  "environment": {
+    "dotnet": "10.0.402",
+    "deno": "2.9.8; repository pin2.9.7; component commands only",
+    "browser": "installed Playwright Chromium, macOS Arm64"
+  },
+  "files": {
+    "src/FreeTrain.Online.Simulation/TerraceTerrain.cs": "7fe34f849d58af0eca586539c46a4a404d7e246556f7f6563983c8b034390e9d",
+    "web/src/lib/terrain-edit.ts": "67514956a800e04c481edc05a9b961df17dfc669a2cd586397c9fca05a7a40a0",
+    "web/src/locales/en/app.json": "2b51bb775f58c9b8360131d997e4fa6d5f055965cc49d3f9082acd8f1bc10652",
+    "web/src/locales/ja/app.json": "05d168d3713d90e429eec92a8a6f59b7e0bdd13cf4f7561ead222c33d7714919",
+    "tests/FreeTrain.Online.Tests/TerraceTerrainTests.cs": "4f79b23d2985bec70361f0f7783e560cae06033a444f5717afdfda937ba6ed55",
+    "web/tests/browser/terrace-terrain.spec.ts": "659ec45791526446d3d2868dbfd5a4608997813263f972a748c9bbfaa6f869be",
+    "doc/web-parity-terraces.md": "6543df6c505b787f034c7bdb63a2b13a567f8b4d62e00f32f381fef8bbb8af2f",
+    "doc/web-parity-terrain-contract.md": "2bc65f7a63e39206078b45f6a6d9812a1ffe3b5d99c653424d26bc591a099b3a",
+    "tmp/web-feature-parity-checklist.md": "220361d5306f35161052a3d078439977b18f79412fd4996198312c740a9265d5"
+  },
+  "logs": {
+    "../../tmp/terrace-direct-build.log": "44843876fb9f1205c30421519edc4ac0b21c53a65b94ea827214381bc1be584e",
+    "../../tmp/terrace-direct-web-build.log": "a8a5e6560d3b95666796edf6dcf614ece21da216fca9df594acb799113c0ec87",
+    "../../tmp/terrace-direct-dotnet.log": "ddd753518f79093e932196bff322cf2d90feb6257c9d04c755f678bbc55a29cf",
+    "../../tmp/terrace-direct-client.log": "9a350a59e9e01cf6c682fb090b843aa6b300e1cbf9a0fb9d2a4b5d9e29e33f99",
+    "../../tmp/terrace-direct-browser.log": "5c426255a1e89a41980e8e12683c18cc0661f71f3342aba5cc9face2f631d246"
+  }
+}

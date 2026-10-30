@@ -16,7 +16,7 @@ const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTe
 export function parseCornerPreview(value:unknown):CornerTerrainPreview {
   if(!validateCorner(value))throw new Error('Invalid corner preview');
   const result=value as CornerTerrainPreview;
-  if(result.cost!=='0'||(result.legal?(result.reason!==null||result.changes.length===0):(result.reason===null||result.changes.length!==0)))throw new Error('Inconsistent corner preview');
+  if(result.cost!=='0'||(result.legal?(result.reason!==null||result.changes.length===0&&result.action!=='plantForest'):(result.reason===null||result.changes.length!==0)))throw new Error('Inconsistent corner preview');
   return result;
 }
 export function parseSpatialPreview(value:unknown):SpatialPreview {

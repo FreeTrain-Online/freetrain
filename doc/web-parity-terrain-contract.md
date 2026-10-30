@@ -227,13 +227,21 @@ cost multiplier or cost exemption from the authoring flag.
 
 ## Terraces, cuts and construction mode
 
-Terrace placement requires Mountain. It backs up four offsets only, removes the
+Source terrace placement requires Mountain. It backs up four offsets only, removes the
 Mountain, raises ground one and installs a non-reclaimable/unowned Terrace at the
 old z. Removal requires Terrace with no occupant above; it removes the Terrace,
 lowers ground one and recreates Mountain from the saved offsets. Trees, ground
 overlay and original ownership are **not** backed up; the recreated Mountain is
 unowned and undecorated. Preserve these source transitions, with loss shown in
 the preview and top-capacity/obstruction checks applied before publication.
+
+**Owner-requested authoring extension — 30 October 2026:** the browser now
+also accepts bare Natural/Cut ground for single-cell and rectangle Place terrace,
+without a corner stroke. It saves zero corner backups and otherwise follows the
+same raise/removal transitions. Occupancy, roof, bounds, allocation and role checks
+remain; existing Terrace columns cannot be stacked. This is explicit new authoring
+behavior, not a revised claim about the pinned source. See
+[direct bare-ground terraces](web-parity-terraces.md#direct-bare-ground-terraces--30-october-2026).
 
 Cut placement requires Mountain and rejects if any of its four neighbor
 ground levels is higher than the selected ground (`Direction.get(i*2)`: canonical
@@ -256,7 +264,7 @@ assignment in `Core.init`; no source economic/placement/timing consumer was foun
 **P3-TERRAIN-006:** use explicit world-owned mode, default off, Owner-controlled
 entry/exit, persisted with the world. It grants no legality/money/role bypass,
 does not alter shared pause, and does not disable ordinary Operator-authorized
-terrain tools. Its workflow ships P3-16; excluded launcher/debug/video tools stay
+terrain tools. [Its P3-16 workflow](web-parity-authoring.md) is delivered at functional slice scope; excluded launcher/debug/video tools stay
 excluded. Pending map edits remain subject to existing epoch/revision/draft rules.
 
 ## Workflow and text handoff

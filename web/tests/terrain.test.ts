@@ -141,3 +141,19 @@ Deno.test('all four terrace strategies and their source diagnostics survive stri
     for(const reason of ['mountainRequired','terraceRequired','higherNeighbor'])equal(parseCornerPreview({worldEpoch:'1',geometryRevision:'0',position:query.position,action,legal:false,reason,cost:'0',changes:[],skipped:[]}).reason,reason);
   }
 });
+Deno.test('authoring previews accept exact realized scenery and source zero-tree outcomes, retaining strict field bounds',async()=>{
+  const {parseCornerPreview}=await import('../src/lib/protocol.ts');
+  const f=(await read()).terrain!.occupants.find(o=>o.forest)!.forest!;
+  const p={x:20,y:20,z:1};const change={position:p,beforeGround:1,afterGround:1,beforeNE:0,beforeSE:0,beforeSW:0,beforeNW:0,afterNE:0,afterSE:0,afterSW:0,afterNW:0,remove:false,losesForest:false,losesOwnership:false};
+  const preview={worldEpoch:'1',geometryRevision:'0',position:p,action:'plantForest',legal:true,reason:null,cost:'0',changes:[change],skipped:[],decorations:[{position:p,forest:f,creekConnections:0}]};
+  equal(parseCornerPreview(preview),preview);
+  equal(parseCornerPreview({...preview,changes:[],decorations:[]}).changes,[]);
+  equal(parseCornerPreview({...preview,action:'placeCreek',decorations:[{position:p,forest:null,creekConnections:15}]}).action,'placeCreek');
+  for(const patch of [{cost:'100'},{decorations:[{position:p,forest:null,creekConnections:16}]},{decorations:Array(65).fill(preview.decorations[0])},{action:'placeCreek',changes:[]},{action:'raise',changes:[]}])rejects(()=>parseCornerPreview({...preview,...patch}));
+});
+Deno.test('authoring mode uses a fenced boolean command and definitions are explicit prepared identities',async()=>{
+  const {validWireShape}=await import('../src/lib/protocol.ts');
+  const command={type:'command',requestId:'mode',expectedWorldEpoch:'1',payload:{kind:'setAuthoringMode',expectedGeometryRevision:'0',enabled:true}};
+  assert(validWireShape(command));
+  for(const patch of [{enabled:'true'},{expectedGeometryRevision:'-1'},{unlimitedMoney:true}])assert(!validWireShape({...command,payload:{...command.payload,...patch}}));
+});

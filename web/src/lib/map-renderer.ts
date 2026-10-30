@@ -14,7 +14,7 @@ import { DemoRailway } from './demo-railway.ts';
 import { demoCar, demoLoop } from './demo-railway-path.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = TerrainTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -99,6 +99,11 @@ export class MapRenderer {
         if(!position||position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+      }
+      for(const site of options.terrainSites??[]) {
+        if(site.position.z>options.heightCut)continue;
+        const p=toScreen(site.position,camera,width,height,this.space);ctx.strokeStyle=site.skipped?'#b00020':'#126e79';ctx.fillStyle=site.skipped?'#b0002030':'#126e7940';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(p.x,p.y-8*camera.zoom);ctx.lineTo(p.x+16*camera.zoom,p.y);ctx.lineTo(p.x,p.y+8*camera.zoom);ctx.lineTo(p.x-16*camera.zoom,p.y);ctx.closePath();ctx.fill();ctx.stroke();
       }
       if(options.preview && options.rectangleEnd && options.preview.z<=options.heightCut){
         const a=options.preview,b=options.rectangleEnd;
