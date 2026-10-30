@@ -188,7 +188,7 @@ public class TerrainPersistenceTests
                 using var first = await server.Connect();
                 var secondCookies = new System.Net.CookieContainer();
                 using var secondHttp = new HttpClient(new HttpClientHandler { CookieContainer = secondCookies }) { BaseAddress = server.Http.BaseAddress };
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=" + ProtocolIdentity.ReferenceContent);
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=" + TerrainProfile.ContentVersion);
                 using var second = await server.Connect(secondCookies);
                 await NetworkTests.Read(first); await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1", new ByteArrayContent(data))).IsSuccessStatusCode);
@@ -224,7 +224,7 @@ public class TerrainPersistenceTests
         {
             using var storage = new SaveStorage(directory); await storage.Write("checkpoint", rejected);
             var session = new NetworkSession(new(), storage); Assert.Equal("incompatibleSave", session.StartupSaveError);
-            Assert.Equal(ProtocolIdentity.ReferenceRuleset, session.Bootstrap().Ruleset);
+            Assert.Equal(TerrainProfile.Ruleset, session.Bootstrap().Ruleset);
             session.PrepareShutdown(); await session.FinalCheckpoint(); Assert.Equal(rejected, storage.Read("checkpoint"));
         }
         finally { Directory.Delete(directory, true); }

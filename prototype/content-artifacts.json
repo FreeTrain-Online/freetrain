@@ -17,12 +17,12 @@
       "sha256": "fdfe186e45895b87f1165174aea2d41b81891ab9d2370e12add91ec80142d2f3"
     },
     {
-      "path": "web/public/assets/FTlogoL.png",
-      "sha256": "c5c31b2ad14a57421dd55928ecb5f906bc446a10cd83f753b7a3b959130dc91a"
+      "path": "web/public/assets/freetrain-online-logo.svg",
+      "sha256": "874cd2a16dc81a08171e1cf1919f242862e2be080cf0b25375a5f3d8b5995bc1"
     },
     {
       "path": "web/public/assets/NOTICE.txt",
-      "sha256": "faa0d88b22dbab9d2e6b71a43c552684b0bb2f5725a555b9e778ad0f41b50962"
+      "sha256": "aba8ea0dea006a5d39ada6347260bab88630c25dafa43ff13b6c27bd1dcb24fc"
     },
     {
       "path": "web/public/assets/condo-bottom-night.png",

@@ -134,7 +134,7 @@ public class ReferenceWorldTests
         try
         {
             byte[] saved;
-            await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true))
+            await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true,referenceFixture:true))
             {
                 var join=await server.Bootstrap(); Assert.Equal(ProtocolIdentity.ReferenceContent,join.ContentVersion);
                 using var socket=await server.Connect();await NetworkTests.Read(socket);

@@ -359,24 +359,36 @@ public class NetworkTests
         public HttpClient Http => http;
         public CookieContainer Cookies => cookies;
         public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=5&contentVersion=prototype-content-1");
-        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null, bool canonical = false)
+        public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null, bool canonical = false, bool referenceFixture = false)
         {
             var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");
             builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["FreeTrainOnline:OperatorSecret"] = secret, ["FreeTrainOnline:TrustedProxy"] = trustedProxy });
             if (participants != null) builder.Configuration.AddInMemoryCollection(participants);
             if (saveDirectory != null) builder.Services.AddSingleton(_ => new SaveStorage(saveDirectory));
             builder.Services.AddSingleton(new NetworkOptions()); builder.Services.AddSingleton<NetworkSession>(services => new(new NetworkOptions(), services.GetService<SaveStorage>(),
-                hostFactory: canonical ? null : (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry))); builder.Services.AddHostedService<SessionDriver>();
+                hostFactory: referenceFixture ? (epoch,expiry) => SessionComposition.CreateReferenceHost(epoch,expiry)
+                    : canonical ? null : (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry))); builder.Services.AddHostedService<SessionDriver>();
             builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = SaveCodec.MaximumBytes);
             var app = builder.Build(); app.UseDeployment(); app.MapNetwork(); await app.StartAsync();
             var cookies = new CookieContainer();
             return new(app, new(new HttpClientHandler { CookieContainer = cookies }) { BaseAddress = new(app.Urls.Single()) }, cookies, canonical);
         }
-        public async Task<JoinMessage> Bootstrap() => JsonSerializer.Deserialize<WireMessage>(await http.GetStringAsync(canonical ? BootstrapPath.Replace("prototype-content-1", ProtocolIdentity.ReferenceContent) : BootstrapPath), NetworkSession.Json) as JoinMessage ?? throw new InvalidDataException();
+        private static string CanonicalVersions => ProtocolIdentity.ReferenceContent + "&contentVersion=" + FreeTrain.Online.Simulation.TerrainProfile.ContentVersion;
+        public async Task<JoinMessage> Bootstrap()
+        {
+            var response = JsonSerializer.Deserialize<WireMessage>(await http.GetStringAsync(canonical
+                ? BootstrapPath.Replace("prototype-content-1", CanonicalVersions) : BootstrapPath), NetworkSession.Json);
+            if (response is JoinMessage join) return join;
+            var offer = Assert.IsType<SessionOfferMessage>(response);
+            // Large terrain is offered as metadata over HTTP; use the coherent
+            // server read here. Socket tests separately reassemble its chunks.
+            return app.Services.GetRequiredService<NetworkSession>().Bootstrap(new(offer.ParticipantId,
+                Enum.Parse<FreeTrain.Online.Session.ParticipantRole>(offer.Role, ignoreCase: true)));
+        }
         public async Task<ClientWebSocket> Connect(CookieContainer? participantCookies = null)
         {
             var socket = new ClientWebSocket(); socket.Options.Cookies = participantCookies ?? cookies;
-            try { await socket.ConnectAsync(canonical ? new Uri(SocketUri.ToString().Replace("prototype-content-1", ProtocolIdentity.ReferenceContent)) : SocketUri, CancellationToken.None); return socket; } catch { socket.Dispose(); throw; }
+            try { await socket.ConnectAsync(canonical ? new Uri(SocketUri.ToString().Replace("prototype-content-1", CanonicalVersions)) : SocketUri, CancellationToken.None); return socket; } catch { socket.Dispose(); throw; }
         }
         public async Task<ClientWebSocket> ConnectEventually(CookieContainer? participantCookies = null)
         {

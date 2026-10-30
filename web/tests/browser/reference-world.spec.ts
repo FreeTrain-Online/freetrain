@@ -4,8 +4,20 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ready,openPanel,closePanel } from './ux-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
-const bootPath='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2';
+const bootPath='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
+// Rail-loop coverage deliberately loads its fixture; fresh services now generate terrain.
+const referenceSave=readFileSync('../prototype/protocol/saves/reference-v7.json');
+let previousWorld:Buffer;
+test.beforeEach(async({request})=>{
+  const before=await(await request.get(bootPath)).json();
+  previousWorld=await(await request.get('/api/saves/download')).body();
+  expect((await request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:referenceSave})).ok()).toBe(true);
+});
+test.afterEach(async({request})=>{
+  const current=(await(await request.get(bootPath)).json()).snapshot;
+  expect((await request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:previousWorld})).ok()).toBe(true);
+});
 async function at(page:Page,p:{x:number;y:number;z:number}) {
   return page.locator('canvas').evaluate((el,p)=>{
     const canvas=el as HTMLCanvasElement,r=canvas.getBoundingClientRect(),[cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom);

@@ -29,6 +29,7 @@ if (string.IsNullOrEmpty(builder.Configuration["FreeTrainOnline:OperatorSecret"]
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = SaveCodec.MaximumBytes);
 var networkOptions = builder.Configuration.GetSection("FreeTrainOnline:Network").Get<NetworkOptions>() ?? new();
 networkOptions.Validate();
+var startupWorld = builder.Configuration.GetSection("FreeTrainOnline:StartupWorld").Get<StartupWorldOptions>() ?? new();
 var checkpointOptions = builder.Configuration.GetSection("FreeTrainOnline:Saves").Get<CheckpointOptions>() ?? new();
 if (checkpointOptions.Interval < TimeSpan.FromSeconds(1) || checkpointOptions.Interval > TimeSpan.FromMinutes(5))
     throw new InvalidOperationException("Checkpoint interval must be between one second and five minutes.");
@@ -39,7 +40,7 @@ if (prototypeRegression && builder.Configuration["urls"]!.Split(';').Any(url => 
     throw new InvalidOperationException("The prototype regression harness requires loopback binding.");
 builder.Services.AddSingleton<NetworkSession>(services => new(networkOptions, services.GetRequiredService<SaveStorage>(),
     services.GetRequiredService<ILogger<NetworkSession>>(),
-    prototypeRegression ? (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry) : null));
+    prototypeRegression ? (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry) : null, startupWorld));
 builder.Services.AddSingleton<SessionDriver>();
 builder.Services.AddHostedService(services => services.GetRequiredService<SessionDriver>());
 var app = builder.Build();

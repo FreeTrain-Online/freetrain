@@ -174,7 +174,7 @@ public class ReliefTerrainTests(ITestOutputHelper output)
             {
                 var before=await server.Bootstrap();using var first=await server.Connect();await NetworkTests.Read(first);
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
-                await http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2");
+                await http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=terrain-content-1");
                 using var second=await server.Connect(cookies);await NetworkTests.Read(second);
                 var r=mode switch { 4 => ForestTerrainTests.Request(70, 64, "grass"), 5 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth) with { Options = WaterTerrainTests.Request(1,RiverDirection.NorthSouth).Options with { StartingArea=16, Forests=ForestTerrainTests.Request(90,16,"mountain").Options.Forests } }, 1 => CoastTerrainTests.Request(CoastKind.Island), 2 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth), 3 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth,CoastKind.Sides,CoastSides.North), _ => Request(ReliefKind.Mountains,z:64) };
                 var response=await Post(server.Http,"/api/worlds/generated/preview",new GeneratedPreviewRequest(r.Name,r.Dimensions,r.WaterLevel,r.Options,before.WorldEpoch,before.Snapshot.Revision));

@@ -65,11 +65,12 @@ public class SaveRejectionTests
             var session = new NetworkSession(new(), storage);
             Assert.Equal(error, session.StartupSaveError);
             Assert.True(session.SavingAvailable);
-            Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(130080, session.Bootstrap().Snapshot.Tick);
+            Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(FreeTrain.Online.Simulation.GameTime.StartMinute, session.Bootstrap().Snapshot.Tick);
+            Assert.NotNull(session.Bootstrap().Snapshot.Terrain);
             Assert.False(session.AutomaticCheckpointAvailable);
             Assert.Equal(error, (await Assert.ThrowsAsync<InvalidDataException>(() => session.Checkpoint())).Message);
             var slot = session.Checkpoint("slot1"); session.Tick(DateTimeOffset.UtcNow); await slot;
-            Assert.NotNull(SaveCodec.Read(File.ReadAllBytes(Path.Combine(directory, "slot1.json"))));
+            Assert.NotNull(SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(directory, "slot1.json")), FreeTrain.Online.Content.TerrainProfiles.Resolve).Terrain);
             session.PrepareShutdown(); await session.FinalCheckpoint();
             Assert.Equal(text, File.ReadAllText(path));
             Assert.True(File.Exists(Path.Combine(directory, "slot1.json")));

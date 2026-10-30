@@ -1,10 +1,9 @@
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {ready,openPanel,closePanel} from './ux-helpers.ts';
+import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
-const boot='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
-const state=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
+const state=canonicalState;
 const savedGround=(s:any)=>[...Buffer.from(s.packedTerrain.cells,'base64')].map(n=>n&63);
 const save=readFileSync('../prototype/protocol/saves/terrain-v7.json');
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
@@ -126,9 +125,9 @@ test('synthetic full-terrain landscape renders behind the connection gate and gi
   await page.screenshot({path:join(directory,'connection-landscape-portrait.png'),fullPage:true});
   expect(images).toBe(decoded);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(360);
   await expect(page.locator('.map-viewport')).toHaveAttribute('inert','');
-  release();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-4');await expect(canvas).toHaveAttribute('data-instance','synthetic-demo');
+  release();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-instance','synthetic-demo');
   expect(await canvas.getAttribute('data-demo-loop')).toBeNull();expect(await canvas.getAttribute('data-demo-train')).toBeNull();
-  expect((await state(page)).terrain).toBeUndefined();expect(errors).toEqual([]);
+  expect((await state(page)).ruleset).toBe('terrain-state-1');expect(errors).toEqual([]);
  }finally{release();}
 });
 

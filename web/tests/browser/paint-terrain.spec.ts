@@ -1,7 +1,6 @@
 import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel} from './ux-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
-const state=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
+import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
+const state=canonicalState;
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
 async function empty(page:Page,locale="en"){
  const s=await state(page),r=await page.request.post('/api/worlds/empty/preview',{data:{name:'Paint terrain',dimensions:{h:30,v:42,z:6},waterLevel:1,epoch:s.worldEpoch,revision:s.revision}});expect(r.ok()).toBe(true);const c=await r.json();

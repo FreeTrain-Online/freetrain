@@ -3,8 +3,10 @@
 FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail and business simulation game FreeTrain by Kohsuke Kawaguchi.
 
 The localized Svelte app connects to an authoritative C# session over HTTP and
-WebSocket. Its default world is now a canonical H/V spatial reference: a small
-32-cell rail loop covering all eight headings. You can inspect rails, pan/zoom,
+WebSocket. Without a usable saved checkpoint, the server generates a fresh seeded
+400(H)×600(V) terrain world with rolling hills, sparse trees, and a random choice of
+dry land, a lake, a river, or a coast. Existing saved worlds restore exactly.
+You can inspect terrain, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
 with **Save 7**. Economy, construction, trains and stations remain future slices.
 Settings offers six departure-bell previews alongside the existing sound effects.
@@ -75,7 +77,7 @@ responsiveness remains in final P3 capacity acceptance.
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive
 [https://github.com/rdmark/freetrain-exav-archive].
-The spatial reference uses source normal rail patterns. The connection screen
+The regression-only spatial reference uses source normal rail patterns. The connection screen
 shows a separate synthetic 48×96 coastal terrain landscape, using canonical
 quarter slopes, water, forests and terraces, plus a decorative coastal railway
 loop and locally animated train. The lowest beach level is tree-free; the demo
@@ -161,10 +163,18 @@ deno task --cwd web dev
 Open the Vite loopback URL printed in the second terminal. The server binds to
 `http://127.0.0.1:5080`; Vite proxies `/api` HTTP and WebSocket traffic to it.
 `GET /health` reports service health and automatic-checkpoint errors. The live map
-uses source H/V geometry and an asset-free rail schematic. Each participant has
+uses source H/V terrain geometry. Each participant has
 one active socket; tabs sharing cookies share that identity. Local browsers
 receive independent Owner identities. Train/construction operations are
 unavailable until their canonical implementations arrive.
+
+Fresh-world defaults can be configured with `FreeTrainOnline__StartupWorld__…`:
+`Width` (H: 400), `Height` (V: 600), `Hills` (35, range 0–100), `TreesPercent` (2, range
+0–90), and `Water` (`Random`, `Dry`, `Lake`, `River`, or `Coast`). Set `Seed` to an
+integer for reproducible terrain; omit it for a fresh random seed. These settings
+only apply when there is no usable checkpoint. The chosen seed and generation
+parameters are retained in Save 7 along with the actual map. The old rail-loop
+map remains an explicit regression fixture; it is no longer a startup world.
 
 For a remote binding, configure `FreeTrainOnline__OperatorSecret` on the server. The
 browser exchanges the access key for an HttpOnly, SameSite cookie. Keep the static
@@ -239,7 +249,7 @@ python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav
 python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive --check
 ```
 
-The existing synthetic live world retains its distinct pack and Save 7 identity.
+The regression-only synthetic rail world retains its distinct pack and Save 7 identity.
 Historical demo/regression PNGs, variants, masks and notices in `web/public/assets/`
 remain frozen artifacts checked by `prototype/content-artifacts.json`; they no
 longer trigger historical source import during normal builds. Browser decode

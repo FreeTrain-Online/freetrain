@@ -45,7 +45,7 @@ also expires input after five ticks, before due events.
 Future agents use the same contexts, commands, reads and leases. No decision engine or
 provider is part of this library.
 
-The default canonical `ReferenceWorld` uses the same bounded FIFO and snapshot /
+Generated terrain worlds and the regression-only `ReferenceWorld` use the same bounded FIFO and snapshot /
 spatial query boundary. Run/Pause/Step advance its world-local source-minute clock;
 other gameplay commands return `operationUnavailable`. Economy/train behavior is pending.
 Capture writes canonical Save 7, including the entity/voxel graph, allocator, clock and random streams. Load

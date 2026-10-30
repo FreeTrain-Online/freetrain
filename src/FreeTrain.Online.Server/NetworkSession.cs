@@ -30,13 +30,26 @@ public sealed partial class NetworkSession
 {
     private readonly NetworkOptions options;
     private readonly SaveStorage? storage;
-    public NetworkSession(NetworkOptions options, SaveStorage? storage = null, ILogger<NetworkSession>? logger = null, Func<long, TimeSpan, SessionHost>? hostFactory = null)
+    public NetworkSession(NetworkOptions options, SaveStorage? storage = null, ILogger<NetworkSession>? logger = null,
+        Func<long, TimeSpan, SessionHost>? hostFactory = null, StartupWorldOptions? startupWorld = null)
     {
         options.Validate();
         this.options = options; this.storage = storage;
-        this.hostFactory = hostFactory ?? ((epoch, expiry) => SessionComposition.CreateReferenceHost(epoch, expiry));
+        startupWorld ??= new();
+        this.hostFactory = hostFactory ?? ((epoch, _) => SessionComposition.CreateGeneratedHost(startupWorld, epoch));
+        // Restore before generating: a saved world must not pay generation cost,
+        // consume a fresh seed, or depend on new-world parameter validity.
+        if (hostFactory == null && storage?.Exists("checkpoint") == true)
+        {
+            try { host = SessionComposition.CreateSavedHost(storage.Read("checkpoint")); return; }
+            catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
+            {
+                StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";
+                logger?.LogWarning("Ignored checkpoint ({Reason}); generating a new world. The file was preserved.", StartupSaveError);
+            }
+        }
         host = this.hostFactory(1, options.InputExpiry);
-        if (storage?.Exists("checkpoint") == true)
+        if (hostFactory != null && storage?.Exists("checkpoint") == true)
         {
             try
             {
@@ -45,7 +58,7 @@ public sealed partial class NetworkSession
             catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
             {
                 StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";
-                logger?.LogWarning("Ignored checkpoint ({Reason}); starting the reference world. The file was preserved.", StartupSaveError);
+                logger?.LogWarning("Ignored checkpoint ({Reason}); starting a new world. The file was preserved.", StartupSaveError);
             }
         }
     }

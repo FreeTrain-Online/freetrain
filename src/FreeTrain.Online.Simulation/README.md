@@ -8,9 +8,11 @@ research evidence where they identify the authority.
 `Prototype/` and `FreeTrain.Online.Simulation.Prototype` explicitly isolate the
 obsolete original-FreeTrain gameplay baseline. Its four-direction geometry,
 clock, random generator, definitions and world remain only for explicit historical
-regression harnesses and headless traces. The default service uses `ReferenceWorld`,
-a validated H/V loop with the canonical source-minute clock/calendar/scheduler
-and versioned world-owned random streams, with no prototype subsystem dependencies.
+regression harnesses and headless traces. The default service restores a saved
+world or generates a seeded 400(H)×600(V) `TerrainWorld` with hills, sparse trees and
+optional water. `ReferenceWorld` remains an explicit validated H/V rail-loop
+fixture. Both use the canonical source-minute clock/calendar/scheduler and
+versioned world-owned random streams, with no prototype subsystem dependencies.
 See [P1-02](../../doc/web-parity-clock.md) and [P1-03](../../doc/web-parity-random.md).
 [P1-04](../../doc/web-parity-spatial-contracts.md) adds Cube, explicit footprints,
 stable entity IDs and world-owned voxel occupancy. Only Save 7 is supported; it

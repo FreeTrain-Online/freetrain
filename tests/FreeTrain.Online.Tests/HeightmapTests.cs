@@ -188,7 +188,7 @@ public class HeightmapTests(ITestOutputHelper output)
             {
                 var before=await server.Bootstrap();using var first=await server.Connect();await NetworkTests.Read(first);
                 var secondCookies=new System.Net.CookieContainer();using var secondHttp=new HttpClient(new HttpClientHandler{CookieContainer=secondCookies}){BaseAddress=server.Http.BaseAddress};
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2");
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=terrain-content-1");
                 using var second=await server.Connect(secondCookies);await NetworkTests.Read(second);
                 async Task<HttpResponseMessage> Preview(long revision, byte[]? bytes=null)
                 {

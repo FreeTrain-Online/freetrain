@@ -1,10 +1,9 @@
 import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel} from './ux-helpers.ts';
+import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
 import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
-const boot='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
 const compat='protocolVersion=5&contentVersion=terrain-content-1';
-const state=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
+const state=canonicalState;
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function empty(page:Page,locale='en'){
  const s=await state(page);const response=await page.request.post('/api/worlds/empty/preview',{data:{name:'Corners',dimensions:{h:30,v:42,z:6},waterLevel:1,epoch:s.worldEpoch,revision:s.revision}});expect(response.ok()).toBe(true);
