@@ -19,8 +19,8 @@ Reproduce: deno task --cwd web import:content (Python 3 standard library).
 FTicon.png: core/res/FTicon.gif, converted to PNG with original pixels and alpha.
 Reproduce: magick core/res/FTicon.gif web/public/assets/FTicon.png
 
-FTlogoL.png: FTlogoL.gif from the FreeTrain wiki (http://www.kohsuke.org/freetrain/wiki/FTlogoL.gif),
-converted to PNG with original pixels but clean alpha.
+freetrain-online-logo.svg: vector image traced by Daniel Markstedt from
+FreeTrain splash screen: core/res/splash.jpg, original author is 477
 
 station.wav: plugins/system/station.wav, copied without modification from main
 at 1f755ca; registered as the station sound in plugins/system/plugin.xml:304.
