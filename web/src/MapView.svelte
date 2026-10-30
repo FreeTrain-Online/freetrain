@@ -62,7 +62,9 @@
   const terrain = $derived(!!view.read && isTerrainWorld(view.read));
   const reference = $derived(isReferenceWorld(view.read) || terrain);
   const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
-  const blocked = $derived(view.pending || !live || view.role === 'observer');
+  // Keep interaction resets tied to role changes, rather than every new view snapshot.
+  const observer = $derived(view.role === 'observer');
+  const blocked = $derived(view.pending || !live || observer);
   const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(item => item.id === selection?.id) : undefined);
   const shapes: Exclude<Track['shape'], `normal${number}`>[] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
   async function flushInput() {
@@ -229,7 +231,7 @@
   });
   $effect(() => { if (!live || tool !== 'inspect' || selectedTrain?.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) clearInput(); });
   $effect(() => { if (inputSuspended) suspendInput(); });
-  $effect(() => { if (view.role === 'observer' || !live) resetInteraction(); });
+  $effect(() => { if (observer || !live) resetInteraction(); });
   $effect(() => {
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
