@@ -135,3 +135,15 @@ Final checks: **512 .NET /127 client /142 Python cases** (one existing Python sk
 The final Linux Arm64 image is `sha256:a05fb6e34a5377e6b0080875b41ac5f4b9e578169586d404cc6b9f7b39bfc634` (`freetrain-online:p3-capacity`). A loopback-only disposable container with4 CPUs and6 GiB memory verifies the621-chunk heavy and1781-chunk mountain scenes, exact save/download/reopen, and generated checkpoint restart from a retained test volume. The generated save SHA-256 is `95de893ad978e36a60152bba243198f718468769f3f636c4d2b33d27339b5937`. Cgroup memory peak for generated upload/publication/reopen is4,395,167,744 bytes; startup restore/download peak is2,111,283,200 bytes. Distribution checks verify238 assets/505 unique media/4 notices, exact catalog hashes and canonical bootstrap; no Skia artifacts are present and the reviewed decoder's MIT notice is included. Test containers/volumes are removed afterward.
 
 The advanced **P3-16a slice is complete for current terrain consumers**. P3-09–11 must add large topology/vegetation/starting-area fixtures without replacing small independent oracles; later editing consumers must extend scale evidence, and P3-17 reruns final capacity regression. Legacy save import and full-city/content-density acceptance remain P10/P11. Overall P3 and the recorded native/P2/browser deferrals remain open.
+
+## P3-14 editing consumer qualification — 30 October 2026
+
+[Rectangle/repair evidence](web-parity-rectangle-terrain.md#verification-and-capacity)
+extends the1500×1090×45 consumer fixtures with64-cell raise, excavation and
+inclusive repair, exact one-command publication and byte-identical Save7 reopen.
+Preview takes11.33/1.01/1.55ms; commit takes1,197.51/912.32/717.12ms respectively.
+These functional continuation checks exceed the250ms authoritative target.
+Together with P3-13's1,193.7ms corner commit, they keep whole-world edit
+validation/admission/publication latency and dense edited-world publication open
+for final P3-16a acceptance before P3-17. Earlier generation/rendering budget
+passes remain separate measurements.

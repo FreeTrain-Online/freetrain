@@ -178,7 +178,8 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const response=await fetch(`/api/terrain/corner/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(5000)])});
       if(!response.ok)throw new Error('Corner preview failed');
       const preview=parseCornerPreview(await response.json());
-      if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||preview.geometryRevision!==query.expectedGeometryRevision||preview.action!==query.action||query.offsetX===null&&(preview.position.x!==query.position.x||preview.position.y!==query.position.y||preview.position.z!==query.position.z))throw new Error('Stale corner preview');
+      const expected=query.rectangle?{x:Math.min(query.position.x,query.rectangle.end.x),y:Math.min(query.position.y,query.rectangle.end.y),z:query.position.z}:query.position;
+      if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||preview.geometryRevision!==query.expectedGeometryRevision||preview.action!==query.action||query.offsetX===null&&(preview.position.x!==expected.x||preview.position.y!==expected.y||preview.position.z!==expected.z))throw new Error('Stale corner preview');
       return preview;
     },
     async previewSpatial(query,signal) {

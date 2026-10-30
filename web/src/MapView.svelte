@@ -32,8 +32,10 @@
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let cornerControls=$state<{cancelDraft:()=>boolean}>();
+  let rectangleMode=false;
+  let rectangleEnd=$state<Position>();
   let cornerGeneration=$state(0);
-  let cornerPicked=$state<{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean}>();
+  let cornerPicked=$state<{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean}>();
   let rawPosition:Position|undefined;
   let anchor=$state<Position>();
   let snapMode=$state<0|4|8>(0);
@@ -69,7 +71,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { rectangleMode=false;rectangleEnd=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -116,7 +118,7 @@
   function move(event: PointerEvent) {
     if (!live || inputSuspended) return;
     const p = point(event);
-    if(tool==='terrain'&&event.shiftKey&&event.buttons===1&&drag&&!drag.pan&&!panel&&!view.pending){drag.moved=true;pickCorner(event,true);return;}
+    if(tool==='terrain'&&!rectangleMode&&event.shiftKey&&event.buttons===1&&drag&&!drag.pan&&!panel&&!view.pending){drag.moved=true;pickCorner(event,true);return;}
     if (drag) {
       if (Math.hypot(p.x - drag.x, p.y - drag.y) > 3) drag.moved = true;
       if (drag.moved) {
@@ -134,7 +136,7 @@
     const world={x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y};
     const position=pickTerrainGround(read,world,heightCut);if(!position)return;
     const projected=space.project(position);
-    const next={position,offsetX:Math.max(0,Math.min(31,Math.floor(world.x-projected.x))),offsetY:Math.max(-32,Math.min(32,Math.floor(world.y-projected.y))),reverse:event.ctrlKey,append};
+    const next={position,offsetX:Math.max(0,Math.min(31,Math.floor(world.x-projected.x))),offsetY:Math.max(-32,Math.min(32,Math.floor(world.y-projected.y))),reverse:event.ctrlKey,soft:event.shiftKey,append};
     cornerPicked=next;
   }
   function down(event: PointerEvent) {
@@ -142,7 +144,7 @@
     event.preventDefault(); focusMap();
     drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, pointerId: event.pointerId };
     canvas.setPointerCapture(event.pointerId);
-    if(tool==='terrain'&&event.shiftKey&&!drag.pan&&!blocked&&!panel)pickCorner(event,false);
+    if(tool==='terrain'&&!rectangleMode&&event.shiftKey&&!drag.pan&&!blocked&&!panel)pickCorner(event,false);
   }
   function up(event: PointerEvent) {
     const was = drag; cancelGesture();
@@ -206,7 +208,7 @@
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
-    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void anchor; void tool; dirty = true; });
+    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -231,7 +233,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // During a view change the canvas clears its old scene and hit map,
@@ -271,7 +273,7 @@
     </PanelFrame>
   {/if}
   {#if tool === 'terrain' && terrain && !panel}
-    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onpreview={p=>{preview=p;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
+    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={value=>{rectangleMode=value;}} onpreview={(p,end)=>{preview=p;rectangleEnd=end;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
   {/if}
   {#if tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>

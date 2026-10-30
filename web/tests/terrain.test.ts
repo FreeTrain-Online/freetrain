@@ -109,3 +109,14 @@ Deno.test('terrain editing uses the source ground ray through water and decorati
   assert(!pickTerrainGround(s,q,0));
   assert(!pickTerrainGround(s,{x:-99999,y:-99999},s.map.levels-1));
 });
+
+Deno.test('rectangle repair preview accepts exact losses and explicit bounded repair diagnostics',async()=>{
+  const {parseCornerPreview}=await import('../src/lib/protocol.ts');
+  const result={worldEpoch:'3',geometryRevision:'17',position:{x:10,y:8,z:1},action:'repair',legal:true,reason:null,cost:'0',
+    skipped:[{position:{x:11,y:8,z:1},reason:'inconsistentNeighbors'},{position:{x:11,y:9,z:1},reason:'unrepresentableHeight'}],
+    changes:[{position:{x:10,y:8,z:1},beforeGround:1,afterGround:2,beforeNE:4,beforeSE:4,beforeSW:4,beforeNW:1,afterNE:0,afterSE:0,afterSW:0,afterNW:0,remove:true,losesForest:true,losesOwnership:true}]};
+  equal(parseCornerPreview(result),result);
+  equal(parseCornerPreview({...result,legal:false,reason:'noChange',changes:[]}).legal,false);
+  rejects(()=>parseCornerPreview({...result,skipped:Array(65).fill(result.skipped[0])}));
+  rejects(()=>parseCornerPreview({...result,action:'flatten'}));
+});

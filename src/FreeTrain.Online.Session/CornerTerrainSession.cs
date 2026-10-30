@@ -14,6 +14,14 @@ public sealed partial class SessionHost
         if (terrainState!.Revision == long.MaxValue) throw new InvalidOperationException("operationUnavailable");
         if (query.Stroke?.Length > 63) throw new ArgumentException("invalidInput");
         var draft = new CornerTerrainDraft(world);
+        if (query.Rectangle is {} rectangle)
+        {
+            if (query.Position == null || rectangle.End == null || query.OffsetX != null || query.OffsetY != null || query.Stroke?.Length > 0)
+                throw new ArgumentException("invalidInput");
+            return (world,draft,RectangleTerrain.Plan(draft,
+                new(query.Position.X,query.Position.Y,query.Position.Z),
+                new(rectangle.End.X,rectangle.End.Y,rectangle.End.Z),query.Action,rectangle.Soft));
+        }
         var sites = new[] { new CornerTerrainSite(query.Position,query.Action,query.OffsetX,query.OffsetY) }.Concat(query.Stroke ?? []);
         var plans = new List<CornerTerrainPlan>();
         foreach (var site in sites)

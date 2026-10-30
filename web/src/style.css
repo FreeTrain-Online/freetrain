@@ -117,4 +117,4 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .decision-dialog.wide { width: min(560px, calc(100% - 24px)); }
 .decision-dialog::backdrop { background: #17241e55; }
 .map-navigation .zoom-level { align-self: center; padding: 2px 4px; font-variant-numeric: tabular-nums; background: var(--ui-window-background); }
-.tool-card > .form-actions:last-child { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
+.tool-card > .form-actions:last-child, .tool-card > section > .form-actions:last-child { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }

@@ -376,5 +376,21 @@
   "cornerSites": "ストロークの地点",
   "cornerSkipped": "変更できない地点",
   "confirmTerrain": "地形の変更を確定",
-  "cornerCapacity": "地形または識別子の上限を超えるため変更できません。"
+  "cornerCapacity": "地形または識別子の上限を超えるため変更できません。",
+  "terrainScope": "地形の選択方法",
+  "terrainCorners": "隅のストローク",
+  "rectangleTool": "矩形の地形操作・修復",
+  "rectangleRaise": "矩形を隆起",
+  "rectangleLower": "矩形を掘削",
+  "rectangleRepair": "隅の不整合を修復",
+  "rectangleEndX": "終点 X",
+  "rectangleEndY": "終点 Y",
+  "rectangleSoft": "半分の高さで隆起（Shift）",
+  "rectangleCheck": "矩形をプレビュー",
+  "rectanglePickEnd": "始点の高さで反対側の終点を選んでください。",
+  "rectangleInvalid": "マップ内の整数座標を指定してください。矩形は両端を含め最大64セルです。",
+  "terrainNoChange": "この地点に変更はありません。",
+  "repairInconsistent": "隣接する隅の高さが一致しないため、このセルは修復できません。",
+  "repairUnrepresentable": "一致する高さがこのセルの隅で表せる範囲を超えています。",
+  "rectangleHelp": "始点と終点を選ぶか座標を入力します。両端は始点の Z で正規化されます。隆起・掘削は終端の手前までの共有隅を操作し、修復は両端を含みます。選択は最大64セルです。終点選択時の Ctrl で修復、Shift で半分の高さの隆起になります。変更・損失・スキップ地点を確認し、一度だけ確定してください。失敗したセルはスキップし、有効な地点をまとめて反映します。"
 }

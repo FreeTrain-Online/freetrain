@@ -9,6 +9,37 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if (args is ["--rectangle-capacity", var rectangleH, var rectangleV, var rectangleZ, var rectangleDirectory])
+{
+    int h=int.Parse(rectangleH),v=int.Parse(rectangleV),z=int.Parse(rectangleZ);
+    Directory.CreateDirectory(rectangleDirectory);
+    var measurements=new List<object>();
+    foreach(var action in new[]{"raise","lower","repair"})
+    {
+        var request=new EmptyWorldRequest(WorldCreationProfile.Id,"Rectangle capacity",new(h,v,z),1);
+        var world=TerrainWorld.Empty(request,TerrainProfiles.Bundled);
+        var p=world.Space.ToLocation(new(h/2,v/2,1));
+        if(action=="repair")
+        {
+            var cells=world.Cells.ToBuilder();cells[(v/2)*h+h/2]=new(0,TerrainSurface.Cut);
+            world=new(world.Profile,world.Name,new(h,v,z),1,cells,new(1,[]),[]);
+        }
+        using var host=new FreeTrain.Online.Session.SessionHost(new TerrainSessionState(world,TerrainProvenance.From(request)),"owner",TerrainProfiles.Resolve);
+        var query=new CornerTerrainQuery(1,0,new(p.X,p.Y,p.Z),action,Rectangle:new(new(p.X+7,p.Y+7,p.Z)));
+        var watch=Stopwatch.StartNew();var preview=host.PreviewCorner(query);var previewMs=watch.Elapsed.TotalMilliseconds;
+        if(!preview.Legal)throw new Exception("Rectangle preview rejected.");
+        watch.Restart();var command=host.Enqueue(new("owner"),new("rectangle-capacity",1,new EditCornerCommand(query)));host.Pump(0);
+        if(await command is not AcceptedMessage)throw new Exception("Rectangle commit rejected.");var commitMs=watch.Elapsed.TotalMilliseconds;
+        watch.Restart();var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;
+        var reopened=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+        if(!bytes.SequenceEqual(SaveCodec.Write(reopened)))throw new Exception("Rectangle continuation mismatch.");
+        if(reopened.World.Revision!=1 || reopened.World.FineHeight(p,1)!=(action=="raise"?8:action=="lower"?0:4))throw new Exception("Rectangle result mismatch.");
+        File.WriteAllBytes(Path.Combine(rectangleDirectory,action+"-v7.json"),bytes);
+        measurements.Add(new{h,v,z,action,selectedCells=64,sites=action=="repair"?64:49,changed=preview.Changes.Length,skipped=preview.Skipped.Length,
+            previewMs,commitMs,saveReopenMs=watch.Elapsed.TotalMilliseconds,saveBytes=bytes.Length,managedBytes=GC.GetTotalMemory(true)});
+    }
+    Console.WriteLine(JsonSerializer.Serialize(measurements,json));return;
+}
 if (args is ["--corner-capacity", var cornerH, var cornerV, var cornerZ, var cornerDirectory])
 {
     int h=int.Parse(cornerH),v=int.Parse(cornerV),z=int.Parse(cornerZ);

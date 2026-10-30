@@ -51,6 +51,11 @@ actual surface-water metrics and bounded topology diagnostics, including full-si
 [P3-13 corner tools](doc/web-parity-corner-terrain.md) add **Game → Modify terrain**:
 Raise/Lower, source ground/corner picking, Ctrl reversal, Shift-drag or explicit
 coordinate strokes, read-only legality/loss preview and one revalidated Confirm.
+[P3-14 rectangle tools](doc/web-parity-rectangle-terrain.md) add normalized two-point
+or coordinate rectangles, source Raise/Excavate profiles, explicit Repair,
+Ctrl repair/Shift upper profile, per-site skips and one atomic confirmation.
+Selections admit at most 64 inclusive cells; Repair includes the far edges while
+Raise/Excavate operate on shared corners before those edges.
 Changes preserve actual Save7 continuation. Full-size editing works, but its
 measured1.2-second commit exceeds the provisional interaction target; editing
 responsiveness remains in final P3 capacity acceptance.

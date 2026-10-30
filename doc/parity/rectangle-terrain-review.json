@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "P3-14-functional-slice-complete; final editing-capacity gate open",
+  "basedOnGitRevision": "31882990a461e342d3705b04f5cdb6d177a87c91",
+  "revisionScope": "Uncommitted working tree; tested source hashes below. No commit created. CornerTerrainDraft comments clarified after tests; executable code unchanged.",
+  "report": "../web-parity-rectangle-terrain.md",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "engine": "FreeTrain ExAV 2.1.1.12",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "path": "plugins/foobarbazer.Mountain2/src/Mountain2Controller.cs",
+    "sha256": "2f7504e8551cddf290135419e11340709dad7b80cace77b2f247562581fc0992",
+    "review": "terrain-review.json",
+    "verification": "40 raw pinned Git blobs, 77 literal fixtures, 59 source text bindings; no original-runtime capture"
+  },
+  "contract": {
+    "maximumInclusiveSelectedCells": 64,
+    "raiseExcavate": "exclusive shared SE sites, x-major/y-minor, targets4/0; Shift upper profile2/4",
+    "repair": "inclusive cells; exact representable neighbor reference, all present neighbors agree; atomic per cell",
+    "localFailures": "skip site/cell without partial writes; subsequent sites see preceding accepted edits",
+    "publication": "one FIFO Owner/Operator replacement after current role/connection, epoch, geometry, candidate and Save7 revalidation",
+    "cost": "0; no source booking",
+    "ownership": "retained entities preserve ID/value/forest/ownership; removal losses explicit; new Mountains unowned; consumed IDs not reused",
+    "preview": "authenticated compatible read-only, observer queries permitted",
+    "wire": "optional rectangle selector on existing CornerTerrainQuery; no state, save, content or protocol revision change",
+    "lifecycle": "two clicks or coordinates; explicit modes plus Ctrl repair/Shift upper profile; stale anchor and response guards, panel/Escape/connection fences, existing ambiguous-outcome no replay"
+  },
+  "results": {
+    "dotnet": {
+      "passed": 685,
+      "failed": 0
+    },
+    "focusedRectangleCases": 24,
+    "client": {
+      "passed": 138,
+      "failed": 0
+    },
+    "python": {
+      "total": 142,
+      "skipped": 1,
+      "failed": 0
+    },
+    "chromium": {
+      "passed": 106,
+      "failed": 0,
+      "newJourneysPassed": 5
+    },
+    "optionalSource": {
+      "passed": 4,
+      "failed": 0
+    },
+    "optionalPrepared": {
+      "passed": 4,
+      "failed": 0
+    },
+    "releaseBuild": "zero warnings/errors",
+    "svelte": "zero warnings/errors",
+    "checks": [
+      "generated contracts",
+      "bundled content preparation",
+      "EN/JA locales",
+      "raw pinned terrain source",
+      "project boundaries",
+      "git diff --check"
+    ]
+  },
+  "capacity": {
+    "command": "dotnet run --project tools/TerrainTransportProbe -c Release --no-restore --no-build -- --rectangle-capacity 1500 1090 45 tmp/p3-14-capacity",
+    "results": [
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "raise",
+        "selectedCells": 64,
+        "sites": 49,
+        "changed": 196,
+        "skipped": 0,
+        "previewMs": 11.329,
+        "commitMs": 1197.5122,
+        "saveReopenMs": 550.9672,
+        "saveBytes": 2189139,
+        "managedBytes": "51967160"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "lower",
+        "selectedCells": 64,
+        "sites": 49,
+        "changed": 196,
+        "skipped": 0,
+        "previewMs": 1.0101,
+        "commitMs": 912.3227,
+        "saveReopenMs": 434.59,
+        "saveBytes": 2189139,
+        "managedBytes": "52491120"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "repair",
+        "selectedCells": 64,
+        "sites": 64,
+        "changed": 1,
+        "skipped": 63,
+        "previewMs": 1.5487,
+        "commitMs": 717.1242,
+        "saveReopenMs": 726.9011,
+        "saveBytes": 2187412,
+        "managedBytes": "52525320"
+      }
+    ],
+    "budgetQualification": "Functional exact publication/reopen only. Commit717–1198ms exceeds250ms target; final P3-16a edit latency and dense publication gate remains open."
+  },
+  "commands": {
+    "build": "dotnet build FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "dotnet": "dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore --disable-build-servers -m:1",
+    "webBuild": "deno task --cwd web build",
+    "client": "deno task --cwd web test",
+    "python": "python3 -m unittest discover -s scripts/tests",
+    "source": "python3 scripts/review-terrain.py --source-root /Users/dmark/dev/freetrain-exav-archive --check",
+    "chromium": "FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/p3-14-browser-final deno run -A npm:@playwright/test@1.64.1 test (cwd web)",
+    "optional": "deno run -A npm:@playwright/test@1.64.1 test --config playwright.optional.config.ts; source/default and FREETRAIN_ONLINE_OPTIONAL_PREPARED=1"
+  },
+  "environment": {
+    "dotnet": "10.0.402",
+    "deno": "2.9.8 (repository .deno-version 2.9.7; component commands used, exact-version aggregate script not run)",
+    "browser": "installed Playwright Chromium; native/device/deferred browsers not reclassified"
+  },
+  "developmentCorrections": [
+    "Normalized reversed rectangle responses now checked against normalized endpoints in remote client.",
+    "Repair admitted by websocket command filter only with rectangle selector.",
+    "Absent optional rectangle omitted from JSON to preserve prior command fixture round-trips.",
+    "Initial literal test expectations corrected for ImmutableArray collection comparison and Shift interior profile.",
+    "Earlier browser development run7/9 superseded by final full Chromium106/106."
+  ],
+  "openGates": [
+    "final P3-16a edit latency and dense edited-world publication before P3-17",
+    "P3-15 terraces/cliffs",
+    "P3-16 map construction mode",
+    "overall P3",
+    "existing P2/native/deferred-browser/full-city/import gates"
+  ],
+  "files": {
+    "src/FreeTrain.Online.Simulation/RectangleTerrain.cs": "7cc9c5e596d48805d01dfef0caefaaff9d29b8be005270a81f5d3d29481d46d9",
+    "src/FreeTrain.Online.Simulation/CornerTerrainDraft.cs": "8b04fa1ba60ea287e13a7bf44ee88438d50371cf53b69d9ea5cdc1258b32e502",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "fb614b9a4fc8f7f3bfbd690562c5ea4b26bf2e1d79c81e25d0012ee240be1d18",
+    "src/FreeTrain.Online.Contracts/WireContracts.cs": "716b41bd6549233f6af2a0ecbe1c4505764cd878c5e344793aa007b7bbb894d4",
+    "src/FreeTrain.Online.Server/NetworkEndpoints.cs": "98c049721565cddb177af0f1b1abc059b9d2161cc3ce5a9c5282701a87c8717a",
+    "prototype/protocol/schema.json": "cbf100f45da9be8a1152e348f1394e9f55606794521fbf6fb6cab17fae9d0bed",
+    "prototype/protocol/fixtures/command-editRectangle.json": "3a48dd4f1aa059d4bbf9e6606a08a4c871f6bbfc21de175733973481cd5ca6fc",
+    "tests/FreeTrain.Online.Tests/RectangleTerrainTests.cs": "610f6f782eeba841599523721c86760e67a114281d6c794e7c5ed58e18d6ba9f",
+    "tools/TerrainTransportProbe/Program.cs": "9a0555a4984e75384090c8ab015b32393f0fb04cc1a1459e3a48316c32d44bc3",
+    "web/src/CornerTerrainControls.svelte": "c0de700636ec817071653e01f15b468e32618d30dcede1419aaf88f693e1de0e",
+    "web/src/RectangleTerrainControls.svelte": "9fcfcb8573671c2a98e983ab9bbba8a474d054d63ab4238b8e96e98d092055a3",
+    "web/src/MapView.svelte": "42a375a8ffc10cc6cc8a7dba6d765f1fc821cf38ba654b7ca635cfee8d5097e9",
+    "web/src/lib/terrain-edit.ts": "00ff343490ef4ac3816d4fdd6b8330903048b74ba6b4c9d39a26a16edd0c3ca5",
+    "web/src/lib/map-renderer.ts": "c0360029c6bde57c41a7e6ae3036a8e89bdc2c214c58c7a4c4126e68ed5c64d3",
+    "web/src/lib/remote-session-client.ts": "1f1e28adc58c2ea89f082ccf0444b35e59288d83c0836099b78088c4e27c3e98",
+    "web/src/style.css": "8b801151715e9e2355d5bb77159b6a1548e1c3dabb95f8ee37f941a69e4d4b5f",
+    "web/src/generated/contracts.ts": "a555653475aa5090789c229260b8cbba8a6d855680341e006546dc31fbf209b6",
+    "web/src/locales/en/app.json": "98373a769f60b97c6a0ec4e5f65b915bc856b795d395ad6d5d9cb5eeee952a9f",
+    "web/src/locales/ja/app.json": "8a233f83da067f6406a140c34ee8276bcc2bc5ae4a6f36848d7e81f173328182",
+    "web/tests/terrain.test.ts": "73f4d926c329ce6f4af18b38fc647ce05f07dc7760261b7b55ee83869f463235",
+    "web/tests/browser/rectangle-terrain.spec.ts": "2cc711373368a8e27352028c7ede418972e9ecc9ba47a25f0c85c903f3c05a46",
+    "web/playwright.config.ts": "f16b3dd4a4a824f10115b7a0ecffb525a5c0cdd99d0f5331d4a1ab0a273e5aae"
+  },
+  "artifacts": [
+    "../../tmp/p3-14-dotnet-build.log",
+    "../../tmp/p3-14-dotnet-tests.log",
+    "../../tmp/p3-14-web-build.log",
+    "../../tmp/p3-14-client-tests.log",
+    "../../tmp/p3-14-python-tests.log",
+    "../../tmp/p3-14-source-check.log",
+    "../../tmp/p3-14-boundaries.log",
+    "../../tmp/p3-14-browser-full.log",
+    "../../tmp/p3-14-optional-source.log",
+    "../../tmp/p3-14-optional-prepared.log",
+    "../../tmp/p3-14-capacity-final.log",
+    "../../tmp/p3-14-capacity/raise-v7.json",
+    "../../tmp/p3-14-capacity/lower-v7.json",
+    "../../tmp/p3-14-capacity/repair-v7.json",
+    "../../tmp/p3-14-browser-final/rectangle-terrain/rectangle-ja-narrow.png"
+  ],
+  "artifactHashes": {
+    "../../tmp/p3-14-dotnet-build.log": "6c46ea7732168917260e6f0de10b40f9abd3911f5da62d2c5091e122119c7bf8",
+    "../../tmp/p3-14-dotnet-tests.log": "7ad39139e8fa09c6c7d7a924087e1e73c74878650138b6eca0bc91c43064280d",
+    "../../tmp/p3-14-web-build.log": "273ddfe282585a3fd792fe1fabaab3f061426fe3a8769a9af6d70c4c24d8beaf",
+    "../../tmp/p3-14-client-tests.log": "b9f7a2af9cdbccf5743fb5d54a4cf1bffc2db0c5d94e8cf86272f0270b7a090d",
+    "../../tmp/p3-14-python-tests.log": "51fce442b6dc80678c1238682905fa16ea35174a0a2df34d4a1117338e730fbf",
+    "../../tmp/p3-14-source-check.log": "9b7c1c3854598fe36d29fcb74b691bf4b929ccf4d8472606017024f83c986fc0",
+    "../../tmp/p3-14-boundaries.log": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6",
+    "../../tmp/p3-14-browser-full.log": "d9a8e1f3aaa2593e2a6b69dc0e62660f76aec4e2ef71ea7d1fcef6a706c30349",
+    "../../tmp/p3-14-optional-source.log": "cf55523b6a1ba5d295b23e4fb63ab5b88c32bfbde8fa9a30bdeb3e881fb4692a",
+    "../../tmp/p3-14-optional-prepared.log": "cbd3c9edc66222002de26b84e8a60b8b20d820e1ca4c2e781a16d032d04d6f7e",
+    "../../tmp/p3-14-capacity-final.log": "2a992b73aab4251301ea8431693cd317eef8bd813b2d1a316907c1ac9c79a2a6",
+    "../../tmp/p3-14-capacity/raise-v7.json": "24ec0d8a5e7cc55b5fe6ce553f2ab573bfb6544fd781fd3118f921256530b82e",
+    "../../tmp/p3-14-capacity/lower-v7.json": "ed091fcc6b19110fc09a9a41e299d07232045baea7489d9058135754efbc5d87",
+    "../../tmp/p3-14-capacity/repair-v7.json": "85760792a0a31f86bf815e8b82e2acae46813f373fe62f445a97278d25f59ab2",
+    "../../tmp/p3-14-browser-final/rectangle-terrain/rectangle-ja-narrow.png": "8c3842423c9cd8ceed65c78f26cba2d066260119f3919317a19082b4f6eeb028"
+  }
+}

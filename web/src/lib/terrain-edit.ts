@@ -14,3 +14,5 @@ export function pickTerrainGround(read:ReadState,point:Point,heightCut:number):P
     if(read.terrain.cells[s.v*read.map.width+s.h].ground===z)return p;
   }
 }
+
+export const terrainReasons = {invalidInput:'cornerInvalid',outside:'outsideMap',unmatchedCorners:'cornerUnmatched',groundLevel:'cornerGround',cornerLimit:'cornerLimit',floor:'cornerFloor',occupied:'cornerOccupied',roof:'cornerRoof',capacityLimit:'cornerCapacity',noChange:'terrainNoChange',inconsistentNeighbors:'repairInconsistent',unrepresentableHeight:'repairUnrepresentable'} as const;

@@ -375,3 +375,10 @@ source/prose numeric differences remain P0-04/P0-06. Per-release numeric/fix and
 reconciliation remains in P0-04/P0-05/P0-06, alongside later phase delivery.
 No runtime application, browser, performance or native/device acceptance is
 established by this source/tooling batch. P0-04 source specification is now complete; P0-05 source specification is now complete; P0-06 is next and P0 as a whole stays open.
+
+P3-14 delivers the Mountain2 portion of MAN-T09/MAN-O06/MAN-A18 and DEV-P15/P28
+through [Rectangle and repair](web-parity-rectangle-terrain.md): explicit
+Raise/Excavate/Repair, coordinate or two-point selection and reviewed Ctrl/Shift
+semantics, with authoritative skips/loss preview and atomic confirmation. This
+source-derived slice does not close terrace/map-construction or broader P3/P9
+workflow/native acceptance.

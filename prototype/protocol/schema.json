@@ -1814,7 +1814,8 @@
         "action": {
           "enum": [
             "raise",
-            "lower"
+            "lower",
+            "repair"
           ]
         },
         "offsetX": {
@@ -1849,6 +1850,16 @@
               "items": {
                 "$ref": "#/$defs/CornerTerrainSite"
               }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rectangle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RectangleTerrainSelection"
             },
             {
               "type": "null"
@@ -1966,7 +1977,8 @@
         "action": {
           "enum": [
             "raise",
-            "lower"
+            "lower",
+            "repair"
           ]
         },
         "legal": {
@@ -1984,7 +1996,10 @@
                 "floor",
                 "occupied",
                 "roof",
-                "capacityLimit"
+                "capacityLimit",
+                "noChange",
+                "inconsistentNeighbors",
+                "unrepresentableHeight"
               ]
             },
             {
@@ -2084,13 +2099,32 @@
             "floor",
             "occupied",
             "roof",
-            "capacityLimit"
+            "capacityLimit",
+            "noChange",
+            "inconsistentNeighbors",
+            "unrepresentableHeight"
           ]
         }
       },
       "required": [
         "position",
         "reason"
+      ]
+    },
+    "RectangleTerrainSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "$ref": "#/$defs/Position"
+        },
+        "soft": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "end",
+        "soft"
       ]
     }
   }

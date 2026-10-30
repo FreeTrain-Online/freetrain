@@ -14,7 +14,7 @@ import { DemoRailway } from './demo-railway.ts';
 import { demoCar, demoLoop } from './demo-railway-path.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = TerrainTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -99,6 +99,12 @@ export class MapRenderer {
         if(!position||position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+      }
+      if(options.preview && options.rectangleEnd && options.preview.z<=options.heightCut){
+        const a=options.preview,b=options.rectangleEnd;
+        const vertices=[a,{x:b.x,y:a.y,z:a.z},b,{x:a.x,y:b.y,z:a.z}];
+        ctx.beginPath();vertices.forEach((v,i)=>{const p=toScreen(v,camera,width,height,this.space!);if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);});
+        ctx.closePath();ctx.strokeStyle='#126e79';ctx.lineWidth=2;ctx.stroke();
       }
       this.canvas.dataset.drawn=String(count);this.canvas.dataset.culled=String(Math.max(0,this.terrainScene.operations.length-count));
       this.canvas.dataset.paintMs=(performance.now()-start).toFixed(2);

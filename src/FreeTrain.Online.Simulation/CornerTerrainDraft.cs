@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-// Sparse detached working state for an ordered stroke. No world-sized clone per site.
+// Sparse detached working state for ordered corner, rectangle and repair edits. No world-sized clone per site.
 public sealed class CornerTerrainDraft(TerrainWorld original)
 {
     private readonly Dictionary<int,TerrainCell> cells = [];
@@ -24,7 +24,10 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
     }
     public CornerTerrainPlan Preview(Location position,string action)
     {
-        var plan=CornerTerrain.Preview(this,position,action);
+        return Admit(CornerTerrain.Preview(this,position,action));
+    }
+    internal CornerTerrainPlan Admit(CornerTerrainPlan plan)
+    {
         if(!plan.Legal)return plan;
         long count=entityCount,trees=treeCount,added=0;
         foreach(var c in plan.Changes)
@@ -43,6 +46,11 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
     {
         var actual=Preview(plan.Position,plan.Action);
         if (!plan.Legal || !actual.Legal || !plan.Changes.SequenceEqual(actual.Changes)) throw new ArgumentException("Invalid corner plan.");
+        ApplyChanges(plan);
+    }
+    internal void ApplyChanges(CornerTerrainPlan plan)
+    {
+        if (!plan.Legal) throw new ArgumentException("Invalid terrain plan.");
         foreach(var c in plan.Changes)
         {
             var s=Space.ToStorage(c.Position);int i=s.V*Space.HorizontalSize+s.H;
@@ -59,7 +67,7 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
             }
             else
             {
-                // A whole atomic stroke increments retained IDs once, irrespective of visits.
+                // A whole atomic edit increments retained IDs once, irrespective of visits.
                 long revision=previous.Id<original.Spatial.NextEntityId ? checked(original.Spatial.At(c.Position).Entity!.Revision+1) : 0;
                 entities[c.Position]=(previous with{Revision=revision,Footprint=footprint},occupant! with{Corners=c.After});
             }

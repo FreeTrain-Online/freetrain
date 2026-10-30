@@ -376,5 +376,21 @@
   "cornerSites": "Stroke sites",
   "cornerSkipped": "Skipped sites",
   "confirmTerrain": "Confirm terrain change",
-  "cornerCapacity": "This change exceeds a terrain or identity limit."
+  "cornerCapacity": "This change exceeds a terrain or identity limit.",
+  "terrainScope": "Terrain selection",
+  "terrainCorners": "Corner stroke",
+  "rectangleTool": "Rectangle and repair",
+  "rectangleRaise": "Raise rectangle",
+  "rectangleLower": "Excavate rectangle",
+  "rectangleRepair": "Repair corners",
+  "rectangleEndX": "End X",
+  "rectangleEndY": "End Y",
+  "rectangleSoft": "Half-height upper profile (Shift)",
+  "rectangleCheck": "Preview rectangle",
+  "rectanglePickEnd": "Pick the opposite endpoint at the anchor level.",
+  "rectangleInvalid": "Use integer coordinates inside the map, with at most 64 cells in the inclusive rectangle.",
+  "terrainNoChange": "No change at this site.",
+  "repairInconsistent": "Neighbor corner heights disagree; this cell cannot be repaired.",
+  "repairUnrepresentable": "The matching height is outside this cell’s quarter-height range.",
+  "rectangleHelp": "Pick two endpoints or enter coordinates. Endpoints are normalized at the first Z. Raise/Excavate visit shared corners before the far edges; Repair includes both endpoints. At most 64 selected cells. Ctrl on the second pick chooses Repair; Shift selects the half-height upper profile. Review changes, losses and skipped sites, then Confirm once. A failed cell is skipped; valid sites publish together."
 }

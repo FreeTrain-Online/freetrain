@@ -173,7 +173,8 @@ public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLe
 
 // Additive terrain tool contract; durable state remains Save7 / protocol5.
 public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
-    string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null);
+    string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null);
+public sealed record RectangleTerrainSelection(PositionRead End, bool Soft = false);
 public sealed record CornerTerrainSite(PositionRead Position, string Action, int? OffsetX = null, int? OffsetY = null);
 public sealed record EditCornerCommand(CornerTerrainQuery Query) : CommandPayload;
 public sealed record CornerTerrainChangeRead(PositionRead Position, int BeforeGround, int AfterGround,

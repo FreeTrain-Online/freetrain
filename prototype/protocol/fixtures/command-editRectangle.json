@@ -1,0 +1,29 @@
+{
+  "type": "command",
+  "requestId": "rectangle-example",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editCorner",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "0",
+      "position": {
+        "x": 3,
+        "y": 3,
+        "z": 1
+      },
+      "action": "raise",
+      "offsetX": null,
+      "offsetY": null,
+      "stroke": null,
+      "rectangle": {
+        "end": {
+          "x": 4,
+          "y": 4,
+          "z": 1
+        },
+        "soft": true
+      }
+    }
+  }
+}
