@@ -19,26 +19,31 @@ public sealed partial class NetworkSession
     public async Task<EmptyCandidateRead> PreviewEmpty(EmptyPreviewRequest input, ParticipantContext identity, CancellationToken cancellation = default)
     {
         using var lease = await ReserveCreationWorker(identity);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation, lease.Disconnected);
+        timeout.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
         WorldCreationJob? started = null;
+        Task<WorldCreationJob>? begin = null;
         var participant = lease.Participant; var capturedHost = lease.Host;
         try
         {
-            Task<WorldCreationJob> begin;
             lock (gate) begin = capturedHost.BeginEmpty(new(WorldCreationProfile.Id, input.Name, input.Dimensions, input.WaterLevel),
                 WorldCreationCapabilities.EmptyReady(), input.Epoch, input.Revision, participant, lease.Reservation);
-            started = await begin;
-            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellation, lease.Disconnected);
-            timeout.CancelAfter(TimeSpan.FromSeconds(WorldCreationJob.WorkerDeadlineSeconds));
+            started = await begin.WaitAsync(timeout.Token);
             var bytes = await Task.Run(() => capturedHost.PrepareCreation(SaveCodec.Write(new TerrainSessionState(
-                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request)))), timeout.Token);
+                TerrainWorld.Empty((EmptyWorldRequest)started.Request, TerrainProfiles.Bundled), TerrainProvenance.From(started.Request))), timeout.Token), timeout.Token);
             timeout.Token.ThrowIfCancellationRequested();
             Task<EmptyCandidateRead> complete;
             lock (gate) complete = capturedHost.CompletePreparedCreation(started, bytes, participant);
-            return await complete;
+            return await complete.WaitAsync(timeout.Token);
         }
         catch
         {
-            if (started != null) { Task cancel; lock (gate) cancel = capturedHost.CancelEmpty(started.Id, participant); await cancel; }
+            if (started == null && begin != null) _ = AbandonCreationStart(begin, capturedHost, participant);
+            if (started != null)
+            {
+                Task? cancel = null; lock (gate) { if (host == capturedHost) cancel = capturedHost.CancelEmpty(started.Id, participant); }
+                if (cancel != null) await cancel;
+            }
             throw;
         }
     }

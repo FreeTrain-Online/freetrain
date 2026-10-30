@@ -25,8 +25,9 @@
   const icon = '/assets/FTicon.png';
   const audio = createBrowserAudio();
   let soundEnabled = $state(false), soundFailed = $state(false), saveBusy = $state(false);
+  let enabledContentHash = $state('');
   let enabledPacks = $state<PluginPack[]>([]), optionalCredits = $state<PluginPack>();
-  const model = createShellModel(() => createRemoteSessionClient((event, epoch) => { void audio.event(event, epoch).then(() => { soundEnabled = audio.enabled; }); }, content => { enabledPacks = content.packs; }), initialLocale());
+  const model = createShellModel(() => createRemoteSessionClient((event, epoch) => { void audio.event(event, epoch).then(() => { soundEnabled = audio.enabled; }); }, content => { enabledPacks = content.packs; enabledContentHash = content.setHash; }), initialLocale());
   const dispose = () => { model.dispose(); audio.dispose(); };
   let view = $state(model.state);
   let mapSelection = $state<Selection>();
@@ -202,7 +203,7 @@
           </ul><h3>{text.selectedBuilding}</h3><p data-testid="building-name">{text[selected.family]} {selected.variant}</p><p>{text.height}: {selected.height}</p>
           {/if}
         {:else if panel === 'newWorld'}
-          <EmptyWorldControls locale={view.locale} epoch={read?.worldEpoch} revision={read?.revision} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner' || !reference} onbusy={value => { saveBusy = value; }} onmodal={() => map.resetInteraction()}/>
+          <EmptyWorldControls contentIdentity={JSON.stringify([view.participantId,enabledContentHash])} locale={view.locale} epoch={read?.worldEpoch} revision={read?.revision} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner' || !reference} onbusy={value => { saveBusy = value; }} onmodal={() => map.resetInteraction()}/>
         {:else if panel === 'saves'}
           <SaveControls bind:slot={savedSlot} onmodal={() => map.resetInteraction()} locale={view.locale} epoch={read?.worldEpoch} disabled={view.pending || view.connection !== 'ready' || view.role !== 'owner'} onbusy={value => { saveBusy = value; }}/>
         {:else if panel === 'settings'}

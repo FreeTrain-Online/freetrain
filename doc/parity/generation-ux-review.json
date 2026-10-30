@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "P3-12-slice-complete",
+  "basedOnGitRevision": "8ae0fd3ffc43d86d2b326d630bdaa503e1f2c475",
+  "revisionScope": "Working-tree changes; source file hashes below identify the tested implementation. No commit created.",
+  "report": "../web-parity-generation-ux.md",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "engine": "FreeTrain ExAV 2.1.1.12",
+    "gitRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "sourceReview": "terrain-review.json",
+    "scope": "Source geometry and corner ordering with WORLDGEN-D001 generation compass policy; no original-runtime capture."
+  },
+  "sourceSha256": {
+    "src/FreeTrain.Online.Session/TerrainPreview.cs": "523cde01953ada366fb4ac4b9989e1e8192285c16c63e87dd3afa9f13d5e6fe1",
+    "src/FreeTrain.Online.Session/WorldCreationSession.cs": "670d6eb3f96e8fbe1f6a53277e6c18def0b01154dc1e594d199458cadc8992c4",
+    "src/FreeTrain.Online.Server/EmptyWorldCreation.cs": "fca248f890c8188fa33f848047f2e997ea567974136e838c1c9f31f781d4319d",
+    "src/FreeTrain.Online.Server/HeightmapWorldCreation.cs": "010eab2117e4e87f45265f049c2881fb71eec44f6412c7bba76673d3628b69c3",
+    "web/src/App.svelte": "818c6bac71158b5e82af6152b6deff49793f812ef3059e0b97a086cbd6095935",
+    "web/src/EmptyWorldControls.svelte": "5c85d1357c0d5a8094bca5710a5253e118262012271cc382189382b6f682557f",
+    "web/src/lib/world-preview.ts": "82a0972e6337c825bea04ffd02ffa6d2d7a1ef530bdcfeeac0c2a1f9d44a5b12",
+    "web/src/locales/en/app.json": "f04e3e891ab3ad499478a4ec74cb0fb078f283cd98f59c344252e7144eebf4f7",
+    "web/src/locales/ja/app.json": "8e14dd9eef123d260be6045422e3d7f2bc3663305623d8f207eb521ddc39f81b",
+    "web/deno.json": "2ffe5a2c92eb5b259a0b07fbb19e75d93a8340042ed2464701483f2c66346ae3",
+    "tests/FreeTrain.Online.Tests/TerrainPreviewTests.cs": "208cd0dc7c8a88f2653a847da2df9cd0c9b3f319e4224cc9e166d6cc2575bc7b",
+    "web/tests/world-preview.test.ts": "2f25a1e5fb68a2654a93b25bbcbc86b4fa61306ff22507f92aac766827213561",
+    "web/tests/browser/terrain.spec.ts": "484a9e7d7a67219e365443a59eb0f47c58251a0a18679619f8a3093c62ab1f35",
+    "web/tests/browser/capacity.spec.ts": "4000566b7215457e7c9d1439380432d54e55555b674749209e12abca9bccf927"
+  },
+  "contract": {
+    "overviewMaximumSide": 128,
+    "overviewMaximumBinaryBytes": 65536,
+    "overviewMaximumBase64Characters": 87384,
+    "sampleFormat": "Row-major H/V; 4 bytes: ground, little-endian UInt16 packed NE/SE/SW/NW quarter corners, flags. Flags 1=any wet corner, 2=forest treatment, 4=reserved starting area, 8=clear flat dry natural cell.",
+    "overview": "Retained realized geometry. Stride 1 shows every cell; larger strides are a labeled schematic sample.",
+    "metrics": "Full-grid water/forest cell percentages, quarter-accurate min/max ground heights, clear flat dry cells, largest same-height canonical XY face-connected clear area after decoration.",
+    "cancellation": "Immediate UI release; abort and job-ID cancel; stale success/error/finally handlers cannot overwrite newer work. Server leases remain held until actual workers finish.",
+    "identity": "Captured generation/participant/content-set/epoch/revision; server connection/job/hash/content fences.",
+    "progress": "Indeterminate preparation and replacement; no fabricated stage percentages.",
+    "retry": "New preview only; uncertain commits are consumed, not automatically replayed.",
+    "sizePresets": [
+      [
+        64,
+        64,
+        16
+      ],
+      [
+        128,
+        128,
+        32
+      ],
+      [
+        256,
+        256,
+        64
+      ]
+    ],
+    "mainMapRotation": "Not implemented in P3-12. Requested four-orientation renderer tracked separately as STRETCH-ROTATION."
+  },
+  "verification": {
+    "dotnet": {
+      "passed": 634,
+      "failed": 0,
+      "newOverviewCases": 6,
+      "log": "tmp/p3-12-dotnet.log"
+    },
+    "client": {
+      "passed": 132,
+      "failed": 0,
+      "newProjectionCases": 3,
+      "log": "tmp/p3-12-client.log"
+    },
+    "python": {
+      "total": 142,
+      "passed": 141,
+      "skipped": 1,
+      "log": "tmp/p3-12-python.log"
+    },
+    "sourceReview": {
+      "pinnedFiles": 40,
+      "literalFixtures": 77,
+      "textRecords": 59,
+      "result": "pass"
+    },
+    "topologyFixtures": {
+      "relief": 11,
+      "coast": 21,
+      "water": 30,
+      "forest": 27,
+      "result": "pass"
+    },
+    "frontendBuild": {
+      "result": "pass",
+      "log": "tmp/p3-12-web-build.log"
+    },
+    "optionalStartup": {
+      "sourcePassed": 4,
+      "preparedPassed": 4,
+      "scope": "Synthetic external packs; not the unresolved real optional suite."
+    },
+    "chromium": {
+      "passed": 97,
+      "failed": 0,
+      "newGenerationScenarios": 7,
+      "log": "tmp/p3-12-browser-final.log",
+      "screenshots": "tmp/p3-12/browser-final/generation-ux/"
+    },
+    "corrections": [
+      "The current shoreline shelves provide a 201-cell level patch in the Japanese forest fixture. Its formerly impossible 200-cell request now succeeds; the rejection test requests the legal maximum of 216 cells.",
+      "A new capacity assertion initially compared total wet cells with boundary-connected sea cells alone. The corrected assertion checks sea plus enclosed lake cells and independently counts the retained actual water mask. No production terrain change was needed."
+    ],
+    "capacity": {
+      "passed": 2,
+      "failed": 0,
+      "dimensions": [
+        1500,
+        1090,
+        45
+      ],
+      "log": "tmp/p3-12-capacity-final.log",
+      "evidence": "tmp/p3-12/capacity-final/",
+      "budgets": {
+        "previewMs": 30000,
+        "readyFromPreviewStartMs": 60000,
+        "overviewSwitchMs": 100,
+        "paintP95Ms": 33.4,
+        "serverPeakRssBytes": 6442450944,
+        "browserPeakRssBytes": 6442450944
+      },
+      "measurements": {
+        "forest-dense": {
+          "previewMs": 15064,
+          "readyMs": 38097,
+          "overviewSwitchMs": 73.89999997615814,
+          "overview": {
+            "cells": 1635000,
+            "wetCells": 0,
+            "forestCells": 1356851,
+            "clearFlatCells": 114453,
+            "largestBuildableArea": 456,
+            "minimumQuarterHeight": 22,
+            "maximumQuarterHeight": 64
+          },
+          "paintP95": 8,
+          "sampledServerPeakRss": 4805918720,
+          "sampledBrowserPeakRss": 3470950400,
+          "sampleIntervalMs": 250,
+          "retainedJSHeapAfterGC": 720141556,
+          "metrics": {
+            "seaCells": 0,
+            "landCells": 1635000,
+            "seaComponents": 0,
+            "landComponents": 1,
+            "seaSides": 0,
+            "waterPercent": 0,
+            "lakeCells": 0,
+            "lakeComponents": 0,
+            "riverCount": 0
+          },
+          "forests": {
+            "eligibleCells": 1634936,
+            "maskCells": 1471442,
+            "forestCells": 1356851,
+            "trees": 3187085,
+            "reservedCells": 64,
+            "largestFlatArea": 1316
+          },
+          "saveBytes": 102116942,
+          "snapshotBytes": 102110599
+        },
+        "forest-coast": {
+          "previewMs": 17811,
+          "readyMs": 28897,
+          "overviewSwitchMs": 75.29999995231628,
+          "overview": {
+            "cells": 1635000,
+            "wetCells": 587589,
+            "forestCells": 869476,
+            "clearFlatCells": 17043,
+            "largestBuildableArea": 71,
+            "minimumQuarterHeight": 12,
+            "maximumQuarterHeight": 120
+          },
+          "paintP95": 5.3,
+          "sampledServerPeakRss": 5716213760,
+          "sampledBrowserPeakRss": 3194667008,
+          "sampleIntervalMs": 250,
+          "retainedJSHeapAfterGC": 523811864,
+          "metrics": {
+            "seaCells": 538740,
+            "landCells": 1047411,
+            "seaComponents": 1,
+            "landComponents": 2,
+            "seaSides": 5,
+            "waterPercent": 35.93816513761468,
+            "lakeCells": 48849,
+            "lakeComponents": 1,
+            "riverCount": 1
+          },
+          "forests": {
+            "eligibleCells": 1047392,
+            "maskCells": 942652,
+            "forestCells": 869476,
+            "trees": 2042753,
+            "reservedCells": 16,
+            "largestFlatArea": 6704
+          },
+          "saveBytes": 70089618,
+          "snapshotBytes": 70083275
+        }
+      },
+      "scope": "Consecutive dense and coastal forest workflows; exact independent CLI save digest, actual-water-mask count, atomic publication, preserved canvas, picking, reload/download and checkpoint restart. Final whole-P3 capacity gate remains open.",
+      "fixtureSaveSha256": {
+        "forest-dense": "ddc143353eb6c8224ada3257375ae04f801ed98677a668150fad303dfb05dfca",
+        "forest-coast": "ff8f43b367018b79d32f7c13cc88de7c6bd54353ffea20db25070fbe27518820"
+      }
+    },
+    "visualReview": {
+      "result": "EN isometric, JA 390px keyboard focus and full-size coastal overview screenshots inspected locally.",
+      "scope": "Local Chromium visual QA; not owner/native/original-runtime acceptance."
+    },
+    "boundariesAndWhitespace": "pass"
+  },
+  "evidenceRoot": "tmp/p3-12/",
+  "openGates": [
+    "Overall P3",
+    "P3-13 and later editing/authoring",
+    "Final full P3 capacity gate before P3-17",
+    "Existing P2/native/platform and deferred browser gates",
+    "Original-runtime/full-city/import gates",
+    "STRETCH-ROTATION separately scheduled",
+    "Fresh Linux distribution acceptance not inferred from prior slice evidence"
+  ],
+  "evidenceSha256": {
+    "tmp/p3-12-dotnet.log": "f46f067176a34e5fb983149428c7aa89334bee5e2f45c0fa73d3479105c4c31b",
+    "tmp/p3-12-client.log": "5aa25b5e76744882efc68ed7884ea56d702cd63570c5bc6b641b347853abd4ec",
+    "tmp/p3-12-python.log": "0f465f47c06a5ce26c1f1d67efc977d27fd1a4e2a3417ac360c22ebbe4f18b79",
+    "tmp/p3-12-web-build.log": "9f397e3aeaa474bdf6e41a35f8f9703e577b33eddd2752535ad44fa6b5f1b6cb",
+    "tmp/p3-12-browser-final.log": "4ec5d91d252a77c1873b3f7cbb5e28b322c5e39fb76a8c24af43e2e05ba8b740",
+    "tmp/p3-12-optional-source.log": "db2dfcce3c8911f97055fb798a2536bd5ab65d48c7412a876c673380f9063e87",
+    "tmp/p3-12-optional-prepared.log": "e9bac3211b119f661d434242cca70a482120a6abce8f6f6a4c181ccc46e20ca7",
+    "tmp/p3-12-capacity-final.log": "a7c029bbdfed1d80206fc0ea785ace71f5d2b36668ad46a861945f3cbdcce5ff",
+    "tmp/p3-12/capacity-final/forest-dense-large.json": "99cbe4ab83c83e8f5c0bbde70dca3601ac91bed04c44adf04d2c05d1eaa7e16d",
+    "tmp/p3-12/capacity-final/forest-coast-large.json": "40b2a44210976a000902b6628baea163b2885ff0f1941b9be8e01ac49bd600f4",
+    "tmp/p3-12/browser-final/generation-ux/isometric-ja-narrow.png": "0b9dd8504d7ca60ee0c1cc4028bfb7b7756edd9aafbe72cda4f10f79e4a4114b",
+    "tmp/p3-12/browser-final/generation-ux/isometric-en.png": "7e02d86aa5644bbea6f7eb442d7f4803a6a6d8ef905f369e6489221a5cbd5dbc"
+  }
+}

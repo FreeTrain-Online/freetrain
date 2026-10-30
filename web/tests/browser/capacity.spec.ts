@@ -235,7 +235,7 @@ test('minimum parity extent is admitted through empty, heightmap and generated p
 
 for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] as const) test(`minimum parity extent ${mode==='coast-island'?'coast: exact island':mode.startsWith('forest-')?'forest: '+mode:'water: lakes and rivers'} preview, bounded publication and checkpoint restart`,async({page,browser})=>{
  const memory=await memorySampler(browser),errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const fixture=resolve(`../tmp/${mode.startsWith('forest-')?'p3-11':'p3-10'}/capacity/${mode}`);
+ const fixture=join(directory,'fixtures',mode);
  try{
   execFileSync('dotnet',[probe,'--capacity','1500','1090','45',mode,fixture],{stdio:'pipe',timeout:60000});
   const expected=digest(readFileSync(join(fixture,'world.json')));await page.goto('/');await ready(page);
@@ -260,6 +260,20 @@ for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] a
   const candidate=await response.json();if(mode.startsWith('forest-'))expect(candidate.geography.forests).toMatchObject({reservedCells:mode==='forest-dense'?64:16});expect(candidate.geography.metrics).toMatchObject(mode==='forest-dense'?{seaCells:0,lakeComponents:0,riverCount:0}:mode==='coast-island'?{seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000}:{seaSides:5,seaComponents:1,lakeComponents:1,riverCount:1});
   const previewMs=Date.now()-start;expect(previewMs).toBeLessThan(30000);expect(await epoch(page)).toBe(before);
   await expect(page.getByTestId('geography-metrics')).toContainText(mode==='coast-island'?'40.0%':'Surface water:');
+  expect(candidate.overview).toMatchObject({width:125,height:91,step:12});
+  let wetCells=0;for(let bits of Buffer.from(candidate.geography.seaMask,'base64'))while(bits){wetCells+=bits&1;bits>>=1;}
+  expect(wetCells).toBe(candidate.geography.metrics.seaCells+candidate.geography.metrics.lakeCells);
+  expect(candidate.overview.metrics).toMatchObject({cells:1635000,wetCells,forestCells:candidate.geography.forests.forestCells});
+  expect(Buffer.from(candidate.overview.samples,'base64').length).toBeLessThanOrEqual(128*128*4);
+  const overviewSwitchMs=await page.evaluate(async()=>{
+   const image=document.querySelector<HTMLImageElement>('[data-testid="world-overview"] img')!,previous=image.src;
+   const button=[...document.querySelectorAll('button')].find(b=>b.textContent==='Isometric')!,started=performance.now();button.click();
+   while(image.src===previous)await new Promise(requestAnimationFrame);
+   return performance.now()-started;
+  });
+  expect(overviewSwitchMs).toBeLessThan(100);
+  await expect(page.getByTestId('world-overview')).toHaveAttribute('data-mode','isometric');
+  await page.getByTestId('world-overview').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`${mode}-overview.png`),fullPage:true});
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await expect(page.locator('canvas')).not.toHaveAttribute('data-world-epoch',before);await closePanel(page);await ready(page);
   const readyMs=Date.now()-start;expect(readyMs).toBeLessThan(60000);await expect(page.locator('canvas')).toHaveAttribute('data-instance','coast-large');
@@ -279,7 +293,7 @@ for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] a
   await stop(server);await startServer();await page.request.post('/api/access',{data:{secret:''}});await page.reload();await ready(page);
   expect(digest(await(await page.request.get('/api/saves/download',{timeout:60000})).body())).toBe(expected);
   const rss=memory.values();expect(rss.sampledServerPeakRss).toBeLessThan(6*1024**3);expect(rss.sampledBrowserPeakRss).toBeLessThan(6*1024**3);
-  writeFileSync(join(directory,`${mode}-large.json`),JSON.stringify({previewMs,readyMs,paintP95:paints[Math.ceil(paints.length*.95)-1],...rss,...await resident(page),metrics:candidate.geography.metrics,forests:candidate.geography.forests,saveBytes:candidate.saveBytes,snapshotBytes:candidate.snapshotBytes},null,2)+'\n');
+  writeFileSync(join(directory,`${mode}-large.json`),JSON.stringify({previewMs,readyMs,overviewSwitchMs,overview:candidate.overview.metrics,paintP95:paints[Math.ceil(paints.length*.95)-1],...rss,...await resident(page),metrics:candidate.geography.metrics,forests:candidate.geography.forests,saveBytes:candidate.saveBytes,snapshotBytes:candidate.snapshotBytes},null,2)+'\n');
   expect(errors).toEqual([]);
  }finally{await memory.stop();}
 });

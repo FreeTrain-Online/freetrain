@@ -8,7 +8,7 @@ namespace FreeTrain.Online.Session;
 
 public sealed record EmptyCandidateRead(Guid Id, string RequestHash, string CandidateHash, string Name,
     WorldDimensions Dimensions, int WaterLevel, int SaveBytes, int SnapshotBytes, DateTimeOffset ExpiresAt, int[]? Ground = null, string? ImagePreview = null,
-    GeographyPreview? Geography = null);
+    GeographyPreview? Geography = null, TerrainPreview? Overview = null);
 public sealed record GeographyPreview(GeographyMetrics Metrics, string SeaMask, ForestMetrics? Forests = null,
     string? ForestMask = null, string? StartingMask = null);
 
@@ -118,8 +118,9 @@ public sealed partial class SessionHost
         internal TerrainSessionState State { get; }
         internal int SnapshotBytes { get; }
         internal GeographyPreview? Geography { get; }
-        internal PreparedCreation(byte[] bytes, TerrainSessionState state, int snapshotBytes, GeographyPreview? geography)
-        { Bytes = bytes; State = state; SnapshotBytes = snapshotBytes; Geography = geography; }
+        internal TerrainPreview Overview { get; }
+        internal PreparedCreation(byte[] bytes, TerrainSessionState state, int snapshotBytes, GeographyPreview? geography, TerrainPreview overview)
+        { Bytes = bytes; State = state; SnapshotBytes = snapshotBytes; Geography = geography; Overview = overview; }
     }
     public PreparedCreation PrepareCreation(byte[] bytes, CancellationToken cancellation = default)
     {
@@ -153,7 +154,7 @@ public sealed partial class SessionHost
             geography = new(metrics, Convert.ToBase64String(packed), forests,
                 Convert.ToBase64String(forestBits), Convert.ToBase64String(startingBits));
         }
-        return new(retained, state, snapshotBytes, geography);
+        return new(retained, state, snapshotBytes, geography, TerrainPreview.Capture(state.World, geography?.StartingMask, cancellation));
     }
     public Task<EmptyCandidateRead> CompleteEmpty(WorldCreationJob started, byte[] bytes, ParticipantContext participant)
         => CompletePreparedCreation(started, PrepareCreation(bytes), participant);
@@ -170,7 +171,7 @@ public sealed partial class SessionHost
         creationBytes = bytes; creationState = state;
         return new(started.Id, started.RequestHash, digest, state.World.Name, started.Request.Dimensions,
             state.World.WaterLevel, bytes.Length, snapshotBytes, started.ExpiresAt, started.Request is HeightmapWorldRequest or GeneratedWorldRequest ? state.World.Cells.Select(c => c.Ground).ToArray() : null,
-            Geography: prepared.Geography);
+            Geography: prepared.Geography, Overview: prepared.Overview);
     });
     private static string CandidateDigest(WorldCreationJob job, byte[] bytes)
     {

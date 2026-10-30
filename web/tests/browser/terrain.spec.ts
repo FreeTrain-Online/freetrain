@@ -225,7 +225,7 @@ test('heightmap browser preview is detached, confirms exact terrain to both clie
    const canvas=document.createElement('canvas');canvas.width=2;canvas.height=2;
    const ctx=canvas.getContext('2d')!;ctx.drawImage(image,0,0);return Array.from(ctx.getImageData(0,0,2,2).data);
   })).toEqual([0,0,0,255,255,255,255,255,0,0,0,255,255,255,255,255]);
-await expect(page.getByRole('img',{name:'Resulting terrain heights and global water',exact:true})).toBeVisible();
+await expect(page.getByRole('img',{name:'North-up terrain overview of the retained candidate',exact:true})).toBeVisible();
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'heightmap');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'ramp-preview-en.png'),fullPage:true});
@@ -369,7 +369,7 @@ test('Japanese narrow coast controls and compass remain reachable and invalidate
   await page.getByLabel('海岸の配置',{exact:true}).selectOption('sides');await page.getByRole('checkbox',{name:'東',exact:true}).check();
   await page.getByLabel('海の目標面積（%）',{exact:true}).fill('76');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();
   await page.getByLabel('海の目標面積（%）',{exact:true}).fill('40');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();
-  await expect(page.getByTestId('geography-metrics')).toContainText('水面：');await expect(page.getByText('概観の方位：',{exact:false})).toBeVisible();
+  await expect(page.getByTestId('geography-metrics')).toContainText('水面：');await expect(page.getByRole('img',{name:'世界の方位',exact:true})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'coasts');mkdirSync(directory,{recursive:true});await page.getByLabel('海岸の配置',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'coast-ja-narrow.png'),fullPage:true});
   await page.getByRole('checkbox',{name:'南',exact:true}).check();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
@@ -481,7 +481,7 @@ test('Japanese narrow forests validate species and starting-area failure, invali
   await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByRole('checkbox',{name:'楓',exact:true}).check();
   await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('91');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('35');
   await page.getByLabel('格納奥行（V）',{exact:true}).fill('27');await page.getByLabel('高さ（Z）',{exact:true}).fill('32');
-  await page.getByLabel('海岸の配置',{exact:true}).selectOption('island');await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('200');
+  await page.getByLabel('海岸の配置',{exact:true}).selectOption('island');await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('216');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('開始区域が見つかりません');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('forest-metrics')).toContainText('開始区域：16');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -491,4 +491,95 @@ test('Japanese narrow forests validate species and starting-area failure, invali
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
  }finally{release();await context.close();}
+});
+
+test('generation UX previews both compass projections, regenerates deterministically and commits the reviewed candidate',async({page})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ try{
+  const canvas=page.locator('canvas');await canvas.evaluate(c=>c.dataset.instance='generation-ux');
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  await page.getByRole('button',{name:'64 × 64',exact:true}).click();await expect(page.getByLabel('Levels (Z)',{exact:true})).toHaveValue('16');
+  await page.getByLabel('Stored length (V)',{exact:true}).fill('45');
+  await page.getByLabel('Forest cover',{exact:true}).selectOption('35');await page.getByLabel('Connected flat starting area (cells)',{exact:true}).fill('16');
+  async function preview(button='Preview world'){const waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:button,exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);await expect(page.getByTestId('world-overview')).toBeVisible();return response.json();}
+  const first=await preview();expect(first.overview.metrics).toMatchObject({cells:64*45,forestCells:first.geography.forests.forestCells,wetCells:first.geography.metrics.seaCells});
+  expect(first.overview.metrics.clearFlatCells).toBeGreaterThanOrEqual(16);expect(first.overview.metrics.largestBuildableArea).toBeGreaterThanOrEqual(16);
+  await expect(page.getByTestId('buildable-metrics')).toContainText(first.overview.metrics.largestBuildableArea.toLocaleString('en'));
+  const overview=page.getByTestId('world-overview'),image=overview.locator('img'),top=await image.getAttribute('src');
+  await expect(overview.locator('line').first()).toHaveAttribute('x2','72');await expect(overview.locator('line').first()).toHaveAttribute('y2','19');
+  await page.getByRole('button',{name:'Isometric',exact:true}).click();await expect(overview).toHaveAttribute('data-mode','isometric');
+  expect(await image.getAttribute('src')).not.toBe(top);await expect(overview.locator('line').first()).toHaveAttribute('x2','48');await expect(overview.locator('line').first()).toHaveAttribute('y2','31');
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'generation-ux');mkdirSync(directory,{recursive:true});await overview.scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'isometric-en.png'),fullPage:true});
+  const again=await preview('Regenerate with same seed');expect(again.id).not.toBe(first.id);expect(again.candidateHash).toBe(first.candidateHash);expect(again.overview).toEqual(first.overview);
+  await page.getByRole('button',{name:'New seed',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect(await page.getByLabel('Generation seed',{exact:true}).inputValue()).not.toBe('0');
+  await page.getByLabel('Generation seed',{exact:true}).fill('0');const final=await preview();expect(final.candidateHash).toBe(first.candidateHash);
+  const create=page.getByRole('button',{name:'Create world',exact:true});await create.click();await page.keyboard.press('Escape');await expect(create).toBeFocused();await expect(overview).toBeVisible();
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await create.click();const sent=page.waitForRequest(r=>r.url().includes('/worlds/empty/commit'));
+  await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
+  expect((await sent).postDataJSON()).toMatchObject({id:final.id,candidateHash:final.candidateHash,requestHash:final.requestHash});
+  await ready(page);await expect(canvas).toHaveAttribute('data-instance','generation-ux');
+  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
+ }finally{await replace(page,original);}
+});
+
+test('generation UX cancellation releases controls immediately and late completions cannot clear newer progress or retry feedback',async({page})=>{
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ let releaseFirst=()=>{},releaseSecond=()=>{},seen=0,completed=0;
+ const firstHeld=new Promise<void>(r=>releaseFirst=r),secondHeld=new Promise<void>(r=>releaseSecond=r);
+ await page.route('**/api/worlds/generated/preview',async route=>{
+  const index=++seen;
+  if(index<=2){const response=await route.fetch();completed++;await(index===1?firstHeld:secondHeld);await route.fulfill({response}).catch(()=>{});}
+  else if(index===3)await route.fulfill({status:503,json:{code:'creationBusy'}});
+  else await route.continue();
+ });
+ try{
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');
+  const preview=page.getByRole('button',{name:'Preview world',exact:true});await preview.click();await expect.poll(()=>completed).toBe(1);
+  await expect(page.getByRole('progressbar')).toBeVisible();await page.getByRole('button',{name:'Cancel',exact:true}).click();
+  await expect(preview).toBeEnabled();await expect(page.getByLabel('Generation seed',{exact:true})).toBeEnabled();await expect(page.getByTestId('creation-feedback')).toContainText('Preview cancelled');
+  await page.getByLabel('Generation seed',{exact:true}).fill('42');await preview.click();await expect.poll(()=>completed).toBe(2);releaseFirst();
+  await expect(page.getByRole('progressbar')).toBeVisible();await expect(preview).toBeDisabled();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  releaseSecond();await expect(page.getByTestId('empty-world-preview')).toBeVisible();await expect(preview).toBeEnabled();
+  await page.getByLabel('Generation seed',{exact:true}).fill('43');await preview.click();await expect(page.getByTestId('creation-feedback')).toContainText('Another world preview');
+  await page.getByRole('button',{name:'Retry preview',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();await expect(page.getByTestId('creation-feedback')).toHaveText('');
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+ }finally{releaseFirst();releaseSecond();}
+});
+
+for(const change of ['revision','epoch','disconnect','content'] as const)test(`generation UX discards pending results across ${change} changes`,async({page,browser})=>{
+ let drop=()=>{};await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();drop=()=>{server.close();route.close();};});
+ await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
+ let release=()=>{},seen=false;const held=new Promise<void>(r=>release=r);
+ await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
+ const context=await browser.newContext(),other=await context.newPage();await other.goto('/');await ready(other);
+ try{
+  await openPanel(page,'newWorld');await page.getByLabel('World source',{exact:true}).selectOption('generated');await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect.poll(()=>seen).toBe(true);
+  if(change==='revision')await other.locator('.command-bar .step').click();
+  else if(change==='epoch')await replace(page,original);
+  else{
+   if(change==='content')await page.route('**/api/content',async route=>{const response=await route.fetch();const content=await response.json();content.setHash='0'.repeat(64);await route.fulfill({response,json:content});});
+   drop();
+   if(change==='disconnect')await ready(page);else await expect(page.getByRole('heading',{name:'Update required',exact:true})).toBeVisible();
+  }
+  release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);await expect(page.getByRole('button',{name:'Create world',exact:true})).toHaveCount(0);
+  if(change==='revision'){await expect(page.getByTestId('creation-feedback')).toContainText('out of date');await expect(page.getByRole('button',{name:'Preview world',exact:true})).toBeEnabled();}
+  else if(change==='disconnect'||change==='epoch'){await ready(page);await openPanel(page,'newWorld');await expect(page.getByRole('button',{name:'Preview world',exact:true})).toBeEnabled();}
+ }finally{release();await replace(other,original);await context.close();}
+});
+
+test('generation UX Japanese narrow previews support keyboard view changes, modal focus and candidate expiry',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP'}),page=await context.newPage();await page.goto('/');await ready(page,'ja');
+ try{
+  await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('generated');
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('world-overview')).toBeVisible();
+  const mode=page.getByRole('button',{name:'等角図',exact:true});await mode.focus();await expect(mode).toBeFocused();await page.keyboard.press('Enter');await expect(mode).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('img',{name:'世界の方位',exact:true})).toBeVisible();await expect(page.getByTestId('buildable-metrics')).toContainText('連続区域');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'generation-ux');mkdirSync(directory,{recursive:true});await page.getByTestId('world-overview').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'isometric-ja-narrow.png'),fullPage:true});
+  const create=page.getByRole('button',{name:'世界を作成',exact:true});await create.click();await page.keyboard.press('Escape');await expect(create).toBeFocused();
+  await page.getByRole('button',{name:'キャンセル',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('キャンセル');
+  await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();const result=await response.json();result.expiresAt=new Date(Date.now()+1000).toISOString();await route.fulfill({response,json:result});});
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('world-overview')).toBeVisible();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);await expect(page.getByTestId('creation-feedback')).toContainText('プレビューは無効');
+ }finally{await context.close();}
 });
