@@ -145,7 +145,7 @@ public static class WorldCreationProfile
         Require(coast.Kind == CoastKind.Inland ? coast.WaterPercent == 0 : coast.WaterPercent is >= 5 and <= 75,
             "coast-coverage", "options.coast.waterPercent");
         Require(lakes.Count is >= 0 and <= 8 && (lakes.Count == 0 ? lakes.AreaPercent == 0 : lakes.AreaPercent is >= 1 and <= 20), "lakes", "options.lakes");
-        Require(Enum.IsDefined(rivers.Direction) && rivers.Width is >= 1 and <= 4 && rivers.Meander is >= 0 and <= 100,
+        Require(Enum.IsDefined(rivers.Direction) && rivers.Width is >= 1 and <= 8 && rivers.Meander is >= 0 and <= 100,
             "rivers", "options.rivers");
         Require(forest.CoveragePercent is >= 0 and <= 90 && forest.Clustering is >= 0 and <= 100 && !forest.Palette.IsDefault &&
             forest.Palette.Length <= 18 && (forest.CoveragePercent == 0 ? forest.Palette.IsEmpty : !forest.Palette.IsEmpty) &&

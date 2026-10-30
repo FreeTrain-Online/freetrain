@@ -390,7 +390,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   const first=await preview();expect(first.geography.metrics).toMatchObject({lakeComponents:0,riverCount:1,seaComponents:1,seaSides:5});
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await expect(page.getByTestId('water-metrics')).toContainText('Enclosed lakes: 0');
-  await page.getByLabel('Channel width (cells)',{exact:true}).fill('2');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
+  await page.getByLabel('Channel width (cells)',{exact:true}).fill('8');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   const wide=await preview();expect(wide.geography.seaMask).not.toBe(first.geography.seaMask);
   await page.getByLabel('River direction',{exact:true}).selectOption('eastWest');
   const across=await preview();expect(across.geography.metrics).toMatchObject({lakeComponents:0,riverCount:1,seaSides:10});
@@ -406,7 +406,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','water-preserved');
   expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(7);
-  const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(1);expect(provenance.Options.Rivers.Width).toBe(2);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
+  const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(1);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
   await closePanel(page);await page.screenshot({path:join(directory,'water-en-live.png'),fullPage:true});
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
@@ -420,7 +420,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   const original=await(await page.request.get('/api/saves/download')).body();
   await openPanel(page,'newWorld','ja');await page.getByLabel('世界の作成方法',{exact:true}).selectOption('generated');
   await page.getByLabel('川の方向',{exact:true}).selectOption('eastWest');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();
-  await page.getByLabel('川幅（セル）',{exact:true}).fill('5');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('1');
+  await page.getByLabel('川幅（セル）',{exact:true}).fill('9');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('8');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('1');
   await page.getByLabel('川の方向',{exact:true}).selectOption('none');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('8');
   await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByLabel('格納奥行（V）',{exact:true}).fill('16');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('形成できません');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);

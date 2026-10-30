@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Independent WORLDGEN-RELIEF-1 oracle: min-plus graph, not runtime scan order."""
 import argparse
+from collections import deque
 import hashlib
 import heapq
 import json
@@ -40,6 +41,22 @@ def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4, shape=
     sites = [(col-row//2+(v-1)//2,col+(row+1)//2) for row in range(v) for col in range(h)]
     heights = {xy:sample(2*(i%h),i//h)//4 for i,xy in enumerate(sites)}
     if shape is not None: heights = shape(sites, heights)
+    shore = kind != 'plains' and any(g < water for g in heights.values())
+    if shore:
+        # Independent XY face distances: four low-base steps protect two complete
+        # flat surface voxels; a separate relief octave varies the outer fringe.
+        distance = {p:0 for p,g in heights.items() if g < water}
+        frontier = deque(distance)
+        while frontier:
+            x,y = frontier.popleft()
+            if distance[x,y] == 6: continue
+            for q in [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]:
+                if q in heights and q not in distance:
+                    distance[q] = distance[x,y]+1
+                    frontier.append(q)
+        for (x,y), steps in distance.items():
+            width = 4+noise(2*x,y,max(4,scale//2),3)*3//ONE
+            if 0 < steps <= width: heights[x,y] = water
     raw = dict(heights)
     queue = [(g,xy) for xy,g in heights.items()]
     heapq.heapify(queue)
@@ -59,7 +76,8 @@ def fixture(kind, seed, amount, scale, smooth, h=32, v=32, z=32, water=4, shape=
         surround=[heights[xx,yy] for xx in range(x-1,x+3) for yy in range(y-1,y+3) if (xx,yy) in heights]
         fine=0
         if lo==hi and max(surround)>hi and (x,y) in index:
-            i=index[x,y];fine=sample(2*(i%h)+1,i//h)%4
+            i=index[x,y]
+            if not (shore and heights[x,y] == water): fine=sample(2*(i%h)+1,i//h)%4
         return 4*hi+fine
     packed=[]
     for xy in sites:

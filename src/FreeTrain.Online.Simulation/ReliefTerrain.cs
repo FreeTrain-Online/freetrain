@@ -72,14 +72,14 @@ public static class ReliefTerrain
             return ForestTerrain.Create(request, world, work, cancellation);
         }
         if (request.Options.Coast.Kind == CoastKind.Inland)
-            return Finish(NaturalTerrain.Normalize(request, profile, ground, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation));
+            return Finish(ShoreTerrain.Normalize(request, profile, ground, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation));
         GeographyException? failure = null;
         for (int attempt = 0; attempt < WorldCreationProfile.MaxAttempts; attempt++)
         {
             var shaped = CoastTerrain.Shape(request, ground, attempt, work);
-            var world = NaturalTerrain.Normalize(request, profile, shaped, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+            var world = ShoreTerrain.Normalize(request, profile, shaped, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
             if (CoastTerrain.FillEnclosedSea(world, work) is { } repaired)
-                world = NaturalTerrain.Normalize(request, profile, repaired, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
+                world = ShoreTerrain.Normalize(request, profile, repaired, (h, v) => Sample(request, seed, 2 * h + 1, v), work, cancellation);
             try { CoastTerrain.Validate(request, world, work); }
             catch (GeographyException error) { failure = error; continue; }
             return Finish(world);

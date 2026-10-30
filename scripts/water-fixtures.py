@@ -225,6 +225,8 @@ def main():
         fixture(lakes=1,h=17,v=16,z=8,water=1,area=1),fixture(lakes=1,h=64,v=64,z=64,water=60,area=20),
         fixture(lakes=0,direction=1,h=128,v=127,seed=-2147483648),
         fixture(lakes=0,direction=2,h=17,v=16,width=4),fixture(lakes=8,h=128,v=127,area=1)]
+    cases += [fixture(lakes=0,direction=1,width=5),fixture(lakes=1,direction=2,width=7),
+        fixture(lakes=1,direction=1,island=True,width=8),fixture(lakes=0,direction=2,sides=8,width=8)]
     output=json.dumps(dict(profile='terrain-generation-1',algorithm='WORLDGEN-WATER-1',
         oracle='Independent canonical XY dictionaries, min-plus normalization, heap routing and shared-edge water floods; literal geometry and river path witnesses.',cases=cases),indent=2)+'\n'
     if args.check: assert OUTPUT.read_text()==output,'Water fixtures differ'

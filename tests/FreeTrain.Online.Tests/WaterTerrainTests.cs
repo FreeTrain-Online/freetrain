@@ -25,6 +25,10 @@ public class WaterTerrainTests(ITestOutputHelper output)
     {
         yield return [1, RiverDirection.None, CoastKind.Inland, CoastSides.None, 1];
         yield return [3, RiverDirection.None, CoastKind.Inland, CoastSides.None, 1];
+        yield return [0, RiverDirection.NorthSouth, CoastKind.Inland, CoastSides.None, 5];
+        yield return [1, RiverDirection.EastWest, CoastKind.Inland, CoastSides.None, 7];
+        yield return [1, RiverDirection.NorthSouth, CoastKind.Island, CoastSides.None, 8];
+        yield return [0, RiverDirection.EastWest, CoastKind.Sides, CoastSides.West, 8];
         foreach (var direction in new[] { RiverDirection.NorthSouth, RiverDirection.EastWest })
         {
             yield return [0, direction, CoastKind.Inland, CoastSides.None, 1];
@@ -186,6 +190,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
     [Theory]
     [InlineData(16,16,1,0)] [InlineData(17,16,4,42)] [InlineData(64,65,2,int.MinValue)]
     [InlineData(128,127,4,int.MaxValue)]
+    [InlineData(64,65,8,int.MinValue)]
     public void Both_axes_reach_map_edges_without_a_dry_seam(int h,int v,int width,int seed)
     {
         foreach(var direction in new[]{RiverDirection.NorthSouth,RiverDirection.EastWest})
@@ -198,6 +203,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
     [Theory]
     [InlineData(RiverDirection.NorthSouth,1)] [InlineData(RiverDirection.EastWest,1)]
     [InlineData(RiverDirection.NorthSouth,4)] [InlineData(RiverDirection.EastWest,4)]
+    [InlineData(RiverDirection.NorthSouth,8)] [InlineData(RiverDirection.EastWest,8)]
     public void River_and_lake_overlay_preserves_both_water_surfaces_without_a_separating_bank(RiverDirection direction,int width)
     {
         var r=Request(1,direction,width:width);
@@ -273,6 +279,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
     [InlineData(0,RiverDirection.NorthSouth,CoastKind.Sides,CoastSides.North,1)]
     [InlineData(0,RiverDirection.EastWest,CoastKind.Inland,CoastSides.None,1)]
     [InlineData(2,RiverDirection.NorthSouth,CoastKind.Inland,CoastSides.None,4)]
+    [InlineData(2,RiverDirection.NorthSouth,CoastKind.Inland,CoastSides.None,8)]
     public void Maximum_feature_counts_and_rough_relief_are_bounded(int lakes,RiverDirection direction,CoastKind coast,CoastSides sides,int width)
     {
         var r=Request(lakes,direction,coast,sides,width,int.MinValue) with { Dimensions=new(128,127,64), WaterLevel=1 };

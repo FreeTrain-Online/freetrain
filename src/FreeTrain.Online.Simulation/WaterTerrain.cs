@@ -195,7 +195,7 @@ public static class WaterTerrain
                     { work.Spend(1); ground[n] = request.WaterLevel - 1; reserved[n] = true; }
                 }
                 // Validate the lake basins before overlaying the river on the same water plane.
-                var lakeWorld = request.Options.Lakes.Count == 0 ? basis : NaturalTerrain.Normalize(request, profile, ground, fine, work, cancellation);
+                var lakeWorld = request.Options.Lakes.Count == 0 ? basis : ShoreTerrain.Normalize(request, profile, ground, fine, work, cancellation);
                 var lakesOnly = request with { Options = request.Options with { Rivers = request.Options.Rivers with { Direction = RiverDirection.None } } };
                 Validate(lakesOnly, lakeWorld, work);
                 var survey = Inspect(lakeWorld, work);
@@ -264,7 +264,7 @@ public static class WaterTerrain
                         foreach (int n in Square(i, options.Width, basis.Space, true))
                         { work.Spend(1); ground[n] = request.WaterLevel - 1; }
                 }
-                var world = NaturalTerrain.Normalize(request, profile, ground, fine, work, cancellation);
+                var world = ShoreTerrain.Normalize(request, profile, ground, fine, work, cancellation);
                 var final = Inspect(world, work);
                 foreach (var channel in channels)
                 {

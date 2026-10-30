@@ -27,7 +27,7 @@
   const selectedProvider = $derived(providers.find(p=>p.binding.contributionId===provider));
   let name = $state(''), h = $state<number|undefined>(30), v = $state<number|undefined>(42), z = $state<number|undefined>(6), water = $state<number|undefined>(1);
   const forestValid=$derived([forestCoverage,clustering,startingArea].every(Number.isInteger) && forestCoverage!>=0 && forestCoverage!<=90 && clustering!>=0 && clustering!<=100 && startingArea!>=0 && startingArea!<=Math.floor((h??0)*(v??0)/4) && (forestCoverage===0 || palette.length===treeSet.length && palette.length>0));
-  const waterValid=$derived([lakeCount,lakeArea,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverWidth!>=1 && riverWidth!<=4 && riverMeander!>=0 && riverMeander!<=100 && (coast==='inland'?0:coverage!)+100*(startingArea??0)/((h??1)*(v??1))+lakeCount!*lakeArea!+100*(riverDirection==='none'?0:1)*riverWidth!*((h??0)+(v??0))/2/((h??1)*(v??1))<=75);
+  const waterValid=$derived([lakeCount,lakeArea,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverWidth!>=1 && riverWidth!<=8 && riverMeander!>=0 && riverMeander!<=100 && (coast==='inland'?0:coverage!)+100*(startingArea??0)/((h??1)*(v??1))+lakeCount!*lakeArea!+100*(riverDirection==='none'?0:1)*riverWidth!*((h??0)+(v??0))/2/((h??1)*(v??1))<=75);
   let candidate = $state<Candidate>();
   let previewImage=$state<string>();
   $effect(()=>{
@@ -132,7 +132,7 @@
     {#if lakeCount}<label class="field">{text.lakeArea}<input type="number" min="1" max="20" step="1" bind:value={lakeArea}/></label>{/if}
     <label class="field">{text.riverDirection}<select aria-label={text.riverDirection} bind:value={riverDirection}><option value="none">{text.riverNone}</option><option value="northSouth">{text.riverNorthSouth}</option><option value="eastWest">{text.riverEastWest}</option></select></label>
     {#if riverDirection!=='none'}
-      <label class="field">{text.riverWidth}<input type="number" min="1" max="4" step="1" bind:value={riverWidth}/></label>
+      <label class="field">{text.riverWidth}<input type="number" min="1" max="8" step="1" bind:value={riverWidth}/></label>
       <label class="field">{text.riverMeander}<input type="number" min="0" max="100" step="1" bind:value={riverMeander}/></label>
     {/if}
     <p class="hint">{text.waterFeaturesHelp}</p>

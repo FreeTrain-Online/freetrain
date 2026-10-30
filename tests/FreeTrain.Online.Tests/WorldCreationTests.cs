@@ -94,7 +94,7 @@ public class WorldCreationTests
             "null-relief" => r with { Options = o with { Relief = null! } },
             "enum" => r with { Options = o with { Coast = new((CoastKind)999, (CoastSides)16, 10) } },
             "start-area" => r with { Options = o with { StartingArea = 2000 } },
-            "river-width" => r with { Options = o with { Rivers = new(RiverDirection.NorthSouth, 5, 30) } },
+            "river-width" => r with { Options = o with { Rivers = new(RiverDirection.NorthSouth, 9, 30) } },
             _ => throw new ArgumentException()
         };
         Assert.NotEmpty(WorldCreationProfile.Validate(r));
