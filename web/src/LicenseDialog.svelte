@@ -2,6 +2,7 @@
   import DecisionModal from './DecisionModal.svelte';
   import { messages, type Locale } from './lib/localization.ts';
   import licenseText from '../../content/bundled-v2/source/trunk/doc/COPYING.txt?raw';
+  import stbImageSharpLicense from '../../doc/notices/StbImageSharp/LICENSE.txt?raw';
   const licensePreamble = `FreeTrain itself is licensed under the LGPL. All use and redistribution are
 subject to this license. Individual plugins may have different licensing
 agreements, but unless specifically noted, please assume LGPL.
@@ -39,6 +40,8 @@ agreements, but unless specifically noted, please assume LGPL.
   <!-- Keyboard focus lets readers scroll the long license with arrow and Page Down keys. -->
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <pre class="license-text" tabindex="0" role="region" aria-label="GNU Lesser General Public License 2.1">{licenseText}</pre>
+  <hr />
+  <pre class="license-text">{stbImageSharpLicense}</pre>
   {#snippet actions()}
     <button onclick={onclose}>{text.closeDialog}</button>
   {/snippet}
