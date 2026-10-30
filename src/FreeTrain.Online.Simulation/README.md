@@ -44,4 +44,10 @@ P4-03 adds detached `MixedWorld`/`RailwayState` composition: one combined occupa
 index/allocator, Traffic component slots, eight-cell slope ownership and exact
 state-handler validation. Zero rails/open ends/disconnected networks are legal.
 See [state contract and handoff](../../doc/web-parity-railway-state.md). Live mixed
-session/save/wire dispatch follows P4-04 booking and P4-05 persistence.
+session/save/wire dispatch follows P4-05 persistence.
+
+P4-04 adds source-priced `RailwayBooking`, immutable `ConstructionAccounts` with
+validated capture/restore and ordered spend/rescue history, and
+`MixedConstructionState` for atomic terrain/rail/allocator/account replacement.
+Source initial cash, bankruptcy continuation and charged no-ops are retained;
+authoring grants no cash exemption. See [booking contract and P4-05 handoff](../../doc/web-parity-railway-booking.md).

@@ -1,7 +1,8 @@
 # P4-03 mixed terrain/rail state — 30 October 2026
 
 P4-03 delivers the detached canonical composition and its state-handler profile.
-Next is **P4-04 atomic construction/removal booking**. P4 gameplay remains open;
+[P4-04 atomic construction/removal booking](web-parity-railway-booking.md) is now
+delivered; next is **P4-05 mixed-world saves, wire contracts and dispatch**. P4 gameplay remains open;
 this step introduces no live command, renderer, save/protocol version or network
 profile. The existing terrain and synthetic reference-loop worlds retain their
 current behavior.
@@ -78,7 +79,8 @@ reusing the existing terrain provenance, construction-mode, `ClockState`,
 clock, reroll forests or infer current ground from provenance. Session FIFO,
 role/epoch/content fences and session revision remain the outer authority; mixed
 geometry and terrain geometry revisions identify their immutable subsets.
-P4-04 must add canonical economics and include it in the same publication boundary.
+P4-04 now adds canonical economics in `MixedConstructionState`, which returns
+geometry/allocator and booking in the same immutable publication boundary.
 Current `TerrainSessionState`/`SessionHost` deliberately do not accept mixed state
 until these prerequisites and P4-05 full input/transport validation are delivered.
 

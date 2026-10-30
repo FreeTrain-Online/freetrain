@@ -2,7 +2,8 @@
 
 **P4-01 is complete at source-contract scope. [P4-02 independent fixtures](web-parity-railway-fixtures.md)
 are complete; [P4-03 detached mixed state](web-parity-railway-state.md) is now delivered.
-Next: P4-04 atomic booking.**
+[P4-04 detached atomic booking](web-parity-railway-booking.md) is delivered.
+Next: P4-05 mixed-world saves, wire contracts and dispatch.**
 This specifies railway behavior; it adds no live handler, command, UI, save or
 protocol version. P4 remains open. The separate synthetic reference loop and the
 accepted zero-rail terrain profile retain their invariants.
