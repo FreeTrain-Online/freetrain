@@ -10,8 +10,8 @@
   let seed = $state<number|undefined>(0), relief = $state('hills'), amount = $state<number|undefined>(50), scale = $state<number|undefined>(24), smoothness = $state<number|undefined>(50);
   function reliefDefaults(kind:string) { relief=kind; [amount,scale,smoothness]=kind==='plains'?[20,32,75]:kind==='mountains'?[85,32,25]:[50,24,50]; }
   let coast = $state('inland'), sides = $state(1), coverage = $state<number|undefined>(40);
-  let lakeCount=$state<number|undefined>(0), lakeArea=$state<number|undefined>(3), riverCount=$state<number|undefined>(0), riverWidth=$state<number|undefined>(1), riverMeander=$state<number|undefined>(30), riverOutlet=$state('automatic');
-  const outlets=['automatic','north','east','south','west','edgeToEdge'] as const;
+  let lakeCount=$state<number|undefined>(0), lakeArea=$state<number|undefined>(3), riverDirection=$state('none'), riverWidth=$state<number|undefined>(1), riverMeander=$state<number|undefined>(30);
+  const riverDirections=['none','northSouth','eastWest'] as const;
   const directions = [{bit:1,label:'coastNorth'},{bit:2,label:'coastEast'},{bit:4,label:'coastSouth'},{bit:8,label:'coastWest'}] as const;
   type ForestChoice = {binding:{packId:string;version:string;catalogHash:string;contributionId:string};species:string;variant:string};
   let forestChoices=$state<ForestChoice[]>([]), forestCoverage=$state<number|undefined>(0), clustering=$state<number|undefined>(50), startingArea=$state<number|undefined>(0), forestVariant=$state('natural');
@@ -27,7 +27,7 @@
   const selectedProvider = $derived(providers.find(p=>p.binding.contributionId===provider));
   let name = $state(''), h = $state<number|undefined>(30), v = $state<number|undefined>(42), z = $state<number|undefined>(6), water = $state<number|undefined>(1);
   const forestValid=$derived([forestCoverage,clustering,startingArea].every(Number.isInteger) && forestCoverage!>=0 && forestCoverage!<=90 && clustering!>=0 && clustering!<=100 && startingArea!>=0 && startingArea!<=Math.floor((h??0)*(v??0)/4) && (forestCoverage===0 || palette.length===treeSet.length && palette.length>0));
-  const waterValid=$derived([lakeCount,lakeArea,riverCount,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverCount!>=0 && riverCount!<=4 && riverWidth!>=1 && riverWidth!<=4 && riverMeander!>=0 && riverMeander!<=100 && (riverCount===0 || (riverOutlet==='edgeToEdge'?coast==='inland' && lakeCount===0:riverOutlet==='automatic'?coast!=='inland' || lakeCount!>0:coast==='island' || coast==='sides' && Boolean(sides & (1<<(['north','east','south','west'].indexOf(riverOutlet)))))) && (coast==='inland'?0:coverage!)+100*(startingArea??0)/((h??1)*(v??1))+lakeCount!*lakeArea!+100*riverCount!*riverWidth!*Math.min(h??0,v??0)/((h??1)*(v??1))<=75);
+  const waterValid=$derived([lakeCount,lakeArea,riverWidth,riverMeander].every(Number.isInteger) && lakeCount!>=0 && lakeCount!<=8 && lakeArea!>=1 && lakeArea!<=20 && riverWidth!>=1 && riverWidth!<=4 && riverMeander!>=0 && riverMeander!<=100 && (coast==='inland'?0:coverage!)+100*(startingArea??0)/((h??1)*(v??1))+lakeCount!*lakeArea!+100*(riverDirection==='none'?0:1)*riverWidth!*((h??0)+(v??0))/2/((h??1)*(v??1))<=75);
   let candidate = $state<Candidate>();
   let previewImage=$state<string>();
   $effect(()=>{
@@ -82,7 +82,7 @@
       let result:Candidate;
       if(source==='empty')result=await call('preview',{name:name || text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r});
       else if(source==='generated') {
-        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:['inland','island','sides'].indexOf(coast),sides:coast==='sides'?sides:0,waterPercent:coast==='inland'?0:coverage},lakes:{count:lakeCount,areaPercent:lakeCount?lakeArea:0},rivers:{count:riverCount,width:riverWidth,meander:riverMeander,outlet:outlets.indexOf(riverOutlet as typeof outlets[number])},forests:{coveragePercent:forestCoverage,clustering,palette:forestCoverage?palette:[]},startingArea}})});
+        const response=await fetch('/api/worlds/generated/preview',{method:'POST',headers:{'Content-Type':'application/json'},signal:requestAbort!.signal,body:JSON.stringify({name:name||text.unnamedWorld,dimensions:{h,v,z},waterLevel:water,epoch:e,revision:r,options:{seed,relief:{kind:['plains','hills','mountains'].indexOf(relief),amount,featureScale:scale,smoothness},coast:{kind:['inland','island','sides'].indexOf(coast),sides:coast==='sides'?sides:0,waterPercent:coast==='inland'?0:coverage},lakes:{count:lakeCount,areaPercent:lakeCount?lakeArea:0},rivers:{direction:riverDirections.indexOf(riverDirection as typeof riverDirections[number]),width:riverWidth,meander:riverMeander},forests:{coveragePercent:forestCoverage,clustering,palette:forestCoverage?palette:[]},startingArea}})});
         if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.code==='geographyImpossible'?(error.constraint==='starting-area'?'startingAreaImpossible':String(error.constraint).startsWith('lake-')?'lakeImpossible':String(error.constraint).startsWith('river-')?'riverImpossible':error.constraint==='coast-coverage'?'coastCoverageImpossible':['coast-boundary','coast-sector','coast-island-rim'].includes(error.constraint)?'coastBoundaryImpossible':'coastTopologyImpossible'):error.code||'creationFailed');}
         result=await response.json();
       } else {
@@ -130,11 +130,10 @@
     <p class="hint">{text.coastHelp}</p>
     <label class="field">{text.lakeCount}<input type="number" min="0" max="8" step="1" bind:value={lakeCount}/></label>
     {#if lakeCount}<label class="field">{text.lakeArea}<input type="number" min="1" max="20" step="1" bind:value={lakeArea}/></label>{/if}
-    <label class="field">{text.riverCount}<input type="number" min="0" max="4" step="1" bind:value={riverCount}/></label>
-    {#if riverCount}
+    <label class="field">{text.riverDirection}<select aria-label={text.riverDirection} bind:value={riverDirection}><option value="none">{text.riverNone}</option><option value="northSouth">{text.riverNorthSouth}</option><option value="eastWest">{text.riverEastWest}</option></select></label>
+    {#if riverDirection!=='none'}
       <label class="field">{text.riverWidth}<input type="number" min="1" max="4" step="1" bind:value={riverWidth}/></label>
       <label class="field">{text.riverMeander}<input type="number" min="0" max="100" step="1" bind:value={riverMeander}/></label>
-      <label class="field">{text.riverOutlet}<select aria-label={text.riverOutlet} bind:value={riverOutlet}>{#each outlets as outlet}<option value={outlet}>{text[({automatic:'riverAutomatic',north:'coastNorth',east:'coastEast',south:'coastSouth',west:'coastWest',edgeToEdge:'riverEdgeToEdge'} as const)[outlet]]}</option>{/each}</select></label>
     {/if}
     <p class="hint">{text.waterFeaturesHelp}</p>
     {#if !waterValid}<p role="status">{text.waterSettingsInvalid}</p>{/if}

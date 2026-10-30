@@ -43,8 +43,8 @@ def fractal(seed, x, y, scale):
         return mix(mix(lattice(ix,iy),lattice(ix+1,iy),fx),mix(lattice(ix,iy+1),lattice(ix+1,iy+1),fx),fy)
     return (4*noise(scale,0)+2*noise(max(2,scale//2),1)+noise(max(1,scale//4),2))//7
 
-def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0, meander=70, h=64, v=64, z=32, water=4, area=3):
-    inputs = dict(lakes=lakes,rivers=rivers,outlet=outlet,sides=sides,island=island,width=width,seed=seed,meander=meander,h=h,v=v,z=z,water=water,area=area if lakes else 0)
+def fixture(lakes=1, direction=0, sides=0, island=False, width=1, seed=0, meander=70, h=64, v=64, z=32, water=4, area=3):
+    inputs = dict(lakes=lakes,direction=direction,sides=sides,island=island,width=width,seed=seed,meander=meander,h=h,v=v,z=z,water=water,area=area if lakes else 0)
     if sides or island:
         base = coast.fixture(sides,island,seed,30,h,v,z,water,geometry=True)
         if 'error' in base: return dict(**inputs,error=base['error'])
@@ -97,14 +97,16 @@ def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0,
     def check(row, count):
         heights,wet,ids,sizes,contacts,face=inspect(row)
         enclosed=[n for n,t in zip(sizes,contacts) if not t]
-        if count==0:
-            target=size*area//100
-            if any(abs(n-target)>max(size//100,target//4) for n in enclosed): raise ValueError('lake-area')
-        if len(enclosed)!=lakes: raise ValueError('lake-rim')
-        expected=15 if island else sides
-        if outlet!=5 or count==0:
-            if any(i in wet and not expected&sector(i) or island and i not in wet for i in boundary): raise ValueError('river-boundary')
-        elif sum(t!=0 for t in contacts)!=count: raise ValueError('river-separation')
+        target=size*area//100
+        if any(abs(n-target)>max(size//100,target//4) for n in enclosed): raise ValueError('lake-area')
+        if len(enclosed)>lakes or not count and len(enclosed)!=lakes: raise ValueError('lake-rim')
+        axis=5 if direction==1 and count else 10 if direction==2 and count else 0
+        expected=(15 if island else sides)|axis
+        actual=0
+        for contact in contacts: actual|=contact
+        if actual!=expected: raise ValueError('river-boundary')
+        if any(i in wet and not expected&sector(i) or island and i not in wet for i in boundary): raise ValueError('river-boundary')
+        if axis and not any(contact&axis==axis for contact in contacts): raise ValueError('river-connectivity')
         return heights,wet,ids,sizes,contacts,face
     failure=None
     for attempt in range(4):
@@ -139,28 +141,20 @@ def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0,
             ground=list(lake_world['ground'])
             heights,wet,ids,sizes,contacts,face=inspect(lake_world)
             water_distance=distances(wet);edge_distance=distances(boundary)
-            channel_reserved=set();paths=[];river_seed=stage(seed,'rivers',attempt)
+            paths=[];river_seed=stage(seed,'rivers',attempt)
             gate={i for i in boundary if any(n not in boundary for n in adjacent[i])}
-            for river in range(rivers):
-                edge=outlet==5;chosen=0 if outlet in [0,5] else 1<<(outlet-1)
-                edge_side=1 if hashed(river_seed,0)%2==0 else 2
-                outlet_water={i for i in range(size) if (i in gate and sector(i)==edge_side if edge else
-                    i in wet and (ids[i]==ids[centers[0]] if not sides and not island else contacts[ids[i]] and (not chosen or sector(i)==chosen)))}
-                goals=outlet_water-channel_reserved
-                blocked=set(channel_reserved)|(boundary-goals)
-                away=distances(boundary|wet|channel_reserved)
-                other=distances(wet-outlet_water)
-                blocked|={i for i in range(size) if i not in goals and 0<=other[i]<=width+3}
-                from_edge=distances(boundary)
-                if not edge: blocked|={i for i in range(size) if i not in wet and from_edge[i]<=width+1}
-                fringe={i for i in gate if i not in channel_reserved and sector(i)==(4 if edge_side==1 else 8)} if edge else set()
-                to_goal=distances(goals,blocked,fringe)
-                sources=[i for i in range(size) if to_goal[i]>=4 and
-                    (i in gate and sector(i)==(4 if edge_side==1 else 8) and i not in channel_reserved if edge else
-                     i not in blocked and i not in wet and away[i]>=width+4)]
-                if not sources: raise ValueError('river-space')
-                source=min(sources,key=lambda i:(-to_goal[i],hashed(river_seed+river,i)))
-                blocked.discard(source)
+            if direction:
+                source_side,target_side=(1,4) if direction==1 else (2,8)
+                axis=source_side|target_side
+                other=distances({i for i in wet if contacts[ids[i]]!=0 and not sector(i)&axis})
+                blocked={i for i in range(size) if 0<=other[i]<=width+3}
+                middle=(h-1+(v-1)//2)//2 if direction==1 else (h-1+v//2)//2
+                def pick(side):
+                    candidates=[i for i in gate if i not in blocked and sector(i)==side]
+                    if not candidates: raise ValueError('river-space')
+                    return min(candidates,key=lambda i:(abs(sites[i][0 if direction==1 else 1]-middle),hashed(river_seed,i)))
+                source,target=pick(source_side),pick(target_side)
+                goals={target};blocked|=boundary-{source,target}
                 def route(roughness):
                     costs={source:0};previous={source:None};queue=[(0,source)]
                     while queue:
@@ -183,7 +177,7 @@ def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0,
                     for k in range(length+1):
                         t=k*65536//length
                         x=sx+relief.trunc(dx*t,65536);y=sy+relief.trunc(dy*t,65536)
-                        noise=fractal(river_seed+river,x,y,scale)-32768
+                        noise=fractal(river_seed,x,y,scale)-32768
                         offsets.append(relief.trunc(noise*amplitude*4*t*(65536-t),65536**3))
                     for i,(x,y) in enumerate(sites):
                         dot=(x-sx)*dx+(y-sy)*dy
@@ -196,9 +190,8 @@ def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0,
                 paths.append(path)
                 for i in path:
                     for n in square(i,width,True): ground[n]=water-1
-                    channel_reserved.update(square(i,width+6,True))
             final=normalize(ground)
-            heights,wet,ids,sizes,contacts,face=check(final,rivers)
+            heights,wet,ids,sizes,contacts,face=check(final,int(direction!=0))
             for path in paths:
                 group=ids[path[-1]]
                 if group<0 or ids[path[0]]!=group: raise ValueError('river-outlet')
@@ -223,14 +216,15 @@ def fixture(lakes=1, rivers=0, outlet=0, sides=0, island=False, width=1, seed=0,
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
-    cases=[fixture(),fixture(lakes=3),fixture(lakes=1,rivers=1),fixture(lakes=0,rivers=1,outlet=5),fixture(island=True),fixture(island=True,rivers=1)]
-    cases += [fixture(rivers=1,sides=1<<(outlet-1),outlet=outlet) for outlet in range(1,5)]
-    cases += [fixture(lakes=0,rivers=2,sides=1),fixture(lakes=0,rivers=1,sides=5,width=4),
-        fixture(lakes=2,seed=-2147483648),fixture(lakes=0,rivers=1,outlet=5,seed=2147483647,width=4),
-        fixture(lakes=0,rivers=1,outlet=5,meander=0),fixture(lakes=8,h=16,v=16,z=8,water=1),
+    cases=[fixture(),fixture(lakes=3),fixture(lakes=1,direction=1),fixture(lakes=0,direction=2),fixture(island=True)]
+    cases += [fixture(direction=direction,island=True) for direction in [1,2]]
+    cases += [fixture(direction=direction,sides=side) for direction in [1,2] for side in [1,2,4,8]]
+    cases += [fixture(lakes=0,direction=1,sides=5,width=4),fixture(lakes=0,direction=2,sides=10,width=4),
+        fixture(lakes=2,seed=-2147483648),fixture(lakes=0,direction=2,seed=2147483647,width=4),
+        fixture(lakes=0,direction=1,meander=0),fixture(lakes=8,h=16,v=16,z=8,water=1),
         fixture(lakes=1,h=17,v=16,z=8,water=1,area=1),fixture(lakes=1,h=64,v=64,z=64,water=60,area=20),
-        fixture(lakes=0,rivers=4,outlet=5,h=128,v=127,seed=-2147483648),
-        fixture(lakes=8,h=128,v=127,area=1)]
+        fixture(lakes=0,direction=1,h=128,v=127,seed=-2147483648),
+        fixture(lakes=0,direction=2,h=17,v=16,width=4),fixture(lakes=8,h=128,v=127,area=1)]
     output=json.dumps(dict(profile='terrain-generation-1',algorithm='WORLDGEN-WATER-1',
         oracle='Independent canonical XY dictionaries, min-plus normalization, heap routing and shared-edge water floods; literal geometry and river path witnesses.',cases=cases),indent=2)+'\n'
     if args.check: assert OUTPUT.read_text()==output,'Water fixtures differ'

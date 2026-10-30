@@ -70,25 +70,28 @@ public static class WaterTerrain
             {
                 lakeCount++; lakes += survey.Sizes[c];
                 int target = world.Cells.Length * request.Options.Lakes.AreaPercent / 100;
-                if (request.Options.Rivers.Count == 0 && Math.Abs(survey.Sizes[c] - target) > Math.Max(world.Cells.Length / 100, target / 4))
+                if (Math.Abs(survey.Sizes[c] - target) > Math.Max(world.Cells.Length / 100, target / 4))
                     throw new GeographyException("lake-area");
             }
             else { sea += survey.Sizes[c]; seas++; sides |= survey.Sides[c]; }
         }
-        if (lakeCount != request.Options.Lakes.Count) throw new GeographyException("lake-rim");
+        // A river can open a requested basin into the boundary-connected water.
+        // Basins were independently checked before carving; only isolated lakes
+        // remain in these final topology metrics.
+        if (lakeCount > request.Options.Lakes.Count || request.Options.Rivers.Count == 0 && lakeCount != request.Options.Lakes.Count)
+            throw new GeographyException("lake-rim");
         var d = request.Dimensions;
-        if (request.Options.Rivers.Outlet != RiverOutlet.EdgeToEdge || request.Options.Rivers.Count == 0)
+        var expectedSides = CoastTerrain.Selected(request.Options.Coast) | request.Options.Rivers.Sides;
+        if (sides != expectedSides) throw new GeographyException("river-boundary");
+        for (int i = 0; i < survey.Corners.Length; i++)
         {
-            if (sides != CoastTerrain.Selected(request.Options.Coast)) throw new GeographyException("river-boundary");
-            for (int i = 0; i < survey.Corners.Length; i++)
-            {
-                work?.Spend(1); if (!CoastTerrain.Boundary(i % d.H, i / d.H, d)) continue;
-                bool expected = (CoastTerrain.Selected(request.Options.Coast) & CoastTerrain.Sector(i % d.H, i / d.H, d)) != 0;
-                if (survey.Corners[i] != 0 && !expected || request.Options.Coast.Kind == CoastKind.Island && survey.Corners[i] == 0)
-                    throw new GeographyException("river-boundary");
-            }
+            work?.Spend(1); if (!CoastTerrain.Boundary(i % d.H, i / d.H, d)) continue;
+            bool expected = (expectedSides & CoastTerrain.Sector(i % d.H, i / d.H, d)) != 0;
+            if (survey.Corners[i] != 0 && !expected || request.Options.Coast.Kind == CoastKind.Island && survey.Corners[i] == 0)
+                throw new GeographyException("river-boundary");
         }
-        else if (seas != request.Options.Rivers.Count) throw new GeographyException("river-separation");
+        if (request.Options.Rivers.Count > 0 && !survey.Sides.Any(contact => (contact & request.Options.Rivers.Sides) == request.Options.Rivers.Sides))
+            throw new GeographyException("river-connectivity");
         int wet = sea + lakes;
         if (wet == world.Cells.Length) throw new GeographyException("river-banks");
         // Rivers may divide the main landmass; the pre-carve coast was independently
@@ -122,7 +125,7 @@ public static class WaterTerrain
         }
     }
 
-    private static int[] Distances(WorldDimensions d, bool[] seeds, GenerationWork work, bool[]? blocked = null, bool[]? fringe = null)
+    private static int[] Distances(WorldDimensions d, bool[] seeds, GenerationWork work)
     {
         var distance = new int[seeds.Length]; Array.Fill(distance, -1); var queue = new int[seeds.Length]; int head = 0, tail = 0;
         for (int i = 0; i < seeds.Length; i++) { work.Spend(1); if (seeds[i]) { distance[i] = 0; queue[tail++] = i; } }
@@ -132,9 +135,9 @@ public static class WaterTerrain
             work.Spend(8); int i = queue[head++], count = CoastTerrain.Neighbors(i, d, neighbors);
             for (int j = 0; j < count; j++)
             {
-                int n = neighbors[j]; if (distance[n] >= 0 || blocked is not null && blocked[n] && fringe?[n] != true) continue;
+                int n = neighbors[j]; if (distance[n] >= 0) continue;
                 distance[n] = distance[i] + 1;
-                if (fringe?[n] != true) queue[tail++] = n;
+                queue[tail++] = n;
             }
         }
         return distance;
@@ -152,7 +155,6 @@ public static class WaterTerrain
                 var ground = basis.Cells.Select(c => c.Ground).ToArray();
                 var original = CoastTerrain.SeaMask(basis, work); var reserved = (bool[])original.Clone();
                 for (int i = 0; i < size; i++) { work.Spend(1); reserved[i] |= CoastTerrain.Boundary(i % d.H, i / d.H, d); }
-                var centers = new List<int>();
                 int lakeSeed = WorldCreationProfile.StageSeed(request.Options.Seed, GenerationStage.Lakes, attempt);
                 Span<int> neighbors = stackalloc int[4];
                 for (int lake = 0; lake < request.Options.Lakes.Count; lake++)
@@ -189,13 +191,12 @@ public static class WaterTerrain
                         for (int j = 0; j < count; j++) { int n = neighbors[j]; if (!seen[n]) Enqueue(n); }
                     }
                     if (core.Count != target) throw new GeographyException("lake-space");
-                    centers.Add(center);
                     foreach (int i in core) foreach (int n in Square(i, 1, basis.Space, true))
                     { work.Spend(1); ground[n] = request.WaterLevel - 1; reserved[n] = true; }
                 }
-                // Normalize lakes before routing; path goals are actual submerged cells.
+                // Validate the lake basins before overlaying the river on the same water plane.
                 var lakeWorld = request.Options.Lakes.Count == 0 ? basis : NaturalTerrain.Normalize(request, profile, ground, fine, work, cancellation);
-                var lakesOnly = request with { Options = request.Options with { Rivers = request.Options.Rivers with { Count = 0 } } };
+                var lakesOnly = request with { Options = request.Options with { Rivers = request.Options.Rivers with { Direction = RiverDirection.None } } };
                 Validate(lakesOnly, lakeWorld, work);
                 var survey = Inspect(lakeWorld, work);
                 var wet = survey.Corners.Select(c => c != 0).ToArray();
@@ -203,73 +204,65 @@ public static class WaterTerrain
                 var boundarySeeds = new bool[size];
                 for (int i = 0; i < size; i++) { work.Spend(1); boundarySeeds[i] = CoastTerrain.Boundary(i % d.H, i / d.H, d); }
                 var fromEdge = Distances(d, boundarySeeds, work);
-                var channels = new List<Channel>(); var channelReserved = new bool[size];
-                int riverSeed = WorldCreationProfile.StageSeed(request.Options.Seed, GenerationStage.Rivers, attempt);
-                for (int river = 0; river < request.Options.Rivers.Count; river++)
+                var channels = new List<Channel>();
+                if (request.Options.Rivers.Count > 0)
                 {
-                    var options = request.Options.Rivers; bool edge = options.Outlet == RiverOutlet.EdgeToEdge;
-                    var goals = new bool[size]; var blocked = new bool[size];
+                    var options = request.Options.Rivers;
+                    int riverSeed = WorldCreationProfile.StageSeed(request.Options.Seed, GenerationStage.Rivers, attempt);
+                    var sourceSide = options.Direction == RiverDirection.NorthSouth ? CoastSides.North : CoastSides.East;
+                    var targetSide = options.Direction == RiverDirection.NorthSouth ? CoastSides.South : CoastSides.West;
                     bool Gate(int i)
                     {
-                        if (!CoastTerrain.Boundary(i % d.H, i / d.H, d)) return false;
+                        if (!boundarySeeds[i]) return false;
                         Span<int> adjacent = stackalloc int[4]; int count = CoastTerrain.Neighbors(i, d, adjacent);
-                        for (int j = 0; j < count; j++) if (!CoastTerrain.Boundary(adjacent[j] % d.H, adjacent[j] / d.H, d)) return true;
+                        for (int j = 0; j < count; j++) if (!boundarySeeds[adjacent[j]]) return true;
                         return false;
                     }
-                    var chosen = options.Outlet switch { RiverOutlet.North => CoastSides.North, RiverOutlet.East => CoastSides.East,
-                        RiverOutlet.South => CoastSides.South, RiverOutlet.West => CoastSides.West, _ => CoastSides.None };
-                    CoastSides edgeSide = Hash(riverSeed, 0) % 2 == 0 ? CoastSides.North : CoastSides.East;
-                    bool IsOutlet(int i)
-                    {
-                        var sector = CoastTerrain.Sector(i % d.H, i / d.H, d);
-                        return edge ? Gate(i) && sector == edgeSide : wet[i] &&
-                            (request.Options.Coast.Kind == CoastKind.Inland ? survey.Component[i] == survey.Component[centers[0]] :
-                             survey.Sides[survey.Component[i]] != 0 && (chosen == 0 || sector == chosen));
-                    }
-                    var clearance = new bool[size];
-                    for (int i = 0; i < size; i++)
-                    {
-                        work.Spend(1); bool boundary = CoastTerrain.Boundary(i % d.H, i / d.H, d);
-                        goals[i] = !channelReserved[i] && IsOutlet(i);
-                        clearance[i] = boundary || wet[i] || channelReserved[i];
-                        blocked[i] = channelReserved[i] || boundary && !goals[i];
-                    }
-                    var away = Distances(d, clearance, work);
-                    // Keep other lakes and previous channels behind dry banks. A mouth
-                    // can enter only the chosen water component/sector.
+                    // Only unrelated shores obstruct the route. Lakes overlay the
+                    // channel wherever they intersect, without a separating bank.
                     var otherWater = new bool[size];
-                    for (int i = 0; i < size; i++) { work.Spend(1); otherWater[i] = wet[i] && !IsOutlet(i); }
+                    for (int i = 0; i < size; i++)
+                    {
+                        work.Spend(1);
+                        otherWater[i] = wet[i] && survey.Sides[survey.Component[i]] != 0 &&
+                            (CoastTerrain.Sector(i % d.H, i / d.H, d) & options.Sides) == 0;
+                    }
                     var fromOtherWater = Distances(d, otherWater, work);
+                    var blocked = new bool[size];
                     for (int i = 0; i < size; i++)
-                    { work.Spend(1); if (!goals[i] && fromOtherWater[i] >= 0 && fromOtherWater[i] <= options.Width + 3) blocked[i] = true; }
-                    var fringe = edge ? new bool[size] : null;
-                    for (int i = 0; i < size; i++)
+                    { work.Spend(1); blocked[i] = fromOtherWater[i] >= 0 && fromOtherWater[i] <= options.Width + 3; }
+                    // Choose gates near the same perpendicular world coordinate.
+                    // H/V rows are staggered: selecting an image edge would make a
+                    // diagonal river and can leave a one-cell lip at the map rim.
+                    int Perpendicular(int i)
                     {
-                        work.Spend(1);
-                        if (!edge && !wet[i] && fromEdge[i] <= options.Width + 1) blocked[i] = true;
-                        if (fringe != null) fringe[i] = Gate(i) && !channelReserved[i] &&
-                            CoastTerrain.Sector(i % d.H, i / d.H, d) == (edgeSide == CoastSides.North ? CoastSides.South : CoastSides.West);
+                        var p = basis.Space.ToLocation(new(i % d.H, i / d.H, 0));
+                        return options.Direction == RiverDirection.NorthSouth ? p.X : p.Y;
                     }
-                    var toGoal = Distances(d, goals, work, blocked, fringe);
-                    int source = -1;
-                    for (int i = 0; i < size; i++)
+                    int middle = options.Direction == RiverDirection.NorthSouth
+                        ? (d.H - 1 + (d.V - 1) / 2) / 2 : (d.H - 1 + d.V / 2) / 2;
+                    int PickGate(CoastSides side)
                     {
-                        work.Spend(1);
-                        bool eligible = edge ? Gate(i) &&
-                            CoastTerrain.Sector(i % d.H, i / d.H, d) == (edgeSide == CoastSides.North ? CoastSides.South : CoastSides.West) && !channelReserved[i]
-                            : !blocked[i] && !wet[i] && away[i] >= options.Width + 4;
-                        if (!eligible || toGoal[i] < 4) continue;
-                        if (source < 0 || toGoal[i] > toGoal[source] || toGoal[i] == toGoal[source] && Hash(riverSeed + river, i) < Hash(riverSeed + river, source)) source = i;
+                        int best = -1;
+                        for (int i = 0; i < size; i++)
+                        {
+                            work.Spend(1);
+                            if (blocked[i] || !Gate(i) || CoastTerrain.Sector(i % d.H, i / d.H, d) != side) continue;
+                            if (best < 0 || Math.Abs(Perpendicular(i) - middle) < Math.Abs(Perpendicular(best) - middle) ||
+                                Math.Abs(Perpendicular(i) - middle) == Math.Abs(Perpendicular(best) - middle) && Hash(riverSeed, i) < Hash(riverSeed, best)) best = i;
+                        }
+                        if (best < 0) throw new GeographyException("river-space");
+                        return best;
                     }
-                    if (source < 0) throw new GeographyException("river-space");
-                    blocked[source] = false;
-                    var path = Route(source, goals, blocked, d, riverSeed + river, options.Meander, work);
-                    channels.Add(new(path, path[^1], source, options.Width));
+                    int source = PickGate(sourceSide), target = PickGate(targetSide);
+                    var goals = new bool[size]; goals[target] = true;
+                    for (int i = 0; i < size; i++)
+                    { work.Spend(1); blocked[i] |= boundarySeeds[i] && i != source && i != target; }
+                    var path = Route(source, goals, blocked, d, riverSeed, options.Meander, work);
+                    channels.Add(new(path, target, source, options.Width));
                     foreach (int i in path)
-                    {
-                        foreach (int n in Square(i, options.Width, basis.Space, true)) { work.Spend(1); ground[n] = request.WaterLevel - 1; }
-                        foreach (int n in Square(i, options.Width + 6, basis.Space, true)) { work.Spend(1); channelReserved[n] = true; }
-                    }
+                        foreach (int n in Square(i, options.Width, basis.Space, true))
+                        { work.Spend(1); ground[n] = request.WaterLevel - 1; }
                 }
                 var world = NaturalTerrain.Normalize(request, profile, ground, fine, work, cancellation);
                 var final = Inspect(world, work);
@@ -284,7 +277,7 @@ public static class WaterTerrain
                             throw new GeographyException("river-connectivity");
                         foreach (int n in Square(i, channel.Width, basis.Space, false))
                         { work.Spend(1); if (final.Component[n] != id || final.Corners[n] != 15) throw new GeographyException("river-width"); }
-                        // Away from the mouth, both sides must still have dry banks.
+                        // Away from seas, lakes and map edges, retain both dry banks.
                         if ((waterDistance[i] < 0 || waterDistance[i] > 2 * (channel.Width + 6)) && fromEdge[i] > 2 * (channel.Width + 6))
                         {
                             var p = basis.Space.ToLocation(new(i % d.H, i / d.H, 0));

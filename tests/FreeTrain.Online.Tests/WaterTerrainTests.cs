@@ -1,6 +1,8 @@
 using System.Buffers.Binary;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using FreeTrain.Online.Content;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Simulation;
@@ -10,37 +12,37 @@ using Xunit.Abstractions;
 [Collection("World creation")]
 public class WaterTerrainTests(ITestOutputHelper output)
 {
-    internal static GeneratedWorldRequest Request(int lakes = 1, int rivers = 0, RiverOutlet outlet = RiverOutlet.Automatic,
+    internal static GeneratedWorldRequest Request(int lakes = 1, RiverDirection direction = RiverDirection.None,
         CoastKind coast = CoastKind.Inland, CoastSides sides = CoastSides.None, int width = 1, int seed = 0)
     {
         var r = WorldCreationProfile.Generated(seed, "Lakes and rivers / 湖と川");
         return r with { Dimensions = new(64, 64, 32), Options = r.Options with { StartingArea = 0,
             Coast = new(coast, sides, coast == CoastKind.Inland ? 0 : 30), Lakes = new(lakes, lakes == 0 ? 0 : 3),
-            Rivers = new(rivers, width, 70, outlet) } };
+            Rivers = new(direction, width, 70) } };
     }
 
     public static IEnumerable<object[]> Combinations()
     {
-        yield return [1, 0, RiverOutlet.Automatic, CoastKind.Inland, CoastSides.None, 1];
-        yield return [3, 0, RiverOutlet.Automatic, CoastKind.Inland, CoastSides.None, 1];
-        yield return [1, 1, RiverOutlet.Automatic, CoastKind.Inland, CoastSides.None, 1];
-        yield return [0, 1, RiverOutlet.EdgeToEdge, CoastKind.Inland, CoastSides.None, 1];
-        yield return [1, 0, RiverOutlet.Automatic, CoastKind.Island, CoastSides.None, 1];
-        yield return [1, 1, RiverOutlet.Automatic, CoastKind.Island, CoastSides.None, 1];
-        foreach (var (side, outlet) in new[] { (CoastSides.North, RiverOutlet.North), (CoastSides.East, RiverOutlet.East),
-                     (CoastSides.South, RiverOutlet.South), (CoastSides.West, RiverOutlet.West) })
-            yield return [1, 1, outlet, CoastKind.Sides, side, 1];
-        yield return [0, 1, RiverOutlet.Automatic, CoastKind.Sides, CoastSides.North | CoastSides.South, 4];
-        yield return [0, 2, RiverOutlet.Automatic, CoastKind.Sides, CoastSides.North, 1];
+        yield return [1, RiverDirection.None, CoastKind.Inland, CoastSides.None, 1];
+        yield return [3, RiverDirection.None, CoastKind.Inland, CoastSides.None, 1];
+        foreach (var direction in new[] { RiverDirection.NorthSouth, RiverDirection.EastWest })
+        {
+            yield return [0, direction, CoastKind.Inland, CoastSides.None, 1];
+            yield return [1, direction, CoastKind.Inland, CoastSides.None, 4];
+            yield return [1, direction, CoastKind.Island, CoastSides.None, 1];
+            foreach (var sides in new[] { CoastSides.North, CoastSides.East, CoastSides.South, CoastSides.West,
+                         CoastSides.North | CoastSides.South, CoastSides.East | CoastSides.West })
+                yield return [1, direction, CoastKind.Sides, sides, 2];
+        }
     }
 
     [Theory, MemberData(nameof(Combinations))]
-    public void Actual_normalized_water_has_requested_rims_channels_and_outlets(int lakes, int rivers, RiverOutlet outlet, CoastKind coast, CoastSides sides, int width)
+    public void Actual_normalized_water_has_lake_basins_and_connected_channels(int lakes, RiverDirection direction, CoastKind coast, CoastSides sides, int width)
     {
-        var r = Request(lakes, rivers, outlet, coast, sides, width);
+        var r = Request(lakes, direction, coast, sides, width);
         var world = ReliefTerrain.Create(r, TerrainProfiles.Bundled);
         var m = WaterTerrain.Validate(r, world); output.WriteLine(JsonSerializer.Serialize(m));
-        Assert.Equal(lakes, m.LakeComponents); Assert.Equal(rivers, m.RiverCount);
+        Assert.InRange(m.LakeComponents, direction == RiverDirection.None ? lakes : 0, lakes); Assert.Equal(direction == RiverDirection.None ? 0 : 1, m.RiverCount);
         Assert.True(m.LandCells > 0); Assert.True(m.WaterPercent > 0);
         Oracle(r, world);
         var saved = SaveCodec.Write(new TerrainSessionState(world, TerrainProvenance.From(r)));
@@ -56,7 +58,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
         foreach (var row in fixture.RootElement.GetProperty("cases").EnumerateArray())
         {
             int N(string key) => row.GetProperty(key).GetInt32();
-            var r = Request(N("lakes"),N("rivers"),(RiverOutlet)N("outlet"),row.GetProperty("island").GetBoolean() ? CoastKind.Island : N("sides") != 0 ? CoastKind.Sides : CoastKind.Inland,(CoastSides)N("sides"),N("width"),N("seed"));
+            var r = Request(N("lakes"),(RiverDirection)N("direction"),row.GetProperty("island").GetBoolean() ? CoastKind.Island : N("sides") != 0 ? CoastKind.Sides : CoastKind.Inland,(CoastSides)N("sides"),N("width"),N("seed"));
             r = r with { Dimensions = new(N("h"),N("v"),N("z")), WaterLevel = N("water"), Options = r.Options with {
                 Lakes = new(N("lakes"),N("area")), Rivers = r.Options.Rivers with { Meander = N("meander") } } };
             if (row.TryGetProperty("error",out var error))
@@ -71,6 +73,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
             }
             Assert.Equal(row.GetProperty("cornerHash").GetString(),Hash(corners));
             var metrics=WaterTerrain.Validate(r,world); Assert.Equal(N("wetCells"),metrics.SeaCells+metrics.LakeCells);
+            Assert.Equal(row.GetProperty("enclosedSizes").GetArrayLength(),metrics.LakeComponents);
             foreach (var path in row.GetProperty("paths").EnumerateArray())
             {
                 var sites=path.EnumerateArray().Select(i=>world.Space.ToLocation(new(i.GetInt32()%r.Dimensions.H,i.GetInt32()/r.Dimensions.H,0))).ToArray();
@@ -113,14 +116,14 @@ public class WaterTerrainTests(ITestOutputHelper output)
             }
             if (touches) open++; else enclosed.Add(size);
         }
-        Assert.Equal(r.Options.Lakes.Count, enclosed.Count);
-        foreach (int size in r.Options.Rivers.Count == 0 ? enclosed : new List<int>())
+        Assert.InRange(enclosed.Count, r.Options.Rivers.Count == 0 ? r.Options.Lakes.Count : 0, r.Options.Lakes.Count);
+        foreach (int size in enclosed)
         {
             int target = surface.Count * r.Options.Lakes.AreaPercent / 100;
             Assert.InRange(Math.Abs(size - target), 0, Math.Max(surface.Count / 100, target / 4));
         }
-        if (r.Options.Rivers.Outlet == RiverOutlet.EdgeToEdge) Assert.Equal(r.Options.Rivers.Count, open);
-        if (r.Options.Coast.Kind == CoastKind.Inland && r.Options.Rivers.Outlet != RiverOutlet.EdgeToEdge) Assert.Equal(0, open);
+        if (r.Options.Coast.Kind == CoastKind.Inland) Assert.Equal(r.Options.Rivers.Count, open);
+        if (r.Options.Rivers.Direction != RiverDirection.None) AssertRiverEdges(r, surface, boundary);
         // Shared corner equality is essential for a legitimate constant water plane.
         foreach (var (p, heights) in surface)
         {
@@ -129,10 +132,103 @@ public class WaterTerrainTests(ITestOutputHelper output)
         }
     }
 
+    private static void AssertRiverEdges(GeneratedWorldRequest r,
+        Dictionary<(int X, int Y), int[]> surface, HashSet<(int, int)> boundary)
+    {
+        int xmin = surface.Keys.Min(p=>p.X), xmax = surface.Keys.Max(p=>p.X);
+        int ymin = surface.Keys.Min(p=>p.Y), ymax = surface.Keys.Max(p=>p.Y);
+        int Sector((int X,int Y) p)
+        {
+            int x=2*p.X-xmin-xmax, y=2*p.Y-ymin-ymax;
+            return Math.Abs(y)*(xmax-xmin)>=Math.Abs(x)*(ymax-ymin) ? y<0?1:4 : x<0?8:2;
+        }
+        int startSide=r.Options.Rivers.Direction==RiverDirection.NorthSouth?1:2;
+        int endSide=r.Options.Rivers.Direction==RiverDirection.NorthSouth?4:8;
+        var fullyWet=surface.Where(p=>p.Value.Max()<4*r.WaterLevel).Select(p=>p.Key).ToHashSet();
+        var starts=boundary.Where(p=>Sector(p)==startSide && fullyWet.Contains(p)).ToArray();
+        Assert.NotEmpty(starts);
+        var seen=starts.ToHashSet(); var queue=new Queue<(int X,int Y)>(starts); bool reaches=false;
+        while(queue.TryDequeue(out var p))
+        {
+            if(boundary.Contains(p) && Sector(p)==endSide) reaches=true;
+            foreach(var n in new[]{(p.X+1,p.Y),(p.X-1,p.Y),(p.X,p.Y+1),(p.X,p.Y-1)})
+                if(fullyWet.Contains(n) && seen.Add(n))queue.Enqueue(n);
+        }
+        Assert.True(reaches,"The river core must join fully submerged gates on opposite compass boundaries.");
+        // On inland maps every wet boundary patch belongs to the chosen axis.
+        if(r.Options.Coast.Kind==CoastKind.Inland)
+            Assert.All(boundary.Where(p=>surface[p].Min()<4*r.WaterLevel),p=>Assert.Contains(Sector(p),new[]{startSide,endSide}));
+    }
+
+    [Theory]
+    [InlineData(0,0,CoastKind.Inland,CoastSides.None,0)]
+    [InlineData(1,1,CoastKind.Inland,CoastSides.None,0)]
+    [InlineData(0,4,CoastKind.Inland,CoastSides.None,5)]
+    [InlineData(1,1,CoastKind.Sides,CoastSides.North,1)]
+    public void Existing_count_and_outlet_provenance_still_reopens_exactly(int lakes,int count,CoastKind coast,CoastSides sides,int outlet)
+    {
+        var r=Request(lakes,RiverDirection.None,coast,sides);
+        var world=ReliefTerrain.Create(r,TerrainProfiles.Bundled);
+        var node=JsonSerializer.SerializeToNode<WorldCreationRequest>(r)!;
+        node["Options"]!["Rivers"]=JsonSerializer.SerializeToNode(new {Count=count,Width=1,Meander=70,Outlet=outlet});
+        string json=node.ToJsonString();
+        var provenance=new TerrainProvenance(r.Profile,"generated",Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(json))),json);
+        var saved=SaveCodec.Write(new TerrainSessionState(world,provenance));
+        var restored=SaveCodec.ReadWorld(saved,TerrainProfiles.Resolve).Terrain!;
+        Assert.Equal(provenance,restored.Provenance);Assert.Equal(saved,SaveCodec.Write(restored));
+        Assert.Throws<ArgumentException>(()=>(provenance with {RequestHash=new string('0',64)}).Validate(world));
+        var invalid=node.DeepClone();invalid["Options"]!["Rivers"]!["Count"]=5;
+        string invalidJson=invalid.ToJsonString();
+        Assert.Throws<ArgumentException>(()=>new TerrainProvenance(r.Profile,"generated",
+            Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(invalidJson))),invalidJson).Validate(world));
+    }
+
+    [Theory]
+    [InlineData(16,16,1,0)] [InlineData(17,16,4,42)] [InlineData(64,65,2,int.MinValue)]
+    [InlineData(128,127,4,int.MaxValue)]
+    public void Both_axes_reach_map_edges_without_a_dry_seam(int h,int v,int width,int seed)
+    {
+        foreach(var direction in new[]{RiverDirection.NorthSouth,RiverDirection.EastWest})
+        {
+            var r=Request(0,direction,width:width,seed:seed) with { Dimensions=new(h,v,32) };
+            Oracle(r,ReliefTerrain.Create(r,TerrainProfiles.Bundled));
+        }
+    }
+
+    [Theory]
+    [InlineData(RiverDirection.NorthSouth,1)] [InlineData(RiverDirection.EastWest,1)]
+    [InlineData(RiverDirection.NorthSouth,4)] [InlineData(RiverDirection.EastWest,4)]
+    public void River_and_lake_overlay_preserves_both_water_surfaces_without_a_separating_bank(RiverDirection direction,int width)
+    {
+        var r=Request(1,direction,width:width);
+        var lake=ReliefTerrain.Create(r with {Options=r.Options with {Rivers=r.Options.Rivers with {Direction=RiverDirection.None}}},TerrainProfiles.Bundled);
+        var river=ReliefTerrain.Create(r with {Options=r.Options with {Lakes=new(0,0)}},TerrainProfiles.Bundled);
+        var combined=ReliefTerrain.Create(r,TerrainProfiles.Bundled);
+        int overlap=0, lakeOnly=0, riverOnly=0;
+        for(int v=0;v<r.Dimensions.V;v++)for(int h=0;h<r.Dimensions.H;h++)
+        {
+            var p=combined.Space.ToLocation(new(h,v,0));
+            bool lakeWet=false,riverWet=false;
+            for(int corner=0;corner<4;corner++)
+            {
+                bool a=lake.FineHeight(p,corner)<4*r.WaterLevel, b=river.FineHeight(p,corner)<4*r.WaterLevel;
+                lakeWet|=a;riverWet|=b;
+                if(a || b)Assert.True(combined.FineHeight(p,corner)<4*r.WaterLevel,"Overlay must retain every wet corner of the independent lake and river.");
+            }
+            if(lakeWet && riverWet)overlap++;
+            else if(lakeWet)lakeOnly++;
+            else if(riverWet)riverOnly++;
+        }
+        Assert.True(overlap>0);Assert.True(lakeOnly>0);Assert.True(riverOnly>0);
+        var metrics=WaterTerrain.Validate(r,combined);
+        Assert.Equal(0,metrics.LakeComponents);Assert.Equal(1,metrics.SeaComponents);Assert.Equal(1,metrics.RiverCount);
+        Oracle(r,combined);
+    }
+
     [Fact]
     public void Controls_are_effective_and_replay_is_exact_without_gameplay_randomness()
     {
-        var r = Request(0, 1, RiverOutlet.EdgeToEdge);
+        var r = Request(0, RiverDirection.NorthSouth);
         byte[] Build(GeneratedWorldRequest input) => SaveCodec.Write(new TerrainSessionState(ReliefTerrain.Create(input, TerrainProfiles.Bundled), TerrainProvenance.From(input)));
         var first = Build(r); Assert.Equal(first, Build(r));
         var geometry = ReliefTerrain.Create(r, TerrainProfiles.Bundled).Cells.Select(c=>c.Ground).ToArray();
@@ -148,7 +244,7 @@ public class WaterTerrainTests(ITestOutputHelper output)
         var shapes=new HashSet<string>();
         foreach(int seed in new[]{0,42,int.MinValue})
         {
-            var r=Request(lake?1:0,lake?0:1,lake?RiverOutlet.Automatic:RiverOutlet.EdgeToEdge,seed:seed) with { Dimensions=new(128,127,32) };
+            var r=Request(lake?1:0,lake?RiverDirection.None:RiverDirection.NorthSouth,seed:seed) with { Dimensions=new(128,127,32) };
             r=r with { Options=r.Options with { Relief=r.Options.Relief with { Amount=0 } } };
             var world=ReliefTerrain.Create(r,TerrainProfiles.Bundled);Oracle(r,world);
             var mask=CoastTerrain.SeaMask(world);
@@ -173,16 +269,16 @@ public class WaterTerrainTests(ITestOutputHelper output)
     }
 
     [Theory]
-    [InlineData(8,0,RiverOutlet.Automatic,CoastKind.Inland,CoastSides.None,1)]
-    [InlineData(0,4,RiverOutlet.Automatic,CoastKind.Sides,CoastSides.North,1)]
-    [InlineData(0,4,RiverOutlet.EdgeToEdge,CoastKind.Inland,CoastSides.None,1)]
-    [InlineData(2,2,RiverOutlet.Automatic,CoastKind.Inland,CoastSides.None,4)]
-    public void Maximum_feature_counts_and_rough_relief_are_bounded(int lakes,int rivers,RiverOutlet outlet,CoastKind coast,CoastSides sides,int width)
+    [InlineData(8,RiverDirection.None,CoastKind.Inland,CoastSides.None,1)]
+    [InlineData(0,RiverDirection.NorthSouth,CoastKind.Sides,CoastSides.North,1)]
+    [InlineData(0,RiverDirection.EastWest,CoastKind.Inland,CoastSides.None,1)]
+    [InlineData(2,RiverDirection.NorthSouth,CoastKind.Inland,CoastSides.None,4)]
+    public void Maximum_feature_counts_and_rough_relief_are_bounded(int lakes,RiverDirection direction,CoastKind coast,CoastSides sides,int width)
     {
-        var r=Request(lakes,rivers,outlet,coast,sides,width,int.MinValue) with { Dimensions=new(128,127,64), WaterLevel=1 };
+        var r=Request(lakes,direction,coast,sides,width,int.MinValue) with { Dimensions=new(128,127,64), WaterLevel=1 };
         r=r with { Options=r.Options with { Lakes=new(lakes,lakes==0?0:1),Relief=new(ReliefKind.Mountains,100,4,0) } };
         var world=ReliefTerrain.Create(r,TerrainProfiles.Bundled); Oracle(r,world);
-        Assert.Equal(lakes,WaterTerrain.Validate(r,world).LakeComponents);
+        Assert.InRange(WaterTerrain.Validate(r,world).LakeComponents, direction == RiverDirection.None ? lakes : 0, lakes);
     }
 
     [Fact]
@@ -202,18 +298,18 @@ public class WaterTerrainTests(ITestOutputHelper output)
             Assert.Equal("lake-space",body.RootElement.GetProperty("constraint").GetString());
         }
         Assert.Equal(saved,await server.Http.GetByteArrayAsync("/api/saves/download"));
-        using var accepted=await Preview(Request(1,1));Assert.True(accepted.IsSuccessStatusCode,await accepted.Content.ReadAsStringAsync());
+        using var accepted=await Preview(Request(1,RiverDirection.NorthSouth));Assert.True(accepted.IsSuccessStatusCode,await accepted.Content.ReadAsStringAsync());
         Assert.Equal(saved,await server.Http.GetByteArrayAsync("/api/saves/download"));
     }
 
     [Fact]
-    public void Impossible_rims_cancel_and_invalid_outlets_are_explicit()
+    public void Impossible_rims_cancel_and_invalid_directions_are_explicit()
     {
         var r = Request(8) with { Dimensions = new(16,16,8), WaterLevel = 1 };
         Assert.StartsWith("lake-", Assert.Throws<GeographyException>(()=>ReliefTerrain.Create(r,TerrainProfiles.Bundled)).Constraint);
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
         Assert.Throws<OperationCanceledException>(()=>ReliefTerrain.Create(Request(),TerrainProfiles.Bundled,cancellation.Token));
-        Assert.Contains(WorldCreationProfile.Validate(Request(0,1)),i=>i.Code=="river-needs-outlet");
-        Assert.Contains(WorldCreationProfile.Validate(Request(1,1,RiverOutlet.North)),i=>i.Code=="river-outlet");
+        var invalid = Request(0, (RiverDirection)999);
+        Assert.Contains(WorldCreationProfile.Validate(invalid), i=>i.Code=="rivers");
     }
 }

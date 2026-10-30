@@ -67,8 +67,8 @@ public class WorldCreationTests
 
     [Theory]
     [InlineData("tiny")][InlineData("headroom")][InlineData("coast-missing")][InlineData("inland-sides")]
-    [InlineData("island-sides")][InlineData("coverage")][InlineData("outlet")][InlineData("inland-river")]
-    [InlineData("edge-river")][InlineData("lakes")][InlineData("space")][InlineData("forest-missing")]
+    [InlineData("island-sides")][InlineData("coverage")][InlineData("river-direction")]
+    [InlineData("lakes")][InlineData("space")][InlineData("forest-missing")]
     [InlineData("forest-duplicate")][InlineData("forest-default")][InlineData("relief")][InlineData("null-options")]
     [InlineData("extreme-features")][InlineData("null-relief")][InlineData("enum")][InlineData("start-area")][InlineData("river-width")]
     public void Contradictory_generated_options_fail_without_clamping(string mutation)
@@ -76,16 +76,14 @@ public class WorldCreationTests
         var r = WorldCreationProfile.Generated(); var o = r.Options;
         r = mutation switch
         {
-            "extreme-features" => r with { Options = o with { Lakes = new(int.MaxValue, int.MaxValue), Rivers = new(int.MaxValue, int.MaxValue, int.MaxValue, RiverOutlet.Automatic) } },
+            "extreme-features" => r with { Options = o with { Lakes = new(int.MaxValue, int.MaxValue), Rivers = new((RiverDirection)int.MaxValue, int.MaxValue, int.MaxValue) } },
             "tiny" => r with { Dimensions = new(15, 64, 16) },
             "headroom" => r with { WaterLevel = 13 },
             "coast-missing" => r with { Options = o with { Coast = new(CoastKind.Sides, CoastSides.None, 25) } },
             "inland-sides" => r with { Options = o with { Coast = new(CoastKind.Inland, CoastSides.North, 0) } },
             "island-sides" => r with { Options = o with { Coast = new(CoastKind.Island, CoastSides.East, 30) } },
             "coverage" => r with { Options = o with { Coast = new(CoastKind.Inland, CoastSides.None, 20) } },
-            "outlet" => r with { Options = o with { Coast = new(CoastKind.Sides, CoastSides.West, 20), Rivers = new(1, 1, 30, RiverOutlet.East) } },
-            "inland-river" => r with { Options = o with { Rivers = new(1, 1, 30, RiverOutlet.Automatic) } },
-            "edge-river" => r with { Options = o with { Lakes = new(1, 2), Rivers = new(1, 1, 30, RiverOutlet.EdgeToEdge) } },
+            "river-direction" => r with { Options = o with { Rivers = new((RiverDirection)999, 1, 30) } },
             "lakes" => r with { Options = o with { Lakes = new(0, 5) } },
             "space" => r with { Options = o with { Lakes = new(8, 20) } },
             "forest-missing" => r with { Options = o with { Forests = new(25, 50, []) } },
@@ -96,7 +94,7 @@ public class WorldCreationTests
             "null-relief" => r with { Options = o with { Relief = null! } },
             "enum" => r with { Options = o with { Coast = new((CoastKind)999, (CoastSides)16, 10) } },
             "start-area" => r with { Options = o with { StartingArea = 2000 } },
-            "river-width" => r with { Options = o with { Rivers = new(1, 5, 30, RiverOutlet.EdgeToEdge) } },
+            "river-width" => r with { Options = o with { Rivers = new(RiverDirection.NorthSouth, 5, 30) } },
             _ => throw new ArgumentException()
         };
         Assert.NotEmpty(WorldCreationProfile.Validate(r));
@@ -109,9 +107,9 @@ public class WorldCreationTests
         var r = WorldCreationProfile.Generated();
         foreach (var sides in Enumerable.Range(1, 15).Select(n => (CoastSides)n))
             Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Coast = new(CoastKind.Sides, sides, 25) } }));
-        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Rivers = new(1, 1, 50, RiverOutlet.EdgeToEdge) } }));
-        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Lakes = new(1, 5), Rivers = new(1, 1, 50, RiverOutlet.Automatic) } }));
-        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Coast = new(CoastKind.Island, CoastSides.None, 30), Rivers = new(1, 1, 50, RiverOutlet.North) } }));
+        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Rivers = new(RiverDirection.NorthSouth, 1, 50) } }));
+        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Lakes = new(1, 5), Rivers = new(RiverDirection.EastWest, 1, 50) } }));
+        Assert.Empty(WorldCreationProfile.Validate(r with { Options = r.Options with { Coast = new(CoastKind.Island, CoastSides.None, 30), Rivers = new(RiverDirection.NorthSouth, 1, 50) } }));
     }
 
     [Theory]

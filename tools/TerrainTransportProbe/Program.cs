@@ -59,7 +59,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
         {
             if (mode is not ("water-lakes" or "water-coast" or "water-edge" or "water-inland")) throw new ArgumentException("Unknown water capacity mode.");
             r = r with { Options = r.Options with { Lakes = new(mode == "water-edge" ? 0 : 2, mode == "water-edge" ? 0 : 3),
-                Rivers = new(mode == "water-lakes" ? 0 : 2, 3, 80, mode == "water-edge" ? RiverOutlet.EdgeToEdge : RiverOutlet.Automatic),
+                Rivers = new(mode == "water-lakes" ? RiverDirection.None : mode == "water-edge" ? RiverDirection.EastWest : RiverDirection.NorthSouth, 3, 80),
                 Coast = mode == "water-coast" ? new(CoastKind.Sides, CoastSides.North, 30) : new(CoastKind.Inland, CoastSides.None, 0) } };
         }
         if (mode.StartsWith("forest-", StringComparison.Ordinal))
@@ -71,7 +71,7 @@ if (args is ["--capacity", var hText, var vText, var zText, var mode, var direct
                 Relief = mode == "forest-coast" ? r.Options.Relief : new(ReliefKind.Hills, 50, 24, 50),
                 Coast = mode == "forest-coast" ? new(CoastKind.Sides, CoastSides.North, 30) : r.Options.Coast,
                 Lakes = mode == "forest-coast" ? new(2, 3) : r.Options.Lakes,
-                Rivers = mode == "forest-coast" ? new(2, 3, 80, RiverOutlet.Automatic) : r.Options.Rivers } };
+                Rivers = mode == "forest-coast" ? new(RiverDirection.NorthSouth, 3, 80) : r.Options.Rivers } };
         }
         state = new(ReliefTerrain.Create(r, TerrainProfiles.Bundled), TerrainProvenance.From(r));
     }

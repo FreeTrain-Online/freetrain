@@ -14,11 +14,20 @@ public enum WorldSizePreset { Compact, Standard }
 public enum ReliefKind { Plains, Hills, Mountains }
 public enum CoastKind { Inland, Island, Sides }
 [Flags] public enum CoastSides { None = 0, North = 1, East = 2, South = 4, West = 8 }
-public enum RiverOutlet { Automatic, North, East, South, West, EdgeToEdge }
+public enum RiverDirection { None, NorthSouth, EastWest }
 public sealed record ReliefOptions(ReliefKind Kind, int Amount, int FeatureScale, int Smoothness);
 public sealed record CoastOptions(CoastKind Kind, CoastSides Sides, int WaterPercent);
 public sealed record LakeOptions(int Count, int AreaPercent);
-public sealed record RiverOptions(int Count, int Width, int Meander, RiverOutlet Outlet);
+public sealed record RiverOptions(RiverDirection Direction, int Width, int Meander)
+{
+    [JsonIgnore] public int Count => Direction == RiverDirection.None ? 0 : 1;
+    [JsonIgnore] public CoastSides Sides => Direction switch
+    {
+        RiverDirection.NorthSouth => CoastSides.North | CoastSides.South,
+        RiverDirection.EastWest => CoastSides.East | CoastSides.West,
+        _ => CoastSides.None
+    };
+}
 public sealed record ForestOptions(int CoveragePercent, int Clustering, ImmutableArray<ContentBinding> Palette);
 public sealed record GeneratedOptions(int Seed, ReliefOptions Relief, CoastOptions Coast, LakeOptions Lakes,
     RiverOptions Rivers, ForestOptions Forests, int StartingArea);
@@ -58,7 +67,7 @@ public static class WorldCreationProfile
     public static HeightmapWorldRequest Heightmap(HeightmapInput image, string name = "") => new(Id, name, new(64, 64, 16), 4, image);
     public static GeneratedWorldRequest Generated(int seed = 0, string name = "") => new(Id, name, new(64, 64, 16), 4,
         new(seed, Relief(ReliefKind.Hills), new(CoastKind.Inland, CoastSides.None, 0), new(0, 0),
-            new(0, 1, 30, RiverOutlet.Automatic), new(0, 50, []), 64));
+            new(RiverDirection.None, 1, 30), new(0, 50, []), 64));
     public static WorldDimensions Size(WorldSizePreset preset) => preset switch
     {
         WorldSizePreset.Compact => new(64, 64, 16),
@@ -136,19 +145,8 @@ public static class WorldCreationProfile
         Require(coast.Kind == CoastKind.Inland ? coast.WaterPercent == 0 : coast.WaterPercent is >= 5 and <= 75,
             "coast-coverage", "options.coast.waterPercent");
         Require(lakes.Count is >= 0 and <= 8 && (lakes.Count == 0 ? lakes.AreaPercent == 0 : lakes.AreaPercent is >= 1 and <= 20), "lakes", "options.lakes");
-        Require(rivers.Count is >= 0 and <= 4 && rivers.Width is >= 1 and <= 4 && rivers.Meander is >= 0 and <= 100 &&
-            Enum.IsDefined(rivers.Outlet), "rivers", "options.rivers");
-        if (rivers.Count > 0)
-        {
-            var selected = rivers.Outlet switch { RiverOutlet.North => CoastSides.North, RiverOutlet.East => CoastSides.East,
-                RiverOutlet.South => CoastSides.South, RiverOutlet.West => CoastSides.West, _ => CoastSides.None };
-            Require(selected == CoastSides.None || coast.Kind == CoastKind.Island ||
-                (coast.Kind == CoastKind.Sides && (coast.Sides & selected) != 0), "river-outlet", "options.rivers.outlet");
-            Require(rivers.Outlet != RiverOutlet.Automatic || coast.Kind != CoastKind.Inland || lakes.Count > 0,
-                "river-needs-outlet", "options.rivers.outlet");
-            Require(rivers.Outlet != RiverOutlet.EdgeToEdge || (coast.Kind == CoastKind.Inland && lakes.Count == 0),
-                "river-edge-mode", "options.rivers.outlet");
-        }
+        Require(Enum.IsDefined(rivers.Direction) && rivers.Width is >= 1 and <= 4 && rivers.Meander is >= 0 and <= 100,
+            "rivers", "options.rivers");
         Require(forest.CoveragePercent is >= 0 and <= 90 && forest.Clustering is >= 0 and <= 100 && !forest.Palette.IsDefault &&
             forest.Palette.Length <= 18 && (forest.CoveragePercent == 0 ? forest.Palette.IsEmpty : !forest.Palette.IsEmpty) &&
             forest.Palette.All(ValidBinding) && forest.Palette.Distinct().Count() == forest.Palette.Length,
@@ -158,7 +156,7 @@ public static class WorldCreationProfile
         if (issues.Count > 0) return; // Do not calculate areas from rejected unbounded feature values.
         // Necessary space bound only. Final connectivity/representability is checked after normalization.
         var reserved = (long)o.StartingArea + cells * (coast.WaterPercent + lakes.Count * (long)lakes.AreaPercent) / 100 +
-            rivers.Count * (long)rivers.Width * Math.Min(d.H, d.V);
+            rivers.Count * (long)rivers.Width * (d.H + d.V) / 2;
         Require(reserved <= cells * 3 / 4, "feature-space", "options");
     }
 

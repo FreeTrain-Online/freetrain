@@ -176,13 +176,13 @@ public class ReliefTerrainTests(ITestOutputHelper output)
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
                 await http.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2");
                 using var second=await server.Connect(cookies);await NetworkTests.Read(second);
-                var r=mode switch { 4 => ForestTerrainTests.Request(70, 64, "grass"), 5 => WaterTerrainTests.Request(1,1) with { Options = WaterTerrainTests.Request(1,1).Options with { StartingArea=16, Forests=ForestTerrainTests.Request(90,16,"mountain").Options.Forests } }, 1 => CoastTerrainTests.Request(CoastKind.Island), 2 => WaterTerrainTests.Request(1,1), 3 => WaterTerrainTests.Request(1,1,RiverOutlet.North,CoastKind.Sides,CoastSides.North), _ => Request(ReliefKind.Mountains,z:64) };
+                var r=mode switch { 4 => ForestTerrainTests.Request(70, 64, "grass"), 5 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth) with { Options = WaterTerrainTests.Request(1,RiverDirection.NorthSouth).Options with { StartingArea=16, Forests=ForestTerrainTests.Request(90,16,"mountain").Options.Forests } }, 1 => CoastTerrainTests.Request(CoastKind.Island), 2 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth), 3 => WaterTerrainTests.Request(1,RiverDirection.NorthSouth,CoastKind.Sides,CoastSides.North), _ => Request(ReliefKind.Mountains,z:64) };
                 var response=await Post(server.Http,"/api/worlds/generated/preview",new GeneratedPreviewRequest(r.Name,r.Dimensions,r.WaterLevel,r.Options,before.WorldEpoch,before.Snapshot.Revision));
                 Assert.True(response.IsSuccessStatusCode,await response.Content.ReadAsStringAsync());
                 var candidate=JsonSerializer.Deserialize<EmptyCandidateRead>(await response.Content.ReadAsStringAsync(),NetworkSession.Json)!;
                 Assert.NotNull(candidate.Geography);
-                Assert.Equal(mode is 1 or 3, candidate.Geography.Metrics.SeaCells > 0);
-                Assert.Equal(mode is 2 or 3 or 5 ? 1 : 0, candidate.Geography.Metrics.LakeComponents);
+                Assert.Equal(mode is 1 or 2 or 3 or 5, candidate.Geography.Metrics.SeaCells > 0);
+                Assert.Equal(mode == 3 ? 1 : 0, candidate.Geography.Metrics.LakeComponents);
                 Assert.Equal(mode >= 4, candidate.Geography.Forests!.ForestCells > 0);
                 var commit=new EmptyCommitRequest(candidate.Id,candidate.RequestHash,candidate.CandidateHash,before.WorldEpoch,before.Snapshot.Revision);
                 Assert.True((await Post(server.Http,"/api/worlds/empty/commit",commit)).IsSuccessStatusCode);

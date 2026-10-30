@@ -71,7 +71,7 @@ public class ForestTerrainTests
     [InlineData(0, 0)][InlineData(15, 0)][InlineData(35, 50)][InlineData(70, 100)][InlineData(90, 100)]
     public void Forest_controls_preserve_actual_water_ground_corners_and_connected_level_reservation(int coverage, int clustering)
     {
-        var r = WaterTerrainTests.Request(1, 1, RiverOutlet.North, CoastKind.Sides, CoastSides.North);
+        var r = WaterTerrainTests.Request(1, RiverDirection.NorthSouth, CoastKind.Sides, CoastSides.North);
         var baseline = ReliefTerrain.Create(r, TerrainProfiles.Bundled);
         r = r with { Options = r.Options with { StartingArea = 16, Forests = Request(coverage).Options.Forests with { Clustering = clustering } } };
         var world = ReliefTerrain.Create(r, TerrainProfiles.Bundled);

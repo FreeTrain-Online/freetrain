@@ -251,13 +251,13 @@ for(const mode of ['coast-island','water-coast','forest-dense','forest-coast'] a
   }
   if(mode==='water-coast'||mode==='forest-coast'){
    await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('30');await page.getByLabel('Lake count (0–8)',{exact:true}).fill('2');
-   await page.getByLabel('River count (0–4)',{exact:true}).fill('2');await page.getByLabel('Channel width (cells)',{exact:true}).fill('3');await page.getByLabel('Meander (0–100)',{exact:true}).fill('80');
+   await page.getByLabel('River direction',{exact:true}).selectOption('northSouth');await page.getByLabel('Channel width (cells)',{exact:true}).fill('3');await page.getByLabel('Meander (0–100)',{exact:true}).fill('80');
   }
   await page.getByLabel('World name',{exact:true}).fill('Capacity relief');
   await page.getByLabel('Stored width (H)',{exact:true}).fill('1500');await page.getByLabel('Stored length (V)',{exact:true}).fill('1090');await page.getByLabel('Levels (Z)',{exact:true}).fill('45');
   const before=await epoch(page),start=Date.now(),waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));
   await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);
-  const candidate=await response.json();if(mode.startsWith('forest-'))expect(candidate.geography.forests).toMatchObject({reservedCells:mode==='forest-dense'?64:16});expect(candidate.geography.metrics).toMatchObject(mode==='forest-dense'?{seaCells:0,lakeComponents:0,riverCount:0}:mode==='coast-island'?{seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000}:{seaSides:1,seaComponents:1,lakeComponents:2,riverCount:2});
+  const candidate=await response.json();if(mode.startsWith('forest-'))expect(candidate.geography.forests).toMatchObject({reservedCells:mode==='forest-dense'?64:16});expect(candidate.geography.metrics).toMatchObject(mode==='forest-dense'?{seaCells:0,lakeComponents:0,riverCount:0}:mode==='coast-island'?{seaSides:15,landComponents:1,seaComponents:1,seaCells:654000,landCells:981000}:{seaSides:5,seaComponents:1,lakeComponents:1,riverCount:1});
   const previewMs=Date.now()-start;expect(previewMs).toBeLessThan(30000);expect(await epoch(page)).toBe(before);
   await expect(page.getByTestId('geography-metrics')).toContainText(mode==='coast-island'?'40.0%':'Surface water:');
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();

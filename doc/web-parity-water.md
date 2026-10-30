@@ -1,5 +1,11 @@
 # P3-10 lakes and rivers — 29 October 2026
 
+**Directional river update — 30 October 2026:** River settings now select None, North → South, or East → West, with width and meander retained. The automatic sea/lake outlet and river count controls are removed. Lakes and coastal layout remain independently selectable. Rivers follow the world compass through opposing map boundaries, join seas along their axis, and overlay lakes wherever they intersect. Unrelated shores remain separate. Intersections retain both the river channel and lake basin at the same water level, without a separating bank. Final enclosed-lake metrics exclude lakes that have joined a river; requested basins are still validated before the river is carved. A low apron reaches each boundary; final normalized channel cores must have all four corners below the water plane and share wet faces along the entire route. Existing Save7 count/outlet provenance remains readable without rewriting saved worlds. The current API uses `rivers: { direction: 0|1|2, width, meander }`; later evidence below describes the earlier count/outlet behavior unless stated otherwise.
+
+Validation before lake overlay: **613 .NET tests, 129 client tests, 18 terrain Chromium tests, 26 independent water fixtures (2 explicitly impossible cases)** and the production web build pass. Both 1500×1090×45 coastal north–south and inland east–west maps reopen byte-exactly and pass independent packed-save wet-face connectivity checks.
+
+Lake-overlay validation: **617 .NET tests**, **18 terrain Chromium tests**, **26 independent water fixtures** and the production web build pass. New tests preserve every wet corner from independently generated lakes and rivers across both directions and widths 1/4, then verify a single connected water surface and shared corners at the intersection. A 1500×1090×45 coastal map with two requested lakes retains one isolated lake and merges the other into the river; exact Save7 reopen and the independent packed-save topology check pass.
+
 ## Fractal shaping follow-up — 29 October 2026
 
 Lakes now have rounded, gently irregular shores rather than stored rectangular

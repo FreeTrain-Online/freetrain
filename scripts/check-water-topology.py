@@ -17,6 +17,9 @@ def check(path):
     packed = saved['packedTerrain']; request = json.loads(packed['provenance']['requestJson'])
     coast = request['Options']['Coast']; lakes=request['Options']['Lakes']; rivers=request['Options']['Rivers']
     selected = 15 if coast['Kind'] == 1 else coast['Sides']
+    direction = rivers.get('Direction')
+    axis = 5 if direction == 1 else 10 if direction == 2 else 0
+    river_count = int(direction != 0) if direction is not None else rivers['Count']
     water = packed['waterLevel']; center = (v-1)//2
     ground = base64.b64decode(packed['cells'], validate=True); assert len(ground) == h*v
     wet = bytearray((g & 63) < water for g in ground)
@@ -54,7 +57,9 @@ def check(path):
             x, y = col-row//2+center, col+(row+1)//2
             if boundary(col,row):
                 side = sector(x,y); outlets |= side
-                if is_sea and rivers['Outlet'] != 5: assert side & selected
+                if is_sea:
+                    if direction is not None: assert side & (selected | axis)
+                    elif rivers['Outlet'] != 5: assert side & selected
                 elif coast['Kind'] == 1: raise AssertionError('Dry island boundary')
             for xx, yy in [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]:
                 if is_sea:
@@ -70,12 +75,19 @@ def check(path):
             else: sea_sides |= outlets; sea_cells += count; sea_components += 1; open_contacts.append(outlets)
         else: land_components += 1
     percent = 100*sea_cells/(h*v)
-    assert land_components > 0 and len(enclosed) == lakes['Count']
-    if rivers['Count'] == 0:
+    assert land_components > 0
+    if direction is not None and river_count:
+        assert len(enclosed) <= lakes['Count']  # Intersecting basins merge into the open river.
+    else: assert len(enclosed) == lakes['Count']
+    if direction is not None or river_count == 0:
         target=h*v*lakes['AreaPercent']//100
         assert all(abs(n-target)<=max(h*v//100,target//4) for n in enclosed)
-    if rivers['Outlet'] == 5 and rivers['Count']:
-        assert sea_components == rivers['Count']
+    if direction is not None:
+        assert sea_sides == selected | axis
+        if axis: assert any(touches & axis == axis for touches in open_contacts), 'River must reach both requested compass sectors'
+        if not selected: assert sea_components == river_count
+    elif rivers['Outlet'] == 5 and river_count:
+        assert sea_components == river_count
         assert all((touches & 5)==5 or (touches & 10)==10 for touches in open_contacts), 'Every edge channel must reach opposing compass sectors'
     else: assert sea_sides == selected
     return dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),h=h,v=v,water=water,seaCells=sea_cells,
