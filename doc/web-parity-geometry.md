@@ -1,5 +1,13 @@
 # P0-04 geometry, clock, train state and drawing expectations
 
+**P4-01 refinement — 30 October 2026:** [Railway source contracts and decisions](web-parity-railway-contract.md)
+now specify per-operation booking/endpoints, stored flags, all bundled railway
+handlers and actual accounting callers. GEO-003 has the planned same-point commit
+guard; GEO-006 and GEO-007 retain source behavior. For GEO-004 the owner confirmed
+deleting all piers below regardless of owner on 30 October, rejecting an owner-only
+restriction so operators can clear supports without getting stuck. Historical source findings
+below remain evidence, not runtime completion or implicit correction approval.
+
 **P0-04 source specification complete — 20 October 2026.** Authority is archive
 Git `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`, stable **2.1.1.12**.
 Pinned source reconciliation, the four agreed dependency chains and the expanded

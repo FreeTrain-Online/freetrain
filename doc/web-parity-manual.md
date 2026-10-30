@@ -1,5 +1,10 @@
 # Manual evidence: ExAV and historical FreeTrain references
 
+**P4-01 source contract — 30 October 2026:** [Railway source reconciliation](#p4-01-railway-source-reconciliation)
+now binds the track/infrastructure/accessory/manual journeys to explicit source
+legality, booking and removal rules. This is specification evidence; P4 gameplay
+and P4-02 executable fixtures remain open.
+
 **P3-07 delivery — 29 October 2026:** [Heightmap and fixed-map controls/evidence](web-parity-heightmap.md) add the terrain-loader/provider portions of MAN-M01/O02/E02/A02/A19 and DEV-P09/P17. Bilingual upload, dimensions/water, image/result preview, cancellation, exact Owner confirmation and Save6 reopen without input image are delivered within temporary32² admission. Other authoring/capacity/native journeys remain open.
 
 **P3-06 delivery — 29 October 2026:** [New world controls and evidence](web-parity-empty-world.md) deliver the empty-map parts of MAN-M01/O02/E02/A02/A19 through the existing Game panel, bilingual fields, candidate preview, Owner confirmation and Save6 reopening. Heightmap/provider selection and the other P3 authoring journeys remain open.
@@ -435,3 +440,33 @@ display and confirmed Run/Pause/Step in English/Japanese, with narrow-menu acces
 and Observer enforcement. [Evidence](web-parity-clock.md) also covers MAN-A16 local
 navigation without shared-time changes. Source speed choices and complete menu
 equivalence remain P9; these manual requirements are only partially satisfied.
+
+## P4-01 railway source reconciliation
+
+The [maintained railway contract](web-parity-railway-contract.md) and
+[hashed source/decision review](parity/railway-review.json) refine the manual's
+railway summaries against stable ExAV callers. CORE-03, CORE-06, EXAV-09,
+EXAV-11 and EXAV-13 remain source requirements, not completed gameplay. The
+[action overlay](web-parity-actions.md#p4-01-railway-workflow-bindings) is reciprocal.
+
+| Workflow | Applicable manual anchors | Source refinement / next runtime owner |
+| --- | --- | --- |
+| Normal rail, attachment/detachment, piers | MAN-T02, MAN-M03, MAN-W01, MAN-W02, MAN-A03, MAN-A14 | Inclusive fixed-Z sign-vector routing; open/well-connected attachment; no-op demolition charges; actual usable start and terrain/water; P4-06–09. Browser authoritative removal preview and Confirm/Cancel adapt the manual's no-removal-ghost/direct-click workflow. |
+| Slope and paired geometry | MAN-T03, MAN-W02, MAN-A04, MAN-E12 | Four rail positions/eight occupied cells; cardinal climb, per-position ground art, stored flags, explicit car checks; P4-10/11. Terrain slopes do not create rail slopes. |
+| Bridge, girder, tunnel, garage | MAN-M03, MAN-W02, MAN-A04, MAN-E12 | Distinct predicates and booking: bridge need not cross water; girder offers eight headings; tunnel/garage removal excludes destination, garage repeats subtotal spend. No endpoint or economic fix approved; P4-12–15. |
+| Signal and pole | MAN-M03, MAN-E12, MAN-A12 | Signal straight-pattern replacement/restoration and actual pass dispatch; pole cardinal pattern eligibility/single accessory slot. Source calls no money spend for either. P4-16/17; moving signal behavior/controller editing stays P5. |
+| Railway accessories | MAN-T05, MAN-M03, MAN-A12 | Full fixed-size ground footprint, invisible upper occupancy, active pending ConstructionSite/completion path and inherited SUBSIDIARIES demolition. P4-18/P7; not P6 cosmetic passage/stair parts. |
+| Speed limits | MAN-M03, MAN-A12, MAN-A16 | EXAV-ACTION-003 adds flat/slope sections and cleanup beyond the historical menu summary. TrafficVoxel eligibility, per-world lists and overlap rules; P4-19, prior-head scheduling P5. |
+| Crossings/protection | MAN-E05, MAN-E11, MAN-E12, MAN-A14 | Source permits road/rail coexistence and creates crossings only under exact perpendicular/empty-slot conditions. P4-20 trusted interface fixtures; P7 playable roads, P5 trains and P6 platforms remain later. |
+
+Historical developer anchors retain their original scope: DEV-P06 poles, DEV-P08
+menus, DEV-P10 pictures, DEV-P11 signal side/loader, DEV-P12 fixed railway
+structures, DEV-P13 road boundary, DEV-P14 special rails, DEV-P24 costs,
+DEV-P26 sprites and DEV-P28 voxel boundaries. Native dialogs and historical
+English text are donors, not authority for new prices or hidden build rules.
+[The translation ledger](parity/railway-localization-review.json) assigns each
+reviewed source string/donor to the owning playable slice and P4-22; it does not
+claim shipped wording. For GEO-004/RAIL-D006 the owner confirmed source teardown
+of all piers below regardless of owner on 30 October, to avoid confusing stuck
+states for operators. P4-07/10/20 must preview every affected pier and retain that
+cleanup behavior; no owner-only restriction or pending approval remains.

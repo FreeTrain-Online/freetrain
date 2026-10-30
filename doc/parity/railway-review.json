@@ -1,0 +1,3958 @@
+{
+  "schemaVersion": 1,
+  "slice": "P4-01",
+  "reviewedOn": "2026-10-30",
+  "status": "source-contract-specified",
+  "authority": {
+    "sourceId": "exav-883cf7d-trunk",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12",
+    "pluginFamily": "V2"
+  },
+  "evidence": "Read-only pinned Git blobs; source-derived reasoning, no desktop execution or production algorithm oracle. Existing P0/P1/P3 source contracts reused explicitly. P4-02 fixtures and P4 runtime remain open.",
+  "sourceReviews": [
+    {
+      "path": "core/contributions/common/FixedSizeStructureContribution.cs",
+      "sha256": "aaa59173972016cec3cc820fd0af46ce8141971a76a665f1fd890d9e72fb0c35",
+      "encoding": "cp932",
+      "review": "Read footprint/height/price/recipe binding and separate builder path.",
+      "bindings": [
+        {
+          "symbol": "long.Parse",
+          "line": 27,
+          "text": "\t\t\t_price = long.Parse( XmlUtil.selectSingleNode(e,\"price\").InnerText );"
+        },
+        {
+          "symbol": "createBuilder",
+          "line": 101,
+          "text": "\t\tpublic override ModalController createBuilder( IControllerSite site ) {"
+        },
+        {
+          "symbol": "size",
+          "line": 16,
+          "text": "\t/// StructureContribution for structures of a fixed size."
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/common/FixedSizeStructureController.cs",
+      "sha256": "6f1d6335ae32daa24c329ca5af86027af048b603fedf9acb20a97afc7139d43d",
+      "encoding": "cp932",
+      "review": "Read separate inverted placement guard; do not confuse with active menu consumer. Explicit P4-18 source-defect boundary.",
+      "bindings": [
+        {
+          "symbol": "if( contrib.canBeBuilt",
+          "line": 31,
+          "text": "\t\t\tif( contrib.canBeBuilt(cube.corner,ControlMode.player) ) {"
+        },
+        {
+          "symbol": "contrib.size",
+          "line": 25,
+          "text": "\t\t\t: base( _contrib.size, _site ) {"
+        },
+        {
+          "symbol": "s.type!=contrib",
+          "line": 81,
+          "text": "\t\t\tif( s==null || s.type!=contrib ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/common/LineContribution.cs",
+      "sha256": "77fd7730fc4438b929e8a83178c3492d2a73e09e6ca199d160b62e740ce31511",
+      "encoding": "utf-8-sig",
+      "review": "Read four-way default and build/remove abstract contract.",
+      "bindings": [
+        {
+          "symbol": "enum DirectionMode",
+          "line": 51,
+          "text": "\t\tpublic enum DirectionMode {"
+        },
+        {
+          "symbol": "DirectionMode.FourWay",
+          "line": 59,
+          "text": "\t\tpublic virtual DirectionMode directionMode { get { return DirectionMode.FourWay; } }"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/rail/RailAccessoryContribution.cs",
+      "sha256": "9460ea68443ddbba07a8248d52e793041c2c64e0531cec292c193f10b6874c52",
+      "encoding": "cp932",
+      "review": "Read price-capable base parser; price availability alone grants no booking.",
+      "bindings": [
+        {
+          "symbol": "class RailAccessoryContribution",
+          "line": 16,
+          "text": "\tpublic abstract class RailAccessoryContribution : Contribution, IEntityBuilder"
+        },
+        {
+          "symbol": "_price = 0",
+          "line": 24,
+          "text": "            if( a == null ) _price = 0;"
+        },
+        {
+          "symbol": "playerCannotBuild",
+          "line": 42,
+          "text": "\t\tpublic bool playerCannotBuild {\tget{ return true; }\t}"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/rail/RailStationaryContribution.cs",
+      "sha256": "d1cba0511aa79df42c89c242a151cee5c74a8ec4096fcc1976bf5c8dd36d3aa8",
+      "encoding": "utf-8-sig",
+      "review": "Read exact fixed-size contribution dispatch.",
+      "bindings": [
+        {
+          "symbol": "class RailStationaryContribution",
+          "line": 15,
+          "text": "\tpublic class RailStationaryContribution : FixedSizeStructureContribution"
+        },
+        {
+          "symbol": "RailStationaryStructure.canBeBuilt",
+          "line": 32,
+          "text": "\t\t\treturn RailStationaryStructure.canBeBuilt( baseLoc, size, cm );"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/rail/SpecialRailContribution.cs",
+      "sha256": "476418deb9602c00468deb74fb88f43ac132cf033c7e9e4ad5aabb11b3874d88",
+      "encoding": "utf-8-sig",
+      "review": "Read specialRail registration contract.",
+      "bindings": [
+        {
+          "symbol": "class SpecialRailContribution",
+          "line": 13,
+          "text": "\tpublic abstract class SpecialRailContribution : LineContribution"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/road/AbstractRoadContributionImpl.cs",
+      "sha256": "654e98f40820bb35d9dd9527fcbd8e055b8dff32467c09d5d8d126787d7a3831",
+      "encoding": "cp932",
+      "review": "Read inherited native quote donor only; not authoritative special-rail price.",
+      "bindings": [
+        {
+          "symbol": "calcCostOfBuildRoad",
+          "line": 70,
+          "text": "            cost = calcCostOfBuildRoad( from, to );"
+        },
+        {
+          "symbol": "calcCostOfRemoving",
+          "line": 116,
+          "text": "            long cost = calcCostOfRemoving( here, to );"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/AbstractLineController.cs",
+      "sha256": "6400b550e5c02b7b4acc5f49e0756ba31f019a7e8961499e52cca915980631ee",
+      "encoding": "cp932",
+      "review": "Read snapped mutation versus unsnapped road quote discrepancy, controls and line dispatch.",
+      "bindings": [
+        {
+          "symbol": "align(",
+          "line": 155,
+          "text": "\t\tprivate Location align( Location loc ) {"
+        },
+        {
+          "symbol": "calcCostOfBuild",
+          "line": 180,
+          "text": "                cost = calcCostOfBuild( anchor, loc );"
+        },
+        {
+          "symbol": "AbstractRoadContributionImpl.calcCostOfBuildRoad",
+          "line": 190,
+          "text": "            return AbstractRoadContributionImpl.calcCostOfBuildRoad( from, to );"
+        },
+        {
+          "symbol": "type.build",
+          "line": 208,
+          "text": "\t\t\t\t\t\t\ttype.build( anchor, loc );"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/Disambiguators.cs",
+      "sha256": "2e570aef234c098cd35cf8a19e862f81ec21d3ec709c5439bf0d3ba054e52296",
+      "encoding": "utf-8-sig",
+      "review": "Read usable first point/ground equality/fixed-Z second-point selection.",
+      "bindings": [
+        {
+          "symbol": "class RailRoadDisambiguator",
+          "line": 11,
+          "text": "\tpublic class RailRoadDisambiguator : LocationDisambiguator"
+        },
+        {
+          "symbol": "class SameLevelDisambiguator",
+          "line": 45,
+          "text": "\tpublic class SameLevelDisambiguator : LocationDisambiguator {"
+        },
+        {
+          "symbol": "class GroundDisambiguator",
+          "line": 31,
+          "text": "\tpublic class GroundDisambiguator : LocationDisambiguator"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/RailRoadController.cs",
+      "sha256": "a9ab580258e61acbe1b543a38a31c6e01c0b510d393c6f55441e8b0527e75a64",
+      "encoding": "cp932",
+      "review": "Read same-point suppression, first/second points, removal without ghost and source UI strings.",
+      "bindings": [
+        {
+          "symbol": "SingleRailRoad.build",
+          "line": 185,
+          "text": "\t\t\t\t\t\tif(!SingleRailRoad.build( anchor, loc ))"
+        },
+        {
+          "symbol": "SingleRailRoad.remove",
+          "line": 189,
+          "text": "\t\t\t\t\t\tSingleRailRoad.remove( anchor, loc );"
+        },
+        {
+          "symbol": "anchor!=loc",
+          "line": 182,
+          "text": "\t\t\t\tif(anchor!=loc) {"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/SlopeRailRoadController.cs",
+      "sha256": "caff18e43415c6304033c80e0730f7f42e50d29deaa7decb1d4deba9bea04457",
+      "encoding": "cp932",
+      "review": "Read direction/base resolution, paired ghost, protected removal and source UI.",
+      "bindings": [
+        {
+          "symbol": "SlopeRailRoad.createSlope",
+          "line": 267,
+          "text": "\t\t\t\t\tSlopeRailRoad.createSlope(loc,direction);"
+        },
+        {
+          "symbol": "SlopeRailRoad.removeSlope",
+          "line": 283,
+          "text": "\t\t\t\t\t\tSlopeRailRoad.removeSlope(loc,direction);"
+        },
+        {
+          "symbol": "srr.level",
+          "line": 277,
+          "text": "\t\t\t\t\tif(srr.level>=2)\tloc.z--;"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/SpecialPurposeRailController.cs",
+      "sha256": "202de0be760fedc8468ca25745d595aa02f51d94b8af146fb95baae1db4690a3",
+      "encoding": "utf-8-sig",
+      "review": "Read direct inheritance of road quote and special rail draw overlay.",
+      "bindings": [
+        {
+          "symbol": "class SpecialPurposeRailController",
+          "line": 18,
+          "text": "\tpublic class SpecialPurposeRailController : AbstractLineController"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/StationaryStructPlacementController.cs",
+      "sha256": "ac37654da972afc5e240b90938f6fb61af7813a5ab3f56a1d778e1367b1f7d93",
+      "encoding": "cp932",
+      "review": "Read actual accessory consumer, ground selection and removal independent of selected catalog type.",
+      "bindings": [
+        {
+          "symbol": "base(Core.plugins.railStationaryGroup)",
+          "line": 40,
+          "text": "\t\tprivate StationaryStructPlacementController() : base(Core.plugins.railStationaryGroup) {}"
+        },
+        {
+          "symbol": "GroundDisambiguator",
+          "line": 46,
+          "text": "\t\t\t\treturn GroundDisambiguator.theInstance.isSelectable(loc);"
+        },
+        {
+          "symbol": "s.remove()",
+          "line": 55,
+          "text": "\t\t\t\ts.remove();"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/structs/FixedSizeStructController.cs",
+      "sha256": "3e8d6918ebeff8ffa58c3a58b9fb9073da0e149ce3c1c806c87c6f7e876c4046",
+      "encoding": "cp932",
+      "review": "Read active stationary tool site creation/completion callback, no upfront type-price spend.",
+      "bindings": [
+        {
+          "symbol": "!selectedType.canBeBuilt",
+          "line": 35,
+          "text": "\t\t\t\tif(!selectedType.canBeBuilt(loc,ControlMode.player)) {"
+        },
+        {
+          "symbol": "new ConstructionSite",
+          "line": 39,
+          "text": "\t\t\t\t\tnew ConstructionSite( loc, new EventHandler(handler.handle), selectedType.size );"
+        },
+        {
+          "symbol": "contribution.create",
+          "line": 61,
+          "text": "\t\t\t\tStructure s = contribution.create(loc,owned);"
+        }
+      ]
+    },
+    {
+      "path": "core/framework/Core.cs",
+      "sha256": "7d1e993d20bf897258678e2ffdfe873e4c7431d7d6d5df8064e5f3f27bec3dbd",
+      "encoding": "cp932",
+      "review": "Reuse P3 authoring flag: no source economic bypass.",
+      "bindings": [
+        {
+          "symbol": "constructionMode",
+          "line": 93,
+          "text": "\t\tpublic static void init( string[] args, Control owner, MenuItem bgmMenuItem,ProgressHandler progressHandler, bool constructionMode ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/framework/GlobalOptions.cs",
+      "sha256": "9deb4e1ebc31d13296072488141c62d2a8ca3e9d14dd0eafbfbcb181f3b1dcf7",
+      "encoding": "cp932",
+      "review": "Read default bankruptcy notification/top-up; portable settings must be authoritative.",
+      "bindings": [
+        {
+          "symbol": "_bunkruptmessageflag = true",
+          "line": 150,
+          "text": "\t\tprivate bool _bunkruptmessageflag = true;"
+        },
+        {
+          "symbol": "_liquidplusatbunkrupt = 10000000000",
+          "line": 163,
+          "text": "        private long _liquidplusatbunkrupt = 10000000000;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "encoding": "cp932",
+      "review": "Reuse P1 checked sign-vector/axis snapping; retain source formulas, no freehand route adaptation.",
+      "bindings": [
+        {
+          "symbol": "toward",
+          "line": 41,
+          "text": "\t\tpublic Location toward( Location to ) {"
+        },
+        {
+          "symbol": "align4To",
+          "line": 101,
+          "text": "\t\tpublic Location align4To( Location anchor ) {"
+        },
+        {
+          "symbol": "align8To",
+          "line": 111,
+          "text": "\t\tpublic Location align8To( Location anchor ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/RRCrossing.cs",
+      "sha256": "26f519860e47eac9fcef7b49afbcb5a63594cfdf195b563e26caaecec9073207",
+      "encoding": "utf-8-sig",
+      "review": "Read automatically created crossing accessory and draw interface; road gameplay remains P7.",
+      "bindings": [
+        {
+          "symbol": "class RRCrossing",
+          "line": 14,
+          "text": "\tclass RRCrossing : TrafficVoxel.Accessory, IDeserializationCallback"
+        },
+        {
+          "symbol": "drawBefore",
+          "line": 173,
+          "text": "\t\tpublic void drawBefore( DrawContext display, Point pt ) {"
+        },
+        {
+          "symbol": "drawAfter",
+          "line": 178,
+          "text": "\t\tpublic void drawAfter( DrawContext display, Point pt ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "encoding": "cp932",
+      "review": "Read rail/road/accessory/car composition, assertion-only occupancy guard, crossing conditions, empty cleanup and pass order.",
+      "bindings": [
+        {
+          "symbol": "shouldHaveCrossing",
+          "line": 148,
+          "text": "\t\t\tbool b = shouldHaveCrossing();"
+        },
+        {
+          "symbol": "onModified",
+          "line": 62,
+          "text": "\t\t\t\tonModified();"
+        },
+        {
+          "symbol": "public void remove()",
+          "line": 189,
+          "text": "\t\tpublic void remove() {"
+        },
+        {
+          "symbol": "_accessory.onRemoved()",
+          "line": 102,
+          "text": "\t\t\t\tif( value==null && _accessory!=null )\t_accessory.onRemoved();"
+        },
+        {
+          "symbol": "drawBefore",
+          "line": 43,
+          "text": "\t\t\tvoid drawBefore( DrawContext display, Point pt );"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Voxel.cs",
+      "sha256": "ae234706b9f1afe305afdb7ca498c0bfab062001d80626fc9d0d2ad843f912cd",
+      "encoding": "utf-8-sig",
+      "review": "Reuse P3 hole-ground interface and voxel reclaimability boundary.",
+      "bindings": [
+        {
+          "symbol": "interface HoleVoxel",
+          "line": 173,
+          "text": "\tpublic interface HoleVoxel"
+        },
+        {
+          "symbol": "drawGround",
+          "line": 182,
+          "text": "\t\tbool drawGround( bool above );"
+        }
+      ]
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "encoding": "cp932",
+      "review": "Reuse P1/P3 stored bounds, sentinel occupancy and global ground/water contract.",
+      "bindings": [
+        {
+          "symbol": "getGroundLevel",
+          "line": 295,
+          "text": "\t\tpublic int getGroundLevel( Location loc ) {"
+        },
+        {
+          "symbol": "isInsideWorld",
+          "line": 220,
+          "text": "\t\tpublic bool isInsideWorld( Cube cube ) {"
+        },
+        {
+          "symbol": "isBorderOfWorld",
+          "line": 241,
+          "text": "\t\tpublic bool isBorderOfWorld( Location loc ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/accounting/AccountGenre.cs",
+      "sha256": "8a6792ceaed54c4fcfc8d62af9373584f7d1aa61cdf7a41eb0e3e95eca7852ad",
+      "encoding": "utf-8-sig",
+      "review": "Read source genres and routing into world account/history.",
+      "bindings": [
+        {
+          "symbol": "public void spend",
+          "line": 51,
+          "text": "\t\tpublic void spend( long delta ) {"
+        },
+        {
+          "symbol": "AC30BB0B",
+          "line": 72,
+          "text": "\t\t\t\t\t.getContribution(\"{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}\");"
+        },
+        {
+          "symbol": "SUBSIDIARIES",
+          "line": 81,
+          "text": "\t\tpublic static AccountGenre SUBSIDIARIES {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/accounting/AccountManager.cs",
+      "sha256": "402292886da4fa0464dc28639aef67ff98c578519e74e978e7ee49d2e2a6936a",
+      "encoding": "cp932",
+      "review": "Read actual cash default/automatic rescue rather than comment claiming game-over; no affordability precheck.",
+      "bindings": [
+        {
+          "symbol": "this(15000000000)",
+          "line": 59,
+          "text": "\t\tpublic AccountManager() : this(15000000000) {}"
+        },
+        {
+          "symbol": "while( _liquidAssets < 0 )",
+          "line": 67,
+          "text": "\t\t\twhile( _liquidAssets < 0 ) {"
+        },
+        {
+          "symbol": "liquidPlusAtBunkrupt",
+          "line": 72,
+          "text": "                          _liquidAssets += Core.options.liquidPlusAtBunkrupt;"
+        },
+        {
+          "symbol": "genre.history.spend",
+          "line": 78,
+          "text": "\t\t\tgenre.history.spend(delta);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/accounting/TransactionHistory.cs",
+      "sha256": "c713d556e5ba0faf54862698a7a11fe3efdf52629b805dc3a34fec7b4025ebdb",
+      "encoding": "cp932",
+      "review": "Reuse P0 accounting history caller contract for P4 durable transaction/P8 boundary.",
+      "bindings": [
+        {
+          "symbol": "spend",
+          "line": 125,
+          "text": "\t\tinternal void spend( long delta ) {"
+        },
+        {
+          "symbol": "earn",
+          "line": 121,
+          "text": "\t\tinternal void earn( long delta ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/BridgePierVoxel.cs",
+      "sha256": "20caa79eda8e465c7f4bbf1f70bc724226af2f7433ae72ac7b2cd09d20e8fa26",
+      "encoding": "utf-8-sig",
+      "review": "Read full-column obstruction scan, best-effort election, owner-ignoring removal and cut dispatch.",
+      "bindings": [
+        {
+          "symbol": "electBridgeSupport",
+          "line": 21,
+          "text": "//\t\tpublic static void electBridgeSupport( Location loc ) {"
+        },
+        {
+          "symbol": "teardownBridgeSupport",
+          "line": 76,
+          "text": "\t\tpublic static void teardownBridgeSupport( Location loc, Entity owner ) {"
+        },
+        {
+          "symbol": "owner",
+          "line": 29,
+          "text": "\t\tpublic static void electBridgeSupport( Location loc, Entity owner ) {"
+        },
+        {
+          "symbol": "heightCutDiff==0",
+          "line": 117,
+          "text": "\t\t\tif( heightCutDiff==0 )\t\tsprite.drawAlpha( display.surface, pt );"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/BridgeRail.cs",
+      "sha256": "b61ea51e9f8ec4ebe27fc076b2e5b2bca8012035aa50ea2e0f347baaa3365a8b",
+      "encoding": "cp932",
+      "review": "Read inclusive compatible-axis route, new-run art/pier alternation, inclusive quote versus skipped mutations and first-cell water early return.",
+      "bindings": [
+        {
+          "symbol": "canBeBuilt",
+          "line": 84,
+          "text": "\t\tpublic override bool canBeBuilt( Location from, Location to ) {"
+        },
+        {
+          "symbol": "calcBuildBridgeRailRoadCost",
+          "line": 118,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( calcBuildBridgeRailRoadCost( here, to ));"
+        },
+        {
+          "symbol": "calcDestroyBridgeRailRoadCost",
+          "line": 178,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( calcDestroyBridgeRailRoadCost( here, to ));"
+        },
+        {
+          "symbol": "BridgeRailMode.Begin",
+          "line": 125,
+          "text": "\t\t\t\t\t\tcreate( v, d, BridgeRailMode.Begin );"
+        },
+        {
+          "symbol": "goto common",
+          "line": 187,
+          "text": "                                goto common;                                    // 処理を抜ける"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/JunctionRailRoad.cs",
+      "sha256": "43c6fef5f1c8873dbf86867cdb8f779780a84d68fd8049226282d76aaeb00fc4",
+      "encoding": "utf-8-sig",
+      "review": "Reuse P0 topology review: reciprocal attachments, straight/turn selection and zero/one/two-edge detach.",
+      "bindings": [
+        {
+          "symbol": "canAttach",
+          "line": 87,
+          "text": "\t\tpublic override bool canAttach( Direction newDir ) {"
+        },
+        {
+          "symbol": "detach",
+          "line": 100,
+          "text": "\t\tpublic override void detach( Direction d1, Direction d2 ) {"
+        },
+        {
+          "symbol": "guide",
+          "line": 15,
+          "text": "\t\tpublic override Direction guide() {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "encoding": "cp932",
+      "review": "Reuse P0 literal 12 normal/16 junction/32 slope tables, indexes, sprite/zdiff contracts.",
+      "bindings": [
+        {
+          "symbol": "getJunction",
+          "line": 154,
+          "text": "\t\tpublic static RailPattern getJunction( Direction a, Direction b, Direction c ) {"
+        },
+        {
+          "symbol": "getUGSlope",
+          "line": 179,
+          "text": "\t\tpublic static RailPattern getUGSlope( Direction climb, int height ) "
+        },
+        {
+          "symbol": "slopeSupports",
+          "line": 120,
+          "text": "\t\tpublic static readonly Sprite[] slopeSupports = new Sprite[] {"
+        },
+        {
+          "symbol": "slopeWalls",
+          "line": 105,
+          "text": "\t\tpublic static readonly Sprite[] slopeWalls = new Sprite[] {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8",
+      "encoding": "cp932",
+      "review": "Read reciprocal same-level neighbors, direction scan, pattern and P5 movement/drawing interface.",
+      "bindings": [
+        {
+          "symbol": "isWellConnected",
+          "line": 64,
+          "text": "\t\tpublic bool isWellConnected { get {"
+        },
+        {
+          "symbol": "zdiff",
+          "line": 44,
+          "text": "\t\tpublic int zdiff( Direction d ) {"
+        },
+        {
+          "symbol": "dir1",
+          "line": 111,
+          "text": "\t\tpublic Direction dir1 { get {"
+        },
+        {
+          "symbol": "dir2",
+          "line": 120,
+          "text": "\t\tpublic Direction dir2 { get {"
+        },
+        {
+          "symbol": "drawBefore",
+          "line": 147,
+          "text": "\t\tpublic virtual void drawBefore( DrawContext display, Point pt ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailStationaryStructure.cs",
+      "sha256": "5c95f70983331f4f577666f14dd620c1d20165f73a5b365fa61da696ee6c3bf5",
+      "encoding": "cp932",
+      "review": "Read constructor booking, zero value, full-footprint structure and transparent single-column voxel.",
+      "bindings": [
+        {
+          "symbol": "RAIL_SERVICE.spend",
+          "line": 18,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( type.price );"
+        },
+        {
+          "symbol": "entityValue",
+          "line": 37,
+          "text": "\t\tpublic override long entityValue { get { return 0; } }"
+        },
+        {
+          "symbol": "StationaryVoxel",
+          "line": 23,
+          "text": "\t\t\t\treturn new StationaryVoxel(this, wloc);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SingleRailRoad.cs",
+      "sha256": "999171a080e821cd9d6aa3a839171eb898440acb1fca18783877c79d562a5937",
+      "encoding": "cp932",
+      "review": "Read attach/detach, inclusive quote/build/removal, per-cell reclamation values, car skips, ground/water multipliers, road TODO and unguarded support teardown.",
+      "bindings": [
+        {
+          "symbol": "canAttach",
+          "line": 30,
+          "text": "\t\tpublic override bool canAttach( Direction newDir ) {"
+        },
+        {
+          "symbol": "calcRailRoadCost",
+          "line": 93,
+          "text": "\t\tprivate static long calcRailRoadCost( Location loc, Direction d1, Direction d2 ) {"
+        },
+        {
+          "symbol": "comupteRoute",
+          "line": 145,
+          "text": "\t\tpublic static IDictionary comupteRoute( Location from, Location to, out long cost ) {"
+        },
+        {
+          "symbol": "public static bool build",
+          "line": 180,
+          "text": "\t\tpublic static bool build( Location here, Location there ) {"
+        },
+        {
+          "symbol": "calcCostOfRemoving",
+          "line": 227,
+          "text": "\t\tpublic static long calcCostOfRemoving( Location here, Location there ) {"
+        },
+        {
+          "symbol": "public static void remove",
+          "line": 257,
+          "text": "\t\tpublic static void remove( Location here, Location there ) {"
+        },
+        {
+          "symbol": "6000000",
+          "line": 284,
+          "text": "\t\tprivate const int RAILROAD_CONSTRUCTION_UNIT_COST = 6000000;"
+        },
+        {
+          "symbol": "2000000",
+          "line": 282,
+          "text": "\t\tprivate const int RAILROAD_DESTRUCTION_UNIT_COST  = 2000000;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "encoding": "utf-8-sig",
+      "review": "Read all eight cells, per-column ground art, stored HoleVoxel flags, ownership, base resolution and operation-specific costs.",
+      "bindings": [
+        {
+          "symbol": "class SlopeEntity",
+          "line": 18,
+          "text": "\tpublic class SlopeEntity : Entity"
+        },
+        {
+          "symbol": "createSlope",
+          "line": 125,
+          "text": "\t\tpublic static void createSlope( Location _base, Direction dir ) {"
+        },
+        {
+          "symbol": "drawSurfaceBelow",
+          "line": 188,
+          "text": "\t\t\t\tdrawSurfaceBelow = !( idx<2 && glevel>=z );"
+        },
+        {
+          "symbol": "calcCostOfNewSlope",
+          "line": 129,
+          "text": "\t\t\taccounting.AccountGenre.RAIL_SERVICE.spend( calcCostOfNewSlope(_base,dir) );"
+        },
+        {
+          "symbol": "calcCostOfTearDownSlope",
+          "line": 265,
+          "text": "\t\t\treturn calcCostOfTearDownSlope(loc,dir)!=0;"
+        },
+        {
+          "symbol": "removeSlope",
+          "line": 302,
+          "text": "\t\tpublic static void removeSlope( Location loc, Direction dir ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SpecialPurposeRailRoad.cs",
+      "sha256": "2fc4805573fad2e04c9b614b1e18b24b566bad29948b08bac4d1d6b456188598",
+      "encoding": "cp932",
+      "review": "Read existing-edge-only attachment and no-op generic detach.",
+      "bindings": [
+        {
+          "symbol": "canAttach",
+          "line": 17,
+          "text": "\t\tpublic override bool canAttach( Direction newDir ) {"
+        },
+        {
+          "symbol": "detach",
+          "line": 8,
+          "text": "\t/// that doesn't allow any attachment/detachment"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "encoding": "utf-8-sig",
+      "review": "Read per-world dictionary root, three lists, append versus dedup, overlap and single-occurrence removal.",
+      "bindings": [
+        {
+          "symbol": "onNewWorld",
+          "line": 25,
+          "text": "        private static void onNewWorld(object sender, EventArgs a)"
+        },
+        {
+          "symbol": "addLowSpeedLimit(ArrayList",
+          "line": 107,
+          "text": "        public void addLowSpeedLimit(ArrayList locs)"
+        },
+        {
+          "symbol": "addLowSpeedLimit(Hashtable",
+          "line": 132,
+          "text": "        public void addLowSpeedLimit(Hashtable route)"
+        },
+        {
+          "symbol": "Contains(ArrayList",
+          "line": 268,
+          "text": "        public bool Contains(ArrayList list)"
+        },
+        {
+          "symbol": "removeLowSpeedLimit",
+          "line": 182,
+          "text": "        public void removeLowSpeedLimit(ArrayList locs)"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/StealSupportedRailContributionImpl.cs",
+      "sha256": "7618db89c16fb455fa6da0f2b57db922d6e34a6a71ad4d5030045efc53a35aab",
+      "encoding": "cp932",
+      "review": "Read above-ground eight-way predicate, before pass, index mapping and bridge-like charging/skips.",
+      "bindings": [
+        {
+          "symbol": "canBeBuilt",
+          "line": 64,
+          "text": "\t\tpublic override bool canBeBuilt( Location from, Location to ) {"
+        },
+        {
+          "symbol": "directionMode",
+          "line": 203,
+          "text": "\t\tpublic override DirectionMode directionMode { get { return DirectionMode.EightWay; } }"
+        },
+        {
+          "symbol": "calcBuildBridgeRailRoadCost",
+          "line": 97,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( calcBuildBridgeRailRoadCost( here, to ));"
+        },
+        {
+          "symbol": "calcDestroyBridgeRailRoadCost",
+          "line": 120,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( calcDestroyBridgeRailRoadCost( here, to ));"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "encoding": "cp932",
+      "review": "Reuse P0 timing chain; read prior-head-location and native equality tests, positive wait/Outside boundaries. No P5 implementation credit.",
+      "bindings": [
+        {
+          "symbol": "SpeedLimit.getInstance",
+          "line": 284,
+          "text": "            SpeedLimit sl = SpeedLimit.getInstance();"
+        },
+        {
+          "symbol": "sl.LowSpeedLimit.Contains(loc)",
+          "line": 286,
+          "text": "            if(sl.LowSpeedLimit.Contains(loc))"
+        },
+        {
+          "symbol": "type.minutesPerVoxel == 4",
+          "line": 292,
+          "text": "                if (type.minutesPerVoxel == 4)"
+        },
+        {
+          "symbol": "TimeLength.fromMinutes(2)",
+          "line": 309,
+          "text": "                    registerTimer(TimeLength.fromMinutes(2));"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TunnelRail.cs",
+      "sha256": "df1eb9b225a260f95dfa32bc24ada420c33f0e25d29bc28ddc1a9ab4d13afbd7",
+      "encoding": "cp932",
+      "review": "Read Mountain backup/loss, new-cell cost, half-open restoration, train skips, gap normal rails and unchanged ground.",
+      "bindings": [
+        {
+          "symbol": "canBeBuilt",
+          "line": 109,
+          "text": "\t\tpublic override bool canBeBuilt( Location from, Location to ) {"
+        },
+        {
+          "symbol": "byte[] heights",
+          "line": 65,
+          "text": "\t\t\tprivate readonly byte[] heights;"
+        },
+        {
+          "symbol": "for( ; here!=to",
+          "line": 197,
+          "text": "\t\t\tfor( ; here!=to; here = here.toward(to) ) {"
+        },
+        {
+          "symbol": "cost += RAILROAD_DESTRUCTION_UNIT_COST *2",
+          "line": 209,
+          "text": "                    cost += RAILROAD_DESTRUCTION_UNIT_COST *2;"
+        },
+        {
+          "symbol": "trr.remove()",
+          "line": 210,
+          "text": "                    trr.remove();\t// destroy it"
+        }
+      ]
+    },
+    {
+      "path": "core/world/structs/ConstructionSite.cs",
+      "sha256": "01ca68c326b92a636a2993df016b549afec2a2bb4ee1b1a36d2cb50f1a88fab8",
+      "encoding": "cp932",
+      "review": "Read durable pending-site/completion/cancellation boundary; later shared P4-18/P7 consumer, no instant-completion approval.",
+      "bindings": [
+        {
+          "symbol": "completionHandler",
+          "line": 27,
+          "text": "\t\tpublic ConstructionSite( Location _baseLoc, EventHandler _completionHandler, Distance size ) {"
+        },
+        {
+          "symbol": "uncompletedVoxels",
+          "line": 42,
+          "text": "\t\t\tuncompletedVoxels = size.volume;"
+        },
+        {
+          "symbol": "completionHandler = null",
+          "line": 96,
+          "text": "\t\t\tcompletionHandler = null;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/structs/PThreeDimStructure.cs",
+      "sha256": "128d7b082620e5035aae34853131ef19ab4caf7283ebb7ddba7e941f6e2942a5",
+      "encoding": "utf-8-sig",
+      "review": "Read full 3D occupancy, equal-ground predicate, inherited area-only demolition and cut silhouette.",
+      "bindings": [
+        {
+          "symbol": "SUBSIDIARIES.spend",
+          "line": 118,
+          "text": "            AccountGenre.SUBSIDIARIES.spend( STRUCTURE_DESTRUCTION_UNIT_COST * type.size.x * type.size.y );"
+        },
+        {
+          "symbol": "500000",
+          "line": 124,
+          "text": "\t\tprivate const int STRUCTURE_DESTRUCTION_UNIT_COST  = 500000;"
+        },
+        {
+          "symbol": "getGroundLevel",
+          "line": 133,
+          "text": "\t\t\t\t\tif( World.world.getGroundLevel(loc.x+x,loc.y+y)!=loc.z )"
+        }
+      ]
+    },
+    {
+      "path": "core/world/structs/Structure.cs",
+      "sha256": "439cc862d31b5c1bf7553d43708f5d0541536b7865548361348bc8487fa3abd4",
+      "encoding": "utf-8-sig",
+      "review": "Read full exclusive footprint occupancy and player/com distinction.",
+      "bindings": [
+        {
+          "symbol": "ControlMode.com",
+          "line": 59,
+          "text": "\t\t\tif(mode == ControlMode.com)"
+        },
+        {
+          "symbol": "isSilentlyReclaimable",
+          "line": 23,
+          "text": "\t\tpublic abstract bool isSilentlyReclaimable { get; }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/terrain/MountainVoxel.cs",
+      "sha256": "3197e72ca80f73482218c87adae901e64632736e7435c6241490c15cb663283b",
+      "encoding": "utf-8-sig",
+      "review": "Reuse P3 actual corner/ownership/reclaimability contracts; distinguish empty buried cells from Mountain occupants.",
+      "bindings": [
+        {
+          "symbol": "getHeight",
+          "line": 39,
+          "text": "\t\tpublic int getHeight( Direction d ) "
+        },
+        {
+          "symbol": "isSilentlyReclaimable",
+          "line": 148,
+          "text": "\t\tpublic bool isSilentlyReclaimable { get { return false; } }"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+      "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb",
+      "encoding": "cp932",
+      "review": "Read reachable flat/slope/cleanup menu, constructor-only initialization defect.",
+      "bindings": [
+        {
+          "symbol": "SpeedLimit.init",
+          "line": 20,
+          "text": "            SpeedLimit.init();"
+        },
+        {
+          "symbol": "removeNotTrafficVoxel",
+          "line": 70,
+          "text": "            freetrain.world.rail.speedlimit.SpeedLimitManager.removeNotTrafficVoxel();"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitManager.cs",
+      "sha256": "0f252596836507c8b426c3fe38084bad91e9c833f9af62a95c91a98c05ca3e42",
+      "encoding": "utf-8-sig",
+      "review": "Read cleanup of absent TrafficVoxels, not of absent rails.",
+      "bindings": [
+        {
+          "symbol": "getRemoveLocations",
+          "line": 44,
+          "text": "            foreach (Location loc in getRemoveLocations(sl.LowSpeedLimit))"
+        },
+        {
+          "symbol": "vox == null",
+          "line": 69,
+          "text": "                if (vox == null)"
+        },
+        {
+          "symbol": "isNotOnlyTrafficVoxel",
+          "line": 83,
+          "text": "        public static bool isNotOnlyTrafficVoxel(ArrayList route)"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+      "sha256": "214a916282aa6bfca86c3d96880b465334b526040e2f2ff4669727a2d1a6a567",
+      "encoding": "cp932",
+      "review": "Read fixed-Z inclusive selection, Traffic-only gate, overlap, level add/remove and speed labels.",
+      "bindings": [
+        {
+          "symbol": "comupteRoute",
+          "line": 362,
+          "text": "\t\t\t\tcanvas.tag = comupteRoute( anchor, currentPos );"
+        },
+        {
+          "symbol": "isNotOnlyTrafficVoxel",
+          "line": 440,
+          "text": "\t\t\tif(SpeedLimitManager.isNotOnlyTrafficVoxel(route))"
+        },
+        {
+          "symbol": "sp.Contains(route)",
+          "line": 446,
+          "text": "            if (sp.Contains(route))"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+      "sha256": "ef99b993f4301939cf9f176f2635e12962458888b538bfe44f46e2cfff05b874",
+      "encoding": "cp932",
+      "review": "Read four-location cardinal section, Traffic-only gate, selected-direction removal and overlap.",
+      "bindings": [
+        {
+          "symbol": "getSlopeLocation",
+          "line": 293,
+          "text": "\t\t\t\tif(SpeedLimitManager.isNotOnlyTrafficVoxel(getSlopeLocation(loc,direction))){"
+        },
+        {
+          "symbol": "isNotOnlyTrafficVoxel",
+          "line": 293,
+          "text": "\t\t\t\tif(SpeedLimitManager.isNotOnlyTrafficVoxel(getSlopeLocation(loc,direction))){"
+        },
+        {
+          "symbol": "srr.level",
+          "line": 324,
+          "text": "\t\t\t\t\tif(srr.level>=2) {"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/plugin.xml",
+      "sha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "encoding": "cp932",
+      "review": "Read menu initialization/account genre registration and exact IDs.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 10,
+          "text": "\t<contribution type=\"picture\" id=\"{CFC7C99B-4EDE-493B-9DD1-268633902901}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"contribution\" id=\"{6CCE619B-6D03-4784-B3EF-C53577E2C958}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/BuilderImpl.cs",
+      "sha256": "3ef6096b427f78d66ff593c54129810cdec73bd24cf0c75100db33528be9e890",
+      "encoding": "cp932",
+      "review": "Read point tool and preview.",
+      "bindings": [
+        {
+          "symbol": "contribution.create",
+          "line": 24,
+          "text": "\t\t\t\tcontribution.create(loc);"
+        },
+        {
+          "symbol": "RailRoadDisambiguator",
+          "line": 44,
+          "text": "\t\t\t\treturn RailRoadDisambiguator.theInstance;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/ControllerForm.cs",
+      "sha256": "24697b24e388ab6f628610b5d3778b7a764c45736deff42f4ee975d7e0283c9a",
+      "encoding": "cp932",
+      "review": "Read consumer and source text/cost control; no inferred charge.",
+      "bindings": [
+        {
+          "symbol": "createBuilder",
+          "line": 159,
+          "text": "\t\t\t\tcurrentController = contrib.createBuilder(this.siteImpl);"
+        },
+        {
+          "symbol": "createRemover",
+          "line": 161,
+          "text": "\t\t\t\tcurrentController = contrib.createRemover(this.siteImpl);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPole.cs",
+      "sha256": "8465edfc5d97bc4b4b28f2f427770b99942022d61723d2d0007d394e36de48a0",
+      "encoding": "utf-8-sig",
+      "review": "Read single-slot attachment and before/after rendering, no electrification behavior.",
+      "bindings": [
+        {
+          "symbol": "target.accessory = this",
+          "line": 22,
+          "text": "\t\t\ttarget.accessory = this;"
+        },
+        {
+          "symbol": "drawBefore",
+          "line": 25,
+          "text": "\t\tpublic void drawBefore( DrawContext display, Point pt ) {"
+        },
+        {
+          "symbol": "onRemoved",
+          "line": 35,
+          "text": "\t\tpublic void onRemoved() {}"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+      "sha256": "3840f1b27b04a4c1bea77caa0f96b35b48c9d91c47152eb41af5eef8a762d57f",
+      "encoding": "utf-8-sig",
+      "review": "Read exact cardinal straight-pattern predicate, inferred orientation, replacement and no spend caller.",
+      "bindings": [
+        {
+          "symbol": "canBeBuilt",
+          "line": 58,
+          "text": "\t\tpublic bool canBeBuilt( Location loc ) {"
+        },
+        {
+          "symbol": "rp.numberOfRails!=2",
+          "line": 66,
+          "text": "\t\t\tif( rp.numberOfRails!=2 )\treturn false;"
+        },
+        {
+          "symbol": "new ElectricPole",
+          "line": 85,
+          "text": "\t\t\tnew ElectricPole( TrafficVoxel.get(loc), this, x );"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/MenuContributionImpl.cs",
+      "sha256": "802596b91b51e5345c616e0251f05c45f4a3c4f36c8762cd8b1c5522bd12049c",
+      "encoding": "cp932",
+      "review": "Read source menu/visibility option and text.",
+      "bindings": [
+        {
+          "symbol": "mergeMenu",
+          "line": 17,
+          "text": "\t\tpublic override void mergeMenu( MainMenu containerMenu ) {"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.electricPole/src/RemoverImpl.cs",
+      "sha256": "d325de0014dc288f69e0037f28182e66f9c46d82211c6b8883dc9053fc68e62a",
+      "encoding": "utf-8-sig",
+      "review": "Read actual pole removal regardless of selected type and no booking.",
+      "bindings": [
+        {
+          "symbol": "accessory = null",
+          "line": 26,
+          "text": "\t\t\t\tTrafficVoxel.get(loc).accessory = null;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"specialRail\" id=\"{93481807-D998-46d7-B1BE-CB2B5D086D67}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+      "sha256": "1505ec0b2283f13116a7b5276e859235389f5c11c67344fb76eee7e259578c76",
+      "encoding": "cp932",
+      "review": "Read ground alignment, inclusive replacement, half-open removal, charged car skips and repeated cumulative spend inside loop.",
+      "bindings": [
+        {
+          "symbol": "canBeBuilt",
+          "line": 88,
+          "text": "\t\tpublic override bool canBeBuilt( Location from, Location to ) {"
+        },
+        {
+          "symbol": "cost += GARAGERAILROAD_DESTRUCTION_UNIT_COST",
+          "line": 145,
+          "text": "                    cost += GARAGERAILROAD_DESTRUCTION_UNIT_COST;"
+        },
+        {
+          "symbol": "AccountGenre.RAIL_SERVICE.spend( cost )",
+          "line": 131,
+          "text": "            AccountGenre.RAIL_SERVICE.spend( cost );"
+        },
+        {
+          "symbol": "6500000",
+          "line": 202,
+          "text": "\t\tprivate const int GARAGERAILROAD_CONSTRUCTION_UNIT_COST = 6500000;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 8,
+          "text": "\t<contribution type=\"contribution\" id=\"{59465CA9-C45E-4D11-8D57-95088E16E0F1}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/MenuContributionImpl.cs",
+      "sha256": "3cdefa5a0d01f79af577027690ac777ba399f515c8de0934e70598aa514586b0",
+      "encoding": "cp932",
+      "review": "Read reachable menu and localization scope.",
+      "bindings": [
+        {
+          "symbol": "SignalRailController",
+          "line": 24,
+          "text": "\t\t\tSignalRailController.create();"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+      "sha256": "ab5abac8f359966a3ee3a5b9b1e07c6f8b5921b3206f9a1751c320d3f7c3555d",
+      "encoding": "utf-8-sig",
+      "review": "Read type/side/direction sprite loading, four frames and pass predicate.",
+      "bindings": [
+        {
+          "symbol": "needsToDrawAfter",
+          "line": 46,
+          "text": "\t\tpublic bool needsToDrawAfter( Direction d ) {"
+        },
+        {
+          "symbol": "getSprite",
+          "line": 21,
+          "text": "\t\t\tSpriteFactory spriteFactory = SpriteFactory.getSpriteFactory(e);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContributionFactory.cs",
+      "sha256": "ca2bb0aaa5278b0b9da058dad2f683cef849e202b18474b28b3fba379a59bd69",
+      "encoding": "utf-8-sig",
+      "review": "Read exact portable-handler registration boundary.",
+      "bindings": [
+        {
+          "symbol": "RailSignalContribution",
+          "line": 8,
+          "text": "\t/// Loader of RailSignalContribution"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.cs",
+      "sha256": "1e899441f1587d6be3bbb7f4cfbb543a8fa4ee5f996e12601bb3968396ca0273",
+      "encoding": "cp932",
+      "review": "Read cardinal selection, empty/normal replacement, errors and missing domain car guard.",
+      "bindings": [
+        {
+          "symbol": "tv.railRoad is SingleRailRoad",
+          "line": 222,
+          "text": "\t\t\t\tif(tv.railRoad==null || tv.railRoad is SingleRailRoad)"
+        },
+        {
+          "symbol": "new SignalRailRoad",
+          "line": 223,
+          "text": "\t\t\t\t\tnew SignalRailRoad(tv,currentType,currentDirection);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+      "sha256": "630c218420cd62c480995b8394237ff91ae151c6417c5daa225968d32e60bfd1",
+      "encoding": "cp932",
+      "review": "Read actual inverse-named draw dispatch, train protection, restoration and no spend caller.",
+      "bindings": [
+        {
+          "symbol": "needsToDrawAfter",
+          "line": 38,
+          "text": "\t\t\tif(!type.needsToDrawAfter(direction))"
+        },
+        {
+          "symbol": "this.voxel.car != null",
+          "line": 50,
+          "text": "            if (this.voxel.car != null) {                                       // 同一ボクセル内に列車がいる場合"
+        },
+        {
+          "symbol": "new SingleRailRoad",
+          "line": 55,
+          "text": "            new SingleRailRoad( voxel, pattern );"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"specialRail\" id=\"{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"picture\" id=\"{98619BD4-46C3-4B91-85FF-11147914F2A5}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "sha256": "1a53d45e25704b8667ed02160e41fcd62f29f040b6d2ba8555c8c0beccd4e236",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 9,
+          "text": "\t<contribution type=\"picture\" id=\"{D7F7DC27-6506-49A6-B63A-961EE8DE258B}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "encoding": "cp932",
+      "review": "Read exact contribution IDs, metadata, prices, sizes and handler bindings; P2 recipes remain separate.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 9,
+          "text": "\t<contribution type=\"picture\" id=\"{54253599-5218-4EE7-828D-563A1D91FE63}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "encoding": "cp932",
+      "review": "Read menu initialization/account genre registration and exact IDs.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 21,
+          "text": "\t<contribution type=\"contribution\" id=\"{312E3101-E7A6-4276-8AC9-617FA6D7ADEA}\">"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "normal-route",
+      "owner": "P4-06/07/09",
+      "sources": [
+        "core/world/rail/SingleRailRoad.cs",
+        "core/controllers/Disambiguators.cs"
+      ],
+      "decisions": [
+        "RAIL-D001",
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D008",
+        "RAIL-D013"
+      ],
+      "legality": "Same Z sign-vector route, inclusive. Usable first point: rail or z<=ground. Reject invalid pattern, car, protected/nonreclaimable obstruction, ground<=z<=water when ground<water. Existing middle rail cannot take two edges.",
+      "mutation": "Reclaim eligible whole entities, create rail or attach one endpoint edge; best-effort piers only on newly created rail. No preview side effects.",
+      "booking": "RAIL_SERVICE sum(6000000*M(z-ground)+entityValue per quoted reclaimable cell), including existing endpoint attachment; M(h)=-2h if negative else h+1.",
+      "removal": "Inclusive normal removal; count any unoccupied rail even no-op subtype/edge. Spend count*2000000*(abs(endZ-water)+1); then subtype detach and source support teardown for every visited cell regardless of pier owner (owner-confirmed D006).",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "attachment-detachment",
+      "owner": "P4-06",
+      "sources": [
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/RailRoad.cs",
+        "core/world/rail/SpecialPurposeRailRoad.cs"
+      ],
+      "decisions": [
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D013"
+      ],
+      "legality": "Existing edge succeeds. Well-connected requires two reciprocal same-Z neighbors. Normal pair: new-edge angle1/3/4 to both if well-connected; otherwise >=3 to at least one. Other subtypes only existing edges.",
+      "mutation": "Well-connected normal becomes matching junction; open pair retains first qualifying dir1 else dir2. Direction scans low/high index.",
+      "booking": "No standalone spend; normal-route callers charge inclusive attachment/removal even if unchanged.",
+      "removal": "Single clears on either matched edge. Junction two matches clears, one converts to remaining normal pair, zero no-op. Slope/special detach no-op.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "slope",
+      "owner": "P4-10/11",
+      "sources": [
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D007",
+        "RAIL-D013"
+      ],
+      "legality": "Cardinal, baseZ+1 within ceiling; four XY positions with both Z levels empty, including no Traffic. Removal checks four car locations and owning ramp validity, second rail zdiff=1/zangle.",
+      "mutation": "Four rails at base+i*d+(0,0,i//2), fillers above i0/1 and walls/supports below i2/3. Per-column baseZ<ground chooses underground art; stored ground flags. Elect directional-style piers.",
+      "booking": "RAIL_SERVICE build 40000000*M(baseZ-water); remove 8000000*(abs(baseZ+1-water)+1). No generic entity-removal charge.",
+      "removal": "Slope tool resolves member to base, clears four rails/paired cells and piers under base. SlopeEntity.remove scans its cube and excludes piers; source slope-tool support teardown remains owner-agnostic under owner-confirmed D006.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "piers",
+      "owner": "P4-07/10/12/13",
+      "sources": [
+        "core/world/rail/BridgePierVoxel.cs"
+      ],
+      "decisions": [
+        "RAIL-D006",
+        "RAIL-D007"
+      ],
+      "legality": "Election scans z0..railZ-1; any occupied voxel prevents piers but does not reject track.",
+      "mutation": "Create ground..railZ-1 with selected top/body style and owner; ordinary/girder default, slope N/E default S/W slope.",
+      "booking": "No separate spend; rail operation charge applies.",
+      "removal": "Delete every BridgePierVoxel in the same XY column z0..railZ-1 regardless of owner, as confirmed by the owner in D006. Preview every affected pier/owner; preserve non-pier occupants and owning rails/entities. No owner-only restriction or new full-ramp cleanup.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "bridge",
+      "owner": "P4-12",
+      "sources": [
+        "core/world/rail/BridgeRail.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "legality": "Different points, cardinal straight fixed-Z selection; empty or Traffic with both axis edges. No actual water requirement. Car replacement protection is service fence.",
+      "mutation": "Leave compatible rails; create Begin then Middle/End for new runs. Single new cell Begin. Alternating new-cell piers; existing rail resets run but not pier toggle.",
+      "booking": "RAIL_SERVICE all inclusive cells build6000000*M(z-ground), remove2000000*M(z-ground), even unchanged/wrong subtype/train skips. Both quotes early-return0 on starting-cell underwater condition.",
+      "removal": "Inclusive, matching BridgeRail/axis only; TrainCar skips, charge still includes it; clear rail and source support teardown (D006).",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "girder",
+      "owner": "P4-13",
+      "sources": [
+        "core/world/rail/StealSupportedRailContributionImpl.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "legality": "Eight-way straight fixed-Z, each cell above local ground; empty or Traffic with both axis edges.",
+      "mutation": "New cells RailImpl/default piers; existing compatible rails stay. Sprite axis0/1/2/3 ->3/1/0/2; before pass only.",
+      "booking": "Same all-inclusive ground-relative6000000/2000000 formulas and first-cell water early-zero as bridge.",
+      "removal": "Inclusive matching RailImpl/axis; TrainCar skips but is charged; source pier teardown (D006).",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "tunnel",
+      "owner": "P4-14",
+      "sources": [
+        "core/world/rail/TunnelRail.cs",
+        "core/world/terrain/MountainVoxel.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "legality": "Different points cardinal straight fixed-Z, z>=water, at least one actual Mountain. Other occupied cells must be Traffic with compatible axis rail.",
+      "mutation": "Save four Mountain offsets, replace with TunnelRail; other empty route cells become SingleRailRoad; existing rails stay. Ground unchanged; trees/ownership/overlay lost.",
+      "booking": "RAIL_SERVICE12000000 per newly created cell inclusive; removal4000000 per matching tunnel actually restored, excluding endpoint and TrainCar skips.",
+      "removal": "[from,to), matching tunnel/axis only, skip TrainCar; restore unowned undecorated Mountain from saved offsets. Ordinary gap rails and final destination stay (GEO-006).",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "garage",
+      "owner": "P4-15",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D010",
+        "RAIL-D013"
+      ],
+      "legality": "Different points cardinal straight fixed-Z, actual ground equality every cell; empty or compatible Traffic rail. Reject car replacement at service boundary.",
+      "mutation": "Replace every inclusive cell with GarageRail, preserving Traffic components, axis front/back sprites; no maintenance mechanic.",
+      "booking": "RAIL_SERVICE6500000 per inclusive build cell. Half-open removal: matching axis garage increments subtotal200000 even when car blocks conversion; spend current subtotal on EVERY visited iteration.",
+      "removal": "[from,to), convert matching garage to normal rail unless any car. Endpoint stays. Three selected cells/two matching visits spend200000+400000=600000, source retained.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "signal",
+      "owner": "P4-16",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+      ],
+      "decisions": [
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D011"
+      ],
+      "legality": "Four directions and exact bundled type. Empty/Traffic no rail or SingleRailRoad accepted, other subtypes/nonTraffic rejected. Add planned car fence.",
+      "mutation": "Replace rail with chosen straight signal/type/direction. needsToDrawAfter true draws signal in before pass; false in after. P5 gets harbor/controller boundary.",
+      "booking": "No source spend on placement/removal; not contribution-price-derived.",
+      "removal": "Any car rejects removal; restore SingleRailRoad with signal pattern. No passenger exchange implied.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "pole",
+      "owner": "P4-17",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPole.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/RemoverImpl.cs"
+      ],
+      "decisions": [
+        "RAIL-D003",
+        "RAIL-D011"
+      ],
+      "legality": "Traffic rail with exactly two opposite cardinal edges, subtype-independent. Existing accessory/car not excluded by source.",
+      "mutation": "Infer N/S versus E/W from rail pattern; replace one accessory slot, no simulated electrification; non-null replacement does not invoke old onRemoved.",
+      "booking": "No build/remove spend caller, despite price-capable base and native cost control.",
+      "removal": "Remove any ElectricPole regardless selected type by accessory=null; callback invoked, rail/road/car preserved.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "stationary-accessory",
+      "owner": "P4-18/P7",
+      "sources": [
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D014",
+        "RAIL-D013"
+      ],
+      "legality": "Full exclusive footprint and height, equal ground across base, reclaimable player occupants. Invisible upper voxels occupy. Active menu uses FixedSizeStructController, not inverted separate builder.",
+      "mutation": "Create pending ConstructionSite then completed owned/nonreclaimable/value0 RailStationaryStructure. Preserve site progress/completion/cancel boundary with P7 shared consumer.",
+      "booking": "Completion constructor spends type.price to RAIL_SERVICE; completed removal spends500000*sizeX*sizeY to SUBSIDIARIES. Site cancellation does not invoke completion price.",
+      "removal": "Select actual structure independent of current catalog type, remove full footprint. Protect canonical dependencies. Pending-site cancellation clears callback/state; no instant completion adaptation authorized.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "speed-limit-flat",
+      "owner": "P4-19",
+      "sources": [
+        "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "core/world/rail/SpeedLimit.cs"
+      ],
+      "decisions": [
+        "RAIL-D001",
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D012"
+      ],
+      "legality": "Inclusive same-Z sign-vector/RailPattern route; TrafficVoxel at every selected location, not necessarily rail. Reject any overlap across all three lists. Coincident selection empty.",
+      "mutation": "Add selected Low/Medium/Fast membership using Hashtable keys, dedup within chosen list. No world geometry/clock change.",
+      "booking": "Zero, no source spend.",
+      "removal": "Remove one occurrence per selected key from all three lists. Cleanup only locations with no TrafficVoxel, not every rail-less location.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "speed-limit-slope",
+      "owner": "P4-19",
+      "sources": [
+        "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "core/world/rail/SpeedLimit.cs",
+        "core/world/rail/Train.cs"
+      ],
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D012"
+      ],
+      "legality": "Cardinal four locations base+i*d+(0,0,i//2), each Traffic, no overlap. Source guard does not require SlopeRailRoad at placement.",
+      "mutation": "Append four entries to selected list (ArrayList path). Persist per-world list state initialized without opening menu. P5 gets prior-head-location numeric equality timing.",
+      "booking": "Zero, no source spend.",
+      "removal": "Resolve clicked slope member/base and validate owning direction before selection; remove one occurrence in all lists; absent-Traffic cleanup as flat path.",
+      "status": "source-contract-specified"
+    },
+    {
+      "id": "crossing",
+      "owner": "P4-20/P7",
+      "sources": [
+        "core/world/Traffic.cs",
+        "core/world/RRCrossing.cs"
+      ],
+      "decisions": [
+        "RAIL-D005",
+        "RAIL-D008",
+        "RAIL-D011"
+      ],
+      "legality": "Source allows rail+road coexistence. Crossing requires exactly two opposite cardinal rail edges plus perpendicular road edges, and empty accessory slot for creation.",
+      "mutation": "Auto-create RRCrossing if conditions/empty slot; remove only crossing when conditions lost. Existing pole suppresses crossing; no added general road-conflict rule.",
+      "booking": "No separate source crossing charge; rail/road owning operation booking applies.",
+      "removal": "Remove crossing as conditions disappear; preserve unrelated road/car/accessory components. Road/train/platform fixtures are trusted P4 interface evidence, not later gameplay delivery.",
+      "status": "source-contract-specified"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "RAIL-D001",
+      "status": "existing-plan-adaptation",
+      "legacyFinding": "GEO-003",
+      "owner": "P4-06",
+      "disposition": "Reject coincident normal-rail commits before direction access; retain normal empty zero preview. Speed-limit flat selection retains its empty no-op.",
+      "authorization": "P4 execution checklist and existing P1/P3 authority/safety contracts",
+      "operations": [
+        "normal-route",
+        "speed-limit-flat"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SpeedLimit.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "plugins/SpeedLimit/SpeedLimitRailRoadController.cs"
+      ],
+      "sha256": "c46d2b02f183ab167ee2672bae94dd5cd76751ba5942d83388e42e64a610e7aa"
+    },
+    {
+      "id": "RAIL-D002",
+      "status": "existing-plan-adaptation",
+      "legacyFinding": null,
+      "owner": "P4-02/04",
+      "disposition": "Carry P1 checked coordinates; widen before products, checked Int64 totals/cash, reject invalid or over-budget work atomically.",
+      "authorization": "P4 execution checklist and existing P1/P3 authority/safety contracts",
+      "operations": [
+        "normal-route",
+        "slope",
+        "bridge",
+        "girder",
+        "tunnel",
+        "garage",
+        "stationary-accessory",
+        "speed-limit-flat",
+        "speed-limit-slope"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/SpeedLimit.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs",
+        "core/world/rail/Train.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+        "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+      ],
+      "sha256": "866ab896f1138b8bc4bc4800a4f26a0470c266cb6c0bb7ad71415b9d10f67c3e"
+    },
+    {
+      "id": "RAIL-D003",
+      "status": "existing-plan-adaptation",
+      "legacyFinding": null,
+      "owner": "P4-09/12–19",
+      "disposition": "Quote actual snapped operation mutation/booking, not inherited road quote.",
+      "authorization": "P4 execution checklist and existing P1/P3 authority/safety contracts",
+      "operations": [
+        "normal-route",
+        "slope",
+        "bridge",
+        "girder",
+        "tunnel",
+        "garage",
+        "signal",
+        "pole",
+        "stationary-accessory",
+        "speed-limit-flat",
+        "speed-limit-slope"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/SpeedLimit.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs",
+        "core/world/rail/Train.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+        "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPole.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/RemoverImpl.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "sha256": "de1a20f791f27c0140d4f215990244b45350339e1141839b0df342d425ffb8ba"
+    },
+    {
+      "id": "RAIL-D004",
+      "status": "retain-source",
+      "legacyFinding": "GEO-006",
+      "owner": "P4-14/15",
+      "disposition": "Keep inclusive builds and operation-specific removal endpoints: tunnel/garage exclude destination.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "bridge",
+        "tunnel",
+        "garage"
+      ],
+      "sources": [
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+      ],
+      "sha256": "25c1956d62c57e295843adeb88cf04efcb7a47cd34f962da72ad1c03d12dbfc4"
+    },
+    {
+      "id": "RAIL-D005",
+      "status": "existing-plan-adaptation",
+      "legacyFinding": null,
+      "owner": "P4-06–20",
+      "disposition": "Keep source local removal skips and no-op charges; enforce planned car protection before replacement and atomic publication.",
+      "authorization": "P4 execution checklist and existing P1/P3 authority/safety contracts",
+      "operations": [
+        "normal-route",
+        "attachment-detachment",
+        "slope",
+        "bridge",
+        "girder",
+        "tunnel",
+        "garage",
+        "signal",
+        "stationary-accessory",
+        "crossing"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/RRCrossing.cs",
+        "core/world/Traffic.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/RailRoad.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/SpecialPurposeRailRoad.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "sha256": "3ddd0f9827d307c13e5ce00f7ad9cf2e93e4e2d89060a52f703f3070cefd6ee4"
+    },
+    {
+      "id": "RAIL-D006",
+      "status": "retain-source",
+      "legacyFinding": "GEO-004",
+      "owner": "P4-07/10/20",
+      "disposition": "Source deletes all piers below regardless of owner. Owner confirmed retaining this behavior on 2026-10-30 to avoid hard-to-understand stuck states for operators; owner-only teardown is rejected. Preview all affected piers and remove them atomically at source call sites. SlopeEntity.remove still excludes piers; no new full-ramp ownership cleanup is authorized.",
+      "authorization": "Explicit owner instruction, 2026-10-30: allow source deletion of all piers below regardless of owner.",
+      "ownerDecision": {
+        "decidedOn": "2026-10-30",
+        "choice": "retain-source-owner-agnostic-teardown",
+        "reason": "Avoid hard-to-understand stuck states for operators."
+      },
+      "operations": [
+        "normal-route",
+        "attachment-detachment",
+        "slope",
+        "piers",
+        "bridge",
+        "girder"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/world/rail/BridgePierVoxel.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/RailRoad.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/SpecialPurposeRailRoad.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs"
+      ],
+      "sha256": "37c838d6fe7298d523946d73abb1741bbec68292006ccd71b65c6c1268047771"
+    },
+    {
+      "id": "RAIL-D007",
+      "status": "retain-source",
+      "legacyFinding": "EXAV-DEP-005/007",
+      "owner": "P4-10/11",
+      "disposition": "Store creation-time HoleVoxel flags, per-position art, and distinct Mountain/pier cut semantics; no recomputation after terrain edits.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "slope",
+        "piers"
+      ],
+      "sources": [
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/world/rail/BridgePierVoxel.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/SlopeRailRoad.cs"
+      ],
+      "sha256": "70093c6482bf1ec44c0bfc99c12f59f80e0a16d223117c536e9fef5a3b21a8b2"
+    },
+    {
+      "id": "RAIL-D008",
+      "status": "retain-source",
+      "legacyFinding": null,
+      "owner": "P4-20/P7",
+      "disposition": "Retain source road coexistence/TODO and conditional crossing; no new blanket road-conflict rule.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "normal-route",
+        "crossing"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/world/RRCrossing.cs",
+        "core/world/Traffic.cs",
+        "core/world/rail/SingleRailRoad.cs"
+      ],
+      "sha256": "7967bdb8d9fa8f768ae2f9c79352dbc771f0e3c31232e22b1a2a8a117963530a"
+    },
+    {
+      "id": "RAIL-D009",
+      "status": "retain-source",
+      "legacyFinding": null,
+      "owner": "P4-12–14",
+      "disposition": "Retain bridge/girder all-inclusive-cell charging and first-cell water early-zero, tunnel new-cell charging.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "bridge",
+        "girder",
+        "tunnel"
+      ],
+      "sources": [
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/terrain/MountainVoxel.cs"
+      ],
+      "sha256": "cdf6fe084b9a4f8247fe3d95fdaa71cc832496293321f558107d52216ca25908"
+    },
+    {
+      "id": "RAIL-D010",
+      "status": "retain-source",
+      "legacyFinding": null,
+      "owner": "P4-15",
+      "disposition": "Retain half-open garage removal and running subtotal spending on every iteration, including charged occupied skips.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "garage"
+      ],
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+      ],
+      "sha256": "7ca0da6375fb03c092011cef5554757ca8278e7898c564cf176339afb5c39bca"
+    },
+    {
+      "id": "RAIL-D011",
+      "status": "retain-source",
+      "legacyFinding": "GEO-007",
+      "owner": "P4-16/17",
+      "disposition": "Retain actual inverse-named signal draw dispatch, zero signal/pole spend and pole slot replacement semantics.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "signal",
+        "pole",
+        "crossing"
+      ],
+      "sources": [
+        "core/world/RRCrossing.cs",
+        "core/world/Traffic.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPole.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.electricPole/src/RemoverImpl.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailController.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "sha256": "17427c3ef4d0281eb31e27859f9a03cc756f06beeef610dc167c35abef85387b"
+    },
+    {
+      "id": "RAIL-D012",
+      "status": "existing-plan-adaptation",
+      "legacyFinding": "EXAV-DEP-011",
+      "owner": "P4-19",
+      "disposition": "World-owned startup initialization independent of native menu; retain Traffic-only eligibility and list rules.",
+      "authorization": "P4 execution checklist and existing P1/P3 authority/safety contracts",
+      "operations": [
+        "speed-limit-flat",
+        "speed-limit-slope"
+      ],
+      "sources": [
+        "core/world/rail/SpeedLimit.cs",
+        "core/world/rail/Train.cs",
+        "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+        "plugins/SpeedLimit/SpeedLimitSlopeController.cs"
+      ],
+      "sha256": "04e6d549a90581071444403b9505c75d6e567224f8fe2059b70bba459719a5cd"
+    },
+    {
+      "id": "RAIL-D013",
+      "status": "retain-source",
+      "legacyFinding": null,
+      "owner": "P4-04/P8",
+      "disposition": "Keep 15bn cash and default 10bn bankruptcy rescue, no affordability guard/no authoring exemption; reject unsafe config/overflow under D002.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "normal-route",
+        "attachment-detachment",
+        "slope",
+        "bridge",
+        "girder",
+        "tunnel",
+        "garage",
+        "stationary-accessory"
+      ],
+      "sources": [
+        "core/controllers/Disambiguators.cs",
+        "core/controllers/rail/SlopeRailRoadController.cs",
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/rail/BridgeRail.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/RailPattern.cs",
+        "core/world/rail/RailRoad.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/rail/SingleRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/SpecialPurposeRailRoad.cs",
+        "core/world/rail/StealSupportedRailContributionImpl.cs",
+        "core/world/rail/TunnelRail.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs",
+        "core/world/terrain/MountainVoxel.cs",
+        "plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs",
+        "core/world/accounting/AccountManager.cs",
+        "core/world/accounting/AccountGenre.cs",
+        "core/framework/GlobalOptions.cs",
+        "core/framework/Core.cs"
+      ],
+      "sha256": "7d2861500940f5a90a07b4ae8516037db33dbb97044a3676826a3d22bb170921"
+    },
+    {
+      "id": "RAIL-D014",
+      "status": "retain-source",
+      "legacyFinding": null,
+      "owner": "P4-18/P7",
+      "disposition": "Keep stationary site/completion timing and inherited SUBSIDIARIES demolition; do not infer instantaneous construction from prepared art.",
+      "authorization": "pinned source; semantic correction not authorized",
+      "operations": [
+        "stationary-accessory"
+      ],
+      "sources": [
+        "core/controllers/rail/StationaryStructPlacementController.cs",
+        "core/controllers/structs/FixedSizeStructController.cs",
+        "core/world/rail/RailStationaryStructure.cs",
+        "core/world/structs/ConstructionSite.cs",
+        "core/world/structs/PThreeDimStructure.cs",
+        "core/world/structs/Structure.cs"
+      ],
+      "sha256": "0491a0c1cda1a0b4756aafeccc167ca992a768af1ac6fc449e16326f8e618d20"
+    }
+  ],
+  "workflowMappings": [
+    {
+      "id": "rail",
+      "operations": [
+        "normal-route",
+        "attachment-detachment",
+        "piers"
+      ],
+      "requirements": [
+        "CORE-03",
+        "CORE-06",
+        "EXAV-11",
+        "EXAV-13",
+        "MAN-T02",
+        "MAN-M03",
+        "MAN-W01",
+        "MAN-W02",
+        "MAN-A03",
+        "MAN-A14",
+        "DEV-P24",
+        "DEV-P28"
+      ],
+      "owner": "P4-06–09",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "slope",
+      "operations": [
+        "slope",
+        "piers"
+      ],
+      "requirements": [
+        "CORE-03",
+        "CORE-06",
+        "EXAV-11",
+        "EXAV-13",
+        "MAN-T03",
+        "MAN-W02",
+        "MAN-A04",
+        "MAN-E12",
+        "DEV-P26",
+        "DEV-P28"
+      ],
+      "owner": "P4-10/11",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "special",
+      "operations": [
+        "bridge",
+        "girder",
+        "tunnel",
+        "garage"
+      ],
+      "requirements": [
+        "CORE-03",
+        "CORE-06",
+        "EXAV-11",
+        "EXAV-13",
+        "MAN-M03",
+        "MAN-W02",
+        "MAN-A04",
+        "MAN-E12",
+        "DEV-P14",
+        "DEV-P24"
+      ],
+      "owner": "P4-12–15",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "signal",
+      "operations": [
+        "signal"
+      ],
+      "requirements": [
+        "CORE-03",
+        "EXAV-11",
+        "EXAV-13",
+        "MAN-M03",
+        "MAN-E12",
+        "MAN-A12",
+        "DEV-P08",
+        "DEV-P11"
+      ],
+      "owner": "P4-16/P5",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "pole",
+      "operations": [
+        "pole"
+      ],
+      "requirements": [
+        "CORE-03",
+        "EXAV-11",
+        "MAN-M03",
+        "MAN-A12",
+        "DEV-P06",
+        "DEV-P10"
+      ],
+      "owner": "P4-17",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "accessory",
+      "operations": [
+        "stationary-accessory"
+      ],
+      "requirements": [
+        "CORE-06",
+        "EXAV-11",
+        "EXAV-13",
+        "MAN-T05",
+        "MAN-M03",
+        "MAN-A12",
+        "DEV-P12",
+        "DEV-P26",
+        "DEV-P28"
+      ],
+      "owner": "P4-18/P7",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "speed-limit",
+      "operations": [
+        "speed-limit-flat",
+        "speed-limit-slope"
+      ],
+      "requirements": [
+        "CORE-06",
+        "EXAV-09",
+        "EXAV-13",
+        "EXAV-ACTION-003",
+        "MAN-M03",
+        "MAN-A12",
+        "MAN-A16",
+        "DEV-P08"
+      ],
+      "owner": "P4-19/P5",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    },
+    {
+      "id": "crossing",
+      "operations": [
+        "crossing"
+      ],
+      "requirements": [
+        "CORE-03",
+        "EXAV-13",
+        "MAN-E05",
+        "MAN-E11",
+        "MAN-E12",
+        "MAN-A14",
+        "DEV-P13",
+        "DEV-P28"
+      ],
+      "owner": "P4-20/P7",
+      "actionDocument": "doc/web-parity-actions.md#p4-01-railway-workflow-bindings",
+      "manualDocument": "doc/web-parity-manual.md#p4-01-railway-source-reconciliation"
+    }
+  ],
+  "contributions": [
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:2:{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+      "source": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "id": "{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+      "type": "electricPole",
+      "nameJa": "両柱(1)",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-17",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:3:{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+      "source": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "id": "{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+      "type": "electricPole",
+      "nameJa": "両柱(2)",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-17",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:4:{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+      "source": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "id": "{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+      "type": "electricPole",
+      "nameJa": "片柱(1)",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-17",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:5:{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+      "source": "plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "id": "{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+      "type": "electricPole",
+      "nameJa": "片柱(2)",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.pole.ElectricPoleContribution",
+        "codebase": "bin/FreeTrain.ElectricPole.dll",
+        "assembly": "FreeTrain.ElectricPole",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/FreeTrain.ElectricPole.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/src/ElectricPoleContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-17",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.garage:0:{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "source": "plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "id": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "type": "specialRail",
+      "nameJa": null,
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.garage.TrainGarageContributionImpl",
+        "codebase": "bin/FreeTrain.TrainGarage.dll",
+        "assembly": "FreeTrain.TrainGarage",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-12–15",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:2:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "source": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "id": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "type": "railSignal",
+      "nameJa": "三灯式",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-16",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:3:{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "source": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "id": "{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "type": "railSignal",
+      "nameJa": "入替信号",
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-16",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:0:{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "id": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "type": "specialRail",
+      "nameJa": null,
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.BridgeRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/BridgeRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-12–15",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:1:{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "id": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "type": "specialRail",
+      "nameJa": null,
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.StealSupportedRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/StealSupportedRailContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-12–15",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:2:{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "id": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "type": "specialRail",
+      "nameJa": null,
+      "price": null,
+      "size": null,
+      "height": null,
+      "handler": {
+        "name": "freetrain.world.rail.TunnelRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/TunnelRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-12–15",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:1:{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:2:{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:3:{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:4:{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:5:{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:6:{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:7:{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:8:{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:9:{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:10:{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:11:{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:12:{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:13:{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:14:{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:15:{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:16:{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:18:{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:19:{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:20:{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:21:{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:22:{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:23:{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:24:{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:25:{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:26:{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:27:{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:28:{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:29:{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:30:{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:31:{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:32:{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:33:{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:35:{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:36:{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:37:{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:38:{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:39:{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:40:{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:42:{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:43:{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:44:{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:45:{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:46:{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:47:{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:49:{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:50:{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:51:{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:52:{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:53:{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:54:{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+      "source": "plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "id": "{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "2",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.c915:1:{6EFAC132-DEAF-4989-BDE4-5865B1669986}",
+      "source": "plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "id": "{6EFAC132-DEAF-4989-BDE4-5865B1669986}",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.c915:2:{FB233435-5BA0-4699-8CB8-F6D0E435BF4F}",
+      "source": "plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "id": "{FB233435-5BA0-4699-8CB8-F6D0E435BF4F}",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "100000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:1:{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+      "source": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "id": "{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "3000000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:2:{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+      "source": "plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "id": "{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+      "type": "railStationary",
+      "nameJa": null,
+      "price": "1000000",
+      "size": "1,1",
+      "height": "1",
+      "handler": {
+        "name": "freetrain.contributions.rail.RailStationaryContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/rail/RailStationaryContribution.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "owner": "P4-18",
+      "status": "source-bound-runtime-unimplemented"
+    }
+  ],
+  "approvalGates": [],
+  "laterConsumers": {
+    "P5": "guide/zdiff, protected car occupancy, signal controller identity/harbor stop, prior-head speed-limit timing; no moving train completion",
+    "P6": "platform/host/cosmetic passageway, not P4 generic railway accessory",
+    "P7": "road components/crossing and shared ConstructionSite lifecycle; no instant completed accessory authorization",
+    "P8": "durable source genres/cash/rescue/transactions now, finance/report closure later",
+    "optional": "Only explicit reviewed portable handlers grant behavior support; separate pack/resource/permission gates unchanged"
+  },
+  "reviewSha256": "4258e9b61fb642f717c40f2163250d1735bc095e315da41372dc1ebd54db00c9"
+}

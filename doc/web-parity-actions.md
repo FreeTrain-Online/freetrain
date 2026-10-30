@@ -1,5 +1,10 @@
 # ExAV player action reassessment
 
+**P4-01 source contract — 30 October 2026:** [Railway operation contracts,
+decisions and source/text evidence](web-parity-railway-contract.md) refine the
+railway routes below. No live railway operation is enabled; P4-02 fixtures are
+next. See the [reciprocal railway bindings](#p4-01-railway-workflow-bindings).
+
 **Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
 
 **P0-03 workflow/scope reconciliation complete — 20 October 2026.** Current
@@ -410,3 +415,40 @@ left button is held. It is a new gesture extension of `terrain-action`,
 stop action. Ordinary Shift strokes keep their preview/confirmation behavior.
 EN/JA help explains immediate changes, possible forest/ownership loss and stop
 conditions; numeric coordinates preserve the keyboard alternative.
+
+## P4-01 railway workflow bindings
+
+The [railway contract](web-parity-railway-contract.md) and
+[hashed review](parity/railway-review.json) own legality, actual mutation/booking
+and subtype removal. CORE-03/06, EXAV-09/11/13 and the existing action map retain
+these feature destinations; source-only specification is not operation delivery.
+The [manual overlay](web-parity-manual.md#p4-01-railway-source-reconciliation)
+contains the reciprocal assignments.
+
+| Family / P4 operation records | Requirements and historical developer scope | Source consumer / destination |
+| --- | --- | --- |
+| rail: normal-route, attachment-detachment, piers | CORE-03, CORE-06, EXAV-11, EXAV-13; MAN-T02/M03/W01/W02/A03/A14; DEV-P24 costs, DEV-P28 voxel bounds | RailRoadController → SingleRailRoad/JunctionRailRoad/BridgePierVoxel; P4-06–09 |
+| slope: slope, piers | CORE-03, CORE-06, EXAV-11, EXAV-13; MAN-T03/W02/A04/E12; DEV-P26 sprites, DEV-P28 bounds | SlopeRailRoadController → SlopeEntity/eight cells/stored flags; P4-10/11 |
+| special: bridge, girder, tunnel, garage | CORE-03, CORE-06, EXAV-11, EXAV-13; MAN-M03/W02/A04/E12; DEV-P14 special rails, DEV-P24 costs | SpecialPurposeRailController/AbstractLineController → four concrete contribution handlers; P4-12–15. Road-derived native quote is not authoritative. |
+| signal: signal | CORE-03, EXAV-11, EXAV-13; MAN-M03/E12/A12; DEV-P08 menus, DEV-P11 signal loader/side | SignalRailController → SignalRailRoad/RailSignalContribution; P4-16, P5 controller boundary |
+| pole: pole | CORE-03, EXAV-11; MAN-M03/A12; DEV-P06 poles, DEV-P10 pictures | ElectricPoleContribution builder/remover → TrafficVoxel accessory; P4-17 |
+| accessory: stationary-accessory | CORE-06, EXAV-11, EXAV-13; MAN-T05/M03/A12; DEV-P12 fixed railway structures, DEV-P26/28 sprites/bounds | StationaryStructPlacementController → active FixedSizeStructController → ConstructionSite → RailStationaryStructure; P4-18/P7 shared construction lifecycle |
+| speed-limit: speed-limit-flat, speed-limit-slope | CORE-06, EXAV-09, EXAV-13, EXAV-ACTION-003; MAN-M03/A12/A16; DEV-P08 menu | SpeedLimit menu → flat/slope controllers/manager → per-world lists; P4-19, P5 timing |
+| crossing: crossing | CORE-03, EXAV-13; MAN-E05/E11/E12/A14; DEV-P13 road format boundary, DEV-P28 bounds | TrafficVoxel.shouldHaveCrossing → RRCrossing; P4-20/P7, trusted car/platform interfaces only |
+
+All requirements in the compact table use their full MAN/DEV identifiers in the
+machine review. MAN-T02, MAN-M03, MAN-W01, MAN-W02, MAN-A03, MAN-A14; MAN-T03,
+MAN-A04, MAN-E12; MAN-A12; MAN-T05; MAN-A16; MAN-E05 and MAN-E11 are the explicit
+manual anchors. DEV-P06, DEV-P08, DEV-P10, DEV-P11, DEV-P12, DEV-P13, DEV-P14,
+DEV-P24, DEV-P26 and DEV-P28 keep their historical identities; old prose is
+context/donor material and does not override pinned ExAV callers.
+
+[78 source text dispositions](parity/railway-localization-review.json) preserve
+Japanese line/expression/hash and the existing historical English-donor records.
+Owning slices add/review EN/JA resources and browser-specific cost/skip/loss,
+confirmation and rejection wording; P4-22 closes translation reconciliation.
+Catalog metadata stays under exact P2 contribution identities, including the 64
+bundled definitions enumerated here. No invented web operation ID is registered
+by this review. RAIL-D006/GEO-004 records the owner's 30 October decision to
+retain source deletion of all piers below regardless of owner, with every affected
+pier shown in the authoritative preview; no ownership approval gate remains.
