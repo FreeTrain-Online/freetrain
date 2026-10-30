@@ -1,6 +1,6 @@
 /* Generated from prototype/protocol/schema.json. Run deno task generate:contracts. */
 
-export type GameDocument = WireMessage | SpatialQuery | SpatialPreview;
+export type GameDocument = WireMessage | SpatialQuery | SpatialPreview | CornerTerrainQuery | CornerTerrainPreview;
 export type WireMessage =
   | Join
   | Command
@@ -91,6 +91,10 @@ export type CommandPayload =
       kind: "releaseControl";
       trainId: string;
       leaseId: string;
+    }
+  | {
+      kind: "editCorner";
+      query: CornerTerrainQuery;
     };
 
 export interface Join {
@@ -295,6 +299,21 @@ export interface Command {
   expectedWorldEpoch: Counter;
   payload: CommandPayload;
 }
+export interface CornerTerrainQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  position: Position;
+  action: "raise" | "lower";
+  offsetX: number | null;
+  offsetY: number | null;
+  stroke: CornerTerrainSite[] | null;
+}
+export interface CornerTerrainSite {
+  position: Position;
+  action: "raise" | "lower";
+  offsetX: number | null;
+  offsetY: number | null;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -448,4 +467,62 @@ export interface StoragePosition {
   h: number;
   v: number;
   z: number;
+}
+export interface CornerTerrainPreview {
+  worldEpoch: Counter;
+  geometryRevision: Counter;
+  position: Position;
+  action: "raise" | "lower";
+  legal: boolean;
+  reason:
+    | (
+        | "invalidInput"
+        | "outside"
+        | "unmatchedCorners"
+        | "groundLevel"
+        | "cornerLimit"
+        | "floor"
+        | "occupied"
+        | "roof"
+        | "capacityLimit"
+      )
+    | null;
+  cost: Money;
+  /**
+   * @maxItems 256
+   */
+  changes: CornerTerrainChange[];
+  /**
+   * @maxItems 64
+   */
+  skipped: CornerTerrainSkip[];
+}
+export interface CornerTerrainChange {
+  position: Position;
+  beforeGround: number;
+  afterGround: number;
+  beforeNE: number;
+  beforeSE: number;
+  beforeSW: number;
+  beforeNW: number;
+  afterNE: number;
+  afterSE: number;
+  afterSW: number;
+  afterNW: number;
+  remove: boolean;
+  losesForest: boolean;
+  losesOwnership: boolean;
+}
+export interface CornerTerrainSkip {
+  position: Position;
+  reason:
+    | "invalidInput"
+    | "outside"
+    | "unmatchedCorners"
+    | "groundLevel"
+    | "cornerLimit"
+    | "floor"
+    | "occupied"
+    | "roof"
+    | "capacityLimit";
 }

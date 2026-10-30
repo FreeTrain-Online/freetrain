@@ -136,6 +136,10 @@ ground, selection at ground, empty or Mountain occupants, corner<4, and forbids
 corner 3→4 when ground is Z-1. Outside neighbors are skipped when raising.
 Saturation raises ground and removes the old mountain.
 
+P3-13 source inspection additionally preserves the helper's four outer-vertex
+checks around that 2×2 (NW/base, NE/north, SE/northeast, SW/east), as well as
+agreement of the edited shared point. See [the editing report](web-parity-corner-terrain.md).
+
 Lowering requires matched corners. An existing base mountain must have its NE
 corner >0. Otherwise source base ground must equal selected z or z-1; z=0 is
 rejected and the working level drops one. Each touching cell must be a mountain

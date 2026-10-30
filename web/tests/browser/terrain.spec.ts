@@ -2,6 +2,7 @@ import {test,expect,type Page} from '@playwright/test';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {ready,openPanel,closePanel} from './ux-helpers.ts';
+const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const boot='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1';
 const state=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 const savedGround=(s:any)=>[...Buffer.from(s.packedTerrain.cells,'base64')].map(n=>n&63);
@@ -423,7 +424,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   await page.getByLabel('川幅（セル）',{exact:true}).fill('9');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('8');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await page.getByLabel('川幅（セル）',{exact:true}).fill('1');
   await page.getByLabel('川の方向',{exact:true}).selectOption('none');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('8');
   await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByLabel('格納奥行（V）',{exact:true}).fill('16');
-  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('形成できません');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.lakeImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByLabel('格納幅（H）',{exact:true}).fill('64');await page.getByLabel('格納奥行（V）',{exact:true}).fill('64');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('1');
   await page.getByLabel('川の方向',{exact:true}).selectOption('northSouth');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('water-metrics')).toContainText('湖：0');
@@ -482,7 +483,7 @@ test('Japanese narrow forests validate species and starting-area failure, invali
   await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('91');await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeDisabled();await page.getByLabel('森林の選択率（0〜90%）',{exact:true}).fill('35');
   await page.getByLabel('格納奥行（V）',{exact:true}).fill('27');await page.getByLabel('高さ（Z）',{exact:true}).fill('32');
   await page.getByLabel('海岸の配置',{exact:true}).selectOption('island');await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('216');
-  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('開始区域が見つかりません');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
+  await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.startingAreaImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('forest-metrics')).toContainText('開始区域：16');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'forests');mkdirSync(directory,{recursive:true});await page.getByLabel('森林の地面表示',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'forest-ja-narrow.png'),fullPage:true});

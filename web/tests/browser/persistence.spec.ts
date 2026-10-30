@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import {mkdtempSync,writeFileSync,truncateSync,rmSync} from 'node:fs';
+import {readFileSync,mkdtempSync,writeFileSync,truncateSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import { ready, openPanel } from './ux-helpers.ts';
+const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=5&contentVersion=prototype-content-1')).json()).snapshot;
 const pause = async(page:any)=>{if(!(await bootstrap(page)).paused)await page.getByRole('button',{name:'Pause',exact:false}).click();};
 
@@ -46,9 +47,9 @@ test('ignored checkpoint diagnostic has a readable Japanese error and disables w
     const page=await context.newPage();
     await page.route('**/api/saves/status',route=>route.fulfill({json:{savingAvailable:false,loadingAvailable:false,startupError:'incompatibleSave'}}));
     await page.goto('/');await ready(page,'ja');await openPanel(page,'saves','ja');
-    await expect(page.getByTestId('startup-save-error')).toContainText('プロトタイプの保存データは読み込めません');
-    await expect(page.getByTestId('saving-unavailable')).toHaveText('この参照ワールドでは保存できません。');
-    await expect(page.getByText('ファイルを選択して互換性を確認します。非対応のデータで現在のゲームが変更されることはありません。',{exact:true})).toBeVisible();
+    await expect(page.getByTestId('startup-save-error')).toContainText(ja.incompatibleSave);
+    await expect(page.getByTestId('saving-unavailable')).toHaveText(ja.savingUnavailable);
+    await expect(page.getByText(ja.loadHint,{exact:true})).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
     await page.screenshot({path:'../tmp/parity-p1/save-policy-ja.png',fullPage:true});
   } finally {await context.close();}

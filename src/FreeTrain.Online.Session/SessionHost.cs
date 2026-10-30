@@ -310,6 +310,7 @@ public sealed partial class SessionHost : IDisposable
                     {
                         switch (queued.Command.Payload)
                         {
+                            case EditCornerCommand edit when edit.Query != null: code = CommitCorner(edit.Query); break;
                             case RunCommand when CanonicalCanAdvance: CanonicalPause(false); break;
                             case RunCommand: code = "invalidInput"; break;
                             case PauseCommand: CanonicalPause(true); break;

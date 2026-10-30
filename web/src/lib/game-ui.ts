@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove';
+export type Tool = 'inspect' | 'build' | 'remove' | 'terrain';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -24,6 +24,7 @@ export const registry = {
   game: { kind: 'menu', menu: 'game', labelKey: 'game', icon: 'window', availability: 'live' },
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
+  terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
   demolish: { kind: 'tool', tool: 'remove', labelKey: 'removeTool', icon: 'cross', availability: 'mutation' },
   inspector: { kind: 'panel', panel: 'inspector', labelKey: 'inspector', icon: 'window', availability: 'live' },
   catalog: { kind: 'panel', panel: 'catalog', labelKey: 'buildings', icon: 'window', availability: 'live' },
@@ -42,6 +43,10 @@ export const registry = {
   'rail-shape': field('trackShape', 'tool-card', 'live'),
   'rail-alignment': field('snapDirection', 'tool-card', 'live'),
   'rail-anchor': action('useAnchor', 'tool-card', 'live'),
+  'terrain-action': field('cornerAction', 'tool-card', 'mutation'),
+  'terrain-preview': action('cornerCheck', 'tool-card', 'mutation'),
+  'terrain-add-site': action('cornerAdd', 'tool-card', 'mutation'),
+  'terrain-confirm': action('confirmTerrain', 'tool-card', 'mutation'),
   confirm: action('confirmTrack', 'tool-card', 'mutation'),
   'cancel-draft': action('cancelPreview', 'tool-card', 'live'),
   controller: field('controller', 'inspector', 'mutation'),
@@ -90,5 +95,6 @@ export type ActionId = keyof typeof registry;
 export const tools = [
   { id: 'inspect', label: registry.inspect.labelKey, icon: '↖' },
   { id: 'build', label: registry.rail.labelKey, icon: '╫' },
+  { id: 'terrain', label: registry.terrain.labelKey, icon: '⛰' },
   { id: 'remove', label: registry.demolish.labelKey, icon: '×' },
 ] as const satisfies readonly { id: Tool; label: keyof typeof messages.en; icon: string }[];

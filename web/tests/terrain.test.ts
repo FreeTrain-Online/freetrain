@@ -67,3 +67,45 @@ Deno.test('terrain upserts keep realized forest edits and forbid reused identiti
   const coalesced={...delta,entities:delta.entities!.map(e=>e.id==='2'?{...e,revision:'2'}:e),revision:'8',terrain:{...delta.terrain!,geometryRevision:'6'}};
   assert(applyDelta(before,coalesced as Delta));
 });
+
+Deno.test('corner legality previews require bounded quarter heights, exact decimal fences and known diagnostics',async()=>{
+  const {parseCornerPreview}=await import('../src/lib/protocol.ts');
+  const result={worldEpoch:'9007199254740993',geometryRevision:'17',position:{x:3,y:3,z:1},action:'raise',legal:true,reason:null,cost:'0',skipped:[],
+    changes:[{position:{x:3,y:3,z:1},beforeGround:1,afterGround:1,beforeNE:0,beforeSE:0,beforeSW:0,beforeNW:0,afterNE:1,afterSE:0,afterSW:0,afterNW:0,remove:false,losesForest:false,losesOwnership:false}]};
+  equal(parseCornerPreview(result),result);
+  rejects(()=>parseCornerPreview({...result,worldEpoch:9007199254740993}));
+  rejects(()=>parseCornerPreview({...result,reason:'silentlyReclaim'}));
+  rejects(()=>parseCornerPreview({...result,cost:'1'}));
+  rejects(()=>parseCornerPreview({...result,legal:false}));
+  rejects(()=>parseCornerPreview({...result,changes:[]}));
+  rejects(()=>parseCornerPreview({...result,changes:[{...result.changes[0],afterNE:5}]}));
+  rejects(()=>parseCornerPreview({...result,changes:Array(257).fill(result.changes[0])}));
+});
+Deno.test('corner preview response from replaced connection or changed geometry never reaches the current draft',async()=>{
+  const {createFixtureService}=await import('../src/lib/session-client.ts');
+  const {createShellModel}=await import('../src/lib/shell-model.ts');
+  const service=createFixtureService();let complete:(result:any)=>void=()=>{};
+  service.publish(await read());
+  const model=createShellModel(()=>({...service.connect(),previewCorner:()=>new Promise(resolve=>{complete=resolve;})}),'en',1);
+  const until=async(test:()=>boolean)=>{while(!test())await new Promise(r=>setTimeout(r,1));};
+  try{
+    await until(()=>model.state.connection==='ready');
+    const query={expectedWorldEpoch:model.state.read!.worldEpoch,expectedGeometryRevision:model.state.read!.terrain!.geometryRevision,position:{x:1,y:1,z:1},action:'raise' as const,offsetX:null,offsetY:null,stroke:null};
+    const pending=model.previewCorner(query,new AbortController().signal).then(()=>false,()=>true);
+    const next=structuredClone(model.state.read) as Snapshot;next.terrain!.geometryRevision=String(BigInt(next.terrain!.geometryRevision)+1n);next.revision=String(BigInt(next.revision)+1n);service.publish(next);
+    complete({});assert(await pending);
+    const second=model.previewCorner({...query,expectedGeometryRevision:next.terrain!.geometryRevision},new AbortController().signal).then(()=>false,()=>true);
+    model.reconnect();await until(()=>model.state.connection==='ready');complete({});assert(await second);
+  }finally{model.dispose();}
+});
+Deno.test('terrain editing uses the source ground ray through water and decorations, respects height cuts and rejects missing ground',async()=>{
+  const {pickTerrainGround}=await import('../src/lib/terrain-edit.ts');
+  const {WorldSpace}=await import('../src/lib/map-geometry.ts');
+  const s=await read(),space=new WorldSpace(s.map.width,s.map.height,s.map.levels);
+  // A flat synthetic grid keeps this oracle independent of drawing and its sprites.
+  s.terrain!.cells=s.terrain!.cells.map(()=>({ground:1,surface:'natural'}));s.terrain!.waterLevel=3;
+  const position=space.location({h:1,v:1,z:1}),q=space.center(position);
+  equal(pickTerrainGround(s,q,s.map.levels-1),position);
+  assert(!pickTerrainGround(s,q,0));
+  assert(!pickTerrainGround(s,{x:-99999,y:-99999},s.map.levels-1));
+});

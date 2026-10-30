@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "P3-13-functional-slice-complete; final editing-capacity gate open",
+  "basedOnGitRevision": "e1db98a7ded435ffd09f0da1d97b518cdb2f70ad",
+  "revisionScope": "Uncommitted working tree; source hashes identify tested files. No commit created.",
+  "report": "../web-parity-corner-terrain.md",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "engine": "FreeTrain ExAV 2.1.1.12",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "review": "terrain-review.json",
+    "verification": "40 raw pinned Git blobs, 77 literal fixtures, 59 source text bindings; no original-runtime capture"
+  },
+  "initialWorkReview": "Only CornerTerrainSelection.cs and seven boundary tests existed; source formula verified and retained, with no pre-existing workflow integration.",
+  "contract": {
+    "maximumStrokeSites": 64,
+    "maximumTouchingChanges": 256,
+    "previewReadOnly": true,
+    "commit": "FIFO revalidation of current participant role/connection, epoch, geometry revision, all ordered operations, final graph and Save7 admission; one replacement",
+    "allowedRoles": [
+      "owner",
+      "operator"
+    ],
+    "observerPreview": true,
+    "cost": "0; source corner methods have no booking",
+    "ownership": "Retained IDs keep forest/value/ownership; new Mountains unowned; saturation/flattening may remove decoration/ownership with explicit preview",
+    "modifiers": "Ctrl XOR selected action per pointer sample; Shift primary drag collects ordered movement samples. Portable explicit Confirm for entire bounded stroke; no timer repetition.",
+    "random": "No gameplay random draws",
+    "capacityAdmission": "Sparse preview checks realized entity/tree envelope, allocator and revision exhaustion before reporting legality"
+  },
+  "results": {
+    "dotnet": {
+      "passed": 660,
+      "failed": 0
+    },
+    "focusedCorners": {
+      "passed": 25,
+      "failed": 0
+    },
+    "client": {
+      "passed": 136,
+      "failed": 0
+    },
+    "python": {
+      "total": 142,
+      "skipped": 1,
+      "failed": 0
+    },
+    "chromium": {
+      "verifiedScenarios": 101,
+      "fullRunPassed": 100,
+      "fullRunFailed": 1,
+      "finalAffectedSpatialFilePassed": 6,
+      "remainingFailures": 0,
+      "qualification": "Full suite100/101 followed by final affected spatial file6/6 after fixing the test fixture scope; all101 unique scenarios covered. Application source unchanged between runs."
+    },
+    "optionalSource": {
+      "passed": 4,
+      "failed": 0
+    },
+    "optionalPrepared": {
+      "passed": 4,
+      "failed": 0
+    },
+    "releaseBuild": "zero warnings/errors",
+    "svelte": "zero errors/warnings",
+    "generatedLocalesContentSourceBoundariesWhitespace": "pass"
+  },
+  "environment": {
+    "dotnetSdk": "10.0.402",
+    "denoInstalled": "2.9.8",
+    "denoDeclared": "2.9.7",
+    "browser": "installed Playwright Chromium; native/deferred browser matrix not run"
+  },
+  "capacity": {
+    "scene": "1500x1090x45 flat empty-world baseline with 64 ordered corner sites",
+    "measurement": {
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "sites": 64,
+      "changed": 256,
+      "skipped": 0,
+      "previewMs": 11.5702,
+      "commitMs": 1193.6747,
+      "saveReopenMs": 525.504,
+      "saveBytes": 2192169,
+      "managedBytes": "87172576"
+    },
+    "saveSha256": "ec9564b4e27ebea741d9126d7f82677ea8d2f2af4e8a7965b22fa87958e5d40d",
+    "exactSaveReopen": true,
+    "maximumRssBytes": 233668608,
+    "latencyBudgetPassed": false,
+    "qualification": "1.194-second boundary commit exceeds provisional250ms target; dense edited-world publication, interaction and final capacity acceptance remain before P3-17."
+  },
+  "regressionRepairs": "Five existing Japanese browser assertions read the current locale fixture instead of older prose; product translations unchanged for those keys.",
+  "evidence": {
+    "dotnet": "tmp/p3-13/dotnet.log",
+    "corner-tests": "tmp/p3-13/corner-tests.log",
+    "client": "tmp/p3-13/client.log",
+    "python": "tmp/p3-13/python.log",
+    "web-build": "tmp/p3-13/web-build.log",
+    "web-check": "tmp/p3-13/web-check.log",
+    "browser": "tmp/p3-13/browser.log",
+    "optional-source": "tmp/p3-13/optional-source.log",
+    "optional-prepared": "tmp/p3-13/optional-prepared.log",
+    "browser-spatial": "tmp/p3-13/browser-spatial.log",
+    "source-check": "tmp/p3-13/source-check.log",
+    "capacity": "tmp/p3-13/capacity.log",
+    "capacity-resource": "tmp/p3-13/capacity-resource.log",
+    "japaneseNarrowScreenshot": "tmp/p3-13/corner-ja-narrow.png"
+  },
+  "sourceSha256": {
+    "README.web.md": "df4c78b03a326f26941560ac5c1dd33a31f0de5e91ca46d3b29b9b52627be154",
+    "doc/web-parity-corner-terrain.md": "8be7d3bcd381ab412bc4befee68f5f6df37479c5268e37c5e4326e4ad7383de0",
+    "doc/web-parity-terrain-contract.md": "723a7beee461f9981b0ea680dab7b48e85023fbe1b1296911f14dd8f492671b5",
+    "doc/web-parity-world-generation.md": "5bb0c9516c58bb220888a86b074f0b8e641e60709f10306f67d215a11233ab67",
+    "prototype/protocol/fixtures/command-editCorner.json": "a22d8ca4958a5c983c51234467666e4e9622b07d0d139ab28d23069853883000",
+    "prototype/protocol/schema.json": "3a23018b793c54be161da91e7f399370ff66c4a952746e6595c6ad3f0d4fb484",
+    "src/FreeTrain.Online.Contracts/WireContracts.cs": "b8bef4a310a0d21b70e2ab63e3e619742f86ee9c172e2930e17ad874d93aa476",
+    "src/FreeTrain.Online.Server/NetworkEndpoints.cs": "76450f485ae93659d4b2d0674ab1adca7b2f5e37b658265bda6fefcc8df8109e",
+    "src/FreeTrain.Online.Server/NetworkSession.cs": "1357cb7a8c51d0057e32c7f91f9ec5cd1b18e1f39c380df9b7f40305745cbfc3",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "c206ee1494052097d7a6222eaa930af22b235d71145835eb362394f8a9603039",
+    "src/FreeTrain.Online.Session/SessionHost.cs": "9c1a8597da6df558937145a4fe19fe4cc49825f1475a7347d5fe10f5a258e5ee",
+    "src/FreeTrain.Online.Simulation/CornerTerrain.cs": "c30fa64c4811d7826777df75f73356860fc72dfe06b47eb57fa6620c86507264",
+    "src/FreeTrain.Online.Simulation/CornerTerrainDraft.cs": "42accf730da336b064ae94c7e89231a9272435f6b5e378451bbaa6ee0ebe2730",
+    "src/FreeTrain.Online.Simulation/CornerTerrainSelection.cs": "09c48856e25cf94ef13a6a4a07d9c6dd8cdb15fb6511bfcad5d7c11c338d7ee6",
+    "src/FreeTrain.Online.Simulation/TerrainWorld.cs": "a0396c8ca9b2f25b2411352a51ed4eb7345fb39f12aa7968ad4688aacc215c30",
+    "tests/FreeTrain.Online.Tests/CornerTerrainSelectionTests.cs": "2f6bbf5d73013bbd268cabd6dd75768e6ac643fb692b35b4c037da395ff5f526",
+    "tests/FreeTrain.Online.Tests/CornerTerrainTests.cs": "bff21a362d8eebae9d5d36c5ff8c10387b1fabeff9cc842b7744623215466bc2",
+    "tmp/web-feature-parity-checklist.md": "0fa97aa6e931a393953a9720b466abfce3900403e4a170864f919a0202855e13",
+    "tools/TerrainTransportProbe/Program.cs": "4f0abb02a708d0c2fbfc096fcf9f308b6bebac65ede513b2041cd9f2f410efdd",
+    "web/playwright.config.ts": "d9d774f1892421fbb6f7a7f1322fb2f4b6bfae80a7833345025e153ba4233267",
+    "web/src/App.svelte": "ca3c7ae4f7e9eaa00a900acd3ca52f68d2e705562acf3d547153202b6f2b5614",
+    "web/src/CornerTerrainControls.svelte": "eb66511e606b32eb5510497827d0495bde6e154d1bdea4cdea002053bcd30160",
+    "web/src/MapView.svelte": "a816683d526536072059cb917615c0f01a4cc1f0fcd79684ad1fc79fd70af9b3",
+    "web/src/generated/contracts.ts": "c2470c507b7a31182cc5aad0676197fcc8c278d16c21ec32c1ffd95db023d0d6",
+    "web/src/lib/game-ui.ts": "9b523997340805d8bf635988a1b601cf0b6c930ae426629fc75088278a7b9d8e",
+    "web/src/lib/protocol.ts": "639baacf15e17b8de4ec4265cc8618affd8f385ba69c2316584b3fd260b04160",
+    "web/src/lib/remote-session-client.ts": "3eeb03032d79ebea135e85d51e91b4a8dce1cc6702b079786824c33cde1a7c52",
+    "web/src/lib/session-client.ts": "48b409ec23bfd2abd76d37690527050bc6709f2d021ba65e0006440d02e3d235",
+    "web/src/lib/shell-model.ts": "713ba6058547d7e3728adeb743d6a4ec0bf185d9c7972a97ae7dfa03dbfeebf2",
+    "web/src/lib/terrain-edit.ts": "ff5a4ba53119cc9e9677eac5cd052599b3c1cf51e387a62f13f8fe087bdce198",
+    "web/src/locales/en/app.json": "438c18a9a70fe801bdd71501ad259f76c4424e709847238bf781d807e2004582",
+    "web/src/locales/ja/app.json": "453c18fde3ba2b69c98dc4799b572e7d4207cbc1fe39d19c4e85666fb6689447",
+    "web/tests/browser/corner-terrain.spec.ts": "128fb7b5b697591d4550bc003e0092093653866d48d00c9b966c50a98e8bf171",
+    "web/tests/browser/persistence.spec.ts": "d14df8bba5cd6d004f8a07e86f5ab980e6ee2b0d6158c8b9e45f1070c3968bf0",
+    "web/tests/browser/reference-world.spec.ts": "e10fdff46a83816c3c6128f15e4d80d8bab0298bcebfdd5e7027ea72256ccc1d",
+    "web/tests/browser/spatial.spec.ts": "0993b69fba576e928766968888ba2ae6cb92a65dc90330802f5a6ed773ef05ed",
+    "web/tests/browser/terrain.spec.ts": "1a9d0faaaeced950392287e94dd08eafff11a13353e6c53734a18782805aa580",
+    "web/tests/terrain.test.ts": "f0c6a09dbef1d637036c825c30b64eef7e82017cbfa60c6a3010974ed230e899"
+  },
+  "remaining": [
+    "P3-14 rectangle/repair",
+    "P3-15 terraces/cliffs",
+    "P3-16 authoring",
+    "P3-16a final editing-consumer latency/dense publication capacity",
+    "P3-17 acceptance/handoff",
+    "Existing P2/native/deferred-browser/full-city/import gates"
+  ]
+}

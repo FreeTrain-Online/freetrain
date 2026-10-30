@@ -1,8 +1,9 @@
 import { expect,test,type Page } from '@playwright/test';
-import { mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ready,openPanel,closePanel } from './ux-helpers.ts';
+const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const bootPath='/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
 async function at(page:Page,p:{x:number;y:number;z:number}) {
@@ -119,7 +120,7 @@ test('canonical Japanese presentation fits narrow DPR 2 and retains canvas throu
     await expect(page.getByTestId('menu-game-time')).toContainText('年4月1日(土)');
     await page.keyboard.press('Escape');
     await page.getByRole('button',{name:'位置を確認',exact:true}).click();await page.getByLabel('線路の高さ',{exact:true}).selectOption('0');
-    await target(page,{x:27,y:24,z:0});await expect(page.getByTestId('geometry-status')).toContainText('対象はマップの範囲内です。');
+    await target(page,{x:27,y:24,z:0});await expect(page.getByTestId('geometry-status')).toContainText(ja.geometryChecked);
     await page.getByRole('button',{name:'方向合わせの基準にする',exact:true}).click();await page.getByLabel('対象の方向合わせ',{exact:true}).selectOption('8');
     await target(page,{x:29,y:29,z:0});await expect(page.getByTestId('preview-heading')).toContainText('南東');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

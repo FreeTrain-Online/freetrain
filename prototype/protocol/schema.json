@@ -11,6 +11,12 @@
     },
     {
       "$ref": "#/$defs/SpatialPreview"
+    },
+    {
+      "$ref": "#/$defs/CornerTerrainQuery"
+    },
+    {
+      "$ref": "#/$defs/CornerTerrainPreview"
     }
   ],
   "$defs": {
@@ -697,6 +703,22 @@
             "kind",
             "trainId",
             "leaseId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editCorner"
+            },
+            "query": {
+              "$ref": "#/$defs/CornerTerrainQuery"
+            }
+          },
+          "required": [
+            "kind",
+            "query"
           ]
         }
       ]
@@ -1774,6 +1796,301 @@
         "cells",
         "occupantCount",
         "occupants"
+      ]
+    },
+    "CornerTerrainQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "action": {
+          "enum": [
+            "raise",
+            "lower"
+          ]
+        },
+        "offsetX": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 31
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offsetY": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -32,
+              "maximum": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stroke": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 63,
+              "items": {
+                "$ref": "#/$defs/CornerTerrainSite"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "position",
+        "action",
+        "offsetX",
+        "offsetY",
+        "stroke"
+      ]
+    },
+    "CornerTerrainChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "beforeGround": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "afterGround": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "beforeNE": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "beforeSE": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "beforeSW": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "beforeNW": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "afterNE": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "afterSE": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "afterSW": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "afterNW": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "remove": {
+          "type": "boolean"
+        },
+        "losesForest": {
+          "type": "boolean"
+        },
+        "losesOwnership": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "position",
+        "beforeGround",
+        "afterGround",
+        "beforeNE",
+        "beforeSE",
+        "beforeSW",
+        "beforeNW",
+        "afterNE",
+        "afterSE",
+        "afterSW",
+        "afterNW",
+        "remove",
+        "losesForest",
+        "losesOwnership"
+      ]
+    },
+    "CornerTerrainPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "worldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "action": {
+          "enum": [
+            "raise",
+            "lower"
+          ]
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "invalidInput",
+                "outside",
+                "unmatchedCorners",
+                "groundLevel",
+                "cornerLimit",
+                "floor",
+                "occupied",
+                "roof",
+                "capacityLimit"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "changes": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/$defs/CornerTerrainChange"
+          }
+        },
+        "skipped": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/CornerTerrainSkip"
+          }
+        }
+      },
+      "required": [
+        "worldEpoch",
+        "geometryRevision",
+        "position",
+        "action",
+        "legal",
+        "reason",
+        "cost",
+        "changes",
+        "skipped"
+      ]
+    },
+    "CornerTerrainSite": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "action": {
+          "enum": [
+            "raise",
+            "lower"
+          ]
+        },
+        "offsetX": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 31
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offsetY": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -32,
+              "maximum": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "position",
+        "action",
+        "offsetX",
+        "offsetY"
+      ]
+    },
+    "CornerTerrainSkip": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "reason": {
+          "enum": [
+            "invalidInput",
+            "outside",
+            "unmatchedCorners",
+            "groundLevel",
+            "cornerLimit",
+            "floor",
+            "occupied",
+            "roof",
+            "capacityLimit"
+          ]
+        }
+      },
+      "required": [
+        "position",
+        "reason"
       ]
     }
   }

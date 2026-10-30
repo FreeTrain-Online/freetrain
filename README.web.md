@@ -47,7 +47,13 @@ and exact confirmation. Generated admission is H/V16–2048 (at most 1,700,000 s
 actual terrain and provenance reopen without regeneration. [P3-09 coasts](doc/web-parity-coasts.md) adds islands,
 independent world-compass coast directions, sea coverage targets (±5 percentage points),
 actual surface-water metrics and bounded topology diagnostics, including full-size fixtures.
-[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river direction/width/meander controls (None, North → South, East → West; matching coastal seas connect at the map boundary), EN/JA feedback and exact Save7 confirmation. Forests and starting areas are delivered in [P3-11](doc/web-parity-forests.md): six species/18 ground treatments, source scatter, coverage/clustering/palette controls, connected level reservation and actual preview metrics. Generation UX completion remains P3-12.
+[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river direction/width/meander controls (None, North → South, East → West; matching coastal seas connect at the map boundary), EN/JA feedback and exact Save7 confirmation. Forests and starting areas are delivered in [P3-11](doc/web-parity-forests.md): six species/18 ground treatments, source scatter, coverage/clustering/palette controls, connected level reservation and actual preview metrics. [P3-12 generation UX](doc/web-parity-generation-ux.md) adds retained north-up/isometric previews, compass, measured presets and generation lifecycle feedback.
+[P3-13 corner tools](doc/web-parity-corner-terrain.md) add **Game → Modify terrain**:
+Raise/Lower, source ground/corner picking, Ctrl reversal, Shift-drag or explicit
+coordinate strokes, read-only legality/loss preview and one revalidated Confirm.
+Changes preserve actual Save7 continuation. Full-size editing works, but its
+measured1.2-second commit exceeds the provisional interaction target; editing
+responsiveness remains in final P3 capacity acceptance.
 
 ## Parity source policy
 

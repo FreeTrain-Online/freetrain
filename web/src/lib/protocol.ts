@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
-import type { Delta, Snapshot, SpatialPreview, WireMessage } from '../generated/contracts.ts';
+import type { Delta, Snapshot, SpatialPreview, CornerTerrainPreview, WireMessage } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
 import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
 import { maximumGameMinute } from './game-time.ts';
@@ -12,6 +12,13 @@ for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
 }
 const validate = ajv.compile(schema.$defs.WireMessage ? { ...schema, $ref: '#/$defs/WireMessage' } : schema);
 const validatePreview=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SpatialPreview'});
+const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTerrainPreview'});
+export function parseCornerPreview(value:unknown):CornerTerrainPreview {
+  if(!validateCorner(value))throw new Error('Invalid corner preview');
+  const result=value as CornerTerrainPreview;
+  if(result.cost!=='0'||(result.legal?(result.reason!==null||result.changes.length===0):(result.reason===null||result.changes.length!==0)))throw new Error('Inconsistent corner preview');
+  return result;
+}
 export function parseSpatialPreview(value:unknown):SpatialPreview {
   if(!validatePreview(value))throw new Error('Invalid spatial preview');
   return value as SpatialPreview;

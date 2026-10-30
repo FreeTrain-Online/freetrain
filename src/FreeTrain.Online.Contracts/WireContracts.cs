@@ -129,6 +129,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(RemoveTrackCommand), "removeTrack")]
 [JsonDerivedType(typeof(SetControllerCommand), "setController")]
 [JsonDerivedType(typeof(ControllerInputCommand), "controllerInput")]
+[JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
 public abstract record CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
@@ -169,3 +170,15 @@ public sealed record TerrainDeltaRead(int WaterLevel, bool ConstructionMode, lon
 public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLevel, bool ConstructionMode,
     long GeometryRevision, long NextEntityId, TerrainProvenanceRead Provenance,
     DefinitionRead[] Definitions, byte[] Cells, int OccupantCount, byte[] Occupants);
+
+// Additive terrain tool contract; durable state remains Save7 / protocol5.
+public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
+    string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null);
+public sealed record CornerTerrainSite(PositionRead Position, string Action, int? OffsetX = null, int? OffsetY = null);
+public sealed record EditCornerCommand(CornerTerrainQuery Query) : CommandPayload;
+public sealed record CornerTerrainChangeRead(PositionRead Position, int BeforeGround, int AfterGround,
+    int BeforeNE, int BeforeSE, int BeforeSW, int BeforeNW, int AfterNE, int AfterSE, int AfterSW, int AfterNW,
+    bool Remove, bool LosesForest, bool LosesOwnership);
+public sealed record CornerTerrainPreviewRead(long WorldEpoch, long GeometryRevision, PositionRead Position,
+    string Action, bool Legal, string? Reason, long Cost, CornerTerrainChangeRead[] Changes, CornerTerrainSkipRead[] Skipped);
+public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason);

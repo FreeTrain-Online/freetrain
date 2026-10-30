@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ready, bootstrap, clickTile, worldReplacementFixture } from './ux-helpers.ts';
+const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 
 test('aligned targets use server-checked geometry without spending or changing the shared world',async({page})=>{
   await page.goto('/');await ready(page);
@@ -100,7 +101,7 @@ test('Japanese alignment labels and source direction names fit a narrow high-DPI
   try {
     const page=await context.newPage();await page.goto('/');await ready(page,'ja');
     await page.getByRole('button',{name:'線路を敷設',exact:true}).click();
-    await clickTile(page,{x:22,y:16,z:1});await expect(page.getByTestId('geometry-status')).toContainText('対象はマップの範囲内です。');
+    await clickTile(page,{x:22,y:16,z:1});await expect(page.getByTestId('geometry-status')).toContainText(ja.geometryChecked);
     await page.getByRole('button',{name:'方向合わせの基準にする',exact:true}).click();await page.getByLabel('対象の方向合わせ',{exact:true}).selectOption('8');
     await clickTile(page,{x:24,y:21,z:1});await expect(page.getByTestId('preview-heading')).toHaveText('方向: 南東 · 距離（マス）: 2');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

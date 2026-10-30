@@ -209,6 +209,7 @@ public sealed partial class NetworkSession
             snapshot.Map.CoordinateSystem == "hv" ? "reference-spatial" : "reference-v1", participant.ParticipantId,
             participant.Role.ToString().ToLowerInvariant(), snapshot.WorldEpoch, snapshot, snapshot.Ruleset, snapshot.RequiredPacks);
     }
+    public CornerTerrainPreviewRead PreviewCorner(CornerTerrainQuery query) { lock (gate) return host.PreviewCorner(query); }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query) { lock (gate) return host.PreviewSpatial(query); }
     public Peer? Connect(DateTimeOffset now, ParticipantContext? participant = null, string? accessCredential = null)
     {

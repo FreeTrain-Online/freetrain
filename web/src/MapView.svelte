@@ -1,8 +1,9 @@
 <script lang="ts">
   import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
+  import { pickTerrainGround } from './lib/terrain-edit.ts';
   import { gameDate } from './lib/game-time.ts';
   import { toolbar } from './lib/toolbar.ts';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { MapRenderer, loadImages, type Selection } from './lib/map-renderer.ts';
@@ -14,6 +15,7 @@
   import { demoScene, demoCamera } from './lib/demo-scene.ts';
   import { demoLoopPeriod } from './lib/demo-railway-path.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
+  import CornerTerrainControls from './CornerTerrainControls.svelte';
   import PanelFrame from './PanelFrame.svelte';
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose }:
     { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void } = $props();
@@ -29,6 +31,9 @@
   let shape = $state<Track['shape']>('buffer');
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
+  let cornerControls=$state<{cancelDraft:()=>boolean}>();
+  let cornerGeneration=$state(0);
+  let cornerPicked=$state<{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean}>();
   let rawPosition:Position|undefined;
   let anchor=$state<Position>();
   let snapMode=$state<0|4|8>(0);
@@ -64,7 +69,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -86,7 +91,8 @@
   export function resetInteraction() { clearInput(); cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
   export function escape() {
-    if (selectedPosition) cancelDraft();
+    if(tool==='terrain'&&cornerControls?.cancelDraft()) { /* First Escape clears the review. */ }
+    else if (selectedPosition) cancelDraft();
     else if (tool !== 'inspect') activateTool('inspect');
     clearInput();
   }
@@ -110,6 +116,7 @@
   function move(event: PointerEvent) {
     if (!live || inputSuspended) return;
     const p = point(event);
+    if(tool==='terrain'&&event.shiftKey&&event.buttons===1&&drag&&!drag.pan&&!panel&&!view.pending){drag.moved=true;pickCorner(event,true);return;}
     if (drag) {
       if (Math.hypot(p.x - drag.x, p.y - drag.y) > 3) drag.moved = true;
       if (drag.moved) {
@@ -117,22 +124,32 @@
         preview = undefined; dirty = true; return;
       }
     }
-    if (tool !== 'inspect' && !panel && !view.pending && !uncertain) {
+    if (tool !== 'inspect' && tool !== 'terrain' && !panel && !view.pending && !uncertain) {
       const raw=tileAt(p,level,camera,width,height,space);
       preview=selectedPosition??(anchor?snap(raw,anchor,snapMode):raw);dirty=true;
     }
+  }
+  function pickCorner(event:PointerEvent,append:boolean){
+    const p=point(event),read=view.read;if(!read?.terrain)return;
+    const world={x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y};
+    const position=pickTerrainGround(read,world,heightCut);if(!position)return;
+    const projected=space.project(position);
+    const next={position,offsetX:Math.max(0,Math.min(31,Math.floor(world.x-projected.x))),offsetY:Math.max(-32,Math.min(32,Math.floor(world.y-projected.y))),reverse:event.ctrlKey,append};
+    cornerPicked=next;
   }
   function down(event: PointerEvent) {
     if (!live || inputSuspended || (event.button !== 0 && event.button !== 1)) return;
     event.preventDefault(); focusMap();
     drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, pointerId: event.pointerId };
     canvas.setPointerCapture(event.pointerId);
+    if(tool==='terrain'&&event.shiftKey&&!drag.pan&&!blocked&&!panel)pickCorner(event,false);
   }
   function up(event: PointerEvent) {
     const was = drag; cancelGesture();
     if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.moved || was.panOnly || event.button !== 0 || spaceHeld) return;
     const p = point(event);
     if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
+    else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
     else if (!blocked && !panel && !uncertain) { void chooseTarget(tileAt(p,level,camera,width,height,space)); }
     dirty = true;
   }
@@ -239,7 +256,7 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'remove' && reference || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
+    {#each tools.filter(item=>item.id!=='terrain'||terrain) as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{item.icon}</button>{/each}
   </div>
   <div class="map-navigation" class:beside-panel={!!panel}>
     <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
@@ -253,7 +270,10 @@
       </div>
     </PanelFrame>
   {/if}
-  {#if tool !== 'inspect' && !panel}
+  {#if tool === 'terrain' && terrain && !panel}
+    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onpreview={p=>{preview=p;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
+  {/if}
+  {#if tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>
       <h2>{reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}</h2>
       <div class="form-actions">

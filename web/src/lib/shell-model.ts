@@ -1,3 +1,4 @@
+import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
 import type { ConnectionStatus, FixtureBehavior, ReadState, SessionClient } from './session-client.ts';
 import type { Locale } from './localization.ts';
@@ -132,6 +133,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   reconnect();
   return {
     get state() { return state; },
+    async previewCorner(query:CornerTerrainQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewCorner)throw new Error('Unavailable');
+      const result=await active.previewCorner(query,signal);
+      if(disposed||current!==generation||client!==active||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.terrain?.geometryRevision!==query.expectedGeometryRevision)throw new Error('Stale corner preview');
+      return result;
+    },
     async previewSpatial(query:SpatialQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewSpatial)throw new Error('Unavailable');

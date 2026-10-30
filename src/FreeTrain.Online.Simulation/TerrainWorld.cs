@@ -98,6 +98,7 @@ public sealed class TerrainWorld
     public ImmutableArray<TerrainCell> Cells { get; }
     public SpatialIndex Spatial { get; }
     public ImmutableArray<TerrainOccupant> Occupants { get; }
+    internal long RealizedTreeCount { get; }
     public ImmutableArray<ReferenceRail> Rails => [];
     private readonly FrozenDictionary<long, TerrainOccupant> occupants;
 
@@ -119,6 +120,7 @@ public sealed class TerrainWorld
             Occupants.Select(o => o.EntityId).Distinct().Count() != Occupants.Length || spatial.Entities.Length != Occupants.Length)
             throw new ArgumentException("Invalid terrain occupants.");
         var trees = Occupants.Sum(o => o.Forest is {} f && !f.Trees.IsDefault ? (long)f.Trees.Length : 0);
+        RealizedTreeCount = trees;
         if (WorldCreationProfile.RealizedTerrainBytes(count, Occupants.Length, trees) > WorldCreationProfile.MaximumRealizedTerrainBytes)
             throw new ArgumentException("Terrain graph resource limit.");
         Spatial = new(Space, spatial.NextEntityId, spatial.Entities);
@@ -149,6 +151,7 @@ public sealed class TerrainWorld
             ? this.occupants[owner.Id].Corners[corner] : 0;
         return 4 * ground + offset;
     }
+    public TerrainOccupant? OccupantAt(Location p) => Spatial.At(p).Entity is {} entity ? occupants[entity.Id] : null;
     public TerrainVoxelRead At(Location p)
     {
         if (!Space.ContainsVoxel(p)) return new(GroundRelation.Outside, false, Spatial.At(p));

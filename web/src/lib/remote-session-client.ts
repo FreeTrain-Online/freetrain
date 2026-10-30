@@ -1,7 +1,7 @@
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview } from './protocol.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 
@@ -172,6 +172,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     get unresolved() { return unresolved; },
     subscribe(listener) { listeners.add(listener); if (read) listener(read); return () => { listeners.delete(listener); }; },
     subscribeStatus(listener) { statuses.add(listener); listener(status); return () => { statuses.delete(listener); }; },
+    async previewCorner(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/terrain/corner/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(5000)])});
+      if(!response.ok)throw new Error('Corner preview failed');
+      const preview=parseCornerPreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||preview.geometryRevision!==query.expectedGeometryRevision||preview.action!==query.action||query.offsetX===null&&(preview.position.x!==query.position.x||preview.position.y!==query.position.y||preview.position.z!==query.position.z))throw new Error('Stale corner preview');
+      return preview;
+    },
     async previewSpatial(query,signal) {
       const identity=join;
       if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');

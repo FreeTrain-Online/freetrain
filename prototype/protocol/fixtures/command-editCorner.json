@@ -1,0 +1,17 @@
+{
+  "type": "command",
+  "requestId": "corner-fixture",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editCorner",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "0",
+      "position": {"x": 3, "y": 3, "z": 1},
+      "action": "raise",
+      "offsetX": null,
+      "offsetY": null,
+      "stroke": [{"position": {"x": 3, "y": 3, "z": 1}, "action": "lower", "offsetX": null, "offsetY": null}]
+    }
+  }
+}

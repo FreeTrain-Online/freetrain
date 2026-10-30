@@ -9,6 +9,28 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if (args is ["--corner-capacity", var cornerH, var cornerV, var cornerZ, var cornerDirectory])
+{
+    int h=int.Parse(cornerH),v=int.Parse(cornerV),z=int.Parse(cornerZ);
+    Directory.CreateDirectory(cornerDirectory);
+    var request=new EmptyWorldRequest(WorldCreationProfile.Id,"Corner capacity",new(h,v,z),1);
+    var world=TerrainWorld.Empty(request,TerrainProfiles.Bundled);
+    using var host=new FreeTrain.Online.Session.SessionHost(new TerrainSessionState(world,TerrainProvenance.From(request)),"owner",TerrainProfiles.Resolve);
+    var p=world.Space.ToLocation(new(h/2,v/2,1));
+    var query=new CornerTerrainQuery(1,0,new(p.X,p.Y,p.Z),"raise",Stroke:Enumerable.Range(1,63)
+        .Select(i=>new CornerTerrainSite(new(p.X+i%8,p.Y+i/8,p.Z),"raise")).ToArray());
+    var watch=Stopwatch.StartNew();var preview=host.PreviewCorner(query);var previewMs=watch.Elapsed.TotalMilliseconds;
+    if(!preview.Legal)throw new Exception("Corner preview rejected.");
+    watch.Restart();var command=host.Enqueue(new("owner"),new("corner-capacity",1,new EditCornerCommand(query)));host.Pump(0);
+    if(await command is not AcceptedMessage)throw new Exception("Corner commit rejected.");var commitMs=watch.Elapsed.TotalMilliseconds;
+    watch.Restart();var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;
+    var reopened=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+    if(!bytes.SequenceEqual(SaveCodec.Write(reopened)))throw new Exception("Corner continuation mismatch.");
+    if(reopened.World.FineHeight(p,0)!=5||reopened.World.Revision!=1)throw new Exception("Corner result mismatch.");
+    File.WriteAllBytes(Path.Combine(cornerDirectory,"corner-v7.json"),bytes);
+    Console.WriteLine(JsonSerializer.Serialize(new{h,v,z,sites=64,changed=preview.Changes.Length,skipped=preview.Skipped.Length,
+        previewMs,commitMs,saveReopenMs=watch.Elapsed.TotalMilliseconds,saveBytes=bytes.Length,managedBytes=GC.GetTotalMemory(true)},json));return;
+}
 if (args is ["--compare-png", var first, var second])
 {
     var a = HeightmapDecoder.Decode(File.ReadAllBytes(first)).Raster;
