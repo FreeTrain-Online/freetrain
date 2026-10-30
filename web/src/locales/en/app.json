@@ -392,5 +392,15 @@
   "terrainNoChange": "No change at this site.",
   "repairInconsistent": "Neighbor corner heights disagree; this cell cannot be repaired.",
   "repairUnrepresentable": "The matching height is outside this cell’s quarter-height range.",
-  "rectangleHelp": "Pick two endpoints or enter coordinates. Endpoints are normalized at the first Z. Raise/Excavate visit shared corners before the far edges; Repair includes both endpoints. At most 64 selected cells. Ctrl on the second pick chooses Repair; Shift selects the half-height upper profile. Review changes, losses and skipped sites, then Confirm once. A failed cell is skipped; valid sites publish together."
+  "rectangleHelp": "Pick two endpoints or enter coordinates. Endpoints are normalized at the first Z. Raise/Excavate visit shared corners before the far edges; Repair includes both endpoints. At most 64 selected cells. Ctrl on the second pick chooses Repair; Shift selects the half-height upper profile. Review changes, losses and skipped sites, then Confirm once. A failed cell is skipped; valid sites publish together.",
+  "terraceTool": "Terraces and cuts",
+  "terraceHelp": "Place a terrace on a slope, remove it to restore its saved corners, or make and restore a cut. Changes remove forest decoration and ownership. Select a tile or enter its voxel coordinates, preview, then confirm. Water does not restrict these tools.",
+  "placeTerrace": "Place terrace",
+  "removeTerrace": "Remove terrace",
+  "placeCut": "Make cut",
+  "removeCut": "Restore cut",
+  "mountainRequired": "Select a slope voxel.",
+  "terraceRequired": "Select a terrace voxel below its raised ground.",
+  "higherNeighbor": "A neighboring ground level is higher than this slope.",
+  "terraceCheck": "Preview terrain change"
 }

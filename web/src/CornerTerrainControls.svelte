@@ -5,11 +5,11 @@
   import type { CornerTerrainQuery, CornerTerrainPreview, CornerTerrainSite, Position } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
-  let {model,view,picked,onpreview,onreset,onmode}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position)=>void;onreset:()=>void;onmode:(rectangle:boolean)=>void}=$props();
-  let scope=$state<'corner'|'rectangle'>('corner');
+  let {model,view,picked,onpreview,onreset,onmode}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position)=>void;onreset:()=>void;onmode:(rectangle:boolean,strategy?:string)=>void}=$props();
+  let scope=$state<'corner'|'rectangle'|'terrace'>('corner');
   let rectangleControls=$state<{cancelDraft:()=>boolean}>();
   const text=$derived(messages[view.locale]);
-  let x=$state(0),y=$state(0),z=$state(1),action=$state<'raise'|'lower'>('raise');
+  let x=$state(0),y=$state(0),z=$state(1),action=$state<'raise'|'lower'>('raise'),terraceAction=$state<'placeTerrace'|'removeTerrace'|'placeCut'|'removeCut'>('placeTerrace');
   let result=$state<CornerTerrainPreview>(),query:CornerTerrainQuery|undefined;
   let submitting=$state(false);
   let status=$state<'idle'|'checking'|'ready'|'failed'|'stale'>('idle'),uncertain=$state(false);
@@ -25,9 +25,9 @@
     if(p){x=p.position.x;y=p.position.y;z=p.position.z;}
     if(![x,y,z].every(Number.isSafeInteger)){status='failed';return;}
     const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:read.terrain.geometryRevision,
-      position:{x,y,z},stroke:null,action:p?.reverse?(action==='raise'?'lower':'raise'):action,offsetX:p?.offsetX??null,offsetY:p?.offsetY??null};
+      position:{x,y,z},stroke:null,action:scope==='terrace'?terraceAction:p?.reverse?(action==='raise'?'lower':'raise'):action,offsetX:scope==='terrace'?null:p?.offsetX??null,offsetY:scope==='terrace'?null:p?.offsetY??null};
     const site:CornerTerrainSite={position:target.position,action:target.action as 'raise'|'lower',offsetX:target.offsetX,offsetY:target.offsetY};
-    if(!p?.append&&!append)sites=[];
+    if(scope==='terrace'||!p?.append&&!append)sites=[];
     if(sites.length<64)sites.push(site);
     count=sites.length;
     const first=sites[0];target.position=first.position;target.action=first.action;target.offsetX=first.offsetX;target.offsetY=first.offsetY;target.stroke=sites.slice(1);
@@ -47,7 +47,7 @@
     else if(view.feedback==='unresolved')uncertain=true;
     else {status='stale';result=undefined;onpreview(undefined);}
   }
-  $effect(()=>{const p=picked;if(p&&scope==='corner')untrack(()=>void check(p));});
+  $effect(()=>{const p=picked;if(p&&scope!=='rectangle')untrack(()=>void check(p));});
   $effect(()=>{
     if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||view.read?.terrain?.geometryRevision!==result.geometryRevision)){
       version++;request?.abort();sites=[];count=0;result=undefined;status='stale';onpreview(undefined);
@@ -57,28 +57,34 @@
   $effect(()=>()=>{version++;request?.abort();onpreview(undefined);});
 </script>
 <div class="tool-card">
-<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending} onchange={()=>{clear();onreset();onmode(scope==='rectangle');}}><option value="corner">{text.terrainCorners}</option><option value="rectangle">{text.rectangleTool}</option></select></label></div>
+<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending} onchange={()=>{clear();onreset();onmode(scope!=='corner',scope==='terrace'?terraceAction:undefined);}}><option value="corner">{text.terrainCorners}</option><option value="rectangle">{text.rectangleTool}</option><option value="terrace">{text.terraceTool}</option></select></label></div>
 {#if scope==='rectangle'}
   <RectangleTerrainControls bind:this={rectangleControls} {model} {view} {picked} {onpreview} {onreset}/>
 {:else}
 <section aria-label={text.terrainTool}>
-  <h2>{text.terrainTool}</h2>
-  <p class="hint">{text.cornerHelp}</p>
+  <h2>{scope==='terrace'?text.terraceTool:text.terrainTool}</h2>
+  <p class="hint">{scope==='terrace'?text.terraceHelp:text.cornerHelp}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     <div class="form-actions">
+      {#if scope==='terrace'}
+      <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={terraceAction} disabled={view.pending} onchange={()=>{clear();onreset();onmode(true,terraceAction);}}>
+        <option value="placeTerrace">{text.placeTerrace}</option><option value="removeTerrace">{text.removeTerrace}</option><option value="placeCut">{text.placeCut}</option><option value="removeCut">{text.removeCut}</option>
+      </select></label>
+      {:else}
       <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={action} disabled={view.pending} onchange={clear}><option value="raise">{text.cornerRaise}</option><option value="lower">{text.cornerLower}</option></select></label>
+      {/if}
       <label>X<input aria-label={text.cornerX} type="number" step="1" bind:value={x} oninput={reset} disabled={view.pending}/></label>
       <label>Y<input aria-label={text.cornerY} type="number" step="1" bind:value={y} oninput={reset} disabled={view.pending}/></label>
       <label>Z<input aria-label={text.cornerZ} type="number" min="0" max={(view.read?.map.levels??1)-1} step="1" bind:value={z} oninput={reset} disabled={view.pending}/></label>
     </div>
-    <button disabled={blocked||status==='checking'}>{text.cornerCheck}</button>
-    <button type="button" disabled={blocked||count>=64} onclick={()=>check(undefined,true)}>{text.cornerAdd}</button>
+    <button disabled={blocked||status==='checking'}>{scope==='terrace'?text.terraceCheck:text.cornerCheck}</button>
+    {#if scope==='corner'}<button type="button" disabled={blocked||count>=64} onclick={()=>check(undefined,true)}>{text.cornerAdd}</button>{/if}
   </form>
-  <p>{text.cornerSites}: {count}/64</p>
+  {#if scope==='corner'}<p>{text.cornerSites}: {count}/64</p>{/if}
   <p role="status" data-testid="corner-status">{status==='checking'?text.checkingGeometry:status==='failed'?text.geometryFailed:status==='stale'?text.cornerStale:result?result.legal?text.cornerLegal:text[terrainReasons[result.reason??'invalidInput']]:text.pickTile}</p>
   {#if result}
     {#if result.skipped.length}<p>{text.cornerSkipped}: {result.skipped.length}</p><ul>{#each result.skipped as skipped}<li>{skipped.position.x}, {skipped.position.y}, {skipped.position.z}: {text[terrainReasons[skipped.reason]]}</li>{/each}</ul>{/if}
-    <p data-testid="corner-position">{result.position.x}, {result.position.y}, {result.position.z} · {result.action==='raise'?text.cornerRaise:text.cornerLower}</p>
+    <p data-testid="corner-position">{result.position.x}, {result.position.y}, {result.position.z} · {result.action==='raise'?text.cornerRaise:result.action==='lower'?text.cornerLower:result.action==='repair'?text.rectangleRepair:text[result.action]}</p>
     <p>{text.cornerCost}: {result.cost}</p>
     <ul class="corner-changes">{#each result.changes as c}<li>{c.position.x}, {c.position.y}: {c.beforeGround} [{c.beforeNE},{c.beforeSE},{c.beforeSW},{c.beforeNW}] → {c.afterGround} [{c.afterNE},{c.afterSE},{c.afterSW},{c.afterNW}]{#if c.losesForest} · {text.cornerForestLoss}{/if}{#if c.losesOwnership} · {text.cornerOwnershipLoss}{/if}</li>{/each}</ul>
   {/if}

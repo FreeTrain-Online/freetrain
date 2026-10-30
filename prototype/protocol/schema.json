@@ -1815,7 +1815,11 @@
           "enum": [
             "raise",
             "lower",
-            "repair"
+            "repair",
+            "placeTerrace",
+            "removeTerrace",
+            "placeCut",
+            "removeCut"
           ]
         },
         "offsetX": {
@@ -1978,7 +1982,11 @@
           "enum": [
             "raise",
             "lower",
-            "repair"
+            "repair",
+            "placeTerrace",
+            "removeTerrace",
+            "placeCut",
+            "removeCut"
           ]
         },
         "legal": {
@@ -1999,7 +2007,10 @@
                 "capacityLimit",
                 "noChange",
                 "inconsistentNeighbors",
-                "unrepresentableHeight"
+                "unrepresentableHeight",
+                "mountainRequired",
+                "terraceRequired",
+                "higherNeighbor"
               ]
             },
             {
@@ -2102,7 +2113,10 @@
             "capacityLimit",
             "noChange",
             "inconsistentNeighbors",
-            "unrepresentableHeight"
+            "unrepresentableHeight",
+            "mountainRequired",
+            "terraceRequired",
+            "higherNeighbor"
           ]
         }
       },

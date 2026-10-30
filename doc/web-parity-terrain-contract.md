@@ -235,8 +235,9 @@ overlay and original ownership are **not** backed up; the recreated Mountain is
 unowned and undecorated. Preserve these source transitions, with loss shown in
 the preview and top-capacity/obstruction checks applied before publication.
 
-Cut placement requires Mountain and rejects if any of its four diagonal neighbor
-ground levels is higher than the selected ground. It removes Mountain without
+Cut placement requires Mountain and rejects if any of its four neighbor
+ground levels is higher than the selected ground (`Direction.get(i*2)`: canonical
+N/E/S/W). It removes Mountain without
 changing ground, creating an intentional discontinuity. Cut removal requires an
 empty ground cell. For each corner, it takes maximum fine height over the four
 touching samples at the selected z (Mountain offset at that same z or plain
@@ -246,6 +247,9 @@ terrain healing solver. The source's 2009 guard rejects invalid byte offsets;
 the port checks signed values before narrowing. Terrain classification must
 permit legitimate cut/terrace discontinuities without treating malformed natural
 corner data as a cut implicitly.
+
+The [P3-15 implementation and evidence](web-parity-terraces.md) deliver the four
+strategies through one read-only preview and revalidated atomic confirmation.
 
 Stable core/plugins contain only the construction flag getter, field and
 assignment in `Core.init`; no source economic/placement/timing consumer was found.

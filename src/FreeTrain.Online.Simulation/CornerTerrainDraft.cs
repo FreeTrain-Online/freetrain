@@ -73,6 +73,18 @@ public sealed class CornerTerrainDraft(TerrainWorld original)
             }
         }
     }
+    internal bool CanAllocateTerrainEntity => nextId < long.MaxValue;
+    internal void ReplaceTerrainSite(CornerTerrainChange c,TerrainOccupantKind kind,TerrainSurface surface)
+    {
+        var s=Space.ToStorage(c.Position);
+        cells[s.V*Space.HorizontalSize+s.H]=new(c.AfterGround,surface);
+        if(At(c.Position).Entity!=null){entityCount--;treeCount-=OccupantAt(c.Position)?.Forest?.Trees.Length??0;}
+        entities[c.Position]=null;
+        if(c.Remove)return;
+        var definition=original.Profile.Definitions.Single(d=>d.Kind==kind&&d.TreeSpriteCount==0).Reference;
+        var entity=new SpatialEntity(nextId++,0,definition,c.Position,new([new(new(0,0,0),kind==TerrainOccupantKind.Mountain&&c.After.Flat)]),false,false,0);
+        entities[c.Position]=(entity,new(entity.Id,kind,c.After));entityCount++;
+    }
     public TerrainWorld Finish()
     {
         var grid=original.Cells.ToBuilder();foreach(var (i,cell) in cells)grid[i]=cell;

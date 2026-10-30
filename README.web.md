@@ -56,7 +56,7 @@ or coordinate rectangles, source Raise/Excavate profiles, explicit Repair,
 Ctrl repair/Shift upper profile, per-site skips and one atomic confirmation.
 Selections admit at most 64 inclusive cells; Repair includes the far edges while
 Raise/Excavate operate on shared corners before those edges.
-Changes preserve actual Save7 continuation. Full-size editing works, but its
+[P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save7 continuation. Full-size editing works, but its
 measured1.2-second commit exceeds the provisional interaction target; editing
 responsiveness remains in final P3 capacity acceptance.
 

@@ -120,3 +120,24 @@ Deno.test('rectangle repair preview accepts exact losses and explicit bounded re
   rejects(()=>parseCornerPreview({...result,skipped:Array(65).fill(result.skipped[0])}));
   rejects(()=>parseCornerPreview({...result,action:'flatten'}));
 });
+
+Deno.test('terrace strategies target the mountain or backed-up terrace ray independently of ground and water',async()=>{
+  const {pickTerrainStrategy}=await import('../src/lib/terrain-edit.ts');const {WorldSpace}=await import('../src/lib/map-geometry.ts');
+  const s=await read(),space=new WorldSpace(s.map.width,s.map.height,s.map.levels),terrace=s.entities![0];
+  const point=space.center(terrace.anchor);
+  equal(pickTerrainStrategy(s,point,s.map.levels-1,'removeTerrace'),terrace.anchor);
+  equal(pickTerrainStrategy(s,point,terrace.anchor.z,'removeTerrace'),terrace.anchor);
+  assert(!pickTerrainStrategy(s,{x:-9999,y:-9999},s.map.levels-1,'placeTerrace'));
+  const mountain=s.entities![1];equal(pickTerrainStrategy(s,space.center(mountain.anchor),s.map.levels-1,'placeCut'),mountain.anchor);
+});
+Deno.test('all four terrace strategies and their source diagnostics survive strict preview and command validation',async()=>{
+  const {parseCornerPreview}=await import('../src/lib/protocol.ts');const {default:Ajv}=await import('ajv');
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/schema.json',import.meta.url)));
+  const ajv=new Ajv({strict:true});
+  for(const [name,unsigned] of [['int64',false],['uint63',true]] as const)ajv.addFormat(name,(v:string)=>/^(0|-?[1-9][0-9]*)$/.test(v)&&BigInt(v)>=(unsigned?0n:-9223372036854775808n)&&BigInt(v)<=9223372036854775807n);
+  const validate=ajv.compile({...schema,$ref:'#/$defs/CornerTerrainQuery'});
+  for(const action of ['placeTerrace','removeTerrace','placeCut','removeCut']){
+    const query={expectedWorldEpoch:'1',expectedGeometryRevision:'0',position:{x:2,y:2,z:1},action,offsetX:null,offsetY:null,stroke:null};assert(validate(query));
+    for(const reason of ['mountainRequired','terraceRequired','higherNeighbor'])equal(parseCornerPreview({worldEpoch:'1',geometryRevision:'0',position:query.position,action,legal:false,reason,cost:'0',changes:[],skipped:[]}).reason,reason);
+  }
+});

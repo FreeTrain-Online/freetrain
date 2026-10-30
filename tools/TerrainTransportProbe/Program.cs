@@ -9,6 +9,31 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if (args is ["--terrace-capacity",var terraceH,var terraceV,var terraceZ,var terraceDirectory])
+{
+    int h=int.Parse(terraceH),v=int.Parse(terraceV),z=int.Parse(terraceZ);Directory.CreateDirectory(terraceDirectory);
+    var request=new EmptyWorldRequest(WorldCreationProfile.Id,"Terrace capacity",new(h,v,z),1);
+    var original=TerrainWorld.Empty(request,TerrainProfiles.Bundled);var p=original.Space.ToLocation(new(h/2,v/2,1));
+    var draft=new CornerTerrainDraft(original);RectangleTerrain.Plan(draft,p,p with{X=p.X+1,Y=p.Y+1},"raise");var world=draft.Finish();
+    using var host=new FreeTrain.Online.Session.SessionHost(new TerrainSessionState(world,TerrainProvenance.From(request),revision:world.Revision),"owner",TerrainProfiles.Resolve);
+    var measurements=new List<object>();
+    foreach(var action in new[]{"placeTerrace","removeTerrace","placeCut","removeCut"})
+    {
+        var query=new CornerTerrainQuery(1,world.Revision,new(p.X,p.Y,p.Z),action);
+        var watch=Stopwatch.StartNew();var preview=host.PreviewCorner(query);var previewMs=watch.Elapsed.TotalMilliseconds;
+        if(!preview.Legal||preview.Changes.Length!=1)throw new Exception("Terrace preview rejected.");
+        watch.Restart();var command=host.Enqueue(new("owner"),new(action,1,new EditCornerCommand(query)));host.Pump(0);
+        if(await command is not AcceptedMessage)throw new Exception("Terrace commit rejected.");var commitMs=watch.Elapsed.TotalMilliseconds;
+        watch.Restart();var capture=host.CaptureSave();host.Pump(0);var bytes=await capture;var reopened=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
+        if(!bytes.SequenceEqual(SaveCodec.Write(reopened)))throw new Exception("Terrace save mismatch.");
+        world=reopened.World;var o=world.OccupantAt(p);var cell=world.Cell(world.Space.ToStorage(p).H,world.Space.ToStorage(p).V);
+        if(cell.Ground!=(action=="placeTerrace"?2:1)|| (action=="placeCut"?o!=null:o?.Corners.Packed!=0x0400)||
+            action=="placeTerrace"&&o?.Kind!=TerrainOccupantKind.Terrace)throw new Exception("Terrace geometry mismatch.");
+        File.WriteAllBytes(Path.Combine(terraceDirectory,action+"-v7.json"),bytes);
+        measurements.Add(new{h,v,z,action,previewMs,commitMs,saveReopenMs=watch.Elapsed.TotalMilliseconds,saveBytes=bytes.Length,managedBytes=GC.GetTotalMemory(true)});
+    }
+    Console.WriteLine(JsonSerializer.Serialize(measurements,json));return;
+}
 if (args is ["--rectangle-capacity", var rectangleH, var rectangleV, var rectangleZ, var rectangleDirectory])
 {
     int h=int.Parse(rectangleH),v=int.Parse(rectangleV),z=int.Parse(rectangleZ);

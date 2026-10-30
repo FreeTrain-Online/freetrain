@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "P3-15-functional-slice-complete; final editing-capacity gate open",
+  "basedOnGitRevision": "60334a2cfbe535fd2a3752286d8b7dec304e25c5",
+  "revisionScope": "Uncommitted working tree, tested file hashes below. No commit created.",
+  "report": "../web-parity-terraces.md",
+  "saveVersion": 7,
+  "protocolVersion": 5,
+  "sourceAuthority": {
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "version": "ExAV 2.1.1.12 / V2",
+    "files": [
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+        "sha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+        "symbols": [
+          "specialStructure"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceContributionImpl.cs",
+        "sha256": "ee41a65d4b6ea0704f88f7e27aae07f7d4ee1cee6e85904446a1807ede1d594e",
+        "symbols": [
+          "TerraceContributionImpl"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceController.cs",
+        "sha256": "a6e10476c105ca110166842077454f5e47e88c0259d40f4f6eb6ce801a1f3422",
+        "symbols": [
+          "TerraceController"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/Strategy.cs",
+        "sha256": "595be974aab49f58ee8fddf6e06bd3999859ea5aadb3627a897be387493e7798",
+        "symbols": [
+          "Strategy"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/MountainDisambiguator.cs",
+        "sha256": "9ebe8880283a406afb32825ad3bf89cf46be7acae20d14627072c19396ea5853",
+        "symbols": [
+          "MountainDisambiguator"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerracePlacementStrategy.cs",
+        "sha256": "9e7e97a47ed8586d2da1a2c4212c641905dfe7b81d11dd18bf9945d471822c15",
+        "symbols": [
+          "TerracePlacementStrategy"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceRemovalStrategy.cs",
+        "sha256": "78f4680586c837569f8a1df145e733ee45c0c75ffdcaff029f83e8fb42ab2a7c",
+        "symbols": [
+          "TerraceRemovalStrategy"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffPlacementStrategy.cs",
+        "sha256": "b4fed0e90dade07572ece716b40234b589da903a82f942a6fb3489b6acb01a02",
+        "symbols": [
+          "CliffPlacementStrategy"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/CliffRemovalStrategy.cs",
+        "sha256": "7dce76cf322d9d7f551948b34c4b1accc51245872245f842e4699f56197b5121",
+        "symbols": [
+          "CliffRemovalStrategy"
+        ]
+      },
+      {
+        "path": "plugins/org.kohsuke.freetrain.terrain.terrace/src/TerraceVoxel.cs",
+        "sha256": "420200a38880379317b6433f4d44f986dcfe5bc29064fa45fe40b7270a333517",
+        "symbols": [
+          "TerraceVoxel"
+        ]
+      }
+    ],
+    "verification": "40 raw pinned Git blobs, 77 literal fixtures, 59 text bindings; source-derived, no original runtime or native GDI comparison"
+  },
+  "contract": {
+    "actions": [
+      "placeTerrace",
+      "removeTerrace",
+      "placeCut",
+      "removeCut"
+    ],
+    "sitesPerCommand": 1,
+    "terrace": "only four offsets backed up; ground+1/-1; new unowned non-reclaimable zero-value entities, no forest/ownership restoration",
+    "cut": "Mountain removal, unchanged ground, four canonical N/E/S/W higher-ground guard; restore exact same-Z maximum touching offsets, all0 no-op, all4 retained",
+    "classification": "Terrace while backed; Cut on removal/restoration; original classification is not backed up",
+    "cost": "0; no source booking or gameplay RNG draws",
+    "publication": "one detached atomic FIFO Owner/Operator commit after current authority, epoch/geometry, full graph and durable admission revalidation",
+    "preview": "authenticated compatible read-only; Observer permitted; loss/geometry/cost diagnostics",
+    "wire": "four action values on existing CornerTerrainQuery, exclusive of rectangles/offsets/nonempty strokes; no saved-state change",
+    "picking": "source Mountain/Terrace/ground rays bounded by height cut; compact immutable-entity-array cache",
+    "lifecycle": "Confirm/Cancel, Escape and panel resets, stale/role/connection/epoch fences and existing no-replay policy"
+  },
+  "results": {
+    "dotnet": {
+      "passed": 700,
+      "failed": 0
+    },
+    "focusedTerraceCases": 15,
+    "client": {
+      "passed": 140,
+      "failed": 0
+    },
+    "python": {
+      "total": 142,
+      "skipped": 1,
+      "failed": 0
+    },
+    "chromium": {
+      "passed": 109,
+      "failed": 0,
+      "newJourneysPassed": 3
+    },
+    "optionalSource": {
+      "passed": 4,
+      "failed": 0
+    },
+    "optionalPrepared": {
+      "passed": 4,
+      "failed": 0
+    },
+    "builds": "Release solution, TerrainTransportProbe, web production; zero errors/warnings",
+    "checks": [
+      "generated contracts",
+      "bundled content",
+      "EN/JA locales",
+      "raw pinned terrain source",
+      "project boundaries",
+      "git diff --check"
+    ],
+    "visualQA": "Japanese 390px DPR2 screenshot inspected; scrolling card and sticky Confirm/Cancel retain reachable controls"
+  },
+  "capacity": {
+    "command": "dotnet run --project tools/TerrainTransportProbe -c Release --no-build --no-restore -- --terrace-capacity 1500 1090 45 tmp/p3-15-capacity",
+    "results": [
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "placeTerrace",
+        "previewMs": 3.6746,
+        "commitMs": 1068.0597,
+        "saveReopenMs": 520.7914,
+        "saveBytes": 2187899,
+        "managedBytes": "52887552"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "removeTerrace",
+        "previewMs": 0.1054,
+        "commitMs": 965.0587,
+        "saveReopenMs": 584.8386,
+        "saveBytes": 2187756,
+        "managedBytes": "52942352"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "placeCut",
+        "previewMs": 0.0547,
+        "commitMs": 1040.0739,
+        "saveReopenMs": 612.1877,
+        "saveBytes": 2187696,
+        "managedBytes": "52975024"
+      },
+      {
+        "h": 1500,
+        "v": 1090,
+        "z": 45,
+        "action": "removeCut",
+        "previewMs": 0.2554,
+        "commitMs": 1071.4959,
+        "saveReopenMs": 611.5097,
+        "saveBytes": 2187756,
+        "managedBytes": "51926840"
+      }
+    ],
+    "qualification": "Actual source rectangle slope followed by all four one-site actions, exact Save7 continuation. Commit965–1072ms exceeds250ms target. Final P3-16a editing latency and dense publication acceptance remains open."
+  },
+  "commands": {
+    "build": "dotnet build FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "dotnet": "dotnet test FreeTrain.Online.slnx -c Release --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false",
+    "client": "deno task --cwd web test",
+    "webBuild": "deno task --cwd web build",
+    "python": "python3 -m unittest discover -s scripts/tests",
+    "source": "python3 scripts/review-terrain.py --source-root /Users/dmark/dev/freetrain-exav-archive --check",
+    "boundaries": "python3 scripts/check-project-boundaries.py",
+    "chromium": "FREETRAIN_ONLINE_BROWSER_EVIDENCE=/Users/dmark/dev/freetrain/tmp/p3-15-browser-final deno run -A npm:@playwright/test@1.64.1 test (cwd web)",
+    "optional": "deno run -A npm:@playwright/test@1.64.1 test --config playwright.optional.config.ts (cwd web); source/default and FREETRAIN_ONLINE_OPTIONAL_PREPARED=1"
+  },
+  "environment": {
+    "dotnet": "10.0.402",
+    "deno": "2.9.8; repository pin2.9.7, component commands used; exact-version aggregate script not run",
+    "browser": "installed Playwright Chromium, local macOS Arm64; native/deferred targets unchanged"
+  },
+  "developmentCorrections": [
+    "Client schema test registered the repository int64/uint63 formats.",
+    "Browser test reselects terrace scope after the existing panel-reset lifecycle; Japanese expected diagnostic corrected.",
+    "Contract wording clarified: source Direction.get(i*2) samples canonical N/E/S/W, not X/Y diagonal neighbors."
+  ],
+  "openGates": [
+    "P3-16 map authoring mode",
+    "final P3-16a edit latency and dense edited-world publication before P3-17",
+    "overall P3 and existing P2/native/deferred-browser/full-city/import gates"
+  ],
+  "files": {
+    "README.web.md": "3a26fd26b5488c07ab38265620c7d172288ecd28e540147be0bfc072de4362cc",
+    "doc/web-parity-terraces.md": "d8a1472ae112ce74630e0ccb7d79d5c07a4872cd0bb3b3774fe26c0174ba3839",
+    "doc/web-parity-terrain-contract.md": "65e339d4df2f5a43ca4f646372e9f1a9a8d6f3432cc837f1b310e26ed7b2a950",
+    "doc/web-parity-world-generation.md": "9c8aea43e37b15a6e9e81e044a28b138b6ac0ae9d75c4a2ef98a96826ab90902",
+    "prototype/protocol/schema.json": "8c9bab7355f1b9878743477bb6cbf1c71e3a078ec05319121b90129d14d51046",
+    "src/FreeTrain.Online.Server/NetworkEndpoints.cs": "3706ced75e0efc14bbaecba795ea9bce7dab6c38740ac30d251348bc6047a639",
+    "src/FreeTrain.Online.Session/CornerTerrainSession.cs": "72036cfd612ca1cf4d01ad77ea8cc77245892219a15400013dc3db19f8ad11fa",
+    "src/FreeTrain.Online.Simulation/CornerTerrainDraft.cs": "758ef35468414402079cdf9f8d5c2c425635ebcbcf8610fc70cb911c5a6b1efa",
+    "src/FreeTrain.Online.Simulation/TerraceTerrain.cs": "eee17b3a52320e9ea63e10c220e9431ca604fa0237426bf3c0da715c1bf03387",
+    "tests/FreeTrain.Online.Tests/TerraceTerrainTests.cs": "a5423891add3ddb3151b6ff0abf3b5219dbd8ad04af2e4550b36bce2461034ee",
+    "tmp/web-feature-parity-checklist.md": "9a6b1c8ee0eb8c4003d600b703a7485683f7ac325d776b67238f17ddb9aba40b",
+    "tools/TerrainTransportProbe/Program.cs": "71be607fcabbd0b8b9d7bb83fd3803378d70bb6d009db1346574ea1ff13eea5d",
+    "web/playwright.config.ts": "715f5e2cd5423bd058fb7b69ae41f1235fa8b49c6e6689e6eb5d84e1cf72cb54",
+    "web/src/CornerTerrainControls.svelte": "02838c73a1a33807fd0c432ceef3f667922d08f76b9ea1805b4964b8b0996738",
+    "web/src/MapView.svelte": "3925bd91ff4667b4f5fe0be8d1af540fc567f572d23c913a53a4e2cdffd61d2d",
+    "web/src/generated/contracts.ts": "de0841637e47c8becabc37964b575147911ca39a0e98d765d12779b5731eaf63",
+    "web/src/lib/terrain-edit.ts": "c82c212fc3518cf1bae973863bed58766af81bbfaf20108a1d5c6a5b6e33f6b1",
+    "web/src/locales/en/app.json": "323639d5bfb3ff7ddf6db77b919d056bdc0414c791f2f4c85874a73ade1a02fb",
+    "web/src/locales/ja/app.json": "5e59364177a7e49749e368064053bf34b2377d5b236922dc273ccba99d370c4d",
+    "web/tests/browser/terrace-terrain.spec.ts": "d74ed2b4120e7175776b0e0c198c9e2a13ed10db08d982810d959bf30e07ddfd",
+    "web/tests/terrain.test.ts": "d9d1a585cd349ddec3e25b2192fe776151e1cb2ac070d709046a315fdbc87391"
+  },
+  "artifacts": [
+    "../../tmp/p3-15-build.log",
+    "../../tmp/p3-15-dotnet-tests.log",
+    "../../tmp/p3-15-web-build.log",
+    "../../tmp/p3-15-client-tests.log",
+    "../../tmp/p3-15-python-tests.log",
+    "../../tmp/p3-15-source-check.log",
+    "../../tmp/p3-15-boundaries.log",
+    "../../tmp/p3-15-browser-full.log",
+    "../../tmp/p3-15-optional-source.log",
+    "../../tmp/p3-15-optional-prepared.log",
+    "../../tmp/p3-15-probe-build.log",
+    "../../tmp/p3-15-capacity.log",
+    "../../tmp/p3-15-browser-final/terrace-terrain/terrace-ja-narrow.png",
+    "../../tmp/p3-15-capacity/placeTerrace-v7.json",
+    "../../tmp/p3-15-capacity/removeTerrace-v7.json",
+    "../../tmp/p3-15-capacity/placeCut-v7.json",
+    "../../tmp/p3-15-capacity/removeCut-v7.json"
+  ],
+  "artifactHashes": {
+    "../../tmp/p3-15-build.log": "e217af832d72a77e435027bce726288a9960c717dcb84bc14cde7d1ba9f56f18",
+    "../../tmp/p3-15-dotnet-tests.log": "4c594ea8ab0a209c12e91066ce54bb65dd9e5ceaaca74872cce90f6d0cc6a868",
+    "../../tmp/p3-15-web-build.log": "3b79feec9d3426210aee39f3cdcbf9c78391722dd49f7fa119517499f954e7bc",
+    "../../tmp/p3-15-client-tests.log": "71cb8372bad149de46776e8069f81b6909ffd5f104fd55056a5a1a375f9a93dd",
+    "../../tmp/p3-15-python-tests.log": "024bd640fd4c9d7ffa7c456dbfb4efa189c0d1fb65a931fb4f009072ad963ee4",
+    "../../tmp/p3-15-source-check.log": "9b7c1c3854598fe36d29fcb74b691bf4b929ccf4d8472606017024f83c986fc0",
+    "../../tmp/p3-15-boundaries.log": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6",
+    "../../tmp/p3-15-browser-full.log": "72d5d9c0c0675a662016afe8c20ab757a6d2df869e0bcbce53a7f6cfe3b65ceb",
+    "../../tmp/p3-15-optional-source.log": "58445266b5ac8c0b6a02a682a234504d323c0f15b8d49306e85f44684199a61d",
+    "../../tmp/p3-15-optional-prepared.log": "c2b4ead88a9d9d2b88d16cadfdbaae10aafab934292d9b1d84322d319eddb5da",
+    "../../tmp/p3-15-probe-build.log": "4f20ff3979f14c8bb620bce4f6e4b5d784e0ac095e8496293abd271aafadbf40",
+    "../../tmp/p3-15-capacity.log": "25037d5fe5c1785f27571c09a44776a44c8424d78a4816c43436022a594ff5e0",
+    "../../tmp/p3-15-browser-final/terrace-terrain/terrace-ja-narrow.png": "618bdc267244e03714dfdccc9985a0b9dc3ab9af6547516a53fd25ea8823dea7",
+    "../../tmp/p3-15-capacity/placeTerrace-v7.json": "a6adba92a98e35dd992486d6be7ef720dc4faf4061eb1b2240b768ea25e92dfa",
+    "../../tmp/p3-15-capacity/removeTerrace-v7.json": "b9e1b401fe2bd7c7198e2418ba6960d224c82158199e7222486d983014a1b5ef",
+    "../../tmp/p3-15-capacity/placeCut-v7.json": "b3e02465250a79d95fd00baafa6a91c2786da46f1085914f9b2381fa20dac3ad",
+    "../../tmp/p3-15-capacity/removeCut-v7.json": "f2fcade146d15b50924aceb9613e1d6f3d20f3e793c1fb2247acf59cc538844e"
+  }
+}

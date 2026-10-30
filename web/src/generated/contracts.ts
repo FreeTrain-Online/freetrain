@@ -303,7 +303,7 @@ export interface CornerTerrainQuery {
   expectedWorldEpoch: Counter;
   expectedGeometryRevision: Counter;
   position: Position;
-  action: "raise" | "lower" | "repair";
+  action: "raise" | "lower" | "repair" | "placeTerrace" | "removeTerrace" | "placeCut" | "removeCut";
   offsetX: number | null;
   offsetY: number | null;
   stroke: CornerTerrainSite[] | null;
@@ -477,7 +477,7 @@ export interface CornerTerrainPreview {
   worldEpoch: Counter;
   geometryRevision: Counter;
   position: Position;
-  action: "raise" | "lower" | "repair";
+  action: "raise" | "lower" | "repair" | "placeTerrace" | "removeTerrace" | "placeCut" | "removeCut";
   legal: boolean;
   reason:
     | (
@@ -493,6 +493,9 @@ export interface CornerTerrainPreview {
         | "noChange"
         | "inconsistentNeighbors"
         | "unrepresentableHeight"
+        | "mountainRequired"
+        | "terraceRequired"
+        | "higherNeighbor"
       )
     | null;
   cost: Money;
@@ -535,5 +538,8 @@ export interface CornerTerrainSkip {
     | "capacityLimit"
     | "noChange"
     | "inconsistentNeighbors"
-    | "unrepresentableHeight";
+    | "unrepresentableHeight"
+    | "mountainRequired"
+    | "terraceRequired"
+    | "higherNeighbor";
 }

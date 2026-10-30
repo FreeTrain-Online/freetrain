@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
-  import { pickTerrainGround } from './lib/terrain-edit.ts';
+  import { pickTerrainStrategy } from './lib/terrain-edit.ts';
   import { gameDate } from './lib/game-time.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, untrack } from 'svelte';
@@ -33,6 +33,7 @@
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let cornerControls=$state<{cancelDraft:()=>boolean}>();
   let rectangleMode=false;
+  let terrainStrategy:string|undefined;
   let rectangleEnd=$state<Position>();
   let cornerGeneration=$state(0);
   let cornerPicked=$state<{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean}>();
@@ -71,7 +72,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { rectangleMode=false;rectangleEnd=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -134,7 +135,7 @@
   function pickCorner(event:PointerEvent,append:boolean){
     const p=point(event),read=view.read;if(!read?.terrain)return;
     const world={x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y};
-    const position=pickTerrainGround(read,world,heightCut);if(!position)return;
+    const position=pickTerrainStrategy(read,world,heightCut,terrainStrategy);if(!position)return;
     const projected=space.project(position);
     const next={position,offsetX:Math.max(0,Math.min(31,Math.floor(world.x-projected.x))),offsetY:Math.max(-32,Math.min(32,Math.floor(world.y-projected.y))),reverse:event.ctrlKey,soft:event.shiftKey,append};
     cornerPicked=next;
@@ -273,7 +274,7 @@
     </PanelFrame>
   {/if}
   {#if tool === 'terrain' && terrain && !panel}
-    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={value=>{rectangleMode=value;}} onpreview={(p,end)=>{preview=p;rectangleEnd=end;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
+    {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end)=>{preview=p;rectangleEnd=end;dirty=true;}} onreset={()=>{cornerPicked=undefined;}}/>{/key}
   {/if}
   {#if tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>
