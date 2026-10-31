@@ -2,7 +2,7 @@
 
 A web-based multiplayer version of FreeTrain, a train simulation game originally developed by [Kohsuke Kawaguchi](https://www.kohsuke.org/freetrain/). This project aims to bring the classic FreeTrain experience to modern web browsers, allowing players to enjoy the game together online.
 
-We are forked from [FreeTrain English version](https://sourceforge.net/projects/freetrain/) while borrowing elements from [FreeTrain EX Av](https://w.atwiki.jp/freetrain-exav/), but the codebase is largely rewritten in modern C# and TypeScript. The server is built with .NET 10, while the client uses Svelte and Vite.
+We are forked from [FreeTrain English version](https://sourceforge.net/projects/freetrain/) while borrowing elements from [FreeTrain EX Av](https://w.atwiki.jp/freetrain-exav/pages/13.html), but the codebase is largely rewritten in modern C# and TypeScript. The server is built with .NET 10, while the client uses Svelte and Vite.
 
 FreeTrain Online is in early development. You can explore and edit a shared world, then build and remove normal railway routes using two map points or keyboard coordinates with a cost and loss preview. Moving trains, stations, special railway infrastructure and the city economy are still in development. There is no public online instance yet; running it currently requires a local setup.
 
