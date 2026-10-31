@@ -124,10 +124,7 @@
     if (event.code === 'Space') { event.preventDefault(); if (!event.repeat){if(down)cancelGesture();spaceHeld = down;} return; }
     if (['+', '=', '-', '−'].includes(event.key)) {
       event.preventDefault();
-      if (down && !event.repeat) {
-        const target = camera.zoom + (event.key === '+' || event.key === '=' ? .25 : -.25);
-        zoom(target / camera.zoom);
-      }
+      if (down && !event.repeat) zoomStep(event.key === '+' || event.key === '=' ? .25 : -.25);
       return;
     }
     const shortcut = tools.find(item=>item.shortcut.toLowerCase()===event.key.toLowerCase())?.id;
@@ -243,6 +240,7 @@
     return { x: Math.max(0, overlay.left - r.left) / 2, y: height / 2 };
   }
   export function zoom(factor: number) { if (!live) return;cancelGesture(); camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
+  function zoomStep(delta: number) { zoom((camera.zoom + delta) / camera.zoom); }
   export function home() {
     cancelGesture();
     narrowRailOffset=0;
@@ -346,7 +344,7 @@
   </div>
   {#if !terrain}<span id="terrain-unavailable" class="sr-only">{text.terrainUnavailable}</span>{/if}
   <div class="map-navigation" class:beside-panel={!!panel}>
-    <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
+    <button aria-label={text.zoomOut} onclick={() => zoomStep(-.25)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoomStep(.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
   </div>
   {#if panel === 'view'}
     <PanelFrame locale={view.locale} title={text.view} closeLabel={text.close} {onclose}>
