@@ -1,0 +1,25 @@
+{
+  "type": "command",
+  "requestId": "remove-line",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "removeObject",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "5",
+      "expectedContentVersion": "mixed-railway-content-1",
+      "position": {
+        "x": 1,
+        "y": 0,
+        "z": 4
+      },
+      "expectedEntityId": "0",
+      "expectedEntityRevision": "0",
+      "end": {
+        "x": 1,
+        "y": 2,
+        "z": 4
+      }
+    }
+  }
+}

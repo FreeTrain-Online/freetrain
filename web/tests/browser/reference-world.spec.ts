@@ -51,7 +51,7 @@ test('default live H/V map renders, picks source rails and keeps unsupported ope
   await page.goto('/');await ready(page);
   const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-coordinate-system','hv');await expect(canvas).toHaveAttribute('data-ruleset','reference-spatial-4');
   await expect(page.getByTestId('reference-world')).toHaveText('Spatial reference world');
-  await expect(page.getByRole('button',{name:'Run',exact:false})).toBeEnabled();await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:'Run',exact:false})).toBeEnabled();await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeDisabled();
   const before=await bootstrap(page);expect(before.tracks).toHaveLength(32);expect(before.trains).toHaveLength(0);
   expect(before.entities).toHaveLength(32);
   for(const track of before.tracks){const entity=before.entities.find((e:any)=>e.id===track.entityId);expect(entity.anchor).toEqual(track.position);expect(entity.definition.recipeId).toBe(track.shape);}
@@ -390,7 +390,7 @@ test('mixed Save8 loads into the playable railway shell, steps and saves exactly
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data})).ok()).toBe(true);
   await page.goto('/');await ready(page);
   await expect(page.getByTestId('reference-world')).toHaveText('Railway world');
-  await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeEnabled();
   const initial=await bootstrap(page);expect(initial.mixed.voxels).toHaveLength(4);expect(initial.cash).toBe('7000000000');
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await bootstrap(page)).tick).toBe('130082');

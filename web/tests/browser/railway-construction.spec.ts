@@ -3,7 +3,7 @@ import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import type {StateChunk} from '../../src/generated/contracts.ts';
-import {ready,openPanel,closePanel,canonicalState as state} from './ux-helpers.ts';
+import {ready,openPanel,closePanel,canonicalState as state,previewRemovalLine,confirmRemoval} from './ux-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 async function save(page:Page){return (await page.request.get('/api/saves/download')).body();}
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
@@ -143,7 +143,7 @@ test('two map points preview/cancel/build, attach, branch and remove in two peer
   await expect(canvas).toHaveAttribute('data-instance','track-canvas');await expect(canvas).toHaveAttribute('data-camera',camera!);await expect(canvas).toHaveAttribute('data-zoom',zoom!);expect(bootstrap).toBe(0);
   await target(page,[34,27],[36,27]);await confirm(page);await target(page,[32,27],[34,29]);await confirm(page);
   await expect.poll(async()=>(await state(peer)).mixed.voxels.find((v:any)=>v.position.x===32&&v.position.y===27).traffic.rail.pattern).toBe(23);
-  const builtBytes=await save(page);await replace(page,builtBytes);await ready(page);await page.getByRole('button',{name:'Remove track',exact:true}).click();await target(page,[34,27],[36,27]);await confirm(page);
+  const builtBytes=await save(page);await replace(page,builtBytes);await ready(page);await previewRemovalLine(page,[34,27],[36,27]);await confirmRemoval(page);
   await expect.poll(async()=>(await state(peer)).mixed.voxels.some((v:any)=>v.position.x===36&&v.position.y===27)).toBe(false);
   expect((await state(page)).tick).toBe(before.tick);expect(errors).toEqual([]);
  }finally{await replace(page,original);await context.close();}
@@ -225,10 +225,10 @@ test('elevated and buried normal routes build, preview exact support losses, sav
   const authored=JSON.parse((await save(page)).toString()),cells=Buffer.from(authored.packedTerrain.cells,'base64');cells[17*30+18]=0x43;
   authored.packedTerrain.cells=cells.toString('base64');authored.packedTerrain.geometryRevision='1';authored.revision='1';await replace(page,Buffer.from(JSON.stringify(authored)));await ready(page);
   await page.getByRole('button',{name:'Track',exact:true}).click();await target(page,[30,27],[32,27],3);await expect(page.getByTestId('rail-cost')).toContainText('42,000,000');await expect(page.getByTestId('rail-cost')).toContainText('New piers: 4');await confirm(page);
-  const elevated=await save(page);await replace(page,elevated);await ready(page);await page.getByRole('button',{name:'Remove track',exact:true}).click();await target(page,[30,27],[32,27],3);await expect(page.locator('.rail-losses li')).toHaveCount(4);await page.screenshot({path:output('track-elevated-removal.png'),fullPage:true});await confirm(page);
-  await page.getByLabel('Track action',{exact:true}).selectOption('lay');await target(page,[30,29],[32,29],0);await expect(page.getByTestId('rail-cost')).toContainText('36,000,000');await confirm(page);
+  const elevated=await save(page);await replace(page,elevated);await ready(page);await previewRemovalLine(page,[30,27],[32,27],3);await expect(page.locator('.remove-task .rail-losses li')).toHaveCount(7);await page.screenshot({path:output('track-elevated-removal.png'),fullPage:true});await confirmRemoval(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();await target(page,[30,29],[32,29],0);await expect(page.getByTestId('rail-cost')).toContainText('36,000,000');await confirm(page);
   const buried=await save(page);await replace(page,buried);await ready(page);await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('0');await closePanel(page);await expect(page.locator('canvas')).toHaveAttribute('data-terrain-cut','0');
-  await page.getByRole('button',{name:'Remove track',exact:true}).click();await target(page,[30,29],[32,29],0);await confirm(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
+  await previewRemovalLine(page,[30,29],[32,29],0);await confirmRemoval(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
  }finally{await replace(page,original);}
 });
 

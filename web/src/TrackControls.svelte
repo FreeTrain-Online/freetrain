@@ -5,10 +5,10 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
-  let {model,view,picked,level=$bindable(1),initialAction='lay',infrastructure='normal',onpreview,onpoints,onreveal,heightCut}:
-    {model:ShellModel;view:ShellState;picked?:Position;level?:number;initialAction?:'lay'|'remove';infrastructure?:'normal'|'bridge';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
+  let {model,view,picked,level=$bindable(1),infrastructure='normal',onpreview,onpoints,onreveal,heightCut}:
+    {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
-  let action=$state<'lay'|'remove'>(untrack(()=>initialAction));
+  let action=$state<'lay'|'remove'>('lay');
   let routing=$state<'closest'|'source'|'alternate'>('closest');
   let ax=$state(0),ay=$state(0),bx=$state(0),by=$state(0);
   let hasA=$state(false),hasB=$state(false),point=$state<'from'|'to'>('from');
@@ -36,7 +36,7 @@
     detectCoordinateLevel();
     if(![ax,ay,bx,by,level].every(Number.isSafeInteger)){status='failed';return;}
     hasA=true;hasB=true;points();
-    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action,routing,infrastructure};
+    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure};
     const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewRailway(query,request.signal);
@@ -71,7 +71,7 @@
   <p class="hint">{text[infrastructure==='bridge'?'bridgeHelp':'railHelp']}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     <div class="form-actions">
-      <label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text.railLay}</option><option value="remove">{text.railRemove}</option></select></label>
+      {#if infrastructure==='bridge'}<label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text.railLay}</option><option value="remove">{text.railRemove}</option></select></label>{/if}
       <label>{text.buildLevel}<input aria-label={text.buildLevel} type="number" min="0" max={(view.read?.map.levels??1)-1} step="1" bind:value={level} disabled={view.pending} oninput={event=>{autoLevel=false;level=event.currentTarget.valueAsNumber;edit();}}/></label>
     </div>
     <label><input type="checkbox" aria-label={text.railAutoLevel} bind:checked={autoLevel} disabled={view.pending} onchange={event=>changeLevelMode(event.currentTarget.checked)}/>{text.railAutoLevel}</label>

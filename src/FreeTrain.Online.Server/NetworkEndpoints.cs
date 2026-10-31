@@ -154,6 +154,27 @@ public static class NetworkEndpoints
             catch (InvalidOperationException ex)
             { return Results.Json(new { code = ex.Message },statusCode:409); }
         });
+        app.MapPost("/api/removal/preview", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk,0,count);
+                }
+                var query = JsonSerializer.Deserialize<RemovalQuery>(buffer.ToArray(),NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PreviewRemoval(query),NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message },statusCode:409); }
+        });
         app.MapPost("/api/railway/preview", async Task<IResult> (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
@@ -446,6 +467,11 @@ public static class NetworkEndpoints
         ReleaseControlCommand release => !string.IsNullOrWhiteSpace(release.TrainId) && !string.IsNullOrWhiteSpace(release.LeaseId),
         RenameStationCommand rename => rename.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(rename.StationId) && rename.Name != null,
         RemoveTrackCommand remove => remove.ExpectedRevision >= 0 && remove.Position != null,
+        RemoveObjectCommand remove => remove.Query != null && remove.Query.Position != null &&
+            remove.Query.ExpectedWorldEpoch >= 0 && remove.Query.ExpectedGeometryRevision >= 0 &&
+            (remove.Query.End == null ? remove.Query.ExpectedEntityId > 0 && remove.Query.ExpectedEntityRevision >= 0 :
+                remove.Query.ExpectedEntityId == 0 && remove.Query.ExpectedEntityRevision == 0) &&
+            remove.Query.ExpectedContentVersion is TerrainProfile.ContentVersion or ProtocolIdentity.MixedContent,
         SetAuthoringModeCommand mode => mode.ExpectedGeometryRevision >= 0,
         EditSlopeCommand edit => edit.Query != null && edit.Query.Position != null &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 &&

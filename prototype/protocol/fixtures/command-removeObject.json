@@ -1,0 +1,20 @@
+{
+  "type": "command",
+  "requestId": "remove-object",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "removeObject",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "3",
+      "expectedContentVersion": "terrain-content-1",
+      "position": {
+        "x": 1,
+        "y": 0,
+        "z": 2
+      },
+      "expectedEntityId": "2",
+      "expectedEntityRevision": "0"
+    }
+  }
+}

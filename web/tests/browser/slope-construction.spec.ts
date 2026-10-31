@@ -71,7 +71,7 @@ test('map slope preview/cancel and flat-to-slope-to-elevated network synchronize
  await page.goto('/');await ready(page);const original=await save(page),context=await browser.newContext(),peer=await context.newPage();
  try{
   await empty(page);await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeEnabled();
-  for(const [name,key] of [['Inspect','I'],['Track','T'],['Slope','S'],['Modify terrain','G'],['Remove track','R']]){
+  for(const [name,key] of [['Inspect','I'],['Track','T'],['Slope','S'],['Modify terrain','G'],['Remove','R']]){
    const button=page.getByRole('button',{name,exact:true});await expect(button).toHaveAttribute('title',`${name} (${key})`);await expect(button).toHaveAttribute('aria-keyshortcuts',key);
   }
   await page.locator('canvas').focus();await page.keyboard.press('g');await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('aria-pressed','true');await page.keyboard.press('i');

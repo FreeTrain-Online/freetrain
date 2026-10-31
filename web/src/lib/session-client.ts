@@ -19,6 +19,7 @@ export interface SessionClient {
   previewCorner?(query:CornerTerrainQuery,signal:AbortSignal):Promise<CornerTerrainPreview>;
   previewSlope?(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').SlopePreview>;
   previewRailway?(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').RailwayPreview>;
+  previewRemoval?(query:import('../generated/contracts.ts').RemovalQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').RemovalPreview>;
   previewSpatial?(query:SpatialQuery,signal:AbortSignal):Promise<SpatialPreview>;
   dispose(): void;
 }

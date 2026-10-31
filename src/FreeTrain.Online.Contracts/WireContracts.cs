@@ -139,6 +139,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 [JsonDerivedType(typeof(EditSlopeCommand), "editSlope")]
+[JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
 public abstract record CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
@@ -148,6 +149,13 @@ public sealed record StepCommand : CommandPayload;
 public sealed record RenameStationCommand(string StationId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record BuildTrackCommand(PositionRead Position, string Shape) : CommandPayload;
 public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevision) : CommandPayload;
+public sealed record RemovalQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
+    PositionRead Position, long ExpectedEntityId, long ExpectedEntityRevision,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead? End = null);
+public sealed record RemoveObjectCommand(RemovalQuery Query) : CommandPayload;
+public sealed record RemovalSkipRead(PositionRead Position, string Reason);
+public sealed record RemovalPreviewRead(RemovalQuery Query, bool Legal, string? Reason, string ObjectKind,
+    PositionRead[] Positions, PositionRead[] Path, RemovalSkipRead[] Skipped);
 public sealed record SetControllerCommand(string TrainId, long ExpectedRevision, string Controller, string LeaseId) : CommandPayload;
 public sealed record ControllerInputCommand(string TrainId, long InputSequence, bool Pass, bool Depart,
     bool Reverse, bool Left, bool Right, bool Reset, string LeaseId) : CommandPayload;

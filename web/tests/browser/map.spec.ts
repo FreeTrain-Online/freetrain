@@ -58,7 +58,7 @@ test('preview and cancel never charge; buffer extension confirms once, removal a
     const built=await bootstrap(page);expect(BigInt(before.cash)-BigInt(built.cash)).toBe(200n);expect(built.tracks).toHaveLength(before.tracks.length+1);
     expect(built.tracks.find((t:any)=>t.position.x===36&&t.position.y===16).shape).toBe('eastWest');
     await clickTile(page,{x:23,y:16,z:1});await page.getByRole('button',{name:'Confirm track change',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Track cannot be placed here.');expect((await bootstrap(page)).cash).toBe(built.cash);
-    await page.getByRole('button',{name:'Remove track',exact:true}).click();await clickTile(page,{x:37,y:16,z:1});await page.getByRole('button',{name:'Confirm track change',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Confirmed by server');
+    await page.getByRole('button',{name:'Remove',exact:true}).click();await clickTile(page,{x:37,y:16,z:1});await page.getByRole('button',{name:'Confirm track change',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Confirmed by server');
     const removed=await bootstrap(page);expect(removed.tracks).toHaveLength(before.tracks.length);expect(removed.cash).toBe(built.cash);
     // Protected station rail is rejected atomically.
     await clickTile(page,{x:20,y:8,z:1});await page.getByRole('button',{name:'Confirm track change',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Track cannot be placed here.');

@@ -9,7 +9,9 @@ export type GameDocument =
   | RailwayQuery
   | RailwayPreview
   | SlopeQuery
-  | SlopePreview;
+  | SlopePreview
+  | RemovalQuery
+  | RemovalPreview;
 export type WireMessage =
   | Join
   | Command
@@ -117,6 +119,10 @@ export type CommandPayload =
   | {
       kind: "editSlope";
       query: SlopeQuery;
+    }
+  | {
+      kind: "removeObject";
+      query: RemovalQuery;
     };
 
 export interface Join {
@@ -454,6 +460,15 @@ export interface SlopeQuery {
   position: Position;
   climb: 0 | 2 | 4 | 6;
 }
+export interface RemovalQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  position: Position;
+  expectedEntityId: Counter;
+  expectedEntityRevision: Counter;
+  end?: Position | null;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -779,4 +794,26 @@ export interface SlopeRailPosition {
   pattern: number;
   zDiff: -1 | 0 | 1;
   zAngle: 0 | 2 | 4 | 6;
+}
+export interface RemovalPreview {
+  query: RemovalQuery;
+  legal: boolean;
+  reason: string | null;
+  objectKind: "terrain" | "forest" | "creek" | "terrace" | "slope" | "pier" | "railway" | "line";
+  /**
+   * @maxItems 8192
+   */
+  positions: Position[];
+  /**
+   * @maxItems 8192
+   */
+  path: Position[];
+  /**
+   * @maxItems 8192
+   */
+  skipped: RemovalSkip[];
+}
+export interface RemovalSkip {
+  position: Position;
+  reason: string;
 }

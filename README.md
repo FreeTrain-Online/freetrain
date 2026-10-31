@@ -49,6 +49,14 @@ Use **Game → New world** to create or import a world. The game saves automatic
 checkpoints, and you can also save, load or download a world from the save panel.
 **Game → Settings** lets you change the language and appearance.
 
+Choose **Remove** (R), select a railway, pier, forest, creek or terrace on the
+map, review the highlighted cells, then confirm. Selecting any part of a railway
+slope removes the complete slope. Forest removal preserves the ground shape.
+For a railway route, choose **Two-point line** in Remove and pick two points
+or enter their coordinates at one height. Review the straight stepped line and
+any skipped objects, then confirm. The line removes tracks and bridges across
+gaps while preserving scenery. The Track tool is for construction.
+
 For more setup, multiplayer, deployment and development details, see
 [README.web.md](README.web.md).
 

@@ -29,6 +29,12 @@
     },
     {
       "$ref": "#/$defs/SlopePreview"
+    },
+    {
+      "$ref": "#/$defs/RemovalQuery"
+    },
+    {
+      "$ref": "#/$defs/RemovalPreview"
     }
   ],
   "$defs": {
@@ -784,6 +790,22 @@
             },
             "query": {
               "$ref": "#/$defs/SlopeQuery"
+            }
+          },
+          "required": [
+            "kind",
+            "query"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "removeObject"
+            },
+            "query": {
+              "$ref": "#/$defs/RemovalQuery"
             }
           },
           "required": [
@@ -3056,6 +3078,129 @@
         "rails",
         "addedPiers",
         "losses"
+      ]
+    },
+    "RemovalQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "expectedEntityId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedEntityRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedContentVersion",
+        "position",
+        "expectedEntityId",
+        "expectedEntityRevision"
+      ]
+    },
+    "RemovalPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/RemovalQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        },
+        "objectKind": {
+          "enum": [
+            "terrain",
+            "forest",
+            "creek",
+            "terrace",
+            "slope",
+            "pier",
+            "railway",
+            "line"
+          ]
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "path": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "skipped": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/RemovalSkip"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "objectKind",
+        "positions",
+        "path",
+        "skipped"
+      ]
+    },
+    "RemovalSkip": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "position",
+        "reason"
       ]
     }
   }

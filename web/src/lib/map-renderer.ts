@@ -15,7 +15,7 @@ import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -124,12 +124,23 @@ export class MapRenderer {
       }
       for(const site of options.terrainSites??[]) {
         if(site.position.z>options.heightCut)continue;
-        const p=toScreen(site.position,camera,width,height,this.space);ctx.strokeStyle=site.skipped?'#b00020':'#126e79';ctx.fillStyle=site.skipped?'#b0002030':'#126e7940';ctx.lineWidth=2;
+        const p=toScreen(site.position,camera,width,height,this.space);ctx.strokeStyle=site.skipped?'#b00020':options.remove?'#bf4a19':'#126e79';ctx.fillStyle=site.skipped?'#b0002030':options.remove?'#bf4a1940':'#126e7940';ctx.lineWidth=2;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*camera.zoom);ctx.lineTo(p.x+16*camera.zoom,p.y);ctx.lineTo(p.x,p.y+8*camera.zoom);ctx.lineTo(p.x-16*camera.zoom,p.y);ctx.closePath();ctx.fill();ctx.stroke();
       }
       // The ghost uses the server's exact visited cells and patterns. A height
       // cut hides the overlay at that level just as it hides constructed rail.
       ctx.save();
+      const removal=options.removalPath??[];
+      this.canvas.dataset.removalPathCells=String(removal.length);
+      if(removal.length>1){
+        ctx.strokeStyle='#bf4a19';ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.beginPath();let started=false;
+        for(const position of removal){
+          if(position.z>options.heightCut)continue;
+          const p=toScreen(position,camera,width,height,this.space);
+          if(started)ctx.lineTo(p.x,p.y);else{ctx.moveTo(p.x,p.y);started=true;}
+        }
+        ctx.stroke();ctx.setLineDash([]);
+      }
       const rail=options.railPreview;
       if(rail){
         ctx.strokeStyle=rail.legal?(rail.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';ctx.lineWidth=3;

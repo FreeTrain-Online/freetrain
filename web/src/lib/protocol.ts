@@ -15,6 +15,17 @@ const validate = ajv.compile(schema.$defs.WireMessage ? { ...schema, $ref: '#/$d
 const validatePreview=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SpatialPreview'});
 const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTerrainPreview'});
 const validateSlope=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SlopePreview'});
+const validateRemoval=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/RemovalPreview'});
+export function parseRemovalPreview(value:unknown):import('../generated/contracts.ts').RemovalPreview {
+  if(!validateRemoval(value))throw new Error('Invalid removal preview');
+  const p=value as import('../generated/contracts.ts').RemovalPreview;
+  if(p.legal ? p.reason!==null||p.positions.length===0 : p.reason===null||p.positions.length!==0)throw new Error('Inconsistent removal preview');
+  if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate removal positions');
+  if(new Set(p.path.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.path.length)throw new Error('Duplicate removal path');
+  if((p.objectKind==='line')!==!!p.query.end||p.legal&&p.path.length===0)throw new Error('Inconsistent removal mode');
+  if(p.query.end ? p.query.expectedEntityId!=='0'||p.query.expectedEntityRevision!=='0' : p.query.expectedEntityId==='0')throw new Error('Invalid removal identity');
+  return p;
+}
 export function parseSlopePreview(value:unknown):import('../generated/contracts.ts').SlopePreview {
   if(!validateSlope(value))throw new Error('Invalid slope preview');
   const p=value as import('../generated/contracts.ts').SlopePreview;

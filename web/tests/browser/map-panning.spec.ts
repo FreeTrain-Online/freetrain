@@ -63,7 +63,7 @@ test('trackpad pans, wheel and keyboard zoom, and tool shortcuts select without 
   await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(4);
   for (let i = 0; i < 20; i++) await page.keyboard.press('-');
   await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(.5);
-  for (const [key, label] of [['t', 'Build track'], ['t', 'Build track'], ['r', 'Remove track'], ['i', 'Inspect / drive']]) {
+  for (const [key, label] of [['t', 'Build track'], ['t', 'Build track'], ['r', 'Remove'], ['i', 'Inspect / drive']]) {
     await page.keyboard.press(key);
     await expect(page.getByRole('button', { name: label, exact: true })).toHaveAttribute('aria-pressed', 'true');
   }

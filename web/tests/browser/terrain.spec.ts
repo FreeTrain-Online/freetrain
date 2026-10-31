@@ -20,7 +20,7 @@ test('real terrain save replacement renders sea/cut/forest, picks independently,
  try {
   await replace(page,save);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await ready(page);
   await expect(canvas).toHaveAttribute('data-instance','terrain-preserved');await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');
-  await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeEnabled();
   // H0,V0 at water z3: source centre 16,-40; no sprite or land at this height.
   const q=await point(page,16,-40);await page.mouse.click(q.x,q.y);await expect(page.getByTestId('selected-object')).toHaveText('Terrain · cell:0,0 · 1, 0, 3');
   await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect(canvas).toHaveAttribute('data-terrain-cut','4');await expect(canvas).toHaveAttribute('data-assets','ready');

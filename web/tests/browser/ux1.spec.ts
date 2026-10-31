@@ -72,7 +72,7 @@ test('UX1 selected inspectors, clock and explicit rail confirm/cancel remain pla
   await page.getByRole('button', { name: 'Confirm track change', exact: true }).dblclick(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
   await expect(page.getByRole('button', { name: 'Confirm track change', exact: true })).toBeDisabled();
   expect(BigInt(before.cash) - BigInt((await bootstrap(page)).cash)).toBe(before.tracks.find((track:any)=>track.position.x===36&&track.position.y===16&&track.position.z===1)?.shape==='buffer'?200n:100n);
-  await page.getByRole('button', { name: 'Remove track', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
+  await page.getByRole('button', { name: 'Remove', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
   await page.getByRole('button', { name: 'Confirm track change', exact: true }).click(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
 });
 
