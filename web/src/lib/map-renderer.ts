@@ -34,7 +34,7 @@ export class MapRenderer {
   private catalog?:Promise<RenderCatalog>;
   private catalogHash='';
   private terrainKey='';
-  private terrainPresentationKey='';
+  private terrainWorldKey='';
   private terrainScene?:TerrainScene;
   private terrainViewport?:TerrainViewport;
   needsFrame=false;
@@ -77,13 +77,14 @@ export class MapRenderer {
     if (!this.read || !this.space) return false;
     if(isTerrainWorld(this.read)||isMixedWorld(this.read)) {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
-      const presentationKey=JSON.stringify([read.worldEpoch,read.requiredPacks,variant,options.heightCut,decorative]);
+      const worldKey=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,decorative]);
+      const presentationKey=JSON.stringify([worldKey,variant,options.heightCut]);
       const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision]);
       if(this.terrainKey!==key) {
-        // Keep the last complete scene during edits in this world. Preparation
-        // is asynchronous, so clearing it here exposes a background-only frame.
-        if(this.terrainPresentationKey!==presentationKey){this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;}
-        this.terrainKey=key;this.terrainPresentationKey=presentationKey;this.terrainError=undefined;
+        // Keep the front buffer during edits and sprite/cut changes in this world.
+        // setScene renders into the spare buffer and flips only when complete.
+        if(this.terrainWorldKey!==worldKey){this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;}
+        this.terrainKey=key;this.terrainWorldKey=worldKey;this.terrainError=undefined;
         const hash=read.requiredPacks[0].catalogHash;
         if(this.catalogHash!==hash){this.catalogHash=hash;this.catalog=undefined;this.terrainCache=new RecipeImageCache();}
         this.catalog??=loadRenderCatalog(hash);
@@ -162,7 +163,7 @@ export class MapRenderer {
       this.canvas.dataset.terrainCut=String(options.heightCut);
       return true;
     }
-    this.terrainKey='';this.terrainPresentationKey='';this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;
+    this.terrainKey='';this.terrainWorldKey='';this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;
     const space=this.space;
     const screen=(p:Position)=>toScreen(p,camera,width,height,space);
     const zoom=camera.zoom;

@@ -52,7 +52,9 @@
   let previousEpoch: string | undefined;
   const text = $derived(messages[view.locale]);
   const read = $derived(view.read);
-  const live = $derived(view.connection === 'ready' && !!read && !view.leaving && !view.signedOut && renderState === 'ready');
+  // A same-socket state transfer keeps the completed world on screen.
+  const synchronizing = $derived(view.connection === 'loading' && view.connectionStage === 'synchronizing');
+  const live = $derived((view.connection === 'ready' || synchronizing) && !!read && !view.leaving && !view.signedOut && renderState === 'ready');
   const train = $derived(mapSelection?.kind === 'train' ? read?.trains.find(item => item.id === mapSelection?.id) : undefined);
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
@@ -64,7 +66,7 @@
   const mixed = $derived(!!read && isMixedWorld(read));
   const reference = $derived(isReferenceWorld(read) || terrain || mixed);
   const worldHint = $derived(mixed ? text.mixedWorldHint : terrain ? text.terrainWorldHint : text.referenceWorldHint);
-  const clockDisabled = $derived(saveBusy || view.pending || !live || view.role === 'observer');
+  const clockDisabled = $derived(saveBusy || view.pending || view.connection !== 'ready' || !live || view.role === 'observer');
   const disabled = $derived(reference || clockDisabled);
   const draftStation = $derived(read?.stations.find(item => item.id === view.draftStationId));
   const draftConflict = $derived(view.draftDirty && (!draftStation || draftStation.revision !== view.draftRevision));
@@ -169,7 +171,7 @@
     </div>
   {/if}
   <main class="map-stage">
-    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
+    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>

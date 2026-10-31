@@ -1,6 +1,8 @@
 import {test,expect,type Page,type Browser} from '@playwright/test';
 import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
+import {createHash} from 'node:crypto';
+import type {StateChunk} from '../../src/generated/contracts.ts';
 import {ready,openPanel,closePanel,canonicalState as state} from './ux-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 async function save(page:Page){return (await page.request.get('/api/saves/download')).body();}
@@ -41,6 +43,56 @@ async function wireCommand(browser:Browser,q:any,secret?:string,duplicate=false)
   return await receipt;
  }finally{await page.close();}
 }
+
+test('first track confirmation keeps the live world visible during a delayed railway promotion',async({page})=>{
+ let delay=false,release=()=>{};
+ await page.routeWebSocket('**/api/session?*',route=>{
+  const server=route.connectToServer(),parts:Buffer[]=[],held:(string|Buffer)[]=[];
+  let waiting=false;
+  release=()=>{delay=false;waiting=false;for(const message of held.splice(0))route.send(message);};
+  server.onMessage(message=>{
+   if(waiting){held.push(message);return;}
+   const m=JSON.parse(String(message));
+   if(delay&&(m.type==='stateChunk'||m.type==='snapshot')){
+    const chunk=m.type==='stateChunk'?m as StateChunk:{type:'stateChunk',transferId:'a'.repeat(32),worldEpoch:m.worldEpoch,revision:m.revision};
+    if(m.type==='stateChunk'){
+     parts[m.index]=Buffer.from(m.data,'base64');
+     if(parts.filter(Boolean).length!==m.count)return;
+    }else parts.push(Buffer.from(JSON.stringify({message:m,packedTerrain:null})));
+    // Pad the real payload to force multiple valid chunks even on a tiny map.
+    const bytes=Buffer.concat([...parts,Buffer.alloc(48*1024,32)]),size=48*1024;
+    const sha256=createHash('sha256').update(bytes).digest('hex');
+    for(let offset=0,index=0;offset<bytes.length;offset+=size,index++){
+     const next=JSON.stringify({...chunk,index,count:Math.ceil(bytes.length/size),totalBytes:bytes.length,sha256,data:bytes.subarray(offset,offset+size).toString('base64')});
+     if(index===0)route.send(next);else held.push(next);
+    }
+    waiting=true;return;
+   }
+   route.send(message);
+  });
+  route.onMessage(message=>server.send(message));
+ });
+ await page.goto('/');await ready(page);const original=await save(page);
+ try{
+  await empty(page);
+  const canvas=page.locator('canvas'),epoch=await canvas.getAttribute('data-world-epoch'),camera=await canvas.getAttribute('data-camera');
+  await page.getByRole('button',{name:'Track',exact:true}).click();await target(page);
+  delay=true;await page.getByRole('button',{name:'Confirm track change',exact:true}).click();
+  await expect(page.getByTestId('connection')).toHaveText('Connecting…');
+  await expect(canvas).toHaveAttribute('data-scene','live');
+  await expect(canvas).toHaveAttribute('data-world-epoch',epoch!);
+  await expect(page.locator('.app-shell')).not.toHaveClass(/gated/);
+  await expect(page.getByRole('button',{name:'Track',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
+  await expect(page.locator('.transport button').first()).toBeDisabled();
+  release();
+  await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(page);
+  await expect(canvas).toHaveAttribute('data-refinement','ready');
+  await expect(canvas).toHaveAttribute('data-camera',camera!);
+  await expect(canvas).toHaveAttribute('data-world-epoch',epoch!);
+  await expect(page.getByRole('button',{name:'Track',exact:true})).toHaveAttribute('aria-pressed','true');
+ }finally{release();await replace(page,original);}
+});
 
 test('two map points preview/cancel/build, attach, branch and remove in two peers without replacing canvas, camera or shared time',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page);const context=await browser.newContext(),peer=await context.newPage();

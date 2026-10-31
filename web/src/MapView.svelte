@@ -24,7 +24,7 @@
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose }:
     { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void } = $props();
   const text = $derived(messages[view.locale]);
-  const liveScene = $derived(view.connection === 'ready' && !!view.read && !view.leaving && !view.signedOut);
+  const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
   let renderer: MapRenderer | undefined;
   const space = $derived(mapSpace(view.read?.map ?? demoScene.map));

@@ -1,3 +1,4 @@
+import { MapRenderer, type MapOptions } from '../src/lib/map-renderer.ts';
 import { TerrainScene, mountainPoints, treeOffset, mountainColor, terrainColor, hsv } from '../src/lib/terrain-renderer.ts';
 import { RecipeImageCache, type RenderCatalog, type Variant } from '../src/lib/content-recipes.ts';
 import type { Snapshot } from '../src/generated/contracts.ts';
@@ -277,4 +278,46 @@ Deno.test('synthetic rail-bed blending has no cut exemptions and restores the no
   t.occupants=t.occupants.filter(o=>!terraces.has(o.entityId));read.entities=read.entities!.filter(e=>!terraces.has(e.id));
   assert(validSnapshot(read));
   for(const c of grid)assert(c.corners.every(n=>n>=0&&n<=4));
+});
+
+Deno.test('map sprite changes retain the front buffer through preparation and progressive rendering',async()=>{
+  await withViewport(async(scene,_viewport,ctx,canvases)=>{
+    const prepare=TerrainScene.prepare;
+    let complete!:(scene:TerrainScene)=>void,invalidated!:()=>void;
+    const images:unknown[]=[];
+    ctx.drawImage=((image:unknown)=>{images.push(image);}) as typeof ctx.drawImage;
+    const canvas={width:128,height:96,dataset:{},getContext:()=>ctx} as unknown as HTMLCanvasElement;
+    const renderer=new MapRenderer(canvas,new Map(),()=>invalidated());
+    const read=flat(200,100);
+    // Use the real scene/raster pipeline with controlled asynchronous preparation.
+    Object.assign(renderer,{catalog:Promise.resolve(catalog),catalogHash:read.requiredPacks[0].catalogHash});
+    TerrainScene.prepare=()=>new Promise(resolve=>{complete=resolve;});
+    const camera={x:0,y:0,zoom:1};
+    let options:MapOptions={heightCut:5,level:1,night:false,winter:false,recolor:false,shape:'eastWest',remove:false};
+    const draw=()=>{images.length=0;return renderer.draw(camera,128,96,1,options);};
+    const settle=()=>{for(let n=0;n<1000;n++){draw();if(!renderer.needsFrame)return;}throw new Error('Map never settled');};
+    const prepared=async(next:TerrainScene)=>{
+      const ready=new Promise<void>(resolve=>{invalidated=resolve;});
+      await Promise.resolve();complete(next);await ready;
+    };
+    try {
+      renderer.setRead(read);assert(!draw());await prepared(scene);settle();
+      let front=images[0];assert(front);
+      for(const variant of [{season:'spring',night:true},{season:'winter',night:true},{season:'winter',night:false}] as Variant[]) {
+        options={...options,night:variant.night,winter:variant.season==='winter'};
+        assert(draw(),'Loading sprites must retain a drawable scene');
+        assert(images[0]===front,'Asynchronous preparation must preserve the front buffer');
+        const replacement=await prepare(flat(200,100),catalog,cache(),variant,5);
+        await prepared(replacement);
+        assert(draw());assert(renderer.needsFrame);
+        assert(images[0]===front,'The first progressive frame must still present the old buffer');
+        settle();assert(images[0]!==front,'The completed replacement must flip buffers');
+        front=images[0];
+      }
+      assert(canvases.filter(c=>c.width===128&&c.height===96).length===2,'Sprite changes must reuse the two viewport buffers');
+      renderer.setRead({...read,worldEpoch:'another-world'});
+      assert(!draw(),'A different world must not retain the previous world buffer');
+      assert(images.length===0);
+    } finally {TerrainScene.prepare=prepare;}
+  });
 });
