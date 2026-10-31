@@ -4,12 +4,14 @@ import { terrainLookup } from './terrain-state.ts';
 import type { Position, Snapshot, TerrainOccupant } from '../generated/contracts.ts';
 import { WorldSpace, move, type Point } from './map-geometry.ts';
 import { RecipeImageCache, type RenderCatalog, type Layer, type Variant, type ReadyScene, type View } from './content-recipes.ts';
-import { isTerrainWorld, validSnapshot } from './world-identity.ts';
+import { isTerrainWorld, isMixedWorld, validSnapshot } from './world-identity.ts';
+import { RailwayRenderPlan, pickRailwayLocation, type RailwayTarget, type RailwayPickPolicy } from './railway-renderer.ts';
 import paletteData from './terrain-palettes.json' with { type: 'json' };
 import type { ReadState } from './session-client.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
-type Operation = { target:TerrainTarget; points:Point[]; color:string; edge?:string } | {target:TerrainTarget; layer:Layer};
+export type SceneTarget=TerrainTarget|RailwayTarget;
+type Operation = { target:TerrainTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer};
 export type TerrainOperation = Operation;
 type Bounds={left:number;top:number;right:number;bottom:number};
 const diamond=[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}];
@@ -51,6 +53,9 @@ export class TerrainScene {
   private polygonBytes=0;
   private raster?:{image:OffscreenCanvas;spare?:OffscreenCanvas;view:View;width:number;height:number;dpr:number;drawn:number};
   private viewKey='';
+  private cellCache=new Map<number,{signature:string;operations:Operation[]}>();
+  private cacheIdentity='';
+  private locationPicker?:(p:Point,view:View,policy:RailwayPickPolicy)=>Position|undefined;
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
     private background='#d8e5d9') {}
@@ -80,12 +85,21 @@ export class TerrainScene {
     const key=[h0,h1,v0,v1].join(',');
     if(key!==this.viewKey){this.operations=r.build(h0,h1,v0,v1);this.viewKey=key;}
   }
-  static async prepare(read:ReadState,catalog:RenderCatalog,cache:RecipeImageCache,variant:Variant,heightCut:number):Promise<TerrainScene> {
+  static async prepare(read:ReadState,catalog:RenderCatalog,cache:RecipeImageCache,variant:Variant,heightCut:number,previous?:TerrainScene):Promise<TerrainScene> {
     // Validation only reads its argument; retain the immutable transport view.
-    if(!isTerrainWorld(read)||!validSnapshot(read as Snapshot))throw new Error('Unsupported terrain read');
+    if(!(isTerrainWorld(read)||isMixedWorld(read))||!validSnapshot(read as Snapshot))throw new Error('Unsupported terrain read');
     if(!Number.isInteger(heightCut)||heightCut<0)throw new Error('Invalid terrain height cut');
     if(catalog.packId!==read.requiredPacks[0].id||catalog.version!==read.requiredPacks[0].version)throw new Error('Terrain catalog mismatch');
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
+    const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
+    const cacheIdentity=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,variant,heightCut]);
+    const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
+    const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
+    const finish=(scene:TerrainScene)=>{
+      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;
+      scene.locationPicker=(p,view,policy)=>pickRailwayLocation(read,{x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom},heightCut,policy);
+      return scene;
+    };
     let ops:Operation[]=[],layers:Layer[]=[];
     const cells=new Map<number,Operation[]>(),maximumCachedCells=65536,large=read.map.width*read.map.height>16384;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
@@ -108,15 +122,27 @@ export class TerrainScene {
       const index=v*read.map.width+h,cached=cacheCells?cells.get(index):undefined;
       if(cached){ops.push(...cached);continue;}
       const start=ops.length;
+      let signature='';
+      let reused=false;
       try {
       const cell=t.cells[v*read.map.width+h],base=space.location({h,v,z:cell.ground});
+      if(railway) {
+        // Terrain faces can overhang a neighbor. Include its corners/ground in
+        // the dependency key, alongside this column's exact saved operations.
+        signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,6),move(base,4)].map(p=>{
+          const s=space.storage(p),surface=at.get(key(p)),backing=at.get(key({...p,z:p.z-1}));
+          return [space.containsHorizontal(p)?t.cells[s.v*read.map.width+s.h]:null,surface,backing,surface&&entities.get(surface.entityId)?.definition,backing&&entities.get(backing.entityId)?.definition];
+        }),railway.signature(index)]);
+        const old=reusable?.get(index);
+        if(old?.signature===signature){reused=true;ops.push(...old.operations);for(const op of old.operations)if('layer' in op)layers.push(op.layer);continue;}
+      }
       const target=(p:Position,surface:TerrainTarget['surface'],id?:string):TerrainTarget=>({kind:'terrain',id:id??`cell:${h},${v}`,position:{...p},surface});
       const surface=at.get(key(base)),terrace=at.get(key({...base,z:base.z-1}));
       if(terrace?.kind==='terrace'&&base.z-1<=cut&&(!full||base.z-1>=t.waterLevel))addSprite(entities.get(terrace.entityId)!.definition.recipeId,undefined,{...base,z:base.z-1},target({...base,z:base.z-1},'terrace',terrace.entityId));
       if(cut<cell.ground) {
         // A nontransparent Terrace at the cut owns this voxel; the source
         // draws its sprite instead of an underground chip over it.
-        if(!(terrace?.kind==='terrace'&&cut===base.z-1))addSprite('system:ground/underground',undefined,{...base,z:cut},target({...base,z:cut},'underground'));
+        if(!(terrace?.kind==='terrace'&&cut===base.z-1)&&(!railway||railway.drawGround({...base,z:cut},read.map.levels)))addSprite('system:ground/underground',undefined,{...base,z:cut},target({...base,z:cut},'underground'));
         continue;
       }
       if(full&&cell.ground<t.waterLevel) {
@@ -127,7 +153,7 @@ export class TerrainScene {
       }
       const mountain=surface?.kind==='mountain'?surface:undefined;
       const flat=!mountain||[mountain.ne,mountain.se,mountain.sw,mountain.nw].every(n=>n===0);
-      if(flat)addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,target(base,'ground'));
+      if(flat&&(!railway||railway.drawGround(base,read.map.levels)))addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,target(base,'ground'));
       if(mountain) {
         const mt=target(base,'mountain',mountain.entityId),clipped=!full&&cut===base.z;
         if(clipped)addPolygon(base,mt,diamond,mountainColor(mountain,variant,base.z<t.waterLevel,true));
@@ -149,7 +175,19 @@ export class TerrainScene {
         const id=entities.get(surface.entityId)!.definition.recipeId,frame=recipes.get(id)?.frames.find(f=>f.selector.connections===connection);
         if(!frame)throw new Error('Missing creek frame');addSprite(id,frame.key,base,target(base,'creek',surface.entityId));
       }
-      } finally {if(cacheCells)cells.set(index,ops.slice(start));}
+      } finally {
+        // Every column is complete before the next H/V cell: source Z order,
+        // then Traffic's before / reserved car / after passes at that voxel.
+        if(railway) {
+          if(!reused) {
+            const column=ops.splice(start);
+            column.push(...railway.operations(index,cut,t.waterLevel,full,t.cells[index].ground));
+            column.sort((a,b)=>a.target.position.z-b.target.position.z);ops.push(...column);
+          }
+          if(cellCache.size<maximumCachedCells)cellCache.set(index,{signature,operations:ops.slice(start)});
+        }
+        if(cacheCells)cells.set(index,ops.slice(start));
+      }
     }
     if(cells.size>maximumCachedCells)for(const id of cells.keys()) {
       const h=id%read.map.width,v=Math.floor(id/read.map.width);
@@ -160,7 +198,7 @@ export class TerrainScene {
     };
     if(read.map.width*read.map.height<=16384) {
       const all=build(0,read.map.width,0,read.map.height);
-      return new TerrainScene(all,await cache.ready(catalog,layers,variant));
+      return finish(new TerrainScene(all,await cache.ready(catalog,[...layers,...(railway?.layers??[])],variant)));
     }
     // Decode each required frame/surface once. Terrain instances and their
     // operations are materialized only for the current viewport, in source order.
@@ -173,7 +211,11 @@ export class TerrainScene {
         marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
       }
     }
-    return new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9');
+    templates.push(...(railway?.layers??[]));
+    for(const l of railway?.layers??[]) {
+      const [ax,ay]=l.frame.anchor!,[,,w,h]=l.frame.rectangle!;marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
+    }
+    return finish(new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9'));
   }
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number):number {
     this.prepareView(view,width,height);
@@ -258,10 +300,13 @@ export class TerrainScene {
     }
     return drawn;
   }
-  pick(p:Point,view:View):TerrainTarget|undefined {
+  pick(p:Point,view:View):SceneTarget|undefined {
     return this.pickOperations(p,view,this.operations);
   }
-  pickOperations(p:Point,view:View,operations:readonly Operation[]):TerrainTarget|undefined {
+  pickLocation(p:Point,view:View,policy:RailwayPickPolicy):Position|undefined {
+    return this.locationPicker?.(p,view,policy);
+  }
+  pickOperations(p:Point,view:View,operations:readonly Operation[]):SceneTarget|undefined {
     const world={x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom};
     for(let i=operations.length-1;i>=0;i--) {
       const op=operations[i];

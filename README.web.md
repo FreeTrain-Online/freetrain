@@ -2,7 +2,9 @@
 now preserve railway components, booking and shared allocator alongside terrain.
 Save1–7 are unsupported and preserved under the current-format-only policy.
 [P4-07 construction](doc/web-parity-railway-construction.md) now validates actual terrain, reclamation and automatic piers,
-and stages source-priced normal-rail build/removal atomically. Railway rendering/tools remain P4-08/09; new worlds still use the terrain profile.
+and stages source-priced normal-rail build/removal atomically.
+[P4-08 rendering](doc/web-parity-railway-rendering.md) displays saved rails and piers through bundled art,
+terrain cuts and English/Japanese inspection. Construction tools remain P4-09; new worlds still use the terrain profile.
 
 # FreeTrain Online
 

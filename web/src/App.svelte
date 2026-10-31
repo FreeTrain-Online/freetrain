@@ -55,6 +55,8 @@
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
+  const railwayVoxel = $derived(mapSelection?.kind === 'railway' ? read?.mixed?.voxels.find(v=>v.ownerId===mapSelection?.id&&v.position.x===mapSelection.position.x&&v.position.y===mapSelection.position.y&&v.position.z===mapSelection.position.z) : undefined);
+  const railwayDefinition = $derived(mapSelection?.kind === 'railway' ? mapSelection.component==='rail' ? railwayVoxel?.traffic?.rail?.definition : mapSelection.component==='accessory' ? railwayVoxel?.traffic?.accessory?.definition : railwayVoxel?.definition : undefined);
   const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
   const terrain = $derived(!!read && isTerrainWorld(read));
   const mixed = $derived(!!read && isMixedWorld(read));
@@ -196,6 +198,12 @@
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>
           {:else if track}<p>{track.shape.startsWith('normal') ? `${text.normalRail} ${track.shape.slice(6)}` : text[track.shape as keyof typeof text]} · {track.revision}</p>
+          {:else if mapSelection?.kind === 'railway' && railwayVoxel && railwayDefinition}
+            <p data-testid="railway-component">{text[({rail:'track',pier:'pier',support:'railwaySupport',accessory:'railwayAccessory'} as const)[mapSelection.component]]}</p>
+            <p data-testid="railway-definition">{railwayDefinition.packId} · {railwayDefinition.contributionId} · {railwayDefinition.recipeId}</p>
+            {#if railwayVoxel.traffic?.rail}<p>{text.railwayPattern}: {railwayVoxel.traffic.rail.pattern}</p>{/if}
+            {#if railwayVoxel.traffic?.rail?.controllerId}<p>{text.controller}: {railwayVoxel.traffic.rail.controllerId}</p>{/if}
+            {#if railwayVoxel.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel.supportedOwnerId}</p>{/if}
           {:else if mapSelection?.kind === 'terrain'}<p data-testid="terrain-surface">{text[({ground:'terrainGround',mountain:'terrainMountain',water:'terrainWater',underground:'terrainUnderground',terrace:'terrainTerrace',forest:'terrainForest',creek:'terrainCreek',cliff:'terrainCliff'} as const)[mapSelection.surface]]}</p><p>{text.terrainWorldHint}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}
         {:else if panel === 'catalog'}

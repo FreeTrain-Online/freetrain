@@ -1,7 +1,7 @@
 import profile from '../generated/railway-profile.json' with {type:'json'};
 import ports from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with {type:'json'};
 import type {Snapshot,Definition,RailwayVoxel,SpatialEntity} from '../generated/contracts.ts';
-import {validTerrain} from './terrain-state.ts';
+import {validTerrain,shareTerrainValidation} from './terrain-state.ts';
 import {WorldSpace,move} from './map-geometry.ts';
 export const railwayProfile=profile;
 const same=(a:Definition|null,b:Definition|null)=>a===b||!!a&&!!b&&a.packId===b.packId&&a.contributionId===b.contributionId&&a.recipeId===b.recipeId;
@@ -12,7 +12,9 @@ export function validMixed(read:Snapshot):boolean {
  if(!m||!t||!read.entities||read.tracks.length||read.trains.length||read.stations.length||read.buildings.length||
     BigInt(m.geometryRevision)>BigInt(read.revision)||BigInt(m.geometryRevision)<BigInt(t.geometryRevision)||BigInt(m.nextEntityId)<BigInt(t.nextEntityId))return false;
  const terrainIds=new Set(t.occupants.map(o=>o.entityId)),terrainEntities=read.entities.filter(e=>terrainIds.has(e.id));
- if(!validTerrain({...read,cash:'0',entities:terrainEntities,mixed:undefined}))return false;
+ const terrainRead={...read,cash:'0',entities:terrainEntities,mixed:undefined};
+ if(!validTerrain(terrainRead))return false;
+ shareTerrainValidation(terrainRead,read);
  const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),occupied=new Set<string>();
  const entities=new Map<string,SpatialEntity>(),owners=new Map<string,RailwayVoxel[]>(),voxels=new Map<string,RailwayVoxel>();
  const binding=(d:Definition|null)=>d&&profile.bindings.find(b=>same(b.reference,d));

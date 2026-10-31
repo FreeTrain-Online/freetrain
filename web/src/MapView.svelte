@@ -61,7 +61,7 @@
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
   const terrain = $derived(!!view.read && isTerrainWorld(view.read));
   const reference = $derived(isReferenceWorld(view.read) || terrain || !!view.read && isMixedWorld(view.read));
-  const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
+  const worldHint = $derived(view.read && isMixedWorld(view.read) ? text.mixedWorldHint : terrain ? text.terrainWorldHint : text.referenceWorldHint);
   // Keep interaction resets tied to role changes, rather than every new view snapshot.
   const observer = $derived(view.role === 'observer');
   const blocked = $derived(view.pending || !live || observer);
@@ -205,7 +205,7 @@
   export function home() {
     cancelGesture();
     const read=view.read, location=homeLocation(read?.map??demoScene.map);
-    if(read?.terrain && isTerrainWorld(read)) {
+    if(read?.terrain && (isTerrainWorld(read)||isMixedWorld(read))) {
       const h=Math.floor(read.map.width/2),v=Math.floor(read.map.height/2);
       location.z=Math.max(read.terrain.waterLevel,read.terrain.cells[v*read.map.width+h].ground);
     }

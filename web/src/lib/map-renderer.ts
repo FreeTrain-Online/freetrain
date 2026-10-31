@@ -6,14 +6,15 @@ import { offset, type SpatialMap, type Point } from './map-geometry.ts';
 import { normalPorts } from './world-identity.ts';
 import { ports } from './prototype/rail-geometry.ts';
 import { mapSpace } from './map-space.ts';
-import { TerrainScene, type TerrainTarget } from './terrain-renderer.ts';
+import { TerrainScene, type SceneTarget } from './terrain-renderer.ts';
 import { TerrainViewport } from './terrain-viewport.ts';
 import { loadRenderCatalog, RecipeImageCache, type RenderCatalog, type Variant } from './content-recipes.ts';
-import { isTerrainWorld } from './world-identity.ts';
+import { isTerrainWorld, isMixedWorld } from './world-identity.ts';
 import { DemoRailway } from './demo-railway.ts';
 import { demoCar, demoLoop } from './demo-railway-path.ts';
+import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
-export type Selection = TerrainTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
+export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
 export interface MapOptions { heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
@@ -31,6 +32,7 @@ export class MapRenderer {
   private buildings = new Map<string,ReadState['buildings'][number]>();
   private terrainCache=new RecipeImageCache();
   private catalog?:Promise<RenderCatalog>;
+  private catalogHash='';
   private terrainKey='';
   private terrainPresentationKey='';
   private terrainScene?:TerrainScene;
@@ -73,17 +75,19 @@ export class MapRenderer {
     ctx.fillStyle=decorative?'#0072bc':options.night?'#17232b':'#d8e5d9'; ctx.fillRect(0,0,width,height);
     this.hits=[]; let drawn=0, culled=0;
     if (!this.read || !this.space) return false;
-    if(isTerrainWorld(this.read)) {
+    if(isTerrainWorld(this.read)||isMixedWorld(this.read)) {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
-      const presentationKey=JSON.stringify([read.worldEpoch,variant,options.heightCut,decorative]);
-      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision]);
+      const presentationKey=JSON.stringify([read.worldEpoch,read.requiredPacks,variant,options.heightCut,decorative]);
+      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision]);
       if(this.terrainKey!==key) {
         // Keep the last complete scene during edits in this world. Preparation
         // is asynchronous, so clearing it here exposes a background-only frame.
         if(this.terrainPresentationKey!==presentationKey){this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;}
         this.terrainKey=key;this.terrainPresentationKey=presentationKey;this.terrainError=undefined;
-        this.catalog??=loadRenderCatalog(read.requiredPacks[0].catalogHash);
-        this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
+        const hash=read.requiredPacks[0].catalogHash;
+        if(this.catalogHash!==hash){this.catalogHash=hash;this.catalog=undefined;this.terrainCache=new RecipeImageCache();}
+        this.catalog??=loadRenderCatalog(hash);
+        this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut,this.terrainScene),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
           if(this.terrainKey===key){
             this.terrainScene=scene;
             if(!decorative&&scene.supportsViewport&&typeof OffscreenCanvas!=='undefined') {
@@ -94,7 +98,7 @@ export class MapRenderer {
           }
         }).catch(error=>{if(this.terrainKey===key){this.terrainError=error;this.invalidate();}});
       }
-      if(this.terrainError)throw this.terrainError;
+      if(this.terrainError){this.canvas.dataset.assets='failed';throw this.terrainError;}
       this.canvas.dataset.assets=this.terrainScene?'ready':'loading';
       if(!this.terrainScene)return false;
       this.terrainView={x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom};
@@ -214,9 +218,14 @@ export class MapRenderer {
     this.canvas.dataset.headings=this.read.trains.flatMap(train=>train.carHeadings).join(',');
     return true;
   }
+  /** Controller geometry from the same completed scene as the visible pixels. */
+  pickLocation(p:Point,policy:RailwayPickPolicy):Position|undefined {
+    if(!this.read||!(isTerrainWorld(this.read)||isMixedWorld(this.read))||this.terrainError||!this.terrainScene||!this.terrainView)return;
+    return this.terrainViewport?this.terrainViewport.pickLocation(p,this.terrainView,policy):this.terrainScene.pickLocation(p,this.terrainView,policy);
+  }
   pick(p:Point,zoom:number):Selection|undefined {
-    if(this.read&&isTerrainWorld(this.read)) {
-      if(!this.terrainScene||!this.terrainView)return;
+    if(this.read&&(isTerrainWorld(this.read)||isMixedWorld(this.read))) {
+      if(this.terrainError||!this.terrainScene||!this.terrainView)return;
       return this.terrainViewport?this.terrainViewport.pick(p,this.terrainView):this.terrainScene.pick(p,this.terrainView);
     }
     for(let i=this.hits.length-1;i>=0;i--) {

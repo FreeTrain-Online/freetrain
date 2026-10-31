@@ -440,5 +440,10 @@
   "paintChanges": "変更回数",
   "paintStop": "ペイントを停止",
   "mixedWorld": "鉄道ワールド",
-  "mixedWorldHint": "保存済みの地形・鉄道・会計を読み込みました。時計の進行・一時停止・1分送りを操作できます。鉄道の表示と建設ツールはまだ利用できません。"
+  "mixedWorldHint": "保存済みの地形・鉄道・会計を読み込みました。線路や橋脚の確認、時計の進行・一時停止・1分送りを操作できます。線路の建設ツールは今後の段階で追加します。",
+  "railway": "鉄道",
+  "railwaySupport": "勾配の支柱",
+  "railwayAccessory": "線路付属物",
+  "railwayPattern": "線路パターン",
+  "railwaySupportedOwner": "支持する線路の所有ID"
 }

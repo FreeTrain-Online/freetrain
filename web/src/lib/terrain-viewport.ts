@@ -1,6 +1,7 @@
 import type { View } from './content-recipes.ts';
 import type { Point } from './map-geometry.ts';
 import type { TerrainOperation, TerrainScene } from './terrain-renderer.ts';
+import type { RailwayPickPolicy } from './railway-renderer.ts';
 
 // Physical-pixel scales keep sprite phases reusable even with fractional DPR or
 // a reduced backing resolution on large windows.
@@ -89,5 +90,11 @@ export class TerrainViewport {
     // offscreen overhang retained in the old image's operation array.
     if(x<0||y<0||x>=raster.width||y>=raster.height)return;
     return raster.scene.pickOperations(p,view,raster.operations);
+  }
+  pickLocation(p:Point,view:View,policy:RailwayPickPolicy) {
+    const raster=this.raster;if(!raster)return;
+    const scale=view.zoom/raster.view.zoom,x=(p.x-view.x)/scale+raster.view.x,y=(p.y-view.y)/scale+raster.view.y;
+    if(x<0||y<0||x>=raster.width||y>=raster.height)return;
+    return raster.scene.pickLocation(p,view,policy);
   }
 }

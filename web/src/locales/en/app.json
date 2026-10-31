@@ -440,5 +440,10 @@
   "paintChanges": "Changes",
   "paintStop": "Stop painting",
   "mixedWorld": "Railway world",
-  "mixedWorldHint": "The saved terrain, railway and accounts are loaded. You can run, pause or step the calendar. Railway display and construction tools are not available yet."
+  "mixedWorldHint": "The saved terrain, railway and accounts are loaded. Inspect track and piers, or run, pause and step the calendar. Railway construction tools are not available yet.",
+  "railway": "Railway",
+  "railwaySupport": "Slope support",
+  "railwayAccessory": "Rail accessory",
+  "railwayPattern": "Rail pattern",
+  "railwaySupportedOwner": "Supported rail owner"
 }
