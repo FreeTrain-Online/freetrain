@@ -36,3 +36,44 @@ test('owner and observer inspect drags survive running world updates', async ({ 
     await observer.close();
   }
 });
+
+test('trackpad pans, wheel and keyboard zoom, and tool shortcuts select without toggling', async ({ page }) => {
+  await page.goto('/'); await ready(page);
+  const canvas = page.locator('canvas');
+  await canvas.focus();
+  const initialCamera = await canvas.getAttribute('data-camera');
+  const initialZoom = await canvas.getAttribute('data-zoom');
+  await canvas.dispatchEvent('wheel', { deltaX: 24, deltaY: 12, deltaMode: 0 });
+  await expect(canvas).not.toHaveAttribute('data-camera', initialCamera!);
+  await expect(canvas).toHaveAttribute('data-zoom', initialZoom!);
+  await canvas.dispatchEvent('wheel', { deltaY: -3, deltaMode: 1 });
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeGreaterThan(Number(initialZoom));
+  await canvas.dispatchEvent('wheel', { deltaY: 3, deltaMode: 1 });
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(Number(initialZoom));
+  await page.keyboard.press('+');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(Number(initialZoom) + .25);
+  await page.keyboard.press('=');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(Number(initialZoom) + .5);
+  await canvas.dispatchEvent('keydown', { key: '+', repeat: true });
+  await page.keyboard.press('-');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(Number(initialZoom) + .25);
+  await page.keyboard.press('-');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(Number(initialZoom));
+  for (let i = 0; i < 20; i++) await page.keyboard.press('+');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(4);
+  for (let i = 0; i < 20; i++) await page.keyboard.press('-');
+  await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(.5);
+  for (const [key, label] of [['t', 'Build track'], ['t', 'Build track'], ['r', 'Remove track'], ['i', 'Inspect / drive']]) {
+    await page.keyboard.press(key);
+    await expect(page.getByRole('button', { name: label, exact: true })).toHaveAttribute('aria-pressed', 'true');
+  }
+  await canvas.dispatchEvent('keydown', { key: 't', ctrlKey: true });
+  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Game ▾', exact: true }).click();
+  await page.getByRole('button', { name: 'Help', exact: true }).click();
+  const help = page.locator('.primary-panel');
+  await expect(help).toContainText('two-finger');
+  await expect(help).toContainText('I — Inspect');
+  await expect(help).not.toContainText('Diagnostics');
+  await expect(help).not.toContainText('Network');
+});

@@ -9,6 +9,7 @@
   import { messages } from './lib/localization.ts';
   import { MapRenderer, loadImages, type Selection } from './lib/map-renderer.ts';
   import { same, tileAt, zoomAt, type Camera } from './lib/map-display.ts';
+  import { createWheelClassifier } from './lib/map-input.ts';
   import { snap } from './lib/map-geometry.ts';
   import { homeLocation, mapSpace } from './lib/map-space.ts';
   import { localSpatialPreview, matchesSpatialPreview } from './lib/spatial-preview.ts';
@@ -119,6 +120,20 @@
   function key(event: KeyboardEvent, down: boolean) {
     if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
     if (event.code === 'Space') { event.preventDefault(); if (!event.repeat){if(down)cancelGesture();spaceHeld = down;} return; }
+    if (['+', '=', '-', '−'].includes(event.key)) {
+      event.preventDefault();
+      if (down && !event.repeat) {
+        const target = camera.zoom + (event.key === '+' || event.key === '=' ? .25 : -.25);
+        zoom(target / camera.zoom);
+      }
+      return;
+    }
+    const shortcut = ({ i: 'inspect', t: 'build', r: 'remove' } as const)[event.key.toLowerCase() as 'i' | 't' | 'r'];
+    if (shortcut) {
+      event.preventDefault();
+      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway)) ontool(shortcut);
+      return;
+    }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
     if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
     event.preventDefault();
@@ -301,7 +316,17 @@
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
     const blur = () => { clearInput(); cancelGesture(); };
     const visibility = () => { lastDemoTick=undefined;blur(); dirty = true; };
-    const wheel = (event: WheelEvent) => { if (!live || inputSuspended) return; event.preventDefault();cancelGesture(); camera = zoomAt(camera, event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height); dirty = true; };
+    const classifyWheel = createWheelClassifier();
+    const wheel = (event: WheelEvent) => {
+      if (!live || inputSuspended || (!event.deltaX && !event.deltaY)) return;
+      event.preventDefault(); cancelGesture();
+      if (classifyWheel(event, performance.now()) === 'pan') {
+        camera = { ...camera, x: camera.x + event.deltaX / camera.zoom, y: camera.y + event.deltaY / camera.zoom };
+      } else if (event.deltaY) {
+        camera = zoomAt(camera, event.ctrlKey ? Math.exp(-event.deltaY * .01) : event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height);
+      }
+      dirty = true;
+    };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
     return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
   });

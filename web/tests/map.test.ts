@@ -93,3 +93,17 @@ Deno.test('renderer picks visible opaque layers in paint order and height cut re
   }
   assert(through,'Transparent pixels must not swallow a rail pick');
 });
+
+Deno.test('wheel steps zoom while smooth trackpad gestures and momentum pan', async () => {
+  const { createWheelClassifier } = await import('../src/lib/map-input.ts');
+  const classify = createWheelClassifier();
+  const pixel = { deltaMode: 0, deltaX: 0, deltaY: 100, ctrlKey: false };
+  assert(classify(pixel, 0) === 'zoom');
+  assert(classify({ ...pixel, deltaMode: 1, deltaY: -3 }, 10) === 'zoom');
+  assert(classify({ ...pixel, deltaY: 1, wheelDeltaY: -120 }, 20) === 'zoom');
+  assert(classify({ ...pixel, deltaY: -4.5 }, 500) === 'pan');
+  assert(classify({ ...pixel, deltaY: -80 }, 520) === 'pan');
+  assert(classify({ ...pixel, deltaX: 8, deltaY: 0 }, 540) === 'pan');
+  assert(classify({ ...pixel, ctrlKey: true, deltaY: -2 }, 550) === 'zoom');
+  assert(classify(pixel, 1000) === 'zoom');
+});
