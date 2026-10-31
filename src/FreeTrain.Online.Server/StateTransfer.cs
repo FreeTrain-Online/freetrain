@@ -21,7 +21,8 @@ public static class StateTransfer
         if (snapshot?.Terrain is not null)
         {
             packed = PackedTerrain.Capture(snapshot);
-            var header = snapshot with { Terrain = null, Entities = [] };
+            var terrainIds = snapshot.Terrain.Occupants.Select(o => o.EntityId).ToHashSet();
+            var header = snapshot with { Terrain = null, Entities = snapshot.Entities!.Where(e => !terrainIds.Contains(e.Id)).ToArray() };
             message = message is JoinMessage join ? join with { Snapshot = header } : header;
         }
         var bytes = JsonSerializer.SerializeToUtf8Bytes(new StateTransferPayload(message, packed), NetworkSession.Json);

@@ -10,15 +10,23 @@ namespace FreeTrain.Online.Persistence;
 public static class SaveCodec
 {
     public const int MaximumBytes = ProtocolIdentity.MaximumStateBytes;
-    public const int Version = 7;
+    public const int Version = 8;
     public sealed record MapData(int Width, int Height, int Levels, string CoordinateSystem);
     public sealed record RailData(int X, int Y, int Z, int Pattern, long EntityId);
     public sealed record SpatialData(long NextEntityId, SpatialEntityRead[] Entities);
     public sealed record Document(int SaveVersion, string Ruleset, string ContentVersion,
         RequiredPackRead[] RequiredPacks, MapData Map, RailData[] Rails, ClockState Clock, bool Paused, RandomStreamsState Random, SpatialData Spatial,
         long Revision = 0,
-        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PackedTerrainRead? PackedTerrain = null);
-    public sealed record LoadedWorld(ReferenceWorld? Reference, TerrainSessionState? Terrain);
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PackedTerrainRead? PackedTerrain = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null);
+    public sealed class LoadedWorld
+    {
+        public ReferenceWorld? Reference { get; }
+        public TerrainSessionState? Terrain { get; }
+        public MixedSessionState? Mixed { get; }
+        internal LoadedWorld(ReferenceWorld? reference, TerrainSessionState? terrain, MixedSessionState? mixed = null)
+        { Reference = reference; Terrain = terrain; Mixed = mixed; }
+    }
     private static readonly JsonSerializerOptions Json = new(WireJson.CreateOptions())
         { PropertyNameCaseInsensitive = false, NumberHandling = JsonNumberHandling.Strict };
 
@@ -34,12 +42,25 @@ public static class SaveCodec
 
     public static byte[] Write(TerrainSessionState state)
     {
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(TerrainDocument(state),Json);
+        if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
+        return bytes;
+    }
+    private static Document TerrainDocument(TerrainSessionState state)
+    {
         var world = state.World;
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(new Document(Version, TerrainProfile.Ruleset, TerrainProfile.ContentVersion,
+        return new Document(Version, TerrainProfile.Ruleset, TerrainProfile.ContentVersion,
             world.Profile.Packs.Select(p => new RequiredPackRead(p.Id, p.Version, p.CatalogHash)).ToArray(),
             new(world.Space.HorizontalSize, world.Space.VerticalSize, world.Space.Levels, "hv"), [],
             state.Clock.Capture(), state.Paused, state.Random.Capture(),
-            new(world.Spatial.NextEntityId, []), Revision: state.Revision, PackedTerrain: PackedTerrain.Capture(state)), Json);
+            new(world.Spatial.NextEntityId, []), Revision: state.Revision, PackedTerrain: PackedTerrain.Capture(state));
+    }
+    public static byte[] Write(MixedSessionState state)
+    {
+        var terrain = TerrainDocument(state.CaptureTerrain());
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(terrain with { Ruleset = ProtocolIdentity.MixedRuleset,
+            ContentVersion = ProtocolIdentity.MixedContent, Spatial = new(state.World.Spatial.NextEntityId,MixedWire.RailwayEntities(state.World)),
+            Mixed = MixedWire.Read(state.Construction) },Json);
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         return bytes;
     }
@@ -68,7 +89,8 @@ public static class SaveCodec
     public static string Digest(TerrainSessionState state) => Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(Write(state)));
     public static ReferenceWorld Read(ReadOnlySpan<byte> bytes) => ReadWorld(bytes).Reference ?? throw new InvalidDataException("incompatibleSave");
     public static LoadedWorld ReadWorld(ReadOnlySpan<byte> bytes,
-        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null)
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null,
+        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null)
     {
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         try
@@ -80,15 +102,31 @@ public static class SaveCodec
                 throw new InvalidDataException("invalidSave");
             if (number != Version || !root.TryGetProperty("ruleset", out var ruleset)
                 || ruleset.ValueKind != JsonValueKind.String
-                || ruleset.GetString() is not (ProtocolIdentity.ReferenceRuleset or TerrainProfile.Ruleset))
+                || ruleset.GetString() is not (ProtocolIdentity.ReferenceRuleset or TerrainProfile.Ruleset or ProtocolIdentity.MixedRuleset))
                 throw new InvalidDataException("incompatibleSave");
-            CheckEnvelope(root, ruleset.GetString() == TerrainProfile.Ruleset);
+            CheckEnvelope(root, ruleset.GetString() != ProtocolIdentity.ReferenceRuleset, ruleset.GetString() == ProtocolIdentity.MixedRuleset);
             var containers = 0;
             CheckUniqueProperties(root, ref containers);
             if (!root.TryGetProperty("revision", out _)) throw new JsonException("Missing revision.");
             var data = JsonSerializer.Deserialize<Document>(bytes, Json) ?? throw new JsonException();
             if (data.Random.Version != RandomStreams.Version || data.Random.Algorithm != GameRandom.Algorithm)
                 throw new InvalidDataException("incompatibleSave");
+            if (data.Ruleset == ProtocolIdentity.MixedRuleset)
+            {
+                var packs = data.RequiredPacks.Select(p => new TerrainPack(p.Id,p.Version,p.CatalogHash)).ToArray();
+                var mixedProfile = railwayResolver?.Invoke(data.Ruleset,data.ContentVersion,packs) ?? throw new InvalidDataException("incompatibleSave");
+                if (data.ContentVersion != ProtocolIdentity.MixedContent ||
+                    !mixedProfile.Terrain.Matches(TerrainProfile.Ruleset,TerrainProfile.ContentVersion,packs)) throw new InvalidDataException("incompatibleSave");
+                if (data.Map.CoordinateSystem != "hv" || data.Rails.Length != 0 || data.PackedTerrain == null || data.Mixed == null ||
+                    data.Spatial.NextEntityId != data.Mixed.NextEntityId) throw new JsonException();
+                var t = data.PackedTerrain.Restore(new(data.Map.Width,data.Map.Height,data.Map.Levels,"hv"),mixedProfile.Terrain,
+                    data.Clock,data.Paused,data.Random,data.Revision);
+                var construction = MixedWire.Restore(data.Mixed,mixedProfile,t.World,data.Spatial.Entities);
+                var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision);
+                MixedWire.ValidateAdmission(state);
+                return new(null,null,state);
+            }
+            if (data.Mixed != null) throw new JsonException();
             if (data.Ruleset == TerrainProfile.Ruleset)
             {
                 var terrainProfile = terrainResolver?.Invoke(data.Ruleset, data.ContentVersion,
@@ -128,13 +166,20 @@ public static class SaveCodec
     }
     private static JsonElement ObjectProperty(JsonElement parent, string name)
         => parent.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Object ? value : throw new JsonException("Save object.");
-    private static void CheckEnvelope(JsonElement root, bool terrain)
+    private static void CheckEnvelope(JsonElement root, bool terrain, bool mixed)
     {
         ArrayBound(root, "requiredPacks", 32); ArrayBound(root, "rails", 1024);
-        ArrayBound(ObjectProperty(root, "spatial"), "entities", terrain ? 0 : 1024);
+        ArrayBound(ObjectProperty(root, "spatial"), "entities", mixed ? ProtocolIdentity.MaximumRailwayVoxels : terrain ? 0 : 1024);
         ArrayBound(ObjectProperty(root, "clock"), "pending", Clock.MaximumPending);
         foreach (var stream in ArrayBound(ObjectProperty(root, "random"), "streams", RandomStreams.Ids.Length).EnumerateArray())
             ArrayBound(ObjectProperty(stream, "state"), "values", 55);
+        if (mixed)
+        {
+            var state = ObjectProperty(root,"mixed");
+            ArrayBound(state,"voxels",ProtocolIdentity.MaximumRailwayVoxels);
+            ArrayBound(state,"slopes",ProtocolIdentity.MaximumRailwayVoxels / 8);
+            ArrayBound(ObjectProperty(state,"accounts"),"transactions",ProtocolIdentity.MaximumAccountTransactions);
+        }
         if (terrain)
         {
             var packed = ObjectProperty(root, "packedTerrain");

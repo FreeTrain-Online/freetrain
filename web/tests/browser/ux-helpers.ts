@@ -1,9 +1,9 @@
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
-export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=5&contentVersion=prototype-content-1')).json()).snapshot;
+export const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=prototype-content-1')).json()).snapshot;
 export async function canonicalState(page:Page) {
-  const response=await(await page.request.get('/api/bootstrap?protocolVersion=5&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1')).json();
+  const response=await(await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1')).json();
   if(response.snapshot)return response.snapshot;
   // Large worlds bootstrap with metadata. Creation tests need the current
   // revision for their first replacement; Owners can read it from the save.

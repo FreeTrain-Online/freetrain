@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatGameTime } from './lib/game-time.ts';
-  import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
+  import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
   import { appName, messages, persistLocale, initialLocale } from './lib/localization.ts';
@@ -57,8 +57,9 @@
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
   const terrain = $derived(!!read && isTerrainWorld(read));
-  const reference = $derived(isReferenceWorld(read) || terrain);
-  const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
+  const mixed = $derived(!!read && isMixedWorld(read));
+  const reference = $derived(isReferenceWorld(read) || terrain || mixed);
+  const worldHint = $derived(mixed ? text.mixedWorldHint : terrain ? text.terrainWorldHint : text.referenceWorldHint);
   const clockDisabled = $derived(saveBusy || view.pending || !live || view.role === 'observer');
   const disabled = $derived(reference || clockDisabled);
   const draftStation = $derived(read?.stations.find(item => item.id === view.draftStationId));
@@ -142,7 +143,7 @@
         <button disabled={clockDisabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
         <button class="step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
       </div>
-      {#if reference}<span class="sr-only" data-testid="reference-world">{terrain ? text.terrainWorld : text.referenceWorld}</span>{/if}
+      {#if reference}<span class="sr-only" data-testid="reference-world">{mixed ? text.mixedWorld : terrain ? text.terrainWorld : text.referenceWorld}</span>{/if}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
       {#if reference}<span class="clock-summary" data-testid="game-time">{formatGameTime(read!.tick,view.locale)}</span>{:else}
       <span class="clock-summary">{text.tick} <span data-testid="tick">{new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))}</span></span>

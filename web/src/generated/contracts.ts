@@ -104,7 +104,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 5;
+  protocolVersion: 6;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -141,6 +141,7 @@ export interface Snapshot {
    */
   entities?: SpatialEntity[];
   terrain?: Terrain;
+  mixed?: Mixed;
 }
 export interface Map {
   width: number;
@@ -298,6 +299,90 @@ export interface TerrainTree {
   y: number;
   sprite: number;
 }
+export interface Mixed {
+  geometryRevision: Counter;
+  nextEntityId: EntityId;
+  /**
+   * @maxItems 8192
+   */
+  voxels: RailwayVoxel[];
+  /**
+   * @maxItems 1024
+   */
+  slopes: SlopeOwner[];
+  accounts: ConstructionAccounts;
+}
+export interface RailwayVoxel {
+  position: Position;
+  ownerId: EntityId;
+  kind: "traffic" | "slopefiller" | "slopesupport" | "slopewall" | "pier";
+  traffic: Traffic | null;
+  definition: Definition | null;
+  sprite: number;
+  drawGroundBelow: boolean;
+  drawGroundAbove: boolean;
+  supportedOwnerId: EntityId | null;
+}
+export interface Traffic {
+  rail: RailComponent | null;
+  road: RoadComponent | null;
+  accessory: AccessoryComponent | null;
+  car: CarComponent | null;
+  platform: Definition | null;
+}
+export interface RailComponent {
+  definition: Definition;
+  pattern: number;
+  variant: number;
+  terrainBackup: Corners | null;
+  direction: number;
+  controllerId: EntityId | null;
+}
+export interface Corners {
+  ne: number;
+  se: number;
+  sw: number;
+  nw: number;
+}
+export interface RoadComponent {
+  definition: Definition;
+  edges: number;
+}
+export interface AccessoryComponent {
+  definition: Definition;
+  direction: number;
+}
+export interface CarComponent {
+  definition: Definition;
+  trainId: EntityId;
+  carId: EntityId;
+}
+export interface SlopeOwner {
+  entityId: EntityId;
+  climb: 0 | 2 | 4 | 6;
+}
+export interface ConstructionAccounts {
+  initialCash: Money;
+  bankruptcyIncrement: EntityId;
+  /**
+   * @maxItems 8192
+   */
+  transactions: AccountTransaction[];
+}
+export interface AccountTransaction {
+  sequence: EntityId;
+  worldRevision: EntityId;
+  absoluteMinute: Counter;
+  operation: string;
+  genre:
+    | "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}"
+    | "{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}"
+    | "{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}"
+    | "{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}";
+  expenditure: Counter;
+  topUps: Counter;
+  cashAfter: Counter;
+}
 export interface Command {
   type: "command";
   requestId: string;
@@ -386,6 +471,7 @@ export interface Delta {
    */
   entities?: SpatialEntity[];
   terrain?: TerrainDelta;
+  mixed?: Mixed;
 }
 export interface Removed {
   trainIds: string[];
@@ -444,7 +530,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 5;
+  protocolVersion: 6;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;

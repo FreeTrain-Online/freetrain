@@ -70,7 +70,7 @@ public static class TerrainWire
                 o.Forest is {} f ? new(DefinitionFor(f.Definition), f.Trees.Select(TreeFor).ToArray()) : null,
                 o.CreekConnections)).ToArray());
     });
-    private static SpatialEntityRead Entity(SpatialEntity e) => new(e.Id,e.Revision,Definition(e.Definition),
+    public static SpatialEntityRead Entity(SpatialEntity e) => new(e.Id,e.Revision,Definition(e.Definition),
         new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
         e.Owned,e.SilentlyReclaimable,e.Value);
     public static bool TryDifference(SnapshotMessage before, SnapshotMessage after, out DeltaMessage delta)

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v4.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v6.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -342,6 +342,9 @@
         },
         "terrain": {
           "$ref": "#/$defs/Terrain"
+        },
+        "mixed": {
+          "$ref": "#/$defs/Mixed"
         }
       },
       "required": [
@@ -437,6 +440,9 @@
         },
         "terrain": {
           "$ref": "#/$defs/TerrainDelta"
+        },
+        "mixed": {
+          "$ref": "#/$defs/Mixed"
         }
       },
       "required": [
@@ -851,7 +857,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 5
+          "const": 6
         },
         "contentVersion": {
           "type": "string",
@@ -1644,7 +1650,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 5
+          "const": 6
         },
         "contentVersion": {
           "type": "string",
@@ -2209,6 +2215,410 @@
         "position",
         "forest",
         "creekConnections"
+      ]
+    },
+    "Corners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ne": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "se": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "sw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "nw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "ne",
+        "se",
+        "sw",
+        "nw"
+      ]
+    },
+    "RailComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "pattern": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 59
+        },
+        "variant": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "terrainBackup": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Corners"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direction": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "definition",
+        "pattern",
+        "variant",
+        "terrainBackup",
+        "direction",
+        "controllerId"
+      ]
+    },
+    "RoadComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "edges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "definition",
+        "edges"
+      ]
+    },
+    "AccessoryComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "direction": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        }
+      },
+      "required": [
+        "definition",
+        "direction"
+      ]
+    },
+    "CarComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "trainId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "carId": {
+          "$ref": "#/$defs/EntityId"
+        }
+      },
+      "required": [
+        "definition",
+        "trainId",
+        "carId"
+      ]
+    },
+    "Traffic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rail": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RailComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "road": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoadComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accessory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AccessoryComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "car": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CarComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "platform": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rail",
+        "road",
+        "accessory",
+        "car",
+        "platform"
+      ]
+    },
+    "RailwayVoxel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "kind": {
+          "enum": [
+            "traffic",
+            "slopefiller",
+            "slopesupport",
+            "slopewall",
+            "pier"
+          ]
+        },
+        "traffic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Traffic"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sprite": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "drawGroundBelow": {
+          "type": "boolean"
+        },
+        "drawGroundAbove": {
+          "type": "boolean"
+        },
+        "supportedOwnerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "position",
+        "ownerId",
+        "kind",
+        "traffic",
+        "definition",
+        "sprite",
+        "drawGroundBelow",
+        "drawGroundAbove",
+        "supportedOwnerId"
+      ]
+    },
+    "SlopeOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "climb": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        }
+      },
+      "required": [
+        "entityId",
+        "climb"
+      ]
+    },
+    "AccountTransaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "worldRevision": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "absoluteMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "genre": {
+          "enum": [
+            "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+            "{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}",
+            "{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}",
+            "{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}"
+          ]
+        },
+        "expenditure": {
+          "$ref": "#/$defs/Counter"
+        },
+        "topUps": {
+          "$ref": "#/$defs/Counter"
+        },
+        "cashAfter": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "sequence",
+        "worldRevision",
+        "absoluteMinute",
+        "operation",
+        "genre",
+        "expenditure",
+        "topUps",
+        "cashAfter"
+      ]
+    },
+    "ConstructionAccounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "initialCash": {
+          "$ref": "#/$defs/Money"
+        },
+        "bankruptcyIncrement": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AccountTransaction"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "initialCash",
+        "bankruptcyIncrement",
+        "transactions"
+      ]
+    },
+    "Mixed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "voxels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RailwayVoxel"
+          },
+          "maxItems": 8192
+        },
+        "slopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SlopeOwner"
+          },
+          "maxItems": 1024
+        },
+        "accounts": {
+          "$ref": "#/$defs/ConstructionAccounts"
+        }
+      },
+      "required": [
+        "geometryRevision",
+        "nextEntityId",
+        "voxels",
+        "slopes",
+        "accounts"
       ]
     }
   }

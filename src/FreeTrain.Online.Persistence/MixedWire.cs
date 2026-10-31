@@ -1,0 +1,90 @@
+using System.Collections.Immutable;
+using System.Text.Json;
+using System.Runtime.CompilerServices;
+using FreeTrain.Online.Contracts;
+using FreeTrain.Online.Simulation;
+
+namespace FreeTrain.Online.Persistence;
+
+public static class MixedWire
+{
+    private sealed record Publication(MixedRead Mixed, SpatialEntityRead[] Railway, SpatialEntityRead[] Combined);
+    private static readonly ConditionalWeakTable<MixedConstructionState, Publication> publications = new();
+    private static Publication Published(MixedSessionState state) => publications.GetValue(state.Construction,_ =>
+    {
+        var railway = RailwayEntities(state.World);
+        var terrain = TerrainWire.Snapshot(state.CaptureTerrain(),1);
+        return new(Read(state.Construction),railway,terrain.Entities!.Concat(railway).OrderBy(e => e.Id).ToArray());
+    });
+    private static DefinitionRead? Read(DefinitionReference? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
+    private static DefinitionReference? Restore(DefinitionRead? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
+    public static MixedRead Read(MixedConstructionState state)
+    {
+        var w = state.World; var a = state.Accounts;
+        if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
+            throw new InvalidDataException("saveTooLarge");
+        return new(w.Revision,w.Spatial.NextEntityId,w.Voxels.OrderBy(v => v.OwnerId).ThenBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z).Select(v =>
+            new RailwayVoxelRead(new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,v.Kind.ToString().ToLowerInvariant(),
+                v.Traffic is not {} t ? null : new(t.Rail is not {} r ? null : new(Read(r.Definition)!,r.Pattern,r.Variant,
+                    r.TerrainBackup is {} b ? new(b.NE,b.SE,b.SW,b.NW) : null,r.Direction,r.ControllerId),
+                    t.Road is {} road ? new(Read(road.Definition)!,road.Edges) : null,
+                    t.Accessory is {} accessory ? new(Read(accessory.Definition)!,accessory.Direction) : null,
+                    t.Car is {} car ? new(Read(car.Definition)!,car.TrainId,car.CarId) : null,Read(t.Platform)),
+                Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId)).ToArray(),
+            w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
+            new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
+                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()));
+    }
+    public static MixedConstructionState Restore(MixedRead data, RailwayProfile profile, TerrainWorld terrain, SpatialEntityRead[] railwayEntities)
+    {
+        if (data.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || data.Slopes.Length > ProtocolIdentity.MaximumRailwayVoxels / 8 ||
+            data.Accounts.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions || railwayEntities.Length > ProtocolIdentity.MaximumRailwayVoxels)
+            throw new ArgumentException("Mixed state limit.");
+        var voxels = data.Voxels.Select(v => new RailwayVoxel(new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,
+            Enum.GetValues<RailwayVoxelKind>().Single(k => k.ToString().ToLowerInvariant() == v.Kind),
+            v.Traffic is not {} t ? null : new(t.Rail is {} r ? new(Restore(r.Definition)!,r.Pattern,r.Variant,
+                r.TerrainBackup is {} b ? new QuarterCorners(b.NE,b.SE,b.SW,b.NW) : null,r.Direction,r.ControllerId) : null,
+                t.Road is {} road ? new(Restore(road.Definition)!,road.Edges) : null,
+                t.Accessory is {} accessory ? new(Restore(accessory.Definition)!,accessory.Direction) : null,
+                t.Car is {} car ? new(Restore(car.Definition)!,car.TrainId,car.CarId) : null,Restore(t.Platform)),
+            Restore(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId));
+        var spatial = TerrainWire.Spatial(data.NextEntityId,railwayEntities);
+        var world = new MixedWorld(profile,terrain,spatial with { Entities = terrain.Spatial.Entities.AddRange(spatial.Entities) },voxels,
+            data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision);
+        var accounts = ConstructionAccounts.Restore(new(data.Accounts.InitialCash,new(data.Accounts.BankruptcyIncrement),
+            data.Accounts.Transactions.Select(t => new AccountTransaction(t.Sequence,t.WorldRevision,t.AbsoluteMinute,t.Operation,
+                Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter)).ToImmutableArray()));
+        return new(world,accounts);
+    }
+    public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
+    {
+        var terrainIds = world.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
+        return world.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).Select(TerrainWire.Entity).ToArray();
+    }
+    public static SnapshotMessage Snapshot(MixedSessionState state, long epoch)
+    {
+        var terrain = TerrainWire.Snapshot(state.CaptureTerrain(),epoch);
+        return terrain with { Ruleset = ProtocolIdentity.MixedRuleset, ContentVersion = ProtocolIdentity.MixedContent,
+            Cash = state.Construction.Accounts.Cash, Entities = Published(state).Combined, Mixed = Published(state).Mixed };
+    }
+    // Bound complete save/snapshot bytes; successor delta bytes are checked below.
+    public static void ValidateAdmission(MixedSessionState state)
+    {
+        var mixed = Read(state.Construction);
+        var mixedBytes = JsonSerializer.SerializeToUtf8Bytes(mixed,WireJson.CreateOptions()).LongLength;
+        if (mixedBytes > 8 * 1024 * 1024)
+            throw new InvalidDataException("saveTooLarge");
+        if (SaveCodec.TerrainSaveUpperBound(state.CaptureTerrain()) +
+            JsonSerializer.SerializeToUtf8Bytes(RailwayEntities(state.World),WireJson.CreateOptions()).LongLength +
+            mixedBytes + 4096 > ProtocolIdentity.MaximumStateBytes)
+            throw new InvalidDataException("saveTooLarge");
+    }
+    public static void ValidateTransition(MixedSessionState before, MixedSessionState after)
+    {
+        ValidateAdmission(after);
+        var delta = StateDifference.Between(Snapshot(before,1),Snapshot(after,1));
+        if (JsonSerializer.SerializeToUtf8Bytes<WireMessage>(delta,WireJson.CreateOptions()).Length > 16 * 1024 * 1024)
+            throw new InvalidDataException("saveTooLarge");
+    }
+
+}

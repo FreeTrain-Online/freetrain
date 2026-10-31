@@ -56,7 +56,7 @@ test('reviewed fixed map uses exact prepared source bytes and metadata and reope
   expect(JSON.parse(data.packedTerrain.provenance.requestJson).Image.Provider.PackId).toBe('fixture-one');
   await page.reload();await expect(page.getByTestId('connection')).toHaveText('Connected to game',{timeout:30000});expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
  }finally{
-  const state=await(await page.request.get('/api/bootstrap?protocolVersion=5&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2')).json();
+  const state=await(await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2')).json();
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+state.worldEpoch,{data:original})).ok()).toBe(true);
  }
 });

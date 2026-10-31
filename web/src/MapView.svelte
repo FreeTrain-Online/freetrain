@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createTerrainPainter, type PaintState, type PaintTarget } from './lib/terrain-painter.ts';
-  import { isReferenceWorld, isTerrainWorld } from './lib/world-identity.ts';
+  import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { pickTerrainStrategy } from './lib/terrain-edit.ts';
   import { gameDate } from './lib/game-time.ts';
   import { toolbar } from './lib/toolbar.ts';
@@ -60,7 +60,7 @@
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
   const terrain = $derived(!!view.read && isTerrainWorld(view.read));
-  const reference = $derived(isReferenceWorld(view.read) || terrain);
+  const reference = $derived(isReferenceWorld(view.read) || terrain || !!view.read && isMixedWorld(view.read));
   const worldHint = $derived(terrain ? text.terrainWorldHint : text.referenceWorldHint);
   // Keep interaction resets tied to role changes, rather than every new view snapshot.
   const observer = $derived(view.role === 'observer');

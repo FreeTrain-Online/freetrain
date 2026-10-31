@@ -71,7 +71,7 @@ test('Operator authors scenery in the Owner mode; Observer only previews and mod
   await expect.poll(async()=>(await state(page)).terrain.occupants.length).toBeGreaterThan(0);
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);await expect(observer.getByRole('button',{name:'Modify terrain',exact:true})).toBeDisabled();
   const s=await state(page);const q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,position:{x:23,y:20,z:1},action:'placeCreek',offsetX:null,offsetY:null,stroke:null,rectangle:{end:{x:23,y:22,z:1},soft:false}};
-  expect((await observer.request.post('/api/terrain/corner/preview?protocolVersion=5&contentVersion=terrain-content-1',{data:q})).ok()).toBe(true);
+  expect((await observer.request.post('/api/terrain/corner/preview?protocolVersion=6&contentVersion=terrain-content-1',{data:q})).ok()).toBe(true);
   await target(operator,'placeCreek','en',[23,20,1],[23,22]);await expect(confirm(operator)).toBeEnabled();await toggle(page,false);await expect(confirm(operator)).toBeDisabled();
   await expect(operator.getByRole('button',{name:'Preview scenery',exact:true})).toBeDisabled();
  }finally{await operator.close();await observer.close();await replace(page,original);}

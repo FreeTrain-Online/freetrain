@@ -6,7 +6,7 @@ import { deepStrictEqual as equal } from 'node:assert';
 const assert=(value:unknown)=>{if(!value)throw new Error('Assertion failed');};
 const snapshot=()=>Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-terrain.json',import.meta.url)).then(s=>parseMessage(s) as Snapshot);
 async function fixture() {
-  const original=await snapshot(),saved=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v7.json',import.meta.url)));
+  const original=await snapshot(),saved=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v8.json',import.meta.url)));
   const data=new TextEncoder().encode(JSON.stringify({message:{...original,entities:[],terrain:undefined},packedTerrain:saved.packedTerrain})+' '.repeat(2*stateChunkBytes));
   const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data)),n=>n.toString(16).padStart(2,'0')).join('');
   const chunks:StateChunk[]=[];
@@ -26,7 +26,7 @@ Deno.test('bounded state assembly permits out-of-order chunks and publishes only
 });
 Deno.test('metadata-only session offers are unambiguous protocol messages',async()=>{
   const identity=await snapshot();
-  const offer={type:'sessionOffer',protocolVersion:5,contentVersion:'terrain-content-1',serverIncarnation:'test',sessionId:'reference-spatial',participantId:'owner',role:'owner',worldEpoch:'1',ruleset:'terrain-state-1',requiredPacks:identity.requiredPacks};
+  const offer={type:'sessionOffer',protocolVersion:6,contentVersion:'terrain-content-1',serverIncarnation:'test',sessionId:'reference-spatial',participantId:'owner',role:'owner',worldEpoch:'1',ruleset:'terrain-state-1',requiredPacks:identity.requiredPacks};
   equal(parseMessage(JSON.stringify(offer)),offer);
 });
 Deno.test('duplicates, conflicting identity, corruption, count bombs, length mismatch and expiry fail closed',async()=>{
@@ -56,7 +56,7 @@ Deno.test('clock-only terrain deltas preserve graph references and reject clock 
   assert(!applyDelta(before,{...delta,tick:'9223372036854775807'}));
 });
 Deno.test('expanded JSON object bombs are rejected by the structure scan before parsing',async()=>{
-  const data=new TextEncoder().encode('['+'{},'.repeat(100000)+'{}]');
+  const data=new TextEncoder().encode('['+'{},'.repeat(1000000)+'{}]');
   const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data)),n=>n.toString(16).padStart(2,'0')).join('');
   const assembly=new StateAssembler();let message='';
   try{

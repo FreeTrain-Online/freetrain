@@ -1,3 +1,4 @@
+import {railwayProfile,validMixed} from './mixed-state.ts';
 import { terrainProfile, validTerrain, isValidatedTerrain } from './terrain-state.ts';
 import { maximumGameMinute } from './game-time.ts';
 import canonical from '../../../prototype/protocol/canonical-profile.json' with { type: 'json' };
@@ -15,7 +16,7 @@ export function sameIdentity(a:WorldIdentity,b:WorldIdentity):boolean {
 }
 // The server selects the whole exact profile. A browser never combines packs or
 // accepts a contribution merely because another installed pack uses the same ID.
-export function resolveProfile(identity:WorldIdentity) {return [canonical,profile,terrainProfile].find(p=>sameIdentity(identity,p));}
+export function resolveProfile(identity:WorldIdentity) {return [canonical,profile,terrainProfile,railwayProfile].find(p=>sameIdentity(identity,p));}
 export function supportedIdentity(identity:WorldIdentity):boolean { return !!resolveProfile(identity); }
 function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
   if(!read.entities||read.entities.length!==read.tracks.length)return false;
@@ -43,6 +44,8 @@ export function validSnapshot(read:Snapshot):boolean {
   const valid=validSnapshotUncached(read);if(valid)validatedSnapshots.add(read);return valid;
 }
 function validSnapshotUncached(read:Snapshot):boolean {
+  if (sameIdentity(read,railwayProfile)) {try{return validMixed(read);}catch{return false;}}
+  if(read.mixed!==undefined)return false;
   if (sameIdentity(read,terrainProfile)) { try { return validTerrain(read); } catch { return false; } }
   if(read.terrain!==undefined)return false;
   if (sameIdentity(read,canonical)) {
@@ -83,3 +86,5 @@ export function normalPorts(shape:string):readonly number[]|undefined {
 export function isReferenceWorld(read:WorldIdentity|undefined):boolean {return !!read&&sameIdentity(read,canonical);}
 
 export function isTerrainWorld(read:WorldIdentity):boolean {return sameIdentity(read,terrainProfile);}
+
+export function isMixedWorld(read:WorldIdentity):boolean {return sameIdentity(read,railwayProfile);}

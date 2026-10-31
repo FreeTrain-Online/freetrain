@@ -28,7 +28,7 @@ function boundedJson(text:string):unknown {
         if(slashes%2===0)break;
       }while(true);
       i=end;
-    }else if(c===123||c===91){if(++containers>100000||++depth>32)throw new Error('State JSON structure');}
+    }else if(c===123||c===91){if(++containers>1000000||++depth>32)throw new Error('State JSON structure');}
     else if(c===125||c===93)depth--;
   }
   return JSON.parse(text);
@@ -90,8 +90,10 @@ export class StateAssembler {
     const message=payload.message,snapshot=message.type==='join'?message.snapshot:message.type==='snapshot'?message:undefined;
     if(!snapshot||snapshot.worldEpoch!==h.worldEpoch||snapshot.revision!==h.revision)throw new Error('State identity');
     if(payload.packedTerrain!==null) {
-      if(snapshot.terrain!==undefined||snapshot.entities?.length!==0||!validatePacked(payload.packedTerrain))throw new Error('Packed state header');
-      Object.assign(snapshot,unpackTerrain(payload.packedTerrain,snapshot.map));
+      if(snapshot.terrain!==undefined||(!snapshot.mixed&&snapshot.entities?.length!==0)||!validatePacked(payload.packedTerrain))throw new Error('Packed state header');
+      const unpacked=unpackTerrain(payload.packedTerrain,snapshot.map);
+      if(snapshot.mixed)unpacked.entities.push(...(snapshot.entities??[]));
+      Object.assign(snapshot,unpacked);
     }
     const result=parseMessageValue(message);this.active=undefined;return result;
   }

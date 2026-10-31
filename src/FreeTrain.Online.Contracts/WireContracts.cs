@@ -6,9 +6,13 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 5;
+    public const int Version = 6;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
+    public const string MixedRuleset = "mixed-railway-1";
+    public const string MixedContent = "mixed-railway-content-1";
+    public const int MaximumRailwayVoxels = 8192;
+    public const int MaximumAccountTransactions = 8192;
     public const string ReferenceRuleset = "reference-spatial-4";
     public const string ReferenceContent = "reference-spatial-content-2";
     public static RequiredPackRead[] ReferencePacks => [new("reference-spatial", "2", "7dd845abcb42aa1797e5d15185881300fa98ffafcefc3e0bbbd5259559c87d82")];
@@ -87,12 +91,14 @@ public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, 
     MapRead Map, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings, TrackRead[] Tracks,
     string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
     TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
@@ -172,7 +178,7 @@ public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLe
     long GeometryRevision, long NextEntityId, TerrainProvenanceRead Provenance,
     DefinitionRead[] Definitions, byte[] Cells, int OccupantCount, byte[] Occupants);
 
-// Additive terrain tool contract; durable state remains Save7 / protocol5.
+// Additive terrain tool contract; durable state uses Save8 / protocol6.
 public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
     string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DefinitionRead? Forest = null);
@@ -188,3 +194,22 @@ public sealed record CornerTerrainPreviewRead(long WorldEpoch, long GeometryRevi
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AuthoringDecorationRead[]? Decorations = null);
 public sealed record AuthoringDecorationRead(PositionRead Position, ForestRead? Forest, int CreekConnections);
 public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason);
+
+// Complete bounded railway/account publication, replaced atomically on every mixed delta.
+// Terrain geometry and railway geometry have separate revisions and allocator high-water marks.
+public sealed record CornersRead(int NE, int SE, int SW, int NW);
+public sealed record RailComponentRead(DefinitionRead Definition, int Pattern, int Variant, CornersRead? TerrainBackup,
+    int Direction, long? ControllerId);
+public sealed record RoadComponentRead(DefinitionRead Definition, int Edges);
+public sealed record AccessoryComponentRead(DefinitionRead Definition, int Direction);
+public sealed record CarComponentRead(DefinitionRead Definition, long TrainId, long CarId);
+public sealed record TrafficRead(RailComponentRead? Rail, RoadComponentRead? Road, AccessoryComponentRead? Accessory,
+    CarComponentRead? Car, DefinitionRead? Platform);
+public sealed record RailwayVoxelRead(PositionRead Position, long OwnerId, string Kind, TrafficRead? Traffic,
+    DefinitionRead? Definition, int Sprite, bool DrawGroundBelow, bool DrawGroundAbove, long? SupportedOwnerId);
+public sealed record SlopeOwnerRead(long EntityId, int Climb);
+public sealed record AccountTransactionRead(long Sequence, long WorldRevision, long AbsoluteMinute, string Operation,
+    string Genre, long Expenditure, long TopUps, long CashAfter);
+public sealed record ConstructionAccountsRead(long InitialCash, long BankruptcyIncrement, AccountTransactionRead[] Transactions);
+public sealed record MixedRead(long GeometryRevision, long NextEntityId, RailwayVoxelRead[] Voxels, SlopeOwnerRead[] Slopes,
+    ConstructionAccountsRead Accounts);

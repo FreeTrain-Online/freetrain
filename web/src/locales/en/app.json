@@ -438,5 +438,7 @@
   "paintBlocked": "This point cannot change further. Move the brush.",
   "paintFailed": "Painting stopped. Check the connection or terrain, then start a new stroke.",
   "paintChanges": "Changes",
-  "paintStop": "Stop painting"
+  "paintStop": "Stop painting",
+  "mixedWorld": "Railway world",
+  "mixedWorldHint": "The saved terrain, railway and accounts are loaded. You can run, pause or step the calendar. Railway display and construction tools are not available yet."
 }

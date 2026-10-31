@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
 import type { Delta, Snapshot, SpatialPreview, CornerTerrainPreview, WireMessage } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
+import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, isMixedWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
 import { maximumGameMinute } from './game-time.ts';
 import { terrainById, validTerrainDelta, shareTerrainValidation } from './terrain-state.ts';
 const validatedReads=new WeakSet<object>(),frozenObjects=new WeakSet<object>();
@@ -46,7 +46,9 @@ export function immutable<T extends object>(value: T): T {
 }
 export function applyDelta(state: ReadState, delta: Delta): ReadState | undefined {
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
-  const terrain=isTerrainWorld(state);
+  const mixed=isMixedWorld(state);
+  const terrain=isTerrainWorld(state)||mixed;
+  if(mixed!==!!delta.mixed)return;
   if((isReferenceWorld(state)||terrain)&&(!delta.entities||!delta.removed.entityIds))return;
   if(!isReferenceWorld(state)&&!terrain&&(delta.entities!==undefined||delta.removed.entityIds!==undefined))return;
   if(delta.entities&&(new Set(delta.entities.map(e=>e.id)).size!==delta.entities.length||
@@ -72,7 +74,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       if(before&&JSON.stringify(o)!==JSON.stringify(before)&&
         (!changedEntities.has(o.entityId)||BigInt(changedEntities.get(o.entityId)!.revision)<=BigInt(old.get(o.entityId)!.revision)))return;
     }
-    if((delta.terrain.cells.length||delta.terrain.occupants.length||delta.entities!.length||delta.removed.entityIds!.length||
+    if(!mixed&&(delta.terrain.cells.length||delta.terrain.occupants.length||delta.entities!.length||delta.removed.entityIds!.length||
       delta.terrain.waterLevel!==state.terrain.waterLevel||delta.terrain.constructionMode!==state.terrain.constructionMode)&&
       BigInt(delta.terrain.geometryRevision)<=BigInt(state.terrain.geometryRevision))return;
   } else if(delta.terrain!==undefined)return;
@@ -85,7 +87,8 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     // The unchanged graph was already checked before publication. Clock/run/pause
     // never clone or revalidate millions of terrain cells.
     if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
-    if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!=='0'||typeof delta.paused!=='boolean')return;
+    if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
+    if(mixed&&JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed))return;
     const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash});
     shareTerrainValidation(state,next);validatedReads.add(next);return next;
   }
@@ -113,13 +116,41 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   const terrainState=terrain?{...state.terrain!,...delta.terrain!,
     cells:delta.terrain!.cells.length?terrainCells!:state.terrain!.cells,
     occupants:terrainMerge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
-  const next={ ...state, ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash,
+  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash,
     ...(state.entities?{entities:(terrain?terrainMerge:merge)(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),
     buildings: merge(state.buildings, delta.buildings, delta.removed.buildingIds, x => x.id),
     tracks: merge(state.tracks, delta.tracks, delta.removed.trackPositions.map(position), x => position(x.position)),
   } as Snapshot;
+  if(mixed) {
+    if(!validSnapshot(next)||!state.mixed||!next.mixed)return;
+    const before=state.mixed,after=next.mixed;
+    if(BigInt(after.nextEntityId)<BigInt(before.nextEntityId)||BigInt(after.geometryRevision)<BigInt(before.geometryRevision))return;
+    if(after.accounts.initialCash!==before.accounts.initialCash||after.accounts.bankruptcyIncrement!==before.accounts.bankruptcyIncrement||
+      after.accounts.transactions.length<before.accounts.transactions.length||before.accounts.transactions.some((t,i)=>JSON.stringify(t)!==JSON.stringify(after.accounts.transactions[i])))return;
+    const old=new Map(state.entities!.map(e=>[e.id,e]));
+    const terrainIds=new Set(state.terrain!.occupants.map(o=>o.entityId)),nextTerrainIds=new Set(next.terrain!.occupants.map(o=>o.entityId));
+    for(const e of delta.entities!){const b=old.get(e.id);
+      if(!b&&BigInt(e.id)<BigInt(before.nextEntityId)||b&&(terrainIds.has(e.id)!==nextTerrainIds.has(e.id)||
+        !terrainIds.has(e.id)&&JSON.stringify(b.definition)!==JSON.stringify(e.definition)))return;
+    }
+    const terrainChanged=delta.terrain!.cells.length||delta.terrain!.occupants.length||
+      delta.entities!.some(e=>terrainIds.has(e.id)||nextTerrainIds.has(e.id))||delta.removed.entityIds!.some(id=>terrainIds.has(id))||
+      delta.terrain!.waterLevel!==state.terrain!.waterLevel;
+    if(terrainChanged&&BigInt(delta.terrain!.geometryRevision)<=BigInt(state.terrain!.geometryRevision))return;
+    if((JSON.stringify(before)!==JSON.stringify(after)||terrainChanged||delta.entities!.length||delta.removed.entityIds!.length||
+        delta.terrain!.constructionMode!==state.terrain!.constructionMode)&&BigInt(after.geometryRevision)<=BigInt(before.geometryRevision))return;
+    const priorVoxels=new Map<string,unknown[]>(),nowVoxels=new Map<string,unknown[]>();
+    for(const [rows,index] of [[before.voxels,priorVoxels],[after.voxels,nowVoxels]] as const)
+      for(const v of rows){const group=index.get(v.ownerId)??[];group.push(v);index.set(v.ownerId,group);}
+    // Payload changes require a revised owner even when its footprint is unchanged.
+    for(const e of next.entities!){const b=old.get(e.id);if(!b||e.revision!==b.revision)continue;
+      const prior=priorVoxels.get(e.id)??[],now=nowVoxels.get(e.id)??[];
+      if(JSON.stringify(prior)!==JSON.stringify(now)||JSON.stringify(before.slopes.find(s=>s.entityId===e.id))!==JSON.stringify(after.slopes.find(s=>s.entityId===e.id)))return;
+    }
+    const frozen=immutable(next);validatedReads.add(frozen);return frozen;
+  }
   if(terrain) {
     if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
     try {if(!validTerrainDelta(state as Snapshot,next,delta))return;}catch{return;}

@@ -212,7 +212,7 @@ public sealed partial class SessionHost
         job.Commit(requestHash, candidateHash, true, DateTimeOffset.UtcNow, fence);
         var replacement = creationState ?? throw new InvalidOperationException("staleCandidate");
         var nextEpoch = checked(WorldEpoch + 1);
-        terrainState = replacement; referenceWorld = null; WorldEpoch = nextEpoch;
+        terrainState = replacement; referenceWorld = null; mixedState = null; WorldEpoch = nextEpoch;
         resetInput = safetyPause = false; ClearCreation();
         return Snapshot();
     });

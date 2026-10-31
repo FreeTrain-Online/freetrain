@@ -1,0 +1,472 @@
+{
+  "type": "snapshot",
+  "worldEpoch": "1",
+  "revision": "6",
+  "tick": "130081",
+  "paused": true,
+  "cash": "7000000000",
+  "map": {
+    "width": 3,
+    "height": 3,
+    "levels": 6,
+    "coordinateSystem": "hv"
+  },
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "tracks": [],
+  "ruleset": "mixed-railway-1",
+  "contentVersion": "mixed-railway-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "entities": [
+    {
+      "id": "1",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}",
+        "recipeId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 0,
+        "z": 1
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": false
+        }
+      ],
+      "owned": false,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "2",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:terrain/mountain",
+        "recipeId": "geometry:quarter-mountain-1"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 0,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": false
+        }
+      ],
+      "owned": false,
+      "silentlyReclaimable": false,
+      "value": "100"
+    },
+    {
+      "id": "3",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+        "recipeId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+      },
+      "anchor": {
+        "x": 2,
+        "y": 1,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": false,
+      "silentlyReclaimable": true,
+      "value": "0"
+    },
+    {
+      "id": "7",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:traffic",
+        "recipeId": "geometry:traffic-components-1"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 0,
+        "z": 4
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "8",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pier",
+        "recipeId": "system:pier"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 0,
+        "z": 3
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "9",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:traffic",
+        "recipeId": "geometry:traffic-components-1"
+      },
+      "anchor": {
+        "x": 3,
+        "y": 2,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    },
+    {
+      "id": "10",
+      "revision": "0",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:traffic",
+        "recipeId": "geometry:traffic-components-1"
+      },
+      "anchor": {
+        "x": 1,
+        "y": 2,
+        "z": 4
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    }
+  ],
+  "terrain": {
+    "name": "保存 / Terrain",
+    "waterLevel": 3,
+    "constructionMode": true,
+    "geometryRevision": "4",
+    "nextEntityId": "7",
+    "provenance": {
+      "profile": "terrain-generation-1",
+      "source": "empty",
+      "requestHash": "e71fc178593fc924af8bc5f83a3978f1a17d4e01b315024210a770f46af6e7cf",
+      "requestJson": "{\"source\":\"empty\",\"Profile\":\"terrain-generation-1\",\"Name\":\"\\u4FDD\\u5B58 / Terrain\",\"Dimensions\":{\"H\":3,\"V\":3,\"Z\":6},\"WaterLevel\":1}"
+    },
+    "cells": [
+      {
+        "ground": 2,
+        "surface": "terrace"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      },
+      {
+        "ground": 2,
+        "surface": "cut"
+      }
+    ],
+    "occupants": [
+      {
+        "entityId": "1",
+        "kind": "terrace",
+        "ne": 1,
+        "se": 2,
+        "sw": 3,
+        "nw": 4,
+        "forest": null,
+        "creekConnections": 0
+      },
+      {
+        "entityId": "2",
+        "kind": "mountain",
+        "ne": 1,
+        "se": 2,
+        "sw": 3,
+        "nw": 4,
+        "forest": {
+          "definition": {
+            "packId": "exav-stable-bundled",
+            "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+            "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+          },
+          "trees": [
+            {
+              "x": 0,
+              "y": 0,
+              "sprite": 0
+            },
+            {
+              "x": 30,
+              "y": 15,
+              "sprite": 8
+            }
+          ]
+        },
+        "creekConnections": 0
+      },
+      {
+        "entityId": "3",
+        "kind": "creek",
+        "ne": 0,
+        "se": 0,
+        "sw": 0,
+        "nw": 0,
+        "forest": null,
+        "creekConnections": 13
+      }
+    ]
+  },
+  "mixed": {
+    "geometryRevision": "5",
+    "nextEntityId": "11",
+    "voxels": [
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 4
+        },
+        "ownerId": "7",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "system:pattern/1",
+              "recipeId": "system:pattern/1"
+            },
+            "pattern": 1,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 3
+        },
+        "ownerId": "8",
+        "kind": "pier",
+        "traffic": null,
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": "7"
+      },
+      {
+        "position": {
+          "x": 3,
+          "y": 2,
+          "z": 2
+        },
+        "ownerId": "9",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+              "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": {
+              "ne": 1,
+              "se": 2,
+              "sw": 3,
+              "nw": 4
+            },
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 2,
+          "z": 4
+        },
+        "ownerId": "10",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+              "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      }
+    ],
+    "slopes": [],
+    "accounts": {
+      "initialCash": "15000000000",
+      "bankruptcyIncrement": "10000000000",
+      "transactions": [
+        {
+          "sequence": "1",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "18000000000",
+          "topUps": "1",
+          "cashAfter": "7000000000"
+        },
+        {
+          "sequence": "2",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "0",
+          "topUps": "0",
+          "cashAfter": "7000000000"
+        }
+      ]
+    }
+  }
+}

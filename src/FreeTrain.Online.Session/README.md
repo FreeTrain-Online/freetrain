@@ -48,14 +48,14 @@ provider is part of this library.
 Generated terrain worlds and the regression-only `ReferenceWorld` use the same bounded FIFO and snapshot /
 spatial query boundary. Run/Pause/Step advance its world-local source-minute clock;
 other gameplay commands return `operationUnavailable`. Economy/train behavior is pending.
-Capture writes canonical Save 7, including the entity/voxel graph, allocator, clock and random streams. Load
+Capture writes canonical Save 8, including the entity/voxel graph, allocator, clock and random streams. Load
 accepts only that current format and validates a complete replacement before
 changing the epoch; later commands/loads carrying the old epoch are fenced.
 Earlier save formats are rejected without mutation or conversion. Explicit
 prototype regression hosts cannot write saves.
 See [P1-01c](../../doc/web-parity-reference-world.md), [P1-02](../../doc/web-parity-clock.md) and [P1-04](../../doc/web-parity-spatial-contracts.md).
 
-Terrain hosts share this canonical FIFO and clock boundary. Save 7/protocol 5 carry
+Terrain hosts share this canonical FIFO and clock boundary. Save 8/protocol 6 carry
 actual ground/occupants, realized forests, authoring mode, provenance and revision/
 allocator continuation, with exact trusted profile resolution. Replacement snapshots
 and edited cell/occupant/removal deltas preserve epoch and stale-request fencing.

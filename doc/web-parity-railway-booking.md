@@ -1,5 +1,10 @@
 # P4-04 atomic construction/removal booking — 30 October 2026
 
+**P4-05 follow-up — 31 October 2026:** [Mixed persistence and dispatch](web-parity-railway-persistence.md)
+now provide Save8/protocol6, the exact mixed profile and validated session/network
+publication. Next is P4-06. The original step-boundary descriptions below retain
+their historical detached-state/booking scope.
+
 P4-04 delivers detached canonical construction accounts, operation-specific quotes
 and one immutable terrain/rail/allocator/account publication unit. Next is
 **P4-05 mixed-world saves, wire contracts and dispatch**. No live railway command,

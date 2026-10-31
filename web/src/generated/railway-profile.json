@@ -1,0 +1,806 @@
+{
+  "ruleset": "mixed-railway-1",
+  "contentVersion": "mixed-railway-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "trafficOwner": {
+    "packId": "exav-stable-bundled",
+    "contributionId": "system:traffic",
+    "recipeId": "geometry:traffic-components-1"
+  },
+  "slopeOwner": {
+    "packId": "exav-stable-bundled",
+    "contributionId": "system:slope",
+    "recipeId": "geometry:eight-cell-slope-1"
+  },
+  "bindings": [
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/0",
+        "recipeId": "system:pattern/0"
+      },
+      "handler": "normal",
+      "variant": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/1",
+        "recipeId": "system:pattern/1"
+      },
+      "handler": "normal",
+      "variant": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/2",
+        "recipeId": "system:pattern/2"
+      },
+      "handler": "normal",
+      "variant": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/3",
+        "recipeId": "system:pattern/3"
+      },
+      "handler": "normal",
+      "variant": 3
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/4",
+        "recipeId": "system:pattern/4"
+      },
+      "handler": "normal",
+      "variant": 4
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/5",
+        "recipeId": "system:pattern/5"
+      },
+      "handler": "normal",
+      "variant": 5
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/6",
+        "recipeId": "system:pattern/6"
+      },
+      "handler": "normal",
+      "variant": 6
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/7",
+        "recipeId": "system:pattern/7"
+      },
+      "handler": "normal",
+      "variant": 7
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/8",
+        "recipeId": "system:pattern/8"
+      },
+      "handler": "normal",
+      "variant": 8
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/9",
+        "recipeId": "system:pattern/9"
+      },
+      "handler": "normal",
+      "variant": 9
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/10",
+        "recipeId": "system:pattern/10"
+      },
+      "handler": "normal",
+      "variant": 10
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/11",
+        "recipeId": "system:pattern/11"
+      },
+      "handler": "normal",
+      "variant": 11
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/12",
+        "recipeId": "system:pattern/12"
+      },
+      "handler": "junction",
+      "variant": 12
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/13",
+        "recipeId": "system:pattern/13"
+      },
+      "handler": "junction",
+      "variant": 13
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/14",
+        "recipeId": "system:pattern/14"
+      },
+      "handler": "junction",
+      "variant": 14
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/15",
+        "recipeId": "system:pattern/15"
+      },
+      "handler": "junction",
+      "variant": 15
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/16",
+        "recipeId": "system:pattern/16"
+      },
+      "handler": "junction",
+      "variant": 16
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/17",
+        "recipeId": "system:pattern/17"
+      },
+      "handler": "junction",
+      "variant": 17
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/18",
+        "recipeId": "system:pattern/18"
+      },
+      "handler": "junction",
+      "variant": 18
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/19",
+        "recipeId": "system:pattern/19"
+      },
+      "handler": "junction",
+      "variant": 19
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/20",
+        "recipeId": "system:pattern/20"
+      },
+      "handler": "junction",
+      "variant": 20
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/21",
+        "recipeId": "system:pattern/21"
+      },
+      "handler": "junction",
+      "variant": 21
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/22",
+        "recipeId": "system:pattern/22"
+      },
+      "handler": "junction",
+      "variant": 22
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/23",
+        "recipeId": "system:pattern/23"
+      },
+      "handler": "junction",
+      "variant": 23
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/24",
+        "recipeId": "system:pattern/24"
+      },
+      "handler": "junction",
+      "variant": 24
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/25",
+        "recipeId": "system:pattern/25"
+      },
+      "handler": "junction",
+      "variant": 25
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/26",
+        "recipeId": "system:pattern/26"
+      },
+      "handler": "junction",
+      "variant": 26
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/27",
+        "recipeId": "system:pattern/27"
+      },
+      "handler": "junction",
+      "variant": 27
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/28",
+        "recipeId": "system:pattern/28"
+      },
+      "handler": "slope",
+      "variant": 28
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/29",
+        "recipeId": "system:pattern/29"
+      },
+      "handler": "slope",
+      "variant": 29
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/30",
+        "recipeId": "system:pattern/30"
+      },
+      "handler": "slope",
+      "variant": 30
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/31",
+        "recipeId": "system:pattern/31"
+      },
+      "handler": "slope",
+      "variant": 31
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/32",
+        "recipeId": "system:pattern/32"
+      },
+      "handler": "slope",
+      "variant": 32
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/33",
+        "recipeId": "system:pattern/33"
+      },
+      "handler": "slope",
+      "variant": 33
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/34",
+        "recipeId": "system:pattern/34"
+      },
+      "handler": "slope",
+      "variant": 34
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/35",
+        "recipeId": "system:pattern/35"
+      },
+      "handler": "slope",
+      "variant": 35
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/36",
+        "recipeId": "system:pattern/36"
+      },
+      "handler": "slope",
+      "variant": 36
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/37",
+        "recipeId": "system:pattern/37"
+      },
+      "handler": "slope",
+      "variant": 37
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/38",
+        "recipeId": "system:pattern/38"
+      },
+      "handler": "slope",
+      "variant": 38
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/39",
+        "recipeId": "system:pattern/39"
+      },
+      "handler": "slope",
+      "variant": 39
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/40",
+        "recipeId": "system:pattern/40"
+      },
+      "handler": "slope",
+      "variant": 40
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/41",
+        "recipeId": "system:pattern/41"
+      },
+      "handler": "slope",
+      "variant": 41
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/42",
+        "recipeId": "system:pattern/42"
+      },
+      "handler": "slope",
+      "variant": 42
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/43",
+        "recipeId": "system:pattern/43"
+      },
+      "handler": "slope",
+      "variant": 43
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/44",
+        "recipeId": "system:pattern/44"
+      },
+      "handler": "slope",
+      "variant": 44
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/45",
+        "recipeId": "system:pattern/45"
+      },
+      "handler": "slope",
+      "variant": 45
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/46",
+        "recipeId": "system:pattern/46"
+      },
+      "handler": "slope",
+      "variant": 46
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/47",
+        "recipeId": "system:pattern/47"
+      },
+      "handler": "slope",
+      "variant": 47
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/48",
+        "recipeId": "system:pattern/48"
+      },
+      "handler": "slope",
+      "variant": 48
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/49",
+        "recipeId": "system:pattern/49"
+      },
+      "handler": "slope",
+      "variant": 49
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/50",
+        "recipeId": "system:pattern/50"
+      },
+      "handler": "slope",
+      "variant": 50
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/51",
+        "recipeId": "system:pattern/51"
+      },
+      "handler": "slope",
+      "variant": 51
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/52",
+        "recipeId": "system:pattern/52"
+      },
+      "handler": "slope",
+      "variant": 52
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/53",
+        "recipeId": "system:pattern/53"
+      },
+      "handler": "slope",
+      "variant": 53
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/54",
+        "recipeId": "system:pattern/54"
+      },
+      "handler": "slope",
+      "variant": 54
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/55",
+        "recipeId": "system:pattern/55"
+      },
+      "handler": "slope",
+      "variant": 55
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/56",
+        "recipeId": "system:pattern/56"
+      },
+      "handler": "slope",
+      "variant": 56
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/57",
+        "recipeId": "system:pattern/57"
+      },
+      "handler": "slope",
+      "variant": 57
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/58",
+        "recipeId": "system:pattern/58"
+      },
+      "handler": "slope",
+      "variant": 58
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/59",
+        "recipeId": "system:pattern/59"
+      },
+      "handler": "slope",
+      "variant": 59
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pier",
+        "recipeId": "system:pier"
+      },
+      "handler": "pier",
+      "variant": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-2",
+        "recipeId": "system:pattern/slope-support-2"
+      },
+      "handler": "slopesupport",
+      "variant": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-2",
+        "recipeId": "system:pattern/underground-slope-support-2"
+      },
+      "handler": "slopewall",
+      "variant": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-3",
+        "recipeId": "system:pattern/slope-support-3"
+      },
+      "handler": "slopesupport",
+      "variant": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-3",
+        "recipeId": "system:pattern/underground-slope-support-3"
+      },
+      "handler": "slopewall",
+      "variant": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-6",
+        "recipeId": "system:pattern/slope-support-6"
+      },
+      "handler": "slopesupport",
+      "variant": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-6",
+        "recipeId": "system:pattern/underground-slope-support-6"
+      },
+      "handler": "slopewall",
+      "variant": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-7",
+        "recipeId": "system:pattern/slope-support-7"
+      },
+      "handler": "slopesupport",
+      "variant": 3
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-7",
+        "recipeId": "system:pattern/underground-slope-support-7"
+      },
+      "handler": "slopewall",
+      "variant": 3
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-10",
+        "recipeId": "system:pattern/slope-support-10"
+      },
+      "handler": "slopesupport",
+      "variant": 4
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-10",
+        "recipeId": "system:pattern/underground-slope-support-10"
+      },
+      "handler": "slopewall",
+      "variant": 4
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-11",
+        "recipeId": "system:pattern/slope-support-11"
+      },
+      "handler": "slopesupport",
+      "variant": 5
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-11",
+        "recipeId": "system:pattern/underground-slope-support-11"
+      },
+      "handler": "slopewall",
+      "variant": 5
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-14",
+        "recipeId": "system:pattern/slope-support-14"
+      },
+      "handler": "slopesupport",
+      "variant": 6
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-14",
+        "recipeId": "system:pattern/underground-slope-support-14"
+      },
+      "handler": "slopewall",
+      "variant": 6
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/slope-support-15",
+        "recipeId": "system:pattern/slope-support-15"
+      },
+      "handler": "slopesupport",
+      "variant": 7
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pattern/underground-slope-support-15",
+        "recipeId": "system:pattern/underground-slope-support-15"
+      },
+      "handler": "slopewall",
+      "variant": 7
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+        "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+      },
+      "handler": "bridge",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+        "recipeId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}"
+      },
+      "handler": "girder",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+        "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+      },
+      "handler": "tunnel",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+        "recipeId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}"
+      },
+      "handler": "garage",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+        "recipeId": "{DDF7F835-8100-45fd-8AE7-EC498796D387}"
+      },
+      "handler": "pole",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+        "recipeId": "{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}"
+      },
+      "handler": "pole",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+        "recipeId": "{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}"
+      },
+      "handler": "pole",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+        "recipeId": "{FD1635C1-05BF-41af-9185-4891B983E2A4}"
+      },
+      "handler": "pole",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+        "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+      },
+      "handler": "signal",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6FA55842-E693-414f-A120-0A3D0C613B21}",
+        "recipeId": "{6FA55842-E693-414f-A120-0A3D0C613B21}"
+      },
+      "handler": "signal",
+      "variant": -1
+    }
+  ]
+}

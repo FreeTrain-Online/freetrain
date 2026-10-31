@@ -1,0 +1,199 @@
+{
+  "type": "delta",
+  "worldEpoch": "1",
+  "baseRevision": "6",
+  "revision": "7",
+  "tick": "130081",
+  "paused": true,
+  "cash": "6999800000",
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "tracks": [],
+  "removed": {
+    "trainIds": [],
+    "stationIds": [],
+    "buildingIds": [],
+    "trackPositions": [],
+    "entityIds": [
+      "7"
+    ]
+  },
+  "ruleset": "mixed-railway-1",
+  "contentVersion": "mixed-railway-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+    }
+  ],
+  "entities": [
+    {
+      "id": "9",
+      "revision": "1",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:traffic",
+        "recipeId": "geometry:traffic-components-1"
+      },
+      "anchor": {
+        "x": 3,
+        "y": 2,
+        "z": 2
+      },
+      "footprint": [
+        {
+          "offset": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "transparent": true
+        }
+      ],
+      "owned": true,
+      "silentlyReclaimable": false,
+      "value": "0"
+    }
+  ],
+  "terrain": {
+    "waterLevel": 3,
+    "constructionMode": true,
+    "geometryRevision": "4",
+    "nextEntityId": "7",
+    "cells": [],
+    "occupants": []
+  },
+  "mixed": {
+    "geometryRevision": "6",
+    "nextEntityId": "11",
+    "voxels": [
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 3
+        },
+        "ownerId": "8",
+        "kind": "pier",
+        "traffic": null,
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": "7"
+      },
+      {
+        "position": {
+          "x": 3,
+          "y": 2,
+          "z": 2
+        },
+        "ownerId": "9",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+              "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+            },
+            "pattern": 10,
+            "variant": 1,
+            "terrainBackup": {
+              "ne": 1,
+              "se": 2,
+              "sw": 3,
+              "nw": 4
+            },
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 2,
+          "z": 4
+        },
+        "ownerId": "10",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+              "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      }
+    ],
+    "slopes": [],
+    "accounts": {
+      "initialCash": "15000000000",
+      "bankruptcyIncrement": "10000000000",
+      "transactions": [
+        {
+          "sequence": "1",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "18000000000",
+          "topUps": "1",
+          "cashAfter": "7000000000"
+        },
+        {
+          "sequence": "2",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "0",
+          "topUps": "0",
+          "cashAfter": "7000000000"
+        },
+        {
+          "sequence": "3",
+          "worldRevision": "6",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "200000",
+          "topUps": "0",
+          "cashAfter": "6999800000"
+        }
+      ]
+    }
+  }
+}

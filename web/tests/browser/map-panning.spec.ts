@@ -32,6 +32,7 @@ test('owner and observer inspect drags survive running world updates', async ({ 
     }
   } finally {
     await page.getByRole('button', { name: 'Pause', exact: false }).click();
+    await expect(page.getByTestId('clock-state')).toHaveText('Paused');
     await observer.close();
   }
 });

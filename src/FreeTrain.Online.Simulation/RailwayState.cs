@@ -16,6 +16,8 @@ public sealed record RailwayBinding(DefinitionReference Reference, RailwayHandle
 // consumers must supply explicit bindings; bundled art alone never enables them.
 public sealed class RailwayProfile
 {
+    public const string Ruleset = "mixed-railway-1";
+    public const string ContentVersion = "mixed-railway-content-1";
     public TerrainProfile Terrain { get; }
     public ImmutableArray<RailwayBinding> Bindings { get; }
     private readonly FrozenDictionary<DefinitionReference, RailwayBinding> bindings;

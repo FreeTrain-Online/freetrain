@@ -72,7 +72,7 @@ public class TerrainPersistenceTests
             case "rails": node["rails"]!.AsArray().Add(new JsonObject()); break;
             case "dimension": node["map"]!["width"] = int.MaxValue; break;
         }
-        var bad = mutation == "duplicate" ? Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(saved).Replace("\"saveVersion\":7", "\"saveVersion\":7,\"saveVersion\":7")) : Bytes(node);
+        var bad = mutation == "duplicate" ? Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(saved).Replace("\"saveVersion\":8", "\"saveVersion\":8,\"saveVersion\":8")) : Bytes(node);
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-reject-" + Guid.NewGuid());
         try
         {
@@ -179,7 +179,7 @@ public class TerrainPersistenceTests
     {
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-http-" + Guid.NewGuid());
         Directory.CreateDirectory(directory); var data = SaveCodec.Write(Scene());
-        var query = "/api/bootstrap?protocolVersion=5&contentVersion=" + TerrainProfile.ContentVersion;
+        var query = "/api/bootstrap?protocolVersion=6&contentVersion=" + TerrainProfile.ContentVersion;
         try
         {
             await using (var server = await NetworkTests.Harness.Start(saveDirectory: directory, canonical: true))
@@ -188,7 +188,7 @@ public class TerrainPersistenceTests
                 using var first = await server.Connect();
                 var secondCookies = new System.Net.CookieContainer();
                 using var secondHttp = new HttpClient(new HttpClientHandler { CookieContainer = secondCookies }) { BaseAddress = server.Http.BaseAddress };
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=5&contentVersion=" + TerrainProfile.ContentVersion);
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=6&contentVersion=" + TerrainProfile.ContentVersion);
                 using var second = await server.Connect(secondCookies);
                 await NetworkTests.Read(first); await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1", new ByteArrayContent(data))).IsSuccessStatusCode);
@@ -237,7 +237,7 @@ public class TerrainPersistenceTests
         var options = WireJson.CreateOptions();
         var snapshot = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/snapshot-terrain.json")));
         Assert.True(JsonNode.DeepEquals(snapshot, JsonSerializer.SerializeToNode<WireMessage>(before, options)));
-        var saved = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves/terrain-v7.json"));
+        var saved = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves/terrain-v8.json"));
         Assert.Equal(SaveCodec.Write(state), SaveCodec.Write(Decode(saved)));
         state.Replace(state.Revision, TerrainTransportScenario.Edit(state), true);
         var delta = NetworkSession.Difference(before, TerrainWire.Snapshot(state, 1));

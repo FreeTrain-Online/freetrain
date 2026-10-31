@@ -86,7 +86,7 @@ public class MixedWorldTests
         Assert.Throws<ArgumentException>(() => Single(t with { Rail = null },profile));
     }
 
-    static (SpatialEntity Entity, RailwayVoxel[] Voxels, SlopeOwnership Owner) Slope(JsonElement row)
+    internal static (SpatialEntity Entity, RailwayVoxel[] Voxels, SlopeOwnership Owner) Slope(JsonElement row)
     {
         var input = row.GetProperty("input"); var expected = row.GetProperty("expected");
         var anchor = Point(input.GetProperty("base")); var direction = input.GetProperty("direction").GetInt32();

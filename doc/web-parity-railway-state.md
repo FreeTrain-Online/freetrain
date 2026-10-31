@@ -1,5 +1,10 @@
 # P4-03 mixed terrain/rail state — 30 October 2026
 
+**P4-05 follow-up — 31 October 2026:** [Mixed persistence and dispatch](web-parity-railway-persistence.md)
+now provide Save8/protocol6, the exact mixed profile and validated session/network
+publication. Next is P4-06. The original step-boundary descriptions below retain
+their historical detached-state/booking scope.
+
 P4-03 delivers the detached canonical composition and its state-handler profile.
 [P4-04 atomic construction/removal booking](web-parity-railway-booking.md) is now
 delivered; next is **P4-05 mixed-world saves, wire contracts and dispatch**. P4 gameplay remains open;

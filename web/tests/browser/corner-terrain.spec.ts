@@ -2,7 +2,7 @@ import {test,expect,type Page} from '@playwright/test';
 import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
 import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
-const compat='protocolVersion=5&contentVersion=terrain-content-1';
+const compat='protocolVersion=6&contentVersion=terrain-content-1';
 const state=canonicalState;
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function empty(page:Page,locale='en'){

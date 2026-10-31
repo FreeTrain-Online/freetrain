@@ -2,12 +2,14 @@ using FreeTrain.Online.Simulation;
 
 namespace FreeTrain.Online.Content;
 
-// P4-03 detached STATE handlers only. WorldProfiles, live save/wire dispatch and
-// PreparedContentCatalog.GameplayAvailable remain unchanged until P4-05 onward.
+// Exact mixed state/save/transport dispatch. Art readiness grants no tool handler.
 public static class RailwayProfiles
 {
     private static readonly Lazy<RailwayProfile> bundled = new(() => Build(PreparedContentCatalog.Bundled, TerrainProfiles.Bundled));
     public static RailwayProfile Bundled => bundled.Value;
+    public static RailwayProfile? Resolve(string ruleset, string contentVersion, IEnumerable<TerrainPack> packs) =>
+        ruleset == RailwayProfile.Ruleset && contentVersion == RailwayProfile.ContentVersion &&
+        Bundled.Terrain.Matches(TerrainProfile.Ruleset,TerrainProfile.ContentVersion,packs) ? Bundled : null;
     public static RailwayProfile Build(PreparedContentCatalog catalog, TerrainProfile terrain)
     {
         if (!terrain.Packs.Contains(new TerrainPack(catalog.PackId, catalog.Version, catalog.CatalogHash)))

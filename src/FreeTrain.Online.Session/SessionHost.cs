@@ -24,8 +24,10 @@ public sealed partial class SessionHost : IDisposable
     private World world = null!;
     private ReferenceWorld? referenceWorld;
     private TerrainSessionState? terrainState;
+    private MixedSessionState? mixedState;
+    private readonly Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver;
     private readonly Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver;
-    public bool SavingAvailable => referenceWorld != null || terrainState != null;
+    public bool SavingAvailable => referenceWorld != null || terrainState != null || mixedState != null;
     private readonly ScenarioDefinition scenario = null!;
     private readonly Func<ITrainController>[] controllerFactories = [];
     private readonly Dictionary<string, ParticipantContext> participants = new(StringComparer.Ordinal);
@@ -126,27 +128,55 @@ public sealed partial class SessionHost : IDisposable
     }
 
     public SessionHost(ReferenceWorld referenceWorld, string ownerId, int queueCapacity = 256, long worldEpoch = 1,
-        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null)
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null,
+        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null)
     {
         ArgumentNullException.ThrowIfNull(referenceWorld);
         ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
         if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
         this.referenceWorld = referenceWorld;
-        this.terrainResolver = terrainResolver;
+        this.terrainResolver = terrainResolver; this.railwayResolver = railwayResolver;
         this.queueCapacity = queueCapacity;
         WorldEpoch = worldEpoch;
         participants.Add(ownerId, new(ownerId));
     }
 
     public SessionHost(TerrainSessionState terrainState, string ownerId,
-        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?> terrainResolver, int queueCapacity = 256, long worldEpoch = 1)
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?> terrainResolver, int queueCapacity = 256, long worldEpoch = 1,
+        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null)
     {
         ArgumentNullException.ThrowIfNull(terrainState);
         ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
         if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
-        this.terrainState = terrainState; this.terrainResolver = terrainResolver;
+        this.terrainState = terrainState; this.terrainResolver = terrainResolver; this.railwayResolver = railwayResolver;
         this.queueCapacity = queueCapacity; WorldEpoch = worldEpoch; participants.Add(ownerId, new(ownerId));
     }
+
+    public SessionHost(MixedSessionState state, string ownerId,
+        Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?> terrainResolver,
+        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?> railwayResolver, int queueCapacity = 256, long worldEpoch = 1)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        if (queueCapacity <= 0 || worldEpoch < 1) throw new ArgumentOutOfRangeException(nameof(queueCapacity));
+        if (!ReferenceEquals(railwayResolver(ProtocolIdentity.MixedRuleset,ProtocolIdentity.MixedContent,state.World.Profile.Terrain.Packs),state.World.Profile))
+            throw new ArgumentException("Unavailable mixed profile.");
+        MixedWire.ValidateAdmission(state);
+        mixedState = state.Freeze(); this.terrainResolver = terrainResolver; this.railwayResolver = railwayResolver;
+        this.queueCapacity = queueCapacity; WorldEpoch = worldEpoch; participants.Add(ownerId,new(ownerId));
+    }
+    // Trusted adapter hook. Live commands must derive geometry and booking from authoritative facts.
+    public Task ApplyMixed(long expectedEpoch, long expectedRevision, MixedConstructionState candidate, bool constructionMode,
+        ParticipantContext participant) => AtBoundary(() =>
+    {
+        if (!Current(participant) || participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
+        if (WorldEpoch != expectedEpoch) throw new InvalidOperationException("staleEpoch");
+        var state = mixedState ?? throw new InvalidOperationException("operationUnavailable");
+        var proposed = state.Successor(expectedRevision,candidate,constructionMode);
+        MixedWire.ValidateTransition(state,proposed);
+        mixedState = proposed;
+        return true;
+    });
 
     // Trusted adapter hook for subsequent terrain tools; no public command/endpoint grants edit legality.
     public Task ApplyTerrain(long expectedEpoch, long expectedRevision, TerrainWorld candidate, bool constructionMode,
@@ -181,6 +211,11 @@ public sealed partial class SessionHost : IDisposable
         {
             if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
             if (expectedEpoch != null && expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
+            if (mixedState is {} mixed)
+            {
+                var frozenMixed = mixed.Freeze();
+                return () => SaveCodec.Write(frozenMixed);
+            }
             if (terrainState is { } state)
             {
                 // Freeze the small mutable clock/random/session header at the FIFO
@@ -194,7 +229,7 @@ public sealed partial class SessionHost : IDisposable
         });
         return await Task.Run(capture);
     }
-    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver);
+    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver, railwayResolver);
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
@@ -211,10 +246,19 @@ public sealed partial class SessionHost : IDisposable
     private SnapshotMessage ReplacePreparedSave(SaveCodec.LoadedWorld replacement)
     {
         if (!SavingAvailable) throw new InvalidDataException("incompatibleSave");
+        if ((replacement.Reference != null ? 1 : 0) + (replacement.Terrain != null ? 1 : 0) + (replacement.Mixed != null ? 1 : 0) != 1)
+            throw new InvalidDataException("invalidSave");
+        // Only SaveCodec creates these validated handles. Recheck the receiving
+        // host's exact installed profile without re-decoding large grids on FIFO.
+        if (replacement.Mixed is {} mixed && !ReferenceEquals(railwayResolver?.Invoke(ProtocolIdentity.MixedRuleset,
+            ProtocolIdentity.MixedContent,mixed.World.Profile.Terrain.Packs),mixed.World.Profile) ||
+            replacement.Terrain is {} terrain && !ReferenceEquals(terrainResolver?.Invoke(TerrainProfile.Ruleset,
+            TerrainProfile.ContentVersion,terrain.World.Profile.Packs),terrain.World.Profile))
+            throw new InvalidDataException("incompatibleSave");
         var epoch = checked(WorldEpoch + 1);
         ClearCreation();
         referenceWorld = replacement.Reference;
-        terrainState = replacement.Terrain;
+        terrainState = replacement.Terrain; mixedState = replacement.Mixed;
         WorldEpoch = epoch;
         resetInput = safetyPause = false;
         return Snapshot();
@@ -284,12 +328,12 @@ public sealed partial class SessionHost : IDisposable
         }
     }
 
-    private bool CanonicalCanAdvance => terrainState?.CanAdvance ?? referenceWorld!.CanAdvance;
-    private bool CanonicalPaused => terrainState?.Paused ?? referenceWorld!.Paused;
-    private long CanonicalRevision => terrainState?.Revision ?? referenceWorld!.Revision;
-    private long CanonicalMinute => terrainState?.Clock.Time.AbsoluteMinute ?? referenceWorld!.Clock.Time.AbsoluteMinute;
-    private void CanonicalPause(bool paused) { if (terrainState != null) terrainState.SetPaused(paused); else referenceWorld!.SetPaused(paused); }
-    private void CanonicalAdvance() { if (terrainState != null) terrainState.AdvanceOneMinute(); else referenceWorld!.AdvanceOneMinute(); }
+    private bool CanonicalCanAdvance => mixedState?.CanAdvance ?? terrainState?.CanAdvance ?? referenceWorld!.CanAdvance;
+    private bool CanonicalPaused => mixedState?.Paused ?? terrainState?.Paused ?? referenceWorld!.Paused;
+    private long CanonicalRevision => mixedState?.Revision ?? terrainState?.Revision ?? referenceWorld!.Revision;
+    private long CanonicalMinute => mixedState?.Clock.Time.AbsoluteMinute ?? terrainState?.Clock.Time.AbsoluteMinute ?? referenceWorld!.Clock.Time.AbsoluteMinute;
+    private void CanonicalPause(bool paused) { if (mixedState != null) mixedState.SetPaused(paused); else if (terrainState != null) terrainState.SetPaused(paused); else referenceWorld!.SetPaused(paused); }
+    private void CanonicalAdvance() { if (mixedState != null) mixedState.AdvanceOneMinute(); else if (terrainState != null) terrainState.AdvanceOneMinute(); else referenceWorld!.AdvanceOneMinute(); }
     private PumpResult PumpReference(int tickBudget)
     {
         var advanced = 0;
@@ -393,7 +437,7 @@ public sealed partial class SessionHost : IDisposable
         lock (gate)
         {
             var snapshot = Snapshot();
-            return SpatialQueries.Preview(snapshot, query, terrainState == null ? null :
+            return SpatialQueries.Preview(snapshot, query, terrainState == null && mixedState == null ? null :
                 new(snapshot.Ruleset, snapshot.ContentVersion, "hv", snapshot.RequiredPacks.ToImmutableArray()));
         }
     }
@@ -401,6 +445,7 @@ public sealed partial class SessionHost : IDisposable
     {
         lock (gate)
         {
+            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch);
             if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
