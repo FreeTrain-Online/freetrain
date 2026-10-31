@@ -51,3 +51,9 @@ validated capture/restore and ordered spend/rescue history, and
 `MixedConstructionState` for atomic terrain/rail/allocator/account replacement.
 Source initial cash, bankruptcy continuation and charged no-ops are retained;
 authoring grants no cash exemption. See [booking contract and P4-05 handoff](../../doc/web-parity-railway-booking.md).
+
+P4-06 adds `RailwayTopology` and immutable `NormalRailway` build/removal drafts:
+source sign-vector routes, exact normal/junction attachment/detachment, subtype
+no-ops, car protection and charged/support call sites. These are topology inputs
+for P4-07 terrain/support validation, with no live commit or allocation/account
+mutation. See [domain behavior, independent checks and handoff](../../doc/web-parity-railway-topology.md).

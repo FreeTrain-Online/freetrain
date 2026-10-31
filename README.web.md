@@ -1,7 +1,8 @@
 **P4-05 mixed infrastructure:** [Save8/protocol6 mixed persistence and dispatch](doc/web-parity-railway-persistence.md)
 now preserve railway components, booking and shared allocator alongside terrain.
 Save1–7 are unsupported and preserved under the current-format-only policy.
-Railway tools/rendering remain P4-06 onward; new worlds still use the terrain profile.
+[P4-06 topology drafts](doc/web-parity-railway-topology.md) now implement source routes and attachment/detachment.
+Terrain/support validation and railway rendering/tools remain P4-07–09; new worlds still use the terrain profile.
 
 # FreeTrain Online
 
