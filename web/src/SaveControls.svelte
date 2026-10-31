@@ -51,7 +51,7 @@
     <label>{text.saveSlot}<select aria-label={text.saveSlot} bind:value={slot} disabled={busy || disabled} onchange={() => { confirmLoad = false; upload = undefined; }}>
       {#each ['slot1','slot2','slot3','checkpoint'] as id}<option value={id}>{id === 'checkpoint' ? text.checkpoint : `${text.saveSlot} ${id.slice(-1)}`}{slots.find(item => item.id === id)?.exists ? '' : ` (${text.emptySlot})`}</option>{/each}
     </select></label>
-    <button disabled={busy || disabled || !savingAvailable || slot === 'checkpoint'} onclick={() => act(() => saveRequest(`${slot}/save`, epoch!), 'saved')}>{text.saveGame}</button>
+    <button class="primary" disabled={busy || disabled || !savingAvailable || slot === 'checkpoint'} onclick={() => act(() => saveRequest(`${slot}/save`, epoch!), 'saved')}>{text.saveGame}</button>
     <button disabled={busy || disabled || !selected?.exists} onclick={() => { upload = undefined; checkOrConfirm(); }}>{text.loadGame}</button>
     <button disabled={busy || disabled || !savingAvailable} onclick={() => act(downloadSave, 'saved')}>{text.downloadSave}</button>
     <label class="field">{text.uploadSave}<input type="file" accept=".json,application/json" disabled={busy || disabled || !availabilityKnown} onchange={event => {

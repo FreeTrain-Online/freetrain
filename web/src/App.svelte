@@ -8,6 +8,7 @@
   import { createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
   import { createBrowserAudio } from './lib/browser-audio.ts';
   import DecisionModal from './DecisionModal.svelte';
+  import { activatePrimary } from './lib/primary-action.ts';
   import CreditsDialog from './CreditsDialog.svelte';
   import { creditFor, type PluginPack } from './lib/optional-content.ts';
   import LicenseDialog from './LicenseDialog.svelte';
@@ -122,7 +123,15 @@
   }
   function leaveNow() { if (saveBusy) return; audio.disable(); soundEnabled = false; map?.resetInteraction(); void model.leave(leaveGame); }
   function leave() { if (!saveBusy) request(leaveNow); }
-  function escape(event: KeyboardEvent) {
+  function key(event: KeyboardEvent) {
+    // Map picking keeps canvas focus; a disabled preview button can leave body
+    // focused. Both should still activate the visible panel's default action.
+    if (event.key === 'Enter' && live && !synchronizing && !menu && !navigation && !creditsOpen && !optionalCredits && !licenseOpen
+      && event.target instanceof HTMLElement && event.target.matches('canvas, body, html')) {
+      const scope = document.querySelector<HTMLElement>('.map-stage .primary-panel, .map-stage .tool-card');
+      if (scope) activatePrimary(event, scope);
+      return;
+    }
     if (event.key !== 'Escape' || !live || event.isComposing || event.keyCode === 229) return;
     if (menu) { event.preventDefault(); closeMenu(); return; }
     if (event.target instanceof HTMLElement && event.target.matches('input,select,textarea,[contenteditable="true"]')) return;
@@ -147,7 +156,7 @@
 </script>
 
 <svelte:head><title>{appName}</title></svelte:head>
-<svelte:window onkeydown={escape}/>
+<svelte:window onkeydown={key}/>
 <div class="app-shell" class:gated={!live} data-shell="svelte">
   {#if live}
     <div class="command-bar" role="toolbar" aria-label={text.game} aria-describedby="mutation-help" use:toolbar>
@@ -188,9 +197,9 @@
     {/if}
     {#if live && panel && panel !== 'view'}
       {#snippet stationActions()}
-          <button type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
+          <button class="primary" type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
         {#if panel === 'inspector'}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}
@@ -262,7 +271,7 @@
     <DecisionModal title={creditFor(optionalCredits,view.locale).title} oncancel={() => { optionalCredits = undefined; }}>
       <p style="white-space:pre-wrap;overflow-wrap:anywhere">{creditFor(optionalCredits,view.locale).text}</p>
       {#each optionalCredits.notices as notice}<p><a href={notice.url} target="_blank" rel="noopener noreferrer">{notice.path}</a></p>{/each}
-      {#snippet actions()}<button onclick={() => { optionalCredits = undefined; }}>{text.closeDialog}</button>{/snippet}
+      {#snippet actions()}<button class="primary" onclick={() => { optionalCredits = undefined; }}>{text.closeDialog}</button>{/snippet}
     </DecisionModal>
   {/if}
   {#if live && creditsOpen}<CreditsDialog locale={view.locale} onclose={() => { creditsOpen = false; }}/>{/if}

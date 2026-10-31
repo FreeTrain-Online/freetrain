@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { primaryAction } from './lib/primary-action.ts';
   import type { PaintState } from './lib/terrain-painter.ts';
   import RectangleTerrainControls from './RectangleTerrainControls.svelte';
   import { terrainReasons } from './lib/terrain-edit.ts';
@@ -71,7 +72,7 @@
   });
   $effect(()=>()=>{version++;request?.abort();onpreview(undefined);});
 </script>
-<div class="tool-card">
+<div class="tool-card" use:primaryAction>
 <section aria-label={text.authoringMode}>
   <h2>{text.authoringMode}</h2><p role="status" data-testid="authoring-mode">{activeMode?text.authoringOn:text.authoringOff}</p>
   <p class="hint">{text.authoringHelp}</p>

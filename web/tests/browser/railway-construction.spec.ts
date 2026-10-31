@@ -24,6 +24,39 @@ async function click(page:Page,x:number,y:number,z=1){
 }
 const output=(name:string)=>{const d=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'track');mkdirSync(d,{recursive:true});return join(d,name);};
 
+for (const focus of ['map', 'preview button', 'preview form']) {
+ test(`Return confirms track changes from the ${focus} without replaying the command`, async ({page}) => {
+  let commands=0;
+  await page.routeWebSocket('**/api/session?*',route=>{
+   const server=route.connectToServer();
+   route.onMessage(message=>{if(JSON.parse(String(message)).payload?.kind==='editRailway')commands++;server.send(message);});
+  });
+  await page.goto('/');await ready(page);const original=await save(page);
+  try {
+   await empty(page);await page.getByRole('button',{name:'Track',exact:true}).click();
+   const canvas=page.locator('canvas'),primary=page.getByRole('button',{name:'Confirm track change',exact:true});
+   if(focus==='map') {
+    await click(page,30,27);await click(page,34,27);await expect(canvas).toBeFocused();
+   } else {
+    await target(page);
+    if(focus==='preview button')await page.getByRole('button',{name:'Preview route',exact:true}).focus();
+    else await expect(page.locator('body')).toBeFocused();
+   }
+   await expect(primary).toBeEnabled();const before=await save(page);
+   await page.keyboard.press('Shift+Enter');
+   await page.evaluate(()=>document.activeElement?.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',repeat:true,bubbles:true,cancelable:true})));
+   expect(await save(page)).toEqual(before);expect(commands).toBe(0);
+   await page.keyboard.press('Enter');
+   await expect(page.getByTestId('rail-route')).toHaveCount(0);
+   await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
+   await expect(primary).toBeDisabled();
+   expect((await state(page)).mixed.voxels).toHaveLength(5);
+   await canvas.focus();await page.keyboard.press('Enter');
+   expect(commands).toBe(1);
+  } finally {await replace(page,original);}
+ });
+}
+
 async function wireCommand(browser:Browser,q:any,secret?:string,duplicate=false){
  const page=await browser.newPage();let finish!:(message:any)=>void;
  const receipt=new Promise<any>(resolve=>finish=resolve);

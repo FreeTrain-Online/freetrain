@@ -43,7 +43,7 @@ agreements, but unless specifically noted, please assume LGPL.
   <hr />
   <pre class="license-text">{stbImageSharpLicense}</pre>
   {#snippet actions()}
-    <button onclick={onclose}>{text.closeDialog}</button>
+    <button class="primary" onclick={onclose}>{text.closeDialog}</button>
   {/snippet}
 </DecisionModal>
 

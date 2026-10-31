@@ -158,11 +158,11 @@
   {#if source==='empty'}<button onclick={()=>{invalidate();h=30;v=42;z=6;water=1;}}>{text.sourceDefaults}</button>{/if}
 </fieldset>
 <div class="form-actions">
-  <button disabled={busy||disabled||!valid} onclick={preview}>{text.previewWorld}</button>
+  <button class:primary={!candidate} disabled={busy||disabled||!valid} onclick={preview}>{text.previewWorld}</button>
   {#if phase==='preview'}<button onclick={cancelPreview}>{text.cancel}</button>{/if}
   {#if !busy && !candidate && feedback!=='idle' && feedback!=='created' && feedback!=='generationCancelled'}<button disabled={disabled||!valid} onclick={preview}>{text.retryGeneration}</button>{/if}
   {#if candidate && source==='generated'}<button disabled={busy||disabled||!valid} onclick={preview}>{text.regenerateWorld}</button>{/if}
-  {#if candidate}<button disabled={busy||disabled} onclick={()=>{onmodal();confirmation=true;}}>{text.createWorld}</button><button onclick={cancelPreview}>{text.cancel}</button>{/if}
+  {#if candidate}<button class="primary" disabled={busy||disabled} onclick={()=>{onmodal();confirmation=true;}}>{text.createWorld}</button><button onclick={cancelPreview}>{text.cancel}</button>{/if}
 </div>
 {#if candidate}
   {@const metrics=candidate.overview.metrics}

@@ -17,6 +17,6 @@
   <h3>{appName}</h3>
   <p>{text.onlineContributorNames}</p>
   {#snippet actions()}
-    <button onclick={onclose}>{text.closeDialog}</button>
+    <button class="primary" onclick={onclose}>{text.closeDialog}</button>
   {/snippet}
 </DecisionModal>

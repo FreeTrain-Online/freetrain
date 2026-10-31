@@ -4,6 +4,7 @@
   import { pickTerrainStrategy } from './lib/terrain-edit.ts';
   import { gameDate } from './lib/game-time.ts';
   import { toolbar } from './lib/toolbar.ts';
+  import { primaryAction } from './lib/primary-action.ts';
   import { onMount, untrack, tick } from 'svelte';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
@@ -365,7 +366,7 @@
     {#key cornerGeneration}<TrackControls infrastructure={tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} initialAction={tool==='remove'?'remove':'lay'} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
   {/if}
   {#if !railway && tool !== 'inspect' && tool !== 'terrain' && !panel}
-    <section class="tool-card" aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>
+    <section class="tool-card" use:primaryAction aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>
       <h2>{reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}</h2>
       <div class="form-actions">
         <label>{text.buildLevel}<select aria-label={text.buildLevel} bind:value={level} disabled={view.pending}>{#each Array.from({length:reference ? view.read!.map.levels:2},(_,i)=>i) as z}<option value={z}>{z}</option>{/each}</select></label>

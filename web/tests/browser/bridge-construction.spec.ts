@@ -111,7 +111,11 @@ test('Japanese narrow DPR2 bridge task retains costs, keyboard shortcut, cancel 
   await page.locator('canvas').focus();await page.keyboard.press('b');await expect(page.getByRole('heading',{name:'鉄橋',exact:true})).toBeVisible();
   await target(page,[30,27],[34,29],3,true);await expect(page.getByTestId('rail-cost')).toContainText('90,000,000');await expect(page.getByRole('button',{name:'鉄橋の変更を確定',exact:true})).toBeInViewport();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:out('bridge-ja-narrow-dpr2.png'),fullPage:true});
-  await confirm(page,true);const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
+  await expect(page.locator('.tool-card button.primary')).toHaveCount(1);
+  await expect(page.getByRole('button',{name:'鉄橋の変更を確定',exact:true})).toHaveClass('primary');
+  await page.getByLabel('始点 X',{exact:true}).focus();await page.keyboard.press('Enter');
+  await expect(page.getByTestId('rail-route')).toHaveCount(0);await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');
+  const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
  }finally{await replace(page,original);await ctx.close();}
 });
 

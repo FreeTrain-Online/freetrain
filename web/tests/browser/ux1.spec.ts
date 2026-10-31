@@ -122,6 +122,8 @@ test('UX1 asset failure keeps sign-in available on a plain backdrop', async ({ p
   await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeEditable();
   await expect(page.getByRole('button', { name: 'Connect', exact: true })).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Reload', exact: true })).toBeEnabled();
+  await expect(page.locator('.session-dialog button.primary')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Connect', exact: true })).toHaveClass('primary session-connect');
   await expect(page.locator('.command-bar')).toHaveCount(0);
   await page.screenshot({ path: `${evidence}/asset-fallback.png` });
 });

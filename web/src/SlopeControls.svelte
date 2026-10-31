@@ -1,5 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { primaryAction } from './lib/primary-action.ts';
   import type { Position, SlopePreview, SlopeQuery } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
@@ -55,7 +56,7 @@
   });
   $effect(()=>()=>{version++;request?.abort();onpreview();onpoints([]);});
 </script>
-<section class="tool-card track-task slope-task" aria-label={text.slopeTask}>
+<section class="tool-card track-task slope-task" use:primaryAction aria-label={text.slopeTask}>
   <h2>{text.slopeTask}</h2><p class="hint">{text.slopeHelp}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     <div class="form-actions">

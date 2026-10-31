@@ -8,6 +8,7 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { appName, messages } from './lib/localization.ts';
   import { authorize } from './lib/remote-session-client.ts';
+  import { primaryAction } from './lib/primary-action.ts';
   let { model, view, renderFailed, onleave, scheme, onscheme }: { model: ShellModel; view: ShellState; renderFailed: boolean; onleave: () => void; scheme: Scheme; onscheme: (value: Scheme) => void } = $props();
   const text = $derived(messages[view.locale]);
   const signingIn = $derived(view.connection === 'accessRequired');
@@ -54,7 +55,7 @@
 </script>
 
 <div class="session-scrim" role="presentation" onpointerdown={scrimPointer} onpointerup={scrimPointer}>
-  <div class="session-dialog" bind:this={dialog} role="dialog" aria-modal="true" aria-labelledby={title ? 'session-title' : 'session-brand'} tabindex="-1" onkeydown={key}>
+  <div class="session-dialog" bind:this={dialog} use:primaryAction role="dialog" aria-modal="true" aria-labelledby={title ? 'session-title' : 'session-brand'} tabindex="-1" onkeydown={key}>
     <div class="panel-title"><strong class="brand" id="session-brand">{appName}</strong></div>
     <div class="panel-body">
       <img class="session-logo" src="/assets/freetrain-online-logo.svg" width="200" height="101" alt={appName}/>
@@ -69,19 +70,19 @@
           <button type="submit" class="primary session-connect" disabled={authorizing}>{authorizing ? text.connectingGame : text.connect}</button>
         </form>
       {:else if view.feedback === 'leaveFailed'}
-        <p>{text.leaveFailed}</p><button onclick={onleave}>{text.retryLeave}</button>
+        <p>{text.leaveFailed}</p><button class:primary={!renderFailed} onclick={onleave}>{text.retryLeave}</button>
       {:else if view.connection === 'incompatible'}
-        <button onclick={() => location.reload()}>{text.reload}</button>
+        <button class:primary={!renderFailed} onclick={() => location.reload()}>{text.reload}</button>
       {:else if view.connection === 'disconnected'}
         <p>{text.recoveryHint}</p>
         {#if view.retryAt}<p>{text.retryScheduled} {new Date(view.retryAt).toLocaleTimeString(view.locale)}</p>{/if}
-        <button class="primary session-connect" disabled>{text.connect}</button>
-        <button class="primary" onclick={model.reconnect}>{text.retryNow}</button>
+        <button class="session-connect" disabled>{text.connect}</button>
+        <button class:primary={!renderFailed} onclick={model.reconnect}>{text.retryNow}</button>
       {:else if !view.leaving && !renderFailed}
         <p>{text.waitForSync}</p>
         <button class="primary session-connect" disabled>{text.connect}</button>
       {/if}
-      {#if renderFailed}<p role="alert">{text.assetsFailed}</p><button onclick={() => location.reload()}>{text.reload}</button>{/if}
+      {#if renderFailed}<p role="alert">{text.assetsFailed}</p><button class:primary={!signingIn} onclick={() => location.reload()}>{text.reload}</button>{/if}
       <p role="status" aria-live="polite" aria-atomic="true" hidden={view.feedback === 'unavailable' || (view.feedback === 'idle' && view.connection !== 'loading')}>{text[view.feedback === 'idle' && view.connection === 'loading' ? 'loading' : view.feedback]}</p>
       {#if !view.leaving && view.feedback !== 'leaveFailed' && (view.role || view.authRequiredAgain)}<button disabled={authorizing} onclick={onleave}>{text.leaveGame}</button>{/if}
       <LanguageSelect locale={view.locale} onchange={model.setLocale}/>
