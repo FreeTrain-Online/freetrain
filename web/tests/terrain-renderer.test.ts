@@ -1,6 +1,6 @@
 import { MapRenderer, type MapOptions } from '../src/lib/map-renderer.ts';
 import { TerrainScene, mountainPoints, treeOffset, mountainColor, terrainColor, hsv } from '../src/lib/terrain-renderer.ts';
-import { RecipeImageCache, type RenderCatalog, type Variant } from '../src/lib/content-recipes.ts';
+import { RecipeImageCache, type RenderCatalog, type Variant, type View } from '../src/lib/content-recipes.ts';
 import type { Snapshot } from '../src/generated/contracts.ts';
 import { WorldSpace } from '../src/lib/map-geometry.ts';
 import { TerrainViewport } from '../src/lib/terrain-viewport.ts';
@@ -43,7 +43,7 @@ async function withViewport(run:(scene:TerrainScene,viewport:TerrainViewport,ctx
 }
 Deno.test('progressive terrain publishes matching picks atomically and cancels a newer camera when returning to the completed view',async()=>{
   await withViewport((scene,viewport,ctx)=>{
-    const a={x:0,y:32,zoom:1},b={x:-64,y:32,zoom:1};
+    const a={x:0,y:32,zoom:1},b={x:-128,y:32,zoom:1};
     const settle=(v:typeof a)=>{for(let n=0;n<1000;n++)if(!viewport.draw(ctx,v,128,96,1).pending)return;throw new Error('Viewport never settled');};
     assert(!viewport.draw(ctx,a,128,96,1).ready);assert(!viewport.pick({x:16,y:24},a));
     settle(a);const operations=scene.operations;
@@ -56,7 +56,7 @@ Deno.test('progressive terrain publishes matching picks atomically and cancels a
     for(let n=0;n<5;n++)assert(!viewport.draw(ctx,a,128,96,1).pending);
     assert(scene.operations===operations);
     settle(b);assert(scene.operations!==operations);
-    equal(viewport.pick({x:16,y:24},b)?.position,{x:51,y:2,z:1});
+    equal(viewport.pick({x:16,y:24},b)?.position,{x:53,y:4,z:1});
   });
 });
 Deno.test('geometry replacement retains the completed viewport and matching picks until the new buffer is complete',async()=>{
@@ -76,7 +76,55 @@ Deno.test('geometry replacement retains the completed viewport and matching pick
     settle();assert(viewport.pick(point,camera)?.position.z===3);
     viewport.setScene(raised);assert(viewport.draw(ctx,camera,128,96,1).ready);
     settle();assert(viewport.pick(point,camera)?.position.z===2);
-    assert(canvases.filter(c=>c.width===128&&c.height===96).length===2,'Geometry revisions must reuse the two viewport buffers');
+    assert(canvases.filter(c=>c.width===256&&c.height===288).length===2,'Geometry revisions must reuse the two viewport buffers');
+  });
+});
+Deno.test('cached terrain covers small pans and refreshes before the buffered edge is exposed',async()=>{
+  await withViewport((scene,viewport,ctx)=>{
+    const camera={x:0,y:32,zoom:1};
+    for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)break;
+    const operations=scene.operations;
+    const smallPan={...camera,x:-24,y:16};
+    assert(!viewport.draw(ctx,smallPan,128,96,1).pending,'The safe interior must reuse the cached image');
+    assert(scene.operations===operations);
+    // This point lies beyond the original viewport, inside the overscan.
+    const point={x:120,y:24};
+    equal(viewport.pick(point,smallPan)?.position,scene.pick(point,smallPan)?.position);
+    assert(viewport.pick(point,smallPan),'Cached offscreen terrain must be available immediately');
+    const edgePan={...camera,x:-40};
+    assert(viewport.draw(ctx,edgePan,128,96,1).pending,'Refresh must start before exhausting the margin');
+    assert(viewport.pick(point,edgePan),'The old buffer must cover the viewport during refresh');
+    assert(!viewport.draw(ctx,camera,128,96,1).pending,'Returning to the safe interior cancels the edge refresh');
+    assert(scene.operations===operations);
+    for(const direction of [-1,1]) {
+      assert(!viewport.draw(ctx,{...camera,y:camera.y+direction*40},128,96,1).pending,'Vertical pans must reuse the larger safe interior');
+      assert(viewport.draw(ctx,{...camera,y:camera.y+direction*60},128,96,1).pending,'Vertical refresh must start halfway through the full-viewport margin');
+      assert(!viewport.draw(ctx,camera,128,96,1).pending);
+    }
+  });
+});
+Deno.test('progressive terrain completes during continuous small pans without restarting its build',async()=>{
+  await withViewport((scene,viewport,ctx)=>{
+    // Force one generator step per frame so the camera moves during both build
+    // and paint work, independent of the machine running the test.
+    const descriptor=Object.getOwnPropertyDescriptor(performance,'now');let time=0;
+    Object.defineProperty(performance,'now',{configurable:true,value:()=>time+=6});
+    const original=scene.viewportOperations.bind(scene);let builds=0;
+    scene.viewportOperations=function*(...args:Parameters<typeof original>){builds++;yield* original(...args);};
+    try {
+      let ready=false;
+      for(let n=0;n<1000;n++) {
+        const camera={x:-n*.01,y:32,zoom:1};
+        if(viewport.draw(ctx,camera,128,96,1).ready) {
+          assert(viewport.pick({x:16,y:24},camera),'Completed moving view must publish picks');
+          ready=true;break;
+        }
+      }
+      assert(ready,'Rendering must finish while the camera keeps moving within its coverage');
+      equal(builds,1);
+    }finally {
+      if(descriptor)Object.defineProperty(performance,'now',descriptor);else Reflect.deleteProperty(performance,'now');
+    }
   });
 });
 Deno.test('progressive viewport keeps continuous camera picking and bounds backing images on fractional-DPI and large windows',async()=>{
@@ -88,6 +136,45 @@ Deno.test('progressive viewport keeps continuous camera picking and bounds backi
     viewport.draw(ctx,{...v,zoom:1.2},5100,3100,3);
     assert(canvases.length<100,'Camera requests must reuse viewport images');
     assert(canvases.every(c=>c.width*c.height<=16_777_216),'Backing images must stay within the pixel bound');
+  });
+});
+Deno.test('zooming out replaces the buffer and publishes newly visible terrain without a pan',async()=>{
+  await withViewport((scene,viewport,ctx)=>{
+    const width=128,height=96,center={x:1600,y:400};
+    const camera=(zoom:number)=>({x:width/2-center.x*zoom,y:height/2-center.y*zoom,zoom});
+    const settle=(view:View)=>{
+      for(let n=0;n<1000;n++)if(!viewport.draw(ctx,view,width,height,1.3).pending)return;
+      throw new Error('Zoomed viewport never settled');
+    };
+    settle(camera(4));
+    let operations=scene.operations;
+    const point={x:8,y:height/2};
+    assert(!viewport.pick(point,camera(.5)),'The initial buffer must exclude the newly exposed edge');
+    // Include zooms sharing a physical raster scale as well as scale changes.
+    for(const zoom of [2,1.5,1.3,1,.8,.5]) {
+      const view=camera(zoom);
+      assert(viewport.draw(ctx,view,width,height,1.3).pending,'A zoom change must request further frames');
+      assert(scene.operations===operations,'Pending zoom work must preserve visible picks');
+      let revealed=false;
+      for(let n=0;n<1000;n++) {
+        const result=viewport.draw(ctx,view,width,height,1.3);
+        if(scene.operations!==operations) {
+          assert(result.pending,'The visible reveal must publish before the full panning buffer finishes');
+          assert(viewport.pick(point,view),'The reveal must already cover the newly visible edge');
+          revealed=true;break;
+        }
+      }
+      assert(revealed,'Zoom must show newly visible terrain before background buffering');
+      const revealCount=scene.operations.length;
+      settle(view);
+      assert(scene.operations!==operations,'Zoom must publish a replacement without any pan');
+      assert(scene.operations.length>revealCount,'Background work must expand the revealed area into the full buffer');
+      operations=scene.operations;
+      const expected=scene.pick(point,view);
+      assert(expected,'Newly exposed edge must contain terrain');
+      equal(viewport.pick(point,view)?.position,expected.position);
+      assert(!viewport.draw(ctx,view,width,height,1.3).pending,'The replacement must settle at the unchanged camera');
+    }
   });
 });
 Deno.test('terrain projection uses diagonal NE/SE/SW/NW quarters and source tree slope arithmetic',()=>{
@@ -314,7 +401,7 @@ Deno.test('map sprite changes retain the front buffer through preparation and pr
         settle();assert(images[0]!==front,'The completed replacement must flip buffers');
         front=images[0];
       }
-      assert(canvases.filter(c=>c.width===128&&c.height===96).length===2,'Sprite changes must reuse the two viewport buffers');
+      assert(canvases.filter(c=>c.width===256&&c.height===288).length===2,'Sprite changes must reuse the two viewport buffers');
       renderer.setRead({...read,worldEpoch:'another-world'});
       assert(!draw(),'A different world must not retain the previous world buffer');
       assert(images.length===0);

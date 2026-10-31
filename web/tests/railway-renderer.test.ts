@@ -160,6 +160,6 @@ Deno.test('large mixed viewport publishes matching railway pixels and picks toge
   const scene=await TerrainScene.prepare(next,catalog,images,day,5,old);viewport.setScene(scene);
   assert(viewport.draw(ctx,camera,128,96,1).ready);assert.equal(viewport.pick(p,camera)?.id,r.ownerId,'Displayed railway keeps its old pick while replacement is pending');assert.deepEqual(viewport.pickLocation(p,camera,{kind:'railOrGround'}),r.position);
   settle();assert.notEqual(viewport.pick(p,camera)?.kind,'railway');assert.notDeepEqual(viewport.pickLocation(p,camera,{kind:'railOrGround'}),r.position);
-  assert.equal(canvases.filter(c=>c.width===128&&c.height===96).length,2);
+  assert.equal(canvases.filter(c=>c.width===256&&c.height===288).length,2);
  }finally {if(descriptor)Object.defineProperty(globalThis,'OffscreenCanvas',descriptor);else Reflect.deleteProperty(globalThis,'OffscreenCanvas');}
 });
