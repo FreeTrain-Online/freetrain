@@ -53,11 +53,11 @@ public static class NormalRailwayConstruction
         catch (OverflowException) { return false; }
     }
 
-    public static NormalRailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to) => Preview(world,from,to,false);
-    public static NormalRailwayConstructionPlan PreviewRemoval(MixedWorld world, Location from, Location to) => Preview(world,from,to,true);
-    private static NormalRailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal)
+    public static NormalRailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,false,reverseBend);
+    public static NormalRailwayConstructionPlan PreviewRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,true,reverseBend);
+    private static NormalRailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
     {
-        var topology=removal ? NormalRailway.PlanRemoval(world,from,to) : NormalRailway.PlanBuild(world,from,to);
+        var topology=removal ? NormalRailway.PlanRemoval(world,from,to,reverseBend) : NormalRailway.PlanBuild(world,from,to,reverseBend);
         NormalRailwayConstructionPlan Reject(string reason) => new(topology,reason);
         if (!topology.TopologyValid) return Reject(topology.Reason!);
         if (!IsUsableStart(world,from)) return Reject("unusableStart");
@@ -177,7 +177,7 @@ public static class NormalRailwayConstruction
     {
         if (!ReferenceEquals(state.World,plan.Source)) throw new InvalidOperationException("staleRevision");
         if (!plan.Legal) throw new InvalidOperationException(plan.Reason);
-        var actual=Preview(state.World,plan.Topology.From,plan.Topology.To,plan.Topology.Removal);
+        var actual=Preview(state.World,plan.Topology.From,plan.Topology.To,plan.Topology.Removal,plan.Topology.ReverseBend);
         if (!actual.Legal) throw new InvalidOperationException(actual.Reason);
         if (state.Accounts.Transactions.Length >= MaximumAccountTransactions) throw new InvalidOperationException("accountCapacityLimit");
         var candidate=actual.Candidate!;

@@ -65,7 +65,7 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .map-navigation.beside-panel { inset-inline-end: calc(var(--panel) + 16px); }
 .command-feedback { position: absolute; inset-block-end: 4px; inset-inline-start: calc(var(--strip) + 8px); max-width: min(480px, calc(100% - var(--strip) - 16px)); margin: 0; padding: 2px 4px; background: var(--ui-notice-background); border: 1px solid var(--border); z-index: 10; pointer-events: none; font-size: 12px; }
 .command-feedback:empty { padding: 0; border: 0; }
-.game-menu { position: absolute; inset-block-start: 4px; inset-inline-start: 4px; width: min(280px, calc(100% - 12px)); max-height: calc(100% - 12px); overflow: auto; overscroll-behavior: contain; padding: 4px; z-index: 40; display: grid; gap: 4px; }
+.game-menu { position: absolute; inset-block-start: 0; inset-inline-start: 4px; width: min(280px, calc(100% - 12px)); max-height: calc(100% - 12px); overflow: auto; overscroll-behavior: contain; padding: 4px; z-index: 40; display: grid; gap: 4px; }
 .game-menu button { text-align: start; }
 .session-scrim { position: absolute; inset: 0; background: #17241e55; display: grid; place-items: center; padding: 8px; z-index: 50; }
 .session-dialog { display: flex; flex-direction: column; width: min(440px, 100%); max-height: calc(100% - 8px); min-height: 0; }
@@ -118,3 +118,11 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .decision-dialog::backdrop { background: #17241e55; }
 .map-navigation .zoom-level { align-self: center; padding: 2px 4px; font-variant-numeric: tabular-nums; background: var(--ui-window-background); }
 .tool-card > .form-actions:last-child, .tool-card > section > .form-actions:last-child { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
+
+.track-task fieldset { min-width: 0; margin-block: 8px; padding: 6px; border: 1px solid var(--border); }
+.track-task input[type="number"] { width: 76px; }
+.track-task select { max-width: 100%; }
+.rail-losses { max-height: 160px; overflow: auto; overflow-wrap: anywhere; }
+
+.track-confirm { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
+.track-confirm p { margin-block: 4px; }

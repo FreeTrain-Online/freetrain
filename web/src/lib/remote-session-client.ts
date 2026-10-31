@@ -1,7 +1,8 @@
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview } from './protocol.ts';
+import { isRailwayPromotion, railwayQueryKey } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 
@@ -127,7 +128,10 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               if(read&&(BigInt(message.worldEpoch)<BigInt(read.worldEpoch)||message.worldEpoch===read.worldEpoch&&BigInt(message.revision)<BigInt(read.revision)))throw new Error('Stale snapshot');
               // A validated replacement may select another supported whole
               // profile. Re-bootstrap its exact pack identity before revealing it.
-              if(!sameIdentity(join,message)){fail();break;}
+              if(!sameIdentity(join,message)){
+                if(read&&isRailwayPromotion(read,message))join={...join,ruleset:message.ruleset,contentVersion:message.contentVersion,requiredPacks:message.requiredPacks,snapshot:message};
+                else {fail();break;}
+              }
               clearTimeout(connectionTimer); resyncing = false;
               if (read && read.worldEpoch !== message.worldEpoch) clearPending();
               publish(message); setStatus('ready'); break;
@@ -180,6 +184,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const preview=parseCornerPreview(await response.json());
       const expected=query.rectangle&&query.action!=='plantForest'&&query.action!=='placeCreek'?{x:Math.min(query.position.x,query.rectangle.end.x),y:Math.min(query.position.y,query.rectangle.end.y),z:query.position.z}:query.position;
       if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||preview.geometryRevision!==query.expectedGeometryRevision||preview.action!==query.action||query.offsetX===null&&(preview.position.x!==expected.x||preview.position.y!==expected.y||preview.position.z!==expected.z))throw new Error('Stale corner preview');
+      return preview;
+    },
+    async previewRailway(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/railway/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(!response.ok)throw new Error('Railway preview failed');
+      const preview=parseRailwayPreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||railwayQueryKey(preview.query)!==railwayQueryKey(query))throw new Error('Stale railway preview');
       return preview;
     },
     async previewSpatial(query,signal) {

@@ -154,6 +154,27 @@ public static class NetworkEndpoints
             catch (InvalidOperationException ex)
             { return Results.Json(new { code = ex.Message },statusCode:409); }
         });
+        app.MapPost("/api/railway/preview", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk,0,count);
+                }
+                var query = JsonSerializer.Deserialize<RailwayQuery>(buffer.ToArray(),NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PreviewRailway(query),NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message },statusCode:409); }
+        });
         async Task<IResult> CreationOperation<T>(HttpContext context, Func<T, ParticipantContext, Task<object>> action)
         {
             var participant = Identity(context);
@@ -405,6 +426,10 @@ public static class NetworkEndpoints
         RenameStationCommand rename => rename.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(rename.StationId) && rename.Name != null,
         RemoveTrackCommand remove => remove.ExpectedRevision >= 0 && remove.Position != null,
         SetAuthoringModeCommand mode => mode.ExpectedGeometryRevision >= 0,
+        EditRailwayCommand edit => edit.Query != null && edit.Query.From != null && edit.Query.To != null &&
+            edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 &&
+            edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
+            edit.Query.Action is "lay" or "remove" && edit.Query.Routing is "closest" or "source" or "alternate",
         EditCornerCommand edit => edit.Query != null && edit.Query.Position != null && edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && (edit.Query.Action is "raise" or "lower" or "placeTerrace" or "removeTerrace" or "placeCut" or "removeCut" or "plantForest" or "placeCreek" || edit.Query.Action == "repair" && edit.Query.Rectangle != null),
         BuildTrackCommand build => build.Position != null && build.Shape != null,
         SetControllerCommand controller => controller.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(controller.TrainId) && !string.IsNullOrWhiteSpace(controller.LeaseId) && controller.Controller is "manual" or "automatic",

@@ -1,4 +1,5 @@
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
+import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
 import type { ConnectionStatus, FixtureBehavior, ReadState, SessionClient } from './session-client.ts';
 import type { Locale } from './localization.ts';
@@ -133,6 +134,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   reconnect();
   return {
     get state() { return state; },
+    async previewRailway(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewRailway)throw new Error('Unavailable');
+      const result=await active.previewRailway(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale railway preview');
+      return result;
+    },
     async previewCorner(query:CornerTerrainQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewCorner)throw new Error('Unavailable');

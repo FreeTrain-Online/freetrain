@@ -384,13 +384,13 @@ test('gallery language switching keeps the composition canvas, decoded images an
   await expect(page.getByRole('heading',{name:'同梱画像レシピ',exact:true})).toBeVisible();
 });
 
-test('mixed Save8 loads into the read-only railway shell, steps and saves exactly while malformed mixed peers block reveal',async({page})=>{
+test('mixed Save8 loads into the playable railway shell, steps and saves exactly while malformed mixed peers block reveal',async({page})=>{
   const data=readFileSync('../prototype/protocol/saves/mixed-v8.json');
   const before=await bootstrap(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data})).ok()).toBe(true);
   await page.goto('/');await ready(page);
   await expect(page.getByTestId('reference-world')).toHaveText('Railway world');
-  await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeEnabled();
   const initial=await bootstrap(page);expect(initial.mixed.voxels).toHaveLength(4);expect(initial.cash).toBe('7000000000');
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await bootstrap(page)).tick).toBe('130082');

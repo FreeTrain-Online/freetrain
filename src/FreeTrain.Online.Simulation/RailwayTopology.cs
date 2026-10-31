@@ -124,6 +124,7 @@ public sealed class NormalRailwayPlan
     public Location From { get; }
     public Location To { get; }
     public bool Removal { get; }
+    public bool ReverseBend { get; }
     public string? Reason { get; }
     public bool TopologyValid => Reason == null;
     public ImmutableArray<NormalRailwayCell> Cells { get; }
@@ -132,22 +133,22 @@ public sealed class NormalRailwayPlan
     // at EVERY visited column, including empty, wrong-edge and protected-car cells.
     public IEnumerable<Location> SupportColumns => Cells.Where(c => Removal || c.Before == null).Select(c => c.Position);
     internal NormalRailwayPlan(MixedWorld source, Location from, Location to, bool removal,
-        string? reason, ImmutableArray<NormalRailwayCell> cells)
-    { Source=source; From=from; To=to; Removal=removal; Reason=reason; Cells=cells; }
+        string? reason, ImmutableArray<NormalRailwayCell> cells, bool reverseBend = false)
+    { Source=source; From=from; To=to; Removal=removal; Reason=reason; Cells=cells; ReverseBend=reverseBend; }
 }
 
 public static class NormalRailway
 {
     // Initial bounded domain work; P4-23 owns measured legal-network capacity.
     public const int MaximumRouteCells = 8192;
-    public static NormalRailwayPlan PlanBuild(MixedWorld world, Location from, Location to) => Plan(world,from,to,false);
-    public static NormalRailwayPlan PlanRemoval(MixedWorld world, Location from, Location to) => Plan(world,from,to,true);
-    private static NormalRailwayPlan Plan(MixedWorld world, Location from, Location to, bool removal)
+    public static NormalRailwayPlan PlanBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Plan(world,from,to,false,reverseBend);
+    public static NormalRailwayPlan PlanRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Plan(world,from,to,true,reverseBend);
+    private static NormalRailwayPlan Plan(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
     {
         ArgumentNullException.ThrowIfNull(world);
-        NormalRailwayPlan Reject(string reason) => new(world,from,to,removal,reason,[]);
+        NormalRailwayPlan Reject(string reason) => new(world,from,to,removal,reason,[],reverseBend);
         ImmutableArray<Location> route;
-        try { route = RailwayTopology.Route(from,to); }
+        try { route = reverseBend ? RailwayTopology.Route(to,from).Reverse().ToImmutableArray() : RailwayTopology.Route(from,to); }
         catch (ArgumentException e) { return Reject(e.Message); }
         if (route.IsEmpty) return Reject("samePoint");
         var cells = ImmutableArray.CreateBuilder<NormalRailwayCell>(route.Length);
@@ -187,7 +188,7 @@ public static class NormalRailway
             { return Reject(e.Message); }
             cells.Add(new(p,incoming,outgoing,before,after,car));
         }
-        return new(world,from,to,removal,null,cells.MoveToImmutable());
+        return new(world,from,to,removal,null,cells.MoveToImmutable(),reverseBend);
     }
 
     private static RailComponent? Replace(RailwayProfile profile, RailComponent before, int? pattern) =>

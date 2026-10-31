@@ -38,6 +38,8 @@
   let renderState = $state<'loading' | 'ready' | 'failed'>('loading');
   let launcher: HTMLElement | undefined;
   let gameLauncher = $state<HTMLButtonElement>();
+  let menuLeft = $state(0);
+  let menuTop = $state(0);
   let scheme = $state<Scheme>(initialScheme());
   const feedbackCode = $derived(view.feedback);
   let successExpired = $state(false);
@@ -77,6 +79,14 @@
       previousEpoch = read.worldEpoch;
     }
   });
+  function syncMenuPosition() {
+    const stage = document.querySelector<HTMLElement>('.map-stage');
+    const stageRect = stage?.getBoundingClientRect();
+    const buttonRect = gameLauncher?.getBoundingClientRect();
+    if (!stageRect || !buttonRect) return;
+    menuLeft = buttonRect.left - stageRect.left;
+    menuTop = 0;
+  }
   function returnFocus() { (launcher?.isConnected ? launcher : gameLauncher)?.focus({ preventScroll: true }); }
   function request(action: () => void) {
     if (saveBusy) return;
@@ -140,10 +150,10 @@
   {#if live}
     <div class="command-bar" role="toolbar" aria-label={text.game} aria-describedby="mutation-help" use:toolbar>
       <img class="app-icon" src={icon} width="32" height="32" alt={appName}/>
-      <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); menu = !menu; if (menu) void tick().then(() => [...document.querySelectorAll<HTMLButtonElement>('#game-menu button')].find(button => !button.disabled && button.getClientRects().length)?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
+      <button bind:this={gameLauncher} aria-expanded={menu} aria-controls="game-menu" onclick={event => { map.resetInteraction(); syncMenuPosition(); menu = !menu; if (menu) void tick().then(() => [...document.querySelectorAll<HTMLButtonElement>('#game-menu button')].find(button => !button.disabled && button.getClientRects().length)?.focus({ preventScroll: true })); }}>{text.game} ▾</button>
       <div class="transport">
         <button disabled={clockDisabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
-        <button class="step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▸| {text.step}</button>
+        <button class="step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▶| {text.step}</button>
       </div>
       {#if reference}<span class="sr-only" data-testid="reference-world">{mixed ? text.mixedWorld : terrain ? text.terrainWorld : text.referenceWorld}</span>{/if}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
@@ -162,7 +172,7 @@
     <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy }} {live} {panel} inputSuspended={menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
-      <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'}>
+      <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
         {#if terrain}<button disabled={clockDisabled} onclick={()=>requestTool('terrain')}>{text.terrainTool}</button>{/if}
         <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
@@ -226,7 +236,7 @@
           {#if read?.ruleset==='prototype-reference-1'}<p data-testid="compatibility-mode">{text.temporaryReferenceWorld}</p>{/if}
           <p>{text[view.connection]} · {view.role ? text[view.role] : ''}</p><p>{text[view.feedback]}</p><button disabled={saveBusy || view.pending} onclick={() => request(model.reconnect)}>{text.reconnect}</button><button disabled={saveBusy} onclick={leave}>{text.leaveGame}</button>
         {:else if panel === 'help'}
-          {#if reference}<p>{worldHint}</p><p>{text.mapHelp}</p>{:else}<p>{text.observerHint}</p><p>{text.toolbarHelp}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>{/if}
+          {#if reference}<p>{worldHint}</p>{#if terrain||mixed}<h3>{text.trackTask}</h3><p>{text.railHelp}</p><p>{text.railHeuristicHelp}</p><p>{text.railRemovalHelp}</p><p>{text.railCutHelp}</p>{/if}<p>{text.mapHelp}</p>{:else}<p>{text.observerHint}</p><p>{text.toolbarHelp}</p><h3>{text.network}</h3><p>{text.networkNotice}</p><p>{text.mapHelp}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p><p>{text.visualSample}</p><p>{text.mapSize}</p>{/if}
         {/if}
       </PanelFrame>
     {/if}

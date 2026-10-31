@@ -421,3 +421,16 @@ Use `100vh` then `100dvh`, bounded grid `minmax(0,1fr)`, zero min sizes and
 logical properties; account for safe areas and visualViewport/keyboard height.
 Never solve overflow by clipping controls. Move summaries to menus under text
 zoom; preserve native zoom. Panel/map navigation avoids occluded regions.
+
+## P4-09 Track task
+
+The [normal-rail task](web-parity-normal-rail-tool.md) extends the existing tool
+card and persistent canvas with map/keyboard endpoints, automatic start-level
+detection, a manual-level override and
+authoritative route/cost/loss preview. Confirm is enabled only for the current
+legal query, connection, role and geometry/content identity; cancellation and
+late results cannot publish geometry. Unresolved command outcomes remain blocked
+through reconnect and are never replayed. Source removal's lower-pier loss list
+includes foreign owners. Long routing/picking help is folded, both locales ship
+with the task, and narrow controls scroll with sticky confirmation. The exact
+terrain-to-mixed profile handoff preserves the same epoch, camera and canvas.

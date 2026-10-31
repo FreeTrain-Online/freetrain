@@ -224,6 +224,7 @@ public sealed partial class NetworkSession
             participant.Role.ToString().ToLowerInvariant(), snapshot.WorldEpoch, snapshot, snapshot.Ruleset, snapshot.RequiredPacks);
     }
     public CornerTerrainPreviewRead PreviewCorner(CornerTerrainQuery query) { lock (gate) return host.PreviewCorner(query); }
+    public RailwayPreviewRead PreviewRailway(RailwayQuery query) { lock (gate) return host.PreviewRailway(query); }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query) { lock (gate) return host.PreviewSpatial(query); }
     public Peer? Connect(DateTimeOffset now, ParticipantContext? participant = null, string? accessCredential = null)
     {
@@ -349,7 +350,7 @@ public sealed partial class NetworkSession
         var next = host.Snapshot();
         var previous = peer.LastSnapshot;
         if (previous?.Revision == next.Revision && previous.WorldEpoch == next.WorldEpoch) return;
-        WireMessage message = previous == null || previous.WorldEpoch != next.WorldEpoch ? next : Difference(previous, next);
+        WireMessage message = previous == null || previous.WorldEpoch != next.WorldEpoch || previous.Ruleset != next.Ruleset ? next : Difference(previous, next);
         if (Write(peer, message)) peer.LastSnapshot = next;
     }
     private bool Write(Peer peer, WireMessage message)

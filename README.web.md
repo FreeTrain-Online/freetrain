@@ -4,7 +4,14 @@ Save1–7 are unsupported and preserved under the current-format-only policy.
 [P4-07 construction](doc/web-parity-railway-construction.md) now validates actual terrain, reclamation and automatic piers,
 and stages source-priced normal-rail build/removal atomically.
 [P4-08 rendering](doc/web-parity-railway-rendering.md) displays saved rails and piers through bundled art,
-terrain cuts and English/Japanese inspection. Construction tools remain P4-09; new worlds still use the terrain profile.
+terrain cuts and English/Japanese inspection.
+[P4-09 Track](doc/web-parity-normal-rail-tool.md) now builds/removes normal routes:
+choose two map points (or XY coordinates) with automatic start-level detection
+or a manual height, preview exact cost/losses,
+then confirm. Closest legal route compares two shortest eight-direction paths;
+longer detours and roads remain future work. New worlds gain mixed railway state
+on their first successful track confirmation. Shape terrain before laying rail;
+mixed-world terrain editing remains a later cross-tool step.
 
 # FreeTrain Online
 

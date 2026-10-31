@@ -17,6 +17,12 @@
     },
     {
       "$ref": "#/$defs/CornerTerrainPreview"
+    },
+    {
+      "$ref": "#/$defs/RailwayQuery"
+    },
+    {
+      "$ref": "#/$defs/RailwayPreview"
     }
   ],
   "$defs": {
@@ -745,6 +751,22 @@
             "kind",
             "expectedGeometryRevision",
             "enabled"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editRailway"
+            },
+            "query": {
+              "$ref": "#/$defs/RailwayQuery"
+            }
+          },
+          "required": [
+            "kind",
+            "query"
           ]
         }
       ]
@@ -2619,6 +2641,189 @@
         "voxels",
         "slopes",
         "accounts"
+      ]
+    },
+    "RailwayQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "to": {
+          "$ref": "#/$defs/Position"
+        },
+        "action": {
+          "enum": [
+            "lay",
+            "remove"
+          ]
+        },
+        "routing": {
+          "enum": [
+            "closest",
+            "source",
+            "alternate"
+          ]
+        },
+        "from": {
+          "$ref": "#/$defs/Position"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedContentVersion",
+        "from",
+        "to",
+        "action",
+        "routing"
+      ]
+    },
+    "RailwayRouteCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "beforePattern": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 59
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "afterPattern": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 59
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "protectedByCar": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "position",
+        "beforePattern",
+        "afterPattern",
+        "protectedByCar"
+      ]
+    },
+    "RailwayLoss": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "pier",
+            "reclamation",
+            "accessory"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "supportedOwnerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "position",
+        "ownerId",
+        "supportedOwnerId"
+      ]
+    },
+    "RailwayPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/RailwayQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "reverseBend": {
+          "type": "boolean"
+        },
+        "cells": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/RailwayRouteCell"
+          }
+        },
+        "addedPiers": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "losses": {
+          "type": "array",
+          "maxItems": 24576,
+          "items": {
+            "$ref": "#/$defs/RailwayLoss"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "reverseBend",
+        "cells",
+        "addedPiers",
+        "losses"
       ]
     }
   }

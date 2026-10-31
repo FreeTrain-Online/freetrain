@@ -1,6 +1,13 @@
 /* Generated from prototype/protocol/schema.json. Run deno task generate:contracts. */
 
-export type GameDocument = WireMessage | SpatialQuery | SpatialPreview | CornerTerrainQuery | CornerTerrainPreview;
+export type GameDocument =
+  | WireMessage
+  | SpatialQuery
+  | SpatialPreview
+  | CornerTerrainQuery
+  | CornerTerrainPreview
+  | RailwayQuery
+  | RailwayPreview;
 export type WireMessage =
   | Join
   | Command
@@ -100,6 +107,10 @@ export type CommandPayload =
       kind: "setAuthoringMode";
       expectedGeometryRevision: Counter;
       enabled: boolean;
+    }
+  | {
+      kind: "editRailway";
+      query: RailwayQuery;
     };
 
 export interface Join {
@@ -419,6 +430,15 @@ export interface RectangleTerrainSelection {
   end: Position;
   soft: boolean;
 }
+export interface RailwayQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  to: Position;
+  action: "lay" | "remove";
+  routing: "closest" | "source" | "alternate";
+  from: Position;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -661,4 +681,35 @@ export interface AuthoringDecoration {
   position: Position;
   forest: Forest | null;
   creekConnections: number;
+}
+export interface RailwayPreview {
+  query: RailwayQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  reverseBend: boolean;
+  /**
+   * @maxItems 8192
+   */
+  cells: RailwayRouteCell[];
+  /**
+   * @maxItems 8192
+   */
+  addedPiers: Position[];
+  /**
+   * @maxItems 24576
+   */
+  losses: RailwayLoss[];
+}
+export interface RailwayRouteCell {
+  position: Position;
+  beforePattern: number | null;
+  afterPattern: number | null;
+  protectedByCar: boolean;
+}
+export interface RailwayLoss {
+  kind: "pier" | "reclamation" | "accessory";
+  position: Position;
+  ownerId: Counter;
+  supportedOwnerId: Counter | null;
 }

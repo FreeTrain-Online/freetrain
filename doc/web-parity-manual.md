@@ -470,3 +470,19 @@ claim shipped wording. For GEO-004/RAIL-D006 the owner confirmed source teardown
 of all piers below regardless of owner on 30 October, to avoid confusing stuck
 states for operators. P4-07/10/20 must preview every affected pier and retain that
 cleanup behavior; no owner-only restriction or pending approval remains.
+
+## P4-09 normal-track browser adaptation
+
+MAN-T02/W01/A03 now have a playable normal-rail browser path: the
+[Track task](web-parity-normal-rail-tool.md) and
+[reciprocal action bindings](web-parity-actions.md#p4-09-normal-track-workflow).
+Two map points or keyboard XY coordinates share a construction plane detected
+from the start by default, with an explicit manual-level override;
+server legality preserves the usable-start, stored-bounds, water, endpoint and
+source cost rules. Explicit Confirm/Cancel replaces native immediate drawing,
+with exact demolition/pier loss preview. Local height cuts remain view settings
+and never choose a different construction level. The reviewed owner extension
+compares two shortest legal candidates; source route order remains selectable.
+EN/JA text and dedicated Chromium two-client/save/reopen cases accompany the
+domain/session implementation. Moving trains, speed limits and special/sloped
+rail retain their separate owners and acceptance gates.

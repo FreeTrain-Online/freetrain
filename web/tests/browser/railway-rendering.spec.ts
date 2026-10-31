@@ -19,7 +19,7 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
  try {
   await replace(page,save);for(const p of [page,peer]){await expect(p.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(p);}
   const before=await canonicalState(page);expect(await canonicalState(peer)).toEqual(before);const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString())).toEqual(JSON.parse(save.toString()));
-  await expect(canvas).toHaveAttribute('data-assets','ready');await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeDisabled();
+  await expect(canvas).toHaveAttribute('data-assets','ready');await expect(page.getByRole('button',{name:'Remove track',exact:true})).toBeEnabled();
   const p=await point(page,16.5,-55.5);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('selected-object')).toHaveText('Railway · 7 · 1, 0, 4');
   await expect(page.getByTestId('railway-definition')).toHaveText('exav-stable-bundled · system:pattern/1 · system:pattern/1');
   const f=catalog.renderRecipes.find((r:any)=>r.id==='system:pattern/1').frames[0];

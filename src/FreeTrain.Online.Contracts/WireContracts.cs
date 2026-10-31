@@ -137,6 +137,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(ControllerInputCommand), "controllerInput")]
 [JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
+[JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 public abstract record CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
@@ -194,6 +195,15 @@ public sealed record CornerTerrainPreviewRead(long WorldEpoch, long GeometryRevi
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AuthoringDecorationRead[]? Decorations = null);
 public sealed record AuthoringDecorationRead(PositionRead Position, ForestRead? Forest, int CreekConnections);
 public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason);
+
+// Additive normal-track task; prices and candidate graphs are never command inputs.
+public sealed record RailwayQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
+    PositionRead From, PositionRead To, string Action, string Routing);
+public sealed record EditRailwayCommand(RailwayQuery Query) : CommandPayload;
+public sealed record RailwayRouteCellRead(PositionRead Position, int? BeforePattern, int? AfterPattern, bool ProtectedByCar);
+public sealed record RailwayLossRead(string Kind, PositionRead Position, long OwnerId, long? SupportedOwnerId);
+public sealed record RailwayPreviewRead(RailwayQuery Query, bool Legal, string? Reason, long Cost, bool ReverseBend,
+    RailwayRouteCellRead[] Cells, PositionRead[] AddedPiers, RailwayLossRead[] Losses);
 
 // Complete bounded railway/account publication, replaced atomically on every mixed delta.
 // Terrain geometry and railway geometry have separate revisions and allocator high-water marks.

@@ -452,3 +452,16 @@ bundled definitions enumerated here. No invented web operation ID is registered
 by this review. RAIL-D006/GEO-004 records the owner's 30 October decision to
 retain source deletion of all piers below regardless of owner, with every affected
 pier shown in the authoritative preview; no ownership approval gate remains.
+
+## P4-09 normal-track workflow
+
+[Track controls, source/translation reconciliation and verification](web-parity-normal-rail-tool.md)
+implement MAN-T02/W01/A03's normal-rail route, attachment, branch and removal
+subset, with DEV-P24 source booking and DEV-P28 stored voxel bounds. Registry
+`rail-action`, `rail-route`, `rail-from-x/y`, `rail-to-x/y`, `rail-pick-from/to`,
+`rail-preview`, `rail-level`, existing `confirm` and `cancel-draft` bind the
+controls to an authoritative preview and FIFO `editRailway`. Removal includes
+all lower-pier losses; explicit level/height-cut, EN/JA help, roles, receipts and
+late-response guards ship together. The bounded two-route heuristic is an owner
+extension. MAN-M03 speed limits and slope/special infrastructure retain their
+later P4 owners; these normal-route tests do not close those requirements.

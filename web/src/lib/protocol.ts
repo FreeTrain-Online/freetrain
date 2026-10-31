@@ -14,6 +14,13 @@ for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
 const validate = ajv.compile(schema.$defs.WireMessage ? { ...schema, $ref: '#/$defs/WireMessage' } : schema);
 const validatePreview=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SpatialPreview'});
 const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTerrainPreview'});
+const validateRailway=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/RailwayPreview'});
+export function parseRailwayPreview(value:unknown):import('../generated/contracts.ts').RailwayPreview {
+  if(!validateRailway(value))throw new Error('Invalid railway preview');
+  const result=value as import('../generated/contracts.ts').RailwayPreview;
+  if(BigInt(result.cost)<0n || (result.legal ? result.reason!==null||result.cells.length<2 : result.reason===null||result.cost!=='0'))throw new Error('Inconsistent railway preview');
+  return result;
+}
 export function parseCornerPreview(value:unknown):CornerTerrainPreview {
   if(!validateCorner(value))throw new Error('Invalid corner preview');
   const result=value as CornerTerrainPreview;

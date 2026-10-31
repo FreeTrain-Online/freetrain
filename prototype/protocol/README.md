@@ -133,3 +133,16 @@ booking journal, not an implicit patch. Snapshot chunks retain railway header
 entities while packing only terrain. See the [maintained contract and initial
 admission limits](../../doc/web-parity-railway-persistence.md). Save7 is retired
 under `historical/save-v7`; protocol5 peers are incompatible.
+
+## P4-09 normal-track query and command
+
+The additive protocol6 `RailwayQuery` / `RailwayPreview` schemas and
+`editRailway` command support [the Track task](../../doc/web-parity-normal-rail-tool.md).
+Preview uses `/api/railway/preview`, permits read-only Observer access and echoes
+the exact epoch/geometry/content-fenced query. Commands carry that query, never a
+price or graph; FIFO revalidation and participant receipts govern confirmation.
+
+First construction may publish a complete same-epoch snapshot changing an exact
+terrain profile to its installed mixed railway profile, retaining map, packs and
+provenance. The client accepts this specific handoff without reconnecting; other
+profile changes still bootstrap. No durable schema or save version changes.
