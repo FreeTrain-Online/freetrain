@@ -25,7 +25,7 @@ public class PreparedContentTests
         Assert.Equal("exav-stable-bundled", catalog.PackId);
         Assert.Equal(448, catalog.Definitions.Length); Assert.Equal(159, catalog.Pictures.Length);
         Assert.Equal(159, catalog.Pictures.Count(p => p.HasPreparedVariants));
-        Assert.Equal(812, catalog.RenderRecipes.Length);
+        Assert.Equal(813, catalog.RenderRecipes.Length);
         Assert.All(catalog.Definitions, d => Assert.Contains(catalog.RenderRecipes, r => r.Id == d.Id));
         Assert.Equal(54, catalog.PluginOrder.Length); Assert.False(catalog.GameplayAvailable);
         var generated = catalog.FindDefinition(catalog.PackId, "null-contrib-0:0");

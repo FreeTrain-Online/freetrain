@@ -15,7 +15,7 @@ import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -34,6 +34,7 @@ export class MapRenderer {
   private catalog?:Promise<RenderCatalog>;
   private catalogHash='';
   private terrainKey='';
+  private terrainPreparedKey='';
   private terrainWorldKey='';
   private terrainScene?:TerrainScene;
   private terrainViewport?:TerrainViewport;
@@ -81,6 +82,7 @@ export class MapRenderer {
       const presentationKey=JSON.stringify([worldKey,variant,options.heightCut]);
       const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision]);
       if(this.terrainKey!==key) {
+        this.canvas.dataset.presentation='pending';
         // Keep the front buffer during edits and sprite/cut changes in this world.
         // setScene renders into the spare buffer and flips only when complete.
         if(this.terrainWorldKey!==worldKey){this.terrainScene=undefined;this.terrainViewport=undefined;this.demoRailway=undefined;this.terrainView=undefined;}
@@ -90,7 +92,7 @@ export class MapRenderer {
         this.catalog??=loadRenderCatalog(hash);
         this.catalog.then(c=>Promise.all([TerrainScene.prepare(read,c,this.terrainCache,variant,options.heightCut,this.terrainScene),decorative?DemoRailway.prepare(c,this.terrainCache):undefined])).then(([scene,railway])=>{
           if(this.terrainKey===key){
-            this.terrainScene=scene;
+            this.terrainScene=scene;this.terrainPreparedKey=key;
             if(!decorative&&scene.supportsViewport&&typeof OffscreenCanvas!=='undefined') {
               if(this.terrainViewport)this.terrainViewport.setScene(scene);
               else this.terrainViewport=new TerrainViewport(scene);
@@ -105,6 +107,9 @@ export class MapRenderer {
       this.terrainView={x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom};
       const progressive=this.terrainViewport?.draw(ctx,this.terrainView,width,height,dpr);
       this.needsFrame=progressive?.pending??false;
+      // The previous scene stays usable while replacement assets/raster work
+      // finish. Expose completion separately from retained-buffer readiness.
+      this.canvas.dataset.presentation=this.terrainPreparedKey===key&&!progressive?.pending?'ready':'pending';
       this.canvas.dataset.refinement=progressive?.pending?'pending':'ready';
       this.canvas.dataset.renderZoom=String(progressive?.renderZoom??camera.zoom);
       if(progressive&&!progressive.ready){this.canvas.dataset.assets='loading';return false;}
@@ -136,6 +141,25 @@ export class MapRenderer {
         }
         ctx.stroke();
         for(const loss of rail.losses){
+          if(loss.position.z>options.heightCut)continue;
+          const p=toScreen(loss.position,camera,width,height,this.space),r=5*camera.zoom;
+          ctx.beginPath();ctx.moveTo(p.x-r,p.y-r);ctx.lineTo(p.x+r,p.y+r);ctx.moveTo(p.x+r,p.y-r);ctx.lineTo(p.x-r,p.y+r);ctx.stroke();
+        }
+      }
+      const slope=options.slopePreview,space=this.space;
+      this.canvas.dataset.slopeGhostCells=String(slope?.members.length??0);
+      if(slope){
+        ctx.strokeStyle=slope.legal?(slope.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';
+        ctx.lineWidth=2;
+        const diamond=(position:Position)=>{
+          if(position.z>options.heightCut)return;
+          const p=toScreen(position,camera,width,height,space),rx=14*camera.zoom,ry=7*camera.zoom;
+          ctx.beginPath();ctx.moveTo(p.x-rx,p.y);ctx.lineTo(p.x,p.y-ry);ctx.lineTo(p.x+rx,p.y);ctx.lineTo(p.x,p.y+ry);ctx.closePath();ctx.stroke();
+        };
+        for(const m of slope.members){ctx.setLineDash(m.kind==='traffic'?[]:[5,3]);diamond(m.position);}
+        ctx.setLineDash([1,3]);for(const p of slope.addedPiers)diamond(p);
+        ctx.setLineDash([]);
+        for(const loss of slope.losses){
           if(loss.position.z>options.heightCut)continue;
           const p=toScreen(loss.position,camera,width,height,this.space),r=5*camera.zoom;
           ctx.beginPath();ctx.moveTo(p.x-r,p.y-r);ctx.lineTo(p.x+r,p.y+r);ctx.moveTo(p.x+r,p.y-r);ctx.lineTo(p.x-r,p.y+r);ctx.stroke();

@@ -7,7 +7,9 @@ export type GameDocument =
   | CornerTerrainQuery
   | CornerTerrainPreview
   | RailwayQuery
-  | RailwayPreview;
+  | RailwayPreview
+  | SlopeQuery
+  | SlopePreview;
 export type WireMessage =
   | Join
   | Command
@@ -111,6 +113,10 @@ export type CommandPayload =
   | {
       kind: "editRailway";
       query: RailwayQuery;
+    }
+  | {
+      kind: "editSlope";
+      query: SlopeQuery;
     };
 
 export interface Join {
@@ -439,6 +445,14 @@ export interface RailwayQuery {
   routing: "closest" | "source" | "alternate";
   from: Position;
 }
+export interface SlopeQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "lay" | "remove";
+  position: Position;
+  climb: 0 | 2 | 4 | 6;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -712,4 +726,56 @@ export interface RailwayLoss {
   position: Position;
   ownerId: Counter;
   supportedOwnerId: Counter | null;
+}
+export interface SlopePreview {
+  query: SlopeQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  base: Position;
+  climb: 0 | 2 | 4 | 6;
+  /**
+   * @maxItems 8
+   */
+  members:
+    | []
+    | [SlopeMember]
+    | [SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember]
+    | [SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember, SlopeMember];
+  /**
+   * @maxItems 4
+   */
+  rails:
+    | []
+    | [SlopeRailPosition]
+    | [SlopeRailPosition, SlopeRailPosition]
+    | [SlopeRailPosition, SlopeRailPosition, SlopeRailPosition]
+    | [SlopeRailPosition, SlopeRailPosition, SlopeRailPosition, SlopeRailPosition];
+  /**
+   * @maxItems 8192
+   */
+  addedPiers: Position[];
+  /**
+   * @maxItems 24576
+   */
+  losses: RailwayLoss[];
+}
+export interface SlopeMember {
+  position: Position;
+  kind: "traffic" | "slopefiller" | "slopesupport" | "slopewall";
+  pattern: number | null;
+  drawGroundBelow: boolean;
+  drawGroundAbove: boolean;
+}
+export interface SlopeRailPosition {
+  level: number;
+  position: Position;
+  pattern: number;
+  zDiff: -1 | 0 | 1;
+  zAngle: 0 | 2 | 4 | 6;
 }

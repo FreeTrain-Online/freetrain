@@ -11,7 +11,7 @@ public sealed record RailwayComponentLoss(Location Position, AccessoryComponent 
 
 // A detached, read-only quote. Candidate identities are provisional: no IDs,
 // money, terrain or session state are reserved or published by preview.
-public sealed class NormalRailwayConstructionPlan
+public sealed class RailwayConstructionPlan
 {
     public NormalRailwayPlan Topology { get; }
     public MixedWorld Source => Topology.Source;
@@ -23,9 +23,9 @@ public sealed class NormalRailwayConstructionPlan
     public ImmutableArray<RailwayPierPlacement> ElectedPiers { get; }
     public ImmutableArray<RailwayComponentLoss> ComponentLosses { get; }
     internal MixedWorld? Candidate { get; }
-    internal NormalRailwayConstructionPlan(NormalRailwayPlan topology, string reason)
+    internal RailwayConstructionPlan(NormalRailwayPlan topology, string reason)
     { Topology=topology; Reason=reason; Booking=ConstructionBooking.None; Reclaimed=[]; RemovedPiers=[]; ElectedPiers=[]; ComponentLosses=[]; }
-    internal NormalRailwayConstructionPlan(NormalRailwayPlan topology, MixedWorld candidate, ConstructionBooking booking,
+    internal RailwayConstructionPlan(NormalRailwayPlan topology, MixedWorld candidate, ConstructionBooking booking,
         IEnumerable<RailwayReclamation> reclaimed, IEnumerable<RailwayVoxel> removed,
         IEnumerable<RailwayPierPlacement> elected, IEnumerable<RailwayComponentLoss> losses)
     {
@@ -53,12 +53,12 @@ public static class NormalRailwayConstruction
         catch (OverflowException) { return false; }
     }
 
-    public static NormalRailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,false,reverseBend);
-    public static NormalRailwayConstructionPlan PreviewRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,true,reverseBend);
-    private static NormalRailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
+    public static RailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,false,reverseBend);
+    public static RailwayConstructionPlan PreviewRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,true,reverseBend);
+    private static RailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
     {
         var topology=removal ? NormalRailway.PlanRemoval(world,from,to,reverseBend) : NormalRailway.PlanBuild(world,from,to,reverseBend);
-        NormalRailwayConstructionPlan Reject(string reason) => new(topology,reason);
+        RailwayConstructionPlan Reject(string reason) => new(topology,reason);
         if (!topology.TopologyValid) return Reject(topology.Reason!);
         if (!IsUsableStart(world,from)) return Reject("unusableStart");
         var reclaimed=new Dictionary<long,RailwayReclamation>();
@@ -173,7 +173,7 @@ public static class NormalRailwayConstruction
 
     // Recompute against the exact authoritative predecessor. A plan from a
     // different world/epoch is stale even if the numeric revision is identical.
-    public static MixedConstructionState Apply(MixedConstructionState state, NormalRailwayConstructionPlan plan, GameTime time)
+    public static MixedConstructionState Apply(MixedConstructionState state, RailwayConstructionPlan plan, GameTime time)
     {
         if (!ReferenceEquals(state.World,plan.Source)) throw new InvalidOperationException("staleRevision");
         if (!plan.Legal) throw new InvalidOperationException(plan.Reason);

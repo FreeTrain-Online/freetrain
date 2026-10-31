@@ -61,11 +61,13 @@ test('late night-sheet decoding cannot replace a newer day view or its hit targe
  let release=()=>{},waiting=0;const held=new Promise<void>(r=>{release=r;});
  try{
   await replace(page,save);await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);
-  await openPanel(page,'view');const canvas=page.locator('canvas');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect.poll(()=>canvas.evaluate(el=>el.dataset.terrainCut)).toBe('4');
+  await openPanel(page,'view');const canvas=page.locator('canvas');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect.poll(()=>canvas.evaluate(el=>el.dataset.terrainCut)).toBe('4');await expect(canvas).toHaveAttribute('data-presentation','ready');
   const before=await canvas.evaluate(el=>el.toDataURL());
   await page.route('**/content/bundled-v2/**/*.png',async route=>{const response=await route.fetch();waiting++;await held;await route.fulfill({response});});
-  await page.getByLabel('Night',{exact:true}).check();await expect.poll(()=>waiting).toBeGreaterThan(0);await expect(canvas).toHaveAttribute('data-assets','loading');
-  await page.getByLabel('Night',{exact:true}).uncheck();await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).toBe(before);
+  // Sprite changes retain the completed scene and its hit targets while the
+  // replacement sheets decode; initial world reveal still waits for readiness.
+  await page.getByLabel('Night',{exact:true}).check();await expect.poll(()=>waiting).toBeGreaterThan(0);await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-presentation','pending');
+  await page.getByLabel('Night',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-presentation','ready');await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).toBe(before);
   const received=page.waitForResponse(r=>r.url().includes('/content/bundled-v2/')&&r.url().endsWith('.png'));release();await received;
   await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
   await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');expect(await canvas.evaluate(el=>el.toDataURL())).toBe(before);

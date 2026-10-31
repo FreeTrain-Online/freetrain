@@ -357,6 +357,7 @@ public sealed partial class SessionHost : IDisposable
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
+                            case EditSlopeCommand edit when edit.Query != null: code = CommitSlope(edit.Query); break;
                             case RunCommand when CanonicalCanAdvance: CanonicalPause(false); break;
                             case RunCommand: code = "invalidInput"; break;
                             case PauseCommand: CanonicalPause(true); break;

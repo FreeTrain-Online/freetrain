@@ -27,6 +27,7 @@ public static class RailwayProfiles
         for (var i = 0; i < 60; i++) Add($"system:pattern/{i}",
             i < 12 ? RailwayHandler.Normal : i < 28 ? RailwayHandler.Junction : RailwayHandler.Slope, i);
         Add("system:pier", RailwayHandler.Pier, 0);
+        Add("system:pier/slopeNE", RailwayHandler.Pier, 1);
         for (var d = 0; d < 8; d += 2)
             for (var i = 2; i < 4; i++)
             {
@@ -36,6 +37,8 @@ public static class RailwayProfiles
                 Add($"system:pattern/underground-slope-support-{pattern}", RailwayHandler.SlopeWall, sprite);
             }
         Add("{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}", RailwayHandler.Bridge, recipeHandler: "special-rail");
+        for (var i = 0; i < 4; i++)
+            bindings.Add(new(new(catalog.PackId,$"system:bridge-pier/{i}","{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"),RailwayHandler.Pier,i));
         Add("{7FD493FF-D6A7-4a13-A471-FB737641D8A0}", RailwayHandler.Girder, recipeHandler: "special-rail");
         Add("{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}", RailwayHandler.Tunnel, recipeHandler: "special-rail");
         Add("{93481807-D998-46d7-B1BE-CB2B5D086D67}", RailwayHandler.Garage, recipeHandler: "special-rail");

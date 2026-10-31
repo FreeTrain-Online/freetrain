@@ -5,7 +5,7 @@
     {
       "id": "exav-stable-bundled",
       "version": "2",
-      "catalogHash": "d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21"
+      "catalogHash": "cb830d0bf26e6f8a64c84d444dde12ca89d9bd636aef043e0ca8ce0168c8f7f9"
     }
   ],
   "trafficOwner": {
@@ -567,6 +567,15 @@
       },
       "handler": "pier",
       "variant": 0
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:pier/slopeNE",
+        "recipeId": "system:pier/slopeNE"
+      },
+      "handler": "pier",
+      "variant": 1
     },
     {
       "reference": {

@@ -1488,7 +1488,7 @@
       "legality": "Cardinal, baseZ+1 within ceiling; four XY positions with both Z levels empty, including no Traffic. Removal checks four car locations and owning ramp validity, second rail zdiff=1/zangle.",
       "mutation": "Four rails at base+i*d+(0,0,i//2), fillers above i0/1 and walls/supports below i2/3. Per-column baseZ<ground chooses underground art; stored ground flags. Elect directional-style piers.",
       "booking": "RAIL_SERVICE build 40000000*M(baseZ-water); remove 8000000*(abs(baseZ+1-water)+1). No generic entity-removal charge.",
-      "removal": "Slope tool resolves member to base, clears four rails/paired cells and piers under base. SlopeEntity.remove scans its cube and excludes piers; source slope-tool support teardown remains owner-agnostic under owner-confirmed D006.",
+      "removal": "Slope tool resolves member to base, clears four rails/paired cells and piers under base. SlopeEntity.remove excludes piers from its direct cube scan, but its TrafficVoxel.remove callbacks tear down piers below each rail and remove whole Traffic voxels, with no tool booking. P4-10 corrects the earlier direct-scan-only reading; D006 remains owner-agnostic at every call site.",
       "status": "source-contract-specified"
     },
     {
@@ -3954,5 +3954,5 @@
     "P8": "durable source genres/cash/rescue/transactions now, finance/report closure later",
     "optional": "Only explicit reviewed portable handlers grant behavior support; separate pack/resource/permission gates unchanged"
   },
-  "reviewSha256": "4258e9b61fb642f717c40f2163250d1735bc095e315da41372dc1ebd54db00c9"
+  "reviewSha256": "d861c2abc9f7d1bfe1527106e20bfd573588d969d95031abd0f01acc5fc81488"
 }

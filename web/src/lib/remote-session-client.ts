@@ -1,8 +1,8 @@
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview } from './protocol.ts';
-import { isRailwayPromotion, railwayQueryKey } from './railway-edit.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview } from './protocol.ts';
+import { isRailwayPromotion, railwayQueryKey, slopeQueryKey } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 
@@ -184,6 +184,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const preview=parseCornerPreview(await response.json());
       const expected=query.rectangle&&query.action!=='plantForest'&&query.action!=='placeCreek'?{x:Math.min(query.position.x,query.rectangle.end.x),y:Math.min(query.position.y,query.rectangle.end.y),z:query.position.z}:query.position;
       if(disposed||join!==identity||status!=='ready'||preview.worldEpoch!==query.expectedWorldEpoch||preview.geometryRevision!==query.expectedGeometryRevision||preview.action!==query.action||query.offsetX===null&&(preview.position.x!==expected.x||preview.position.y!==expected.y||preview.position.z!==expected.z))throw new Error('Stale corner preview');
+      return preview;
+    },
+    async previewSlope(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/railway/slope/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(!response.ok)throw new Error('Slope preview failed');
+      const preview=parseSlopePreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||slopeQueryKey(preview.query)!==slopeQueryKey(query))throw new Error('Stale railway preview');
       return preview;
     },
     async previewRailway(query,signal) {

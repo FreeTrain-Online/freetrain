@@ -32,12 +32,14 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
   },{set:catalog.surfaceSets[f.surfaceSet],rectangle:f.rectangle});expect(pixels.actual).toEqual(pixels.expected);
   await closePanel(page);const pier=await point(page,16.5,-40.5);await page.mouse.click(pier.x,pier.y);await expect(page.getByTestId('selected-object')).toHaveText('Railway · 8 · 1, 0, 3');await expect(page.getByTestId('railway-component')).toHaveText('Railroad pier');
   await page.screenshot({path:output('rail-pier-en.png'),fullPage:true});
-  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('3');await expect(canvas).toHaveAttribute('data-terrain-cut','3');await closePanel(page);
+  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('3');await expect(canvas).toHaveAttribute('data-terrain-cut','3');await expect(canvas).toHaveAttribute('data-presentation','ready');await closePanel(page);
   const cut=await point(page,16.5,-55.5);await page.mouse.click(cut.x,cut.y);await expect(page.getByTestId('selected-object')).toContainText('Railway · 8');
-  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('5');await expect(canvas).toHaveAttribute('data-terrain-cut','5');const hash=await canvas.evaluate(el=>el.toDataURL());
+  await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('5');await expect(canvas).toHaveAttribute('data-terrain-cut','5');
+  // Retained-buffer readiness precedes completion of the requested cut.
+  await expect(canvas).toHaveAttribute('data-presentation','ready');const hash=await canvas.evaluate(el=>el.toDataURL());
   await page.getByLabel('Night',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/night');
   await page.getByLabel('Winter ground',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant','winter/night');
-  await page.getByLabel('Night',{exact:true}).uncheck();await page.getByLabel('Winter ground',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');
+  await page.getByLabel('Night',{exact:true}).uncheck();await page.getByLabel('Winter ground',{exact:true}).uncheck();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/day');await expect(canvas).toHaveAttribute('data-presentation','ready');
   await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).toBe(hash);const decoded=sheets;
   await openPanel(page,'session');await openPanel(page,'help');expect(sheets).toBe(decoded);await expect(canvas).toHaveAttribute('data-instance','railway-preserved');
   expect(await canonicalState(page)).toEqual(before);expect((await(await page.request.get('/api/saves/download')).body())).toEqual(captured);

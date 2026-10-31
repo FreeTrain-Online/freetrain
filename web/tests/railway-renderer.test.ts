@@ -163,3 +163,15 @@ Deno.test('large mixed viewport publishes matching railway pixels and picks toge
   assert.equal(canvases.filter(c=>c.width===256&&c.height===288).length,2);
  }finally {if(descriptor)Object.defineProperty(globalThis,'OffscreenCanvas',descriptor);else Reflect.deleteProperty(globalThis,'OffscreenCanvas');}
 });
+Deno.test('S/W slope pier binding preserves the pinned second core crop, anchor and saved selector',async()=>{
+ const recipe=catalog.renderRecipes.find(r=>r.id==='system:pier/slopeNE')!;
+ assert.equal(recipe.sourceSymbol,'BridgePierVoxel.slopeNESprite');
+ assert.deepEqual(recipe.frames[0].rectangle,[32,0,32,32]);assert.deepEqual(recipe.frames[0].anchor,[0,16]);
+ const s=flat(1,1,0),r=rail(s,0,0,3,4),p=pier(s,0,0,1,r.ownerId);
+ p.definition=definition('system:pier/slopeNE');p.sprite=1;s.entities!.at(-1)!.definition=p.definition;
+ assert(validSnapshot(s));const before=JSON.stringify(s),scene=await prepare(s);
+ const op=railwayOps(scene).find(o=>o.target.id===p.ownerId)!;assert('layer' in op);
+ assert.equal(op.layer.recipeId,'system:pier/slopeNE');assert.deepEqual(op.layer.frame.rectangle,[32,0,32,32]);
+ assert.equal(JSON.stringify(s),before);
+ const invalid=structuredClone(s);invalid.mixed!.voxels[1].sprite=0;assert(!validSnapshot(invalid));
+});

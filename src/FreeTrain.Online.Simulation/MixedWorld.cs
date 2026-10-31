@@ -115,8 +115,10 @@ public sealed class MixedWorld
                 if (b.Handler != expected || v.Sprite < 0 || b.Variant >= 0 && b.Variant != v.Sprite)
                     throw new ArgumentException("Invalid support binding.");
             }
-            // SlopeEntity.remove deliberately leaves piers: a historical supported
-            // ID may outlive its rail, but cannot refer to an unrelated live entity.
+            // A historical supported ID may outlive its rail (for example a
+            // pier above an explicit teardown call's height), but cannot refer
+            // to an unrelated live entity. SlopeEntity's Traffic.remove callbacks
+            // do tear down lower piers despite its direct cube-scan exclusion.
             if (v.Kind == RailwayVoxelKind.Pier && (v.SupportedOwnerId is not {} id || id < 1 || id >= Spatial.NextEntityId ||
                 entities.ContainsKey(id) && (!byOwner.TryGetValue(id, out var owner) || !owner.Any(m => m.Traffic?.Rail != null &&
                     m.Position.X == v.Position.X && m.Position.Y == v.Position.Y && m.Position.Z > v.Position.Z))))

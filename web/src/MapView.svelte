@@ -17,6 +17,8 @@
   import { demoScene, demoCamera } from './lib/demo-scene.ts';
   import { demoLoopPeriod } from './lib/demo-railway-path.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
+  import SlopeControls from './SlopeControls.svelte';
+  import type { SlopePreview } from './generated/contracts.ts';
   import TrackControls from './TrackControls.svelte';
   import type { RailwayPreview } from './generated/contracts.ts';
   import CornerTerrainControls from './CornerTerrainControls.svelte';
@@ -38,7 +40,7 @@
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean}>();
-  let railPicked=$state<Position>(),railPreview=$state<RailwayPreview>();
+  let railPicked=$state<Position>(),railPreview=$state<RailwayPreview>(),slopePreview=$state<SlopePreview>();
   let railPoints=$state<{position:Position;label:string}[]>([]),railLevel=$state(1);
   let cornerControls=$state<{cancelDraft:()=>boolean}>();
   let rectangleMode=false;
@@ -89,7 +91,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { untrack(()=>railControls?.cancelDraft());railPicked=undefined;railPreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { untrack(()=>railControls?.cancelDraft());railPicked=undefined;railPreview=undefined;slopePreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -111,7 +113,7 @@
   export function resetInteraction() { clearInput(); cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
   export function escape() {
-    if(railway&&(tool==='build'||tool==='remove')&&railControls?.cancelDraft()) { /* First Escape clears the route. */ }
+    if(railway&&(tool==='build'||tool==='remove'||tool==='slope')&&railControls?.cancelDraft()) { /* First Escape clears the route. */ }
     else if(tool==='terrain'&&cornerControls?.cancelDraft()) { /* First Escape clears the review. */ }
     else if (selectedPosition) cancelDraft();
     else if (tool !== 'inspect') activateTool('inspect');
@@ -128,10 +130,10 @@
       }
       return;
     }
-    const shortcut = ({ i: 'inspect', t: 'build', r: 'remove' } as const)[event.key.toLowerCase() as 'i' | 't' | 'r'];
+    const shortcut = tools.find(item=>item.shortcut.toLowerCase()===event.key.toLowerCase())?.id;
     if (shortcut) {
       event.preventDefault();
-      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway)) ontool(shortcut);
+      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !(shortcut === 'slope' && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
       return;
     }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
@@ -149,7 +151,7 @@
     focusMap();
     // A small world must remain reachable above the narrow tool sheet. Shift
     // only when opening the task; previews/confirmations preserve the camera.
-    if(narrow&&railway&&(tool==='build'||tool==='remove')){
+    if(narrow&&railway&&(tool==='build'||tool==='remove'||tool==='slope')){
       const active=tool;
       void tick().then(()=>{
         const card=document.querySelector('.track-task');
@@ -215,8 +217,8 @@
     const p = point(event);
     if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
-    else if(railway&&(tool==='build'||tool==='remove')&&!blocked&&!panel){
-      railPicked=railControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:'railOrGround'}):tileAt(p,railLevel,camera,width,height,space);
+    else if(railway&&(tool==='build'||tool==='remove'||tool==='slope')&&!blocked&&!panel){
+      railPicked=railControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:tool==='slope'?'slopeOrGround':'railOrGround'}):tileAt(p,railLevel,camera,width,height,space);
     }
     else if (!blocked && !panel && !uncertain) { void chooseTarget(tileAt(p,level,camera,width,height,space)); }
     dirty = true;
@@ -277,7 +279,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
     $effect(() => { void heightCut;cancelGesture(); });
-    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void railPreview; void railPoints; void anchor; void tool; dirty = true; });
+    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -302,7 +304,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, railPreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // Terrain revisions keep the completed scene visible while preparing
@@ -337,8 +339,12 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools.filter(item=>item.id!=='terrain'||terrain) as item}<button aria-label={reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]} title={reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else}{item.icon}{/if}</button>{/each}
+    {#each tools.filter(item=>item.id!=='slope'||railway) as item}
+      {@const label=reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]}
+      <button aria-label={label} title={`${label} (${item.shortcut})${item.id==='terrain'&&!terrain?` · ${text.terrainUnavailable}`:''}`} aria-keyshortcuts={item.shortcut} aria-describedby={item.id==='terrain'&&!terrain?'terrain-unavailable':undefined} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else if item.icon==='slope'}<RailToolIcon slope />{:else}{item.icon}{/if}</button>
+    {/each}
   </div>
+  {#if !terrain}<span id="terrain-unavailable" class="sr-only">{text.terrainUnavailable}</span>{/if}
   <div class="map-navigation" class:beside-panel={!!panel}>
     <button aria-label={text.zoomOut} onclick={() => zoom(.8)}>−</button><span class="zoom-level" aria-label={text.zoomLevel}>{zoomPercent}%</span><button aria-label={text.zoomIn} onclick={() => zoom(1.25)}>＋</button><button onclick={home}>{text.homeMap}</button>
   </div>
@@ -353,6 +359,9 @@
   {/if}
   {#if tool === 'terrain' && terrain && !panel}
     {#key cornerGeneration}<CornerTerrainControls bind:this={cornerControls} {model} {view} {paintState} onpaintstop={cancelGesture} picked={cornerPicked} onmode={(value,strategy)=>{rectangleMode=value;terrainStrategy=strategy;}} onpreview={(p,end,sites)=>{preview=p;rectangleEnd=end;terrainSites=sites;dirty=true;}} onreset={()=>{cornerPicked=undefined;cancelGesture();}}/>{/key}
+  {/if}
+  {#if railway && tool === 'slope' && !panel}
+    {#key cornerGeneration}<SlopeControls bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{slopePreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={z=>{heightCut=z;}}/>{/key}
   {/if}
   {#if railway && (tool === 'build' || tool === 'remove') && !panel}
     {#key cornerGeneration}<TrackControls bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} initialAction={tool==='remove'?'remove':'lay'} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
@@ -374,7 +383,7 @@
       <p class="hint">{reference ? worldHint : text.unvalidatedPreview}</p>
       {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
       {#if selectedPosition && selectedPosition.z > heightCut}<button onclick={() => { heightCut = level; }}>{text.revealPreview}</button>{/if}
-      <div class="form-actions"><button class="primary" disabled={reference || blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+      <div class="form-actions"><button class="primary" disabled={reference || blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending||(!selectedPosition&&!anchor)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
   <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>

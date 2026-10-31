@@ -134,6 +134,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   reconnect();
   return {
     get state() { return state; },
+    async previewSlope(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewSlope)throw new Error('Unavailable');
+      const result=await active.previewSlope(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale slope preview');
+      return result;
+    },
     async previewRailway(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRailway)throw new Error('Unavailable');

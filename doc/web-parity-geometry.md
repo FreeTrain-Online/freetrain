@@ -182,8 +182,10 @@ rail to its base.
 Bridge support election first refuses any occupied cell from z=0 up to the rail,
 then builds piers from local ground to railZ-1. Ordinary rail uses the default
 style; slopes use default for N/E and the slope style for S/W. Support teardown
-currently ignores owner, while slope entity removal excludes BridgePierVoxel
-(`GEO-004`). Bridge special rail uses six begin/middle/end images, alternates piers
+ignores owner. Slope entity removal excludes BridgePierVoxel directly, but its
+TrafficVoxel.remove callbacks tear down lower piers (P4-10 source-call correction
+to the earlier direct-scan-only reading of `GEO-004`). Bridge special rail uses
+six begin/middle/end images, alternates piers
 on newly created spans, and requires compatible straight track or empty cells;
 its predicate never checks water despite its comment. Tunnel construction requires
 at least one MountainVoxel, is not below water, saves mountain corner heights,

@@ -10,7 +10,14 @@ choose two map points (or XY coordinates) with automatic start-level detection
 or a manual height, preview exact cost/losses,
 then confirm. Closest legal route compares two shortest eight-direction paths;
 longer detours and roads remain future work. New worlds gain mixed railway state
-on their first successful track confirmation. Shape terrain before laying rail;
+on their first successful railway confirmation.
+[P4-11 Slope](doc/web-parity-slope-tool.md) adds the distinct EN/JA ramp task:
+choose a cardinal uphill direction and lower base (map or keyboard), review all
+eight occupied cells, actual source cost and pier losses, then confirm. Removal
+resolves any member, including invisible fillers, to its whole ramp. Surface/
+underground art, stored ground holes and height cuts use the same live renderer.
+Flat-to-slope-to-elevated networks save and reopen exactly.
+Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 
 # FreeTrain Online

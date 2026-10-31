@@ -6,7 +6,7 @@ import type { Position } from '../generated/contracts.ts';
 
 export const railwayRevision = (read?: ReadState) => read?.mixed?.geometryRevision ?? read?.terrain?.geometryRevision;
 export const railwayFence = (read?: ReadState) => `${read?.worldEpoch}/${railwayRevision(read)}/${read?.contentVersion}`;
-export const railwayQueryKey = (q: RailwayQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.routing,q.from.x,q.from.y,q.from.z,q.to.x,q.to.y,q.to.z]);
+export const railwayQueryKey = (q: RailwayQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.routing,q.infrastructure??'normal',q.from.x,q.from.y,q.from.z,q.to.x,q.to.y,q.to.z]);
 
 // Keyboard XY already identifies a column. Match the map's rail-or-ground
 // policy within that column, respecting a cut into otherwise higher ground.
@@ -32,7 +32,10 @@ export function isRailwayPromotion(before: ReadState, after: ReadState): boolean
     before.terrain?.name === after.terrain?.name && JSON.stringify(before.terrain?.provenance) === JSON.stringify(after.terrain?.provenance);
 }
 
+export const slopeQueryKey = (q:import('../generated/contracts.ts').SlopeQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.climb,q.position.x,q.position.y,q.position.z]);
+
 export const railwayReasons = {
+  nonCardinalSlope:'slopeCardinal',notSlope:'slopeNotFound',slopeDirectionMismatch:'slopeMismatch',occupiedCar:'railCar',unavailableSlopeBinding:'railBinding',staleRevision:'railStale',
   samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
   unusableStart:'railStart',underwater:'railUnderwater',obstacle:'railObstacle',carOccupied:'railCar',
   existingMiddleRail:'railMiddle',cannotAttach:'railAttach',invalidRailPattern:'railPattern',

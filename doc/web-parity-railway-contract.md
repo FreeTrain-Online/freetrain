@@ -120,7 +120,9 @@ Build books `40,000,000 * M(baseZ-water)` once. Removal resolves the owning base
 recognizes the second rail through zdiff+1/zangle and checks all four rail car
 positions. Book `8,000,000 * (abs(baseZ+1-water)+1)` once; clear four rail
 components and their paired cells. Source `SlopeEntity.remove` instead scans its
-cube and excludes piers; it is not equivalent to slope-tool teardown. Canonical
+cube and excludes piers directly, but calls `TrafficVoxel.remove` for its rails,
+which tears down piers below each rail height. It has no slope-tool booking and
+removes whole Traffic voxels rather than preserving road/pole components. Canonical
 ownership validation must reject malformed partial ramps before either operation.
 
 Pier election checks **every** voxel from Z0 to railZ−1. Any occupant prevents
@@ -150,8 +152,10 @@ then revalidate and remove the complete selected set atomically. Preserve other
 voxel types and terrain; this decision authorizes pier teardown, not deletion of
 their owning rails or other entities. Keep the source call sites and local skips,
 including normal removal's teardown on cells whose rail detach is a no-op. The
-separate SlopeEntity.remove path still excludes piers; the owner's decision does
-not introduce a new full-ramp ownership cleanup algorithm. P4-02 fixtures must
+separate SlopeEntity.remove path excludes piers from its direct scan, but its
+TrafficVoxel.remove callbacks also invoke owner-agnostic teardown below each rail.
+This transitive call was reconciled in P4-10; the owner's decision does not
+introduce an additional ownership cleanup algorithm. P4-02 fixtures must
 include foreign-owner piers and no-op normal detach with actual pier removal.
 
 ## Special rails and their distinct booking

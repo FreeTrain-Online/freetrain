@@ -465,3 +465,14 @@ all lower-pier losses; explicit level/height-cut, EN/JA help, roles, receipts an
 late-response guards ship together. The bounded two-route heuristic is an owner
 extension. MAN-M03 speed limits and slope/special infrastructure retain their
 later P4 owners; these normal-route tests do not close those requirements.
+
+### P4-11 slope workflow
+
+The distinct [Slope task](web-parity-slope-tool.md) implements MAN-T03/A04 with
+cardinal climb/base/level selection, map and keyboard targeting, all eight ghost
+members, source cost/support/loss preview and atomic confirmation/removal. Any
+member, including invisible fillers and support cells, resolves the whole ramp;
+normal-track removal retains its distinct source behavior. Surface/underground
+art, stored ground holes, cuts, two-peer changes and exact reopen are verified
+at the browser/portable scope recorded there. RAIL-TEXT-015–020 feature wording
+is reconciled in EN/JA; overall P4-22/native and P5 movement gates remain open.

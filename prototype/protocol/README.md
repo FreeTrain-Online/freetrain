@@ -146,3 +146,13 @@ First construction may publish a complete same-epoch snapshot changing an exact
 terrain profile to its installed mixed railway profile, retaining map, packs and
 provenance. The client accepts this specific handoff without reconnecting; other
 profile changes still bootstrap. No durable schema or save version changes.
+
+P4-11 adds `SlopeQuery` / `SlopePreview`, read-only
+`POST /api/railway/slope/preview` and FIFO `editSlope` for the distinct
+[Slope task](../../doc/web-parity-slope-tool.md). Query inputs contain only
+expected epoch/geometry/content, selected position, cardinal climb and Lay/Remove;
+prices and candidate IDs are authoritative outputs. Legal previews carry all eight
+unique rail/filler/support/wall members, four ordered transition positions, elected
+piers and explicit pier losses. Removal resolves any member to its owning base.
+The existing role/participant/receipt and terrain-to-mixed promotion rules apply.
+Save8/protocol6 mixed state and chunks retain every invisible occupied cell.

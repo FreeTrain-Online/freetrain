@@ -11,7 +11,7 @@
   },
   "evidence": "Literal source-derived expectations checked by an independent Python evaluator. No production output, desktop execution or native capture oracle; no live state/save/UI/protocol changes.",
   "artifactBindings": {
-    "railway-review.json": "4268557a83e26dedec2c47026dc7ffbe70e148aa17589b4eefdf86c8df170877",
+    "railway-review.json": "96a9015474f0817700945ec2d13a33593035b100b7df99cb226b02c887844d96",
     "exav-scenarios.json": "0f589e512e9301b42d5e5fdcc26b0c3dd0519710116c419799545056c1beb285",
     "exav-geometry.json": "e90b21e3a8dbff83e1f6bbb937136a160a0e4b170e7dd37289bb28a3e2ec63b5",
     "exav-geometry-behavior.json": "c6568df79db3d0be98e33c4c221c5a20dc0dbabbab0b3a9de275b4b25e8ce254",

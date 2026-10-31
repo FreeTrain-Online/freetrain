@@ -205843,6 +205843,54 @@
       "status": "ready"
     },
     {
+      "id": "system:pier/slopeNE",
+      "pluginId": "system",
+      "sourcePath": "trunk/core/res/BridgePier.bmp",
+      "handler": "source-geometry",
+      "sourceSymbol": "BridgePierVoxel.slopeNESprite",
+      "fields": {},
+      "frames": [
+        {
+          "key": "pier/slopeNE",
+          "pictureId": "{8AD4EF28-CBEF-4C73-A8FF-5772B87EF005}:BridgePier.bmp",
+          "rectangle": [
+            32,
+            0,
+            32,
+            32
+          ],
+          "anchor": [
+            0,
+            16
+          ],
+          "cell": [
+            0,
+            0,
+            0
+          ],
+          "stage": 20,
+          "effect": {
+            "kind": "simple"
+          },
+          "selector": {},
+          "status": "ready",
+          "surfaceSet": "589a7b78c568ed45532c61b148bc8829b3afba993406255c2cc4e390d3dbfe15",
+          "baseSurfaceSet": "589a7b78c568ed45532c61b148bc8829b3afba993406255c2cc4e390d3dbfe15",
+          "masks": {
+            "spring/day": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "spring/night": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "summer/day": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "summer/night": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "autumn/day": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "autumn/night": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "winter/day": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668",
+            "winter/night": "e76466cd7fc34e1d37a2b41657ad24c3c0688a37ff4b8bf81b2bd28f918e6668"
+          }
+        }
+      ],
+      "status": "ready"
+    },
+    {
       "id": "system:cliff/0/0/0",
       "pluginId": "system",
       "sourcePath": "trunk/core/res/cliff.bmp",
@@ -290415,8 +290463,8 @@
     "sha256": "3ee9ae0a7e086efa4475822b5ca653741aa14c5373fca2df20b910c7fe8cc43c"
   },
   "recipeCounts": {
-    "recipes": 812,
-    "frames": 3176,
+    "recipes": 813,
+    "frames": 3177,
     "invalidCrops": 21,
     "surfaceSets": 170
   }

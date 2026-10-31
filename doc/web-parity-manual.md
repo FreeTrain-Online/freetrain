@@ -486,3 +486,16 @@ compares two shortest legal candidates; source route order remains selectable.
 EN/JA text and dedicated Chromium two-client/save/reopen cases accompany the
 domain/session implementation. Moving trains, speed limits and special/sloped
 rail retain their separate owners and acceptance gates.
+
+### P4-11 slope browser adaptation
+
+[The Slope task](web-parity-slope-tool.md) delivers MAN-T03/A04's railway
+construction journey through a distinct tool: pick the lower end, choose a
+cardinal climb, review the complete eight-cell footprint and source cost, then
+confirm. Coordinates and an explicit level provide keyboard/elevated/underground
+targeting. Auto uses the visible ground/rail height and respects the cut. Remove
+accepts any of the eight cells and displays every lower-pier loss; normal Track
+removal does not remove ramps. The tested journey connects flat rail through a
+ramp to elevated rail and reopens exactly. Shared time/canvas/camera and existing
+preview/confirmation safety are preserved. Train transition timing is P5; source
+native/human/platform acceptance retains its recorded status.

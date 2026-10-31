@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove' | 'terrain';
+export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -25,6 +25,7 @@ export const registry = {
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
   terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
+  slope: { kind: 'tool', tool: 'slope', labelKey: 'slopeTask', icon: 'rail', availability: 'mutation' },
   demolish: { kind: 'tool', tool: 'remove', labelKey: 'removeTool', icon: 'cross', availability: 'mutation' },
   inspector: { kind: 'panel', panel: 'inspector', labelKey: 'inspector', icon: 'window', availability: 'live' },
   catalog: { kind: 'panel', panel: 'catalog', labelKey: 'buildings', icon: 'window', availability: 'live' },
@@ -39,6 +40,12 @@ export const registry = {
   run: action('run', 'clock', 'mutation'),
   pause: action('pause', 'clock', 'mutation'),
   step: action('step', 'clock', 'mutation'),
+  'slope-direction': field('slopeDirection', 'tool-card', 'live'),
+  'slope-x': field('slopeX', 'tool-card', 'live'),
+  'slope-y': field('slopeY', 'tool-card', 'live'),
+  'slope-level': field('slopeLevel', 'tool-card', 'live'),
+  'slope-preview': action('slopeCheck', 'tool-card', 'live'),
+  'slope-confirm': action('slopeConfirm', 'tool-card', 'mutation'),
   'rail-action': field('railAction', 'tool-card', 'mutation'),
   'rail-auto-level': field('railAutoLevel', 'tool-card', 'live'),
   'rail-route': field('railRouting', 'tool-card', 'live'),
@@ -110,8 +117,9 @@ export type ActionId = keyof typeof registry;
 
 
 export const tools = [
-  { id: 'inspect', label: registry.inspect.labelKey, icon: '↖' },
-  { id: 'build', label: registry.rail.labelKey, icon: 'rail' },
-  { id: 'terrain', label: registry.terrain.labelKey, icon: '⛰' },
-  { id: 'remove', label: registry.demolish.labelKey, icon: '×' },
-] as const satisfies readonly { id: Tool; label: keyof typeof messages.en; icon: string }[];
+  { id: 'inspect', shortcut: 'I', label: registry.inspect.labelKey, icon: '↖' },
+  { id: 'build', shortcut: 'T', label: registry.rail.labelKey, icon: 'rail' },
+  { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
+  { id: 'terrain', shortcut: 'G', label: registry.terrain.labelKey, icon: '⛰' },
+  { id: 'remove', shortcut: 'R', label: registry.demolish.labelKey, icon: '×' },
+] as const satisfies readonly { id: Tool; label: keyof typeof messages.en; icon: string; shortcut: string }[];

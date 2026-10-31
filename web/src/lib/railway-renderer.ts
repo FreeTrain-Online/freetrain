@@ -13,12 +13,13 @@ export interface RailwayTarget {
 }
 export interface RailwayOperation {target:RailwayTarget;layer:Layer}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
-export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'ground'}|{kind:'sameLevel';level:number};
+export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
  * The second point keeps the first point's level, including vacant elevated cells. */
 export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,policy:RailwayPickPolicy):Position|undefined {
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
-  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail).map(v=>key(v.position)));
+  const slopeOwners=new Set(read.mixed?.slopes.map(s=>s.entityId));
+  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)).map(v=>key(v.position)));
   for(let z=Math.min(heightCut,space.levels-1);z>=0;z--) {
     const p=space.pick(point,z);if(!space.contains(p))continue;
     const s=space.storage(p),ground=read.terrain!.cells[s.v*space.horizontalSize+s.h].ground;
@@ -50,7 +51,10 @@ export class RailwayRenderPlan {
       const add=(d:Definition,component:RailwayTarget['component'],selectors?:Record<string,number|boolean>,controllerId?:string,targetDefinition=d)=>{
         binding(d);
         const recipe=recipes.get(d.recipeId);if(!recipe)throw new Error('Railway recipe unavailable: '+d.recipeId);
-        const selected=selectors?recipe.frames.filter(f=>Object.entries(selectors).every(([k,value])=>f.selector[k]===value)):recipe.frames;
+        const pier=binding(d);
+        const selected=d.contributionId.startsWith('system:bridge-pier/')
+          ? recipe.frames.filter(f=>f.key===`pier/${pier.variant%2}/${Math.floor(pier.variant/2)}`)
+          : selectors?recipe.frames.filter(f=>Object.entries(selectors).every(([k,value])=>f.selector[k]===value)):recipe.frames;
         if(!selected.length||selected.some(f=>f.status!=='invisible'&&(f.status!=='ready'||!f.masks?.[variantKey(variant)])))throw new Error('Railway frame unavailable: '+d.recipeId);
         const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component,definition:targetDefinition,...(controllerId?{controllerId}:{})};
         for(const layer of instantiate({...recipe,frames:selected},v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z],{selectors})) {

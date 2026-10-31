@@ -60,3 +60,49 @@ Deno.test('late railway preview cannot survive an edit, profile change, aborted 
   }finally{model.dispose();}
  }
 });
+
+Deno.test('slope preview rejects malformed occupancy, illegal money and unsupported command directions',async()=>{
+ const {parseSlopePreview}=await import('../src/lib/protocol.ts');
+ const {slopeQueryKey}=await import('../src/lib/railway-edit.ts');
+ const query={expectedWorldEpoch:q.expectedWorldEpoch,expectedGeometryRevision:q.expectedGeometryRevision,expectedContentVersion:q.expectedContentVersion,position:q.from,climb:2 as const,action:'lay' as const};
+ const rails=Array.from({length:4},(_,i)=>({level:i,position:{x:i+1,y:0,z:2+Math.floor(i/2)},pattern:32+i,zDiff:[0,1,-1,0][i] as -1|0|1,zAngle:(i===2?6:2) as 2|6}));
+ const members=rails.flatMap((r,i)=>[{position:r.position,kind:'traffic' as const,pattern:r.pattern,drawGroundBelow:true,drawGroundAbove:true},
+  {position:{...r.position,z:3-Math.floor(i/2)},kind:i<2?'slopefiller' as const:'slopesupport' as const,pattern:null,drawGroundBelow:true,drawGroundAbove:true}]);
+ const p={query,legal:true,reason:null,cost:'120000000',base:q.from,climb:2 as const,members,rails,addedPiers:[],losses:[]};
+ assert.deepEqual(parseSlopePreview(p),p);
+ assert.equal(parseSlopePreview({...p,legal:false,reason:'obstacle',cost:'0',rails:[]}).reason,'obstacle');
+ for(const patch of [{cost:120},{cost:'-1'},{reason:'obstacle'},{members:members.slice(1)},{members:members.map(()=>members[0])},{rails:[]},{extra:true},{legal:false}])assert.throws(()=>parseSlopePreview({...p,...patch}));
+ assert.equal(slopeQueryKey(query),slopeQueryKey({...query,position:{z:2,y:0,x:1}}));
+ assert.notEqual(slopeQueryKey(query),slopeQueryKey({...query,climb:0}));
+ for(const patch of [{climb:1},{action:'removeEntity'},{cost:'0'},{position:null}])assert.throws(()=>parseMessage(JSON.stringify({type:'command',requestId:'slope',expectedWorldEpoch:'1',payload:{kind:'editSlope',query:{...query,...patch}}})));
+});
+
+Deno.test('late slope previews reject abort, epoch, geometry, profile and reconnect generations',async()=>{
+ for(const change of ['geometry','epoch','profile','abort','connection']){
+  const service=createFixtureService();service.publish(terrain);let complete!:(p:any)=>void;
+  const model=createShellModel(()=>({...service.connect(),previewSlope:()=>new Promise<any>(resolve=>complete=resolve)}),'en',1);
+  try{
+   await until(()=>model.state.connection==='ready');const request=new AbortController();
+   const query={expectedWorldEpoch:q.expectedWorldEpoch,expectedGeometryRevision:q.expectedGeometryRevision,expectedContentVersion:q.expectedContentVersion,position:q.from,climb:2 as const,action:'lay' as const};
+   const result=model.previewSlope(query,request.signal),rejected=assert.rejects(result);
+   if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
+   if(change==='epoch')service.publish({...terrain,worldEpoch:'999'});
+   if(change==='profile')service.publish({...terrain,...railwayProfile} as unknown as Snapshot);
+   if(change==='abort')request.abort();
+   if(change==='connection')model.reconnect();
+   complete({query});await rejected;
+  }finally{model.dispose();}
+ }
+});
+
+Deno.test('slope removal geometric picking includes invisible filler occupancy at the visible cut',async()=>{
+ const {pickRailwayLocation}=await import('../src/lib/railway-renderer.ts');
+ const {WorldSpace}=await import('../src/lib/map-geometry.ts');
+ const read=structuredClone(terrain);read.terrain!.cells=read.terrain!.cells.map(c=>({...c,ground:0}));
+ const position={x:1,y:0,z:2},space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
+ read.mixed={slopes:[{entityId:'99',climb:2}],voxels:[{position,ownerId:'99',kind:'slopefiller',traffic:null}]} as any;
+ const center=space.center(position);
+ assert.deepEqual(pickRailwayLocation(read,center,2,{kind:'slopeOrGround'}),position);
+ assert.notDeepEqual(pickRailwayLocation(read,center,2,{kind:'railOrGround'}),position);
+ assert.notDeepEqual(pickRailwayLocation(read,center,1,{kind:'slopeOrGround'}),position);
+});

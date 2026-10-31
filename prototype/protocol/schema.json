@@ -23,6 +23,12 @@
     },
     {
       "$ref": "#/$defs/RailwayPreview"
+    },
+    {
+      "$ref": "#/$defs/SlopeQuery"
+    },
+    {
+      "$ref": "#/$defs/SlopePreview"
     }
   ],
   "$defs": {
@@ -762,6 +768,22 @@
             },
             "query": {
               "$ref": "#/$defs/RailwayQuery"
+            }
+          },
+          "required": [
+            "kind",
+            "query"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editSlope"
+            },
+            "query": {
+              "$ref": "#/$defs/SlopeQuery"
             }
           },
           "required": [
@@ -2677,6 +2699,13 @@
         },
         "from": {
           "$ref": "#/$defs/Position"
+        },
+        "infrastructure": {
+          "enum": [
+            "normal",
+            "bridge"
+          ],
+          "default": "normal"
         }
       },
       "required": [
@@ -2822,6 +2851,209 @@
         "cost",
         "reverseBend",
         "cells",
+        "addedPiers",
+        "losses"
+      ]
+    },
+    "SlopeQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "lay",
+            "remove"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "climb": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedContentVersion",
+        "action",
+        "position",
+        "climb"
+      ]
+    },
+    "SlopeMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "kind": {
+          "enum": [
+            "traffic",
+            "slopefiller",
+            "slopesupport",
+            "slopewall"
+          ]
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 28,
+              "maximum": 59
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "drawGroundBelow": {
+          "type": "boolean"
+        },
+        "drawGroundAbove": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "position",
+        "kind",
+        "pattern",
+        "drawGroundBelow",
+        "drawGroundAbove"
+      ]
+    },
+    "SlopeRailPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "pattern": {
+          "type": "integer",
+          "minimum": 28,
+          "maximum": 59
+        },
+        "zDiff": {
+          "enum": [
+            -1,
+            0,
+            1
+          ]
+        },
+        "zAngle": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        }
+      },
+      "required": [
+        "level",
+        "position",
+        "pattern",
+        "zDiff",
+        "zAngle"
+      ]
+    },
+    "SlopePreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/SlopeQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "base": {
+          "$ref": "#/$defs/Position"
+        },
+        "climb": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "members": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/SlopeMember"
+          }
+        },
+        "rails": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/SlopeRailPosition"
+          }
+        },
+        "addedPiers": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "losses": {
+          "type": "array",
+          "maxItems": 24576,
+          "items": {
+            "$ref": "#/$defs/RailwayLoss"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "base",
+        "climb",
+        "members",
+        "rails",
         "addedPiers",
         "losses"
       ]

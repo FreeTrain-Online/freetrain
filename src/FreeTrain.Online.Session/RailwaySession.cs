@@ -10,14 +10,18 @@ public sealed partial class SessionHost
     // changes the terrain profile, initial cash, IDs, random streams or clock.
     private MixedSessionState RailwayState(RailwayQuery query)
     {
-        if (query.ExpectedWorldEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
-            query.Routing is not ("closest" or "source" or "alternate")) throw new ArgumentException("invalidInput");
+            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge")) throw new ArgumentException("invalidInput");
+        return RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
+    }
+    private MixedSessionState RailwayState(long expectedEpoch, long expectedRevision, string expectedContent)
+    {
+        if (expectedEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         var content = mixedState != null ? ProtocolIdentity.MixedContent : TerrainProfile.ContentVersion;
-        if (query.ExpectedContentVersion != content) throw new InvalidOperationException("staleRevision");
+        if (expectedContent != content) throw new InvalidOperationException("staleRevision");
         var revision = mixedState?.World.Revision ?? terrainState?.World.Revision;
         if (revision == null) throw new InvalidOperationException("operationUnavailable");
-        if (query.ExpectedGeometryRevision != revision) throw new InvalidOperationException("staleRevision");
+        if (expectedRevision != revision) throw new InvalidOperationException("staleRevision");
         if (mixedState != null) return mixedState;
         var state = terrainState!;
         var profile = railwayResolver?.Invoke(ProtocolIdentity.MixedRuleset,ProtocolIdentity.MixedContent,state.World.Profile.Packs)
@@ -27,11 +31,12 @@ public sealed partial class SessionHost
             state.Clock.Capture(),state.Paused,state.Random.Capture(),state.Revision);
     }
 
-    private static NormalRailwayConstructionPlan PlanRailway(MixedSessionState state, RailwayQuery query)
+    private static RailwayConstructionPlan PlanRailway(MixedSessionState state, RailwayQuery query)
     {
         var from = new Location(query.From.X,query.From.Y,query.From.Z);
         var to = new Location(query.To.X,query.To.Y,query.To.Z);
-        NormalRailwayConstructionPlan Plan(bool alternate) => query.Action == "remove"
+        if (query.Infrastructure == "bridge") return BridgeRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
+        RailwayConstructionPlan Plan(bool alternate) => query.Action == "remove"
             ? NormalRailwayConstruction.PreviewRemoval(state.World,from,to,alternate)
             : NormalRailwayConstruction.PreviewBuild(state.World,from,to,alternate);
         if (query.Routing == "alternate") return Plan(true);
@@ -68,7 +73,9 @@ public sealed partial class SessionHost
             var before = RailwayState(query);
             var plan = PlanRailway(before,query);
             if (!plan.Legal) return "invalidPlacement";
-            var construction = NormalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time);
+            var construction = query.Infrastructure == "bridge"
+                ? BridgeRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
+                : NormalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time);
             var after = before.Successor(before.Revision,construction,before.ConstructionMode);
             MixedWire.ValidateTransition(before,after);
             mixedState = after;

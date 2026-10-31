@@ -261,6 +261,9 @@ def system_recipes(catalog, review):
                          rectangle=p['rectangle'],anchor=p['anchor'],sourceSymbol='RailPattern'))
     def system(key, resource, rect, anchor, symbol):
         rows.append(dict(id=key,path='core/res/'+resource,rectangle=rect,anchor=anchor,sourceSymbol=symbol))
+    # P4-10: pinned BridgePierVoxel.cs slopeNESprite; S/W ramps use this
+    # second crop while N/E retain the gallery's default system:pier.
+    system('pier/slopeNE','BridgePier.bmp',[32,0,32,32],[0,16],'BridgePierVoxel.slopeNESprite')
     for side in range(2):
         for left in range(5):
             for right in range(5):

@@ -138,6 +138,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
+[JsonDerivedType(typeof(EditSlopeCommand), "editSlope")]
 public abstract record CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
@@ -198,12 +199,20 @@ public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason)
 
 // Additive normal-track task; prices and candidate graphs are never command inputs.
 public sealed record RailwayQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
-    PositionRead From, PositionRead To, string Action, string Routing);
+    PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal");
 public sealed record EditRailwayCommand(RailwayQuery Query) : CommandPayload;
 public sealed record RailwayRouteCellRead(PositionRead Position, int? BeforePattern, int? AfterPattern, bool ProtectedByCar);
 public sealed record RailwayLossRead(string Kind, PositionRead Position, long OwnerId, long? SupportedOwnerId);
 public sealed record RailwayPreviewRead(RailwayQuery Query, bool Legal, string? Reason, long Cost, bool ReverseBend,
     RailwayRouteCellRead[] Cells, PositionRead[] AddedPiers, RailwayLossRead[] Losses);
+
+public sealed record SlopeQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
+    PositionRead Position, int Climb, string Action);
+public sealed record EditSlopeCommand(SlopeQuery Query) : CommandPayload;
+public sealed record SlopeMemberRead(PositionRead Position, string Kind, int? Pattern, bool DrawGroundBelow, bool DrawGroundAbove);
+public sealed record SlopeRailPositionRead(int Level, PositionRead Position, int Pattern, int ZDiff, int ZAngle);
+public sealed record SlopePreviewRead(SlopeQuery Query, bool Legal, string? Reason, long Cost, PositionRead Base, int Climb,
+    SlopeMemberRead[] Members, SlopeRailPositionRead[] Rails, PositionRead[] AddedPiers, RailwayLossRead[] Losses);
 
 // Complete bounded railway/account publication, replaced atomically on every mixed delta.
 // Terrain geometry and railway geometry have separate revisions and allocator high-water marks.
