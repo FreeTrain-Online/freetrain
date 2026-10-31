@@ -115,8 +115,9 @@ public sealed record NormalRailwayCell(Location Position, Heading Incoming, Head
 }
 
 // This is a topology draft, NOT terrain legality or permission to publish a world.
-// P4-07 must validate occupancy/reclamation/water/supports and price the complete
-// transaction. No allocator, terrain, account, clock or random state changes here.
+// NormalRailwayConstruction validates occupancy/reclamation/water/supports and
+// prices the complete transaction. No allocator, terrain, account, clock or
+// random state changes here.
 public sealed class NormalRailwayPlan
 {
     public MixedWorld Source { get; }

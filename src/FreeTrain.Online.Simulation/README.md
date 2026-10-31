@@ -55,5 +55,12 @@ authoring grants no cash exemption. See [booking contract and P4-05 handoff](../
 P4-06 adds `RailwayTopology` and immutable `NormalRailway` build/removal drafts:
 source sign-vector routes, exact normal/junction attachment/detachment, subtype
 no-ops, car protection and charged/support call sites. These are topology inputs
-for P4-07 terrain/support validation, with no live commit or allocation/account
+for terrain/support validation, with no live commit or allocation/account
 mutation. See [domain behavior, independent checks and handoff](../../doc/web-parity-railway-topology.md).
+
+P4-07 adds `NormalRailwayConstruction` read-only previews and detached atomic
+construction publication over those drafts. Actual terrain/water/occupancy,
+whole-entity reclamation, source support election/owner-agnostic teardown,
+crossing cleanup and exact booking validate before replacement. `RailwaySupports`
+accepts explicit top/body bindings for later infrastructure consumers. No live
+rail tool or rendering is enabled. See [construction and verification](../../doc/web-parity-railway-construction.md).

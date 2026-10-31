@@ -37,6 +37,10 @@ public readonly record struct Heading
     public Heading Right90 => new((Index + 2) % 8);
     public Heading Opposite => new((Index + 4) % 8);
 
+    // The generated record formatter would recursively print Left/Right/etc.
+    // Keep diagnostics for railway plans finite and culture independent.
+    public override string ToString() => $"Heading {{ Index = {Index} }}";
+
     // Angle in eighth-turns, in the inclusive range 0..4.
     public int AngleTo(Heading other)
     {

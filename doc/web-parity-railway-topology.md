@@ -3,9 +3,9 @@
 P4-06 implements detached railway topology over the canonical mixed world.
 [RailwayTopology and NormalRailway](../src/FreeTrain.Online.Simulation/RailwayTopology.cs)
 produce immutable rail-component replacements and source support call sites.
-**Next: P4-07 terrain legality, elevated track and automatic piers.** The drafts
-are inputs to that validator, not construction authorization or a publishable
-mixed-world transaction. Rendering and the first playable browser tool remain
+**[P4-07 terrain legality, elevated track and automatic piers](web-parity-railway-construction.md)
+now consumes these drafts.** The drafts themselves remain inputs to that validator,
+not construction authorization or a publishable mixed-world transaction. Rendering and the first playable browser tool remain
 P4-08/09. Save8/protocol6 and the current read-only mixed-world shell are unchanged.
 
 The sole behavior authority is stable ExAV 2.1.1.12/V2, archive Git
