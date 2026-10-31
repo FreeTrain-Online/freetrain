@@ -48,7 +48,7 @@ public class MixedWorldTests
     [Fact]
     public void Bundled_registration_is_exact_and_does_not_admit_prepared_unimplemented_content()
     {
-        Assert.Equal(88,Profile.Bindings.Length);
+        Assert.Equal(92,Profile.Bindings.Length);
         Assert.Equal(60,Profile.Bindings.Count(b => b.Handler is RailwayHandler.Normal or RailwayHandler.Junction or RailwayHandler.Slope));
         foreach (var reference in new[] { Ref("system:pattern/60"),Ref("system:pattern/01"),
             Ref("system:fat-0"),Ref("system:ground/spring"),new DefinitionReference("other","system:pattern/1","system:pattern/1"),

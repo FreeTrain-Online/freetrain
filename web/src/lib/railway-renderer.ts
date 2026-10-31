@@ -53,11 +53,11 @@ export class RailwayRenderPlan {
         const recipe=recipes.get(d.recipeId);if(!recipe)throw new Error('Railway recipe unavailable: '+d.recipeId);
         const pier=binding(d);
         const selected=d.contributionId.startsWith('system:bridge-pier/')
-          ? recipe.frames.filter(f=>f.key===`pier/${pier.variant%2}/${Math.floor(pier.variant/2)}`)
+          ? recipe.frames.filter(f=>f.key===`pier/${(pier.variant-2)%2}/${Math.floor((pier.variant-2)/2)}`)
           : selectors?recipe.frames.filter(f=>Object.entries(selectors).every(([k,value])=>f.selector[k]===value)):recipe.frames;
         if(!selected.length||selected.some(f=>f.status!=='invisible'&&(f.status!=='ready'||!f.masks?.[variantKey(variant)])))throw new Error('Railway frame unavailable: '+d.recipeId);
         const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component,definition:targetDefinition,...(controllerId?{controllerId}:{})};
-        for(const layer of instantiate({...recipe,frames:selected},v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z],{selectors})) {
+        for(const layer of instantiate({...recipe,handler:d.contributionId.startsWith('system:bridge-pier/')?'source-geometry':recipe.handler,frames:selected},v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z],{selectors})) {
           // P2's signal stages describe needsToDrawAfter's name. GEO-007
           // follows SignalRailRoad's actual inverted calls in the live world.
           if(recipe.handler==='signal')layer.frame={...layer.frame,stage:layer.frame.stage===40?10:40};

@@ -137,7 +137,7 @@
   "night": "Night",
   "winter": "Winter ground",
   "recolor": "Recolor",
-  "toolShortcuts": "Tools (with the map focused): I — Inspect; T — Lay tracks; S — Slope; G — Terrain; R — Remove tracks. Escape cancels the current preview, then returns to Inspect; it also closes an open panel or menu. Construction tools require permission to edit.",
+  "toolShortcuts": "Tools (with the map focused): I — Inspect; T — Lay tracks; B — Bridge; S — Slope; G — Terrain; R — Remove tracks. Escape cancels the current preview, then returns to Inspect; it also closes an open panel or menu. Construction tools require permission to edit.",
   "mapHelp": "Focus the map for keyboard controls. Click an object to inspect. In Inspect, drag to pan; in every tool, use two-finger trackpad scrolling, middle-button drag, or Space + drag to pan. Scroll the mouse wheel, pinch the trackpad, press + / − (or = / -), or use the zoom buttons to zoom. Each zoom key press changes zoom by 25 percentage points (50%–400%). The wheel and pinch zoom around the pointer. Reset camera returns to the map centre.",
   "constructionHelp": "Select a tile, then confirm. Tools keep shared time running; use Pause when needed. 100 per changed tile; buffer extension costs 200. Removal has no refund.",
   "mapCanvas": "Interactive world map",
@@ -522,5 +522,11 @@
   "slopeCardinal": "Choose a cardinal uphill direction.",
   "slopeNotFound": "There is no ramp at the selected cell.",
   "slopeMismatch": "The uphill direction must match the selected ramp.",
-  "terrainUnavailable": "Terrain editing is not available in this world."
+  "terrainUnavailable": "Terrain editing is not available in this world.",
+  "bridgeTask": "Bridge",
+  "bridgeHelp": "Choose two points and a level. The end snaps to a horizontal or vertical line. Review the actual cost before confirming.",
+  "bridgeRemovalHelp": "Bridge removal visits both endpoints and charges every cell, including other rails and occupied skips. Only matching bridge rails without a train car are removed. All piers below each removed rail are lost regardless of owner; other rails and occupied bridge cells retain their piers.",
+  "confirmBridge": "Confirm bridge change",
+  "bridgeRules": "Choose two points and a level. The end snaps to the longer cardinal axis (X on ties). Existing rails must have both ports along the span and remain unchanged. New runs use begin/middle/end artwork and alternating bridge piers. Dry land is allowed; blocked supports are omitted. The preview shows the actual booking for every cell, including existing rails.",
+  "bridgeDescription": "Red steel railway bridge"
 }

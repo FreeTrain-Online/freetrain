@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope';
+export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -25,6 +25,7 @@ export const registry = {
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
   terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
+  bridge: { kind: 'tool', tool: 'bridge', labelKey: 'bridgeTask', icon: 'rail', availability: 'mutation' },
   slope: { kind: 'tool', tool: 'slope', labelKey: 'slopeTask', icon: 'rail', availability: 'mutation' },
   demolish: { kind: 'tool', tool: 'remove', labelKey: 'removeTool', icon: 'cross', availability: 'mutation' },
   inspector: { kind: 'panel', panel: 'inspector', labelKey: 'inspector', icon: 'window', availability: 'live' },
@@ -119,6 +120,7 @@ export type ActionId = keyof typeof registry;
 export const tools = [
   { id: 'inspect', shortcut: 'I', label: registry.inspect.labelKey, icon: '↖' },
   { id: 'build', shortcut: 'T', label: registry.rail.labelKey, icon: 'rail' },
+  { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'terrain', shortcut: 'G', label: registry.terrain.labelKey, icon: '⛰' },
   { id: 'remove', shortcut: 'R', label: registry.demolish.labelKey, icon: '×' },

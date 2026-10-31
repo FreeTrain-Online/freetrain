@@ -38,7 +38,7 @@ public static class RailwayProfiles
             }
         Add("{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}", RailwayHandler.Bridge, recipeHandler: "special-rail");
         for (var i = 0; i < 4; i++)
-            bindings.Add(new(new(catalog.PackId,$"system:bridge-pier/{i}","{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"),RailwayHandler.Pier,i));
+            bindings.Add(new(new(catalog.PackId,$"system:bridge-pier/{i}","{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"),RailwayHandler.Pier,i+2));
         Add("{7FD493FF-D6A7-4a13-A471-FB737641D8A0}", RailwayHandler.Girder, recipeHandler: "special-rail");
         Add("{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}", RailwayHandler.Tunnel, recipeHandler: "special-rail");
         Add("{93481807-D998-46d7-B1BE-CB2B5D086D67}", RailwayHandler.Garage, recipeHandler: "special-rail");

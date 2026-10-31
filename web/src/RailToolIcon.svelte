@@ -1,6 +1,8 @@
-<script lang="ts">let {slope=false}:{slope?:boolean}=$props();</script>
+<script lang="ts">let {slope=false,bridge=false}:{slope?:boolean;bridge?:boolean}=$props();</script>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-  {#if slope}
+  {#if bridge}
+    <path d="M2 14h20M3 14V5l6 9 6-9 6 9V5M3 5h18M5 16v5m14-5v5" />
+  {:else if slope}
     <path d="M2 16h4L18 6h4M2 19h4L18 9h4" />
     <path d="M10 16v5M15 12v9M20 9v12M2 21h20" />
   {:else}

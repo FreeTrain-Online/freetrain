@@ -17,6 +17,11 @@ eight occupied cells, actual source cost and pier losses, then confirm. Removal
 resolves any member, including invisible fillers, to its whole ramp. Surface/
 underground art, stored ground holes and height cuts use the same live renderer.
 Flat-to-slope-to-elevated networks save and reopen exactly.
+[P4-12 Bridge](doc/web-parity-bridge-tool.md) adds the EN/JA **Bridge** task (**B**):
+cardinal endpoint snapping, source begin/middle/end art, alternating top/body piers,
+actual inclusive-cell booking and explicit support losses. Compatible rails stay
+in place; dry land is allowed. Preview, confirm, remove and save/reopen use the
+same authoritative mixed-world boundary.
 Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 

@@ -106,3 +106,11 @@ Deno.test('slope removal geometric picking includes invisible filler occupancy a
  assert.notDeepEqual(pickRailwayLocation(read,center,2,{kind:'railOrGround'}),position);
  assert.notDeepEqual(pickRailwayLocation(read,center,1,{kind:'slopeOrGround'}),position);
 });
+
+Deno.test('bridge preview echoes unsnapped input while cells carry snapped geometry and infrastructure fences exclude other tasks',()=>{
+ const bridge={...q,infrastructure:'bridge' as const,to:{x:5,y:2,z:7}};
+ const p={...preview,query:bridge};assert.equal(parseRailwayPreview(p).query.infrastructure,'bridge');
+ assert.notEqual(railwayQueryKey(q),railwayQueryKey({...q,infrastructure:'bridge'}));
+ assert.equal(railwayQueryKey(q),railwayQueryKey({...q,infrastructure:'normal'}));
+ assert.throws(()=>parseRailwayPreview({...p,query:{...bridge,infrastructure:'girder'}}));
+});

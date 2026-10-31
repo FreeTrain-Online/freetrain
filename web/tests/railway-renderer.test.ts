@@ -175,3 +175,25 @@ Deno.test('S/W slope pier binding preserves the pinned second core crop, anchor 
  assert.equal(JSON.stringify(s),before);
  const invalid=structuredClone(s);invalid.mixed!.voxels[1].sprite=0;assert(!validSnapshot(invalid));
 });
+
+Deno.test('bridge begin middle end and all four pier crops retain exact source frames and foreground dispatch in eight variants',async()=>{
+ const id='{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}';
+ for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
+  for(let index=0;index<6;index++){
+   const s=flat(1,1,0),v=rail(s,0,0,3,index<3?4:10);v.traffic!.rail!.definition=definition(id);v.traffic!.rail!.variant=index;
+   assert(validSnapshot(s));const plan=new RailwayRenderPlan(s,catalog,{season,night});
+   assert.deepEqual(plan.layers.map(l=>l.frame.stage),[10,40]);
+   assert.deepEqual(plan.layers.map(l=>l.frame.rectangle),[[index*32,0,32,32],[index*32,32,32,32]]);
+   assert(plan.layers.every(l=>l.frame.anchor?.[0]===0&&l.frame.anchor?.[1]===16));
+  }
+  for(let style=0;style<4;style++){
+   const s=flat(1,1,0),v=rail(s,0,0,3,4);v.traffic!.rail!.definition=definition(id);v.traffic!.rail!.variant=2;
+   const p=pier(s,0,0,1,v.ownerId);p.definition=definition(`system:bridge-pier/${style}`,id);p.sprite=style+2;s.entities!.at(-1)!.definition=p.definition;
+   assert(validSnapshot(s));const plan=new RailwayRenderPlan(s,catalog,{season,night}),layers=plan.layers.filter(l=>l.entityId===p.ownerId);
+   assert.equal(layers.length,1,'Pier frames must survive special-rail default index filtering');
+   assert.deepEqual(layers[0].frame.rectangle,[style%2*32,Math.floor(style/2)*32,32,32]);
+   assert.equal(layers[0].frame.stage,0);
+   const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5);assert(railwayOps(scene).some(o=>o.target.id===p.ownerId));
+  }
+ }
+});

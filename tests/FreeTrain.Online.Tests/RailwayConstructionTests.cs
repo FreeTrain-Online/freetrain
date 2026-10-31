@@ -50,9 +50,9 @@ public class RailwayConstructionTests
             new([new(new(0,0,0),true)]),true,false,0))),world.Voxels.Add(new(p,id,RailwayVoxelKind.Pier,
                 Definition:definition,SupportedOwnerId:supportedId)),world.Slopes,world.Revision);
     }
-    static MixedConstructionState Apply(MixedWorld world,NormalRailwayConstructionPlan plan) =>
+    static MixedConstructionState Apply(MixedWorld world,RailwayConstructionPlan plan) =>
         NormalRailwayConstruction.Apply(new(world),plan,new(GameTime.StartMinute));
-    static void Rejected(NormalRailwayConstructionPlan plan,string reason)
+    static void Rejected(RailwayConstructionPlan plan,string reason)
     {
         Assert.False(plan.Legal); Assert.Equal(reason,plan.Reason); Assert.Empty(plan.Booking.Charges);
         Assert.Empty(plan.Reclaimed); Assert.Empty(plan.RemovedPiers); Assert.Empty(plan.ElectedPiers);

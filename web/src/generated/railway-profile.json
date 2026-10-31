@@ -810,6 +810,42 @@
       },
       "handler": "signal",
       "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:bridge-pier/0",
+        "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+      },
+      "handler": "pier",
+      "variant": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:bridge-pier/1",
+        "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+      },
+      "handler": "pier",
+      "variant": 3
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:bridge-pier/2",
+        "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+      },
+      "handler": "pier",
+      "variant": 4
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:bridge-pier/3",
+        "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+      },
+      "handler": "pier",
+      "variant": 5
     }
   ]
 }

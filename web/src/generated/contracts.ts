@@ -444,6 +444,7 @@ export interface RailwayQuery {
   action: "lay" | "remove";
   routing: "closest" | "source" | "alternate";
   from: Position;
+  infrastructure?: "normal" | "bridge";
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;

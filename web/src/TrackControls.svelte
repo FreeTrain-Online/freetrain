@@ -4,8 +4,8 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
-  let {model,view,picked,level=$bindable(1),initialAction='lay',onpreview,onpoints,onreveal,heightCut}:
-    {model:ShellModel;view:ShellState;picked?:Position;level?:number;initialAction?:'lay'|'remove';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
+  let {model,view,picked,level=$bindable(1),initialAction='lay',infrastructure='normal',onpreview,onpoints,onreveal,heightCut}:
+    {model:ShellModel;view:ShellState;picked?:Position;level?:number;initialAction?:'lay'|'remove';infrastructure?:'normal'|'bridge';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
   let action=$state<'lay'|'remove'>(untrack(()=>initialAction));
   let routing=$state<'closest'|'source'|'alternate'>('closest');
@@ -35,12 +35,13 @@
     detectCoordinateLevel();
     if(![ax,ay,bx,by,level].every(Number.isSafeInteger)){status='failed';return;}
     hasA=true;hasB=true;points();
-    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action,routing};
+    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action,routing,infrastructure};
     const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewRailway(query,request.signal);
       if(id!==version||fence!==railwayFence(view.read)||blocked)return;
       result=preview;status='ready';onpreview(preview);
+      if(infrastructure==='bridge'&&preview.cells.length)onpoints([{position:preview.cells[0].position,label:'A'},{position:preview.cells.at(-1)!.position,label:'B'}]);
     }catch{if(id===version){status='failed';onpreview();}}
   }
   async function commit(){
@@ -63,9 +64,10 @@
   });
   $effect(()=>()=>{version++;request?.abort();onpreview();onpoints([]);});
 </script>
-<section class="tool-card track-task" aria-label={text.trackTask}>
-  <h2>{text.trackTask}</h2>
-  <p class="hint">{text.railHelp}</p>
+<section class="tool-card track-task" aria-label={text[infrastructure==='bridge'?'bridgeTask':'trackTask']}>
+  <h2>{text[infrastructure==='bridge'?'bridgeTask':'trackTask']}</h2>
+  {#if infrastructure==='bridge'}<p>{text.bridgeDescription}</p>{/if}
+  <p class="hint">{text[infrastructure==='bridge'?'bridgeHelp':'railHelp']}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     <div class="form-actions">
       <label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text.railLay}</option><option value="remove">{text.railRemove}</option></select></label>
@@ -83,21 +85,21 @@
       <label>Y<input aria-label={text.railToY} type="number" step="1" bind:value={by} oninput={()=>{hasB=true;edit();}}/></label>
       <button type="button" aria-pressed={point==='to'} onclick={()=>choosePoint('to')}>{text.railPickTo}</button>
     </div></fieldset>
-    <label>{text.railRouting}<select aria-label={text.railRouting} bind:value={routing} disabled={view.pending} onchange={edit}><option value="closest">{text.railClosest}</option><option value="source">{text.railSource}</option><option value="alternate">{text.railAlternate}</option></select></label>
-    {#if action==='remove'}<p class="hint">{text.railRemovalHelp}</p>{/if}
+    {#if infrastructure==='normal'}<label>{text.railRouting}<select aria-label={text.railRouting} bind:value={routing} disabled={view.pending} onchange={edit}><option value="closest">{text.railClosest}</option><option value="source">{text.railSource}</option><option value="alternate">{text.railAlternate}</option></select></label>{/if}
+    {#if action==='remove'}<p class="hint">{text[infrastructure==='bridge'?'bridgeRemovalHelp':'railRemovalHelp']}</p>{/if}
     <button disabled={blocked||status==='checking'}>{text.railCheck}</button>
   </form>
   <p role="status" data-testid="rail-status">{status==='checking'?text.checkingGeometry:status==='failed'?text.geometryFailed:status==='stale'?text.railStale:result?result.legal?text.railLegal:text[railwayReasons[result.reason as keyof typeof railwayReasons]??'geometryFailed']:text[point==='from'?'railPickFrom':'railPickTo']}</p>
   {#if result}
-    <p data-testid="rail-route">{result.query.from.x}, {result.query.from.y}, {level} → {result.query.to.x}, {result.query.to.y}, {level} · {result.reverseBend?text.railAlternate:text.railSource}</p>
+    <p data-testid="rail-route">{result.cells[0]?.position.x??result.query.from.x}, {result.cells[0]?.position.y??result.query.from.y}, {level} → {result.cells.at(-1)?.position.x??result.query.to.x}, {result.cells.at(-1)?.position.y??result.query.to.y}, {level}{#if infrastructure==='normal'} · {result.reverseBend?text.railAlternate:text.railSource}{/if}</p>
     {#if result.cells.some(c=>c.protectedByCar)}<p>{text.railProtected}</p>{/if}
     {#if result.losses.length}<details open><summary>{text.railLossDetails}</summary><ul class="rail-losses">{#each result.losses as loss}<li>{text[loss.kind==='pier'?'railPierLoss':loss.kind==='reclamation'?'railReclamationLoss':'railAccessoryLoss']}: {loss.position.x}, {loss.position.y}, {loss.position.z} · {text.owner}: {loss.ownerId}{#if loss.supportedOwnerId} · {text.railwaySupportedOwner}: {loss.supportedOwnerId}{/if}</li>{/each}</ul></details>{/if}
   {/if}
   {#if level>heightCut}<button onclick={onreveal}>{text.revealPreview}</button>{/if}
-  <details><summary>{text.railRoutingHelp}</summary><p class="hint">{text.railHeuristicHelp}</p><p class="hint">{text.railCutHelp}</p></details>
+  <details><summary>{text.railRoutingHelp}</summary><p class="hint">{text[infrastructure==='bridge'?'bridgeRules':'railHeuristicHelp']}</p><p class="hint">{text.railCutHelp}</p></details>
   {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="status">{text[view.feedback]}</p>{/if}
   <div class="track-confirm">
     {#if result}<p data-testid="rail-cost">{text.cornerCost}: {BigInt(result.cost).toLocaleString(view.locale)} · {text.railCells}: {result.cells.length} · {text.railPiers}: {result.addedPiers.length} · {text.railLosses}: {result.losses.length}</p>{/if}
-  <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending||(!hasA&&!hasB&&!result)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+  <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text[infrastructure==='bridge'?'confirmBridge':'confirmTrack']}</button><button disabled={view.pending||(!hasA&&!hasB&&!result)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
   </div>
 </section>
