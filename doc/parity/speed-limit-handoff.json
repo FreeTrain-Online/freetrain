@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "owner": "P4-19/P5",
+  "authority": {
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "version": "2.1.1.12",
+    "files": [
+      {
+        "path": "core/world/rail/SpeedLimit.cs",
+        "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd"
+      },
+      {
+        "path": "core/world/rail/Train.cs",
+        "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404"
+      },
+      {
+        "path": "plugins/SpeedLimit/SpeedLimitManager.cs",
+        "sha256": "0f252596836507c8b426c3fe38084bad91e9c833f9af62a95c91a98c05ca3e42"
+      },
+      {
+        "path": "plugins/SpeedLimit/SpeedLimitRailRoadController.cs",
+        "sha256": "214a916282aa6bfca86c3d96880b465334b526040e2f2ff4669727a2d1a6a567"
+      },
+      {
+        "path": "plugins/SpeedLimit/SpeedLimitSlopeController.cs",
+        "sha256": "ef99b993f4301939cf9f176f2635e12962458888b538bfe44f46e2cfff05b874"
+      },
+      {
+        "path": "plugins/SpeedLimit/MenuContributionImpl.cs",
+        "sha256": "768befbc233c36900bd4f608718e0b7d3e43957ee5d7395299d3f98eba771feb"
+      },
+      {
+        "path": "plugins/SpeedLimit/plugin.xml",
+        "sha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21"
+      }
+    ]
+  },
+  "status": "source-derived handoff; authoring delivered separately; no moving-train execution evidence",
+  "membership": {
+    "owner": "MixedWorld.SpeedLimits",
+    "wire": "mixed.speedLimits (optional empty state); ordered low/medium/fast arrays, at most8192 each",
+    "location": "canonical voxel X/Y/Z, not owner ID or rail recipe",
+    "priority": [
+      "low",
+      "medium",
+      "fast",
+      "native"
+    ],
+    "flatAddition": "same-list deduplication, complete route overlap guard",
+    "slopeAddition": "append four locations; complete overlap guard",
+    "removal": "one occurrence per selected location per list",
+    "cleanup": "remove absent Traffic only after every world replacement; road/accessory survive rail removal"
+  },
+  "numericBoundaryVectors": [
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": -1,
+      "expectedMinutes": -1
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 0,
+      "expectedMinutes": 0
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 1,
+      "expectedMinutes": 1
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 2,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 3,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 4,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 5,
+      "expectedMinutes": 5
+    },
+    {
+      "limit": "none",
+      "nativeMinutesPerVoxel": 2147483647,
+      "expectedMinutes": 2147483647
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": -1,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 0,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 1,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 2,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 3,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 4,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 5,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "low",
+      "nativeMinutesPerVoxel": 2147483647,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": -1,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 0,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 1,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 2,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 3,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 4,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 5,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "medium",
+      "nativeMinutesPerVoxel": 2147483647,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": -1,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 0,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 1,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 2,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 3,
+      "expectedMinutes": 3
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 4,
+      "expectedMinutes": 4
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 5,
+      "expectedMinutes": 2
+    },
+    {
+      "limit": "fast",
+      "nativeMinutesPerVoxel": 2147483647,
+      "expectedMinutes": 2
+    }
+  ],
+  "numericQualification": "Exact equality branches, not max/min. Nonpositive numeric rows characterize registerTimer(Location) arithmetic only; P5 must validate scheduler/input handling separately.",
+  "timingBoundaryVectors": [
+    {
+      "id": "prior-low-into-unlimited",
+      "beforeHead": "inside A",
+      "afterHead": "inside B",
+      "priorLimit": "low",
+      "nextLimit": "none",
+      "native": 1,
+      "expectedMinutes": 4,
+      "lookup": "A"
+    },
+    {
+      "id": "prior-unlimited-into-low",
+      "beforeHead": "inside A",
+      "afterHead": "inside B",
+      "priorLimit": "none",
+      "nextLimit": "low",
+      "native": 1,
+      "expectedMinutes": 1,
+      "lookup": "A"
+    },
+    {
+      "id": "prior-medium-into-fast",
+      "beforeHead": "inside A",
+      "afterHead": "inside B",
+      "priorLimit": "medium",
+      "nextLimit": "fast",
+      "native": 2,
+      "expectedMinutes": 3,
+      "lookup": "A"
+    },
+    {
+      "id": "prior-fast-into-low",
+      "beforeHead": "inside A",
+      "afterHead": "inside B",
+      "priorLimit": "fast",
+      "nextLimit": "low",
+      "native": 5,
+      "expectedMinutes": 2,
+      "lookup": "A"
+    },
+    {
+      "id": "outside-next",
+      "beforeHead": "inside A",
+      "afterHead": "outside",
+      "priorLimit": "low",
+      "native": 1,
+      "expectedMinutes": 1,
+      "lookup": null
+    },
+    {
+      "id": "outside-prior",
+      "beforeHead": "outside",
+      "afterHead": "inside B",
+      "nextLimit": "low",
+      "native": 1,
+      "expectedMinutes": 1,
+      "lookup": null
+    },
+    {
+      "id": "positive-station-stop",
+      "beforeHead": "inside A",
+      "priorLimit": "low",
+      "native": 1,
+      "stopMinutes": 7,
+      "expectedMinutes": 7,
+      "lookup": null,
+      "behavior": "register explicit stop, increment stopCallCount, return before movement"
+    }
+  ],
+  "callsite": "Train.clockHandler captures ins=head.state.asInside() BEFORE move/reverse. After movement: next.isOutside -> native, ins==null -> native, otherwise registerTimer(ins.voxel.location). Positive station stop returns earlier. Reverse/block/null-next hazards remain P5 state-machine review.",
+  "qualifications": [
+    "No P5 moving-train timing acceptance from P4 authoring tests.",
+    "No native capture or train runtime oracle.",
+    "P4-20–24 retain integrated demolition, persistence, multiplayer, capacity and acceptance gates."
+  ]
+}

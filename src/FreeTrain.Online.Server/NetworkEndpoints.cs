@@ -481,8 +481,10 @@ public static class NetworkEndpoints
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
             edit.Query.Action is "lay" or "remove" && edit.Query.Routing is "closest" or "source" or "alternate" &&
-            edit.Query.Infrastructure is "normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary" &&
+            edit.Query.Infrastructure is "normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary" or "speed" &&
             edit.Query.StationaryType is {Length: <= 512} &&
+            edit.Query.Speed is "low" or "medium" or "fast" && edit.Query.SpeedClimb is 0 or 2 or 4 or 6 &&
+            (edit.Query.Infrastructure != "speed" || !edit.Query.SpeedSlope || edit.Query.From == edit.Query.To) &&
             PoleRailwayConstruction.IsBundledType(edit.Query.PoleType) &&
             edit.Query.SignalDirection is 0 or 2 or 4 or 6 &&
             edit.Query.SignalType is SignalRailwayConstruction.ThreeAspect or SignalRailwayConstruction.Shunting &&

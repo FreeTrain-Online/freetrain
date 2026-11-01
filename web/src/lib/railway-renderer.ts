@@ -1,3 +1,4 @@
+import { speedLimitFrame, speedIcons } from './speed-limit-display.ts';
 // Stable ExAV 2.1.1.12: Traffic.draw, RailRoad.drawBefore/After,
 // QuarterViewDrawer.shouldDrawGround/fromABToXYZ and Disambiguators.
 // Original authors; LGPL-2.1-or-later.
@@ -9,17 +10,17 @@ import { railwayProfile } from './mixed-state.ts';
 
 export interface RailwayTarget {
   kind:'railway'; id:string; position:Position;
-  component:'rail'|'pier'|'support'|'accessory'|'stationary'; definition:Definition; controllerId?:string;
+  component:'rail'|'pier'|'support'|'accessory'|'stationary'|'speedLimit'; definition:Definition; controllerId?:string;
 }
 export interface RailwayOperation {target:RailwayTarget;layer:Layer}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
-export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
+export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
  * The second point keeps the first point's level, including vacant elevated cells. */
 export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,policy:RailwayPickPolicy):Position|undefined {
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   const slopeOwners=new Set(read.mixed?.slopes.map(s=>s.entityId));
-  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary').map(v=>key(v.position)));
+  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='trafficOrGround'&&v.traffic||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary').map(v=>key(v.position)));
   for(let z=Math.min(heightCut,space.levels-1);z>=0;z--) {
     const p=space.pick(point,z);if(!space.contains(p))continue;
     const s=space.storage(p),ground=read.terrain!.cells[s.v*space.horizontalSize+s.h].ground;
@@ -47,6 +48,10 @@ export class RailwayRenderPlan {
       const b=railwayProfile.bindings.find(b=>b.reference.packId===d.packId&&b.reference.contributionId===d.contributionId&&b.reference.recipeId===d.recipeId);
       if(!b)throw new Error('Railway binding unavailable: '+d.recipeId);return b;
     };
+    const limits=new Map<string,('low'|'medium'|'fast')[]>();
+    for(const speed of ['low','medium','fast'] as const)for(const p of read.mixed!.speedLimits?.[speed]??[]){
+      const k=key(p),values=limits.get(k)??[];if(!values.includes(speed))values.push(speed);limits.set(k,values);
+    }
     for(const v of read.mixed!.voxels) {
       this.voxels.set(key(v.position),v);
       const s=space.storage(v.position),index=s.v*space.horizontalSize+s.h,ops=this.columns.get(index)??[];
@@ -106,14 +111,20 @@ export class RailwayRenderPlan {
           add({packId:r.definition.packId,contributionId:`system:pattern/${r.pattern}`,recipeId:`system:pattern/${r.pattern}`},'rail',undefined,r.controllerId??undefined,r.definition);
         }else add(r.definition,'rail',['bridge','girder','tunnel','garage'].includes(b.handler)?{index:r.variant}:undefined,r.controllerId??undefined);
       }
+      if(variant.drawSpeedLimits!==false)for(const speed of limits.get(key(v.position))??[]){
+        const icon=speedIcons[speed],definition={packId:read.requiredPacks[0].id,contributionId:icon.id,recipeId:icon.id};
+        const layer:Layer={entityId:v.ownerId,recipeId:icon.id,frame:speedLimitFrame(speed),position:[v.position.x-space.centerX,v.position.y,v.position.z]};
+        this.layers.push(layer);ops.push({target:{kind:'railway',id:v.ownerId,position:v.position,component:'speedLimit',definition},layer});
+      }
       // Traffic: accessory-before, rail-before, [P5 car], rail-after, accessory-after.
       ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     }
     for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
-    for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify(voxels));
+    for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position)))]));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}
   private order(op:RailwayOperation):number {
+    if(op.target.component==='speedLimit')return 60;
     const after=(op.layer.frame.stage??20)>=30;
     return op.target.component==='accessory'?(after?50:10):(after?40:20);
   }

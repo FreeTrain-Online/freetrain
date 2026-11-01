@@ -1,3 +1,4 @@
+import { speedLimitCatalog } from './speed-limit-display.ts';
 import { terrainLookup, terrainChangedColumns } from './terrain-state.ts';
 // Stable ExAV 2.1.1.12: QuarterViewDrawer, MountainVoxel.drawGround/drawTrees,
 // TerraceVoxel.draw and ColorMap. Original authors; LGPL-2.1-or-later.
@@ -92,6 +93,7 @@ export class TerrainScene {
     if(!(isTerrainWorld(read)||isMixedWorld(read))||!validSnapshot(read as Snapshot))throw new Error('Unsupported terrain read');
     if(!Number.isInteger(heightCut)||heightCut<0)throw new Error('Invalid terrain height cut');
     if(catalog.packId!==read.requiredPacks[0].id||catalog.version!==read.requiredPacks[0].version)throw new Error('Terrain catalog mismatch');
+    if(read.mixed?.speedLimits)catalog=speedLimitCatalog(catalog);
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
     const cacheIdentity=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,variant,heightCut]);

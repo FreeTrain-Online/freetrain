@@ -238,6 +238,9 @@ completed recipe immediately would be a separate unapproved timing adaptation.
 
 ## Speed-limit authoring and crossings
 
+P4-19 implementation, EN/JA workflow, verification and P5 timing handoff are
+recorded in [speed-limit authoring](web-parity-speed-limits.md).
+
 **P4-19:** level selection follows the inclusive normal sign-vector route at
 fixed Z, including RailPattern validation, but tests **TrafficVoxel existence**,
 not necessarily a rail or a straight rail. Slope selection is four locations

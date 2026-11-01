@@ -36,6 +36,9 @@ export function validMixed(read:Snapshot):boolean {
   if(!space.contains(v.position)||voxels.has(key(v.position))||terrainIds.has(v.ownerId)||!entities.has(v.ownerId))return false;
   voxels.set(key(v.position),v);const group=owners.get(v.ownerId)??[];group.push(v);owners.set(v.ownerId,group);
  }
+ if(m.speedLimits)for(const list of [m.speedLimits.low,m.speedLimits.medium,m.speedLimits.fast]) {
+  if(list.length>8192||list.some(p=>!voxels.get(key(p))?.traffic))return false;
+ }
  const slopes=new Map(m.slopes.map(s=>[s.entityId,s]));if(slopes.size!==m.slopes.length)return false;
  for(const e of read.entities){
   if(terrainIds.has(e.id))continue;

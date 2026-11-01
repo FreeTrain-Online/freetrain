@@ -83,3 +83,13 @@ Deno.test('mixed clock deltas preserve validated graph references and reject cha
  const next=applyDelta(state,delta);assert(next);assert.equal(next.mixed,state.mixed);assert.equal(next.entities,state.entities);assert.equal(next.terrain,state.terrain);
  delta.mixed!.voxels[0].traffic!.rail!.pattern=2;assert.equal(applyDelta(state,delta),undefined);
 });
+
+Deno.test('speed lists validate Traffic eligibility, preserve duplicate order and reject absent, filler and pier membership',async()=>{
+ const read=await scene(),traffic=read.mixed!.voxels.find(v=>v.traffic)!,pier=read.mixed!.voxels.find(v=>v.kind==='pier')!;
+ read.mixed!.speedLimits={low:[traffic.position,traffic.position],medium:[],fast:[traffic.position]};
+ assert.doesNotThrow(()=>parseMessage(JSON.stringify(read)));
+ for(const p of [pier.position,{...traffic.position,z:7},{x:-999,y:0,z:0}]){
+  const invalid=structuredClone(read);invalid.mixed!.speedLimits!.low=[p];assert.throws(()=>parseMessage(JSON.stringify(invalid)));
+ }
+ const oversized=structuredClone(read);oversized.mixed!.speedLimits!.low=Array(8193).fill(traffic.position);assert.throws(()=>parseMessage(JSON.stringify(oversized)));
+});

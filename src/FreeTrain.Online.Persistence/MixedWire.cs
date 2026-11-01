@@ -16,6 +16,7 @@ public static class MixedWire
         var terrain = TerrainWire.Snapshot(state.CaptureTerrain(),1);
         return new(Read(state.Construction),railway,terrain.Entities!.Concat(railway).OrderBy(e => e.Id).ToArray());
     });
+    private static PositionRead P(Location p)=>new(p.X,p.Y,p.Z);
     private static DefinitionRead? Read(DefinitionReference? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
     private static DefinitionReference? Restore(DefinitionRead? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
     public static MixedRead Read(MixedConstructionState state)
@@ -33,7 +34,8 @@ public static class MixedWire
                 Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null)).ToArray(),
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
-                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()));
+                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()),
+            w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null);
     }
     public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
         .Where(v => v.Construction is {State: < 4}).ToDictionary(v => StationaryConstruction.Handler(new(
@@ -57,9 +59,11 @@ public static class MixedWire
                 t.Accessory is {} accessory ? new(Restore(accessory.Definition)!,accessory.Direction) : null,
                 t.Car is {} car ? new(Restore(car.Definition)!,car.TrainId,car.CarId) : null,Restore(t.Platform)),
             Restore(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null));
+        static ImmutableArray<Location> Locations(PositionRead[] list) => list.Length<=ProtocolIdentity.MaximumRailwayVoxels ? list.Select(p=>new Location(p.X,p.Y,p.Z)).ToImmutableArray() : throw new ArgumentException("Speed-limit list limit.");
         var spatial = TerrainWire.Spatial(data.NextEntityId,railwayEntities);
         var world = new MixedWorld(profile,terrain,spatial with { Entities = terrain.Spatial.Entities.AddRange(spatial.Entities) },voxels,
-            data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision);
+            data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision,
+            data.SpeedLimits is {} limits ? new SpeedLimits(Locations(limits.Low),Locations(limits.Medium),Locations(limits.Fast)) : null);
         var accounts = ConstructionAccounts.Restore(new(data.Accounts.InitialCash,new(data.Accounts.BankruptcyIncrement),
             data.Accounts.Transactions.Select(t => new AccountTransaction(t.Sequence,t.WorldRevision,t.AbsoluteMinute,t.Operation,
                 Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter)).ToImmutableArray()));

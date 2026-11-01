@@ -11,7 +11,9 @@ public sealed partial class SessionHost
     private MixedSessionState RailwayState(RailwayQuery query)
     {
         if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
-            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary") ||
+            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary" or "speed") ||
+            query.Speed is not ("low" or "medium" or "fast") || query.SpeedClimb is not (0 or 2 or 4 or 6) ||
+            query.Infrastructure=="speed" && query.SpeedSlope && query.From!=query.To ||
             query.SignalDirection is not (0 or 2 or 4 or 6) ||
             query.SignalType is not (SignalRailwayConstruction.ThreeAspect or SignalRailwayConstruction.Shunting) ||
             !PoleRailwayConstruction.IsBundledType(query.PoleType) || query.StationaryType is not {Length: <= 512} ||
@@ -41,6 +43,7 @@ public sealed partial class SessionHost
     {
         var from = new Location(query.From.X,query.From.Y,query.From.Z);
         var to = new Location(query.To.X,query.To.Y,query.To.Z);
+        if (query.Infrastructure == "speed") return SpeedLimitConstruction.Preview(state.World,from,to,query.Speed,query.Action=="remove",query.SpeedSlope,query.SpeedClimb);
         if (query.Infrastructure == "stationary") return StationaryConstruction.Preview(state.World,from,query.StationaryType,query.Action == "remove");
         if (query.Infrastructure == "pole") return PoleRailwayConstruction.Preview(state.World,from,query.PoleType,query.Action == "remove");
         if (query.Infrastructure == "signal") return SignalRailwayConstruction.Preview(state.World,from,query.SignalType,query.SignalDirection,query.Action == "remove");
@@ -93,7 +96,14 @@ public sealed partial class SessionHost
             var before = RailwayState(query);
             var plan = PlanRailway(before,query);
             if (!plan.Legal) return "invalidPlacement";
-            var construction = query.Infrastructure == "stationary" ? before.Construction : query.Infrastructure == "pole"
+            // Removing an unlisted section is a source no-op. In particular,
+            // do not promote an untouched terrain world and disable its tools.
+            if(query.Infrastructure=="speed" && query.Action=="remove")
+            {
+                var selected=plan.Topology.Cells.Select(c=>c.Position).ToHashSet();
+                if(!before.World.SpeedLimits.Locations.Any(selected.Contains))return null;
+            }
+            var construction = query.Infrastructure == "speed" ? SpeedLimitConstruction.Apply(before.Construction,plan,before.Clock.Time) : query.Infrastructure == "stationary" ? before.Construction : query.Infrastructure == "pole"
                 ? PoleRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
                 : query.Infrastructure == "signal"
                 ? SignalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)

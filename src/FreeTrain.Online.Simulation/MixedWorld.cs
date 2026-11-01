@@ -14,6 +14,7 @@ public sealed class MixedWorld
     public long Revision { get; }
     public ImmutableArray<RailwayVoxel> Voxels { get; }
     public ImmutableArray<SlopeOwnership> Slopes { get; }
+    public SpeedLimits SpeedLimits { get; }
     private readonly FrozenDictionary<Location, RailwayVoxel> voxels;
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
@@ -21,7 +22,7 @@ public sealed class MixedWorld
     public RailwayVoxel? At(Location p) => voxels.GetValueOrDefault(p);
 
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
-        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0)
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(terrain);
@@ -69,6 +70,10 @@ public sealed class MixedWorld
         if (terrainIds.Count != 0 || slopeIds.Count != 0 || byOwner.Keys.Any(id => !entities.ContainsKey(id)))
             throw new ArgumentException("Missing mixed-world owner.");
         foreach (var v in Voxels) ValidateVoxel(v);
+        SpeedLimits=speedLimits ?? SpeedLimits.Empty;
+        if(SpeedLimits.Low.IsDefault||SpeedLimits.Medium.IsDefault||SpeedLimits.Fast.IsDefault||
+            new[]{SpeedLimits.Low.Length,SpeedLimits.Medium.Length,SpeedLimits.Fast.Length}.Any(n=>n>NormalRailwayConstruction.MaximumRailwayVoxels)||
+            SpeedLimits.Locations.Any(p=>At(p)?.Traffic==null))throw new ArgumentException("Invalid speed-limit membership.");
         foreach (var (p, backup) in terrain.TunnelBackups)
             if (At(p)?.Traffic?.Rail is not {} r || profile.Resolve(r.Definition).Handler != RailwayHandler.Tunnel || r.TerrainBackup != backup)
                 throw new ArgumentException("Missing tunnel boundary owner.");
@@ -195,11 +200,13 @@ public sealed class MixedWorld
 
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
-        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes)
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("staleRevision");
         if (spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Allocator rewind.");
-        var candidate = new MixedWorld(Profile, terrain, spatial, voxels, slopes, checked(Revision + 1));
+        var members=voxels.ToImmutableArray();
+        var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
+        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits);
         if (!ReferenceEquals(terrain, Terrain))
         {
             if (terrain.Profile != Terrain.Profile || terrain.Name != Terrain.Name ||

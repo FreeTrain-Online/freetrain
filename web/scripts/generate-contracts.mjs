@@ -60,3 +60,26 @@ const stationaryOutput=new URL('../src/generated/stationary-types.json',import.m
 if(process.argv.includes('--check')){if(await readFile(stationaryOutput,'utf8')!==stationaryJson)throw new Error('Generated stationary types are stale.');}else await writeFile(stationaryOutput,stationaryJson);
 const railwayOutput=new URL('../src/generated/railway-profile.json',import.meta.url),railwayJson=JSON.stringify(railway,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(railwayOutput,'utf8')!==railwayJson)throw new Error('Generated railway profile is stale.');}else await writeFile(railwayOutput,railwayJson);
+
+// Exact source overlay surfaces and alpha masks, independent of metadata recipes.
+// Our content PNG writer emits RGBA8 with filter 0; reject any other encoding.
+const { inflateSync }=await import('node:zlib');
+const speedIcons={};
+for(const [index,speed] of ['Low','Medium','Fast'].entries()){
+  const asset=catalog.assets.find(a=>a.path===`trunk/plugins/SpeedLimit/${speed}SpeedIcon.bmp`);
+  if(asset?.status!=='converted-surface')throw new Error('Missing speed-limit icon');
+  const png=await readFile(new URL('../public'+asset.day.url,import.meta.url));
+  if(createHash('sha256').update(png).digest('hex')!==asset.day.sha256||png[24]!==8||png[25]!==6)throw new Error('Invalid speed icon PNG');
+  const chunks=[];
+  for(let pos=8;pos<png.length;){const n=png.readUInt32BE(pos),kind=png.toString('ascii',pos+4,pos+8);if(kind==='IDAT')chunks.push(png.subarray(pos+8,pos+8+n));pos+=12+n;}
+  const raw=inflateSync(Buffer.concat(chunks)),stride=asset.width*4+1;
+  if(raw.length!==asset.height*stride)throw new Error('Invalid speed icon rows');
+  const mask=Array.from({length:asset.height},(_,y)=>{
+    if(raw[y*stride]!==0)throw new Error('Unexpected speed icon filter');
+    return Array.from({length:asset.width},(_,x)=>raw[y*stride+1+x*4+3]?'1':'0').join('');
+  });
+  const id=`{CFC7C99B-4EDE-493B-9DD1-26863390290${index+1}}`;
+  speedIcons[speed.toLowerCase()]={id,image:asset.day,width:asset.width,height:asset.height,mask};
+}
+const speedOutput=new URL('../src/generated/speed-limit-icons.json',import.meta.url),speedJson=JSON.stringify(speedIcons,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(speedOutput,'utf8')!==speedJson)throw new Error('Generated speed-limit icons are stale.');}else await writeFile(speedOutput,speedJson);

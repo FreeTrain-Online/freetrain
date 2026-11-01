@@ -12,6 +12,7 @@ FreeTrain Online is in early development. You can explore and edit a shared worl
 - Create flat or generated worlds, or import a heightmap image.
 - Modify terrain with painting and other terrain tools.
 - Lay, attach, branch and remove normal railway with an authoritative preview.
+- Set and remove speed-limit sections on level track and slopes.
 - Save and restore worlds, including automatic checkpoints.
 - English and Japanese localizations.
 
@@ -56,6 +57,10 @@ For a railway route, choose **Two-point line** in Remove and pick two points
 or enter their coordinates at one height. Review the straight stepped line and
 any skipped objects, then confirm. The line removes tracks and bridges across
 gaps while preserving scenery. The Track tool is for construction.
+
+Choose **Speed limits** (L) to add or remove Low, Medium or Fast sections.
+Select a level range or a four-position slope, review the preview, then confirm.
+Limits are saved with the world; train movement and timing remain in development.
 
 For more setup, multiplayer, deployment and development details, see
 [README.web.md](README.web.md).

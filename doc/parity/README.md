@@ -4,6 +4,7 @@
 
 | Location | Status |
 | --- | --- |
+| [P4-19 speed-limit authoring](../web-parity-speed-limits.md), [P5 handoff](speed-limit-handoff.json) | World-local flat/slope authoring, ordered membership, Traffic cleanup and EN/JA workflow; source-derived numeric/prior-head timing vectors are a P5 handoff, without moving-train runtime credit |
 | [P4-03 mixed terrain/rail state](../web-parity-railway-state.md) | Detached canonical composition, one spatial index/allocator, Traffic components and eight-cell slope validation; 87 exact bundled state handlers. Next P4-04 booking; live mixed dispatch/save/wire and railway gameplay remain open |
 | [railway-fixtures.json](railway-fixtures.json), [P4-02 review and handoff](../web-parity-railway-fixtures.md) | 1,484 independent literal cases, 60 patterns/eight directions, 26 pinned source files; executable source arithmetic/topology expectations. P4-03 detached mixed state is delivered separately; no live railway/runtime/native claim |
 | [Runtime decisions](runtime-decisions.json), [current save policy](../web-parity-runtime-policy.md), [save presentation review](save-policy-translation-review.json) | Owner-directed Save 1 retirement: reject/report/preserve; no prototype writer or migration. Canonical live world and new persistence remain open |

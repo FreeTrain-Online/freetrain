@@ -166,3 +166,12 @@ pending actions. `RailwayQuery.infrastructure: stationary` carries a bounded,
 opaque `stationaryType` ID and identical point endpoints. Removal resolves the
 actual owner independently of that selected ID. Existing Save8/protocol6 documents
 without sites retain their shape. See [the lifecycle and contribution ledger](../../doc/web-parity-stationary-tool.md).
+
+P4-19 adds optional `mixed.speedLimits` with ordered `low`, `medium`, `fast`
+XYZ arrays (8,192 entries each). Empty membership is omitted. Restore validates
+TrafficVoxel existence, preserving duplicate order and cross-list state. All
+infrastructure replacement paths prune absent Traffic only. The shared railway
+query adds `infrastructure: speed`, `speed: low|medium|fast`, `speedSlope` and
+cardinal `speedClimb`; slope input endpoints agree. Preview and WebSocket commit
+share role/revision/content/input validation. No booking or train movement is
+introduced. See [authoring and P5 handoff](../../doc/web-parity-speed-limits.md).

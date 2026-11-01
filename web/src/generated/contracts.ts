@@ -334,6 +334,7 @@ export interface Mixed {
    */
   slopes: SlopeOwner[];
   accounts: ConstructionAccounts;
+  speedLimits?: SpeedLimits;
 }
 export interface RailwayVoxel {
   position: Position;
@@ -412,6 +413,20 @@ export interface AccountTransaction {
   topUps: Counter;
   cashAfter: Counter;
 }
+export interface SpeedLimits {
+  /**
+   * @maxItems 8192
+   */
+  low: Position[];
+  /**
+   * @maxItems 8192
+   */
+  medium: Position[];
+  /**
+   * @maxItems 8192
+   */
+  fast: Position[];
+}
 export interface Command {
   type: "command";
   requestId: string;
@@ -464,8 +479,11 @@ export interface RailwayQuery {
   signalType?: "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}" | "{6FA55842-E693-414f-A120-0A3D0C613B21}";
   signalDirection?: 0 | 2 | 4 | 6;
   tunnelRouting?: "exact" | "portals" | "portals-auto";
-  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage" | "signal" | "pole" | "stationary";
+  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage" | "signal" | "pole" | "stationary" | "speed";
   stationaryType?: string;
+  speed?: "low" | "medium" | "fast";
+  speedSlope?: boolean;
+  speedClimb?: 0 | 2 | 4 | 6;
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;

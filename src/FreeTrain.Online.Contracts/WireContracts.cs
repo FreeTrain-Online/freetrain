@@ -207,7 +207,7 @@ public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason)
 
 // Additive normal-track task; prices and candidate graphs are never command inputs.
 public sealed record RailwayQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
-    PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal", string TunnelRouting = "exact", string SignalType = "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}", int SignalDirection = 0, string PoleType = "{DDF7F835-8100-45fd-8AE7-EC498796D387}", string StationaryType = "");
+    PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal", string TunnelRouting = "exact", string SignalType = "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}", int SignalDirection = 0, string PoleType = "{DDF7F835-8100-45fd-8AE7-EC498796D387}", string StationaryType = "", string Speed = "low", bool SpeedSlope = false, int SpeedClimb = 0);
 public sealed record EditRailwayCommand(RailwayQuery Query) : CommandPayload;
 public sealed record RailwayRouteCellRead(PositionRead Position, int? BeforePattern, int? AfterPattern, bool ProtectedByCar);
 public sealed record RailwayLossRead(string Kind, PositionRead Position, long OwnerId, long? SupportedOwnerId);
@@ -241,4 +241,5 @@ public sealed record AccountTransactionRead(long Sequence, long WorldRevision, l
     string Genre, long Expenditure, long TopUps, long CashAfter);
 public sealed record ConstructionAccountsRead(long InitialCash, long BankruptcyIncrement, AccountTransactionRead[] Transactions);
 public sealed record MixedRead(long GeometryRevision, long NextEntityId, RailwayVoxelRead[] Voxels, SlopeOwnerRead[] Slopes,
-    ConstructionAccountsRead Accounts);
+    ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null);
+public sealed record SpeedLimitsRead(PositionRead[] Low, PositionRead[] Medium, PositionRead[] Fast);

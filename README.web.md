@@ -61,6 +61,14 @@ removal costs 500,000 per ground cell under Subsidiaries; cancelling a site is
 free. Progress, callbacks and random state save/reopen exactly. These decorative
 objects do not support track or control trains.
 
+[P4-19 Speed limits](doc/web-parity-speed-limits.md) adds **Speed limits / 速度制限
+(L)**: level ranges and four-position cardinal slope sections, Low/Medium/Fast,
+current-limit readouts, original icon overlays and zero-cost removal. Membership
+is saved per world, rejects overlapping sections and follows Traffic-cell deletion.
+View can hide/show icons locally; opening the task preserves shared time.
+The [P5 handoff](doc/parity/speed-limit-handoff.json) records prior-head-location
+and numeric-speed boundaries; train-motion timing remains P5.
+
 [Building catalog](doc/web-building-catalog.md) is available from **Game → Building
 catalog**, with Signals and Railway accessories as its first categories. Browse
 or search source-art cards independently, or open either building tool to show

@@ -314,3 +314,36 @@ Deno.test('construction sites use source fence ground bone and wall pass order, 
  assert.deepEqual(pickRailwayLocation(s,{x:16,y:-24},5,{kind:'stationaryOrGround'}),{x:0,y:0,z:2});
  s.mixed!.voxels=[];s.entities=[];const cleared=await prepare(s);assert.equal(railwayOps(cleared).length,0);
 });
+
+Deno.test('speed-limit source overlays retain exact origins, alpha picks, Traffic order, cuts and visibility without changing saved state',async()=>{
+ const {speedIcons,speedLimitCatalog}=await import('../src/lib/speed-limit-display.ts');
+ const c=speedLimitCatalog(catalog);
+ for(const speed of ['low','medium','fast'] as const){
+  const s=flat(1,1),v=rail(s,0,0,1,4);s.mixed!.speedLimits={low:[],medium:[],fast:[]};s.mixed!.speedLimits[speed]=[v.position,v.position];const before=JSON.stringify(s);
+  for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
+   const scene=await TerrainScene.prepare(s,c,cache(c),{season,night},5),ops=railwayOps(scene),icon=speedIcons[speed];
+   assert.deepEqual(ops.map(o=>o.target.component),['rail','speedLimit']);const op=ops.at(-1)!;assert('layer' in op);
+   assert.equal(op.target.id,v.ownerId);assert.equal(op.layer.recipeId,icon.id);assert.deepEqual(op.layer.frame.anchor,[0,0]);assert.deepEqual(op.layer.frame.rectangle,[0,0,25,13]);
+   const surface=c.surfaceSets[op.layer.frame.surfaceSet!][`${season}/${night?'night':'day'}`];assert.equal(surface.image.url,icon.image.url);
+   const [x,y,z]=op.layer.position;let picked=false;
+   for(let b=0;b<icon.height;b++)for(let a=0;a<icon.width;a++)if(icon.mask[b][a]==='1'){
+    const p=scene.pick({x:16*(x+y)+a+.5,y:8*(y-x)-16*z+b+.5},view);if(p?.kind==='railway'&&p.component==='speedLimit'){picked=true;assert.equal(p.definition.contributionId,icon.id);}
+   }assert(picked);
+   const hidden=await TerrainScene.prepare(s,c,cache(c),{season,night,drawSpeedLimits:false},5);assert.deepEqual(railwayOps(hidden).map(o=>o.target.component),['rail']);
+  }
+  assert.equal(JSON.stringify(s),before);assert.equal(railwayOps(await TerrainScene.prepare(s,c,cache(c),day,0)).length,0);
+ }
+});
+Deno.test('changing only speed membership invalidates its column while preserving unrelated render operations',async()=>{
+ const {speedLimitCatalog}=await import('../src/lib/speed-limit-display.ts');const c=speedLimitCatalog(catalog);
+ const s=flat(3,5),first=rail(s,0,0,1,4);rail(s,2,4,1,4);
+ const before=await prepare(s,5,c),changed=structuredClone(s);changed.revision='1';changed.mixed!.geometryRevision='1';changed.mixed!.speedLimits={low:[first.position],medium:[],fast:[]};
+ const after=await prepare(changed,5,c,before);assert.equal(railwayOps(before).filter(o=>o.target.component==='speedLimit').length,0);assert.equal(railwayOps(after).filter(o=>o.target.component==='speedLimit').length,1);
+ assert.equal(railwayOps(after).find(o=>o.target.id==='2'),railwayOps(before).find(o=>o.target.id==='2'));
+});
+Deno.test('speed-limit inspector definition becomes unavailable when its membership is removed',async()=>{
+ const {speedIcons,speedLimitAt}=await import('../src/lib/speed-limit-display.ts');const p={x:1,y:0,z:1},d=definition(speedIcons.fast.id);
+ assert.equal(speedLimitAt({low:[],medium:[],fast:[p]},p,d),d);
+ assert.equal(speedLimitAt({low:[p],medium:[],fast:[]},p,d),undefined);
+ assert.equal(speedLimitAt(undefined,p,d),undefined);
+});

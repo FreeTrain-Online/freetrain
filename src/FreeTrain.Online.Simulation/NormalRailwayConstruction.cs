@@ -25,13 +25,14 @@ public sealed class RailwayConstructionPlan
     internal MixedWorld? Candidate { get; }
     public int PendingCompletionCount => (Candidate ?? Source).Voxels.Where(v => v.Construction != null).Select(v => v.OwnerId).Distinct().Count();
     internal RailwayHandler? PreparedHandler { get; }
+    internal bool IsSpeedLimit { get; }
     internal RailwayConstructionPlan(NormalRailwayPlan topology, string reason)
     { Topology=topology; Reason=reason; Booking=ConstructionBooking.None; Reclaimed=[]; RemovedPiers=[]; ElectedPiers=[]; ComponentLosses=[]; }
     internal RailwayConstructionPlan(NormalRailwayPlan topology, MixedWorld candidate, ConstructionBooking booking,
         IEnumerable<RailwayReclamation> reclaimed, IEnumerable<RailwayVoxel> removed,
-        IEnumerable<RailwayPierPlacement> elected, IEnumerable<RailwayComponentLoss> losses, RailwayHandler? preparedHandler = null)
+        IEnumerable<RailwayPierPlacement> elected, IEnumerable<RailwayComponentLoss> losses, RailwayHandler? preparedHandler = null, bool speedLimit = false)
     {
-        Topology=topology; Candidate=candidate; Booking=booking; PreparedHandler=preparedHandler;
+        Topology=topology; Candidate=candidate; Booking=booking; PreparedHandler=preparedHandler; IsSpeedLimit=speedLimit;
         Reclaimed=reclaimed.ToImmutableArray(); RemovedPiers=removed.ToImmutableArray();
         ElectedPiers=elected.ToImmutableArray(); ComponentLosses=losses.ToImmutableArray();
     }

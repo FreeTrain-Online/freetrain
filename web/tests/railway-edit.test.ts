@@ -184,3 +184,15 @@ Deno.test('stationary preview identities bind exact malformed-looking contributi
  assert.notEqual(railwayQueryKey(query),railwayQueryKey({...query,stationaryType:'other variant'}));
  assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'stationary',expectedWorldEpoch:'1',payload:{kind:'editRailway',query}})).type,'command');
 });
+
+Deno.test('speed-limit preview identity includes typed speed, shape and direction, with exact four-cell slope validation',()=>{
+ const query={...q,infrastructure:'speed' as const,speed:'low' as const,speedSlope:false,speedClimb:0 as const};
+ const p={...preview,query,cost:'0'};
+ assert.deepEqual(parseRailwayPreview(p),p);
+ for(const patch of [{speed:'fast' as const},{speedSlope:true},{speedClimb:2 as const}])assert.notEqual(railwayQueryKey(query),railwayQueryKey({...query,...patch}));
+ assert.equal(railwayQueryKey(query),railwayQueryKey({...q,infrastructure:'speed'}));
+ const slope={...p,query:{...query,speedSlope:true},cells:[0,1,2,3].map(i=>({...p.cells[0],position:{x:1,y:-i,z:2+Math.floor(i/2)}}))};
+ assert.deepEqual(parseRailwayPreview(slope),slope);
+ assert.throws(()=>parseRailwayPreview({...slope,cells:slope.cells.slice(1)}));
+ for(const patch of [{speed:'warp'},{speedClimb:1},{speedSlope:'yes'}])assert.throws(()=>parseMessage(JSON.stringify({type:'command',requestId:'speed',expectedWorldEpoch:'1',payload:{kind:'editRailway',query:{...query,...patch}}})));
+});

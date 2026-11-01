@@ -2681,6 +2681,9 @@
         },
         "accounts": {
           "$ref": "#/$defs/ConstructionAccounts"
+        },
+        "speedLimits": {
+          "$ref": "#/$defs/SpeedLimits"
         }
       },
       "required": [
@@ -2768,7 +2771,8 @@
             "garage",
             "signal",
             "pole",
-            "stationary"
+            "stationary",
+            "speed"
           ],
           "default": "normal"
         },
@@ -2776,6 +2780,27 @@
           "type": "string",
           "maxLength": 512,
           "default": ""
+        },
+        "speed": {
+          "enum": [
+            "low",
+            "medium",
+            "fast"
+          ],
+          "default": "low"
+        },
+        "speedSlope": {
+          "type": "boolean",
+          "default": false
+        },
+        "speedClimb": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "default": 0
         }
       },
       "required": [
@@ -3273,6 +3298,38 @@
         "state",
         "ground",
         "needsDoor"
+      ]
+    },
+    "SpeedLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "low": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        },
+        "medium": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        },
+        "fast": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "low",
+        "medium",
+        "fast"
       ]
     }
   }
