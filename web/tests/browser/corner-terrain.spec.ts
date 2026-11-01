@@ -1,6 +1,6 @@
 import {test,expect,type Page} from '@playwright/test';
 import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
-import {mkdirSync} from 'node:fs';
+import {mkdirSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
 const compat='protocolVersion=6&contentVersion=terrain-content-1';
 const state=canonicalState;
@@ -101,4 +101,55 @@ test('Japanese narrow terrain controls work by keyboard, scroll internally, and 
   await expect.poll(async()=>JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()).packedTerrain.occupantCount).toBe(4);
   expect((await state(page)).paused).toBe(true);
  }finally{await replace(page,original);await context.close();}
+});
+
+test('large terrain edits redraw locally and match a full render with overlapping forests and removed art',async({page})=>{
+ test.setTimeout(120_000);await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body(),errors:string[]=[];
+ page.on('pageerror',e=>errors.push(String(e)));
+ try{
+  const s=await state(page),r=await page.request.post('/api/worlds/empty/preview',{data:{name:'Local terrain redraw',dimensions:{h:400,v:600,z:24},waterLevel:4,epoch:s.worldEpoch,revision:s.revision}});expect(r.ok()).toBe(true);const c=await r.json();
+  expect((await page.request.post('/api/worlds/empty/commit',{data:{id:c.id,requestHash:c.requestHash,candidateHash:c.candidateHash,epoch:s.worldEpoch,revision:s.revision}})).ok()).toBe(true);
+  // Explicit authored forests: one follows the edited slope and is eventually
+  // removed; a nearby canopy outside the validated ring must survive every
+  // clipped repaint as an unchanged overlapping operation.
+  const doc=JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()),t=doc.packedTerrain;
+  const profile=JSON.parse(readFileSync('src/generated/terrain-profile.json','utf8')),forest=profile.definitions.find((d:any)=>d.treeSpriteCount>0&&d.treeDensity>0);
+  t.definitions=[profile.definitions[0].reference,forest.reference];t.nextEntityId='3';doc.spatial.nextEntityId='3';t.occupantCount=2;
+  const data=Buffer.alloc(98);
+  for(const [i,x,y] of [[0,349,350],[1,352,350]]){
+   const row=data.subarray(i*49,(i+1)*49);row.writeBigInt64LE(BigInt(i+1));row.writeInt32LE(x,18);row.writeInt32LE(y,22);row[26]=4;row[27]=5;row.writeBigInt64LE(BigInt(forest.price),28);row.writeUInt16LE(1,40);row[42]=2;
+   row.set([0,0,0,30,15,forest.treeSpriteCount-1],43);
+  }t.occupants=data.toString('base64');await replace(page,Buffer.from(JSON.stringify(doc)));
+  const loaded=await state(page),canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-world-epoch',loaded.worldEpoch);await ready(page);await expect(canvas).toHaveAttribute('data-presentation','ready');
+  await canvas.evaluate(el=>el.setAttribute('data-instance','local-terrain'));const camera=await canvas.getAttribute('data-camera');
+  await page.getByRole('button',{name:'Modify terrain',exact:true}).click();
+  const hash=()=>canvas.evaluate(async el=>{const c=el as HTMLCanvasElement,data=c.getContext('2d')!.getImageData(0,0,c.width,c.height).data;return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data)),v=>v.toString(16).padStart(2,'0')).join('');});
+  const timings=[];
+  for(const action of ['raise','raise','lower','lower']){
+   for(const [label,value] of [['Corner cell X',349],['Corner cell Y',350],['Corner cell Z',4]] as const)await page.getByLabel(label,{exact:true}).fill(String(value));
+   await page.getByLabel('Terrain action',{exact:true}).selectOption(action);
+   await page.getByRole('button',{name:'Preview corner',exact:true}).click();await expect(page.getByTestId('corner-status')).toContainText('change is legal');
+   await canvas.evaluate(el=>{
+    const w=window as any;w.__terrainEditTiming={start:0,ready:0,pending:0};
+    document.querySelector<HTMLButtonElement>('.tool-card button.primary')!.addEventListener('click',()=>{w.__terrainEditTiming.start=performance.now();},{once:true});
+    const observer=new MutationObserver(records=>{const t=w.__terrainEditTiming;if(!t.start)return;
+     if(records.some(r=>r.oldValue==='ready')&&el.getAttribute('data-presentation')==='pending'&&!t.pending)t.pending=performance.now();
+     if(records.some(r=>r.oldValue==='pending')&&el.getAttribute('data-presentation')==='ready'){t.ready=performance.now();observer.disconnect();}
+    });observer.observe(el,{attributes:true,attributeOldValue:true,attributeFilter:['data-presentation']});
+   });
+   await page.getByRole('button',{name:'Confirm terrain change',exact:true}).click();await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
+   await page.waitForFunction(()=>(window as any).__terrainEditTiming.ready>0);
+   timings.push(await page.evaluate(()=>{const t=(window as any).__terrainEditTiming;return {visualMs:t.ready-t.start,refineMs:t.ready-t.pending};}));
+   await expect(canvas).toHaveAttribute('data-terrain-update','local');const local=await hash();
+   // A variant change invalidates the entire raster, providing an independent
+   // full-render pixel oracle at the same camera, cut, and terrain revision.
+   await openPanel(page,'view');await page.getByLabel('Night',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant',/night$/);await expect(canvas).toHaveAttribute('data-presentation','ready');
+   await page.getByLabel('Night',{exact:true}).uncheck();await closePanel(page);await expect(canvas).toHaveAttribute('data-terrain-variant',/day$/);await expect(canvas).toHaveAttribute('data-presentation','ready');
+   await expect(canvas).toHaveAttribute('data-terrain-update','full');expect(await hash()).toBe(local);
+  }
+  const after=JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString());expect(after.packedTerrain.occupantCount).toBe(1);
+  expect(Buffer.from(after.packedTerrain.occupants,'base64')).toEqual(data.subarray(49));
+  await expect(canvas).toHaveAttribute('data-instance','local-terrain');expect(await canvas.getAttribute('data-camera')).toBe(camera);expect(errors).toEqual([]);
+  console.log(JSON.stringify({configuration:process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION??'Release',dimensions:'400x600x24',timings}));
+ }finally{await replace(page,original);}
 });

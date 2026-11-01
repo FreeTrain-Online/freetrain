@@ -171,3 +171,16 @@ Deno.test('incremental terrain validation equals independent full validation, pr
   (d:Delta)=>{d.terrain!.cells=[{index:0,ground:0,surface:'natural'}];},
  ]){const bad=structuredClone(delta);mutate(bad);assert(!applyDelta(before,bad));equal(JSON.stringify(before),saved);}
 });
+
+Deno.test('local redraw certificates include geometry neighbors, survive clock-only reads and reject global or unvalidated changes',async()=>{
+ const {terrainChangedColumns}=await import('../src/lib/terrain-state.ts');
+ const before=immutable(await read()),delta=parseMessage(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/delta-terrain-update.json',import.meta.url))) as Delta;
+ const next=applyDelta(before,delta) as Snapshot;assert(next);
+ const columns=terrainChangedColumns(before,next);assert(columns&&columns.length>0&&columns.length<=9);
+ equal(terrainChangedColumns(next,next),[]);
+ const clock={...delta,baseRevision:next.revision,revision:String(BigInt(next.revision)+1n),entities:[],removed:{...delta.removed,entityIds:[]},
+  terrain:{...next.terrain!,cells:[],occupants:[]}} as Delta;
+ const timed=applyDelta(next,clock) as Snapshot;assert(timed);equal(terrainChangedColumns(before,timed),columns);
+ const global=applyDelta(before,await change()) as Snapshot;assert(global);assert(terrainChangedColumns(before,global)===undefined);
+ assert(terrainChangedColumns(before,immutable(structuredClone(next)))===undefined);
+});

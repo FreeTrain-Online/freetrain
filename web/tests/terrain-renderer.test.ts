@@ -408,3 +408,28 @@ Deno.test('map sprite changes retain the front buffer through preparation and pr
     } finally {TerrainScene.prepare=prepare;}
   });
 });
+
+Deno.test('certified local terrain edits patch the completed raster and picks atomically, while global changes retain the full redraw',async()=>{
+ const {parseMessage,applyDelta,immutable}=await import('../src/lib/protocol.ts');
+ const before=immutable(parseMessage(JSON.stringify(flat(200,100))) as Snapshot);
+ const position=new WorldSpace(200,100,6).location({h:3,v:2,z:1});
+ const definition={packId:before.requiredPacks[0].id,contributionId:'system:terrain/mountain',recipeId:'geometry:quarter-mountain-1'};
+ const delta:import('../src/generated/contracts.ts').Delta={type:'delta',worldEpoch:before.worldEpoch,baseRevision:before.revision,revision:String(BigInt(before.revision)+1n),tick:before.tick,paused:true,cash:'0',ruleset:before.ruleset,contentVersion:before.contentVersion,requiredPacks:before.requiredPacks,
+  trains:[],stations:[],buildings:[],tracks:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[]},
+  entities:[{id:before.terrain!.nextEntityId,revision:'0',definition,anchor:position,footprint:[{offset:{x:0,y:0,z:0},transparent:false}],owned:false,silentlyReclaimable:false,value:'0'}],
+  terrain:{waterLevel:0,constructionMode:false,geometryRevision:String(BigInt(before.terrain!.geometryRevision)+1n),nextEntityId:String(BigInt(before.terrain!.nextEntityId)+1n),cells:[],occupants:[{entityId:before.terrain!.nextEntityId,kind:'mountain',ne:1,se:0,sw:0,nw:0,creekConnections:0,forest:null}]}};
+ const after=applyDelta(before,delta) as Snapshot;assert(after);
+ await withViewport(async(_unused,_viewport,ctx)=>{
+  const scene=await TerrainScene.prepare(before,catalog,cache(),day,5),viewport=new TerrainViewport(scene),camera={x:0,y:32,zoom:1};
+  for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)break;
+  const prior=scene.operations,edited=await TerrainScene.prepare(after,catalog,cache(),day,5,scene);
+  viewport.setScene(edited);const result=viewport.draw(ctx,camera,128,96,1);
+  assert(result.ready&&!result.pending,'A local edit must not rebuild the overscanned viewport');
+  assert(scene.operations===prior,'The previous immutable scene must keep its old picks');
+  equal(viewport.pick({x:112,y:36},camera)?.id,before.terrain!.nextEntityId);
+  const water={...delta,baseRevision:after.revision,revision:String(BigInt(after.revision)+1n),entities:[],terrain:{...delta.terrain!,waterLevel:1,geometryRevision:String(BigInt(after.terrain!.geometryRevision)+1n),occupants:[]}};
+  const changed=applyDelta(after,water) as Snapshot;assert(changed);
+  viewport.setScene(await TerrainScene.prepare(changed,catalog,cache(),day,5,edited));
+  assert(viewport.draw(ctx,camera,128,96,1).pending,'A global water change must use the full redraw');
+ });
+});

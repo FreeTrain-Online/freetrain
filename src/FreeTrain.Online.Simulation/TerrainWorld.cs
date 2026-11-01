@@ -94,6 +94,8 @@ public sealed class TerrainWorld
     public WorldSpace Space { get; }
     public int WaterLevel { get; }
     public long Revision { get; }
+    // Derived from canonical tunnel rail backups, never a second serialized owner.
+    public ImmutableDictionary<Location, QuarterCorners> TunnelBackups { get; }
     // Row-major H/V storage: index = V * HSize + H; includes all stored border cells.
     public ImmutableArray<TerrainCell> Cells { get; }
     public SpatialIndex Spatial { get; }
@@ -104,16 +106,17 @@ public sealed class TerrainWorld
     private readonly ImmutableDictionary<long, TerrainOccupant?> occupantEdits = ImmutableDictionary<long, TerrainOccupant?>.Empty;
     // Tokens certify validation against an exact immutable predecessor, without a world history chain.
     public object GeometryIdentity { get; } = new();
-    public object? PreviousGeometryIdentity { get; }
-    public ImmutableArray<int> ChangedCells { get; } = [];
-    public ImmutableArray<long> ChangedEntities { get; } = [];
+    public object? PreviousGeometryIdentity { get; private set; }
+    public ImmutableArray<int> ChangedCells { get; private set; } = [];
+    public ImmutableArray<long> ChangedEntities { get; private set; } = [];
     internal bool IsValidatedSuccessorOf(TerrainWorld previous) => PreviousGeometryIdentity == previous.GeometryIdentity;
     private TerrainOccupant Occupant(long id) =>
         (occupantEdits.TryGetValue(id, out var value) ? value : occupants.GetValueOrDefault(id))
         ?? throw new ArgumentException("Missing terrain occupant.");
 
     public TerrainWorld(TerrainProfile profile, string name, WorldDimensions dimensions, int waterLevel,
-        IEnumerable<TerrainCell> cells, SpatialState spatial, IEnumerable<TerrainOccupant> occupants, long revision = 0)
+        IEnumerable<TerrainCell> cells, SpatialState spatial, IEnumerable<TerrainOccupant> occupants, long revision = 0,
+        IReadOnlyDictionary<Location, QuarterCorners>? tunnelBackups = null)
     {
         var request = new EmptyWorldRequest(WorldCreationProfile.Id, name, dimensions, waterLevel);
         // Validate dimensions/budgets before enumerating any untrusted collection.
@@ -135,6 +138,11 @@ public sealed class TerrainWorld
             throw new ArgumentException("Terrain graph resource limit.");
         Spatial = new(Space, spatial.NextEntityId, spatial.Entities);
         this.occupants = Occupants.ToFrozenDictionary(o => o.EntityId);
+        TunnelBackups = tunnelBackups?.ToImmutableDictionary() ?? ImmutableDictionary<Location, QuarterCorners>.Empty;
+        foreach (var (p, corners) in TunnelBackups)
+            if (!Space.ContainsVoxel(p) || p.Z != Cell(p).Ground || Spatial.At(p).Entity != null ||
+                Enumerable.Range(0,4).Any(c => 4*p.Z + corners[c] >= 4*Space.Levels))
+                throw new ArgumentException("Invalid tunnel terrain boundary.");
         foreach (var entity in Spatial.Entities) ValidateEntity(entity);
         ValidateContinuity();
     }
@@ -148,6 +156,7 @@ public sealed class TerrainWorld
     {
         Profile = previous.Profile; Name = previous.Name; Space = previous.Space;
         WaterLevel = previous.WaterLevel; Revision = checked(previous.Revision + 1);
+        TunnelBackups = previous.TunnelBackups;
         PreviousGeometryIdentity = previous.GeometryIdentity;
         ChangedCells = cellChanges.Where(p => previous.Cells[p.Key] != p.Value).Select(p => p.Key).Order().ToImmutableArray();
         var removed = changes.Keys.Select(p => previous.Spatial.At(p).Entity?.Id)
@@ -269,20 +278,22 @@ public sealed class TerrainWorld
     // A whole candidate is validated before returning a replacement. The caller's
     // old world/index/allocator remains intact on any failure. Authority/FIFO is P3-06/13.
     public TerrainWorld Replace(long expectedRevision, IEnumerable<TerrainCell> cells, int waterLevel,
-        SpatialState spatial, IEnumerable<TerrainOccupant> occupants)
+        SpatialState spatial, IEnumerable<TerrainOccupant> occupants, IReadOnlyDictionary<Location, QuarterCorners>? tunnelBackups = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("Stale terrain revision.");
         if (spatial is null || spatial.Entities.IsDefault || spatial.Entities.Any(e => e is null) ||
             spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Invalid terrain graph or allocator rewind.");
         var candidate = new TerrainWorld(Profile, Name, new(Space.HorizontalSize, Space.VerticalSize, Space.Levels), waterLevel,
-            cells, spatial, occupants, checked(Revision + 1));
+            cells, spatial, occupants, checked(Revision + 1), tunnelBackups ?? TunnelBackups);
         var old = Spatial.Entities.ToDictionary(e => e.Id);
+        var changed = ImmutableArray.CreateBuilder<long>();
         foreach (var entity in candidate.Spatial.Entities)
         {
-            if (!old.TryGetValue(entity.Id, out var previous))
+            if (!old.Remove(entity.Id, out var previous))
             {
                 if (entity.Id < Spatial.NextEntityId || entity.Revision != 0)
                     throw new ArgumentException("Entity identity cannot be reused.");
+                changed.Add(entity.Id);
                 continue;
             }
             if (entity.Revision == previous.Revision)
@@ -294,7 +305,14 @@ public sealed class TerrainWorld
             }
             else if (previous.Revision == long.MaxValue || entity.Revision != previous.Revision + 1)
                 throw new ArgumentException("Invalid terrain entity revision.");
+            else changed.Add(entity.Id);
         }
+        // The full constructor and identity checks above certify this exact
+        // predecessor. Mixed-world publication can reuse that validation and
+        // wire records instead of rescanning the whole map at every handoff.
+        candidate.PreviousGeometryIdentity = GeometryIdentity;
+        candidate.ChangedCells = Enumerable.Range(0,Cells.Length).Where(i => Cells[i] != candidate.Cells[i]).ToImmutableArray();
+        candidate.ChangedEntities = changed.Concat(old.Keys).Order().ToImmutableArray();
         return candidate;
     }
 
@@ -372,7 +390,11 @@ public sealed class TerrainWorld
             {
                 if (!Space.ContainsHorizontal(sample.Position)) continue;
                 if (Cell(sample.Position).Surface != TerrainSurface.Natural) { discontinuity = true; break; }
-                var height = FineHeight(sample.Position, sample.Corner);
+                // A tunnel removes the Mountain owner; its saved corners certify
+                // the original natural boundary without restoring visible terrain.
+                var ground = Cell(sample.Position).Ground;
+                var height = TunnelBackups.TryGetValue(sample.Position with { Z = ground }, out var backup)
+                    ? 4 * ground + backup[sample.Corner] : FineHeight(sample.Position, sample.Corner);
                 if (first >= 0 && first != height) mismatch = true;
                 first = height;
             }

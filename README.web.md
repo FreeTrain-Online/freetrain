@@ -29,6 +29,14 @@ rails retain their identities. Preview, inclusive source booking, confirmation,
 removal and exact save/reopen use the shared special-rail task. Auto selects an
 elevated starting height for isolated spans; changing a draft’s height refreshes
 its authoritative preview and confirmation.
+[P4-14 Tunnel](doc/web-parity-tunnel-tool.md) adds the EN/JA **Tunnel** task (**U**):
+cardinal routes through actual Mountains, mixed tunnel/ordinary rail, saved
+corner restoration and source before/after artwork. Construction charges only
+new cells; removal excludes the destination and preserves ordinary gap rails.
+Preview/confirm, underground cuts/picking and exact save/reopen/restoration share
+the authoritative mixed-world boundary. Portal selection also accepts one cell
+before or inside either mountainside; automatic height can adjust by one level.
+The preview shows the resolved path and actual cost before confirmation.
 Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 
@@ -98,14 +106,15 @@ actual surface-water metrics and bounded topology diagnostics, including full-si
 [P3-13 corner tools](doc/web-parity-corner-terrain.md) add **Game → Modify terrain**:
 Raise/Lower, source ground/corner picking, Ctrl reversal, Shift-drag or explicit
 coordinate strokes, read-only legality/loss preview and one revalidated Confirm.
+[Localized redraw](doc/web-parity-terrain-rendering.md#localized-terrain-redraw--1-november-2026)
+keeps validated snapshot identity and repaints changed terrain plus overlapping scenery.
 [P3-14 rectangle tools](doc/web-parity-rectangle-terrain.md) add normalized two-point
 or coordinate rectangles, source Raise/Excavate profiles, explicit Repair,
 Ctrl repair/Shift upper profile, per-site skips and one atomic confirmation.
 Selections admit at most 64 inclusive cells; Repair includes the far edges while
 Raise/Excavate operate on shared corners before those edges.
-[P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save8 continuation. Full-size editing works, but its
-measured1.2-second commit exceeds the provisional interaction target; editing
-responsiveness remains in final P3 capacity acceptance.
+[P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save8 continuation. Full-size editing has [P3-17 acceptance](doc/web-parity-p3-acceptance.md);
+resource-heavy authoritative edits retain the documented 250 ms target miss.
 
 ## Parity source policy
 
@@ -341,6 +350,9 @@ If a development server already uses browser-test ports, set
 `deno task --cwd web test:browser`. The canonical test servers use the next port
 number in each pair (defaults 5081/4174). `FREETRAIN_ONLINE_API_TARGET` changes the Vite
 development/preview proxy target only; the production client uses its own origin.
+Browser tests use Release server builds by default. To check development-build
+latency and connection behavior, build the server with `-c Debug` and set
+`FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION=Debug` for the browser run.
 
 ## Headless scenario
 

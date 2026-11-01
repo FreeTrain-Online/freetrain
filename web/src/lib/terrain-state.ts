@@ -11,6 +11,9 @@ type Page={entities:(SpatialEntity|undefined)[];occupants:(TerrainOccupant|undef
 type Index={pages:(Page|undefined)[];recipes:Map<string,number>};
 function recipesFor(index:Index,e:SpatialEntity,o:TerrainOccupant,d:number){for(const id of [e.definition.recipeId,...(o.forest?[o.forest.definition.recipeId]:[])])index.recipes.set(id,(index.recipes.get(id)??0)+d);}
 const indexes=new WeakMap<object,Index>();
+// Geometry certificates carry only a weak predecessor link. Clock publications
+// share the same index; abandoned edits never retain a world-history chain.
+const edits=new WeakMap<Index,{previous:WeakRef<Index>;columns:readonly number[];global:boolean}>();
 const get=(index:Index,i:number)=>{const p=index.pages[i>>>9],j=i&511;return {e:p?.entities[j],o:p?.occupants[j]};};
 function put(index:Index,i:number,e:SpatialEntity|undefined,o:TerrainOccupant|undefined,copied?:Set<number>) {
  const n=i>>>9,j=i&511;
@@ -26,7 +29,7 @@ export function terrainById<T>(values:readonly T[],id:string,key:(value:T)=>stri
  return lo<values.length&&key(values[lo])===id?values[lo]:undefined;
 }
 // Validate the whole proposed graph before exposing any replacement or merged delta.
-export function validTerrain(read:Snapshot):boolean {
+export function validTerrain(read:Snapshot,tunnelCorners:ReadonlyMap<number,number>=new Map()):boolean {
   const t=read.terrain, {width:w,height:h,levels:z}=read.map;
   if(!t||!read.entities||read.map.coordinateSystem!=='hv'||w<1||w>2048||h<1||h>2048||z<1||z>64||w*h>1700000||w*h*z>108800000||
     t.cells.length!==w*h||t.occupants.length>2*w*h||read.entities.length!==t.occupants.length||
@@ -70,6 +73,9 @@ export function validTerrain(read:Snapshot):boolean {
     if(terrace)terraces[index]=1;
     put(graph,2*index+(terrace?1:0),e,o);recipesFor(graph,e,o,1);
   }
+  // Canonical tunnel backups certify the removed natural boundary; they do
+  // not populate terrain occupants or affect visible terrain/picking.
+  for(const [i,corners] of tunnelCorners){if(i<0||i>=w*h||get(graph,2*i).e)return false;quarters[i]=corners;}
   const offsets=Array.from({length:8},(_,d)=>offset(d));
   const fine=(i:number,corner:number)=>4*t.cells[i].ground+((quarters[i]>>(12-4*corner))&15);
   for(let v=0;v<h;v++)for(let u=0;u<w;u++) {
@@ -149,7 +155,22 @@ export function validTerrainDelta(before:Snapshot,read:Snapshot,delta:Delta):boo
    }if(!discontinuity&&mismatch)return false;
   }
  }
- indexes.set(read,graph);return true;
+ indexes.set(read,graph);
+ edits.set(graph,{previous:new WeakRef(original),columns:[...neighborhoods],global:t.waterLevel!==before.terrain!.waterLevel});
+ return true;
+}
+// Only immutable, validated consecutive geometry can certify a local redraw.
+// Replacements, lost predecessors and global water changes use the full path.
+export function terrainChangedColumns(before:Snapshot,after:Snapshot):readonly number[]|undefined {
+ if(!Object.isFrozen(before)||!Object.isFrozen(after))return;
+ const base=indexes.get(before);let current=indexes.get(after);if(!base||!current)return;
+ const columns=new Set<number>();
+ for(let n=0;n<64;n++){
+  if(current===base)return [...columns];
+  const edit=edits.get(current);if(!edit||edit.global)return;
+  for(const i of edit.columns)columns.add(i);
+  current=edit.previous.deref();if(!current)return;
+ }
 }
 export function shareTerrainValidation(before:object,after:object){const index=indexes.get(before);if(index)indexes.set(after,index);}
 

@@ -2722,11 +2722,16 @@
         "from": {
           "$ref": "#/$defs/Position"
         },
+        "tunnelRouting": {
+          "enum": ["exact", "portals", "portals-auto"],
+          "default": "exact"
+        },
         "infrastructure": {
           "enum": [
             "normal",
             "bridge",
-            "girder"
+            "girder",
+            "tunnel"
           ],
           "default": "normal"
         }

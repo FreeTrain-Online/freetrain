@@ -120,7 +120,7 @@ public static class SaveCodec
                 if (data.Map.CoordinateSystem != "hv" || data.Rails.Length != 0 || data.PackedTerrain == null || data.Mixed == null ||
                     data.Spatial.NextEntityId != data.Mixed.NextEntityId) throw new JsonException();
                 var t = data.PackedTerrain.Restore(new(data.Map.Width,data.Map.Height,data.Map.Levels,"hv"),mixedProfile.Terrain,
-                    data.Clock,data.Paused,data.Random,data.Revision);
+                    data.Clock,data.Paused,data.Random,data.Revision, MixedWire.TunnelBackups(data.Mixed,mixedProfile));
                 var construction = MixedWire.Restore(data.Mixed,mixedProfile,t.World,data.Spatial.Entities);
                 var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision);
                 MixedWire.ValidateAdmission(state);

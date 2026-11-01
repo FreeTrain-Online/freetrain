@@ -68,6 +68,9 @@ public sealed class MixedWorld
         if (terrainIds.Count != 0 || slopeIds.Count != 0 || byOwner.Keys.Any(id => !entities.ContainsKey(id)))
             throw new ArgumentException("Missing mixed-world owner.");
         foreach (var v in Voxels) ValidateVoxel(v);
+        foreach (var (p, backup) in terrain.TunnelBackups)
+            if (At(p)?.Traffic?.Rail is not {} r || profile.Resolve(r.Definition).Handler != RailwayHandler.Tunnel || r.TerrainBackup != backup)
+                throw new ArgumentException("Missing tunnel boundary owner.");
         var cars = Voxels.Where(v => v.Traffic?.Car != null).Select(v => v.Traffic!.Car!).ToArray();
         if (cars.Select(c => c.CarId).Distinct().Count() != cars.Length)
             throw new ArgumentException("Car occupies multiple voxels.");
@@ -147,6 +150,9 @@ public sealed class MixedWorld
                 throw new ArgumentException("Invalid rail component.");
             if (r.TerrainBackup is {} backup)
             {
+                var column = Terrain.Space.ToStorage(v.Position);
+                if (v.Position.Z != Terrain.Cell(column.H,column.V).Ground)
+                    throw new ArgumentException("Tunnel must replace a surface Mountain.");
                 var maximum = 4 * (Terrain.Space.Levels - v.Position.Z) - 1;
                 if (Enumerable.Range(0,4).Any(c => backup[c] > maximum))
                     throw new ArgumentException("Tunnel backup exceeds world height.");
@@ -190,7 +196,8 @@ public sealed class MixedWorld
                 terrain.Space.HorizontalSize != Terrain.Space.HorizontalSize || terrain.Space.VerticalSize != Terrain.Space.VerticalSize ||
                 terrain.Space.Levels != Terrain.Space.Levels || terrain.Revision != checked(Terrain.Revision + 1))
                 throw new ArgumentException("Invalid terrain successor.");
-            Terrain.Replace(Terrain.Revision, terrain.Cells, terrain.WaterLevel, terrain.Spatial.Capture(), terrain.Occupants);
+            if (!terrain.IsValidatedSuccessorOf(Terrain))
+                Terrain.Replace(Terrain.Revision, terrain.Cells, terrain.WaterLevel, terrain.Spatial.Capture(), terrain.Occupants, terrain.TunnelBackups);
         }
         var old = Spatial.Entities.ToDictionary(e => e.Id);
         var oldTerrainIds = Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();

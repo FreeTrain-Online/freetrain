@@ -210,3 +210,22 @@ Deno.test('girder four literal crops draw only before cars, preserve alpha picks
   assert.equal(JSON.stringify(s),saved);
  }
 });
+Deno.test('tunnel two-axis backgrounds and foregrounds use saved corners, alpha picking and cut visibility in eight variants',async()=>{
+ const id='{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}';
+ for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true])for(const [direction,pattern,index] of [[0,10,1],[2,4,0],[4,10,1],[6,4,0]]){
+  const s=flat(1,1,2),v=rail(s,0,0,2,pattern),r=v.traffic!.rail!;r.definition=definition(id);r.variant=index;r.direction=direction;r.terrainBackup={ne:0,se:1,sw:2,nw:3};
+  assert(validSnapshot(s));const saved=JSON.stringify(s),plan=new RailwayRenderPlan(s,catalog,{season,night});
+  assert.deepEqual(plan.layers.map(l=>l.frame.stage),[10,40]);
+  assert.deepEqual(plan.layers.map(l=>l.frame.rectangle),[[index*32,0,32,32],[index*32+64,0,32,32]]);
+  for(const l of plan.layers)assert.deepEqual(l.frame.anchor,[0,16]);
+  const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},2),p=opaquePoint(scene,v.ownerId);
+  assert.equal(scene.pick({x:p.a,y:p.b},view)?.id,v.ownerId);assert.equal(railwayOps(await prepare(s,1)).length,0);
+  assert.equal(JSON.stringify(s),saved);
+ }
+});
+Deno.test('natural terrain continuity uses exact tunnel backups and rejects a tampered corner or an overlapping mountain',()=>{
+ const s=flat(3,5,2);for(const cell of s.terrain!.cells)cell.surface='natural';
+ const v=rail(s,1,2,2,4),r=v.traffic!.rail!;r.definition=definition('{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}');r.terrainBackup={ne:0,se:0,sw:0,nw:0};
+ assert(validSnapshot(s));r.terrainBackup.ne=1;assert.equal(validSnapshot(s),false);
+ r.terrainBackup.ne=0;v.position.z=1;s.entities![0].anchor.z=1;assert.equal(validSnapshot(s),false);
+});

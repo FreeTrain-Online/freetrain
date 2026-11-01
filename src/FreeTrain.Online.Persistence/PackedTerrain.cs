@@ -111,7 +111,7 @@ public static class PackedTerrain
     }
 
     public static TerrainSessionState Restore(this PackedTerrainRead data, MapRead map, TerrainProfile profile, ClockState clock, bool paused,
-        RandomStreamsState random, long revision)
+        RandomStreamsState random, long revision, IReadOnlyDictionary<Location, QuarterCorners>? tunnelBackups = null)
     {
         var (Encoding, Name, WaterLevel, ConstructionMode, GeometryRevision, NextEntityId, Provenance,
             Definitions, Cells, OccupantCount, Occupants) = data;
@@ -167,7 +167,7 @@ public static class PackedTerrain
         }
         if (offset != Occupants.Length) throw new JsonException("Trailing packed occupant bytes.");
         var world = new TerrainWorld(profile, Name, request.Dimensions, WaterLevel, cells,
-            new(NextEntityId, entities.MoveToImmutable()), occupants, GeometryRevision);
+            new(NextEntityId, entities.MoveToImmutable()), occupants, GeometryRevision, tunnelBackups);
         return new(world, new(Provenance.Profile, Provenance.Source, Provenance.RequestHash, Provenance.RequestJson),
             ConstructionMode, clock, paused, random, revision);
     }

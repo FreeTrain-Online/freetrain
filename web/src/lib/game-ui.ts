@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder';
+export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -25,6 +25,7 @@ export const registry = {
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
   terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
+  tunnel: { kind: 'tool', tool: 'tunnel', labelKey: 'tunnelTask', icon: 'rail', availability: 'mutation' },
   girder: { kind: 'tool', tool: 'girder', labelKey: 'girderTask', icon: 'rail', availability: 'mutation' },
   bridge: { kind: 'tool', tool: 'bridge', labelKey: 'bridgeTask', icon: 'rail', availability: 'mutation' },
   slope: { kind: 'tool', tool: 'slope', labelKey: 'slopeTask', icon: 'rail', availability: 'mutation' },
@@ -124,6 +125,7 @@ export const tools = [
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'girder', shortcut: 'V', label: registry.girder.labelKey, icon: 'girder' },
+  { id: 'tunnel', shortcut: 'U', label: registry.tunnel.labelKey, icon: 'tunnel' },
   { id: 'terrain', shortcut: 'G', label: registry.terrain.labelKey, icon: '⛰' },
   { id: 'remove', shortcut: 'R', label: registry.demolish.labelKey, icon: '×' },
 ] as const satisfies readonly { id: Tool; label: keyof typeof messages.en; icon: string; shortcut: string }[];

@@ -355,3 +355,13 @@ checks pass; **150 Python cases complete, with one existing skip** (including
 eight new evidence-corruption checks). The existing terrain review, historical
 rail/support table check and `git diff --check` pass. Production .NET/client,
 browser and native suites were not rerun for this source/documentation-only step.
+
+### P4-14 owner extension: portal selection
+
+The source tunnel semantics above remain the exact construction/removal boundary.
+[OWNER-TUNNEL-PORTALS-001](web-parity-tunnel-tool.md#owner-extension-forgiving-portal-selection)
+adds optional browser endpoint resolution within one cell along the cardinal
+route, and one level of automatic-height tolerance. Manual height remains fixed;
+actual route/cost are confirmed before mutation. This authoring extension does
+not change the native Mountain predicate, water/occupancy checks, booking or
+GEO-006 removal endpoints.

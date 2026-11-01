@@ -13,7 +13,16 @@ export function validMixed(read:Snapshot):boolean {
     BigInt(m.geometryRevision)>BigInt(read.revision)||BigInt(m.geometryRevision)<BigInt(t.geometryRevision)||BigInt(m.nextEntityId)<BigInt(t.nextEntityId))return false;
  const terrainIds=new Set(t.occupants.map(o=>o.entityId)),terrainEntities=read.entities.filter(e=>terrainIds.has(e.id));
  const terrainRead={...read,cash:'0',entities:terrainEntities,mixed:undefined};
- if(!validTerrain(terrainRead))return false;
+ const tunnelCorners=new Map<number,number>(),boundarySpace=new WorldSpace(read.map.width,read.map.height,read.map.levels);
+ for(const v of m.voxels){const r=v.traffic?.rail,b=r&&profile.bindings.find(b=>same(b.reference,r.definition));
+  if(b?.handler==='tunnel'){
+   const p=v.position,c=r!.terrainBackup;if(!c||!boundarySpace.contains(p))return false;
+   const s=boundarySpace.storage(p),i=s.v*read.map.width+s.h;
+   if(t.cells[i].ground!==p.z||tunnelCorners.has(i))return false;
+   tunnelCorners.set(i,c.ne<<12|c.se<<8|c.sw<<4|c.nw);
+  }
+ }
+ if(!validTerrain(terrainRead,tunnelCorners))return false;
  shareTerrainValidation(terrainRead,read);
  const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),occupied=new Set<string>();
  const entities=new Map<string,SpatialEntity>(),owners=new Map<string,RailwayVoxel[]>(),voxels=new Map<string,RailwayVoxel>();

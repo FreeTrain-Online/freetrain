@@ -481,7 +481,8 @@ public static class NetworkEndpoints
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
             edit.Query.Action is "lay" or "remove" && edit.Query.Routing is "closest" or "source" or "alternate" &&
-            edit.Query.Infrastructure is "normal" or "bridge" or "girder",
+            edit.Query.Infrastructure is "normal" or "bridge" or "girder" or "tunnel" &&
+            edit.Query.TunnelRouting is "exact" or "portals" or "portals-auto",
         EditCornerCommand edit => edit.Query != null && edit.Query.Position != null && edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && (edit.Query.Action is "raise" or "lower" or "placeTerrace" or "removeTerrace" or "placeCut" or "removeCut" or "plantForest" or "placeCreek" || edit.Query.Action == "repair" && edit.Query.Rectangle != null),
         BuildTrackCommand build => build.Position != null && build.Shape != null,
         SetControllerCommand controller => controller.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(controller.TrainId) && !string.IsNullOrWhiteSpace(controller.LeaseId) && controller.Controller is "manual" or "automatic",

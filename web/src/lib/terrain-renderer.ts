@@ -1,4 +1,4 @@
-import { terrainLookup } from './terrain-state.ts';
+import { terrainLookup, terrainChangedColumns } from './terrain-state.ts';
 // Stable ExAV 2.1.1.12: QuarterViewDrawer, MountainVoxel.drawGround/drawTrees,
 // TerraceVoxel.draw and ColorMap. Original authors; LGPL-2.1-or-later.
 import type { Position, Snapshot, TerrainOccupant } from '../generated/contracts.ts';
@@ -55,6 +55,8 @@ export class TerrainScene {
   private viewKey='';
   private cellCache=new Map<number,{signature:string;operations:Operation[]}>();
   private cacheIdentity='';
+  private read?:Snapshot;
+  private space?:WorldSpace;
   private locationPicker?:(p:Point,view:View,policy:RailwayPickPolicy)=>Position|undefined;
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
@@ -96,7 +98,8 @@ export class TerrainScene {
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
-      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;
+      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;
+      if(previous?.cacheIdentity===cacheIdentity)scene.bounds=previous.bounds;
       scene.locationPicker=(p,view,policy)=>pickRailwayLocation(read,{x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom},heightCut,policy);
       return scene;
     };
@@ -217,6 +220,17 @@ export class TerrainScene {
     }
     return finish(new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9'));
   }
+  changedColumns(previous:TerrainScene):readonly number[]|undefined {
+    if(this.cacheIdentity!==previous.cacheIdentity||!this.read||!previous.read||this.read.mixed||previous.read.mixed)return;
+    return terrainChangedColumns(previous.read,this.read);
+  }
+  columnIndex(op:TerrainOperation):number {
+    const s=this.space!.storage(op.target.position);return s.v*this.space!.horizontalSize+s.h;
+  }
+  columnOperations(index:number):readonly TerrainOperation[] {
+    const r=this.region!;return r.build(index%r.width,index%r.width+1,Math.floor(index/r.width),Math.floor(index/r.width)+1);
+  }
+  boundsFor(op:TerrainOperation):Bounds {return this.operationBounds(op);}
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number):number {
     this.prepareView(view,width,height);
     const dpr=typeof ctx.getTransform==='function'?ctx.getTransform().a:1;

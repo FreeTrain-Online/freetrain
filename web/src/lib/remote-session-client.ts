@@ -3,7 +3,7 @@ import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
 import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview } from './protocol.ts';
 import { removalQueryKey } from './object-removal.ts';
-import { isRailwayPromotion, railwayQueryKey, slopeQueryKey } from './railway-edit.ts';
+import { isRailwayPromotion, railwayQueryKey, slopeQueryKey, RailwayPreviewRequestError } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 
@@ -209,6 +209,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const identity=join;
       if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
       const response=await fetch(`/api/railway/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(response.status===400)throw new RailwayPreviewRequestError('Railway preview request rejected');
       if(!response.ok)throw new Error('Railway preview failed');
       const preview=parseRailwayPreview(await response.json());
       if(disposed||join!==identity||status!=='ready'||railwayQueryKey(preview.query)!==railwayQueryKey(query))throw new Error('Stale railway preview');

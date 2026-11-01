@@ -136,3 +136,21 @@ Deno.test('girder automatic height starts above actual ground, preserves elevate
  read.terrain!.cells=read.terrain!.cells.map(c=>({...c,ground:read.map.levels-1}));
  assert.equal(railwayStartLevel(read,position,5,1),read.map.levels-1,'The authoritative preview reports no ground clearance at the ceiling');
 });
+Deno.test('tunnel requests keep their own preview identity and pass the command schema',()=>{
+ const tunnel={...q,infrastructure:'tunnel' as const};
+ assert.equal(parseRailwayPreview({...preview,query:tunnel}).query.infrastructure,'tunnel');
+ for(const infrastructure of ['normal','bridge','girder'] as const)assert.notEqual(railwayQueryKey(tunnel),railwayQueryKey({...tunnel,infrastructure}));
+ assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'tunnel',expectedWorldEpoch:'1',payload:{kind:'editRailway',query:tunnel}})).type,'command');
+});
+
+Deno.test('portal routing is explicit in the command schema and every preview fence',()=>{
+ const exact={...q,infrastructure:'tunnel' as const};
+ assert.equal(railwayQueryKey(exact),railwayQueryKey({...exact,tunnelRouting:'exact'}));
+ for(const tunnelRouting of ['portals','portals-auto'] as const){
+  const query={...exact,tunnelRouting};assert.notEqual(railwayQueryKey(exact),railwayQueryKey(query));
+  assert.equal(parseRailwayPreview({...preview,query}).query.tunnelRouting,tunnelRouting);
+  assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'portal',expectedWorldEpoch:'1',payload:{kind:'editRailway',query}})).type,'command');
+ }
+ assert.notEqual(railwayQueryKey({...exact,tunnelRouting:'portals'}),railwayQueryKey({...exact,tunnelRouting:'portals-auto'}));
+ assert.throws(()=>parseRailwayPreview({...preview,query:{...exact,tunnelRouting:'anywhere'}}));
+});

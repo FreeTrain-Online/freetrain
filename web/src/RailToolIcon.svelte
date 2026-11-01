@@ -1,6 +1,8 @@
-<script lang="ts">let {slope=false,bridge=false,girder=false}:{slope?:boolean;bridge?:boolean;girder?:boolean}=$props();</script>
+<script lang="ts">let {slope=false,bridge=false,girder=false,tunnel=false}:{slope?:boolean;bridge?:boolean;girder?:boolean;tunnel?:boolean}=$props();</script>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-  {#if girder}
+  {#if tunnel}
+    <path d="M3 20V11a9 9 0 0 1 18 0v9h-4v-9a5 5 0 0 0-10 0v9Z"/><path d="m8 22 3-8m5 8-3-8M8 18h8M9 15h6"/>
+  {:else if girder}
     <path d="M2 7h20M2 11h20M4 7l4 4 4-4 4 4 4-4M6 12v9m12-9v9M3 21h6m6 0h6" />
   {:else if bridge}
     <path d="M2 14h20M3 14V5l6 9 6-9 6 9V5M3 5h18M5 14v7m14-7v7" />

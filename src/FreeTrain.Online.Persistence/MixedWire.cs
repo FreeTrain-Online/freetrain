@@ -35,6 +35,12 @@ public static class MixedWire
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
                 t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()));
     }
+    public static IReadOnlyDictionary<Location, QuarterCorners> TunnelBackups(MixedRead data, RailwayProfile profile) =>
+        data.Voxels.Where(v => v.Traffic?.Rail is {} r && profile.Resolve(Restore(r.Definition)!).Handler == RailwayHandler.Tunnel)
+            .ToDictionary(v => new Location(v.Position.X,v.Position.Y,v.Position.Z), v => {
+                var b=v.Traffic!.Rail!.TerrainBackup ?? throw new ArgumentException("Missing tunnel backup.");
+                return new QuarterCorners(b.NE,b.SE,b.SW,b.NW);
+            });
     public static MixedConstructionState Restore(MixedRead data, RailwayProfile profile, TerrainWorld terrain, SpatialEntityRead[] railwayEntities)
     {
         if (data.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || data.Slopes.Length > ProtocolIdentity.MaximumRailwayVoxels / 8 ||

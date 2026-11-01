@@ -28,7 +28,7 @@ test('Owner mode confirmation, exact forest preview, save/reload, creek route an
  try{
   await empty(page);await tool(page);const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','authoring'));
   await page.getByRole('button',{name:'Enter map authoring',exact:true}).click();expect(await save(page)).toEqual(before);
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(before);
+  await page.getByRole('region',{name:'Map authoring mode',exact:true}).getByRole('button',{name:'Cancel',exact:true}).click();expect(await save(page)).toEqual(before);
   await toggle(page);await author(page);await target(page);await expect(confirm(page)).toBeEnabled();const preview=page.waitForResponse(r=>r.url().includes('/api/terrain/corner/preview'));
   await target(page);const predicted=(await(await preview).json()).decorations;const untouched=await save(page);await expect(page.getByTestId('authoring-result')).toContainText('Trees:');expect(await save(page)).toEqual(untouched);
   await confirm(page).click();await expect.poll(async()=>(await state(page)).terrain.occupants.length).toBe(predicted.length);

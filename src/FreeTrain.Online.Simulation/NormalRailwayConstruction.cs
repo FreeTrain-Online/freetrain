@@ -23,13 +23,14 @@ public sealed class RailwayConstructionPlan
     public ImmutableArray<RailwayPierPlacement> ElectedPiers { get; }
     public ImmutableArray<RailwayComponentLoss> ComponentLosses { get; }
     internal MixedWorld? Candidate { get; }
+    internal RailwayHandler? PreparedHandler { get; }
     internal RailwayConstructionPlan(NormalRailwayPlan topology, string reason)
     { Topology=topology; Reason=reason; Booking=ConstructionBooking.None; Reclaimed=[]; RemovedPiers=[]; ElectedPiers=[]; ComponentLosses=[]; }
     internal RailwayConstructionPlan(NormalRailwayPlan topology, MixedWorld candidate, ConstructionBooking booking,
         IEnumerable<RailwayReclamation> reclaimed, IEnumerable<RailwayVoxel> removed,
-        IEnumerable<RailwayPierPlacement> elected, IEnumerable<RailwayComponentLoss> losses)
+        IEnumerable<RailwayPierPlacement> elected, IEnumerable<RailwayComponentLoss> losses, RailwayHandler? preparedHandler = null)
     {
-        Topology=topology; Candidate=candidate; Booking=booking;
+        Topology=topology; Candidate=candidate; Booking=booking; PreparedHandler=preparedHandler;
         Reclaimed=reclaimed.ToImmutableArray(); RemovedPiers=removed.ToImmutableArray();
         ElectedPiers=elected.ToImmutableArray(); ComponentLosses=losses.ToImmutableArray();
     }

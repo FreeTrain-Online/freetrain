@@ -214,3 +214,50 @@ hide unmatched corners. Chromium checks the former gap area for ocean-coloured
 pixels and exports `terrain/island-terrain.png` without the connection dialog.
 The production build, **120 client cases** and all **14 Chromium terrain/session
 cases** pass. Logs: `tmp/demo-terrain-mend-{build,client,browser}.log`.
+
+
+## Localized terrain redraw — 1 November 2026
+
+An owner-reported delay after general terrain edits exposed a browser identity
+issue and unnecessary viewport rebuilding. The server already validates a sparse
+draft's changed columns and all touching corner neighbors. An isolated Debug
+profile of a 400×600×24 existing terrain world measured 6.41 ms planning,
+17.49 ms draft completion/validation, 3.26 ms admission, 0.26 ms replacement,
+1.88 ms snapshot publication and 2.09 ms delta construction (about 32 ms total).
+It did not need another configurable validation radius.
+
+The shell now receives replacement model states through Svelte's `$state.raw`.
+Its immutable snapshots retain the exact identity certified by transport
+validation, avoiding a proxy-induced full validation when preparing the scene.
+Validated terrain deltas attach weak predecessor metadata containing changed
+columns and their eight-neighbor ring. Clock-only reads share that certificate;
+a bounded traversal can combine edits received before a render without retaining
+world history.
+
+The viewport replaces only those columns' drawing/picking operations. Damage
+includes both old and new polygon/sprite bounds, covering removed trees, shifted
+canopies and exposed cliffs. All overlapping operations repaint in source V/H/Z
+order into the spare buffer, and matching pixels/picks publish together. Large
+changes (over 2,048 affected columns or one-third of the raster), missing
+certificates, world/variant/cut changes, global water changes and mixed railway
+scenes retain the established full redraw. No legality, source selection,
+geometry limits, save format or receipt timeouts change.
+
+The isolated Chromium Debug empty-world comparison improved click-to-visible
+feedback from 302.1 ms to 80.8 ms at 400×600×24. A separate authored-forest
+regression measured 81.5 / 51.3 / 50.5 / 66.5 ms through two raises and two lowers;
+the post-arrival redraw portions were 16.4–19.3 ms. Each local result is pixel
+identical to an independently forced full day render. The test also verifies
+removed artwork clears, an overlapping forest outside the validated ring keeps
+identical saved bytes, and the canvas/camera survive. These are local measurements without injected
+RTT, not a replacement for the recorded full-size capacity budgets or accepted
+dense-edit latency miss.
+
+Validation: **991/991 .NET tests**, **198/198 client tests** and production /
+generated/content/locales/type checks pass. The focused Debug browser case passes. The configured browser
+sweep passed 173/175 cases; an existing authoring test still targeted “Cancel
+preview” instead of the mode confirmation’s “Cancel.” Its timeout skipped world
+restoration and caused the startup-world failure. Correcting that scoped test
+selector yields **5/5** authoring/startup cases on a fresh service, resolving both
+failures without further product changes. The other 173 cases remain unchanged.
+Logs: `tmp/terrain-local-{validation-before,render-before,render-after,forest-browser,client,render-build,dotnet,browser-regression,authoring-recheck}.log`.
