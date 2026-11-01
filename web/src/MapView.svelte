@@ -26,8 +26,8 @@
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
-  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose }:
-    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void } = $props();
+  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose, onclock }:
+    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
   const text = $derived(messages[view.locale]);
   const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
@@ -69,7 +69,7 @@
   let held = $state('');
   const keys = new Set<string>();
   let narrow = $state(false);
-  let spaceHeld = false, sendingInput = false, inputDirty = false;
+  let sendingInput = false, inputDirty = false;
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
@@ -89,7 +89,7 @@
     try { while (inputDirty) { inputDirty = false; await model.input(new Set(keys), inputTrainId); } }
     finally { sendingInput = false; }
   }
-  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; spaceHeld = false; if (had) void flushInput(); }
+  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; if (had) void flushInput(); }
   function cancelGesture() {
     if(painter.state.active)painter.stop();
     if (drag && canvas.hasPointerCapture(drag.pointerId)) canvas.releasePointerCapture(drag.pointerId);
@@ -127,7 +127,16 @@
   }
   function key(event: KeyboardEvent, down: boolean) {
     if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
-    if (event.code === 'Space') { event.preventDefault(); if (!event.repeat){if(down)cancelGesture();spaceHeld = down;} return; }
+    if (event.code === 'Space') {
+      event.preventDefault();
+      if (down && !event.repeat) onclock(view.read?.paused ? 'run' : 'pause');
+      return;
+    }
+    if (event.key.toLowerCase() === 'n' && view.read?.paused) {
+      event.preventDefault();
+      if (down && !event.repeat) onclock('step');
+      return;
+    }
     if (['+', '=', '-', '−'].includes(event.key)) {
       event.preventDefault();
       if (down && !event.repeat) zoomStep(event.key === '+' || event.key === '=' ? .25 : -.25);
@@ -207,7 +216,7 @@
   function down(event: PointerEvent) {
     if (!live || inputSuspended || (event.button !== 0 && event.button !== 1)) return;
     event.preventDefault(); focusMap();
-    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1 || spaceHeld, panOnly: event.button === 1 || spaceHeld, paint: false, pointerId: event.pointerId };
+    drag = { ...point(event), camera: { ...camera }, moved: false, pan: tool === 'inspect' || event.button === 1, panOnly: event.button === 1, paint: false, pointerId: event.pointerId };
     canvas.setPointerCapture(event.pointerId);
     if(tool==='terrain'&&paintingMode()&&!drag.pan&&!blocked&&!panel){
       drag.paint=true;const target=paintTarget(event);if(target){preview=target.position;dirty=true;painter.start(target,terrainStrategy==='paintLower'?'lower':'raise');}return;
@@ -216,7 +225,7 @@
   }
   function up(event: PointerEvent) {
     const was = drag; cancelGesture();
-    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.paint || was.moved || was.panOnly || event.button !== 0 || spaceHeld) return;
+    if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.paint || was.moved || was.panOnly || event.button !== 0) return;
     const p = point(event);
     if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);

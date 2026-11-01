@@ -1,6 +1,46 @@
 import { expect, test, type Page } from '@playwright/test';
 import { ready, bootstrap, at, clickTile, clickSprite, closePanel, openPanel, selectTrain, selectStation } from './ux-helpers.ts';
 
+test('map clock shortcuts toggle on Space press and step on N without disrupting panning or text',async({page})=>{
+  const commands:string[]=[];
+  await page.routeWebSocket('**/api/session?*',route=>{
+    const server=route.connectToServer();
+    route.onMessage(message=>{const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);});
+  });
+  await page.goto('/');await ready(page);
+  if(!(await bootstrap(page)).paused)await page.getByRole('button',{name:'Pause',exact:false}).click();
+  const canvas=page.locator('canvas');await canvas.focus();
+  const tick=BigInt((await bootstrap(page)).tick);
+  await page.keyboard.press('n');
+  await expect.poll(async()=>BigInt((await bootstrap(page)).tick)).toBe(tick+1n);
+  await expect(canvas).toBeFocused();
+  await page.keyboard.down('Space');await page.keyboard.down('Space');
+  await expect(page.getByTestId('clock-state')).toHaveText('Running');
+  await page.keyboard.up('Space');
+  await expect(page.getByTestId('clock-state')).toHaveText('Running');
+  expect(commands.filter(kind=>kind==='run')).toHaveLength(1);
+  const steps=commands.filter(kind=>kind==='step').length;
+  await page.keyboard.press('n');await expect(canvas).toBeFocused();
+  await page.keyboard.press('Tab');await expect(canvas).not.toBeFocused();
+  expect(commands.filter(kind=>kind==='step')).toHaveLength(steps);
+  await canvas.focus();await page.keyboard.press('Space');
+  await expect(page.getByTestId('clock-state')).toHaveText('Paused');
+  const count=commands.length,camera=await canvas.getAttribute('data-camera'),rect=(await canvas.boundingBox())!;
+  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);await page.mouse.down();
+  await page.mouse.move(rect.x+rect.width/2+60,rect.y+rect.height/2+20);await page.mouse.up();
+  await expect(canvas).not.toHaveAttribute('data-camera',camera!);
+  await page.keyboard.press('Control+Space');await page.keyboard.press('Tab');
+  await expect(canvas).not.toBeFocused();
+  expect(commands).toHaveLength(count);
+  await selectStation(page);
+  const draft=page.getByLabel('Station name',{exact:true});await draft.focus();
+  await page.keyboard.press('Space');await page.keyboard.press('n');await page.keyboard.press('Tab');
+  expect(commands).toHaveLength(count);
+  await page.getByRole('button',{name:'Reset draft',exact:true}).click();
+  await openPanel(page,'help');
+  await expect(page.locator('.primary-panel')).toContainText('press N to advance a single step while paused');
+});
+
 test('source sprites pick real buildings and station; camera, cut and display effects stay local',async({page})=>{
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/');await ready(page);
