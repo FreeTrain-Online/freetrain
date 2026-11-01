@@ -2725,7 +2725,8 @@
         "infrastructure": {
           "enum": [
             "normal",
-            "bridge"
+            "bridge",
+            "girder"
           ],
           "default": "normal"
         }

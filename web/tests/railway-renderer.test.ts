@@ -197,3 +197,16 @@ Deno.test('bridge begin middle end and all four pier crops retain exact source f
   }
  }
 });
+
+Deno.test('girder four literal crops draw only before cars, preserve alpha picks and obey cuts in eight variants',async()=>{
+ const id='{7FD493FF-D6A7-4a13-A471-FB737641D8A0}';
+ for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true])for(const [direction,pattern,index] of [[0,10,3],[1,1,1],[2,4,0],[3,7,2],[4,10,3],[5,1,1],[6,4,0],[7,7,2]]){
+  const s=flat(1,1,0),v=rail(s,0,0,3,pattern),r=v.traffic!.rail!;r.definition=definition(id);r.variant=index;r.direction=direction;
+  assert(validSnapshot(s));const saved=JSON.stringify(s),plan=new RailwayRenderPlan(s,catalog,{season,night});
+  assert.equal(plan.layers.length,1);assert.equal(plan.layers[0].frame.stage,10);
+  assert.deepEqual(plan.layers[0].frame.rectangle,[index*32,0,32,32]);assert.deepEqual(plan.layers[0].frame.anchor,[0,16]);
+  const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5),p=opaquePoint(scene,v.ownerId);
+  assert.equal(scene.pick({x:p.a,y:p.b},view)?.id,v.ownerId);assert.equal(railwayOps(await prepare(s,2)).length,0);
+  assert.equal(JSON.stringify(s),saved);
+ }
+});

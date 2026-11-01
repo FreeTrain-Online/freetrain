@@ -11,7 +11,7 @@ public sealed partial class SessionHost
     private MixedSessionState RailwayState(RailwayQuery query)
     {
         if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
-            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge")) throw new ArgumentException("invalidInput");
+            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder")) throw new ArgumentException("invalidInput");
         return RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
     }
     private MixedSessionState RailwayState(long expectedEpoch, long expectedRevision, string expectedContent)
@@ -35,6 +35,7 @@ public sealed partial class SessionHost
     {
         var from = new Location(query.From.X,query.From.Y,query.From.Z);
         var to = new Location(query.To.X,query.To.Y,query.To.Z);
+        if (query.Infrastructure == "girder") return GirderRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
         if (query.Infrastructure == "bridge") return BridgeRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
         RailwayConstructionPlan Plan(bool alternate) => query.Action == "remove"
             ? NormalRailwayConstruction.PreviewRemoval(state.World,from,to,alternate)
@@ -73,7 +74,9 @@ public sealed partial class SessionHost
             var before = RailwayState(query);
             var plan = PlanRailway(before,query);
             if (!plan.Legal) return "invalidPlacement";
-            var construction = query.Infrastructure == "bridge"
+            var construction = query.Infrastructure == "girder"
+                ? GirderRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
+                : query.Infrastructure == "bridge"
                 ? BridgeRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
                 : NormalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time);
             var after = before.Successor(before.Revision,construction,before.ConstructionMode);

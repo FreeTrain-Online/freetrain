@@ -22,6 +22,13 @@ cardinal endpoint snapping, source begin/middle/end art, alternating top/body pi
 actual inclusive-cell booking and explicit support losses. Compatible rails stay
 in place; dry land is allowed. Preview, confirm, remove and save/reopen use the
 same authoritative mixed-world boundary.
+[P4-13 Girder viaduct](doc/web-parity-girder-tool.md) adds the EN/JA **Girder viaduct** task (**V**):
+eight-way straight snapping, every-cell above-ground validation, four exact
+before-car orientations and default piers beneath every new rail. Compatible
+rails retain their identities. Preview, inclusive source booking, confirmation,
+removal and exact save/reopen use the shared special-rail task. Auto selects an
+elevated starting height for isolated spans; changing a draft’s height refreshes
+its authoritative preview and confirmation.
 Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 

@@ -10,13 +10,15 @@ export const railwayQueryKey = (q: RailwayQuery) => JSON.stringify([q.expectedWo
 
 // Keyboard XY already identifies a column. Match the map's rail-or-ground
 // policy within that column, respecting a cut into otherwise higher ground.
-export function railwayStartLevel(read:ReadState,position:Pick<Position,'x'|'y'>,heightCut:number):number|undefined {
+// Girder laying requests one level of clearance, retaining higher visible rail.
+export function railwayStartLevel(read:ReadState,position:Pick<Position,'x'|'y'>,heightCut:number,clearance:0|1=0):number|undefined {
   if(!read.terrain||![position.x,position.y,heightCut].every(Number.isSafeInteger)||heightCut<0)return;
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   try{
     const p={...position,z:0};if(!space.containsHorizontal(p))return;
     const s=space.storage(p),cut=Math.min(heightCut,read.map.levels-1);
-    let level=Math.min(cut,read.terrain.cells[s.v*read.map.width+s.h].ground);
+    const ground=read.terrain.cells[s.v*read.map.width+s.h].ground;
+    let level=clearance ? Math.min(read.map.levels-1,ground+clearance) : Math.min(cut,ground);
     for(const voxel of read.mixed?.voxels??[])if(voxel.traffic?.rail&&voxel.position.x===position.x&&voxel.position.y===position.y&&voxel.position.z<=cut)
       level=Math.max(level,voxel.position.z);
     return level;
@@ -36,7 +38,7 @@ export const slopeQueryKey = (q:import('../generated/contracts.ts').SlopeQuery) 
 
 export const railwayReasons = {
   nonCardinalSlope:'slopeCardinal',notSlope:'slopeNotFound',slopeDirectionMismatch:'slopeMismatch',occupiedCar:'railCar',unavailableSlopeBinding:'railBinding',staleRevision:'railStale',
-  samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
+  girderAboveGround:'girderAboveGround',samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
   unusableStart:'railStart',underwater:'railUnderwater',obstacle:'railObstacle',carOccupied:'railCar',
   existingMiddleRail:'railMiddle',cannotAttach:'railAttach',invalidRailPattern:'railPattern',
   unavailableRailBinding:'railBinding',unavailablePierBinding:'railBinding',unavailableCrossingBinding:'railBinding',

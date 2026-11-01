@@ -450,7 +450,7 @@ export interface RailwayQuery {
   action: "lay" | "remove";
   routing: "closest" | "source" | "alternate";
   from: Position;
-  infrastructure?: "normal" | "bridge";
+  infrastructure?: "normal" | "bridge" | "girder";
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;

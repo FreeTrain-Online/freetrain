@@ -112,5 +112,27 @@ Deno.test('bridge preview echoes unsnapped input while cells carry snapped geome
  const p={...preview,query:bridge};assert.equal(parseRailwayPreview(p).query.infrastructure,'bridge');
  assert.notEqual(railwayQueryKey(q),railwayQueryKey({...q,infrastructure:'bridge'}));
  assert.equal(railwayQueryKey(q),railwayQueryKey({...q,infrastructure:'normal'}));
- assert.throws(()=>parseRailwayPreview({...p,query:{...bridge,infrastructure:'girder'}}));
+ assert.throws(()=>parseRailwayPreview({...p,query:{...bridge,infrastructure:'unknown'}}));
+});
+
+Deno.test('girder requests retain distinct task identity through the shared preview and command schema',()=>{
+ const girder={...q,infrastructure:'girder' as const};
+ assert.equal(parseRailwayPreview({...preview,query:girder}).query.infrastructure,'girder');
+ assert.notEqual(railwayQueryKey(girder),railwayQueryKey({...girder,infrastructure:'bridge'}));
+ assert.notEqual(railwayQueryKey(girder),railwayQueryKey(q));
+ assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'girder',expectedWorldEpoch:'1',payload:{kind:'editRailway',query:girder}})).type,'command');
+});
+
+Deno.test('girder automatic height starts above actual ground, preserves elevated attachment and stays within world levels',()=>{
+ const read=structuredClone(terrain);read.terrain!.cells=read.terrain!.cells.map(c=>({...c,ground:2}));
+ const position={x:1,y:0};const before=JSON.stringify(read);
+ assert.equal(railwayStartLevel(read,position,5,1),3);
+ assert.equal(railwayStartLevel(read,position,1,1),3,'A cut does not make a buried girder legal');
+ assert.equal(railwayStartLevel(read,position,5),2,'Normal rail retains its ground-level policy');
+ assert.equal(JSON.stringify(read),before);
+ read.mixed={voxels:[{position:{...position,z:4},traffic:{rail:{pattern:4}}}]} as Snapshot['mixed'];
+ assert.equal(railwayStartLevel(read,position,5,1),4);
+ assert.equal(railwayStartLevel(read,position,3,1),3,'Hidden rail does not set the level');
+ read.terrain!.cells=read.terrain!.cells.map(c=>({...c,ground:read.map.levels-1}));
+ assert.equal(railwayStartLevel(read,position,5,1),read.map.levels-1,'The authoritative preview reports no ground clearance at the ceiling');
 });
