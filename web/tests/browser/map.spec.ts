@@ -21,8 +21,11 @@ test('source sprites pick real buildings and station; camera, cut and display ef
   const rect=(await canvas.boundingBox())!;
   await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);await page.mouse.down();await page.mouse.move(rect.x+rect.width/2+70,rect.y+rect.height/2+25);await page.mouse.up();
   await expect(canvas).not.toHaveAttribute('data-camera',camera!);
+  const pannedCamera=await canvas.getAttribute('data-camera');
   const zoom=await canvas.getAttribute('data-zoom');await page.getByRole('button',{name:'Zoom in',exact:true}).click();await expect(canvas).not.toHaveAttribute('data-zoom',zoom!);
   await page.getByRole('button',{name:'Reset camera',exact:true}).click();
+  await expect(canvas).toHaveAttribute('data-zoom','1.500');
+  await expect(canvas).toHaveAttribute('data-camera',pannedCamera!);
   await openPanel(page, 'view');
   await page.getByLabel('Night',{exact:true}).check();
   await page.screenshot({path:'test-results/map-night.png',fullPage:true});
@@ -37,6 +40,34 @@ test('source sprites pick real buildings and station; camera, cut and display ef
   const after=await bootstrap(page);expect(after.cash).toBe(before.cash);expect(after.tracks).toEqual(before.tracks);expect(after.tick).toBe(before.tick);
   expect(Number(await canvas.getAttribute('data-culled'))).toBeGreaterThan(0);expect(errors).toEqual([]);
 });
+
+for (const width of [1280, 640]) {
+  test(`reset camera preserves the visible centre with a panel at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.goto('/');await ready(page);
+    const canvas=page.locator('canvas');
+    const box=(await canvas.boundingBox())!;
+    await page.mouse.move(box.x+box.width/2,box.y+box.height/3);
+    await page.mouse.down();await page.mouse.move(box.x+box.width/2+60,box.y+box.height/3+30);await page.mouse.up();
+    await openPanel(page,'view');
+    await page.getByRole('button',{name:'Zoom out',exact:true}).click();
+    await expect(canvas).not.toHaveAttribute('data-zoom','1.500');
+    const visibleWorldCentre=()=>canvas.evaluate(el=>{
+      const r=el.getBoundingClientRect(),panel=document.querySelector('.primary-panel')!.getBoundingClientRect();
+      const [x,y]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom);
+      const center=panel.width>=r.width*.8
+        ? {x:r.width/2,y:Math.max(0,panel.top-r.top)/2}
+        : {x:Math.max(0,panel.left-r.left)/2,y:r.height/2};
+      return {x:x+(center.x-r.width/2)/zoom,y:y+(center.y-r.height/2)/zoom};
+    });
+    const before=await visibleWorldCentre();
+    await page.getByRole('button',{name:'Reset camera',exact:true}).first().click();
+    await expect(canvas).toHaveAttribute('data-zoom','1.500');
+    const after=await visibleWorldCentre();
+    expect(Math.abs(after.x-before.x)).toBeLessThan(.15);
+    expect(Math.abs(after.y-before.y)).toBeLessThan(.15);
+  });
+}
 
 test('preview and cancel never charge; buffer extension confirms once, removal and invalid placement use host state',async({page})=>{
   const timers:ReturnType<typeof setTimeout>[]=[];

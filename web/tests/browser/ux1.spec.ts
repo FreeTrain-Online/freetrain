@@ -206,9 +206,8 @@ test('UX1 lost authentication clears live identity and requires sign-in again', 
 test('UX1 epoch snapshot fixture discards old geometry and restores initial framing', async ({ page }) => {
   const replaceWorld=await worldReplacementFixture(page);
   await page.goto('/'); await ready(page);
-  await page.getByRole('button', { name: 'Reset camera', exact: true }).click();
   await page.locator('canvas').evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  const homeZoom = await page.locator('canvas').getAttribute('data-zoom');
+  const homeZoom = await page.locator('canvas').evaluate(el => Math.min(1.5, Math.max(.5, el.getBoundingClientRect().width / 850)).toFixed(3));
   const homeCamera = await page.locator('canvas').getAttribute('data-camera');
   await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
   await page.getByRole('button', { name: 'Build track', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });

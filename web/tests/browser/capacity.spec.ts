@@ -142,7 +142,6 @@ test(`${mode} DPR${dpr}: responsive zoom refinement, latest camera, picking and 
     expect(response.ok()).toBe(true);
     const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-world-epoch',await epoch(page));await ready(page);
     await expect(canvas).toHaveAttribute('data-refinement','ready');
-    const initialCamera=await canvas.getAttribute('data-camera');
     await canvas.evaluate(canvas=>{
       const w=window as any;
       w.zoomDiagnostics={lastInput:0,settled:0,paints:[],longTasks:[]};
@@ -187,10 +186,12 @@ test(`${mode} DPR${dpr}: responsive zoom refinement, latest camera, picking and 
     const fractionalBox=(await canvas.boundingBox())!;
     await page.mouse.click(fractionalBox.x+fractionalBox.width/2,fractionalBox.y+fractionalBox.height/2);
     await expect(page.getByTestId('selected-object')).toContainText('Terrain');await closePanel(page);
-    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',initialCamera!);await expect(canvas).toHaveAttribute('data-refinement','ready');
-    // Cancel an unfinished request by returning to the already published Home view.
-    await canvas.dispatchEvent('wheel',{deltaY:-1,clientX:900,clientY:500});await expect(canvas).toHaveAttribute('data-refinement','pending');
-    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',initialCamera!);await expect(canvas).toHaveAttribute('data-zoom','1.500');await expect(canvas).toHaveAttribute('data-refinement','ready');
+    const currentCamera=await canvas.getAttribute('data-camera');
+    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',currentCamera!);await expect(canvas).toHaveAttribute('data-zoom','1.500');await expect(canvas).toHaveAttribute('data-refinement','ready');
+    // Cancel an unfinished request by returning to the already published zoom level.
+    const resetBox=(await canvas.boundingBox())!;
+    await canvas.dispatchEvent('wheel',{deltaY:-1,clientX:resetBox.x+resetBox.width/2,clientY:resetBox.y+resetBox.height/2});await expect(canvas).toHaveAttribute('data-refinement','pending');
+    await page.getByRole('button',{name:'Reset camera',exact:true}).click();await expect(canvas).toHaveAttribute('data-camera',currentCamera!);await expect(canvas).toHaveAttribute('data-zoom','1.500');await expect(canvas).toHaveAttribute('data-refinement','ready');
     const box=(await canvas.boundingBox())!;
     await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await expect(page.getByTestId('selected-object')).toContainText('Terrain');
     const selected=await page.getByTestId('selected-object').textContent();

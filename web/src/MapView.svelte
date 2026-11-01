@@ -251,7 +251,8 @@
   }
   export function zoom(factor: number) { if (!live) return;cancelGesture(); camera = zoomAt(camera, factor, visibleCenter(), width, height); dirty = true; }
   function zoomStep(delta: number) { zoom((camera.zoom + delta) / camera.zoom); }
-  export function home() {
+  export function home() { zoom(1.5 / camera.zoom); }
+  function frameWorld() {
     cancelGesture();
     narrowRailOffset=0;
     const read=view.read, location=homeLocation(read?.map??demoScene.map);
@@ -272,7 +273,7 @@
   $effect(() => {
     const read = view.read;
     if (liveScene && read) {
-      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; renderState='loading'; heightCut=read.map.levels-1;railLevel=Math.min(railLevel,read.map.levels-1);removeLevel=Math.min(removeLevel,read.map.levels-1);resetInteraction(); tool = 'inspect'; home(); }
+      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; renderState='loading'; heightCut=read.map.levels-1;railLevel=Math.min(railLevel,read.map.levels-1);removeLevel=Math.min(removeLevel,read.map.levels-1);resetInteraction(); tool = 'inspect'; frameWorld(); }
       renderer?.setRead(read); dirty = true;
     } else {
       renderer?.setRead(demoScene); resetInteraction(); tool = 'inspect';
@@ -298,7 +299,7 @@
     const resize = new ResizeObserver(entries => { cancelGesture();width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
     loadImages().then(images => {
       if (!active) return;
-      renderer = new MapRenderer(canvas, images,()=>{if(active)dirty=true;}); renderer.setRead(liveScene && view.read ? view.read : demoScene); home(); dirty = true;
+      renderer = new MapRenderer(canvas, images,()=>{if(active)dirty=true;}); renderer.setRead(liveScene && view.read ? view.read : demoScene); frameWorld(); dirty = true;
     }).catch(() => { if (active) renderState = 'failed'; });
     const paint = (now:number) => {
       if (!active) return;
