@@ -278,6 +278,41 @@ Deno.test('terrace rims follow the upper block perimeter without shared edges or
     equal(variantScene.pick({x:16,y:-24},view)?.surface,'ground');
   }
 });
+Deno.test('flat terrain rims mark upper height boundaries in every direction and variant',async()=>{
+  for(const [season,night,edge] of [
+    ['spring',false,'#605420'],['spring',true,'#181508'],
+    ['winter',false,'#606880'],['winter',true,'#181a20'],
+  ] as const)for(const [i,direction] of ([2,4,6,0] as const).entries()) {
+    const s=flat(3,5,2),space=new WorldSpace(3,5,6),base=space.location({h:1,v:2,z:2});
+    const neighbor=move(base,direction),{h,v}=space.storage(neighbor);
+    s.terrain!.cells[v*3+h].ground=1;
+    const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5);
+    const rims=scene.operations.filter(op=>'points' in op&&op.edge===edge);
+    equal(rims.length,4);
+    const rim=rims.find(op=>op.target.position.x===base.x&&op.target.position.y===base.y)!;
+    assert('points' in rim);equal(rim.target.surface,'ground');equal(rim.target.position.z,2);
+    const q=space.project(base),points=mountainPoints({ne:0,se:0,sw:0,nw:0});
+    equal(rim.points,[points[i],points[(i+1)%4]].map(p=>({x:q.x+p.x,y:q.y+p.y})));
+    const cut=await TerrainScene.prepare(s,catalog,cache(),{season,night},1);
+    assert(!cut.operations.some(op=>'points' in op&&op.edge===edge),'Hidden tops must not leave rims');
+  }
+  const level=await TerrainScene.prepare(flat(3,5,2),catalog,cache(),day,5);
+  assert(!level.operations.some(op=>'points' in op&&op.edge==='#605420'),'Level tile joins keep their faint grid');
+});
+Deno.test('natural plateau rims remain distinct where lower slopes meet the top, but not at level water',async()=>{
+  for(const [direction,corners] of [[2,[0,0,4,4]],[4,[4,0,0,4]],[6,[4,4,0,0]],[0,[0,4,4,0]]] as const) {
+    const s=flat(3,5,2),space=new WorldSpace(3,5,6),base=space.location({h:1,v:2,z:2});
+    const neighbor={...move(base,direction),z:1},{h,v}=space.storage(neighbor);
+    s.terrain!.cells[v*3+h].ground=1;
+    const slope=mountain([...corners]),e=slope.entities![0],o=slope.terrain!.occupants[0];
+    e.anchor=neighbor;s.entities=[e];o.position=neighbor;s.terrain!.occupants=[o];
+    const scene=await TerrainScene.prepare(s,catalog,cache(),day,5);
+    equal(scene.operations.filter(op=>'points' in op&&op.edge==='#605420'&&op.target.position.x===base.x&&op.target.position.y===base.y).length,1);
+  }
+  const s=flat(3,5,2);s.terrain!.waterLevel=2;s.terrain!.cells[7].ground=1;
+  const scene=await TerrainScene.prepare(s,catalog,cache(),day,5);
+  assert(!scene.operations.some(op=>'points' in op&&op.edge==='#605420'),'Water at the top height has no exposed drop');
+});
 Deno.test('all 18 exact forest treatments render overlays only on flat Mountains and cliffs use pinned quarter recipes',async()=>{
   const profile=JSON.parse(await Deno.readTextFile(new URL('../src/generated/terrain-profile.json',import.meta.url)));
   for(const definition of profile.definitions.filter((d:any)=>d.treeSpriteCount>0)) {

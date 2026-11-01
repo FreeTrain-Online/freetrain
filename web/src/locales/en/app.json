@@ -576,5 +576,21 @@
   "garageRemovalHelp": "Removal converts matching garages to normal track, excluding the destination. Car-occupied garages stay. Each visited cell charges the running subtotal of 200,000 per matching garage, including protected cars; gaps repeat that subtotal. Reverse the endpoints to include the remaining end.",
   "confirmGarage": "Confirm garage change",
   "garageGroundRequired": "Every garage cell must be at its local ground level.",
-  "garageDependency": "A terrain backup or railway slope must be removed with its own tool first."
+  "garageDependency": "A terrain backup or railway slope must be removed with its own tool first.",
+  "signalTask": "Signals",
+  "signalDescription": "Place railway signals facing one of four map directions.",
+  "signalHelp": "Choose a point on the map or enter Start X / Y. Empty traffic and ordinary track, including curves, can become straight signal track.",
+  "signalRules": "Signals cost nothing. Junctions, special tracks and obstacles reject placement. Cars protect both placement and removal. Train waits and controller editing are planned for the train phase.",
+  "signalRemovalHelp": "Remove a signal at the selected point to restore normal track with the same pattern.",
+  "confirmSignal": "Confirm signal change",
+  "signalType": "Signal type",
+  "signalDirection": "Signal direction",
+  "signalThreeAspect": "Three-aspect signal",
+  "signalShunting": "Shunting signal",
+  "signalNorth": "North (0)",
+  "signalEast": "East (2)",
+  "signalSouth": "South (4)",
+  "signalWest": "West (6)",
+  "signalNotFound": "There is no signal at this point.",
+  "signalTarget": "Only empty traffic or ordinary track can receive a signal."
 }

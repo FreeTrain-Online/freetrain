@@ -11,7 +11,10 @@ public sealed partial class SessionHost
     private MixedSessionState RailwayState(RailwayQuery query)
     {
         if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
-            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage") ||
+            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal") ||
+            query.SignalDirection is not (0 or 2 or 4 or 6) ||
+            query.SignalType is not (SignalRailwayConstruction.ThreeAspect or SignalRailwayConstruction.Shunting) ||
+            query.Infrastructure == "signal" && query.From != query.To ||
             query.TunnelRouting is not ("exact" or "portals" or "portals-auto") ||
             query.TunnelRouting != "exact" && (query.Infrastructure != "tunnel" || query.Action != "lay")) throw new ArgumentException("invalidInput");
         return RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
@@ -37,6 +40,7 @@ public sealed partial class SessionHost
     {
         var from = new Location(query.From.X,query.From.Y,query.From.Z);
         var to = new Location(query.To.X,query.To.Y,query.To.Z);
+        if (query.Infrastructure == "signal") return SignalRailwayConstruction.Preview(state.World,from,query.SignalType,query.SignalDirection,query.Action == "remove");
         if (query.Infrastructure == "garage") return GarageRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
         if (query.Infrastructure == "tunnel") return query.TunnelRouting == "exact"
             ? TunnelRailwayConstruction.Preview(state.World,from,to,query.Action == "remove")
@@ -61,8 +65,7 @@ public sealed partial class SessionHost
         {
             var state = RailwayState(query);
             var plan = PlanRailway(state,query);
-            var reason = plan.Reason ?? (state.Revision == long.MaxValue || state.World.Revision == long.MaxValue ? "constructionOverflow" : null) ?? (state.Construction.Accounts.Transactions.Length >= NormalRailwayConstruction.MaximumAccountTransactions ||
-                plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions-state.Construction.Accounts.Transactions.Length
+            var reason = plan.Reason ?? (state.Revision == long.MaxValue || state.World.Revision == long.MaxValue ? "constructionOverflow" : null) ?? (plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions-state.Construction.Accounts.Transactions.Length
                 ? "accountCapacityLimit" : null);
             static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
             var losses = plan.Reclaimed.Select(r => new RailwayLossRead("reclamation",P(r.Entity.Anchor),r.Entity.Id,null))
@@ -81,7 +84,9 @@ public sealed partial class SessionHost
             var before = RailwayState(query);
             var plan = PlanRailway(before,query);
             if (!plan.Legal) return "invalidPlacement";
-            var construction = query.Infrastructure == "garage"
+            var construction = query.Infrastructure == "signal"
+                ? SignalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
+                : query.Infrastructure == "garage"
                 ? GarageRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
                 : query.Infrastructure == "tunnel"
                 ? TunnelRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)

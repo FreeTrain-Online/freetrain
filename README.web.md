@@ -34,6 +34,12 @@ ground-level cardinal garage tracks, compatible-track replacement, exact backgro
 art, and protected conversion back to ordinary rail. Preview explains the source's half-open
 removal and repeated-subtotal billing. Garages are decorative; train mechanics remain P5.
 
+[P4-16 Signals](doc/web-parity-signal-tool.md) adds the EN/JA **Signals** task (**F**):
+three-aspect and shunting signals in four directions, point placement on empty or
+ordinary track, protected removal restoring normal rail, exact bundled art and
+zero booking. Save/reopen retains signal and controller-reference state. Train
+waits and controller editing remain P5.
+
 [P4-14 Tunnel](doc/web-parity-tunnel-tool.md) adds the EN/JA **Tunnel** task (**U**):
 cardinal routes through actual Mountains, mixed tunnel/ordinary rail, saved
 corner restoration and source before/after artwork. Construction charges only

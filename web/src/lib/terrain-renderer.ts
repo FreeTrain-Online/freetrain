@@ -110,7 +110,7 @@ export class TerrainScene {
     const key=(p:Position)=>{const s=space.storage(p);return s.h<0||s.h>=read.map.width||s.v<0||s.v>=read.map.height||p.z<0||p.z>=read.map.levels?-1:(s.v*read.map.width+s.h)*read.map.levels+p.z;};
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
     const groundEdge=terrainColor(variant.season==='winter'?[192,200,216]:[187,171,115],variant.night);
-    const terraceEdge=terrainColor(variant.season==='winter'?[96,104,128]:[96,84,32],variant.night);
+    const rimEdge=terrainColor(variant.season==='winter'?[96,104,128]:[96,84,32],variant.night);
     const addSprite=(id:string,frameKey:string|undefined,p:Position,target:TerrainTarget,offset:Point={x:0,y:0})=>{
       const recipe=recipes.get(id),frame=frameKey===undefined?recipe?.frames[0]:recipe?.frames.find(f=>f.key===frameKey);
       if(!frame||frame.status!=='ready'||!frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`])throw new Error('Terrain recipe unavailable: '+id+'/'+frameKey);
@@ -166,12 +166,14 @@ export class TerrainScene {
         const ground=target(base,'ground');
         addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,ground);
         if(base.z>=t.waterLevel)addPolygon(base,ground,diamond,'transparent',groundEdge);
-        // Only the upper perimeter of a continuous, same-height terrace block
-        // gets a rim; shared tile edges and the wall bottoms stay unoutlined.
-        if(visibleTerrace)for(const [i,d] of ([2,4,6,0] as const).entries()) {
+        // Outline the upper rim even when the lower cell's slope reaches this
+        // top: that continuous join is the normal edge of a natural plateau.
+        if(visibleTerrace||base.z>=t.waterLevel)for(const [i,d] of ([2,4,6,0] as const).entries()) {
           const neighbor=move(base,d),s=space.storage(neighbor);
-          if(space.containsHorizontal(neighbor)&&t.cells[s.v*read.map.width+s.h].ground===base.z&&at.get(key({...neighbor,z:base.z-1}))?.kind==='terrace')continue;
-          addPolygon(base,ground,[diamond[i],diamond[(i+1)%4]],'transparent',terraceEdge);
+          const nc=space.containsHorizontal(neighbor)?t.cells[s.v*read.map.width+s.h]:undefined;
+          const terraceRim=visibleTerrace&&!(nc?.ground===base.z&&at.get(key({...neighbor,z:base.z-1}))?.kind==='terrace');
+          const drop=nc&&Math.max(nc.ground,full?t.waterLevel:0)<base.z;
+          if(terraceRim||drop)addPolygon(base,ground,[diamond[i],diamond[(i+1)%4]],'transparent',rimEdge);
         }
       }
       if(mountain) {

@@ -576,5 +576,21 @@
   "garageRemovalHelp": "終点を除き、同じ軸の機関庫を通常線路に戻します。車両のある機関庫は残ります。対象の機関庫（車両保護分を含む）ごとに200,000を小計に加え、各通過マスでその小計を支出します。隙間でも同じ小計を支出します。残った終点を戻すには始点と終点を逆にします。",
   "confirmGarage": "機関庫の変更を確定",
   "garageGroundRequired": "機関庫の全マスをその場所の地表の高さに合わせてください。",
-  "garageDependency": "地形の復元情報や勾配線路は、先に専用ツールで撤去してください。"
+  "garageDependency": "地形の復元情報や勾配線路は、先に専用ツールで撤去してください。",
+  "signalTask": "信号",
+  "signalDescription": "地図の4方向に向けて鉄道用信号機を設置します。",
+  "signalHelp": "地図上の1点を選ぶか、始点 X・Yを入力します。空の交通マスや通常線路（曲線を含む）を直線の信号付き線路に置き換えます。",
+  "signalRules": "設置・撤去は無料です。分岐・特殊線路・障害物には設置できません。車両がある場合は設置も撤去もできません。停車待ちと制御の編集は列車の実装段階で対応します。",
+  "signalRemovalHelp": "選択した点の信号機を撤去し、同じ接続形状の通常線路に戻します。",
+  "confirmSignal": "信号の変更を確定",
+  "signalType": "信号の種類",
+  "signalDirection": "信号の向き",
+  "signalThreeAspect": "三灯式",
+  "signalShunting": "入替信号",
+  "signalNorth": "北 (0)",
+  "signalEast": "東 (2)",
+  "signalSouth": "南 (4)",
+  "signalWest": "西 (6)",
+  "signalNotFound": "この点には信号機がありません。",
+  "signalTarget": "空の交通マスまたは通常線路にのみ設置できます。"
 }

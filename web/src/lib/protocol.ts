@@ -37,7 +37,7 @@ const validateRailway=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/Railway
 export function parseRailwayPreview(value:unknown):import('../generated/contracts.ts').RailwayPreview {
   if(!validateRailway(value))throw new Error('Invalid railway preview');
   const result=value as import('../generated/contracts.ts').RailwayPreview;
-  if(BigInt(result.cost)<0n || (result.legal ? result.reason!==null||result.cells.length<2 : result.reason===null||result.cost!=='0'))throw new Error('Inconsistent railway preview');
+  if(BigInt(result.cost)<0n || (result.legal ? result.reason!==null||(result.query.infrastructure==='signal'?result.cells.length!==1:result.cells.length<2) : result.reason===null||result.cost!=='0'))throw new Error('Inconsistent railway preview');
   return result;
 }
 export function parseCornerPreview(value:unknown):CornerTerrainPreview {

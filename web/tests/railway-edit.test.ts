@@ -154,3 +154,17 @@ Deno.test('portal routing is explicit in the command schema and every preview fe
  assert.notEqual(railwayQueryKey({...exact,tunnelRouting:'portals'}),railwayQueryKey({...exact,tunnelRouting:'portals-auto'}));
  assert.throws(()=>parseRailwayPreview({...preview,query:{...exact,tunnelRouting:'anywhere'}}));
 });
+
+Deno.test('signal preview identities include type and direction',()=>{
+ const q={expectedWorldEpoch:'1',expectedGeometryRevision:'2',expectedContentVersion:'mixed-railway-content-1',from:{x:1,y:2,z:1},to:{x:1,y:2,z:1},action:'lay',routing:'source',infrastructure:'signal'} as const;
+ assert.equal(railwayQueryKey(q),railwayQueryKey({...q,signalType:'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}',signalDirection:0}));
+ assert.notEqual(railwayQueryKey(q),railwayQueryKey({...q,signalDirection:2}));
+ assert.notEqual(railwayQueryKey(q),railwayQueryKey({...q,signalType:'{6FA55842-E693-414f-A120-0A3D0C613B21}'}));
+});
+Deno.test('signal previews accept exactly one cell while route tools retain their minimum',()=>{
+ const signal={...preview,query:{...q,to:q.from,infrastructure:'signal' as const},cost:'0',cells:[preview.cells[0]]};
+ assert.deepEqual(parseRailwayPreview(signal),signal);
+ assert.throws(()=>parseRailwayPreview({...signal,cells:[]}));
+ assert.throws(()=>parseRailwayPreview({...signal,cells:preview.cells}));
+ assert.throws(()=>parseRailwayPreview({...signal,query:q}));
+});

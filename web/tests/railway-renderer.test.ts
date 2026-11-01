@@ -241,3 +241,13 @@ Deno.test('garage axes dispatch exact background and foreground crops with indep
   assert.equal(railwayOps(await TerrainScene.prepare(s,catalog,cache(),{season,night},0)).length,0);
  }
 });
+Deno.test('signal types and directions retain literal crops, picking and cuts across eight seasonal light variants',async()=>{
+ for(const id of ['{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}','{6FA55842-E693-414f-A120-0A3D0C613B21}'])for(const direction of [0,2,4,6])for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
+  const s=flat(1,1),v=rail(s,0,0,1,direction%4===0?10:4);v.traffic!.rail!.definition=definition(id);v.traffic!.rail!.direction=direction;
+  assert(validSnapshot(s));const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5);
+  const ops=railwayOps(scene),signal=ops.find(o=>'layer' in o&&o.layer.recipeId===id)!;assert('layer' in signal);
+  assert.deepEqual(signal.layer.frame.rectangle,[direction/2*32,0,32,24]);assert.deepEqual(signal.layer.frame.anchor,[0,8]);
+  const p=opaquePoint(scene,'1');assert.equal(scene.pick({x:p.a,y:p.b},view)?.kind,'railway');
+  assert.equal(railwayOps(await TerrainScene.prepare(s,catalog,cache(),{season,night},0)).length,0);
+ }
+});

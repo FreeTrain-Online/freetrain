@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage';
+export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -25,6 +25,7 @@ export const registry = {
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
   terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
+  signal: { kind: 'tool', tool: 'signal', labelKey: 'signalTask', icon: 'rail', availability: 'mutation' },
   garage: { kind: 'tool', tool: 'garage', labelKey: 'garageTask', icon: 'rail', availability: 'mutation' },
   tunnel: { kind: 'tool', tool: 'tunnel', labelKey: 'tunnelTask', icon: 'rail', availability: 'mutation' },
   girder: { kind: 'tool', tool: 'girder', labelKey: 'girderTask', icon: 'rail', availability: 'mutation' },
@@ -126,6 +127,7 @@ export const tools = [
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'girder', shortcut: 'V', label: registry.girder.labelKey, icon: 'girder' },
+  { id: 'signal', shortcut: 'F', label: registry.signal.labelKey, icon: '🚦' },
   { id: 'garage', shortcut: 'H', label: registry.garage.labelKey, icon: 'garage' },
   { id: 'tunnel', shortcut: 'U', label: registry.tunnel.labelKey, icon: 'tunnel' },
   { id: 'terrain', shortcut: 'G', label: registry.terrain.labelKey, icon: '⛰' },

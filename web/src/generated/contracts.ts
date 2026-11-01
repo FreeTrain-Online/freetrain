@@ -450,8 +450,10 @@ export interface RailwayQuery {
   action: "lay" | "remove";
   routing: "closest" | "source" | "alternate";
   from: Position;
+  signalType?: "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}" | "{6FA55842-E693-414f-A120-0A3D0C613B21}";
+  signalDirection?: 0 | 2 | 4 | 6;
   tunnelRouting?: "exact" | "portals" | "portals-auto";
-  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage";
+  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage" | "signal";
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;
