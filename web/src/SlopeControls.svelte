@@ -75,7 +75,7 @@
   {#if result}
     <p data-testid="slope-base">{text.slopeBase}: {result.base.x}, {result.base.y}, {result.base.z} → {result.base.z+1}</p>
     <details><summary>{text.slopeFootprint} ({result.members.length})</summary><ul class="rail-losses">{#each result.members as member}<li>{member.position.x}, {member.position.y}, {member.position.z} · {text[member.kind==='traffic'?'slopeRail':member.kind==='slopefiller'?'slopeInvisible':member.kind==='slopewall'?'slopeWall':'slopeSupport']}</li>{/each}</ul></details>
-    {#if result.losses.length}<details open><summary>{text.railLossDetails}</summary><ul class="rail-losses" data-testid="slope-losses">{#each result.losses as loss}<li>{text.railPierLoss}: {loss.position.x}, {loss.position.y}, {loss.position.z} · {text.owner}: {loss.ownerId} · {text.railwaySupportedOwner}: {loss.supportedOwnerId}</li>{/each}</ul></details>{/if}
+    {#if result.losses.length}<details open><summary>{text.railLossDetails}</summary><ul class="rail-losses" data-testid="slope-losses">{#each result.losses as loss}<li>{text[loss.kind==='pier'?'railPierLoss':'railAccessoryLoss']}: {loss.position.x}, {loss.position.y}, {loss.position.z} · {text.owner}: {loss.ownerId}{#if loss.supportedOwnerId} · {text.railwaySupportedOwner}: {loss.supportedOwnerId}{/if}</li>{/each}</ul></details>{/if}
     {#if result.members.some(m=>m.position.z>heightCut)}<button onclick={()=>onreveal(Math.max(...result!.members.map(m=>m.position.z)))}>{text.revealPreview}</button>{/if}
   {/if}
   <details><summary>{text.slopeDetails}</summary><p class="hint">{text.slopeRemovalHelp}</p><p class="hint">{text.slopeGhostHelp}</p><p class="hint">{text.railCutHelp}</p></details>

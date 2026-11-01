@@ -106,9 +106,9 @@ changes without a terrain revision. Assets and the canvas remain shared.
 
 Save8/protocol6 remain current. These are additive query/command contracts; old
 save formats stay unsupported. The 8,192 railway-voxel and 8,192 journal-entry
-limits remain admission bounds, not measured city capacity. Terrain editing in a
-mixed world remains unavailable until the mixed cross-tool handoff; prepare
-terrain before laying rail. Slopes, bridge/girder/tunnel/garage/signal/pole tools,
+limits remain admission bounds, not measured city capacity. At P4-09, terrain
+editing in mixed worlds remained unavailable. [P4-20](web-parity-cross-tool.md)
+now supplies that handoff with shared occupancy, allocation and stale-draft fences. Slopes, bridge/girder/tunnel/garage/signal/pole tools,
 speed limits, moving trains, stations and roads retain their later phase owners.
 
 ## Workflow and translation reconciliation

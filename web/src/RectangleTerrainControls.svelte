@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { railwayRevision } from './lib/railway-edit.ts';
   import { untrack } from 'svelte';
   import type { CornerTerrainQuery, CornerTerrainPreview, Position } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
@@ -26,18 +27,18 @@
   async function check(mode=action,profile=soft){
     if(blocked||authoring&&action==='plantForest'&&!selectedForest)return;reset();const id=version,read=view.read;if(!read?.terrain)return;
     if(![x,y,z,endX,endY].every(Number.isSafeInteger)){status='failed';return;}
-    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:read.terrain.geometryRevision,
+    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:railwayRevision(read)!,
       position:{x,y,z},action:mode,offsetX:null,offsetY:null,stroke:null,rectangle:{end:{x:endX,y:endY,z},soft:authoring||terrace?false:profile},...(authoring&&mode==='plantForest'&&selectedForest?{forest:{packId:selectedForest.binding.packId,contributionId:selectedForest.binding.contributionId,recipeId:selectedForest.binding.contributionId}}:{})};
-    requestFence=`${read.worldEpoch}/${read.terrain.geometryRevision}`;status='checking';request=new AbortController();
+    requestFence=`${read.worldEpoch}/${railwayRevision(read)!}`;status='checking';request=new AbortController();
     try{
       const preview=await model.previewCorner(target,request.signal);
-      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||target.expectedGeometryRevision!==view.read?.terrain?.geometryRevision)return;
+      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||target.expectedGeometryRevision!==railwayRevision(view.read))return;
       query=target;result=preview;status='ready';onpreview(target.position,authoring||terrace?undefined:target.rectangle!.end,authoring||terrace?[...preview.changes.map(c=>({position:c.position,skipped:false})),...preview.skipped.map(c=>({position:c.position,skipped:true}))]:undefined);
     }catch{if(id===version)status='failed';}
   }
   function pick(p:NonNullable<typeof picked>){
     if(blocked)return;
-    if(!anchor){reset();x=p.position.x;y=p.position.y;z=p.position.z;anchor={x,y,z};anchorFence=`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`;onpreview(anchor);}
+    if(!anchor){reset();x=p.position.x;y=p.position.y;z=p.position.z;anchor={x,y,z};anchorFence=`${view.read?.worldEpoch}/${railwayRevision(view.read)}`;onpreview(anchor);}
     else {endX=p.position.x;endY=p.position.y;anchor=undefined;void check(!authoring&&!terrace&&p.reverse?'repair':action,!authoring&&!terrace&&(p.soft||soft));}
   }
   async function commit(){
@@ -51,9 +52,9 @@
   }
   $effect(()=>{const p=picked;if(p)untrack(()=>pick(p));});
   $effect(()=>{
-    if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`){clear();status='stale';}
-    if(anchor&&anchorFence!==`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`){clear();status='stale';}
-    if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||view.read?.terrain?.geometryRevision!==result.geometryRevision)){
+    if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`){clear();status='stale';}
+    if(anchor&&anchorFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`){clear();status='stale';}
+    if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||railwayRevision(view.read)!==result.geometryRevision)){
       reset();anchor=undefined;status='stale';
     }
     if(view.connection!=='ready'||view.role==='observer'||authoring&&!view.read?.terrain?.constructionMode)clear();

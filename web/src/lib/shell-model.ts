@@ -162,7 +162,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewCorner)throw new Error('Unavailable');
       const result=await active.previewCorner(query,signal);
-      if(disposed||current!==generation||client!==active||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.terrain?.geometryRevision!==query.expectedGeometryRevision)throw new Error('Stale corner preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision)throw new Error('Stale corner preview');
       return result;
     },
     async previewSpatial(query:SpatialQuery,signal:AbortSignal) {

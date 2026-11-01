@@ -6,15 +6,33 @@ namespace FreeTrain.Online.Session;
 
 public sealed partial class SessionHost
 {
+    private long TerrainGeometryRevision => mixedState?.World.Revision ?? terrainState!.World.Revision;
+    private void PublishTerrain(TerrainWorld candidate, bool? mode = null, RandomStreamsState? random = null)
+    {
+        if (mixedState is {} mixed)
+        {
+            var construction=MixedTerrain.Replace(mixed.Construction,candidate,mixed.Clock.Time);
+            var after=mixed.Successor(mixed.Revision,construction,mode ?? mixed.ConstructionMode,random);
+            MixedWire.ValidateTransition(mixed,after);
+            mixedState=after;
+        }
+        else
+        {
+            var state=terrainState!;
+            SaveCodec.ValidateTerrainAdmission(new TerrainSessionState(candidate,state.Provenance,mode ?? state.ConstructionMode,
+                state.Clock.Capture(),state.Paused,random ?? state.Random.Capture(),checked(state.Revision+1)));
+            state.Replace(state.Revision,candidate,mode ?? state.ConstructionMode,random);
+        }
+    }
     private (TerrainWorld World, CornerTerrainDraft Draft, CornerTerrainPlan[] Plans) PlanCorner(CornerTerrainQuery query)
     {
         if (query.ExpectedWorldEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
-        var world = terrainState?.World ?? throw new InvalidOperationException("operationUnavailable");
-        if (query.ExpectedGeometryRevision != world.Revision) throw new InvalidOperationException("staleRevision");
-        if (terrainState!.Revision == long.MaxValue) throw new InvalidOperationException("operationUnavailable");
+        var world = mixedState?.World.Terrain ?? terrainState?.World ?? throw new InvalidOperationException("operationUnavailable");
+        if (query.ExpectedGeometryRevision != TerrainGeometryRevision) throw new InvalidOperationException("staleRevision");
+        if ((mixedState?.Revision ?? terrainState!.Revision) == long.MaxValue) throw new InvalidOperationException("operationUnavailable");
         if (query.Forest != null) throw new ArgumentException("invalidInput");
         if (query.Stroke?.Length > 63) throw new ArgumentException("invalidInput");
-        var draft = new CornerTerrainDraft(world);
+        var draft = mixedState is {} mixed ? MixedTerrain.Draft(mixed.World) : new CornerTerrainDraft(world);
         if(TerraceTerrain.IsAction(query.Action))
         {
             if(query.Position==null||query.OffsetX!=null||query.OffsetY!=null||query.Stroke?.Length>0)
@@ -67,7 +85,7 @@ public sealed partial class SessionHost
             if(AuthoringTerrain.IsAction(query.Action))return PreviewAuthoring(query);
             var (world,_,plans) = PlanCorner(query);
             var first = plans[0];
-            return new(WorldEpoch,world.Revision,new(first.Position.X,first.Position.Y,first.Position.Z),first.Action,plans.Any(p=>p.Legal),
+            return new(WorldEpoch,TerrainGeometryRevision,new(first.Position.X,first.Position.Y,first.Position.Z),first.Action,plans.Any(p=>p.Legal),
                 plans.Any(p=>p.Legal) ? null : first.Reason,0,
                 plans.SelectMany(p=>p.Changes).Select(c => new CornerTerrainChangeRead(new(c.Position.X,c.Position.Y,c.Position.Z),c.BeforeGround,c.AfterGround,
                     c.Before.NE,c.Before.SE,c.Before.SW,c.Before.NW,c.After.NE,c.After.SE,c.After.SW,c.After.NW,
@@ -82,11 +100,7 @@ public sealed partial class SessionHost
             var (world,draft,plans) = PlanCorner(query);
             if (!plans.Any(p=>p.Legal)) return "invalidPlacement";
             var candidate = draft.Finish();
-            var state = terrainState!;
-            // Validate durable admission before publication. No financial booking or RNG draws.
-            SaveCodec.ValidateTerrainAdmission(new TerrainSessionState(candidate,state.Provenance,state.ConstructionMode,
-                state.Clock.Capture(),state.Paused,state.Random.Capture(),checked(state.Revision+1)));
-            state.Replace(state.Revision,candidate,state.ConstructionMode);
+            PublishTerrain(candidate);
             return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }

@@ -79,8 +79,11 @@ confirmation stay in the building tool.
 The catalog supports English/Japanese and a compact expandable phone layout.
 Cards and railway object inspection show the original XML plugin author/title.
 
-Shape terrain before laying rail;
-mixed-world terrain editing remains a later cross-tool step.
+[P4-20 Cross-tool integration](doc/web-parity-cross-tool.md) keeps terrain tools
+available in railway worlds. They protect occupied cells, share the entity
+allocator and preserve tunnel/terrace backups. A peer railway edit invalidates an
+open terrain preview. Rail/road crossing and protected car/platform interfaces
+are verified with trusted fixtures; their real gameplay remains P5/P6/P7.
 
 # FreeTrain Online
 

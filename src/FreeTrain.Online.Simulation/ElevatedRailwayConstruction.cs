@@ -72,8 +72,8 @@ internal static class ElevatedRailwayConstruction
                 cells.Add(new(p,d.Opposite,d,rail,after,car));
                 if (rail==after) continue;
                 var traffic=(before?.Traffic ?? new()) with { Rail=after };
-                if (after == null && traffic.Accessory is {} a && world.Profile.Resolve(a.Definition).Handler==RailwayHandler.Crossing)
-                { losses.Add(new(p,a));traffic=traffic with { Accessory=null }; }
+                traffic=TrafficLifecycle.Refresh(world.Profile,traffic);
+                if (before?.Traffic?.Accessory is {} a && traffic.Accessory!=a) losses.Add(new(p,a));
                 if (after==null && traffic.Road==null && traffic.Accessory==null)
                 { voxels.Remove(p);entities.Remove(before!.OwnerId); }
                 else if (before != null)
@@ -122,6 +122,7 @@ internal static class ElevatedRailwayConstruction
             var candidate=world.Replace(world.Revision,world.Terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),voxels.Values,world.Slopes);
             return new(Topology(),candidate,booking,[],removed,elected,losses);
         }
+        catch (InvalidOperationException e) when(e.Message=="unavailableCrossingBinding") { return Reject(e.Message); }
         catch (OverflowException) { return Reject("constructionOverflow"); }
     }
 

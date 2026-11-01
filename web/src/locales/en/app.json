@@ -441,7 +441,7 @@
   "paintChanges": "Changes",
   "paintStop": "Stop painting",
   "mixedWorld": "Railway world",
-  "mixedWorldHint": "Build, remove and inspect normal track and four-position slopes. Shape terrain before laying railway; special infrastructure follows in later steps.",
+  "mixedWorldHint": "Build, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.",
   "railway": "Railway",
   "railwaySupport": "Slope support",
   "railwayAccessory": "Rail accessory",

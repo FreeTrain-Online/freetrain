@@ -19,6 +19,7 @@ public static class PoleRailwayConstruction
         var before=world.At(p);var traffic=before?.Traffic;var rail=traffic?.Rail;
         if(removal ? traffic?.Accessory is not {} a || world.Profile.Resolve(a.Definition).Handler!=RailwayHandler.Pole
             : rail==null || rail.Pattern is not (4 or 10))return Reject(removal?"poleNotFound":"poleTarget");
+        if(removal && traffic!.Rail==null && traffic.Road==null && traffic.Car!=null)return Reject("carOccupied");
         var binding=world.Profile.Bindings.SingleOrDefault(b=>b.Handler==RailwayHandler.Pole&&b.Reference.ContributionId==type);
         if(binding==null)return Reject("unavailableRailBinding");
         // Two opposite cardinal ports; subtype and cars do not exclude placement.
@@ -27,6 +28,7 @@ public static class PoleRailwayConstruction
         cells.Add(new(p,new(0),new(4),rail,rail,false));
         try
         {
+            after=TrafficLifecycle.Refresh(world.Profile,after);
             var entities=world.Spatial.Entities.ToDictionary(e=>e.Id);var voxels=world.Voxels.ToDictionary(v=>v.Position);
             if(after.Rail==null&&after.Road==null&&after.Car==null&&after.Platform==null&&after.Accessory==null){voxels.Remove(p);entities.Remove(before!.OwnerId);}
             else{voxels[p]=before! with{Traffic=after};entities[before!.OwnerId]=entities[before.OwnerId] with{Revision=checked(entities[before.OwnerId].Revision+1)};}
@@ -34,6 +36,7 @@ public static class PoleRailwayConstruction
             var losses=traffic!.Accessory is {} old?new[]{new RailwayComponentLoss(p,old)}:[];
             return new(Topology(),candidate,ConstructionBooking.None,[],[],[],losses,RailwayHandler.Pole);
         }
+        catch(InvalidOperationException e) when(e.Message=="unavailableCrossingBinding"){return Reject(e.Message);}
         catch(OverflowException){return Reject("constructionOverflow");}
     }
     public static MixedConstructionState Apply(MixedConstructionState state,RailwayConstructionPlan plan,GameTime time)

@@ -441,7 +441,7 @@
   "paintChanges": "変更回数",
   "paintStop": "ペイントを停止",
   "mixedWorld": "鉄道ワールド",
-  "mixedWorldHint": "通常線路と4位置の勾配線路を敷設・撤去・確認できます。地形は線路を敷く前に整えてください。特殊設備は今後の手順で追加します。",
+  "mixedWorldHint": "鉄道設備を建設・撤去・確認できます。地形ツールは占有セルを保護し、トンネルや雛壇の復元情報を保持します。",
   "railway": "鉄道",
   "railwaySupport": "勾配の支柱",
   "railwayAccessory": "線路付属物",

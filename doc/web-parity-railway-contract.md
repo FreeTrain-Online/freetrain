@@ -265,13 +265,17 @@ not a generic min/max formula for arbitrary numeric speeds. Positive station
 waits return earlier, and Outside countdown uses native speed. P4 authoring tests
 cannot close P5 timing or EXAV-DEP-013/014 train defects.
 
-**Road TODO disposition / P4-20, P7:** normal construction has no general road
-conflict check; TrafficVoxel permits component coexistence. Preserve that source
-fact rather than inventing a broad road exclusion. Crossing accessory appears
+**Road TODO disposition / P4-20, P7:**
+[P4-20 integration and dependency matrix](web-parity-cross-tool.md) records the
+implemented cross-tool policies and trusted interface evidence. Normal construction
+has no general road conflict check; TrafficVoxel permits component coexistence.
+Preserve that source fact rather than inventing a broad road exclusion. Crossing accessory appears
 only with a straight two-edge cardinal rail and perpendicular road edges **when
 the accessory slot is empty**. An existing pole suppresses automatic crossing
-creation; losing crossing conditions removes only an RRCrossing. P4 must use
-trusted road/car/platform component fixtures for these interfaces. It does not
+creation; null pole removal recreates the crossing if its conditions still hold.
+Losing crossing conditions removes only an RRCrossing. Source slope patterns also
+have two opposite cardinal ports, including their height transitions; there is
+no flat-only exclusion. P4 must use trusted road/car/platform component fixtures for these interfaces. It does not
 claim playable P7 roads, P6 platforms or P5 trains. Unknown/unrepresentable
 component combinations fail canonical validation; that is not a new gameplay
 road-conflict rule. Crossing behavior is pinned through Traffic and RRCrossing.

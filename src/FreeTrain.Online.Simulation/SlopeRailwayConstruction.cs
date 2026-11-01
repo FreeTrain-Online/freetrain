@@ -23,17 +23,18 @@ public sealed class SlopeRailwayConstructionPlan
     public ImmutableArray<RailwayVoxel> Members { get; }
     public ImmutableArray<RailwayVoxel> RemovedPiers { get; }
     public ImmutableArray<RailwayPierPlacement> ElectedPiers { get; }
+    public ImmutableArray<RailwayComponentLoss> ComponentLosses { get; }
     internal MixedWorld? Candidate { get; }
     internal SlopeRailwayConstructionPlan(MixedWorld source, SlopeOperation operation, Location selected,
         Location @base, Heading climb, long? ownerId, string? reason = null, MixedWorld? candidate = null,
         ConstructionBooking? booking = null, IEnumerable<SlopeRailPosition>? rails = null,
         IEnumerable<RailwayVoxel>? members = null, IEnumerable<RailwayVoxel>? removed = null,
-        IEnumerable<RailwayPierPlacement>? elected = null)
+        IEnumerable<RailwayPierPlacement>? elected = null, IEnumerable<RailwayComponentLoss>? losses = null)
     {
         Source=source; Operation=operation; Selected=selected; Base=@base; Climb=climb; OwnerId=ownerId;
         Reason=reason; Candidate=candidate; Booking=booking ?? ConstructionBooking.None;
         Rails=rails?.ToImmutableArray() ?? []; Members=members?.ToImmutableArray() ?? [];
-        RemovedPiers=removed?.ToImmutableArray() ?? []; ElectedPiers=elected?.ToImmutableArray() ?? [];
+        RemovedPiers=removed?.ToImmutableArray() ?? []; ElectedPiers=elected?.ToImmutableArray() ?? []; ComponentLosses=losses?.ToImmutableArray() ?? [];
     }
 }
 
@@ -99,6 +100,7 @@ public static class SlopeRailwayConstruction
             long Allocate() { var id=nextId; nextId=checked(nextId+1); return id; }
             var rails=new List<SlopeRailPosition>(); var members=new List<RailwayVoxel>();
             var removed=new List<RailwayVoxel>(); var elected=new List<RailwayPierPlacement>();
+            var losses=new List<RailwayComponentLoss>();
             if (operation==SlopeOperation.Build)
             {
                 // Validate all eight stored cells before binding, allocating or booking.
@@ -162,7 +164,8 @@ public static class SlopeRailwayConstruction
                             // Source tool clears RAIL, preserving road/pole components.
                             // Surviving traffic receives a new standalone owner; the
                             // eight-cell slope owner must never become a partial ramp.
-                            var t=member.Traffic with { Rail=null };
+                            var t=TrafficLifecycle.Refresh(world.Profile,member.Traffic with { Rail=null });
+                            if(member.Traffic.Accessory is {} a && t.Accessory!=a)losses.Add(new(member.Position,a));
                             if (t.Road!=null || t.Accessory!=null)
                             {
                                 var id=Allocate(); entities.Add(id,SingleOwner(id,world.Profile.TrafficOwner,member.Position));
@@ -187,7 +190,7 @@ public static class SlopeRailwayConstruction
                 _=>ConstructionBooking.None };
             var candidate=world.Replace(world.Revision,world.Terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),voxels.Values,slopes);
             return new(world,operation,selected,@base,climb,ownerId,candidate:candidate,booking:booking,
-                rails:rails.OrderBy(r=>r.Level),members:members,removed:removed,elected:elected);
+                rails:rails.OrderBy(r=>r.Level),members:members,removed:removed,elected:elected,losses:losses);
         }
         catch (OverflowException) { return Reject("constructionOverflow"); }
     }

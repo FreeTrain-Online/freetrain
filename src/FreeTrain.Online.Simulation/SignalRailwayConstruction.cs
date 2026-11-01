@@ -42,7 +42,8 @@ public static class SignalRailwayConstruction
         try
         {
             var entities=world.Spatial.Entities.ToDictionary(e=>e.Id);var voxels=world.Voxels.ToDictionary(v=>v.Position);var nextId=world.Spatial.NextEntityId;
-            var traffic=(before?.Traffic??new()) with{Rail=after};
+            var traffic=TrafficLifecycle.Refresh(world.Profile,(before?.Traffic??new()) with{Rail=after});
+            var losses=before?.Traffic?.Accessory is {} old && old!=traffic.Accessory ? new[]{new RailwayComponentLoss(p,old)} : [];
             if(before!=null){voxels[p]=before with{Traffic=traffic};entities[before.OwnerId]=entities[before.OwnerId] with{Revision=checked(entities[before.OwnerId].Revision+1)};}
             else{
                 var id=nextId;nextId=checked(nextId+1);
@@ -51,8 +52,9 @@ public static class SignalRailwayConstruction
             }
             if(voxels.Count>NormalRailwayConstruction.MaximumRailwayVoxels)return Reject("railwayCapacityLimit");
             var candidate=world.Replace(world.Revision,world.Terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),voxels.Values,world.Slopes);
-            return new(Topology(),candidate,ConstructionBooking.None,[],[],[],[],RailwayHandler.Signal);
+            return new(Topology(),candidate,ConstructionBooking.None,[],[],[],losses,RailwayHandler.Signal);
         }
+        catch(InvalidOperationException e) when(e.Message=="unavailableCrossingBinding"){return Reject(e.Message);}
         catch(OverflowException){return Reject("constructionOverflow");}
     }
     public static MixedConstructionState Apply(MixedConstructionState state,RailwayConstructionPlan plan,GameTime time)

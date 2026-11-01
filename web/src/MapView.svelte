@@ -74,7 +74,7 @@
   let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
-  const terrain = $derived(!!view.read && isTerrainWorld(view.read));
+  const terrain = $derived(!!view.read && (isTerrainWorld(view.read) || isMixedWorld(view.read)));
   const railway = $derived(terrain || !!view.read && isMixedWorld(view.read));
   const reference = $derived(isReferenceWorld(view.read) || terrain || !!view.read && isMixedWorld(view.read));
   const worldHint = $derived(view.read && isMixedWorld(view.read) ? text.mixedWorldHint : terrain ? text.terrainWorldHint : text.referenceWorldHint);

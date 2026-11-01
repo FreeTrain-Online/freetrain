@@ -25,6 +25,7 @@ public static class GarageRailwayConstruction
         var voxels=world.Voxels.ToDictionary(v=>v.Position);
         var nextId=world.Spatial.NextEntityId;
         var matches=new List<bool>();
+        var losses=new List<RailwayComponentLoss>();
         try
         {
             for(var i=0;i<=length;i++)
@@ -52,7 +53,8 @@ public static class GarageRailwayConstruction
                 }
                 cells.Add(new(p,d.Opposite,d,rail,after,car));
                 if(removal&&rail==after)continue;
-                var traffic=(before?.Traffic??new()) with{Rail=after};
+                var traffic=TrafficLifecycle.Refresh(world.Profile,(before?.Traffic??new()) with{Rail=after});
+                if(before?.Traffic?.Accessory is {} a && traffic.Accessory!=a)losses.Add(new(p,a));
                 if(before!=null)
                 {
                     voxels[p]=before with{Traffic=traffic};
@@ -67,8 +69,9 @@ public static class GarageRailwayConstruction
             }
             if(voxels.Count>NormalRailwayConstruction.MaximumRailwayVoxels)return Reject("railwayCapacityLimit");
             var candidate=world.Replace(world.Revision,world.Terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),voxels.Values,world.Slopes);
-            return new(Topology(),candidate,removal?RailwayBooking.GarageRemoval(matches):RailwayBooking.GarageBuild(length+1),[],[],[],[],RailwayHandler.Garage);
+            return new(Topology(),candidate,removal?RailwayBooking.GarageRemoval(matches):RailwayBooking.GarageBuild(length+1),[],[],[],losses,RailwayHandler.Garage);
         }
+        catch(InvalidOperationException e) when(e.Message=="unavailableCrossingBinding"){return Reject(e.Message);}
         catch(OverflowException){return Reject("constructionOverflow");}
     }
     public static MixedConstructionState Apply(MixedConstructionState state,RailwayConstructionPlan plan,GameTime time)

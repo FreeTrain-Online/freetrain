@@ -28,7 +28,7 @@ public static class AuthoringTerrain
         route.Add((here,previous is {} last?Bit(last.Opposite):0));return route.ToImmutable();
     }
     public static AuthoringTerrainPlan Plan(TerrainWorld world,Location start,Location end,string action,
-        DefinitionReference? forest,RandomStreams random)
+        DefinitionReference? forest,RandomStreams random, long? nextEntityId = null, SpatialIndex? protectedSpatial = null)
     {
         if(!IsAction(action)||!world.Space.ContainsVoxel(start)||!world.Space.ContainsVoxel(end)||start.Z!=end.Z)
             throw new ArgumentException("Invalid authoring selection.");
@@ -50,11 +50,11 @@ public static class AuthoringTerrain
             if(forest!=null)throw new ArgumentException("Unexpected forest.");
             sites=CreekRoute(start,end);
         }
-        var draft=new CornerTerrainDraft(world);var plans=ImmutableArray.CreateBuilder<CornerTerrainPlan>();
+        var draft=new CornerTerrainDraft(world,nextEntityId,protectedSpatial);var plans=ImmutableArray.CreateBuilder<CornerTerrainPlan>();
         var decorations=ImmutableArray.CreateBuilder<AuthoringDecoration>();
         foreach(var (p,bits) in sites)
         {
-            string? reason=null;var entity=world.Spatial.At(p).Entity;var occupant=world.OccupantAt(p);
+            string? reason=null;var entity=draft.At(p).Entity;var occupant=draft.OccupantAt(p);
             int ground=0;
             if(!world.Space.ContainsVoxel(p))reason="outside";
             else

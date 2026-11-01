@@ -187,7 +187,7 @@ public sealed class MixedWorld
             a.Direction is < 0 or > 7 || Profile.Resolve(a.Definition).Handler == RailwayHandler.Pole && a.Direction > 1)) throw new ArgumentException("Invalid accessory component.");
         if (t.Accessory is {} crossing && Profile.Resolve(crossing.Definition).Handler == RailwayHandler.Crossing &&
             (t.Rail == null || t.Road == null ||
-                !(t.Rail.Pattern == 10 && (t.Road.Edges & 68) == 68 || t.Rail.Pattern == 4 && (t.Road.Edges & 17) == 17)))
+                !TrafficLifecycle.HasCrossing(t)))
             throw new ArgumentException("Invalid crossing components.");
         if (t.Car is {} car && (Profile.Resolve(car.Definition).Handler != RailwayHandler.Car || car.TrainId < 1 || car.CarId < 1))
             throw new ArgumentException("Invalid car reference.");

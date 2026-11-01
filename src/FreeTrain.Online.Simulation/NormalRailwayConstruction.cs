@@ -110,18 +110,10 @@ public static class NormalRailwayConstruction
                 {
                     var before=world.At(p);
                     var components=(before?.Traffic ?? new()) with { Rail=cell.After };
-                    var crossing=components.Rail is {} r && components.Road is {} road &&
-                        (r.Pattern == 10 && (road.Edges & 68) == 68 || r.Pattern == 4 && (road.Edges & 17) == 17);
-                    if (!crossing && components.Accessory is {} a && world.Profile.Resolve(a.Definition).Handler == RailwayHandler.Crossing)
-                    {
-                        losses.Add(new(p,a)); components=components with { Accessory=null };
-                    }
-                    else if (crossing && components.Accessory == null)
-                    {
-                        var matches=world.Profile.Bindings.Where(b=>b.Handler==RailwayHandler.Crossing).Take(2).ToArray();
-                        if (matches.Length != 1) return Reject("unavailableCrossingBinding");
-                        components=components with { Accessory=new(matches[0].Reference) };
-                    }
+                    var previousAccessory=components.Accessory;
+                    components=TrafficLifecycle.Refresh(world.Profile,components);
+                    if (previousAccessory != null && components.Accessory != previousAccessory)
+                        losses.Add(new(p,previousAccessory));
                     if (components.Rail == null && components.Road == null && components.Accessory == null)
                     {
                         voxels.Remove(p); entities.Remove(before!.OwnerId);
@@ -168,6 +160,7 @@ public static class NormalRailwayConstruction
             var candidate=world.Replace(world.Revision,terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),voxels.Values,world.Slopes);
             return new(topology,candidate,booking,reclaimed.Values,removed,elected,losses);
         }
+        catch (InvalidOperationException e) when (e.Message == "unavailableCrossingBinding") { return Reject(e.Message); }
         catch (OverflowException) { return Reject("constructionOverflow"); }
     }
 

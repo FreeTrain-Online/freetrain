@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { railwayRevision } from './lib/railway-edit.ts';
   import { primaryAction } from './lib/primary-action.ts';
   import type { PaintState } from './lib/terrain-painter.ts';
   import RectangleTerrainControls from './RectangleTerrainControls.svelte';
@@ -16,11 +17,11 @@
   const activeMode=$derived(view.read?.terrain?.constructionMode??false);
   async function changeMode(){
     const read=view.read;if(!read?.terrain||view.role!=='owner'||view.pending||modeUncertain)return;
-    if(modeFence!==`${read.worldEpoch}/${read.terrain.geometryRevision}`){modeReview=false;onreset();return;}
-    const accepted=await model.send({kind:'setAuthoringMode',expectedGeometryRevision:read.terrain.geometryRevision,enabled:!activeMode});
+    if(modeFence!==`${read.worldEpoch}/${railwayRevision(read)!}`){modeReview=false;onreset();return;}
+    const accepted=await model.send({kind:'setAuthoringMode',expectedGeometryRevision:railwayRevision(read)!,enabled:!activeMode});
     if(accepted)modeReview=false;else if(view.feedback==='unresolved')modeUncertain=true;
   }
-  $effect(()=>{if(modeFence&&(modeFence!==`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`||view.role!=='owner'||view.connection!=='ready')){modeReview=false;modeFence=undefined;onreset();}});
+  $effect(()=>{if(modeFence&&(modeFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`||view.role!=='owner'||view.connection!=='ready')){modeReview=false;modeFence=undefined;onreset();}});
   let rectangleControls=$state<{cancelDraft:()=>boolean}>();
   const text=$derived(messages[view.locale]);
   let x=$state(0),y=$state(0),z=$state(1),action=$state<'raise'|'lower'>('raise'),terraceAction=$state<'placeTerrace'|'removeTerrace'|'placeCut'|'removeCut'>('placeTerrace');
@@ -39,17 +40,17 @@
     if(blocked)return;reset();const id=version,read=view.read;if(!read?.terrain)return;
     if(p){x=p.position.x;y=p.position.y;z=p.position.z;}
     if(![x,y,z].every(Number.isSafeInteger)){status='failed';return;}
-    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:read.terrain.geometryRevision,
+    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:railwayRevision(read)!,
       position:{x,y,z},stroke:null,action:scope==='terrace'?terraceAction:p?.reverse?(action==='raise'?'lower':'raise'):action,offsetX:scope==='terrace'?null:p?.offsetX??null,offsetY:scope==='terrace'?null:p?.offsetY??null};
     const site:CornerTerrainSite={position:target.position,action:target.action as 'raise'|'lower',offsetX:target.offsetX,offsetY:target.offsetY};
     if(scope==='terrace'||!p?.append&&!append)sites=[];
     if(sites.length<64)sites.push(site);
     count=sites.length;
     const first=sites[0];target.position=first.position;target.action=first.action;target.offsetX=first.offsetX;target.offsetY=first.offsetY;target.stroke=sites.slice(1);
-    requestFence=`${read.worldEpoch}/${read.terrain.geometryRevision}`;status='checking';request=new AbortController();
+    requestFence=`${read.worldEpoch}/${railwayRevision(read)!}`;status='checking';request=new AbortController();
     try{
       const preview=await model.previewCorner(target,request.signal);
-      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||target.expectedGeometryRevision!==view.read?.terrain?.geometryRevision)return;
+      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||target.expectedGeometryRevision!==railwayRevision(view.read))return;
       query=target;result=preview;status='ready';onpreview(preview.position);
     }catch{if(id===version)status='failed';}
   }
@@ -64,8 +65,8 @@
   }
   $effect(()=>{const p=picked;if(p&&scope!=='paint'&&scope!=='rectangle'&&scope!=='authoring'&&!(scope==='terrace'&&terraceBatch)&&!modeReview)untrack(()=>void check(p));});
   $effect(()=>{
-    if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`){clear();status='stale';}
-    if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||view.read?.terrain?.geometryRevision!==result.geometryRevision)){
+    if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`){clear();status='stale';}
+    if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||railwayRevision(view.read)!==result.geometryRevision)){
       version++;request?.abort();sites=[];count=0;result=undefined;status='stale';onpreview(undefined);
     }
     if(view.connection!=='ready'||view.role==='observer'){clear();}
@@ -82,7 +83,7 @@
       {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="status">{text[view.feedback]}</p>{/if}
       <div class="form-actions"><button class="primary" disabled={blocked||modeUncertain} onclick={changeMode}>{text.confirmAuthoringMode}</button><button disabled={view.pending} onclick={()=>{modeReview=false;onreset();}}>{text.cancel}</button></div>
     {:else}
-      <button disabled={blocked||modeUncertain} onclick={()=>{clear();rectangleControls?.cancelDraft();onreset();modeFence=`${view.read?.worldEpoch}/${view.read?.terrain?.geometryRevision}`;modeReview=true;}}>{activeMode?text.exitAuthoring:text.enterAuthoring}</button>
+      <button disabled={blocked||modeUncertain} onclick={()=>{clear();rectangleControls?.cancelDraft();onreset();modeFence=`${view.read?.worldEpoch}/${railwayRevision(view.read)}`;modeReview=true;}}>{activeMode?text.exitAuthoring:text.enterAuthoring}</button>
     {/if}
   {/if}
 </section>

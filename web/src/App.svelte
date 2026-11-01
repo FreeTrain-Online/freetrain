@@ -230,7 +230,7 @@
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
-        {#if terrain||mixed}<button disabled={clockDisabled||!terrain} title={!terrain?text.terrainUnavailable:undefined} onclick={()=>requestTool('terrain')}>{text.terrainTool}</button>{/if}
+        {#if terrain||mixed}<button disabled={clockDisabled} onclick={()=>requestTool('terrain')}>{text.terrainTool}</button>{/if}
         <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
         {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={id === 'catalog' && reference ? catalogOpen && !panel : panel === id} aria-controls={id === 'catalog' && reference ? 'building-catalog' : 'primary-panel'} onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>

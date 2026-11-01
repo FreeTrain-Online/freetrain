@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 namespace FreeTrain.Online.Simulation;
 
 // Sparse detached working state for ordered corner, rectangle and repair edits. No world-sized clone per site.
-public sealed class CornerTerrainDraft(TerrainWorld original, long? nextEntityId = null)
+public sealed class CornerTerrainDraft(TerrainWorld original, long? nextEntityId = null, SpatialIndex? protectedSpatial = null)
 {
     private readonly Dictionary<int,TerrainCell> cells = [];
     private readonly Dictionary<Location,(SpatialEntity Entity,TerrainOccupant Occupant)?> entities = [];
@@ -13,7 +13,7 @@ public sealed class CornerTerrainDraft(TerrainWorld original, long? nextEntityId
     public TerrainCell Cell(int h,int v) => cells.GetValueOrDefault(v*Space.HorizontalSize+h,original.Cell(h,v));
     public VoxelOccupancy At(Location p) => !Space.ContainsVoxel(p) ? new(VoxelStatus.Outside,null,true) :
         entities.TryGetValue(p,out var value) ? value is {} pair ? new(VoxelStatus.Occupied,pair.Entity,pair.Entity.Footprint.Members[0].Transparent) :
-            new(VoxelStatus.Vacant,null,true) : original.Spatial.At(p);
+            new(VoxelStatus.Vacant,null,true) : protectedSpatial?.At(p) ?? original.Spatial.At(p);
     public TerrainOccupant? OccupantAt(Location p) => entities.TryGetValue(p,out var value) ? value?.Occupant : original.OccupantAt(p);
     public int FineHeight(Location p,int corner)
     {

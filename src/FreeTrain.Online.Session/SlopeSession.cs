@@ -44,7 +44,7 @@ public sealed partial class SessionHost
             return new(query,reason == null,reason,reason == null?plan.Booking.Total:0,P(plan.Base),plan.Climb.Index,members,
                 plan.Rails.Select(r=>new SlopeRailPositionRead(r.Level,P(r.Position),r.Pattern,r.ZDiff,r.ZAngle.Index)).ToArray(),
                 plan.ElectedPiers.Select(p=>P(p.Position)).ToArray(),
-                plan.RemovedPiers.Select(v=>new RailwayLossRead("pier",P(v.Position),v.OwnerId,v.SupportedOwnerId)).ToArray());
+                plan.RemovedPiers.Select(v=>new RailwayLossRead("pier",P(v.Position),v.OwnerId,v.SupportedOwnerId)).Concat(plan.ComponentLosses.Select(v=>new RailwayLossRead("accessory",P(v.Position),state.World.At(v.Position)!.OwnerId,null))).ToArray());
         }
     }
     private string? CommitSlope(SlopeQuery query)

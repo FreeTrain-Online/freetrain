@@ -76,7 +76,8 @@ mark**, then return terrain state and combined occupancy for validation together
 The tests include both that valid workflow and rejection of a terrain-only
 allocator that would reuse a railway ID. Future commands must use combined
 occupancy for all legality checks; calling a terrain-only tool directly is not
-an authorized mixed-world mutation path.
+an authorized mixed-world mutation path. [P4-20](web-parity-cross-tool.md) now
+implements that combined-occupancy terrain draft and authorized session path.
 
 P4-05 should add mixed-world session/save/wire dispatch around this composition,
 reusing the existing terrain provenance, construction-mode, `ClockState`,

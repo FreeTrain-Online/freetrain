@@ -83,8 +83,8 @@ test('map slope preview/cancel and flat-to-slope-to-elevated network synchronize
   expect(await save(page)).toEqual(bytes);await page.screenshot({path:out('slope-en-eight-cell-preview.png'),fullPage:true});
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');
-  await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeDisabled();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('title','Modify terrain (G) · Terrain editing is not available in this world.');
-  await canvas.focus();await page.keyboard.press('g');await expect(slopeButton).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeEnabled();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('title','Modify terrain (G)');
+  await canvas.focus();await page.keyboard.press('g');await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('aria-pressed','true');await page.keyboard.press('s');await expect(slopeButton).toHaveAttribute('aria-pressed','true');
   let built=await state(page);expect(built.mixed.voxels).toHaveLength(8);expect(built.mixed.slopes).toHaveLength(1);expect(built.tick).toBe(before.tick);expect(built.terrain).toEqual(before.terrain);expect(await state(peer)).toEqual(built);
   await track(page,[27,27],[30,27],1);await track(page,[33,27],[36,27],2);
   built=await state(page);const captured=await save(page);expect(built.mixed.accounts.transactions).toHaveLength(3);expect(built.mixed.voxels.filter((v:any)=>v.kind==='slopefiller')).toHaveLength(2);

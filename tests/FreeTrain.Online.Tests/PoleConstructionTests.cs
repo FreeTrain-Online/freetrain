@@ -53,12 +53,15 @@ public class PoleConstructionTests
     [Fact]
     public void Replacement_with_car_and_road_keeps_components_and_preview_lists_lost_accessory()
     {
-        var w=Add(World(),components:true);var original=w.At(P)!.Traffic!;
+        var w=Add(World(),components:true);
+        var crossing=new RailwayBinding(new(w.Profile.Terrain.Packs[0].Id,"test:crossing","test:crossing"),RailwayHandler.Crossing);
+        w=new(new(w.Profile.Terrain,w.Profile.Bindings.Add(crossing)),w.Terrain,w.Spatial.Capture(),w.Voxels,w.Slopes,w.Revision);
+        var original=w.At(P)!.Traffic!;
         foreach(var type in Types){
             var plan=PoleRailwayConstruction.Preview(w,P,type);Assert.True(plan.Legal);Assert.Equal(w.At(P)!.Traffic!.Accessory==null?0:1,plan.ComponentLosses.Length);
             w=Apply(w,plan).World;Assert.Equal(original.Rail,w.At(P)!.Traffic!.Rail);Assert.Equal(original.Car,w.At(P)!.Traffic!.Car);Assert.Equal(original.Road,w.At(P)!.Traffic!.Road);
         }
-        w=Apply(w,PoleRailwayConstruction.Preview(w,P,Types[0],true)).World;Assert.Equal(original,w.At(P)!.Traffic);
+        w=Apply(w,PoleRailwayConstruction.Preview(w,P,Types[0],true)).World;Assert.Equal(original with{Accessory=new(crossing.Reference)},w.At(P)!.Traffic);
     }
     [Fact]
     public void Crossing_replacement_and_orphan_cleanup_follow_accessory_setter()
