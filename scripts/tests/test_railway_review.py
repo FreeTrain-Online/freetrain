@@ -82,8 +82,18 @@ class RailwayReview(unittest.TestCase):
         self.contract['operations'][0]['status'] = 'runtime-verified'
         with self.assertRaisesRegex(ValueError, 'Overclaimed operation'):
             self.validate()
+
         self.locale['status'] = 'shipped'
         with self.assertRaisesRegex(ValueError, 'Overclaimed or mismatched review status'):
+            self.validate()
+
+    def test_delivered_wording_and_each_source_disposition_are_required(self):
+        row = self.locale['sourceStrings'][0]
+        row['delivery']['wording']['en']['railObstacle'] = 'Invented wording'
+        with self.assertRaisesRegex(ValueError, 'Missing/stale delivered translation'):
+            self.validate()
+        row.pop('delivery')
+        with self.assertRaisesRegex(ValueError, 'Missing/stale delivered translation'):
             self.validate()
 
 

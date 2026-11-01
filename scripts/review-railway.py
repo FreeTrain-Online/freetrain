@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate P4-01 source/decision/translation coverage; no railway algorithms.
+"""Validate P4-01 source scope and P4-22 translation delivery; no railway algorithms.
 
 Default checks need only checked-in evidence. --source-root reads raw pinned Git
 blobs from an explicitly supplied archive, never its mutable working tree.
@@ -146,6 +146,13 @@ def validate(review, locale, source_root=None):
     source_candidates = {(r['path'].removeprefix('trunk/'), r['line'], r['expression']): r
                          for r in actions['translationEntries'] if 'line' in r and 'expression' in r}
     strings = unique(locale['sourceStrings'], 'id', 'text')
+    delivery = locale.get('delivery', {})
+    require(delivery.get('slice') == 'P4-22' and
+            delivery.get('status') == 'all-78-dispositions-reviewed' and
+            delivery.get('evidence') == 'doc/web-parity-construction-regression.md',
+            'Missing P4-22 translation reconciliation')
+    resources = {lang: json.loads((ROOT / f'web/src/locales/{lang}/app.json').read_text())
+                 for lang in ('en', 'ja')}
     for row in strings.values():
         path = row['source']
         candidate = source_candidates.get((path, row['line'], row['expression']))
@@ -157,6 +164,15 @@ def validate(review, locale, source_root=None):
         require(row['status'] == locale['status'] and row['disposition'] and row['classification'] in
                 ('historical-donor-requires-feature-wording-review', 'new-translation-required'),
                 'Overclaimed/unclassified translation')
+        shipped = row.get('delivery', {})
+        keys = shipped.get('resourceKeys', [])
+        require(shipped.get('slice') == 'P4-22' and
+                shipped.get('status') in ('localized', 'adapted') and shipped.get('review') and
+                (keys or row['id'] == 'RAIL-TEXT-006') and
+                all(key in resources['en'] and key in resources['ja'] for key in keys) and
+                shipped.get('wording') == {lang: {key: resources[lang][key] for key in keys}
+                                          for lang in resources},
+                'Missing/stale delivered translation: ' + row['id'])
         if texts:
             require(row['expression'] in texts[path].splitlines()[row['line'] - 1],
                     'Text line drift: ' + row['id'])
@@ -185,6 +201,8 @@ def main():
     print('P4-01 review passed: %d pinned files, %d operations, %d decisions, '
           '%d bundled definitions, %d source texts. P4-02 fixtures checked separately; runtime remains open; '
           'GEO-004 retains owner-confirmed teardown regardless of pier owner; no pending approval gates.' % counts)
+    print('P4-22 translation delivery passed: all 78 source-text dispositions bind reviewed '
+          'EN/JA resources or an explicit browser adaptation; native/later-phase gates remain separate.')
 
 
 if __name__ == '__main__':

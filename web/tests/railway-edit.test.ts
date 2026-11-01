@@ -78,7 +78,7 @@ Deno.test('slope preview rejects malformed occupancy, illegal money and unsuppor
 });
 
 Deno.test('late slope previews reject abort, epoch, geometry, profile and reconnect generations',async()=>{
- for(const change of ['geometry','epoch','profile','abort','connection']){
+ for(const change of ['geometry','epoch','profile','content','abort','connection','dispose']){
   const service=createFixtureService();service.publish(terrain);let complete!:(p:any)=>void;
   const model=createShellModel(()=>({...service.connect(),previewSlope:()=>new Promise<any>(resolve=>complete=resolve)}),'en',1);
   try{
@@ -87,6 +87,8 @@ Deno.test('late slope previews reject abort, epoch, geometry, profile and reconn
    const result=model.previewSlope(query,request.signal),rejected=assert.rejects(result);
    if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
    if(change==='epoch')service.publish({...terrain,worldEpoch:'999'});
+   if(change==='content')service.publish({...terrain,contentVersion:'changed-content'} as unknown as Snapshot);
+   if(change==='dispose')model.dispose();
    if(change==='profile')service.publish({...terrain,...railwayProfile} as unknown as Snapshot);
    if(change==='abort')request.abort();
    if(change==='connection')model.reconnect();
@@ -195,4 +197,26 @@ Deno.test('speed-limit preview identity includes typed speed, shape and directio
  assert.deepEqual(parseRailwayPreview(slope),slope);
  assert.throws(()=>parseRailwayPreview({...slope,cells:slope.cells.slice(1)}));
  for(const patch of [{speed:'warp'},{speedClimb:1},{speedSlope:'yes'}])assert.throws(()=>parseMessage(JSON.stringify({type:'command',requestId:'speed',expectedWorldEpoch:'1',payload:{kind:'editRailway',query:{...query,...patch}}})));
+});
+
+Deno.test('every delivered route/accessory preview fences epoch, geometry, content, cancellation and reconnect independently of locale',async()=>{
+ for(const infrastructure of ['normal','bridge','girder','tunnel','garage','signal','pole','stationary','speed'] as const){
+  for(const change of ['epoch','geometry','content','abort','connection','dispose','locale']){
+   const service=createFixtureService();service.publish(terrain);let complete!:(p:RailwayPreview)=>void;
+   const model=createShellModel(()=>({...service.connect(),previewRailway:()=>new Promise<RailwayPreview>(r=>complete=r)}),'en',1);
+   try{
+    await until(()=>model.state.connection==='ready');const abort=new AbortController(),query={...q,infrastructure};
+    const result=model.previewRailway(query,abort.signal),rejected=change==='locale'?undefined:assert.rejects(result);
+    if(change==='epoch')service.publish({...terrain,worldEpoch:'999'});
+    if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
+    if(change==='content')service.publish({...terrain,contentVersion:'changed-content'} as unknown as Snapshot);
+    if(change==='abort')abort.abort();
+    if(change==='connection')model.reconnect();
+    if(change==='dispose')model.dispose();
+    if(change==='locale')model.setLocale('ja');
+    complete({...preview,query});
+    if(rejected)await rejected;else {assert.equal((await result).query,query);assert.equal(model.state.locale,'ja');}
+   }finally{model.dispose();}
+  }
+ }
 });

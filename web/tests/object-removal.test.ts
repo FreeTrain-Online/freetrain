@@ -38,16 +38,18 @@ Deno.test('object removal protocol rejects malformed, duplicate and inconsistent
  assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'remove',expectedWorldEpoch:read.worldEpoch,payload:{kind:'removeObject',query}})).type,'command');
 });
 
-Deno.test('late removal previews reject geometry changes, epoch replacement, abort and reconnect',async()=>{
- for(const change of ['geometry','epoch','abort','connection']){
+Deno.test('late removal previews reject geometry changes, epoch/content replacement, abort, reconnect and disposal',async()=>{
+ for(const change of ['geometry','epoch','content','abort','connection','dispose']){
   const service=createFixtureService();service.publish(read);let complete!:(p:RemovalPreview)=>void;
   const model=createShellModel(()=>({...service.connect(),previewRemoval:()=>new Promise<RemovalPreview>(r=>complete=r)}),'en',1);
   try{
    await until(()=>model.state.connection==='ready');const request=new AbortController();const pending=model.previewRemoval(query,request.signal),rejected=assert.rejects(pending);
    if(change==='geometry')service.publish({...read,terrain:{...read.terrain!,geometryRevision:'999'}});
    if(change==='epoch')service.publish({...read,worldEpoch:'999'});
+   if(change==='content')service.publish({...read,contentVersion:'changed-content'} as unknown as Snapshot);
    if(change==='abort')request.abort();
    if(change==='connection')model.reconnect();
+   if(change==='dispose')model.dispose();
    complete(preview);await rejected;
   }finally{model.dispose();}
  }

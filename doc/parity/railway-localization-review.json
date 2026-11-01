@@ -31,7 +31,26 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "railObstacle",
+          "stationaryGround"
+        ],
+        "wording": {
+          "en": {
+            "railObstacle": "An occupied terrain or structure cell blocks this route.",
+            "stationaryGround": "The full footprint must be on equal ground."
+          },
+          "ja": {
+            "railObstacle": "地形または構造物が経路を塞いでいます。",
+            "stationaryGround": "設置範囲全体を同じ高さの地面に合わせてください。"
+          }
+        },
+        "review": "Placement errors use precise occupancy/ground feedback in detached previews."
+      }
     },
     {
       "id": "RAIL-TEXT-002",
@@ -54,7 +73,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "removeUnavailable"
+        ],
+        "wording": {
+          "en": {
+            "removeUnavailable": "Use the dedicated tunnel or railway-accessory tool to remove this object."
+          },
+          "ja": {
+            "removeUnavailable": "この建造物は専用のトンネルまたは鉄道アクセサリのツールで撤去してください。"
+          }
+        },
+        "review": "Wrong-type removal uses the selected actual object and its dedicated tool; no native error dialog."
+      }
     },
     {
       "id": "RAIL-TEXT-003",
@@ -77,7 +112,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-004",
@@ -100,7 +151,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railLay"
+        ],
+        "wording": {
+          "en": {
+            "railLay": "Lay"
+          },
+          "ja": {
+            "railLay": "敷設"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-005",
@@ -113,7 +180,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "cornerCost"
+        ],
+        "wording": {
+          "en": {
+            "cornerCost": "Cost"
+          },
+          "ja": {
+            "cornerCost": "費用"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-006",
@@ -136,7 +219,17 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [],
+        "wording": {
+          "en": {},
+          "ja": {}
+        },
+        "review": "Inherited default road-window title is overwritten by each railway task title. Playable road construction remains P7; do not expose a road task from this inherited label."
+      }
     },
     {
       "id": "RAIL-TEXT-007",
@@ -159,7 +252,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railPickTo"
+        ],
+        "wording": {
+          "en": {
+            "railPickTo": "Pick end on map"
+          },
+          "ja": {
+            "railPickTo": "地図で終点を選択"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-008",
@@ -172,7 +281,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railPickFrom"
+        ],
+        "wording": {
+          "en": {
+            "railPickFrom": "Pick start on map"
+          },
+          "ja": {
+            "railPickFrom": "地図で始点を選択"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-009",
@@ -195,7 +320,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railHelp"
+        ],
+        "wording": {
+          "en": {
+            "railHelp": "Pick A, then B on the map, or enter X/Y coordinates. The start level is detected automatically. Enter a level to override it, then preview, review and confirm."
+          },
+          "ja": {
+            "railHelp": "地図で A、B の順に選ぶか X/Y 座標を入力します。始点の高さは自動検出します。高さを入力すると手動指定になります。プレビューの内容を確認して確定します。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-010",
@@ -218,7 +359,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railLay"
+        ],
+        "wording": {
+          "en": {
+            "railLay": "Lay"
+          },
+          "ja": {
+            "railLay": "敷設"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-011",
@@ -241,7 +398,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-012",
@@ -264,7 +437,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "cornerCost"
+        ],
+        "wording": {
+          "en": {
+            "cornerCost": "Cost"
+          },
+          "ja": {
+            "cornerCost": "費用"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-013",
@@ -287,7 +476,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "trackTask"
+        ],
+        "wording": {
+          "en": {
+            "trackTask": "Track"
+          },
+          "ja": {
+            "trackTask": "線路"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-014",
@@ -310,7 +515,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railObstacle"
+        ],
+        "wording": {
+          "en": {
+            "railObstacle": "An occupied terrain or structure cell blocks this route."
+          },
+          "ja": {
+            "railObstacle": "地形または構造物が経路を塞いでいます。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-015",
@@ -333,7 +554,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railLay"
+        ],
+        "wording": {
+          "en": {
+            "railLay": "Lay"
+          },
+          "ja": {
+            "railLay": "敷設"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-016",
@@ -356,7 +593,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-017",
@@ -379,7 +632,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "cornerCost"
+        ],
+        "wording": {
+          "en": {
+            "cornerCost": "Cost"
+          },
+          "ja": {
+            "cornerCost": "費用"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-018",
@@ -402,7 +671,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "slopeTask"
+        ],
+        "wording": {
+          "en": {
+            "slopeTask": "Slope"
+          },
+          "ja": {
+            "slopeTask": "勾配線路"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-019",
@@ -425,7 +710,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railObstacle"
+        ],
+        "wording": {
+          "en": {
+            "railObstacle": "An occupied terrain or structure cell blocks this route."
+          },
+          "ja": {
+            "railObstacle": "地形または構造物が経路を塞いでいます。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-020",
@@ -448,7 +749,26 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "slopeNotFound",
+          "railCar"
+        ],
+        "wording": {
+          "en": {
+            "slopeNotFound": "There is no ramp at the selected cell.",
+            "railCar": "A car occupies the route."
+          },
+          "ja": {
+            "slopeNotFound": "選択セルに勾配線路がありません。",
+            "railCar": "経路上に車両があります。"
+          }
+        },
+        "review": "Ramp removal reports no ramp, direction mismatch or car protection rather than a generic native dialog."
+      }
     },
     {
       "id": "RAIL-TEXT-021",
@@ -471,7 +791,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railObstacle"
+        ],
+        "wording": {
+          "en": {
+            "railObstacle": "An occupied terrain or structure cell blocks this route."
+          },
+          "ja": {
+            "railObstacle": "地形または構造物が経路を塞いでいます。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-022",
@@ -494,7 +830,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "bridgeTask"
+        ],
+        "wording": {
+          "en": {
+            "bridgeTask": "Bridge"
+          },
+          "ja": {
+            "bridgeTask": "鉄橋"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-023",
@@ -517,7 +869,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "bridgeDescription"
+        ],
+        "wording": {
+          "en": {
+            "bridgeDescription": "Red steel railway bridge"
+          },
+          "ja": {
+            "bridgeDescription": "鉄骨の赤鉄橋"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-024",
@@ -540,7 +908,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "girderTask"
+        ],
+        "wording": {
+          "en": {
+            "girderTask": "Girder viaduct"
+          },
+          "ja": {
+            "girderTask": "ガード高架"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-025",
@@ -563,7 +947,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "girderDescription"
+        ],
+        "wording": {
+          "en": {
+            "girderDescription": "Steel-reinforced elevated railway"
+          },
+          "ja": {
+            "girderDescription": "スチールで強化された高架"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-026",
@@ -586,7 +986,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "tunnelTask"
+        ],
+        "wording": {
+          "en": {
+            "tunnelTask": "Tunnel"
+          },
+          "ja": {
+            "tunnelTask": "トンネル"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-027",
@@ -609,7 +1025,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "tunnelDescription"
+        ],
+        "wording": {
+          "en": {
+            "tunnelDescription": "Tunnel through a mountainside"
+          },
+          "ja": {
+            "tunnelDescription": "山肌を突き抜けるためのトンネル"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-028",
@@ -622,7 +1054,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedTask"
+        ],
+        "wording": {
+          "en": {
+            "speedTask": "Speed limits"
+          },
+          "ja": {
+            "speedTask": "速度制限"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-029",
@@ -635,7 +1083,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFlat"
+        ],
+        "wording": {
+          "en": {
+            "speedFlat": "Level section"
+          },
+          "ja": {
+            "speedFlat": "速度制限区間"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-030",
@@ -648,7 +1112,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedSlope"
+        ],
+        "wording": {
+          "en": {
+            "speedSlope": "Slope section"
+          },
+          "ja": {
+            "speedSlope": "速度制限区間（勾配）"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-031",
@@ -661,7 +1141,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "speedRemovalHelp"
+        ],
+        "wording": {
+          "en": {
+            "speedRemovalHelp": "Remove clears one entry at each selected location in every speed list. Slope removal accepts any member of the owning slope, with its actual climb direction. Limits disappear automatically when the traffic cell is removed."
+          },
+          "ja": {
+            "speedRemovalHelp": "選択した各位置をすべての速度リストから1件ずつ削除します。勾配は構成セルのどこでも指定できますが、実際の上り方向を選んでください。交通セルが撤去されると速度制限も自動的に削除されます。"
+          }
+        },
+        "review": "Automatic Traffic deletion cleanup replaces the native manual orphan-cleanup menu. Dedicated Remove clears selected lists; no redundant cleanup command is advertised."
+      }
     },
     {
       "id": "RAIL-TEXT-032",
@@ -674,7 +1170,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railPickTo"
+        ],
+        "wording": {
+          "en": {
+            "railPickTo": "Pick end on map"
+          },
+          "ja": {
+            "railPickTo": "地図で終点を選択"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-033",
@@ -687,7 +1199,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railPickFrom"
+        ],
+        "wording": {
+          "en": {
+            "railPickFrom": "Pick start on map"
+          },
+          "ja": {
+            "railPickFrom": "地図で始点を選択"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-034",
@@ -700,7 +1228,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedHelp"
+        ],
+        "wording": {
+          "en": {
+            "speedHelp": "Choose a level range using two map points or XY coordinates. For slopes, choose the lower base and climb direction; four traffic positions are selected."
+          },
+          "ja": {
+            "speedHelp": "マップの2点またはXY座標で同じ高さの区間を選びます。勾配区間では下端と上り方向を指定し、4か所を選択します。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-035",
@@ -713,7 +1257,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedAdd"
+        ],
+        "wording": {
+          "en": {
+            "speedAdd": "Add limit"
+          },
+          "ja": {
+            "speedAdd": "追加"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-036",
@@ -726,7 +1286,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-037",
@@ -739,7 +1315,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedValue"
+        ],
+        "wording": {
+          "en": {
+            "speedValue": "Speed"
+          },
+          "ja": {
+            "speedValue": "速度"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-038",
@@ -752,7 +1344,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedTask"
+        ],
+        "wording": {
+          "en": {
+            "speedTask": "Speed limits"
+          },
+          "ja": {
+            "speedTask": "速度制限"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-039",
@@ -765,7 +1373,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLow"
+        ],
+        "wording": {
+          "en": {
+            "speedLow": "Low"
+          },
+          "ja": {
+            "speedLow": "低速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-040",
@@ -778,7 +1402,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedMedium"
+        ],
+        "wording": {
+          "en": {
+            "speedMedium": "Medium"
+          },
+          "ja": {
+            "speedMedium": "中速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-041",
@@ -791,7 +1431,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFast"
+        ],
+        "wording": {
+          "en": {
+            "speedFast": "Fast"
+          },
+          "ja": {
+            "speedFast": "高速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-042",
@@ -804,7 +1460,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLimitTraffic"
+        ],
+        "wording": {
+          "en": {
+            "speedLimitTraffic": "Every selected position must contain rail, road or a rail accessory."
+          },
+          "ja": {
+            "speedLimitTraffic": "選択したすべての位置に線路・道路・線路アクセサリのいずれかが必要です。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-043",
@@ -817,7 +1489,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLimitOverlap"
+        ],
+        "wording": {
+          "en": {
+            "speedLimitOverlap": "This section overlaps an existing speed limit. Remove it before adding another."
+          },
+          "ja": {
+            "speedLimitOverlap": "既に速度制限が設定されています。削除してから追加してください。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-044",
@@ -830,7 +1518,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "speedLow"
+        ],
+        "wording": {
+          "en": {
+            "speedLow": "Low"
+          },
+          "ja": {
+            "speedLow": "低速"
+          }
+        },
+        "review": "Native integer switch cases use typed low/medium/fast values; labels preserve source meaning."
+      }
     },
     {
       "id": "RAIL-TEXT-045",
@@ -843,7 +1547,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedMedium"
+        ],
+        "wording": {
+          "en": {
+            "speedMedium": "Medium"
+          },
+          "ja": {
+            "speedMedium": "中速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-046",
@@ -856,7 +1576,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFast"
+        ],
+        "wording": {
+          "en": {
+            "speedFast": "Fast"
+          },
+          "ja": {
+            "speedFast": "高速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-047",
@@ -869,7 +1605,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "speedLow"
+        ],
+        "wording": {
+          "en": {
+            "speedLow": "Low"
+          },
+          "ja": {
+            "speedLow": "低速"
+          }
+        },
+        "review": "Native integer switch cases use typed low/medium/fast values; labels preserve source meaning."
+      }
     },
     {
       "id": "RAIL-TEXT-048",
@@ -882,7 +1634,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedMedium"
+        ],
+        "wording": {
+          "en": {
+            "speedMedium": "Medium"
+          },
+          "ja": {
+            "speedMedium": "中速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-049",
@@ -895,7 +1663,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFast"
+        ],
+        "wording": {
+          "en": {
+            "speedFast": "Fast"
+          },
+          "ja": {
+            "speedFast": "高速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-050",
@@ -908,7 +1692,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedAdd"
+        ],
+        "wording": {
+          "en": {
+            "speedAdd": "Add limit"
+          },
+          "ja": {
+            "speedAdd": "追加"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-051",
@@ -921,7 +1721,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-052",
@@ -934,7 +1750,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedValue"
+        ],
+        "wording": {
+          "en": {
+            "speedValue": "Speed"
+          },
+          "ja": {
+            "speedValue": "速度"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-053",
@@ -947,7 +1779,26 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedTask",
+          "speedSlope"
+        ],
+        "wording": {
+          "en": {
+            "speedTask": "Speed limits",
+            "speedSlope": "Slope section"
+          },
+          "ja": {
+            "speedTask": "速度制限",
+            "speedSlope": "速度制限区間（勾配）"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-054",
@@ -960,7 +1811,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLimitTraffic"
+        ],
+        "wording": {
+          "en": {
+            "speedLimitTraffic": "Every selected position must contain rail, road or a rail accessory."
+          },
+          "ja": {
+            "speedLimitTraffic": "選択したすべての位置に線路・道路・線路アクセサリのいずれかが必要です。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-055",
@@ -973,7 +1840,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLimitOverlap"
+        ],
+        "wording": {
+          "en": {
+            "speedLimitOverlap": "This section overlaps an existing speed limit. Remove it before adding another."
+          },
+          "ja": {
+            "speedLimitOverlap": "既に速度制限が設定されています。削除してから追加してください。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-056",
@@ -986,7 +1869,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLow"
+        ],
+        "wording": {
+          "en": {
+            "speedLow": "Low"
+          },
+          "ja": {
+            "speedLow": "低速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-057",
@@ -999,7 +1898,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedMedium"
+        ],
+        "wording": {
+          "en": {
+            "speedMedium": "Medium"
+          },
+          "ja": {
+            "speedMedium": "中速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-058",
@@ -1012,7 +1927,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFast"
+        ],
+        "wording": {
+          "en": {
+            "speedFast": "Fast"
+          },
+          "ja": {
+            "speedFast": "高速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-059",
@@ -1025,7 +1956,26 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "speedLimitTraffic",
+          "slopeNotFound"
+        ],
+        "wording": {
+          "en": {
+            "speedLimitTraffic": "Every selected position must contain rail, road or a rail accessory.",
+            "slopeNotFound": "There is no ramp at the selected cell."
+          },
+          "ja": {
+            "speedLimitTraffic": "選択したすべての位置に線路・道路・線路アクセサリのいずれかが必要です。",
+            "slopeNotFound": "選択セルに勾配線路がありません。"
+          }
+        },
+        "review": "Slope removal resolves actual owning ramp; missing slope/Traffic gets corrective feedback instead of a native dialog."
+      }
     },
     {
       "id": "RAIL-TEXT-060",
@@ -1038,7 +1988,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedLow"
+        ],
+        "wording": {
+          "en": {
+            "speedLow": "Low"
+          },
+          "ja": {
+            "speedLow": "低速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-061",
@@ -1051,7 +2017,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedMedium"
+        ],
+        "wording": {
+          "en": {
+            "speedMedium": "Medium"
+          },
+          "ja": {
+            "speedMedium": "中速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-062",
@@ -1064,7 +2046,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "speedFast"
+        ],
+        "wording": {
+          "en": {
+            "speedFast": "Fast"
+          },
+          "ja": {
+            "speedFast": "高速"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-063",
@@ -1087,7 +2085,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "poleTarget"
+        ],
+        "wording": {
+          "en": {
+            "poleTarget": "Poles require straight north/south or east/west track."
+          },
+          "ja": {
+            "poleTarget": "架線柱には南北または東西の直線線路が必要です。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-064",
@@ -1110,7 +2124,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "cornerCost"
+        ],
+        "wording": {
+          "en": {
+            "cornerCost": "Cost"
+          },
+          "ja": {
+            "cornerCost": "費用"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-065",
@@ -1133,7 +2163,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-066",
@@ -1156,7 +2202,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railLay"
+        ],
+        "wording": {
+          "en": {
+            "railLay": "Lay"
+          },
+          "ja": {
+            "railLay": "敷設"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-067",
@@ -1179,7 +2241,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "poleTask"
+        ],
+        "wording": {
+          "en": {
+            "poleTask": "Electric poles"
+          },
+          "ja": {
+            "poleTask": "架線柱"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-068",
@@ -1202,7 +2280,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "poleTask"
+        ],
+        "wording": {
+          "en": {
+            "poleTask": "Electric poles"
+          },
+          "ja": {
+            "poleTask": "架線柱"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-069",
@@ -1215,7 +2309,23 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "showPoles"
+        ],
+        "wording": {
+          "en": {
+            "showPoles": "Show electric poles"
+          },
+          "ja": {
+            "showPoles": "架線柱を表示"
+          }
+        },
+        "review": "Positive Show electric poles checkbox replaces the native negative Hide electric poles toggle; local rendering only."
+      }
     },
     {
       "id": "RAIL-TEXT-070",
@@ -1238,7 +2348,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "garageTask"
+        ],
+        "wording": {
+          "en": {
+            "garageTask": "Train garage"
+          },
+          "ja": {
+            "garageTask": "機関庫"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-071",
@@ -1261,7 +2387,26 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "garageDescription",
+          "garageRules"
+        ],
+        "wording": {
+          "en": {
+            "garageDescription": "A decorative shelter for trains.",
+            "garageRules": "Every cell, including existing compatible tracks, becomes garage rail and costs 6,500,000. Garages have no maintenance, fueling or repair mechanics."
+          },
+          "ja": {
+            "garageDescription": "列車用の装飾施設です。",
+            "garageRules": "既存の対応線路を含む全マスを機関庫に置き換え、1マス6,500,000かかります。整備・給油・修理の機能はありません。"
+          }
+        },
+        "review": "Decorative purpose retained. No maintenance/inspection gameplay is implied by the source description."
+      }
     },
     {
       "id": "RAIL-TEXT-072",
@@ -1284,7 +2429,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "signalTask"
+        ],
+        "wording": {
+          "en": {
+            "signalTask": "Signals"
+          },
+          "ja": {
+            "signalTask": "信号"
+          }
+        },
+        "review": "Signals toolbar and keyboard task replace the native menu mnemonic and ellipsis."
+      }
     },
     {
       "id": "RAIL-TEXT-073",
@@ -1307,7 +2468,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railLay"
+        ],
+        "wording": {
+          "en": {
+            "railLay": "Lay"
+          },
+          "ja": {
+            "railLay": "敷設"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-074",
@@ -1330,7 +2507,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railRemove"
+        ],
+        "wording": {
+          "en": {
+            "railRemove": "Remove"
+          },
+          "ja": {
+            "railRemove": "撤去"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-075",
@@ -1353,7 +2546,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "signalTask"
+        ],
+        "wording": {
+          "en": {
+            "signalTask": "Signals"
+          },
+          "ja": {
+            "signalTask": "信号"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-076",
@@ -1376,7 +2585,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "railObstacle"
+        ],
+        "wording": {
+          "en": {
+            "railObstacle": "An occupied terrain or structure cell blocks this route."
+          },
+          "ja": {
+            "railObstacle": "地形または構造物が経路を塞いでいます。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-077",
@@ -1399,7 +2624,23 @@
       },
       "classification": "historical-donor-requires-feature-wording-review",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "localized",
+        "resourceKeys": [
+          "signalTarget"
+        ],
+        "wording": {
+          "en": {
+            "signalTarget": "Only empty traffic or ordinary track can receive a signal."
+          },
+          "ja": {
+            "signalTarget": "空の交通マスまたは通常線路にのみ設置できます。"
+          }
+        },
+        "review": "Source meaning retained in the bilingual construction task, preview or corrective feedback. Native modal errors and window titles use the browser task surface."
+      }
     },
     {
       "id": "RAIL-TEXT-078",
@@ -1412,12 +2653,31 @@
       "englishDonor": null,
       "classification": "new-translation-required",
       "disposition": "P4 owning playable slice supplies EN/JA resources and reviews meaning; P4-22 reconciles. Native-only shell wording adapts to existing panels; switch labels become typed speed values.",
-      "status": "translation-scope-recorded-not-shipped"
+      "status": "translation-scope-recorded-not-shipped",
+      "delivery": {
+        "slice": "P4-22",
+        "status": "adapted",
+        "resourceKeys": [
+          "railCar",
+          "signalRules"
+        ],
+        "wording": {
+          "en": {
+            "railCar": "A car occupies the route.",
+            "signalRules": "Signals cost nothing. Junctions, special tracks and obstacles reject placement. Cars protect both placement and removal. Train waits and controller editing are planned for the train phase."
+          },
+          "ja": {
+            "railCar": "経路上に車両があります。",
+            "signalRules": "設置・撤去は無料です。分岐・特殊線路・障害物には設置できません。車両がある場合は設置も撤去もできません。停車待ちと制御の編集は列車の実装段階で対応します。"
+          }
+        },
+        "review": "Car-protected rejection is translated now; real train movement and controller workflows remain P5."
+      }
     }
   ],
   "catalogScope": {
     "source": "doc/parity/railway-review.json#contributions",
-    "disposition": "Exact identity-bound P2 metadata carries names/groups/authors/descriptions; P4-18 reconciles all variants. No new translation claim."
+    "disposition": "All 64 identity-bound bundled definitions covered by P4 handlers; 54 stationary variants and four pole choices retain exact source identities. P2 content localization, P4-18 accessory review and P9 catalog foundation supply EN/JA names, descriptions and original author/plugin metadata. Optional packs retain separate acceptance."
   },
   "browserWording": [
     "Authoritative snapped geometry and exact operation cost",
@@ -1433,5 +2693,11 @@
     "internal persistence keys",
     "numeric formats/defaults"
   ],
-  "reviewSha256": "c28653cfd4352910b03d9220f30e8d2fa5a89581bbad5260464ab90dadd7ff2f"
+  "reviewSha256": "3ec395d3fb82b9e50f14c730bca8e1a984d8b29c667f0b33e27c9b423c21c613",
+  "delivery": {
+    "slice": "P4-22",
+    "status": "all-78-dispositions-reviewed",
+    "evidence": "doc/web-parity-construction-regression.md",
+    "scope": "Delivered browser/portable P4 construction only. Original P4-01 source-scope status and donor bytes above remain historical provenance. Native fidelity, P5 train/controller behavior and P7 roads retain their owning gates."
+  }
 }
