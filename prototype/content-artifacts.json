@@ -13,8 +13,8 @@
       "sha256": "49b07772b218bd3837383e6af3761166ea68914ed00fe0312ab561715a35ed5d"
     },
     {
-      "path": "web/public/assets/FTicon.png",
-      "sha256": "fdfe186e45895b87f1165174aea2d41b81891ab9d2370e12add91ec80142d2f3"
+      "path": "web/public/assets/FTOicon.png",
+      "sha256": "5bcf0d38894508b9fcb41aba01284397daccf74f4a732f10876a2598a7c20f3b"
     },
     {
       "path": "web/public/assets/freetrain-online-logo.svg",
@@ -22,7 +22,7 @@
     },
     {
       "path": "web/public/assets/NOTICE.txt",
-      "sha256": "aba8ea0dea006a5d39ada6347260bab88630c25dafa43ff13b6c27bd1dcb24fc"
+      "sha256": "1528463db9230e5904cf2e1e0deee11526fb801d93ca971de156d9a5d3d5121f"
     },
     {
       "path": "web/public/assets/condo-bottom-night.png",

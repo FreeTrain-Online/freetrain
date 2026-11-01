@@ -2,7 +2,7 @@ import { MapRenderer, type MapOptions } from '../src/lib/map-renderer.ts';
 import { TerrainScene, mountainPoints, treeOffset, mountainColor, terrainColor, hsv } from '../src/lib/terrain-renderer.ts';
 import { RecipeImageCache, type RenderCatalog, type Variant, type View } from '../src/lib/content-recipes.ts';
 import type { Snapshot } from '../src/generated/contracts.ts';
-import { WorldSpace } from '../src/lib/map-geometry.ts';
+import { WorldSpace, move } from '../src/lib/map-geometry.ts';
 import { TerrainViewport } from '../src/lib/terrain-viewport.ts';
 function assert(v:unknown,message='Assertion failed'):asserts v {if(!v)throw new Error(message);}
 function equal(a:unknown,b:unknown){assert(JSON.stringify(a)===JSON.stringify(b),`${JSON.stringify(a)} != ${JSON.stringify(b)}`);}
@@ -247,6 +247,36 @@ Deno.test('creek connection variants and terrace front pixels retain entity targ
   equal(scene.pick({x:16,y:-2},view)?.surface,'terrace');equal(scene.pick({x:16,y:-24},view)?.surface,'ground');
   const cut=await TerrainScene.prepare(s,catalog,cache(),day,0);equal(cut.pick({x:16,y:8},view)?.surface,'underground');
   const terraceCut=await TerrainScene.prepare(s,catalog,cache(),day,1);equal(terraceCut.pick({x:16,y:-8},view)?.surface,'terrace');
+});
+Deno.test('terrace rims follow the upper block perimeter without shared edges or wall outlines',async()=>{
+  for(const direction of [0,2,4,6] as const)for(const raised of [false,true]) {
+    const s=flat(3,5,2),space=new WorldSpace(3,5,6),base=space.location({h:1,v:2,z:1});
+    const neighbor=move(base,direction);if(raised)neighbor.z++;
+    for(const [i,p] of [base,neighbor].entries()) {
+      const e=structuredClone(original.entities![0]),o=structuredClone(original.terrain!.occupants[0]);
+      e.id=String(i+1);e.anchor=p;o.entityId=e.id;s.entities!.push(e);s.terrain!.occupants.push(o);
+      const {h,v}=space.storage(p);s.terrain!.cells[v*3+h]={ground:p.z+1,surface:'terrace'};
+    }
+    const scene=await TerrainScene.prepare(s,catalog,cache(),day,5);
+    const rims=scene.operations.filter(op=>'points' in op&&op.edge==='#605420');
+    equal(rims.length,raised?8:6);
+    assert(rims.every(op=>op.target.surface==='ground'),'Only upper rims should be outlined');
+    const cut=await TerrainScene.prepare(s,catalog,cache(),day,1);
+    assert(!cut.operations.some(op=>'points' in op&&op.edge==='#605420'),'Hidden tops must not leave wall outlines');
+  }
+  const s=flat(1,1,2),e=structuredClone(original.entities![0]),o=structuredClone(original.terrain!.occupants[0]);
+  e.anchor={x:0,y:0,z:1};s.entities=[e];s.terrain!.occupants=[o];s.terrain!.cells[0].surface='terrace';
+  const scene=await TerrainScene.prepare(s,catalog,cache(),day,5);
+  equal(scene.operations.filter(op=>'points' in op&&op.edge==='#605420').length,4);
+  for(const [season,night,groundEdge,terraceEdge] of [
+    ['spring',false,'#bbab73','#605420'],['spring',true,'#2e2a1c','#181508'],
+    ['winter',false,'#c0c8d8','#606880'],['winter',true,'#303236','#181a20'],
+  ] as const) {
+    const variantScene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5);
+    const outlines=variantScene.operations.filter(op=>'points' in op);
+    equal(outlines.map(op=>'points' in op&&op.edge),[groundEdge,...Array(4).fill(terraceEdge)]);
+    equal(variantScene.pick({x:16,y:-24},view)?.surface,'ground');
+  }
 });
 Deno.test('all 18 exact forest treatments render overlays only on flat Mountains and cliffs use pinned quarter recipes',async()=>{
   const profile=JSON.parse(await Deno.readTextFile(new URL('../src/generated/terrain-profile.json',import.meta.url)));

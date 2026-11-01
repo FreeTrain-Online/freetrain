@@ -109,6 +109,8 @@ export class TerrainScene {
     const lookup=terrainLookup(read as Snapshot),entities={get:(id:string)=>lookup.entity(id)},at={get:(key:number)=>lookup.occupant(key)};
     const key=(p:Position)=>{const s=space.storage(p);return s.h<0||s.h>=read.map.width||s.v<0||s.v>=read.map.height||p.z<0||p.z>=read.map.levels?-1:(s.v*read.map.width+s.h)*read.map.levels+p.z;};
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
+    const groundEdge=terrainColor(variant.season==='winter'?[192,200,216]:[187,171,115],variant.night);
+    const terraceEdge=terrainColor(variant.season==='winter'?[96,104,128]:[96,84,32],variant.night);
     const addSprite=(id:string,frameKey:string|undefined,p:Position,target:TerrainTarget,offset:Point={x:0,y:0})=>{
       const recipe=recipes.get(id),frame=frameKey===undefined?recipe?.frames[0]:recipe?.frames.find(f=>f.key===frameKey);
       if(!frame||frame.status!=='ready'||!frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`])throw new Error('Terrain recipe unavailable: '+id+'/'+frameKey);
@@ -132,7 +134,7 @@ export class TerrainScene {
       if(railway) {
         // Terrain faces can overhang a neighbor. Include its corners/ground in
         // the dependency key, alongside this column's exact saved operations.
-        signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,6),move(base,4)].map(p=>{
+        signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,0),move(base,2),move(base,4),move(base,6)].map(p=>{
           const s=space.storage(p),surface=at.get(key(p)),backing=at.get(key({...p,z:p.z-1}));
           return [space.containsHorizontal(p)?t.cells[s.v*read.map.width+s.h]:null,surface,backing,surface&&entities.get(surface.entityId)?.definition,backing&&entities.get(backing.entityId)?.definition];
         }),railway.signature(index)]);
@@ -141,7 +143,11 @@ export class TerrainScene {
       }
       const target=(p:Position,surface:TerrainTarget['surface'],id?:string):TerrainTarget=>({kind:'terrain',id:id??`cell:${h},${v}`,position:{...p},surface});
       const surface=at.get(key(base)),terrace=at.get(key({...base,z:base.z-1}));
-      if(terrace?.kind==='terrace'&&base.z-1<=cut&&(!full||base.z-1>=t.waterLevel))addSprite(entities.get(terrace.entityId)!.definition.recipeId,undefined,{...base,z:base.z-1},target({...base,z:base.z-1},'terrace',terrace.entityId));
+      const visibleTerrace=terrace?.kind==='terrace'&&base.z-1<=cut&&(!full||base.z-1>=t.waterLevel);
+      if(visibleTerrace) {
+        const p={...base,z:base.z-1},tt=target(p,'terrace',terrace.entityId);
+        addSprite(entities.get(terrace.entityId)!.definition.recipeId,undefined,p,tt);
+      }
       if(cut<cell.ground) {
         // A nontransparent Terrace at the cut owns this voxel; the source
         // draws its sprite instead of an underground chip over it.
@@ -156,7 +162,18 @@ export class TerrainScene {
       }
       const mountain=surface?.kind==='mountain'?surface:undefined;
       const flat=!mountain||[mountain.ne,mountain.se,mountain.sw,mountain.nw].every(n=>n===0);
-      if(flat&&(!railway||railway.drawGround(base,read.map.levels)))addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,target(base,'ground'));
+      if(flat&&(!railway||railway.drawGround(base,read.map.levels))) {
+        const ground=target(base,'ground');
+        addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,ground);
+        if(base.z>=t.waterLevel)addPolygon(base,ground,diamond,'transparent',groundEdge);
+        // Only the upper perimeter of a continuous, same-height terrace block
+        // gets a rim; shared tile edges and the wall bottoms stay unoutlined.
+        if(visibleTerrace)for(const [i,d] of ([2,4,6,0] as const).entries()) {
+          const neighbor=move(base,d),s=space.storage(neighbor);
+          if(space.containsHorizontal(neighbor)&&t.cells[s.v*read.map.width+s.h].ground===base.z&&at.get(key({...neighbor,z:base.z-1}))?.kind==='terrace')continue;
+          addPolygon(base,ground,[diamond[i],diamond[(i+1)%4]],'transparent',terraceEdge);
+        }
+      }
       if(mountain) {
         const mt=target(base,'mountain',mountain.entityId),clipped=!full&&cut===base.z;
         if(clipped)addPolygon(base,mt,diamond,mountainColor(mountain,variant,base.z<t.waterLevel,true));

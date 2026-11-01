@@ -303,6 +303,21 @@ def system_recipes(catalog, review):
     return result
 
 
+def prepared_bitmap(path, raw):
+    width, height, pixels = decode(raw)
+    # Web ground art: flatten the land and snow diamonds while retaining their
+    # exact transparency footprints and the water/underground source tiles.
+    if path in ('trunk/core/res/EmptyChip.bmp', 'trunk/core/res/EmptyChip_n.bmp'):
+        colors = ((219, 195, 131), (255, 255, 255)) if path.endswith('/EmptyChip.bmp') else ((55, 49, 33), (64, 64, 64))
+        key = pixels[0]
+        for y in range(16):
+            for x in range(64):
+                i = y * width + x
+                if pixels[i] != key:
+                    pixels[i] = colors[x // 32]
+    return width, height, pixels
+
+
 def render_surfaces(catalog, files, artifact):
     """Bake source effects once per sheet; hash/mask caches follow real variants."""
     pictures={p['id']:p for p in catalog['pictures']}
@@ -322,7 +337,7 @@ def render_surfaces(catalog, files, artifact):
                         v=variant[mode]; path=v['path']; automatic=v['treatment']=='automatic-night-rgb888-v1'
                         cache_key=(path,automatic,dump(settings),mode)
                         if path not in decoded:
-                            decoded[path]=decode(files[path])
+                            decoded[path]=prepared_bitmap(path, files[path])
                         w,h,pixels=decoded[path]
                         if cache_key not in surface_cache:
                             rgba=surface(pixels,automatic)
@@ -391,7 +406,9 @@ def prepare(root=INPUT):
                          directContributionCredits=row['directContributionCredits'],
                          individualImageAuthorStatus='not independently verified; preserve declared evidence'))
         if row['mediaType'] == 'bmp':
-            width, height, pixels = decode(raw)
+            width, height, pixels = prepared_bitmap(path, raw)
+            if path in ('trunk/core/res/EmptyChip.bmp', 'trunk/core/res/EmptyChip_n.bmp'):
+                asset['adaptation'] = 'Web flat land/snow tiles: uniform #dbc383/#ffffff (authored night #373121/#404040); original alpha footprints preserved.'
             asset.update(width=width, height=height, status='converted-surface',
                          day=artifact(png(width, height, surface(pixels)), 'png', path, 'day'),
                          night=artifact(png(width, height, surface(pixels, True)), 'png', path, 'night'))

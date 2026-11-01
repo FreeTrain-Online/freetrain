@@ -98,6 +98,20 @@ class PreparedInputs(unittest.TestCase):
         self.assertNotIn(b'freetrain_plugins', self.artifacts['catalog.json'])
         self.assertEqual(4, len(self.catalog['notices']))
 
+    def test_flat_ground_bitmaps_keep_transparency_and_other_tiles(self):
+        for name, expected in [('EmptyChip.bmp', [(219, 195, 131), (255, 255, 255)]),
+                               ('EmptyChip_n.bmp', [(55, 49, 33), (64, 64, 64)])]:
+            path = 'trunk/core/res/' + name
+            raw = (bundled.INPUT / 'source' / path).read_bytes()
+            width, height, original = bitmap.decode(raw)
+            w, h, pixels = bundled.prepared_bitmap(path, raw)
+            self.assertEqual((width, height), (w, h))
+            for y in range(height):
+                for x in range(width):
+                    i = y * width + x
+                    self.assertEqual(expected[x // 32] if x < 64 and original[i] != original[0] else original[i], pixels[i])
+            self.assertEqual([p[3] for p in bitmap.surface(original)], [p[3] for p in bitmap.surface(pixels)])
+
     def test_duplicate_ids_missing_dependencies_and_cycles_fail_without_silent_overrides(self):
         with self.assertRaisesRegex(ValueError, 'Duplicate contribution'):
             bundled.unique([{'id': 'X'}, {'id': 'X'}], 'id', 'contribution')
