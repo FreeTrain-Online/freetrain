@@ -23,7 +23,7 @@
   import SessionGate from './SessionGate.svelte';
   import type { Selection } from './lib/map-renderer.ts';
   import { panels, type Panel, type Tool } from './lib/game-ui.ts';
-  const icon = '/assets/FTicon.png';
+  const icon = '/assets/FTOicon.png';
   const audio = createBrowserAudio();
   let soundEnabled = $state(false), soundFailed = $state(false), saveBusy = $state(false);
   let enabledContentHash = $state('');

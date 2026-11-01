@@ -16,8 +16,8 @@ Tint variants are an authored red/green channel swap, not historical variants.
 Sources, hashes and alpha masks: web/src/generated/sprites.json.
 Reproduce: deno task --cwd web import:content (Python 3 standard library).
 
-FTicon.png: core/res/FTicon.gif, converted to PNG with original pixels and alpha.
-Reproduce: magick core/res/FTicon.gif web/public/assets/FTicon.png
+FTOicon.png: core/res/FTicon.gif, converted to PNG RGB with original pixels
+and alpha, modified for FreeTrain Online branding.
 
 freetrain-online-logo.svg: vector image traced by Daniel Markstedt from
 FreeTrain splash screen: core/res/splash.jpg, original author is 477
