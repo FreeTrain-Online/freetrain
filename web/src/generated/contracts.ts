@@ -451,7 +451,7 @@ export interface RailwayQuery {
   routing: "closest" | "source" | "alternate";
   from: Position;
   tunnelRouting?: "exact" | "portals" | "portals-auto";
-  infrastructure?: "normal" | "bridge" | "girder" | "tunnel";
+  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage";
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;

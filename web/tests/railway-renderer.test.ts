@@ -229,3 +229,15 @@ Deno.test('natural terrain continuity uses exact tunnel backups and rejects a ta
  assert(validSnapshot(s));r.terrainBackup.ne=1;assert.equal(validSnapshot(s),false);
  r.terrainBackup.ne=0;v.position.z=1;s.entities![0].anchor.z=1;assert.equal(validSnapshot(s),false);
 });
+Deno.test('garage axes dispatch exact background and foreground crops with independent picking in every light and season',async()=>{
+ for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true])for(const [pattern,index] of [[4,0],[10,1]]){
+  const s=flat(1,1),v=rail(s,0,0,1,pattern);
+  v.traffic!.rail!.definition=definition('{93481807-D998-46d7-B1BE-CB2B5D086D67}');v.traffic!.rail!.variant=index;
+  assert(validSnapshot(s));const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5),ops=railwayOps(scene);
+  assert.equal(ops.length,2);
+  assert.deepEqual(ops.map(op=>{assert('layer' in op);return op.layer.frame.rectangle;}),[[32*index,0,32,27],[32*index+64,0,32,27]]);
+  assert.deepEqual(ops.map(op=>{assert('layer' in op);return op.layer.frame.anchor;}),[[0,11],[0,11]]);
+  const p=opaquePoint(scene,v.ownerId);assert.equal(scene.pick({x:p.a,y:p.b},view)?.id,v.ownerId);
+  assert.equal(railwayOps(await TerrainScene.prepare(s,catalog,cache(),{season,night},0)).length,0);
+ }
+});

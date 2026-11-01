@@ -29,6 +29,11 @@ rails retain their identities. Preview, inclusive source booking, confirmation,
 removal and exact save/reopen use the shared special-rail task. Auto selects an
 elevated starting height for isolated spans; changing a draft’s height refreshes
 its authoritative preview and confirmation.
+[P4-15 Train garage](doc/web-parity-garage-tool.md) adds the EN/JA **Train garage** task (**H**):
+ground-level cardinal garage tracks, compatible-track replacement, exact background/foreground
+art, and protected conversion back to ordinary rail. Preview explains the source's half-open
+removal and repeated-subtotal billing. Garages are decorative; train mechanics remain P5.
+
 [P4-14 Tunnel](doc/web-parity-tunnel-tool.md) adds the EN/JA **Tunnel** task (**U**):
 cardinal routes through actual Mountains, mixed tunnel/ordinary rail, saved
 corner restoration and source before/after artwork. Construction charges only

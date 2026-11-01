@@ -38,7 +38,7 @@ export const slopeQueryKey = (q:import('../generated/contracts.ts').SlopeQuery) 
 
 export const railwayReasons = {
   nonCardinalSlope:'slopeCardinal',notSlope:'slopeNotFound',slopeDirectionMismatch:'slopeMismatch',occupiedCar:'railCar',unavailableSlopeBinding:'railBinding',staleRevision:'railStale',
-  tunnelMountainRequired:'tunnelMountainRequired',tunnelComponentDependency:'tunnelComponentDependency',girderAboveGround:'girderAboveGround',samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
+  garageGroundRequired:'garageGroundRequired',garageDependency:'garageDependency',tunnelMountainRequired:'tunnelMountainRequired',tunnelComponentDependency:'tunnelComponentDependency',girderAboveGround:'girderAboveGround',samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
   unusableStart:'railStart',underwater:'railUnderwater',obstacle:'railObstacle',carOccupied:'railCar',
   existingMiddleRail:'railMiddle',cannotAttach:'railAttach',invalidRailPattern:'railPattern',
   unavailableRailBinding:'railBinding',unavailablePierBinding:'railBinding',unavailableCrossingBinding:'railBinding',

@@ -2731,7 +2731,8 @@
             "normal",
             "bridge",
             "girder",
-            "tunnel"
+            "tunnel",
+            "garage"
           ],
           "default": "normal"
         }

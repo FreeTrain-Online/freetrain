@@ -568,5 +568,13 @@
   "previewRemoval": "Preview removal",
   "removeSkipped": "Skipped railway objects",
   "removeNoRailway": "No railway tracks or bridges lie on this line at the selected height.",
-  "removeNothing": "All railway objects on this line are protected. Review the skipped objects."
+  "removeNothing": "All railway objects on this line are protected. Review the skipped objects.",
+  "garageTask": "Train garage",
+  "garageDescription": "A decorative shelter for trains.",
+  "garageHelp": "Choose two points at ground level. The route aligns to the nearest map axis. Existing tracks must connect in both directions along that axis.",
+  "garageRules": "Every cell, including existing compatible tracks, becomes garage rail and costs 6,500,000. Garages have no maintenance, fueling or repair mechanics.",
+  "garageRemovalHelp": "Removal converts matching garages to normal track, excluding the destination. Car-occupied garages stay. Each visited cell charges the running subtotal of 200,000 per matching garage, including protected cars; gaps repeat that subtotal. Reverse the endpoints to include the remaining end.",
+  "confirmGarage": "Confirm garage change",
+  "garageGroundRequired": "Every garage cell must be at its local ground level.",
+  "garageDependency": "A terrain backup or railway slope must be removed with its own tool first."
 }
