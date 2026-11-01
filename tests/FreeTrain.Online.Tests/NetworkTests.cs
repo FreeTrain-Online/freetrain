@@ -333,7 +333,7 @@ public class NetworkTests
         var terrain = packed.Restore(header.Map, FreeTrain.Online.Content.TerrainProfiles.Bundled,
             new FreeTrain.Online.Simulation.Clock().Capture(), header.Paused,
             new FreeTrain.Online.Simulation.RandomStreams(FreeTrain.Online.Simulation.RandomStreams.ReferenceSeed).Capture(), header.Revision);
-        var snapshot = header with { Entities = TerrainWire.Entities(terrain.World.Spatial), Terrain = TerrainWire.Read(terrain) };
+        var snapshot = header with { Entities = [..TerrainWire.Entities(terrain.World.Spatial), ..header.Entities ?? []], Terrain = TerrainWire.Read(terrain) };
         return payload.Message is JoinMessage j ? j with { Snapshot = snapshot } : snapshot;
     }
     private static async Task<WireMessage> ReadFrame(ClientWebSocket socket)
