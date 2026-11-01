@@ -51,15 +51,16 @@ public sealed class MixedWorld
                 if (!SameEntity(e, te) || byOwner.ContainsKey(e.Id)) throw new ArgumentException("Terrain identity was overwritten.");
                 continue;
             }
-            if (!byOwner.TryGetValue(e.Id, out var members) || !e.Owned || e.SilentlyReclaimable || e.Value != 0 ||
+            if (!byOwner.TryGetValue(e.Id, out var members) || e.Owned != (members[0].Construction == null) || e.SilentlyReclaimable || e.Value != 0 ||
                 members.Length != e.Footprint.Members.Length)
                 throw new ArgumentException("Invalid railway owner.");
             // Traffic, EmptyVoxel slope fillers/supports/walls and piers all
             // report source transparency. None is silently reclaimable.
             foreach (var (p, transparent) in e.Footprint.At(e.Anchor))
-                if (At(p) is not {} v || v.OwnerId != e.Id || !transparent)
+                if (At(p) is not {} v || v.OwnerId != e.Id || members[0].Kind != RailwayVoxelKind.Stationary && !transparent)
                     throw new ArgumentException("Railway footprint/payload mismatch.");
-            if (slopeIds.Remove(e.Id, out var slope)) ValidateSlope(e, slope, members);
+            if (members[0].Kind == RailwayVoxelKind.Stationary) StationaryConstruction.ValidateOwner(this,e,members);
+            else if (slopeIds.Remove(e.Id, out var slope)) ValidateSlope(e, slope, members);
             else if (members.Length != 1 || members[0].Position != e.Anchor ||
                 members[0].Kind is not (RailwayVoxelKind.Traffic or RailwayVoxelKind.Pier) ||
                 e.Definition != (members[0].Kind == RailwayVoxelKind.Traffic ? profile.TrafficOwner : members[0].Definition))
@@ -104,6 +105,15 @@ public sealed class MixedWorld
     private void ValidateVoxel(RailwayVoxel v)
     {
         if (Spatial.At(v.Position).Entity?.Id != v.OwnerId) throw new ArgumentException("Unowned railway voxel.");
+        if (v.Kind == RailwayVoxelKind.Stationary)
+        {
+            if (v.Traffic != null || v.Definition == null || Profile.Resolve(v.Definition).Handler != RailwayHandler.Stationary ||
+                v.Sprite != 0 || v.SupportedOwnerId != null || !v.DrawGroundAbove || !v.DrawGroundBelow ||
+                v.Construction is {} c && (c.State is < 0 or > 4 || c.Ground is < 0 or > 6))
+                throw new ArgumentException("Invalid stationary voxel.");
+            return;
+        }
+        if (v.Construction != null) throw new ArgumentException("Unexpected construction state.");
         if (v.Kind != RailwayVoxelKind.Traffic)
         {
             if (v.Traffic != null || v.Kind == RailwayVoxelKind.SlopeFiller && (v.Definition != null || v.Sprite != 0) ||

@@ -97,6 +97,7 @@ public static class ObjectRemoval
             var plan = SlopeRailwayConstruction.PreviewEntityRemoval(world,p);
             return (plan.Candidate,"slope",plan.Reason);
         }
+        if (voxel.Kind == RailwayVoxelKind.Stationary && voxel.Construction == null) return (null,"railway","operationUnavailable");
         var objectKind = voxel.Kind == RailwayVoxelKind.Pier ? "pier" : "railway";
         if (voxel.Traffic?.Car != null) return (null,objectKind,"occupiedCar");
         if (voxel.Traffic?.Platform != null) return (null,objectKind,"platformDependency");

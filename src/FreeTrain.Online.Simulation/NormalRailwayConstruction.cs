@@ -23,6 +23,7 @@ public sealed class RailwayConstructionPlan
     public ImmutableArray<RailwayPierPlacement> ElectedPiers { get; }
     public ImmutableArray<RailwayComponentLoss> ComponentLosses { get; }
     internal MixedWorld? Candidate { get; }
+    public int PendingCompletionCount => (Candidate ?? Source).Voxels.Where(v => v.Construction != null).Select(v => v.OwnerId).Distinct().Count();
     internal RailwayHandler? PreparedHandler { get; }
     internal RailwayConstructionPlan(NormalRailwayPlan topology, string reason)
     { Topology=topology; Reason=reason; Booking=ConstructionBooking.None; Reclaimed=[]; RemovedPiers=[]; ElectedPiers=[]; ComponentLosses=[]; }

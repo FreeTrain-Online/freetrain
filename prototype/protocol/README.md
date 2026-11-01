@@ -156,3 +156,13 @@ unique rail/filler/support/wall members, four ordered transition positions, elec
 piers and explicit pier losses. Removal resolves any member to its owning base.
 The existing role/participant/receipt and terrain-to-mixed promotion rules apply.
 Save8/protocol6 mixed state and chunks retain every invisible occupied cell.
+
+P4-18 extends the current mixed schema with `kind: stationary`, exact stationary
+bindings and an optional `construction` cell payload (stage 0–4, ground 0–6,
+door flag). The existing clock state carries one bound one-shot per unfinished
+cell, preserving order and the world-local construction random stream. Completion
+replaces the site owner and charges the source price; cancellation removes its
+pending actions. `RailwayQuery.infrastructure: stationary` carries a bounded,
+opaque `stationaryType` ID and identical point endpoints. Removal resolves the
+actual owner independently of that selected ID. Existing Save8/protocol6 documents
+without sites retain their shape. See [the lifecycle and contribution ledger](../../doc/web-parity-stationary-tool.md).

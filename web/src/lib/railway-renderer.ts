@@ -9,17 +9,17 @@ import { railwayProfile } from './mixed-state.ts';
 
 export interface RailwayTarget {
   kind:'railway'; id:string; position:Position;
-  component:'rail'|'pier'|'support'|'accessory'; definition:Definition; controllerId?:string;
+  component:'rail'|'pier'|'support'|'accessory'|'stationary'; definition:Definition; controllerId?:string;
 }
 export interface RailwayOperation {target:RailwayTarget;layer:Layer}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
-export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'sameLevel';level:number};
+export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
  * The second point keeps the first point's level, including vacant elevated cells. */
 export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,policy:RailwayPickPolicy):Position|undefined {
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   const slopeOwners=new Set(read.mixed?.slopes.map(s=>s.entityId));
-  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)).map(v=>key(v.position)));
+  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary').map(v=>key(v.position)));
   for(let z=Math.min(heightCut,space.levels-1);z>=0;z--) {
     const p=space.pick(point,z);if(!space.contains(p))continue;
     const s=space.storage(p),ground=read.terrain!.cells[s.v*space.horizontalSize+s.h].ground;
@@ -34,11 +34,15 @@ export class RailwayRenderPlan {
   private voxels=new Map<string,RailwayVoxel>();
   private signatures=new Map<number,string>();
   private space:WorldSpace;
+  private columnStructures=new Map<number,Set<string>>();
+  private structures=new Map<string,{anchor:Position;height:number;definition:Definition}>();
   constructor(read:ReadState,catalog:RenderCatalog,variant:Variant) {
     const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     this.space=space;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
     const states=new Map<number,RailwayVoxel[]>();
+    const ownerIds=new Set(read.mixed!.voxels.filter(v=>v.kind==='stationary').map(v=>v.ownerId));
+    const owners=new Map(read.entities!.filter(e=>ownerIds.has(e.id)).map(e=>[e.id,e]));
     const binding=(d:Definition)=>{
       const b=railwayProfile.bindings.find(b=>b.reference.packId===d.packId&&b.reference.contributionId===d.contributionId&&b.reference.recipeId===d.recipeId);
       if(!b)throw new Error('Railway binding unavailable: '+d.recipeId);return b;
@@ -48,16 +52,17 @@ export class RailwayRenderPlan {
       const s=space.storage(v.position),index=s.v*space.horizontalSize+s.h,ops=this.columns.get(index)??[];
       this.columns.set(index,ops);
       const column=states.get(index)??[];column.push(v);states.set(index,column);
-      const add=(d:Definition,component:RailwayTarget['component'],selectors?:Record<string,number|boolean>,controllerId?:string,targetDefinition=d)=>{
+      const add=(d:Definition,component:RailwayTarget['component'],selectors?:Record<string,number|boolean>,controllerId?:string,targetDefinition=d,cell?:number[])=>{
         binding(d);
         const recipe=recipes.get(d.recipeId);if(!recipe)throw new Error('Railway recipe unavailable: '+d.recipeId);
         const pier=binding(d);
         const selected=d.contributionId.startsWith('system:bridge-pier/')
           ? recipe.frames.filter(f=>f.key===`pier/${(pier.variant-2)%2}/${Math.floor((pier.variant-2)/2)}`)
           : selectors?recipe.frames.filter(f=>Object.entries(selectors).every(([k,value])=>f.selector[k]===value)):recipe.frames;
-        if(!selected.length||selected.some(f=>f.status!=='invisible'&&(f.status!=='ready'||!f.masks?.[variantKey(variant)])))throw new Error('Railway frame unavailable: '+d.recipeId);
+        const frames=cell?selected.filter(f=>f.cell.every((n,i)=>n===cell[i])).map(f=>({...f,cell:[0,0,0] as [number,number,number]})):selected;
+        if(!frames.length||frames.some(f=>f.status!=='invisible'&&(f.status!=='ready'||!f.masks?.[variantKey(variant)])))throw new Error('Railway frame unavailable: '+d.recipeId);
         const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component,definition:targetDefinition,...(controllerId?{controllerId}:{})};
-        for(const layer of instantiate({...recipe,handler:d.contributionId.startsWith('system:bridge-pier/')?'source-geometry':recipe.handler,frames:selected},v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z],{selectors})) {
+        for(const layer of instantiate({...recipe,handler:d.contributionId.startsWith('system:bridge-pier/')?'source-geometry':recipe.handler,frames},v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z],{selectors})) {
           if(recipe.handler==='electric-pole'&&variant.drawPoles===false)continue;
           // P2's signal stages describe needsToDrawAfter's name. GEO-007
           // follows SignalRailRoad's actual inverted calls in the live world.
@@ -65,6 +70,30 @@ export class RailwayRenderPlan {
           this.layers.push(layer);ops.push({target,layer});
         }
       };
+      if(v.kind==='stationary'){
+        const owner=owners.get(v.ownerId)!;
+        const d=v.definition!,c=v.construction;
+        if(c){
+          const type=railwayProfile.bindings.find(b=>b.reference.contributionId===d.contributionId)!;
+          if(!('stationary' in type)||!type.stationary)throw new Error('Missing stationary dimensions');
+          const x=v.position.x-owner.anchor.x,y=v.position.y-owner.anchor.y;
+          const connected=[y!==0,x!==type.stationary.sizeX-1,y!==type.stationary.sizeY-1,x!==0];
+          const part=(part:string)=>add({packId:d.packId,contributionId:`system:construction/${part}`,recipeId:`system:construction/${part}`},'stationary',undefined,undefined,d);
+          const ground=v.position.z===read.terrain!.cells[index].ground;
+          const fence=(i:number)=>{if(!connected[i])part(`fence/${i}/${c.needsDoor?1:0}`);};
+          if(ground){fence(0);fence(1);}
+          if(c.state===0){if(ground)part(`ground/${c.ground}`);}
+          else if(c.state<4){if(ground)part('ground/0');part(`bones/${c.state-1}/${connected.map(n=>n?'1':'0').join('')}`);}
+          else{for(const i of [0,1])if(!connected[i])part(`wall/${i}`);part(`bones/2/${connected.map(n=>n?'1':'0').join('')}`);for(const i of [2,3])if(!connected[i])part(`wall/${i}`);}
+          if(ground){fence(2);fence(3);}
+        }else {
+          const type=binding(d);if(!('stationary' in type)||!type.stationary)throw new Error('Missing stationary dimensions');
+          this.structures.set(v.ownerId,{anchor:owner.anchor,height:type.stationary.height,definition:d});
+          const members=this.columnStructures.get(index)??new Set<string>();members.add(v.ownerId);this.columnStructures.set(index,members);
+          add(d,'stationary',undefined,undefined,d,[v.position.x-owner.anchor.x,v.position.y-owner.anchor.y,v.position.z-owner.anchor.z]);
+        }
+        continue;
+      }
       if(v.kind==='slopefiller')continue; // Explicit invisible occupancy still controls holes.
       if(v.kind!=='traffic'){add(v.definition!,v.kind==='pier'?'pier':'support');continue;}
       const c=v.traffic!;
@@ -80,6 +109,7 @@ export class RailwayRenderPlan {
       // Traffic: accessory-before, rail-before, [P5 car], rail-after, accessory-after.
       ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     }
+    for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify(voxels));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}
@@ -93,9 +123,21 @@ export class RailwayRenderPlan {
     const below=p.z===0?undefined:this.voxels.get(key({...p,z:p.z-1}));
     return above?.drawGroundBelow!==false&&below?.drawGroundAbove!==false;
   }
-  operations(index:number,cut:number,water:number,full:boolean,ground:number):RailwayOperation[] {
+  operations(index:number,cut:number,water:number,full:boolean,ground:number):(RailwayOperation|{target:RailwayTarget;points:Point[];color:string})[] {
     const p=this.space.location({h:index%this.space.horizontalSize,v:Math.floor(index/this.space.horizontalSize),z:water});
     const minimum=full?(water<=ground&&!this.drawGround(p,this.space.levels)?Math.max(0,water-1):water):0;
-    return (this.columns.get(index)??[]).filter(op=>op.target.position.z<=cut&&op.target.position.z>=minimum);
+    const result:(RailwayOperation|{target:RailwayTarget;points:Point[];color:string})[]=(this.columns.get(index)??[]).filter(op=>{
+      const structure=this.structures.get(op.target.id);
+      return op.target.position.z<=cut&&op.target.position.z>=minimum&&(!structure||full||cut>=structure.anchor.z+structure.height);
+    });
+    if(!full)for(const id of this.columnStructures.get(index)??[]){
+      const s=this.structures.get(id)!;
+      const storage=this.space.storage(s.anchor);
+      if(storage.v*this.space.horizontalSize+storage.h!==index||s.anchor.z<minimum||s.anchor.z>cut||cut>=s.anchor.z+s.height)continue;
+      const q=this.space.project(s.anchor);
+      result.push({target:{kind:'railway',id,position:s.anchor,component:'stationary',definition:s.definition},
+        points:[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}].map(p=>({x:q.x+p.x,y:q.y+p.y})),color:'#808080'});
+    }
+    return result.sort((a,b)=>a.target.position.z-b.target.position.z);
   }
 }

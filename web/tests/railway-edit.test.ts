@@ -175,3 +175,12 @@ Deno.test('pole request identity and single-cell preview retain exact type selec
  const pole={...preview,query,cost:'0',cells:[preview.cells[0]]};assert.deepEqual(parseRailwayPreview(pole),pole);
  assert.throws(()=>parseRailwayPreview({...pole,cells:[]}));assert.throws(()=>parseRailwayPreview({...pole,cells:preview.cells}));
 });
+Deno.test('stationary preview identities bind exact malformed-looking contribution IDs and accept full height footprints',()=>{
+ const query={...q,to:q.from,infrastructure:'stationary' as const,stationaryType:'{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E'};
+ const quote={...preview,query,cost:'0',cells:[preview.cells[0]]};
+ assert.deepEqual(parseRailwayPreview(quote),quote);
+ assert.deepEqual(parseRailwayPreview({...quote,cells:preview.cells}).cells,preview.cells);
+ assert.throws(()=>parseRailwayPreview({...quote,cells:[]}));
+ assert.notEqual(railwayQueryKey(query),railwayQueryKey({...query,stationaryType:'other variant'}));
+ assert.equal(parseMessage(JSON.stringify({type:'command',requestId:'stationary',expectedWorldEpoch:'1',payload:{kind:'editRailway',query}})).type,'command');
+});

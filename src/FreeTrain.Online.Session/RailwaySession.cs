@@ -11,11 +11,11 @@ public sealed partial class SessionHost
     private MixedSessionState RailwayState(RailwayQuery query)
     {
         if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
-            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole") ||
+            query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary") ||
             query.SignalDirection is not (0 or 2 or 4 or 6) ||
             query.SignalType is not (SignalRailwayConstruction.ThreeAspect or SignalRailwayConstruction.Shunting) ||
-            !PoleRailwayConstruction.IsBundledType(query.PoleType) ||
-            query.Infrastructure is ("signal" or "pole") && query.From != query.To ||
+            !PoleRailwayConstruction.IsBundledType(query.PoleType) || query.StationaryType is not {Length: <= 512} ||
+            query.Infrastructure is ("signal" or "pole" or "stationary") && query.From != query.To ||
             query.TunnelRouting is not ("exact" or "portals" or "portals-auto") ||
             query.TunnelRouting != "exact" && (query.Infrastructure != "tunnel" || query.Action != "lay")) throw new ArgumentException("invalidInput");
         return RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
@@ -41,6 +41,7 @@ public sealed partial class SessionHost
     {
         var from = new Location(query.From.X,query.From.Y,query.From.Z);
         var to = new Location(query.To.X,query.To.Y,query.To.Z);
+        if (query.Infrastructure == "stationary") return StationaryConstruction.Preview(state.World,from,query.StationaryType,query.Action == "remove");
         if (query.Infrastructure == "pole") return PoleRailwayConstruction.Preview(state.World,from,query.PoleType,query.Action == "remove");
         if (query.Infrastructure == "signal") return SignalRailwayConstruction.Preview(state.World,from,query.SignalType,query.SignalDirection,query.Action == "remove");
         if (query.Infrastructure == "garage") return GarageRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
@@ -67,8 +68,14 @@ public sealed partial class SessionHost
         {
             var state = RailwayState(query);
             var plan = PlanRailway(state,query);
-            var reason = plan.Reason ?? (state.Revision == long.MaxValue || state.World.Revision == long.MaxValue ? "constructionOverflow" : null) ?? (plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions-state.Construction.Accounts.Transactions.Length
+            var reason = plan.Reason ?? (state.Revision == long.MaxValue || state.World.Revision == long.MaxValue ? "constructionOverflow" : null) ?? (plan.Booking.Charges.Length + plan.PendingCompletionCount > NormalRailwayConstruction.MaximumAccountTransactions-state.Construction.Accounts.Transactions.Length
                 ? "accountCapacityLimit" : null);
+            if (reason == null && query.Infrastructure == "stationary")
+            {
+                try { MixedWire.ValidateTransition(state,StationaryConstruction.Commit(state,plan)); }
+                catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+                { reason = "constructionOverflow"; }
+            }
             static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
             var losses = plan.Reclaimed.Select(r => new RailwayLossRead("reclamation",P(r.Entity.Anchor),r.Entity.Id,null))
                 .Concat(plan.RemovedPiers.Select(v => new RailwayLossRead("pier",P(v.Position),v.OwnerId,v.SupportedOwnerId)))
@@ -86,7 +93,7 @@ public sealed partial class SessionHost
             var before = RailwayState(query);
             var plan = PlanRailway(before,query);
             if (!plan.Legal) return "invalidPlacement";
-            var construction = query.Infrastructure == "pole"
+            var construction = query.Infrastructure == "stationary" ? before.Construction : query.Infrastructure == "pole"
                 ? PoleRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
                 : query.Infrastructure == "signal"
                 ? SignalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
@@ -99,7 +106,7 @@ public sealed partial class SessionHost
                 : query.Infrastructure == "bridge"
                 ? BridgeRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time)
                 : NormalRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time);
-            var after = before.Successor(before.Revision,construction,before.ConstructionMode);
+            var after = query.Infrastructure == "stationary" ? StationaryConstruction.Commit(before,plan) : before.Successor(before.Revision,construction,before.ConstructionMode);
             MixedWire.ValidateTransition(before,after);
             mixedState = after;
             terrainState = null;

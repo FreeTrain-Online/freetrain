@@ -40,9 +40,16 @@ export function validMixed(read:Snapshot):boolean {
  for(const e of read.entities){
   if(terrainIds.has(e.id))continue;
   const group=owners.get(e.id),s=slopes.get(e.id);
-  if(!group||group.length!==e.footprint.length||!e.owned||e.silentlyReclaimable||e.value!=='0')return false;
-  for(const f of e.footprint){const v=voxels.get(key({x:e.anchor.x+f.offset.x,y:e.anchor.y+f.offset.y,z:e.anchor.z+f.offset.z}));if(!f.transparent||v?.ownerId!==e.id)return false;}
-  if(s){
+  if(!group||group.length!==e.footprint.length||e.owned!==(group[0].construction===undefined)||e.silentlyReclaimable||e.value!=='0')return false;
+  for(const f of e.footprint){const v=voxels.get(key({x:e.anchor.x+f.offset.x,y:e.anchor.y+f.offset.y,z:e.anchor.z+f.offset.z}));if(v?.ownerId!==e.id||group[0].kind!=='stationary'&&!f.transparent)return false;}
+  if(group[0].kind==='stationary'){
+   const b=binding(e.definition),type=b&&'stationary' in b?b.stationary:undefined;
+   const site=group[0].construction!==undefined;
+   if(!type||group.length!==type.sizeX*type.sizeY*type.height||site&&group.every(v=>v.construction?.state===4)||
+    e.footprint.some(f=>f.transparent!==(!site&&type.sizeX===1&&type.sizeY===1))||
+    group.some(v=>v.kind!=='stationary'||!same(v.definition,e.definition)||(v.construction!==undefined)!==site||
+     v.construction?.needsDoor&&v.position.x===e.anchor.x&&v.position.y===e.anchor.y+type.sizeY-1||v.position.x<e.anchor.x||v.position.x>=e.anchor.x+type.sizeX||v.position.y<e.anchor.y||v.position.y>=e.anchor.y+type.sizeY||v.position.z<e.anchor.z||v.position.z>=e.anchor.z+type.height))return false;
+  }else if(s){
    if(!same(e.definition,profile.slopeOwner)||group.length!==8)return false;
    for(let i=0;i<4;i++){
     let p=e.anchor;for(let j=0;j<i;j++)p=move(p,s.climb);p={...p,z:e.anchor.z+Math.floor(i/2)};
@@ -56,6 +63,12 @@ export function validMixed(read:Snapshot):boolean {
  if([...slopes.keys()].some(id=>!owners.has(id)))return false;
  const cars=new Set<string>();
  for(const v of m.voxels){
+  if(v.construction!==undefined&&(!v.construction||!Number.isInteger(v.construction.state)||v.construction.state<0||v.construction.state>4||!Number.isInteger(v.construction.ground)||v.construction.ground<0||v.construction.ground>6||typeof v.construction.needsDoor!=='boolean'))return false;
+  if(v.kind==='stationary'){
+   if(v.traffic!==null||binding(v.definition)?.handler!=='stationary'||v.sprite!==0||v.supportedOwnerId!==null||!v.drawGroundBelow||!v.drawGroundAbove)return false;
+   continue;
+  }
+  if(v.construction!==undefined)return false;
   if(v.kind!=='traffic'){
    if(v.traffic!==null||v.kind==='slopefiller'&&(v.definition!==null||v.sprite!==0)||v.kind!=='pier'&&v.supportedOwnerId!==null||
       v.kind==='pier'&&(!v.drawGroundBelow||!v.drawGroundAbove))return false;

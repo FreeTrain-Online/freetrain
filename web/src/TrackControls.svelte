@@ -1,15 +1,20 @@
 <script lang="ts">
+  import stationaryTypes from './generated/stationary-types.json' with {type:'json'};
+  import StationaryPreview from './StationaryPreview.svelte';
   import { untrack } from 'svelte';
+  import { WorldSpace } from './lib/map-geometry.ts';
   import { primaryAction } from './lib/primary-action.ts';
   import type { Position, RailwayPreview, RailwayQuery } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel, RailwayPreviewRequestError } from './lib/railway-edit.ts';
   let {model,view,picked,level=$bindable(1),infrastructure='normal',onpreview,onpoints,onreveal,heightCut}:
-    {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge'|'girder'|'tunnel'|'garage'|'signal'|'pole';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
+    {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge'|'girder'|'tunnel'|'garage'|'signal'|'pole'|'stationary';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
-  const pointTool=$derived(infrastructure==='signal'||infrastructure==='pole');
-  const wording=$derived(infrastructure==='pole' ? {task:'poleTask',description:'poleDescription',help:'poleHelp',rules:'poleRules',removal:'poleRemovalHelp',confirm:'confirmPole'} as const : infrastructure==='signal' ? {task:'signalTask',description:'signalDescription',help:'signalHelp',rules:'signalRules',removal:'signalRemovalHelp',confirm:'confirmSignal'} as const : infrastructure==='garage' ? {task:'garageTask',description:'garageDescription',help:'garageHelp',rules:'garageRules',removal:'garageRemovalHelp',confirm:'confirmGarage'} as const : infrastructure==='tunnel' ? {task:'tunnelTask',description:'tunnelDescription',help:'tunnelHelp',rules:'tunnelRules',removal:'tunnelRemovalHelp',confirm:'confirmTunnel'} as const : infrastructure==='girder' ? {task:'girderTask',description:'girderDescription',help:'girderHelp',rules:'girderRules',removal:'girderRemovalHelp',confirm:'confirmGirder'} as const : infrastructure==='bridge' ? {task:'bridgeTask',description:'bridgeDescription',help:'bridgeHelp',rules:'bridgeRules',removal:'bridgeRemovalHelp',confirm:'confirmBridge'} as const : {task:'trackTask',description:'bridgeDescription',help:'railHelp',rules:'railHeuristicHelp',removal:'railRemovalHelp',confirm:'confirmTrack'} as const);
+  const pointTool=$derived(infrastructure==='stationary'||infrastructure==='signal'||infrastructure==='pole');
+  const wording=$derived(infrastructure==='stationary' ? {task:'stationaryTask',description:'stationaryDescription',help:'stationaryHelp',rules:'stationaryRules',removal:'stationaryRemovalHelp',confirm:'confirmStationary'} as const : infrastructure==='pole' ? {task:'poleTask',description:'poleDescription',help:'poleHelp',rules:'poleRules',removal:'poleRemovalHelp',confirm:'confirmPole'} as const : infrastructure==='signal' ? {task:'signalTask',description:'signalDescription',help:'signalHelp',rules:'signalRules',removal:'signalRemovalHelp',confirm:'confirmSignal'} as const : infrastructure==='garage' ? {task:'garageTask',description:'garageDescription',help:'garageHelp',rules:'garageRules',removal:'garageRemovalHelp',confirm:'confirmGarage'} as const : infrastructure==='tunnel' ? {task:'tunnelTask',description:'tunnelDescription',help:'tunnelHelp',rules:'tunnelRules',removal:'tunnelRemovalHelp',confirm:'confirmTunnel'} as const : infrastructure==='girder' ? {task:'girderTask',description:'girderDescription',help:'girderHelp',rules:'girderRules',removal:'girderRemovalHelp',confirm:'confirmGirder'} as const : infrastructure==='bridge' ? {task:'bridgeTask',description:'bridgeDescription',help:'bridgeHelp',rules:'bridgeRules',removal:'bridgeRemovalHelp',confirm:'confirmBridge'} as const : {task:'trackTask',description:'bridgeDescription',help:'railHelp',rules:'railHeuristicHelp',removal:'railRemovalHelp',confirm:'confirmTrack'} as const);
+  let stationaryType=$state(stationaryTypes[0].id);
+  const stationary=$derived(stationaryTypes.find(t=>t.id===stationaryType)!);
   let signalType=$state<'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'|'{6FA55842-E693-414f-A120-0A3D0C613B21}'>('{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}');
   const poleTypes=['{DDF7F835-8100-45fd-8AE7-EC498796D387}','{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}','{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}','{FD1635C1-05BF-41af-9185-4891B983E2A4}'] as const;
   let poleType=$state<NonNullable<RailwayQuery['poleType']>>(poleTypes[0]);
@@ -20,6 +25,8 @@
   let hasA=$state(false),hasB=$state(false),point=$state<'from'|'to'>('from');
   let autoLevel=$state(true),autoCoordinates=$state(true);
   let result=$state<RailwayPreview>(),status=$state<'idle'|'checking'|'ready'|'failed'|'stale'>('idle');
+  const stationaryTarget=$derived(action==='remove'&&result?.legal?stationaryTypes.find(t=>t.id===view.read?.mixed?.voxels.find(v=>v.position.x===result?.cells[0]?.position.x&&v.position.y===result?.cells[0]?.position.y&&v.position.z===result?.cells[0]?.position.z)?.definition?.contributionId):undefined);
+  const shownStationary=$derived(action==='remove'?stationaryTarget:stationary);
   let requestRejected=$state(false);
   let fence=$state<string>(),submitting=$state(false);
   let version=0,request:AbortController|undefined;
@@ -27,8 +34,9 @@
   function reset(){requestRejected=false;version++;request?.abort();fence=undefined;result=undefined;status='idle';onpreview();}
   function points(){if(pointTool){onpoints(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]);return;}onpoints([...(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]),...(hasB?[{position:{x:bx,y:by,z:level},label:'B'}]:[])]);}
   function edit(){reset();points();}
+  export function isRemoving(){return action==='remove';}
   export function usesAutomaticPick(){return autoLevel&&(point==='from'||(infrastructure==='girder'||infrastructure==='tunnel')&&action==='lay');}
-  function startLevel(position:Position){return view.read?railwayStartLevel(view.read,position,heightCut,infrastructure==='girder'&&action==='lay'?1:0):undefined;}
+  function startLevel(position:Position){if(infrastructure==='stationary'&&view.read?.terrain){const space=new WorldSpace(view.read.map.width,view.read.map.height,view.read.map.levels);if(!space.containsHorizontal(position))return;const s=space.storage(position);return view.read.terrain.cells[s.v*space.horizontalSize+s.h].ground;}return view.read?railwayStartLevel(view.read,position,heightCut,infrastructure==='girder'&&action==='lay'?1:0):undefined;}
   function editLevel(){const refresh=result!==undefined||status==='checking';edit();if((infrastructure==='girder'||infrastructure==='tunnel')&&hasA&&hasB&&refresh)void check();}
   function detectCoordinateLevel(){
     if(autoLevel&&autoCoordinates&&view.read){
@@ -49,7 +57,7 @@
     if(![ax,ay,bx,by,level].every(Number.isSafeInteger)){status='failed';return;}
     if(pointTool){bx=ax;by=ay;}
     hasA=true;hasB=true;points();
-    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
+    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='stationary'?{stationaryType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
     const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewRailway(query,request.signal);
@@ -83,13 +91,21 @@
   {#if infrastructure!=='normal'}<p>{text[wording.description]}</p>{/if}
   <p class="hint">{text[wording.help]}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
+    {#if infrastructure==='stationary'}
+      {#if action==='lay'}<label>{text.stationaryType}<select aria-label={text.stationaryType} bind:value={stationaryType} onchange={edit} disabled={view.pending}>{#each stationaryTypes as type}<option value={type.id}>{view.locale==='ja'?type.groupJa:type.groupEn} · {type.variant}</option>{/each}</select></label>{/if}
+      {#if shownStationary}
+      {#if action==='remove'}<p>{text.stationaryTarget}: {view.locale==='ja'?shownStationary.groupJa:shownStationary.groupEn} · {shownStationary.variant}</p>{/if}
+      <StationaryPreview type={shownStationary} locale={view.locale}/>
+      <p>{text.stationaryDimensions}: {shownStationary.sizeX} × {shownStationary.sizeY} × {shownStationary.height}{#if action==='lay'} · {text.stationaryCompletionCost}: {shownStationary.price.toLocaleString(view.locale)}{/if}</p>
+      {/if}
+    {/if}
     {#if infrastructure==='pole'}<label>{text.poleType}<select aria-label={text.poleType} bind:value={poleType} onchange={edit} disabled={view.pending}>{#each poleTypes as type,i}<option value={type}>{text[(['poleDouble1','poleDouble2','poleSingle1','poleSingle2'] as const)[i]]}</option>{/each}</select></label>{/if}
     {#if infrastructure==='signal'}
       <label>{text.signalType}<select aria-label={text.signalType} bind:value={signalType} onchange={edit} disabled={view.pending}><option value={'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'}>{text.signalThreeAspect}</option><option value={'{6FA55842-E693-414f-A120-0A3D0C613B21}'}>{text.signalShunting}</option></select></label>
       <label>{text.signalDirection}<select aria-label={text.signalDirection} bind:value={signalDirection} onchange={edit} disabled={view.pending}>{#each [0,2,4,6] as d}<option value={d}>{text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[d/2]]}</option>{/each}</select></label>
     {/if}
     <div class="form-actions">
-      {#if infrastructure!=='normal'}<label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text.railLay}</option><option value="remove">{text.railRemove}</option></select></label>{/if}
+      {#if infrastructure!=='normal'}<label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text[infrastructure==='stationary'?'stationaryPlace':'railLay']}</option><option value="remove">{text.railRemove}</option></select></label>{/if}
       <label>{text.buildLevel}<input aria-label={text.buildLevel} type="number" min="0" max={(view.read?.map.levels??1)-1} step="1" bind:value={level} disabled={view.pending} oninput={event=>{autoLevel=false;level=event.currentTarget.valueAsNumber;editLevel();}}/></label>
     </div>
     <label><input type="checkbox" aria-label={text.railAutoLevel} bind:checked={autoLevel} disabled={view.pending} onchange={event=>changeLevelMode(event.currentTarget.checked)}/>{text.railAutoLevel}</label>

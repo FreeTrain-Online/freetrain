@@ -338,13 +338,14 @@ export interface Mixed {
 export interface RailwayVoxel {
   position: Position;
   ownerId: EntityId;
-  kind: "traffic" | "slopefiller" | "slopesupport" | "slopewall" | "pier";
+  kind: "traffic" | "slopefiller" | "slopesupport" | "slopewall" | "pier" | "stationary";
   traffic: Traffic | null;
   definition: Definition | null;
   sprite: number;
   drawGroundBelow: boolean;
   drawGroundAbove: boolean;
   supportedOwnerId: EntityId | null;
+  construction?: ConstructionCell;
 }
 export interface Traffic {
   rail: RailComponent | null;
@@ -379,6 +380,11 @@ export interface CarComponent {
   definition: Definition;
   trainId: EntityId;
   carId: EntityId;
+}
+export interface ConstructionCell {
+  state: number;
+  ground: number;
+  needsDoor: boolean;
 }
 export interface SlopeOwner {
   entityId: EntityId;
@@ -458,7 +464,8 @@ export interface RailwayQuery {
   signalType?: "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}" | "{6FA55842-E693-414f-A120-0A3D0C613B21}";
   signalDirection?: 0 | 2 | 4 | 6;
   tunnelRouting?: "exact" | "portals" | "portals-auto";
-  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage" | "signal" | "pole";
+  infrastructure?: "normal" | "bridge" | "girder" | "tunnel" | "garage" | "signal" | "pole" | "stationary";
+  stationaryType?: string;
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;

@@ -1031,7 +1031,8 @@
             "slopefiller",
             "slopesupport",
             "slopewall",
-            "pier"
+            "pier",
+            "stationary"
           ]
         },
         "traffic": {
@@ -1074,6 +1075,9 @@
               "type": "null"
             }
           ]
+        },
+        "construction": {
+          "$ref": "#/$defs/ConstructionCell"
         }
       },
       "required": [
@@ -1214,6 +1218,30 @@
         "voxels",
         "slopes",
         "accounts"
+      ]
+    },
+    "ConstructionCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "ground": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "needsDoor": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "ground",
+        "needsDoor"
       ]
     }
   },

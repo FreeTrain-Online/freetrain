@@ -33,7 +33,7 @@ export async function worldReplacementFixture(page:Page) {
 export async function ready(page: Page, language = 'en') {
   await expect(page.locator('.command-bar')).toBeVisible();
   await expect(page.getByTestId('connection')).toHaveText(language === 'ja' ? 'ゲームに接続済み' : 'Connected to game');
-  await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'live');
+  await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-scene', 'live');
 }
 export async function closePanel(page: Page) {
   const close = page.locator('.primary-panel .panel-title button:last-child');

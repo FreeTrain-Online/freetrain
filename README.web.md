@@ -53,6 +53,14 @@ Preview/confirm, underground cuts/picking and exact save/reopen/restoration shar
 the authoritative mixed-world boundary. Portal selection also accepts one cell
 before or inside either mountainside; automatic height can adjust by one level.
 The preview shows the resolved path and actual cost before confirmation.
+[P4-18 Railway accessories](doc/web-parity-stationary-tool.md) adds **Railway
+accessories / 鉄道アクセサリ (A)**: all 54 bundled decorative piers and signal
+boxes, exact variant previews, ground placement and source construction sites.
+Shared time advances weekday work; completion charges the source price. Whole
+removal costs 500,000 per ground cell under Subsidiaries; cancelling a site is
+free. Progress, callbacks and random state save/reopen exactly. These decorative
+objects do not support track or control trains.
+
 Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 

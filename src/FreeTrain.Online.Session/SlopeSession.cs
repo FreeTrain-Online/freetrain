@@ -22,7 +22,7 @@ public sealed partial class SessionHost
         {
             var state=SlopeState(query); var plan=PlanSlope(state,query);
             var reason=plan.Reason ?? (state.Revision == long.MaxValue || state.World.Revision == long.MaxValue
-                ? "constructionOverflow" : state.Construction.Accounts.Transactions.Length >= NormalRailwayConstruction.MaximumAccountTransactions
+                ? "constructionOverflow" : state.Construction.Accounts.Transactions.Length + state.World.Voxels.Where(v => v.Construction != null).Select(v => v.OwnerId).Distinct().Count() >= NormalRailwayConstruction.MaximumAccountTransactions
                 ? "accountCapacityLimit" : null);
             static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
             var members=plan.Members.OrderBy(v=>v.Position.X).ThenBy(v=>v.Position.Y).ThenBy(v=>v.Position.Z).Select(v=>new SlopeMemberRead(P(v.Position),v.Kind.ToString().ToLowerInvariant(),

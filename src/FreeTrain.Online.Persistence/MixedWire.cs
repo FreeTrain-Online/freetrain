@@ -30,11 +30,14 @@ public static class MixedWire
                     t.Road is {} road ? new(Read(road.Definition)!,road.Edges) : null,
                     t.Accessory is {} accessory ? new(Read(accessory.Definition)!,accessory.Direction) : null,
                     t.Car is {} car ? new(Read(car.Definition)!,car.TrainId,car.CarId) : null,Read(t.Platform)),
-                Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId)).ToArray(),
+                Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null)).ToArray(),
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
                 t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()));
     }
+    public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
+        .Where(v => v.Construction is {State: < 4}).ToDictionary(v => StationaryConstruction.Handler(new(
+            new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,RailwayVoxelKind.Stationary)), _ => (Action)(() => {}));
     public static IReadOnlyDictionary<Location, QuarterCorners> TunnelBackups(MixedRead data, RailwayProfile profile) =>
         data.Voxels.Where(v => v.Traffic?.Rail is {} r && profile.Resolve(Restore(r.Definition)!).Handler == RailwayHandler.Tunnel)
             .ToDictionary(v => new Location(v.Position.X,v.Position.Y,v.Position.Z), v => {
@@ -53,7 +56,7 @@ public static class MixedWire
                 t.Road is {} road ? new(Restore(road.Definition)!,road.Edges) : null,
                 t.Accessory is {} accessory ? new(Restore(accessory.Definition)!,accessory.Direction) : null,
                 t.Car is {} car ? new(Restore(car.Definition)!,car.TrainId,car.CarId) : null,Restore(t.Platform)),
-            Restore(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId));
+            Restore(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null));
         var spatial = TerrainWire.Spatial(data.NextEntityId,railwayEntities);
         var world = new MixedWorld(profile,terrain,spatial with { Entities = terrain.Spatial.Entities.AddRange(spatial.Entities) },voxels,
             data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision);

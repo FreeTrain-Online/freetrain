@@ -207,7 +207,7 @@ public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason)
 
 // Additive normal-track task; prices and candidate graphs are never command inputs.
 public sealed record RailwayQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
-    PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal", string TunnelRouting = "exact", string SignalType = "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}", int SignalDirection = 0, string PoleType = "{DDF7F835-8100-45fd-8AE7-EC498796D387}");
+    PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal", string TunnelRouting = "exact", string SignalType = "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}", int SignalDirection = 0, string PoleType = "{DDF7F835-8100-45fd-8AE7-EC498796D387}", string StationaryType = "");
 public sealed record EditRailwayCommand(RailwayQuery Query) : CommandPayload;
 public sealed record RailwayRouteCellRead(PositionRead Position, int? BeforePattern, int? AfterPattern, bool ProtectedByCar);
 public sealed record RailwayLossRead(string Kind, PositionRead Position, long OwnerId, long? SupportedOwnerId);
@@ -232,8 +232,10 @@ public sealed record AccessoryComponentRead(DefinitionRead Definition, int Direc
 public sealed record CarComponentRead(DefinitionRead Definition, long TrainId, long CarId);
 public sealed record TrafficRead(RailComponentRead? Rail, RoadComponentRead? Road, AccessoryComponentRead? Accessory,
     CarComponentRead? Car, DefinitionRead? Platform);
+public sealed record ConstructionCellRead(int State, int Ground, bool NeedsDoor);
 public sealed record RailwayVoxelRead(PositionRead Position, long OwnerId, string Kind, TrafficRead? Traffic,
-    DefinitionRead? Definition, int Sprite, bool DrawGroundBelow, bool DrawGroundAbove, long? SupportedOwnerId);
+    DefinitionRead? Definition, int Sprite, bool DrawGroundBelow, bool DrawGroundAbove, long? SupportedOwnerId,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ConstructionCellRead? Construction = null);
 public sealed record SlopeOwnerRead(long EntityId, int Climb);
 public sealed record AccountTransactionRead(long Sequence, long WorldRevision, long AbsoluteMinute, string Operation,
     string Genre, long Expenditure, long TopUps, long CashAfter);

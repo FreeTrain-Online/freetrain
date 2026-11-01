@@ -62,12 +62,12 @@ public sealed class TerrainSessionState
     public long Revision { get; private set; }
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public TerrainSessionState(TerrainWorld world, TerrainProvenance provenance, bool constructionMode = false,
-        ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0)
+        ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0, IReadOnlyDictionary<string, Action>? clockHandlers = null)
     {
         provenance.Validate(world);
         if (revision < world.Revision) throw new ArgumentException("Invalid state revision.");
         World = world; Provenance = provenance; ConstructionMode = constructionMode;
-        Clock = clock == null ? new() : Clock.Restore(clock);
+        Clock = clock == null ? new(handlers:clockHandlers) : Clock.Restore(clock,clockHandlers);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
         Paused = paused; Revision = revision;
     }

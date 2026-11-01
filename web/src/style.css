@@ -32,7 +32,7 @@ input[type="range"] { padding: 0; }
 .map-viewport.demo { inset: 0; }
 .world-canvas { display: block; width: 100%; height: 100%; touch-action: none; background: #d8e5d9; }
 .world-canvas:focus-visible { outline-offset: -4px; }
-.tool-strip { position: absolute; inset-block: 0; inset-inline-start: 0; width: var(--strip); display: flex; flex-direction: column; gap: 4px; padding: 3px; background: var(--ui-menu-bar); border-inline-end: 1px solid var(--border); z-index: 10; }
+.tool-strip { position: absolute; inset-block: 0; inset-inline-start: 0; width: var(--strip); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 4px; padding: 3px; background: var(--ui-menu-bar); border-inline-end: 1px solid var(--border); z-index: 10; }
 .tool-strip button { flex-shrink: 0; font-size: 19px; width: 100%; }
 .primary-panel, .tool-card, .game-menu, .session-dialog { background: var(--ui-window-background); border: 1px solid var(--border); box-shadow: var(--shadow); }
 .primary-panel { position: absolute; inset-block-start: 8px; inset-inline-end: 8px; width: min(var(--panel), calc(100% - var(--strip) - 16px)); max-height: calc(100% - 60px); display: flex; flex-direction: column; z-index: 30; }
@@ -92,7 +92,7 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
   .command-bar { font-size: 12px; }
   .command-bar .step, .command-bar > .app-icon { display: none; }
   .overflow-step { display: block; }
-  .tool-strip { inset: 0 0 auto; width: 100%; height: var(--strip); flex-direction: row; border-inline-end: 0; border-bottom: 1px solid var(--border); }
+  .tool-strip { inset: 0 0 auto; width: 100%; height: var(--strip); overflow-x: auto; overflow-y: hidden; flex-direction: row; border-inline-end: 0; border-bottom: 1px solid var(--border); }
   .tool-strip button { width: var(--target); }
   .map-viewport { inset: var(--strip) 0 0; }
   .primary-panel { width: calc(100% - 16px); inset-block-start: auto; inset-block-end: 52px; max-height: calc(100% - var(--strip) - 60px); }

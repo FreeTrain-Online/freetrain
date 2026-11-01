@@ -43,5 +43,20 @@ for(let d=0;d<8;d+=2)for(let i=2;i<4;i++){const p=d/2*4+i;add(`system:pattern/sl
 for(const [id,kind] of [['{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}','bridge'],['{7FD493FF-D6A7-4a13-A471-FB737641D8A0}','girder'],['{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}','tunnel'],['{93481807-D998-46d7-B1BE-CB2B5D086D67}','garage']])add(id,kind);
 for(const r of catalog.renderRecipes.filter(r=>['electric-pole','signal'].includes(r.handler)))add(r.id,r.handler==='signal'?'signal':'pole');
 for(let i=0;i<4;i++)railway.bindings.push({reference:definition(`system:bridge-pier/${i}`,'{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}'),handler:'pier',variant:i+2});
+// Source-bound stationary dimensions, prices and independent variant identities.
+const groups={'レンガ橋脚':'Brick pier','コン橋脚':'Concrete pier','レンガ橋脚(側道付)':'Brick pier with side path','コン橋脚(側道付)':'Concrete pier with side path','コン橋脚(複合)':'Composite concrete pier','信号所':'Signal box'};
+const counts={};
+const stationary=catalog.contributions.filter(c=>c.type==='railStationary').map(c=>{
+  const recipe=catalog.renderRecipes.find(r=>r.id===c.id),f=recipe.fields;
+  const group=c.declaration.children.find(c=>c.tag==='group').text;
+  if(!groups[group]||recipe.status!=='ready'||recipe.frames.some(f=>!['ready','invisible'].includes(f.status)))throw new Error('Unavailable stationary recipe/translation');
+  const variant=counts[group]=(counts[group]??0)+1;
+  const type={sizeX:f.size[0],sizeY:f.size[1],height:Number(f.height),price:Number(f.price)};
+  railway.bindings.push({reference:definition(c.id),handler:'stationary',variant:-1,stationary:type});
+  return {id:c.id,pluginId:c.pluginId,groupJa:group,groupEn:groups[group],variant,...type};
+});
+for(const r of catalog.renderRecipes.filter(r=>r.id.startsWith('system:construction/')))add(r.id,'constructionart');
+const stationaryOutput=new URL('../src/generated/stationary-types.json',import.meta.url),stationaryJson=JSON.stringify(stationary,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(stationaryOutput,'utf8')!==stationaryJson)throw new Error('Generated stationary types are stale.');}else await writeFile(stationaryOutput,stationaryJson);
 const railwayOutput=new URL('../src/generated/railway-profile.json',import.meta.url),railwayJson=JSON.stringify(railway,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(railwayOutput,'utf8')!==railwayJson)throw new Error('Generated railway profile is stale.');}else await writeFile(railwayOutput,railwayJson);

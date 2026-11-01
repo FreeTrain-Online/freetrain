@@ -846,6 +846,1419 @@
       },
       "handler": "pier",
       "variant": 5
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-A"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-B"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+        "recipeId": "{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+        "recipeId": "{98619BD4-46C3-4B91-85FE-11147914F2A5}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-A"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-B"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+        "recipeId": "{98619BD4-46C3-4B91-85FF-11147914F2A5}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-A"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-B"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+        "recipeId": "{{98619BD4-46C3-4B90-1703d-kokakyo2}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+        "recipeId": "{98619BD4-46C3-4B90-1703d-kokakyo2}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-A"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-B"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo2}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo3}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo4}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-C"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-D"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-E"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-F"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-G"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+        "recipeId": "{98619BD4-46C3-4B91-1703d-kokakyo5}-H"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 2,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6EFAC132-DEAF-4989-BDE4-5865B1669986}",
+        "recipeId": "{6EFAC132-DEAF-4989-BDE4-5865B1669986}"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FB233435-5BA0-4699-8CB8-F6D0E435BF4F}",
+        "recipeId": "{FB233435-5BA0-4699-8CB8-F6D0E435BF4F}"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 100000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+        "recipeId": "{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 3000000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+        "recipeId": "{FCD0126A-4B66-48D4-824A-936EB06FC44B}"
+      },
+      "handler": "stationary",
+      "variant": -1,
+      "stationary": {
+        "sizeX": 1,
+        "sizeY": 1,
+        "height": 1,
+        "price": 1000000
+      }
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/0/0",
+        "recipeId": "system:construction/fence/0/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/0/1",
+        "recipeId": "system:construction/fence/0/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/1/0",
+        "recipeId": "system:construction/fence/1/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/1/1",
+        "recipeId": "system:construction/fence/1/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/2/0",
+        "recipeId": "system:construction/fence/2/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/2/1",
+        "recipeId": "system:construction/fence/2/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/3/0",
+        "recipeId": "system:construction/fence/3/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/fence/3/1",
+        "recipeId": "system:construction/fence/3/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/0",
+        "recipeId": "system:construction/ground/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/1",
+        "recipeId": "system:construction/ground/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/2",
+        "recipeId": "system:construction/ground/2"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/3",
+        "recipeId": "system:construction/ground/3"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/4",
+        "recipeId": "system:construction/ground/4"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/5",
+        "recipeId": "system:construction/ground/5"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/ground/6",
+        "recipeId": "system:construction/ground/6"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0011",
+        "recipeId": "system:construction/bones/0/0011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1011",
+        "recipeId": "system:construction/bones/0/1011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1001",
+        "recipeId": "system:construction/bones/0/1001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0000",
+        "recipeId": "system:construction/bones/0/0000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0111",
+        "recipeId": "system:construction/bones/0/0111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1111",
+        "recipeId": "system:construction/bones/0/1111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1101",
+        "recipeId": "system:construction/bones/0/1101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0101",
+        "recipeId": "system:construction/bones/0/0101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0110",
+        "recipeId": "system:construction/bones/0/0110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1110",
+        "recipeId": "system:construction/bones/0/1110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1100",
+        "recipeId": "system:construction/bones/0/1100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1010",
+        "recipeId": "system:construction/bones/0/1010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0010",
+        "recipeId": "system:construction/bones/0/0010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0100",
+        "recipeId": "system:construction/bones/0/0100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/1000",
+        "recipeId": "system:construction/bones/0/1000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/0/0001",
+        "recipeId": "system:construction/bones/0/0001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0011",
+        "recipeId": "system:construction/bones/1/0011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1011",
+        "recipeId": "system:construction/bones/1/1011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1001",
+        "recipeId": "system:construction/bones/1/1001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0000",
+        "recipeId": "system:construction/bones/1/0000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0111",
+        "recipeId": "system:construction/bones/1/0111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1111",
+        "recipeId": "system:construction/bones/1/1111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1101",
+        "recipeId": "system:construction/bones/1/1101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0101",
+        "recipeId": "system:construction/bones/1/0101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0110",
+        "recipeId": "system:construction/bones/1/0110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1110",
+        "recipeId": "system:construction/bones/1/1110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1100",
+        "recipeId": "system:construction/bones/1/1100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1010",
+        "recipeId": "system:construction/bones/1/1010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0010",
+        "recipeId": "system:construction/bones/1/0010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0100",
+        "recipeId": "system:construction/bones/1/0100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/1000",
+        "recipeId": "system:construction/bones/1/1000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/1/0001",
+        "recipeId": "system:construction/bones/1/0001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0011",
+        "recipeId": "system:construction/bones/2/0011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1011",
+        "recipeId": "system:construction/bones/2/1011"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1001",
+        "recipeId": "system:construction/bones/2/1001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0000",
+        "recipeId": "system:construction/bones/2/0000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0111",
+        "recipeId": "system:construction/bones/2/0111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1111",
+        "recipeId": "system:construction/bones/2/1111"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1101",
+        "recipeId": "system:construction/bones/2/1101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0101",
+        "recipeId": "system:construction/bones/2/0101"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0110",
+        "recipeId": "system:construction/bones/2/0110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1110",
+        "recipeId": "system:construction/bones/2/1110"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1100",
+        "recipeId": "system:construction/bones/2/1100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1010",
+        "recipeId": "system:construction/bones/2/1010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0010",
+        "recipeId": "system:construction/bones/2/0010"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0100",
+        "recipeId": "system:construction/bones/2/0100"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/1000",
+        "recipeId": "system:construction/bones/2/1000"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/bones/2/0001",
+        "recipeId": "system:construction/bones/2/0001"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/wall/0",
+        "recipeId": "system:construction/wall/0"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/wall/1",
+        "recipeId": "system:construction/wall/1"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/wall/2",
+        "recipeId": "system:construction/wall/2"
+      },
+      "handler": "constructionart",
+      "variant": -1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:construction/wall/3",
+        "recipeId": "system:construction/wall/3"
+      },
+      "handler": "constructionart",
+      "variant": -1
     }
   ]
 }

@@ -20,8 +20,10 @@ export function toolbar(node: HTMLElement, orientation: 'horizontal' | 'vertical
     const available = buttons(), index = available.indexOf(event.target);
     if (!available.length) return;
     event.preventDefault(); event.stopPropagation();
-    available[event.key === 'Home' ? 0 : event.key === 'End' ? available.length - 1
-      : (index + (event.key === next ? 1 : -1) + available.length) % available.length].focus({ preventScroll: true });
+    const target=available[event.key === 'Home' ? 0 : event.key === 'End' ? available.length - 1
+      : (index + (event.key === next ? 1 : -1) + available.length) % available.length];
+    target.focus({ preventScroll: true });
+    if(node.scrollWidth>node.clientWidth||node.scrollHeight>node.clientHeight)target.scrollIntoView({block:'nearest',inline:'nearest'});
   };
   const observer = new MutationObserver(sync);
   observer.observe(node, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'hidden'] });

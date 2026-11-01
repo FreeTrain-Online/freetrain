@@ -266,3 +266,51 @@ Deno.test('all bundled poles dispatch axis-specific before/after crops with exac
   v.traffic!.accessory!.direction=2;assert.equal(validSnapshot(s),false);
  }
 });
+
+const stationaryTypes=JSON.parse(await Deno.readTextFile(new URL('../src/generated/stationary-types.json',import.meta.url)));
+function stationary(s:Snapshot,type:typeof stationaryTypes[number],construction?:{state:number;ground:number;needsDoor:boolean}){
+ const p=new WorldSpace(s.map.width,s.map.height,s.map.levels).location({h:0,v:0,z:1}),id=s.mixed!.nextEntityId,d=definition(type.id);
+ const footprint=[];
+ for(let z=0;z<type.height;z++){
+  footprint.push({offset:{x:0,y:0,z},transparent:!construction});
+  s.mixed!.voxels.push({position:{...p,z:p.z+z},ownerId:id,kind:'stationary',traffic:null,definition:d,sprite:0,drawGroundBelow:true,drawGroundAbove:true,supportedOwnerId:null,...(construction?{construction:{...construction}}:{})});
+ }
+ s.entities!.push({id,revision:'0',definition:d,anchor:p,footprint,owned:!construction,silentlyReclaimable:false,value:'0'});
+ s.mixed!.nextEntityId=String(BigInt(id)+1n);return id;
+}
+Deno.test('all 54 stationary variants render exact recipe cells in eight seasonal light variants and retain qualified picks',async()=>{
+ const ledger=JSON.parse(await Deno.readTextFile(new URL('../../doc/parity/railway-accessories.json',import.meta.url)));
+ assert.equal(stationaryTypes.length,54);
+ for(const type of stationaryTypes){
+  const expected=ledger.contributions.find((c:any)=>c.id===type.id);assert.deepEqual([type.sizeX,type.sizeY,type.height],expected.footprint);
+  const s=flat(1,1),id=stationary(s,type);assert(validSnapshot(s),type.id);const before=JSON.stringify(s);
+  for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
+   const scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5),ops=railwayOps(scene);
+   const frames=catalog.renderRecipes.find(r=>r.id===type.id)!.frames.filter(f=>f.status!=='invisible').sort((a,b)=>a.cell[2]-b.cell[2]);
+   assert.equal(ops.length,frames.length,type.id);
+   for(let i=0;i<ops.length;i++){const op=ops[i];assert('layer' in op);assert.equal(op.target.component,'stationary');assert.equal(op.target.definition.contributionId,type.id);assert.deepEqual(op.layer.frame.rectangle,frames[i].rectangle);assert.deepEqual(op.layer.frame.anchor,frames[i].anchor);assert.equal(op.layer.position[2],1+frames[i].cell[2]);}
+   assert.equal(scene.pick({x:opaquePoint(scene,id).a,y:opaquePoint(scene,id).b},view)?.id,id);
+  }
+  assert.equal(JSON.stringify(s),before);
+  const cut=await prepare(s,1),ops=railwayOps(cut);assert.equal(ops.length,1);assert('points' in ops[0]);assert.equal(ops[0].color,'#808080');
+  assert.equal(cut.pick({x:16,y:-8},view)?.id,id);
+  const altered=structuredClone(s);altered.entities![0].owned=false;assert(!validSnapshot(altered));
+  if(type.height===2){const partial=structuredClone(s);partial.mixed!.voxels.pop();assert(!validSnapshot(partial));}
+ }
+});
+Deno.test('construction sites use source fence ground bone and wall pass order, preserve opaque occupancy and disappear with their owner',async()=>{
+ const type=stationaryTypes.find((t:any)=>t.height===2)!;
+ for(const state of [0,1,2,3,4])for(const ground of [0,1,2,3,4,5,6]){
+  const s=flat(1,1),id=stationary(s,type,{state,ground,needsDoor:false});
+  if(state===4)s.mixed!.voxels[1].construction!.state=3;
+  assert(validSnapshot(s));const before=JSON.stringify(s),scene=await prepare(s),ops=railwayOps(scene);
+  assert(ops.every(o=>o.target.id===id&&o.target.component==='stationary'));
+  const keys=ops.filter(o=>o.target.position.z===1&&'layer' in o).map(o=>o.layer.recipeId.replace('system:construction/',''));
+  assert.deepEqual(keys,state===0?['fence/0/0','fence/1/0',`ground/${ground}`,'fence/2/0','fence/3/0']:state<4?['fence/0/0','fence/1/0','ground/0',`bones/${state-1}/0000`,'fence/2/0','fence/3/0']:['fence/0/0','fence/1/0','wall/0','wall/1','bones/2/0000','wall/2','wall/3','fence/2/0','fence/3/0']);
+  assert.equal(JSON.stringify(s),before);
+  const invalid=structuredClone(s);invalid.mixed!.voxels[0].construction!.state=5;assert(!validSnapshot(invalid));
+ }
+ const s=flat(1,1);stationary(s,type,{state:0,ground:0,needsDoor:false});const plan=new RailwayRenderPlan(s,catalog,day);
+ assert.deepEqual(pickRailwayLocation(s,{x:16,y:-24},5,{kind:'stationaryOrGround'}),{x:0,y:0,z:2});
+ s.mixed!.voxels=[];s.entities=[];const cleared=await prepare(s);assert.equal(railwayOps(cleared).length,0);
+});

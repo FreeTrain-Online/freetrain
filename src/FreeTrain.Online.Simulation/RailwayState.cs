@@ -8,9 +8,10 @@ namespace FreeTrain.Online.Simulation;
 public enum RailwayHandler
 {
     Normal, Junction, Slope, Bridge, Girder, Tunnel, Garage, Signal,
-    Pole, Crossing, Road, Car, Platform, Pier, SlopeSupport, SlopeWall
+    Pole, Crossing, Road, Car, Platform, Pier, SlopeSupport, SlopeWall, Stationary, ConstructionArt
 }
-public sealed record RailwayBinding(DefinitionReference Reference, RailwayHandler Handler, int Variant = -1);
+public sealed record StationaryType(int SizeX, int SizeY, int Height, long Price);
+public sealed record RailwayBinding(DefinitionReference Reference, RailwayHandler Handler, int Variant = -1, StationaryType? Stationary = null);
 
 // Trusted state handlers, not command or renderer registration. Road/car/platform
 // consumers must supply explicit bindings; bundled art alone never enables them.
@@ -37,6 +38,9 @@ public sealed class RailwayProfile
         foreach (var b in Bindings)
         {
             b.Reference.Validate();
+            if ((b.Handler == RailwayHandler.Stationary) != (b.Stationary != null) ||
+                b.Stationary is {} type && (type.SizeX is < 1 or > 32 || type.SizeY is < 1 or > 32 || type.Height is < 1 or > 32 || type.Price < 0))
+                throw new ArgumentException("Invalid stationary binding.");
             if (!terrain.Packs.Any(p => p.Id == b.Reference.PackId) || b.Reference == TrafficOwner || b.Reference == SlopeOwner ||
                 b.Handler == RailwayHandler.Normal && b.Variant is not (>= 0 and < 12) ||
                 b.Handler == RailwayHandler.Junction && b.Variant is not (>= 12 and < 28) ||
@@ -59,10 +63,11 @@ public sealed record AccessoryComponent(DefinitionReference Definition, int Dire
 public sealed record CarComponent(DefinitionReference Definition, long TrainId, long CarId);
 public sealed record TrafficComponents(RailComponent? Rail = null, RoadComponent? Road = null,
     AccessoryComponent? Accessory = null, CarComponent? Car = null, DefinitionReference? Platform = null);
-public enum RailwayVoxelKind { Traffic, SlopeFiller, SlopeSupport, SlopeWall, Pier }
+public enum RailwayVoxelKind { Traffic, SlopeFiller, SlopeSupport, SlopeWall, Pier, Stationary }
+public sealed record ConstructionCell(int State = 0, int Ground = 0, bool NeedsDoor = false);
 // OwnerId resolves through the ONE combined SpatialIndex. Pier's supported owner
 // is separate; its deletion never implicitly deletes that owner or its rail.
 public sealed record RailwayVoxel(Location Position, long OwnerId, RailwayVoxelKind Kind,
     TrafficComponents? Traffic = null, DefinitionReference? Definition = null, int Sprite = 0,
-    bool DrawGroundBelow = true, bool DrawGroundAbove = true, long? SupportedOwnerId = null);
+    bool DrawGroundBelow = true, bool DrawGroundAbove = true, long? SupportedOwnerId = null, ConstructionCell? Construction = null);
 public sealed record SlopeOwnership(long EntityId, Heading Climb);

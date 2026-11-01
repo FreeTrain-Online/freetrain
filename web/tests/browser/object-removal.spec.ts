@@ -141,7 +141,7 @@ test('Japanese narrow Remove keeps selection reachable and confirms a forest wit
  await page.goto('/');await ready(page,'ja');const original=await save(page);
  try{
   const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:terrain})).ok()).toBe(true);await ready(page,'ja');await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
-  await revealForest(page,true);await remove(page,true).click();await click(page,0,-58);await expect(confirm(page,true)).toBeEnabled();await expect(page.getByTestId('remove-target')).toContainText('森林');
+  await revealForest(page,true);await remove(page,true).click();expect(await page.evaluate(()=>scrollX)).toBe(0);await click(page,0,-58);await expect(confirm(page,true)).toBeEnabled();await expect(page.getByTestId('remove-target')).toContainText('森林');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const dir=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'remove');mkdirSync(dir,{recursive:true});await page.screenshot({path:join(dir,'remove-ja-narrow.png'),fullPage:true});
   await page.keyboard.press('Enter');await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');await expect(confirm(page,true)).toBeDisabled();expect((await state(page)).terrain.occupants.every((o:any)=>o.forest===null)).toBe(true);

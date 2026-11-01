@@ -49,6 +49,17 @@ public static class RailwayProfiles
                 throw new ArgumentException("Railway contribution type mismatch.");
             Add(recipe.Id, recipe.Handler == "signal" ? RailwayHandler.Signal : RailwayHandler.Pole, recipeHandler: recipe.Handler);
         }
+        foreach (var recipe in catalog.RenderRecipes.Where(r => r.Id.StartsWith("system:construction/", StringComparison.Ordinal)))
+            Add(recipe.Id, RailwayHandler.ConstructionArt);
+        foreach (var definition in catalog.Definitions.Where(d => d.Type == "railStationary"))
+        {
+            Add(definition.Id, RailwayHandler.Stationary, recipeHandler: "fixed-3d");
+            var fields = catalog.FindRenderRecipe(catalog.PackId, definition.Id)!.Data.GetProperty("fields");
+            var size = fields.GetProperty("size");
+            bindings[^1] = bindings[^1] with { Stationary = new(size[0].GetInt32(), size[1].GetInt32(),
+                int.Parse(fields.GetProperty("height").GetString()!, System.Globalization.CultureInfo.InvariantCulture),
+                long.Parse(fields.GetProperty("price").GetString()!, System.Globalization.CultureInfo.InvariantCulture)) };
+        }
         return new(terrain, bindings);
     }
 }
