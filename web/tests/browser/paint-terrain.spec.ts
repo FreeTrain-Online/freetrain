@@ -6,7 +6,7 @@ async function empty(page:Page,locale="en"){
  const s=await state(page),r=await page.request.post('/api/worlds/empty/preview',{data:{name:'Paint terrain',dimensions:{h:30,v:42,z:6},waterLevel:1,epoch:s.worldEpoch,revision:s.revision}});expect(r.ok()).toBe(true);const c=await r.json();
  expect((await page.request.post('/api/worlds/empty/commit',{data:{id:c.id,requestHash:c.requestHash,candidateHash:c.candidateHash,epoch:s.worldEpoch,revision:s.revision}})).ok()).toBe(true);await ready(page,locale);
 }
-async function tool(page:Page,ja=false){await page.getByRole('button',{name:ja?'地形操作':'Modify terrain',exact:true}).click();await page.getByLabel(ja?'地形の選択方法':'Terrain selection',{exact:true}).selectOption('paint');}
+async function tool(page:Page,ja=false){await page.getByRole('button',{name:ja?'地形操作':'Modify terrain',exact:true}).click();await expect(page.getByLabel(ja?'地形の選択方法':'Terrain selection',{exact:true})).toHaveValue('paint');}
 async function pixel(page:Page,x=20,y=20,z=1){return page.locator('canvas').evaluate((canvas,p)=>{
  const [cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom),r=canvas.getBoundingClientRect();
  return{x:r.x+r.width/2+(16*(p.x+p.y-20)+16-cx)*zoom,y:r.y+r.height/2+(8*(-p.x+p.y+20)-16*p.z+2-cy)*zoom};
@@ -60,7 +60,7 @@ test('release cancels a delayed preview, Escape and focus loss stop held paintin
   const atEscape=await revision(page);await page.waitForTimeout(350);expect(await revision(page)).toBe(atEscape);
   await page.mouse.move(p.x+90,p.y);await page.mouse.down();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
   const before=await revision(page);await page.mouse.down({button:'middle'});await page.mouse.move(p.x+120,p.y+20);await page.mouse.up({button:'middle'});await page.waitForTimeout(250);expect(await revision(page)).toBe(before);
-  await openPanel(page,'help');await closePanel(page);await expect(page.getByLabel('Terrain selection',{exact:true})).toHaveValue('corner');
+  await openPanel(page,'help');await closePanel(page);await expect(page.getByLabel('Terrain selection',{exact:true})).toHaveValue('paint');
  }finally{release();await restore(page,original);}
 });
 test('Japanese narrow paint has accessible action/coordinate alternatives and shared time continues',async({browser})=>{

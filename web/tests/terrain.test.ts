@@ -1,3 +1,5 @@
+import { pickTerrainIntersection, terrainCornerPoint } from '../src/lib/terrain-edit.ts';
+import { WorldSpace } from '../src/lib/map-geometry.ts';
 import { parseMessage, applyDelta, immutable } from '../src/lib/protocol.ts';
 import type { Snapshot, Delta } from '../src/generated/contracts.ts';
 function assert(value:unknown):asserts value {if(!value)throw new Error('Assertion failed');}
@@ -183,4 +185,19 @@ Deno.test('local redraw certificates include geometry neighbors, survive clock-o
  const timed=applyDelta(next,clock) as Snapshot;assert(timed);equal(terrainChangedColumns(before,timed),columns);
  const global=applyDelta(before,await change()) as Snapshot;assert(global);assert(terrainChangedColumns(before,global)===undefined);
  assert(terrainChangedColumns(before,immutable(structuredClone(next)))===undefined);
+});
+
+Deno.test('intersection selection snaps to each shared vertex and marker follows actual quarter heights',async()=>{
+ const state=await read();state.map.width=30;state.map.height=42;state.map.levels=6;
+ state.terrain!.cells=Array.from({length:1260},()=>({ground:1,surface:'natural'}));
+ state.entities=[];state.terrain!.occupants=[];
+ const space=new WorldSpace(30,42,6),p=space.project({x:20,y:20,z:1});
+ for(const [dx,dy,x,y] of [[16,1,20,20],[30,8,20,21],[16,15,19,21],[2,8,19,20]]){
+  equal(pickTerrainIntersection(state,{x:p.x+dx,y:p.y+dy},5),{x,y,z:1});
+ }
+ const fixture=await read(),entity={...fixture.entities![0],anchor:{x:20,y:20,z:1}};
+ state.entities=[entity];state.terrain!.occupants=[{...fixture.terrain!.occupants[0],kind:'mountain',ne:3}];
+ equal(terrainCornerPoint(state,entity.anchor),{x:p.x+16,y:p.y-12});
+ equal(pickTerrainIntersection(state,{x:p.x+16,y:p.y+1},5),{x:20,y:20,z:1});
+ equal(terrainCornerPoint(state,{x:-100,y:-100,z:1}),undefined);
 });

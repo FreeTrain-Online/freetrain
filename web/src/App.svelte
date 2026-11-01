@@ -300,7 +300,7 @@
           <p>{text.mapHelp}</p><p>{text.toolShortcuts}</p><p>{text.toolbarHelp}</p>
           {#if reference}<p>{worldHint}</p>{#if terrain||mixed}<h3>{text.trackTask}</h3><p>{text.railHelp}</p><p>{text.railHeuristicHelp}</p><p>{text.railRemovalHelp}</p><p>{text.railCutHelp}</p><h3>{text.stationaryTask}</h3><p>{text.stationaryHelp}</p><p>{text.stationaryRules}</p><p>{text.stationaryRemovalHelp}</p><h3>{text.speedTask}</h3><p>{text.speedHelp}</p><p>{text.speedRules}</p><p>{text.speedRemovalHelp}</p><h3>{text.poleTask}</h3><p>{text.poleHelp}</p><p>{text.poleRules}</p><p>{text.poleRemovalHelp}</p><h3>{text.signalTask}</h3><p>{text.signalHelp}</p><p>{text.signalRules}</p><p>{text.signalRemovalHelp}</p><h3>{text.garageTask}</h3><p>{text.garageDescription}</p><p>{text.garageHelp}</p><p>{text.garageRules}</p><p>{text.garageRemovalHelp}</p><h3>{text.tunnelTask}</h3><p>{text.tunnelDescription}</p><p>{text.tunnelHelp}</p><p>{text.tunnelRules}</p><p>{text.tunnelRemovalHelp}</p><h3>{text.girderTask}</h3><p>{text.girderDescription}</p><p>{text.girderHelp}</p><p>{text.girderRules}</p><p>{text.girderRemovalHelp}</p><h3>{text.bridgeTask}</h3><p>{text.bridgeDescription}</p><p>{text.bridgeHelp}</p><p>{text.bridgeRules}</p><p>{text.bridgeRemovalHelp}</p><h3>{text.slopeTask}</h3><p>{text.slopeHelp}</p><p>{text.slopeRemovalHelp}</p><p>{text.slopeGhostHelp}</p>{/if}
           {:else}<p>{text.observerHint}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p>{/if}
-          {#if terrain}<h3>{text.terrainTool}</h3><p>{text.terrainPaintHelp}</p><p>{text.cornerHelp}</p><p>{text.rectangleHelp}</p>{/if}
+          {#if terrain}<h3>{text.terrainTool}</h3><p>{text.terrainPaintHelp}</p><p>{text.rectangleHelp}</p>{/if}
         {/if}
       </PanelFrame>
     {/if}

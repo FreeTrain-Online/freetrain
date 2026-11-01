@@ -1,3 +1,4 @@
+import { terrainCornerPoint } from './terrain-edit.ts';
 import content from '../generated/sprites.json' with { type: 'json' };
 import type { Position, Track } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
@@ -15,7 +16,7 @@ import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -122,6 +123,14 @@ export class MapRenderer {
         if(!position||position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+      }
+      const vertex=options.terrainCorner&&terrainCornerPoint(read,options.terrainCorner);
+      this.canvas.dataset.terrainCorner=options.terrainCorner?`${options.terrainCorner.x},${options.terrainCorner.y}`:'';
+      if(vertex&&options.terrainCorner!.z<=options.heightCut){
+        const x=(vertex.x-camera.x)*camera.zoom+width/2,y=(vertex.y-camera.y)*camera.zoom+height/2;
+        ctx.beginPath();ctx.arc(x,y,5.5*camera.zoom,0,2*Math.PI);
+        ctx.fillStyle='#ffeaa0aa';ctx.fill();ctx.strokeStyle='#126e79';ctx.lineWidth=2;ctx.stroke();
+        ctx.beginPath();ctx.arc(x,y,2*camera.zoom,0,2*Math.PI);ctx.fillStyle='#126e79';ctx.fill();
       }
       for(const site of options.terrainSites??[]) {
         if(site.position.z>options.heightCut)continue;

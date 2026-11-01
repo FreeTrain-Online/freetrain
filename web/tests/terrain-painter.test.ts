@@ -59,3 +59,15 @@ Deno.test('mixed-world painting uses infrastructure revision and fences accessor
   assert(h.commands.length===count);
  }finally{h.painter.stop();}
 });
+
+Deno.test('selected intersection repeats without screen offsets and accessibility activation edits only once',async()=>{
+ const h=await harness();
+ const selected={...target(),offsetX:null,offsetY:null};
+ try{
+  assert(h.painter.start(selected,'raise'));await until(()=>h.commands.length>=3);h.painter.stop();
+  assert(h.queries.every(q=>q.position.x===20&&q.position.y===20&&q.offsetX===null&&q.offsetY===null));
+  const count=h.commands.length;
+  assert(h.painter.start(selected,'lower',false));await until(()=>!h.painter.state.active);
+  await new Promise(r=>setTimeout(r,10));assert(h.commands.length===count+1);
+ }finally{h.painter.stop();}
+});

@@ -4,12 +4,12 @@
   import type { PaintState } from './lib/terrain-painter.ts';
   import RectangleTerrainControls from './RectangleTerrainControls.svelte';
   import { terrainReasons } from './lib/terrain-edit.ts';
-  import { untrack } from 'svelte';
-  import type { CornerTerrainQuery, CornerTerrainPreview, CornerTerrainSite, Position } from './generated/contracts.ts';
+  import { onMount, untrack } from 'svelte';
+  import type { CornerTerrainQuery, CornerTerrainPreview, Position } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
-  let {model,view,picked,onpreview,onreset,onmode,paintState,onpaintstop}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number;offsetY:number;reverse:boolean;append?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position,sites?:{position:Position;skipped:boolean}[])=>void;onreset:()=>void;onmode:(rectangle:boolean,strategy?:string)=>void;paintState:PaintState;onpaintstop:()=>void}=$props();
-  let scope=$state<'corner'|'rectangle'|'terrace'|'authoring'|'paint'>('corner');
+  let {model,view,picked,onpreview,onreset,onmode,paintState,onpaintstop,onadjust}: {model:ShellModel;view:ShellState;picked?:{position:Position;offsetX:number|null;offsetY:number|null;reverse:boolean;append?:boolean;painting?:boolean;soft?:boolean};onpreview:(p:Position|undefined,end?:Position,sites?:{position:Position;skipped:boolean}[])=>void;onreset:()=>void;onmode:(rectangle:boolean,strategy?:string)=>void;paintState:PaintState;onpaintstop:()=>void;onadjust:(p:Position,direction:'raise'|'lower',continuous:boolean)=>void}=$props();
+  let scope=$state<'rectangle'|'terrace'|'authoring'|'paint'>('paint');
   let terraceBatch=$state(false);
   let modeReview=$state(false);
   let modeFence=$state<string>();
@@ -28,25 +28,20 @@
   let result=$state<CornerTerrainPreview>(),query:CornerTerrainQuery|undefined;
   let submitting=$state(false);
   let status=$state<'idle'|'checking'|'ready'|'failed'|'stale'>('idle'),uncertain=$state(false);
-  let sites:CornerTerrainSite[]=[];
-  let count=$state(0);
+  let selected=$state(false);
   let requestFence=$state<string>();
   let version=0,request:AbortController|undefined;
   const blocked=$derived(view.pending||view.connection!=='ready'||view.role==='observer'||uncertain);
-  export function cancelDraft(){if(scope==='paint'&&paintState.active){onpaintstop();return true;}if(modeReview){modeReview=false;modeFence=undefined;onreset();return true;}if(scope==='rectangle'||scope==='authoring'||scope==='terrace'&&terraceBatch)return rectangleControls?.cancelDraft()??false;if(count||status!=='idle'){clear();onreset();return true;}return false;}
-  function clear(){sites=[];count=0;reset();}
+  export function cancelDraft(){if(paintState.active){onpaintstop();return true;}if(modeReview){modeReview=false;modeFence=undefined;onreset();return true;}if(scope==='rectangle'||scope==='authoring'||scope==='terrace'&&terraceBatch)return rectangleControls?.cancelDraft()??false;if(selected||status!=='idle'){clear();onreset();return true;}return false;}
+  function clear(){selected=false;reset();}
   function reset(){requestFence=undefined;version++;request?.abort();result=undefined;query=undefined;status='idle';uncertain=false;onpreview(undefined);}
-  async function check(p?:typeof picked,append=false) {
+  async function check(p?:typeof picked) {
     if(blocked)return;reset();const id=version,read=view.read;if(!read?.terrain)return;
     if(p){x=p.position.x;y=p.position.y;z=p.position.z;}
-    if(![x,y,z].every(Number.isSafeInteger)){status='failed';return;}
+    if(![x,y,z].every(Number.isSafeInteger)){selected=false;status='failed';return;}
+    selected=true;
     const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:railwayRevision(read)!,
       position:{x,y,z},stroke:null,action:scope==='terrace'?terraceAction:p?.reverse?(action==='raise'?'lower':'raise'):action,offsetX:scope==='terrace'?null:p?.offsetX??null,offsetY:scope==='terrace'?null:p?.offsetY??null};
-    const site:CornerTerrainSite={position:target.position,action:target.action as 'raise'|'lower',offsetX:target.offsetX,offsetY:target.offsetY};
-    if(scope==='terrace'||!p?.append&&!append)sites=[];
-    if(sites.length<64)sites.push(site);
-    count=sites.length;
-    const first=sites[0];target.position=first.position;target.action=first.action;target.offsetX=first.offsetX;target.offsetY=first.offsetY;target.stroke=sites.slice(1);
     requestFence=`${read.worldEpoch}/${railwayRevision(read)!}`;status='checking';request=new AbortController();
     try{
       const preview=await model.previewCorner(target,request.signal);
@@ -54,6 +49,32 @@
       query=target;result=preview;status='ready';onpreview(preview.position);
     }catch{if(id===version)status='failed';}
   }
+  function adjust(direction:'raise'|'lower',continuous:boolean){
+    if(!selected||view.connection!=='ready'||view.role==='observer'||uncertain)return;
+    reset();onadjust({x,y,z},direction,continuous);
+  }
+  let holdTimer:ReturnType<typeof setTimeout>|undefined;
+  let heldDirection:'raise'|'lower'|undefined;
+  export function cancelHold(){clearTimeout(holdTimer);holdTimer=undefined;heldDirection=undefined;}
+  function beginHold(direction:'raise'|'lower'){
+    cancelHold();heldDirection=direction;
+    holdTimer=setTimeout(()=>{holdTimer=undefined;adjust(direction,true);},200);
+  }
+  function releaseHold(){
+    const single=holdTimer!==undefined,direction=heldDirection;
+    onpaintstop();
+    if(single&&direction)adjust(direction,false);
+  }
+  function hold(event:PointerEvent,direction:'raise'|'lower'){
+    if(event.button!==0)return;
+    event.preventDefault();event.currentTarget instanceof HTMLElement&&event.currentTarget.setPointerCapture(event.pointerId);
+    beginHold(direction);
+  }
+  function holdKey(event:KeyboardEvent,direction:'raise'|'lower'){
+    if(event.key!=='Enter'&&event.key!==' ')return;
+    event.preventDefault();if(!event.repeat)beginHold(direction);
+  }
+  function releaseKey(event:KeyboardEvent){if(event.key==='Enter'||event.key===' '){event.preventDefault();releaseHold();}}
   async function commit(){
     if(blocked||status!=='ready'||!result?.legal||!query)return;
     const id=version,target=query;submitting=true;
@@ -63,15 +84,16 @@
     else if(view.feedback==='unresolved')uncertain=true;
     else {status='stale';result=undefined;onpreview(undefined);}
   }
-  $effect(()=>{const p=picked;if(p&&scope!=='paint'&&scope!=='rectangle'&&scope!=='authoring'&&!(scope==='terrace'&&terraceBatch)&&!modeReview)untrack(()=>void check(p));});
+  onMount(()=>onmode(false,'paintRaise'));
+  $effect(()=>{const p=picked;if(p&&(scope==='paint'||scope==='terrace'&&!terraceBatch)&&!modeReview)untrack(()=>{if(p.painting){reset();x=p.position.x;y=p.position.y;z=p.position.z;selected=true;}else void check(p);});});
   $effect(()=>{
     if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`){clear();status='stale';}
     if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||railwayRevision(view.read)!==result.geometryRevision)){
-      version++;request?.abort();sites=[];count=0;result=undefined;status='stale';onpreview(undefined);
+      version++;request?.abort();selected=false;result=undefined;status='stale';onpreview(undefined);
     }
     if(view.connection!=='ready'||view.role==='observer'){clear();}
   });
-  $effect(()=>()=>{version++;request?.abort();onpreview(undefined);});
+  $effect(()=>()=>{cancelHold();version++;request?.abort();onpreview(undefined);});
 </script>
 <div class="tool-card" use:primaryAction>
 <section aria-label={text.authoringMode}>
@@ -87,7 +109,7 @@
     {/if}
   {/if}
 </section>
-<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending||modeReview} onchange={()=>{terraceBatch=false;clear();onreset();onmode(scope!=='corner'&&scope!=='paint',scope==='terrace'?terraceAction:scope==='paint'?(action==='raise'?'paintRaise':'paintLower'):undefined);}}><option value="corner">{text.terrainCorners}</option><option value="paint">{text.terrainPaint}</option><option value="rectangle">{text.rectangleTool}</option><option value="terrace">{text.terraceTool}</option><option value="authoring" disabled={!activeMode}>{text.authoringDecorations}</option></select></label></div>
+<div class="terrain-scope"><label>{text.terrainScope}<select aria-label={text.terrainScope} bind:value={scope} disabled={view.pending||modeReview} onchange={()=>{terraceBatch=false;clear();onreset();onmode(scope!=='paint',scope==='terrace'?terraceAction:scope==='paint'?(action==='raise'?'paintRaise':'paintLower'):undefined);}}><option value="paint">{text.terrainPaint}</option><option value="rectangle">{text.rectangleTool}</option><option value="terrace">{text.terraceTool}</option><option value="authoring" disabled={!activeMode}>{text.authoringDecorations}</option></select></label></div>
 {#if !modeReview}
 {#if scope==='terrace'&&terraceAction==='placeTerrace'}
   <label><input type="checkbox" bind:checked={terraceBatch} disabled={view.pending} onchange={()=>{clear();rectangleControls?.cancelDraft();onreset();onmode(true,'placeTerrace');}}/>{text.terraceBatch}</label>
@@ -97,9 +119,14 @@
 {:else}
 <section aria-label={text.terrainTool}>
   <h2>{scope==='paint'?text.terrainPaint:scope==='terrace'?text.terraceTool:text.terrainTool}</h2>
-  <p class="hint">{scope==='paint'?text.terrainPaintHelp:scope==='terrace'?text.terraceHelp:text.cornerHelp}</p>
+  <p class="hint">{scope==='paint'?text.terrainPaintHelp:text.terraceHelp}</p>
   {#if scope==='paint'}
-    <p role="status" data-testid="paint-status" data-active={paintState.active}>{text[paintState.status==='painting'?'paintActive':paintState.status==='blocked'?'paintBlocked':paintState.status==='failed'?'paintFailed':'paintReady']} · {text.paintChanges}: {paintState.completed}</p>
+    <div class="form-actions">
+      {#each ['raise','lower'] as direction}
+        <button type="button" disabled={!selected||view.connection!=='ready'||view.role==='observer'||uncertain} onpointerdown={event=>hold(event,direction as 'raise'|'lower')} onpointerup={releaseHold} onpointercancel={onpaintstop} onlostpointercapture={()=>{if(heldDirection)onpaintstop();}} onblur={onpaintstop} onkeydown={event=>holdKey(event,direction as 'raise'|'lower')} onkeyup={releaseKey} onclick={event=>{if(event.detail===0)adjust(direction as 'raise'|'lower',false);}}>{direction==='raise'?text.cornerRaise:text.cornerLower}</button>
+      {/each}
+    </div>
+    <p role="status" data-testid="paint-status" data-active={paintState.active}>{paintState.status==='blocked'?text.cornerAdjustBlocked:text[paintState.status==='painting'?'paintActive':paintState.status==='failed'?'paintFailed':'paintReady']} · {text.paintChanges}: {paintState.completed}</p>
     {#if paintState.status==='blocked'&&paintState.reason&&paintState.reason in terrainReasons}<p>{text[terrainReasons[paintState.reason as keyof typeof terrainReasons]]}</p>{/if}
     <button type="button" disabled={!paintState.active} onclick={onpaintstop}>{text.paintStop}</button>
   {/if}
@@ -110,16 +137,16 @@
         <option value="placeTerrace">{text.placeTerrace}</option><option value="removeTerrace">{text.removeTerrace}</option><option value="placeCut">{text.placeCut}</option><option value="removeCut">{text.removeCut}</option>
       </select></label>
       {:else}
-      <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={action} disabled={view.pending} onchange={()=>{clear();if(scope==='paint'){onreset();onmode(false,action==='raise'?'paintRaise':'paintLower');}}}><option value="raise">{scope==='paint'?text.paintRaise:text.cornerRaise}</option><option value="lower">{scope==='paint'?text.paintLower:text.cornerLower}</option></select></label>
+      <label>{text.cornerAction}<select aria-label={text.cornerAction} bind:value={action} disabled={view.pending} onchange={()=>{clear();onreset();if(scope==='paint'){onmode(false,action==='raise'?'paintRaise':'paintLower');}}}><option value="raise">{scope==='paint'?text.paintRaise:text.cornerRaise}</option><option value="lower">{scope==='paint'?text.paintLower:text.cornerLower}</option></select></label>
       {/if}
-      <label>X<input aria-label={text.cornerX} type="number" step="1" bind:value={x} oninput={reset} disabled={view.pending}/></label>
-      <label>Y<input aria-label={text.cornerY} type="number" step="1" bind:value={y} oninput={reset} disabled={view.pending}/></label>
-      <label>Z<input aria-label={text.cornerZ} type="number" min="0" max={(view.read?.map.levels??1)-1} step="1" bind:value={z} oninput={reset} disabled={view.pending}/></label>
+      <label>X<input aria-label={text.cornerX} type="number" step="1" bind:value={x} oninput={()=>{clear();onreset();}} disabled={view.pending}/></label>
+      <label>Y<input aria-label={text.cornerY} type="number" step="1" bind:value={y} oninput={()=>{clear();onreset();}} disabled={view.pending}/></label>
+      <label>Z<input aria-label={text.cornerZ} type="number" min="0" max={(view.read?.map.levels??1)-1} step="1" bind:value={z} oninput={()=>{clear();onreset();}} disabled={view.pending}/></label>
     </div>
     <button disabled={blocked||status==='checking'}>{scope==='terrace'?text.terraceCheck:text.cornerCheck}</button>
-    {#if scope==='corner'}<button type="button" disabled={blocked||count>=64} onclick={()=>check(undefined,true)}>{text.cornerAdd}</button>{/if}
+
   </form>
-  {#if scope==='corner'}<p>{text.cornerSites}: {count}/64</p>{/if}
+
   <p role="status" data-testid="corner-status">{status==='checking'?text.checkingGeometry:status==='failed'?text.geometryFailed:status==='stale'?text.cornerStale:result?result.legal?text.cornerLegal:text[terrainReasons[result.reason??'invalidInput']]:text.pickTile}</p>
   {#if result}
     {#if result.skipped.length}<p>{text.cornerSkipped}: {result.skipped.length}</p><ul>{#each result.skipped as skipped}<li>{skipped.position.x}, {skipped.position.y}, {skipped.position.z}: {text[terrainReasons[skipped.reason]]}</li>{/each}</ul>{/if}

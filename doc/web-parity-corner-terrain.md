@@ -51,16 +51,22 @@ not a price or legality exemption. Geometry, tree/entity resource admission,
 allocator/revision exhaustion and terrace backing validity are checked before
 publication. Invalid source cliff/lower states are rejected rather than written.
 
-Ctrl reverses the selected Raise/Lower action for each pointer sample. Shift plus
-primary drag collects movement samples in order, up to 64 sites. This is an
-explicit portable adaptation of desktop Shift movement: collection requires the
-pressed pointer, has no repeat timer, and the entire stroke waits for Confirm.
-Release/blur/pointer cancellation stop collection; panel/tool/Escape/epoch or
-connection changes discard or fence drafts. The keyboard/touch alternative is
-Raise/Lower plus X/Y/Z, Preview, and Add coordinate to stroke. First Escape clears
-the review; the next leaves the tool. Rejected sites are listed and skipped in
-source order; valid sites publish together. Invalid request/authority/fence/final
-state publishes nothing. This bounded stroke is not Mountain2 rectangle behavior.
+1 November 2026 interaction update: the default web tool is now **Paint terrain**, incorporating
+intersection selection and following freetrain-modern's nearest projected shared-corner
+selection. A circular marker follows the selected vertex's actual quarter
+height. A click selects an intersection without changing terrain; holding or dragging
+on the map paints between intersections, with Shift reversing the action.
+Raise/Lower buttons apply one step on click and repeat while held with
+pointer, Enter or Space. Each step previews and commits against fresh geometry;
+release, Escape, blur, pointer cancellation and tool/panel changes stop repetition.
+The selected X/Y stays fixed between steps. Existing corner limits, occupancy
+checks and authority remain in effect. Changes already committed remain.
+
+X/Y/Z Preview and Confirm remain available as an alternative. Ctrl reverses the
+pointer preview action. The former Shift stroke collection and Add coordinate
+controls have been replaced by the persistent intersection interaction. The
+bounded stroke protocol remains supported for existing clients; no server,
+save or terrain geometry contract changes are required.
 
 ## Service, transport and UI
 

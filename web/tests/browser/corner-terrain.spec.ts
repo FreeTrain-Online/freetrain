@@ -42,27 +42,37 @@ test('corner EN coordinate preview is read-only, confirms exactly once, preserve
  }finally{await replace(page,original);}
 });
 
-test('pointer Ctrl reverses action; Shift stroke stops on release and blur, remains read-only until one confirmation; panels and Escape clear it',async({page})=>{
+test('intersection selection stays fixed while held buttons raise and lower all four touching tiles; release and Escape stop',async({page})=>{
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  try{
   await empty(page);await page.getByRole('button',{name:'Modify terrain',exact:true}).click();
-  // Pick the top half of a ground diamond. Its source-selected NE corner is (20,20).
-  const p=await pixel(page,20,20,1,16,3);await page.keyboard.down('Control');await page.mouse.click(p.x,p.y);await page.keyboard.up('Control');
-  await expect(page.getByTestId('corner-position')).toHaveText('20, 20, 1 · Lower corner');
-  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
+  await expect(page.getByLabel('Terrain selection',{exact:true})).toHaveValue('paint');
+  await expect(page.getByLabel('Terrain selection',{exact:true}).locator('option[value=corner]')).toHaveCount(0);
   const before=await(await page.request.get('/api/saves/download')).body();
-  await page.keyboard.down('Shift');await page.mouse.move(p.x,p.y);await page.mouse.down();
-  const next=await pixel(page,21,20,1,16,3);await page.mouse.move(next.x,next.y);await page.mouse.up();await page.keyboard.up('Shift');
-  await expect(page.locator('.tool-card')).toContainText('Stroke sites: 2/64');
-  await expect(page.getByTestId('corner-status')).toContainText('change is legal');
-  await page.mouse.move(next.x+10,next.y);await expect(page.locator('.tool-card')).toContainText('Stroke sites: 2/64');
+  const p=await pixel(page,20,20,1,16,3);await page.mouse.click(p.x,p.y);
+  await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','20,20');
+  await expect(page.locator('.corner-changes li')).toHaveCount(4);
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
-  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.mouse.move(p.x,p.y);
-  await expect(page.locator('.tool-card')).toContainText('Stroke sites: 2/64');
-  await page.getByRole('button',{name:'Confirm terrain change',exact:true}).click();await expect.poll(async()=>JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()).packedTerrain.geometryRevision).toBe('1');
-  await target(page);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeDisabled();
-  await target(page);await openPanel(page,'help');await closePanel(page);await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeDisabled();
- }finally{await replace(page,original);}
+  const raise=page.getByRole('button',{name:'Raise corner',exact:true}),lower=page.getByRole('button',{name:'Lower corner',exact:true});
+  await raise.click();await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBe(1);
+  await page.waitForTimeout(300);expect(Number((await state(page)).terrain.geometryRevision)).toBe(1);
+  await raise.hover();await page.mouse.down();
+  await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThanOrEqual(2);
+  await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  const raised=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(raised.terrain.geometryRevision);
+  expect(raised.terrain.occupants).toHaveLength(4);
+  expect(raised.terrain.occupants.every((o:any)=>o.ne+o.se+o.sw+o.nw>=2)).toBe(true);
+  await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','20,20');
+  await page.screenshot({path:test.info().outputPath('intersection-marker.png')});
+  await lower.focus();await page.keyboard.down(' ');
+  await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThan(Number(raised.terrain.geometryRevision));
+  await page.keyboard.up(' ');await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  const stopped=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(stopped.terrain.geometryRevision);
+  await raise.hover();await page.mouse.down();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','true');
+  await page.keyboard.press('Escape');await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','20,20');
+  await openPanel(page,'help');await closePanel(page);await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','');
+ }finally{await page.mouse.up();await replace(page,original);}
 });
 
 test('late previews cannot overwrite newer targets; remote edits invalidate review and observer preview has no mutation authority',async({page,browser})=>{
@@ -93,8 +103,6 @@ test('Japanese narrow terrain controls work by keyboard, scroll internally, and 
  try{
   await empty(page,'ja');await openPanel(page,'help','ja');await closePanel(page);
   await page.getByRole('button',{name:'地形操作',exact:true}).focus();await page.keyboard.press('Enter');await target(page,'ja');
-  await page.getByRole('button',{name:'座標をストロークに追加',exact:true}).click();
-  await expect(page.locator('.tool-card')).toContainText('ストロークの地点: 2/64');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const path=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'corner-terrain');mkdirSync(path,{recursive:true});await page.screenshot({path:join(path,'corner-ja-narrow.png'),fullPage:true});
   await page.getByRole('button',{name:'地形の変更を確定',exact:true}).focus();await page.keyboard.press('Enter');
