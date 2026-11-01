@@ -20,6 +20,9 @@
   import SaveControls from './SaveControls.svelte';
   import MapView from './MapView.svelte';
   import PanelFrame from './PanelFrame.svelte';
+  import BuildingCatalog from './BuildingCatalog.svelte';
+  import ObjectProvenance from './ObjectProvenance.svelte';
+  import type { CatalogCategory, SignalDirection } from './lib/building-catalog.ts';
   import SessionGate from './SessionGate.svelte';
   import type { Selection } from './lib/map-renderer.ts';
   import { panels, type Panel, type Tool } from './lib/game-ui.ts';
@@ -36,6 +39,8 @@
   let mapSelection = $state<Selection>();
   let map: MapView;
   let panel = $state<Panel>(), menu = $state(false), tool = $state<Tool>('inspect');
+  let catalogOpen = $state(false), catalogCategory = $state<CatalogCategory>('signal');
+  let catalogLauncher: HTMLElement | undefined;
   let creditsOpen = $state(false);
   let licenseOpen = $state(false);
   let renderState = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -77,7 +82,7 @@
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   $effect(() => applyScheme(scheme));
-  $effect(() => { if (!live) { panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
+  $effect(() => { if (!live) { catalogOpen = false; panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
   $effect(() => {
     if (read) {
       if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; }
@@ -103,6 +108,15 @@
   function closeNow() { panel = undefined; menu = false; returnFocus(); }
   function closePanel() { request(() => { closeNow(); if (tool !== 'inspect') map?.focusMap(); }); }
   function openPanel(next: Panel, source?: HTMLElement) {
+    if (next === 'catalog' && reference) {
+      const nextOpen = !catalogOpen || !!panel;
+      request(() => {
+        if (source) catalogLauncher = gameLauncher;
+        panel = undefined; catalogOpen = nextOpen;
+        if (catalogOpen) void tick().then(() => document.querySelector<HTMLElement>('#building-catalog h2')?.focus({ preventScroll: true }));
+      });
+      return;
+    }
     const nextPanel = panel === next ? undefined : next;
     request(() => { if (source) launcher = source; panel = nextPanel; if (!panel) returnFocus(); });
   }
@@ -115,7 +129,32 @@
       if (selection) { panel = 'inspector'; void tick().then(() => document.querySelector<HTMLElement>('.primary-panel h2')?.focus({ preventScroll: true })); }
     });
   }
-  function requestTool(next: Tool) { request(() => { closeNow(); map?.activateTool(next); }); }
+  function showCatalog() {
+    if (tool === 'signal' || tool === 'stationary') catalogCategory = tool;
+    catalogLauncher = document.querySelector<HTMLElement>('.tool-card button') ?? undefined;
+    catalogOpen = true;
+  }
+  function closeCatalog() {
+    catalogOpen = false;
+    if (catalogLauncher?.isConnected) catalogLauncher.focus({ preventScroll: true });
+    else map?.focusMap();
+  }
+  function chooseCatalogItem(category: CatalogCategory, id: string, direction?: SignalDirection) {
+    if (view.pending || saveBusy || synchronizing) return;
+    const choose = () => {
+      model.selectCatalogItem(category, id, direction);
+      if (!clockDisabled && (terrain || mixed)) {
+        panel = undefined;
+        if (tool !== category) map?.activateTool(category);
+      }
+    };
+    if (view.draftDirty) request(choose); else choose();
+  }
+  function requestTool(next: Tool) { request(() => {
+    closeNow(); map?.activateTool(next);
+    if (tool === 'signal' || tool === 'stationary') { catalogCategory = tool; catalogOpen = true; }
+  }); }
+
   async function resolveDraft(apply: boolean) {
     const action = navigation, epoch = read?.worldEpoch;
     if (apply) {
@@ -139,6 +178,7 @@
     }
     if (event.key !== 'Escape' || !live || event.isComposing || event.keyCode === 229) return;
     if (menu) { event.preventDefault(); closeMenu(); return; }
+    if (catalogOpen && event.target instanceof HTMLElement && event.target.closest('#building-catalog')) { event.preventDefault(); closeCatalog(); return; }
     if (event.target instanceof HTMLElement && event.target.matches('input,select,textarea,[contenteditable="true"]')) return;
     event.preventDefault();
     if (panel) closePanel(); else map?.escape();
@@ -184,14 +224,14 @@
       </div>
     </div>
   {/if}
-  <main class="map-stage">
-    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock}/>
+  <main class="map-stage" class:with-catalog={live && catalogOpen && !panel}>
+    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
         {#if terrain||mixed}<button disabled={clockDisabled||!terrain} title={!terrain?text.terrainUnavailable:undefined} onclick={()=>requestTool('terrain')}>{text.terrainTool}</button>{/if}
         <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
-        {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={panel === id} aria-controls="primary-panel" onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
+        {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={id === 'catalog' && reference ? catalogOpen && !panel : panel === id} aria-controls={id === 'catalog' && reference ? 'building-catalog' : 'primary-panel'} onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
         {#each enabledPacks as pack (pack.id)}
           <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); optionalCredits = pack; }}>{creditFor(pack,view.locale).button}</button>
@@ -199,6 +239,9 @@
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); licenseOpen = true; }}>{text.license}</button>
         {#if reference}<p data-testid="menu-game-time">{formatGameTime(read!.tick,view.locale)}</p><p>{worldHint}</p>{:else}<p>{text.tick} {new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))} · {text.cash} {new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</p>{/if}
       </nav>
+    {/if}
+    {#if live && catalogOpen && !panel}
+      <BuildingCatalog locale={view.locale} category={catalogCategory} selections={view.catalogSelections} signalDirection={view.signalDirection} pending={view.pending || saveBusy || synchronizing} oncategory={value => { catalogCategory = value; }} onselect={chooseCatalogItem} onclose={closeCatalog}/>
     {/if}
     {#if live && panel && panel !== 'view'}
       {#snippet stationActions()}
@@ -227,6 +270,7 @@
           {:else if mapSelection?.kind === 'railway' && railwayVoxel && railwayDefinition}
             <p data-testid="railway-component">{text[({rail:'track',pier:'pier',support:'railwaySupport',accessory:'railwayAccessory',stationary:'stationaryTask'} as const)[mapSelection.component]]}</p>
             <p data-testid="railway-definition">{railwayDefinition.packId} · {railwayDefinition.contributionId} · {railwayDefinition.recipeId}</p>
+            <ObjectProvenance id={railwayDefinition.contributionId} packId={railwayDefinition.packId} locale={view.locale}/>
             {#if railwayVoxel.traffic?.rail}<p>{text.railwayPattern}: {railwayVoxel.traffic.rail.pattern}</p>{/if}
             {#if railwayVoxel.traffic?.rail?.controllerId}<p>{text.controller}: {railwayVoxel.traffic.rail.controllerId}</p>{/if}
             {#if railwayVoxel.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel.supportedOwnerId}</p>{/if}

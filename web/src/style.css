@@ -58,6 +58,24 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .catalog button { width: 100%; text-align: start; display: flex; align-items: center; gap: 8px; }
 .catalog strong, .catalog small { display: block; }
 .building-icon { width: 40px; height: 40px; object-fit: contain; image-rendering: pixelated; }
+.building-catalog { position: absolute; inset: 8px 8px 60px auto; width: var(--panel); display: flex; flex-direction: column; z-index: 25; background: var(--ui-window-background); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.catalog-filters { padding: 0 8px; display: grid; gap: 8px; }
+.catalog-filters .field { margin: 8px 0 0; }
+.catalog-count { margin: 8px; font-size: 12px; color: var(--muted); }
+.catalog-content { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 6px; }
+.catalog-help { padding: 8px; margin: 0; border-top: 1px solid var(--border); }
+.catalog-item { border: 1px solid var(--border); background: var(--ui-button-alternative); }
+.catalog-item.catalog-active { outline: 2px solid var(--focus); outline-offset: -3px; background: var(--ui-notice-background); }
+.catalog-item .catalog-item-main { min-height: 88px; border: 0; background: transparent; box-shadow: none; }
+.catalog-options { display: grid; gap: 4px; padding: 0 8px 8px; }
+.catalog-option-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+.catalog .catalog-option-buttons button { width: auto; justify-content: center; padding: 2px 6px; }
+.catalog-option-buttons button[aria-pressed="true"] { outline: 2px solid var(--focus); outline-offset: -2px; }
+.catalog-preview { flex: 0 0 96px; height: 80px; display: grid; place-items: center; }
+.catalog-preview img { object-fit: contain; image-rendering: pixelated; }
+.object-provenance { display: grid; gap: 2px; overflow-wrap: anywhere; }
+.with-catalog .map-navigation { inset-inline-end: calc(var(--panel) + 16px); }
+.with-catalog .tool-card { width: min(320px, calc(100% - var(--panel) - var(--strip) - 32px)); }
 .map-options { display: grid; gap: 8px; }
 .map-options label { display: flex; gap: 4px; align-items: center; }
 .map-options input[type="range"] { width: 120px; }
@@ -108,6 +126,26 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 @media (max-height: 600px) {
   .primary-panel { inset-block-start: 8px; inset-block-end: auto; width: min(352px, calc(100% - var(--strip) - 16px)); max-height: calc(100% - 16px); }
   .tool-card { max-height: calc(100% - 76px); }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .with-catalog { --panel: 280px; }
+  .with-catalog .catalog-preview { flex-basis: 72px; }
+  .with-catalog .catalog-preview img { width: 72px; }
+}
+@media (max-width: 639px) {
+  .building-catalog { inset: calc(var(--strip) + 8px) 8px auto; width: auto; max-height: 34%; }
+  .building-catalog .sheet-toggle { display: block; }
+  .building-catalog.catalog-expanded { max-height: calc(100% - var(--strip) - 68px); bottom: 60px; z-index: 31; }
+  .catalog-filters { grid-template-columns: 1fr 1fr; gap: 4px; }
+  .catalog-filters .field { margin-top: 4px; font-size: 12px; }
+  .catalog-filters select { width: 100%; }
+  .catalog-count { margin: 2px 8px; }
+  .catalog-help { display: none; }
+  .catalog-item .catalog-item-main { min-height: 72px; }
+  .catalog-preview { height: 64px; flex-basis: 72px; }
+  .catalog-preview img { width: 72px; height: 64px; }
+  .with-catalog .map-navigation { inset-inline-end: 8px; }
+  .with-catalog .tool-card { width: calc(100% - 16px); max-height: 42%; }
 }
 /* Transient overlays consume the complete gesture; native modal dialogs make
    the remaining document inert, including canvas and portalled controls. */

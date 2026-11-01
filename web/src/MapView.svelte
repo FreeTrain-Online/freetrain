@@ -26,8 +26,8 @@
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
-  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose, onclock }:
-    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
+  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose, onclock, oncatalog }:
+    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
   const text = $derived(messages[view.locale]);
   const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
@@ -169,7 +169,9 @@
         const card=document.querySelector('.track-task');
         if(!live||tool!==active||!card)return;
         const r=canvas.getBoundingClientRect(),top=card.getBoundingClientRect().top-r.top;
-        narrowRailOffset=(height/2-Math.max(0,top)/2)/camera.zoom;
+        const catalogBottom=document.querySelector('#building-catalog')?.getBoundingClientRect().bottom;
+        const visibleTop=catalogBottom===undefined?0:Math.min(top,Math.max(0,catalogBottom-r.top+8));
+        narrowRailOffset=(height/2-(visibleTop+Math.max(0,top))/2)/camera.zoom;
         camera={...camera,y:camera.y+narrowRailOffset};dirty=true;
       });
     }
@@ -387,7 +389,7 @@
     {#key cornerGeneration}<RemoveControls bind:this={removeControls} {model} {view} picked={removePicked} bind:level={removeLevel} {heightCut} onpreview={p=>{terrainSites=[...(p?.positions??[]).map(position=>({position,skipped:false})),...(p?.skipped??[]).map(s=>({position:s.position,skipped:true}))];removalPath=p?.path??[];dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreset={()=>{removePicked=undefined;}} onreveal={()=>{heightCut=removeLevel;}}/>{/key}
   {/if}
   {#if railway && (tool === 'build' || tool === 'bridge' || tool === 'girder' || tool === 'tunnel' || tool === 'stationary' || tool === 'pole' || tool === 'signal' || tool === 'garage') && !panel}
-    {#key cornerGeneration}<TrackControls infrastructure={tool==='stationary'?'stationary':tool==='pole'?'pole':tool==='signal'?'signal':tool==='garage'?'garage':tool==='tunnel'?'tunnel':tool==='girder'?'girder':tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
+    {#key cornerGeneration}<TrackControls {oncatalog} infrastructure={tool==='stationary'?'stationary':tool==='pole'?'pole':tool==='signal'?'signal':tool==='garage'?'garage':tool==='tunnel'?'tunnel':tool==='girder'?'girder':tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
   {/if}
   {#if !railway && tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" use:primaryAction aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>

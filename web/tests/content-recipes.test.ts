@@ -1,8 +1,31 @@
 import { RecipeImageCache, instantiate, traversal, composeTrain, validateCatalog, halfBlend, type RenderCatalog, type Recipe } from '../src/lib/content-recipes.ts';
+import { objectOrigin } from '../src/lib/object-provenance.ts';
+import { catalogItems } from '../src/lib/building-catalog.ts';
+import stationaryTypes from '../src/generated/stationary-types.json' with { type: 'json' };
 const assert=(value:unknown,message='Assertion failed')=>{if(!value)throw new Error(message);};
 const equal=(a:unknown,b:unknown)=>assert(JSON.stringify(a)===JSON.stringify(b),JSON.stringify([a,b]));
 const c=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url))) as RenderCatalog;
 const byHandler=(handler:string)=>c.renderRecipes.find(r=>r.handler===handler)!;
+Deno.test('catalog groups all 54 exact variants without merging plugins, heights or prices across locales',()=>{
+  const en=catalogItems('stationary','en'),ja=catalogItems('stationary','ja');
+  equal(en.map(g=>g.variants.length),[8,8,8,8,6,12,2,1,1]);
+  equal(en.map(g=>g.id),ja.map(g=>g.id));
+  const ids=en.flatMap(g=>g.variants.map(v=>v.id));
+  equal(ids,stationaryTypes.map(t=>t.id)); assert(new Set(ids).size===54);
+  equal(en[0].title,'Brick pier'); equal(ja[0].title,'レンガ橋脚');
+  assert(en[0].id!==en[6].id && en[0].title===en[6].title);
+  equal(catalogItems('signal','en').map(g=>g.variants.length),[1,1]);
+});
+Deno.test('object provenance retains original XML plugin author/title and never guesses missing credits',()=>{
+  equal(objectOrigin(c,'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'),{author:'川口耕介',plugin:'鉄道用信号機'});
+  equal(objectOrigin(c,'{98619BD4-46C3-4B91-85FE-11147914F2A5}-A'),{author:'いっちー',plugin:'もっともっと橋脚'});
+  equal(objectOrigin(c,'not-a-contribution'),undefined);
+  const missing=structuredClone(c);
+  missing.plugins!.find(p=>p.id==='org.kohsuke.freetrain.rail.signal')!.author='';
+  equal(objectOrigin(missing,'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'),{plugin:'鉄道用信号機'});
+  delete missing.plugins;
+  equal(objectOrigin(missing,'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'),undefined);
+});
 Deno.test('all compiled source recipes and masks validate and exact identity rejects drift',()=>{
   validateCatalog(c);assert(c.renderRecipes.length>=812);
   const invalid=structuredClone(c);invalid.renderRecipes.push(invalid.renderRecipes[0]);

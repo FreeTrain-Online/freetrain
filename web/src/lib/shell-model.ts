@@ -3,6 +3,7 @@ import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
 import type { ConnectionStatus, FixtureBehavior, ReadState, SessionClient } from './session-client.ts';
 import type { Locale } from './localization.ts';
+import { initialCatalogSelection, isCatalogItem, signalDirections, type SignalDirection, type CatalogCategory } from './building-catalog.ts';
 
 // Imported reference families: a fixed pier and the condo's four supported heights.
 export const catalog = Array.from({ length: 5 }, (_, index) => ({
@@ -31,10 +32,12 @@ export interface ShellState {
   feedback: Rejected['code'] | 'idle' | 'waiting' | 'accepted' | 'unavailable' | 'unresolved' | 'leaveFailed';
   behavior: FixtureBehavior;
   selectedBuilding: string;
+  catalogSelections: Record<CatalogCategory, string>;
+  signalDirection: SignalDirection;
 }
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
   let inputSequence = BigInt(Date.now()) * 1000n;
-  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id };
+  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id, catalogSelections: { ...initialCatalogSelection }, signalDirection: 0 };
   let client: SessionClient | undefined;
   let unsubscribe: (() => void) | undefined;
   let unsubscribeStatus: (() => void) | undefined;
@@ -175,6 +178,10 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     setComposing(composing: boolean) { update({ composing }); },
     setBehavior(behavior: FixtureBehavior) { update({ behavior }); },
     selectBuilding(selectedBuilding: string) { update({ selectedBuilding }); },
+    selectCatalogItem(category: CatalogCategory, id: string, direction?: SignalDirection) {
+      if (state.pending || !isCatalogItem(category, id) || direction !== undefined && (category !== 'signal' || !signalDirections.some(d => d.value === direction))) return;
+      update({ catalogSelections: { ...state.catalogSelections, [category]: id }, ...(direction !== undefined ? { signalDirection: direction } : {}) });
+    },
     selectStation(id: string) { stationId = id; dirty = false; const station = state.read?.stations.find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false, draftInterrupted: false }); },
     resetDraft() { dirty = false; const station = state.read?.stations.find(item => item.id === stationId) ?? (!stationId ? state.read?.stations[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },
     rename() {

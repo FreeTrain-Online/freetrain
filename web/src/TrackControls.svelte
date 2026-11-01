@@ -1,6 +1,6 @@
 <script lang="ts">
   import stationaryTypes from './generated/stationary-types.json' with {type:'json'};
-  import StationaryPreview from './StationaryPreview.svelte';
+  import { signalTypes, signalDirections, type SignalType } from './lib/building-catalog.ts';
   import { untrack } from 'svelte';
   import { WorldSpace } from './lib/map-geometry.ts';
   import { primaryAction } from './lib/primary-action.ts';
@@ -8,17 +8,17 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
   import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel, RailwayPreviewRequestError } from './lib/railway-edit.ts';
-  let {model,view,picked,level=$bindable(1),infrastructure='normal',onpreview,onpoints,onreveal,heightCut}:
-    {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge'|'girder'|'tunnel'|'garage'|'signal'|'pole'|'stationary';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;heightCut:number}=$props();
+  let {model,view,picked,level=$bindable(1),infrastructure='normal',onpreview,onpoints,onreveal,oncatalog,heightCut}:
+    {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge'|'girder'|'tunnel'|'garage'|'signal'|'pole'|'stationary';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;oncatalog:()=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
   const pointTool=$derived(infrastructure==='stationary'||infrastructure==='signal'||infrastructure==='pole');
   const wording=$derived(infrastructure==='stationary' ? {task:'stationaryTask',description:'stationaryDescription',help:'stationaryHelp',rules:'stationaryRules',removal:'stationaryRemovalHelp',confirm:'confirmStationary'} as const : infrastructure==='pole' ? {task:'poleTask',description:'poleDescription',help:'poleHelp',rules:'poleRules',removal:'poleRemovalHelp',confirm:'confirmPole'} as const : infrastructure==='signal' ? {task:'signalTask',description:'signalDescription',help:'signalHelp',rules:'signalRules',removal:'signalRemovalHelp',confirm:'confirmSignal'} as const : infrastructure==='garage' ? {task:'garageTask',description:'garageDescription',help:'garageHelp',rules:'garageRules',removal:'garageRemovalHelp',confirm:'confirmGarage'} as const : infrastructure==='tunnel' ? {task:'tunnelTask',description:'tunnelDescription',help:'tunnelHelp',rules:'tunnelRules',removal:'tunnelRemovalHelp',confirm:'confirmTunnel'} as const : infrastructure==='girder' ? {task:'girderTask',description:'girderDescription',help:'girderHelp',rules:'girderRules',removal:'girderRemovalHelp',confirm:'confirmGirder'} as const : infrastructure==='bridge' ? {task:'bridgeTask',description:'bridgeDescription',help:'bridgeHelp',rules:'bridgeRules',removal:'bridgeRemovalHelp',confirm:'confirmBridge'} as const : {task:'trackTask',description:'bridgeDescription',help:'railHelp',rules:'railHeuristicHelp',removal:'railRemovalHelp',confirm:'confirmTrack'} as const);
-  let stationaryType=$state(stationaryTypes[0].id);
+  const stationaryType=$derived(view.catalogSelections.stationary);
   const stationary=$derived(stationaryTypes.find(t=>t.id===stationaryType)!);
-  let signalType=$state<'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'|'{6FA55842-E693-414f-A120-0A3D0C613B21}'>('{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}');
+  const signalType=$derived(view.catalogSelections.signal as SignalType);
   const poleTypes=['{DDF7F835-8100-45fd-8AE7-EC498796D387}','{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}','{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}','{FD1635C1-05BF-41af-9185-4891B983E2A4}'] as const;
   let poleType=$state<NonNullable<RailwayQuery['poleType']>>(poleTypes[0]);
-  let signalDirection=$state<0|2|4|6>(0);
+  const signalDirection=$derived(view.signalDirection);
   let action=$state<'lay'|'remove'>('lay');
   let routing=$state<'closest'|'source'|'alternate'>('closest');
   let ax=$state(0),ay=$state(0),bx=$state(0),by=$state(0);
@@ -84,6 +84,9 @@
     if(fence&&fence!==current&&!submitting){reset();autoCoordinates=true;status='stale';}
     if(view.connection!=='ready'||view.role==='observer')untrack(()=>cancelDraft());
   });
+  // Changing the catalog variant or direction invalidates an outstanding quote,
+  // while keeping the chosen map point ready for the next preview.
+  $effect(()=>{void stationaryType;void signalType;void signalDirection;untrack(edit);});
   $effect(()=>()=>{version++;request?.abort();onpreview();onpoints([]);});
 </script>
 <section class="tool-card track-task" use:primaryAction aria-label={text[wording.task]}>
@@ -92,17 +95,16 @@
   <p class="hint">{text[wording.help]}</p>
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     {#if infrastructure==='stationary'}
-      {#if action==='lay'}<label>{text.stationaryType}<select aria-label={text.stationaryType} bind:value={stationaryType} onchange={edit} disabled={view.pending}>{#each stationaryTypes as type}<option value={type.id}>{view.locale==='ja'?type.groupJa:type.groupEn} · {type.variant}</option>{/each}</select></label>{/if}
+      {#if action==='lay'}<p data-testid="catalog-selection">{text.stationaryType}: {view.locale==='ja'?stationary.groupJa:stationary.groupEn} · {stationary.variant}</p><div class="form-actions"><button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button></div>{/if}
       {#if shownStationary}
       {#if action==='remove'}<p>{text.stationaryTarget}: {view.locale==='ja'?shownStationary.groupJa:shownStationary.groupEn} · {shownStationary.variant}</p>{/if}
-      <StationaryPreview type={shownStationary} locale={view.locale}/>
-      <p>{text.stationaryDimensions}: {shownStationary.sizeX} × {shownStationary.sizeY} × {shownStationary.height}{#if action==='lay'} · {text.stationaryCompletionCost}: {shownStationary.price.toLocaleString(view.locale)}{/if}</p>
+      <p>{text.stationaryDimensions}: {shownStationary.sizeX} × {shownStationary.sizeY} × {shownStationary.height}{#if action==='lay'} · {text.price}: {shownStationary.price.toLocaleString(view.locale)}{/if}</p>
       {/if}
     {/if}
     {#if infrastructure==='pole'}<label>{text.poleType}<select aria-label={text.poleType} bind:value={poleType} onchange={edit} disabled={view.pending}>{#each poleTypes as type,i}<option value={type}>{text[(['poleDouble1','poleDouble2','poleSingle1','poleSingle2'] as const)[i]]}</option>{/each}</select></label>{/if}
     {#if infrastructure==='signal'}
-      <label>{text.signalType}<select aria-label={text.signalType} bind:value={signalType} onchange={edit} disabled={view.pending}><option value={'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}'}>{text.signalThreeAspect}</option><option value={'{6FA55842-E693-414f-A120-0A3D0C613B21}'}>{text.signalShunting}</option></select></label>
-      <label>{text.signalDirection}<select aria-label={text.signalDirection} bind:value={signalDirection} onchange={edit} disabled={view.pending}>{#each [0,2,4,6] as d}<option value={d}>{text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[d/2]]}</option>{/each}</select></label>
+      <p data-testid="catalog-selection">{text.signalType}: {text[signalTypes.find(type=>type.id===signalType)!.label]}</p><button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button>
+      <p data-testid="signal-direction">{text.signalDirection}: {text[signalDirections.find(d=>d.value===signalDirection)!.label]}</p>
     {/if}
     <div class="form-actions">
       {#if infrastructure!=='normal'}<label>{text.railAction}<select aria-label={text.railAction} bind:value={action} disabled={view.pending} onchange={edit}><option value="lay">{text[infrastructure==='stationary'?'stationaryPlace':'railLay']}</option><option value="remove">{text.railRemove}</option></select></label>{/if}

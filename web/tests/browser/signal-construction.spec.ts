@@ -47,7 +47,7 @@ for(const ja of [false,true])test(`signal types, directions, replacement, restor
   await ready(page,ja?'ja':'en');await page.getByRole('button',{name:ja?'信号':'Signals',exact:true}).click();
   const text={type:ja?'信号の種類':'Signal type',dir:ja?'信号の向き':'Signal direction',action:ja?'線路の操作':'Track action',confirm:ja?'信号の変更を確定':'Confirm signal change'};
   for(const type of types)for(const d of [0,2,4,6]){
-   await page.getByLabel(text.action,{exact:true}).selectOption('lay');await page.getByLabel(text.type,{exact:true}).selectOption(type);await page.getByLabel(text.dir,{exact:true}).selectOption(String(d));
+   await page.getByLabel(text.action,{exact:true}).selectOption('lay');const name=ja?(type===types[0]?'三灯式':'入替信号'):(type===types[0]?'Three-aspect signal':'Shunting signal');await page.locator('#building-catalog').getByRole('group',{name:`${name} · ${text.dir}`,exact:true}).getByRole('button',{name:(ja?['北 (0)','東 (2)','南 (4)','西 (6)']:['North (0)','East (2)','South (4)','West (6)'])[d/2],exact:true}).click();
    for(const [name,value] of [[ja?'始点 X':'Start X',30],[ja?'始点 Y':'Start Y',27],[ja?'線路の高さ':'Track level',1]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
    const before=await save(page);await page.getByRole('button',{name:ja?'経路をプレビュー':'Preview route',exact:true}).click();await expect(page.getByRole('button',{name:text.confirm,exact:true})).toBeEnabled();expect(await save(page)).toEqual(before);
    await page.getByRole('button',{name:text.confirm,exact:true}).click();await expect(page.getByTestId('rail-route')).toHaveCount(0);

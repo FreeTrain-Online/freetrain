@@ -22,6 +22,7 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
   await expect(canvas).toHaveAttribute('data-assets','ready');await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeEnabled();
   const p=await point(page,16.5,-55.5);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('selected-object')).toHaveText('Railway · 7 · 1, 0, 4');
   await expect(page.getByTestId('railway-definition')).toHaveText('exav-stable-bundled · system:pattern/1 · system:pattern/1');
+  await expect(page.getByTestId('object-author')).toHaveText('Author: 川口耕介');
   const f=catalog.renderRecipes.find((r:any)=>r.id==='system:pattern/1').frames[0];
   const pixels=await canvas.evaluate(async(el,args)=>{
    const canvas=el as HTMLCanvasElement,r=canvas.getBoundingClientRect(),[cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom),variant=canvas.dataset.terrainVariant!;

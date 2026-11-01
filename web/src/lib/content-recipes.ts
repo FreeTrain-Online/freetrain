@@ -16,7 +16,7 @@ export interface RenderCatalog {
   schemaVersion: number; packId: string; version: string;
   source: { revision: string };
   renderRecipes: Recipe[];
-  plugins?: {id:string;author:unknown}[];
+  plugins?: {id:string;title?:string;author:unknown}[];
   assets?: {path:string;author:unknown;credits:unknown;notices:unknown;mediaType?:string;native?:Media}[];
   contributions?: {id:string;pluginId:string;type:string;sourcePath:string;declaration:{children:{tag:string;text:string;attributes:Record<string,string>}[]}}[];
   surfaceSets: Record<string,Record<string,Binding>>;

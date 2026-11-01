@@ -61,6 +61,16 @@ removal costs 500,000 per ground cell under Subsidiaries; cancelling a site is
 free. Progress, callbacks and random state save/reopen exactly. These decorative
 objects do not support track or control trains.
 
+[Building catalog](doc/web-building-catalog.md) is available from **Game → Building
+catalog**, with Signals and Railway accessories as its first categories. Browse
+or search source-art cards independently, or open either building tool to show
+its category beside the map. Selecting a card replaces the former object dropdown;
+accessory variants are grouped into nine entries with inline variant buttons,
+and signal cards offer inline direction buttons. Map targeting, preview and
+confirmation stay in the building tool.
+The catalog supports English/Japanese and a compact expandable phone layout.
+Cards and railway object inspection show the original XML plugin author/title.
+
 Shape terrain before laying rail;
 mixed-world terrain editing remains a later cross-tool step.
 

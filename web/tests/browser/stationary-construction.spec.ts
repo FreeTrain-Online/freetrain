@@ -26,9 +26,9 @@ for(const ja of [false,true])test(`stationary source lifecycle, detached preview
   const initial=JSON.parse((await save(page)).toString());initial.clock.absoluteMinute='3420';await replace(page,Buffer.from(JSON.stringify(initial)));
   if(ja)await language(page,true);
   const tool=page.getByRole('button',{name:ja?'鉄道アクセサリ':'Railway accessories',exact:true});await tool.click();
-  const selector=page.getByLabel(ja?'アクセサリの種類':'Accessory variant',{exact:true});await expect(selector.locator('option')).toHaveCount(54);
-  const tall=types.find((t:any)=>t.height===2);await selector.selectOption(tall.id);
-  await expect.poll(()=>page.getByTestId('stationary-preview').evaluate(c=>Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(0,0,128,112).data).some((v,i)=>i%4===3&&v>0))).toBe(true);
+  const selector=page.locator('#building-catalog .catalog');await expect(selector.locator('.catalog-item')).toHaveCount(9);await expect(selector.locator('[data-catalog-variant]')).toHaveCount(54);
+  const tall=types.find((t:any)=>t.height===2);await selector.getByRole('button',{name:`${ja?tall.groupJa:tall.groupEn} · ${tall.variant}`,exact:true}).click();
+  await expect(page.locator('.track-task canvas')).toHaveCount(0);await expect(page.locator('#building-catalog .catalog-active img')).toBeVisible();
   const before=await save(page);await target(page,ja);const confirm=page.getByRole('button',{name:ja?'アクセサリの操作を確定':'Confirm accessory action',exact:true});await expect(confirm).toBeEnabled();await expect(page.getByTestId('rail-cost')).toContainText('0');expect(await save(page)).toEqual(before);
   await confirm.click();await expect(page.getByTestId('rail-route')).toHaveCount(0);let built=await state(page);expect(built.mixed.voxels).toHaveLength(2);expect(built.mixed.voxels.every((v:any)=>v.construction.state===0)).toBe(true);expect(built.mixed.accounts.transactions).toHaveLength(0);
   await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
