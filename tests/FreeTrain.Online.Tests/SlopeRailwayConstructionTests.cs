@@ -222,7 +222,7 @@ public class SlopeRailwayConstructionTests
         var profile=new RailwayProfile(Profile.Terrain,Profile.Bindings.Concat(new[]{new RailwayBinding(road,RailwayHandler.Road),new(platform,RailwayHandler.Platform)}));
         var w=MixedWorld.FromTerrain(profile,Terrain());var built=Apply(w,SlopeRailwayConstruction.PreviewBuild(w,P,Heading.East)).World;
         var before=built.At(P)!.Traffic!;var pole=profile.Bindings.First(b=>b.Handler==RailwayHandler.Pole).Reference;
-        var t=before with{Road=new(road,68),Accessory=new(pole,2)};
+        var t=before with{Road=new(road,68),Accessory=new(pole,0)};
         var mixed=ChangeTraffic(built,P,t);var removed=Apply(mixed,SlopeRailwayConstruction.PreviewRemoval(mixed,P,Heading.East)).World;
         Assert.Single(removed.Voxels);Assert.Null(removed.At(P)!.Traffic!.Rail);
         Assert.Equal(t with{Rail=null},removed.At(P)!.Traffic);Assert.True(removed.At(P)!.OwnerId>=built.Spatial.NextEntityId);

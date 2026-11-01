@@ -22,7 +22,7 @@ export interface RenderCatalog {
   surfaceSets: Record<string,Record<string,Binding>>;
   masks: Record<string,string[]>;
 }
-export interface Variant { season: 'spring'|'summer'|'autumn'|'winter'; night: boolean }
+export interface Variant { season: 'spring'|'summer'|'autumn'|'winter'; night: boolean; drawPoles?:boolean }
 export const variantKey = (v:Variant) => `${v.season}/${v.night?'night':'day'}`;
 export const catalogURL = '/content/bundled-v2/catalog.json';
 export async function sha256(bytes: Uint8Array): Promise<string> {

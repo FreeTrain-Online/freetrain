@@ -6,7 +6,7 @@ import type { Position } from '../generated/contracts.ts';
 
 export const railwayRevision = (read?: ReadState) => read?.mixed?.geometryRevision ?? read?.terrain?.geometryRevision;
 export const railwayFence = (read?: ReadState) => `${read?.worldEpoch}/${railwayRevision(read)}/${read?.contentVersion}`;
-export const railwayQueryKey = (q: RailwayQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.routing,q.infrastructure??'normal',q.tunnelRouting??'exact',q.signalType??'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}',q.signalDirection??0,q.from.x,q.from.y,q.from.z,q.to.x,q.to.y,q.to.z]);
+export const railwayQueryKey = (q: RailwayQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.routing,q.infrastructure??'normal',q.tunnelRouting??'exact',q.signalType??'{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}',q.signalDirection??0,q.poleType??'{DDF7F835-8100-45fd-8AE7-EC498796D387}',q.from.x,q.from.y,q.from.z,q.to.x,q.to.y,q.to.z]);
 
 // Keyboard XY already identifies a column. Match the map's rail-or-ground
 // policy within that column, respecting a cut into otherwise higher ground.
@@ -37,7 +37,7 @@ export function isRailwayPromotion(before: ReadState, after: ReadState): boolean
 export const slopeQueryKey = (q:import('../generated/contracts.ts').SlopeQuery) => JSON.stringify([q.expectedWorldEpoch,q.expectedGeometryRevision,q.expectedContentVersion,q.action,q.climb,q.position.x,q.position.y,q.position.z]);
 
 export const railwayReasons = {
-  signalNotFound:'signalNotFound',signalTarget:'signalTarget',invalidInput:'geometryFailed',nonCardinalSlope:'slopeCardinal',notSlope:'slopeNotFound',slopeDirectionMismatch:'slopeMismatch',occupiedCar:'railCar',unavailableSlopeBinding:'railBinding',staleRevision:'railStale',
+  poleNotFound:'poleNotFound',poleTarget:'poleTarget',signalNotFound:'signalNotFound',signalTarget:'signalTarget',invalidInput:'geometryFailed',nonCardinalSlope:'slopeCardinal',notSlope:'slopeNotFound',slopeDirectionMismatch:'slopeMismatch',occupiedCar:'railCar',unavailableSlopeBinding:'railBinding',staleRevision:'railStale',
   garageGroundRequired:'garageGroundRequired',garageDependency:'garageDependency',tunnelMountainRequired:'tunnelMountainRequired',tunnelComponentDependency:'tunnelComponentDependency',girderAboveGround:'girderAboveGround',samePoint:'railSamePoint',noncoplanar:'railNoncoplanar',routeWorkLimit:'railWorkLimit',outside:'outsideMap',
   unusableStart:'railStart',underwater:'railUnderwater',obstacle:'railObstacle',carOccupied:'railCar',
   existingMiddleRail:'railMiddle',cannotAttach:'railAttach',invalidRailPattern:'railPattern',

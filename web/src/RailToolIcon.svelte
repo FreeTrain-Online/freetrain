@@ -1,6 +1,8 @@
-<script lang="ts">let {slope=false,bridge=false,girder=false,garage=false,tunnel=false}:{slope?:boolean;bridge?:boolean;girder?:boolean;garage?:boolean;tunnel?:boolean}=$props();</script>
+<script lang="ts">let {pole=false,slope=false,bridge=false,girder=false,garage=false,tunnel=false}:{pole?:boolean;slope?:boolean;bridge?:boolean;girder?:boolean;garage?:boolean;tunnel?:boolean}=$props();</script>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-  {#if garage}
+  {#if pole}
+    <path d="m14 2-10 12h7l-1 8L21 9h-8Z" fill="#ffd24a" stroke-width="2.2"/>
+  {:else if garage}
     <path d="M3 21V8l9-6 9 6v13M7 21V10h10v11M9 21l1-7m5 7-1-7M9 18h6M10 15h4"/>
   {:else if tunnel}
     <path d="M3 20V11a9 9 0 0 1 18 0v9h-4v-9a5 5 0 0 0-10 0v9Z"/><path d="m8 22 3-8m5 8-3-8M8 18h8M9 15h6"/>

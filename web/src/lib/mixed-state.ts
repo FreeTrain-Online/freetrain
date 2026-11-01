@@ -86,7 +86,7 @@ export function validMixed(read:Snapshot):boolean {
      c.platform&&(!r||binding(c.platform)?.handler!=='platform'))return false;
   if(c.car){if(cars.has(c.car.carId))return false;cars.add(c.car.carId);}
   if(c.accessory){const h=binding(c.accessory.definition)?.handler;
-   if(h!=='pole'&&h!=='crossing'||h==='crossing'&&(!r||!c.road||!(r.pattern===10&&(c.road.edges&68)===68||r.pattern===4&&(c.road.edges&17)===17)))return false;
+   if(h!=='pole'&&h!=='crossing'||h==='pole'&&c.accessory.direction>1||h==='crossing'&&(!r||!c.road||!(r.pattern===10&&(c.road.edges&68)===68||r.pattern===4&&(c.road.edges&17)===17)))return false;
   }
  }
  let cash=BigInt(m.accounts.initialCash),sequence=1n,revision=0n,minute=0n,operation='',topUps=0n;

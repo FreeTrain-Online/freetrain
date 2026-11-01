@@ -169,7 +169,7 @@ public sealed class MixedWorld
         if (t.Road is {} road && (Profile.Resolve(road.Definition).Handler != RailwayHandler.Road || road.Edges is < 1 or > 255))
             throw new ArgumentException("Invalid road component.");
         if (t.Accessory is {} a && (Profile.Resolve(a.Definition).Handler is not (RailwayHandler.Pole or RailwayHandler.Crossing) ||
-            a.Direction is < 0 or > 7)) throw new ArgumentException("Invalid accessory component.");
+            a.Direction is < 0 or > 7 || Profile.Resolve(a.Definition).Handler == RailwayHandler.Pole && a.Direction > 1)) throw new ArgumentException("Invalid accessory component.");
         if (t.Accessory is {} crossing && Profile.Resolve(crossing.Definition).Handler == RailwayHandler.Crossing &&
             (t.Rail == null || t.Road == null ||
                 !(t.Rail.Pattern == 10 && (t.Road.Edges & 68) == 68 || t.Rail.Pattern == 4 && (t.Road.Edges & 17) == 17)))

@@ -592,5 +592,19 @@
   "signalSouth": "South (4)",
   "signalWest": "West (6)",
   "signalNotFound": "There is no signal at this point.",
-  "signalTarget": "Only empty traffic or ordinary track can receive a signal."
+  "signalTarget": "Only empty traffic or ordinary track can receive a signal.",
+  "poleTask": "Electric poles",
+  "poleDescription": "Visual overhead railway supports.",
+  "poleHelp": "Choose a point on cardinal straight track. The track sets the pole orientation, including on compatible special rail.",
+  "poleRules": "Placement and removal cost nothing. Placement replaces the current accessory, even when a car is present. Poles do not simulate electrification.",
+  "poleRemovalHelp": "Remove any pole at the selected point, keeping track, road and cars. A pole left after track removal can also be removed.",
+  "confirmPole": "Confirm pole change",
+  "poleType": "Pole type",
+  "poleDouble1": "Double pole (1)",
+  "poleDouble2": "Double pole (2)",
+  "poleSingle1": "Single pole (1)",
+  "poleSingle2": "Single pole (2)",
+  "poleNotFound": "There is no electric pole at this point.",
+  "poleTarget": "Poles require straight north/south or east/west track.",
+  "showPoles": "Show electric poles"
 }

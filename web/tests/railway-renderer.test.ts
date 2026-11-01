@@ -251,3 +251,18 @@ Deno.test('signal types and directions retain literal crops, picking and cuts ac
   assert.equal(railwayOps(await TerrainScene.prepare(s,catalog,cache(),{season,night},0)).length,0);
  }
 });
+Deno.test('all bundled poles dispatch axis-specific before/after crops with exact picking and cuts',async()=>{
+ for(const id of ['{DDF7F835-8100-45fd-8AE7-EC498796D387}','{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}','{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}','{FD1635C1-05BF-41af-9185-4891B983E2A4}'])for(const [pattern,axis] of [[4,0],[10,1]])for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
+  const s=flat(1,1),v=rail(s,0,0,1,pattern);v.traffic!.accessory={definition:definition(id),direction:axis};
+  assert(validSnapshot(s));const saved=JSON.stringify(s),scene=await TerrainScene.prepare(s,catalog,cache(),{season,night},5);
+  const ops=railwayOps(scene),poles=ops.filter(o=>'layer' in o&&o.layer.recipeId===id);
+  assert.equal(poles.length,2);
+  assert.deepEqual(poles.map(o=>{assert('layer' in o);return o.layer.frame.rectangle;}),[[axis*32,0,32,32],[axis*32+64,0,32,32]]);
+  assert.deepEqual(poles.map(o=>{assert('layer' in o);return o.layer.frame.anchor;}),[[0,16],[0,16]]);
+  assert.deepEqual(ops.map(o=>o.target.component),['accessory','rail','accessory']);
+  const p=opaquePoint(scene,v.ownerId);const picked=scene.pick({x:p.a,y:p.b},view);assert.equal(picked?.id,v.ownerId);assert(picked?.kind==='railway');assert.equal(picked.component,'accessory');assert.equal(picked.definition.contributionId,id);
+  assert.equal(railwayOps(await TerrainScene.prepare(s,catalog,cache(),{season,night},0)).length,0);assert.equal(JSON.stringify(s),saved);
+  const hidden=await TerrainScene.prepare(s,catalog,cache(),{season,night,drawPoles:false},5,scene);assert.equal(railwayOps(hidden).length,1);assert.equal(railwayOps(hidden)[0].target.component,'rail');assert.equal(JSON.stringify(s),saved);
+  v.traffic!.accessory!.direction=2;assert.equal(validSnapshot(s),false);
+ }
+});

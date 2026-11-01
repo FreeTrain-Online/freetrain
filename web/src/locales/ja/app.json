@@ -592,5 +592,19 @@
   "signalSouth": "南 (4)",
   "signalWest": "西 (6)",
   "signalNotFound": "この点には信号機がありません。",
-  "signalTarget": "空の交通マスまたは通常線路にのみ設置できます。"
+  "signalTarget": "空の交通マスまたは通常線路にのみ設置できます。",
+  "poleTask": "架線柱",
+  "poleDescription": "線路を飾る架線柱です。",
+  "poleHelp": "南北または東西の直線線路上の一点を選びます。対応する特殊線路にも設置でき、向きは線路から決まります。",
+  "poleRules": "設置・撤去は無料です。車両がある場合も、既存の付属物を置き換えます。電化のシミュレーション機能はありません。",
+  "poleRemovalHelp": "種類に関係なく選択地点の架線柱を撤去し、線路・道路・車両を保持します。線路撤去後に残った架線柱も撤去できます。",
+  "confirmPole": "架線柱の変更を確定",
+  "poleType": "架線柱の種類",
+  "poleDouble1": "両柱(1)",
+  "poleDouble2": "両柱(2)",
+  "poleSingle1": "片柱(1)",
+  "poleSingle2": "片柱(2)",
+  "poleNotFound": "この地点に架線柱はありません。",
+  "poleTarget": "架線柱には南北または東西の直線線路が必要です。",
+  "showPoles": "架線柱を表示"
 }

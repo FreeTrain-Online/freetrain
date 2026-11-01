@@ -168,3 +168,10 @@ Deno.test('signal previews accept exactly one cell while route tools retain thei
  assert.throws(()=>parseRailwayPreview({...signal,cells:preview.cells}));
  assert.throws(()=>parseRailwayPreview({...signal,query:q}));
 });
+Deno.test('pole request identity and single-cell preview retain exact type selection',()=>{
+ const query={...q,to:q.from,infrastructure:'pole' as const};
+ assert.equal(railwayQueryKey(query),railwayQueryKey({...query,poleType:'{DDF7F835-8100-45fd-8AE7-EC498796D387}'}));
+ assert.notEqual(railwayQueryKey(query),railwayQueryKey({...query,poleType:'{FD1635C1-05BF-41af-9185-4891B983E2A4}'}));
+ const pole={...preview,query,cost:'0',cells:[preview.cells[0]]};assert.deepEqual(parseRailwayPreview(pole),pole);
+ assert.throws(()=>parseRailwayPreview({...pole,cells:[]}));assert.throws(()=>parseRailwayPreview({...pole,cells:preview.cells}));
+});

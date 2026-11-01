@@ -15,7 +15,7 @@ import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -77,7 +77,7 @@ export class MapRenderer {
     this.hits=[]; let drawn=0, culled=0;
     if (!this.read || !this.space) return false;
     if(isTerrainWorld(this.read)||isMixedWorld(this.read)) {
-      const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night};
+      const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night,drawPoles:options.drawPoles!==false};
       const worldKey=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,decorative]);
       const presentationKey=JSON.stringify([worldKey,variant,options.heightCut]);
       const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision]);

@@ -39,6 +39,7 @@
   let width = 0, height = 0, dirty = true, lastDpr = 0;
   let level = $state(1), heightCut = $state(15);
   let shape = $state<Track['shape']>('buffer');
+  let drawPoles=$state(true);
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean}>();
@@ -118,7 +119,7 @@
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
   export function escape() {
     if(railway&&tool==='remove'&&removeControls?.cancelDraft()) { /* First Escape clears the object. */ }
-    else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='signal'||tool==='garage')&&railControls?.cancelDraft()) { /* First Escape clears the route. */ }
+    else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='pole'||tool==='signal'||tool==='garage')&&railControls?.cancelDraft()) { /* First Escape clears the route. */ }
     else if(tool==='terrain'&&cornerControls?.cancelDraft()) { /* First Escape clears the review. */ }
     else if (selectedPosition) cancelDraft();
     else if (tool !== 'inspect') activateTool('inspect');
@@ -135,7 +136,7 @@
     const shortcut = tools.find(item=>item.shortcut.toLowerCase()===event.key.toLowerCase())?.id;
     if (shortcut) {
       event.preventDefault();
-      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !((shortcut === 'slope'||shortcut === 'bridge'||shortcut === 'girder'||shortcut === 'tunnel'||shortcut === 'signal'||shortcut === 'garage') && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
+      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !((shortcut === 'slope'||shortcut === 'bridge'||shortcut === 'girder'||shortcut === 'tunnel'||shortcut === 'pole'||shortcut === 'signal'||shortcut === 'garage') && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
       return;
     }
     if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
@@ -153,7 +154,7 @@
     focusMap();
     // A small world must remain reachable above the narrow tool sheet. Shift
     // only when opening the task; previews/confirmations preserve the camera.
-    if(narrow&&railway&&(tool==='build'||tool==='remove'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='signal'||tool==='garage')){
+    if(narrow&&railway&&(tool==='build'||tool==='remove'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='pole'||tool==='signal'||tool==='garage')){
       const active=tool;
       void tick().then(()=>{
         const card=document.querySelector('.track-task');
@@ -224,7 +225,7 @@
       removePicked=pick==='object'?renderer?.pick(p,camera.zoom):pick==='auto'?renderer?.pickLocation(p,{kind:'railOrGround'}):tileAt(p,removeLevel,camera,width,height,space);
       if(!removePicked)removeControls?.cancelDraft();
     }
-    else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='signal'||tool==='garage')&&!blocked&&!panel){
+    else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='pole'||tool==='signal'||tool==='garage')&&!blocked&&!panel){
       railPicked=railControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:tool==='slope'?'slopeOrGround':'railOrGround'}):tileAt(p,railLevel,camera,width,height,space);
     }
     else if (!blocked && !panel && !uncertain) { void chooseTarget(tileAt(p,level,camera,width,height,space)); }
@@ -288,7 +289,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
     $effect(() => { void heightCut;cancelGesture(); });
-    $effect(() => { void heightCut; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+    $effect(() => { void heightCut; void drawPoles; void night; void winter; void recolor; void selection; void preview; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -313,7 +314,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { heightCut, level, drawPoles, night, winter, recolor, selection, preview, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // Terrain revisions keep the completed scene visible while preparing
@@ -348,9 +349,9 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools.filter(item=>!['slope','bridge','girder','tunnel','garage','signal'].includes(item.id)||railway) as item}
+    {#each tools.filter(item=>!['slope','bridge','girder','tunnel','garage','signal','pole'].includes(item.id)||railway) as item}
       {@const label=reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]}
-      <button aria-label={label} title={`${label} (${item.shortcut})${item.id==='terrain'&&!terrain?` · ${text.terrainUnavailable}`:''}`} aria-keyshortcuts={item.shortcut} aria-describedby={item.id==='terrain'&&!terrain?'terrain-unavailable':undefined} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else if item.icon==='garage'}<RailToolIcon garage />{:else if item.icon==='tunnel'}<RailToolIcon tunnel />{:else if item.icon==='girder'}<RailToolIcon girder />{:else if item.icon==='bridge'}<RailToolIcon bridge />{:else if item.icon==='slope'}<RailToolIcon slope />{:else}{item.icon}{/if}</button>
+      <button aria-label={label} title={`${label} (${item.shortcut})${item.id==='terrain'&&!terrain?` · ${text.terrainUnavailable}`:''}`} aria-keyshortcuts={item.shortcut} aria-describedby={item.id==='terrain'&&!terrain?'terrain-unavailable':undefined} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else if item.icon==='pole'}<RailToolIcon pole />{:else if item.icon==='garage'}<RailToolIcon garage />{:else if item.icon==='tunnel'}<RailToolIcon tunnel />{:else if item.icon==='girder'}<RailToolIcon girder />{:else if item.icon==='bridge'}<RailToolIcon bridge />{:else if item.icon==='slope'}<RailToolIcon slope />{:else}{item.icon}{/if}</button>
     {/each}
   </div>
   {#if !terrain}<span id="terrain-unavailable" class="sr-only">{text.terrainUnavailable}</span>{/if}
@@ -361,6 +362,7 @@
     <PanelFrame locale={view.locale} title={text.view} closeLabel={text.close} {onclose}>
       <div class="map-options">
         <label>{text.heightCut}<input aria-label={text.heightCut} type="range" min="0" max={view.read!.map.levels-1} bind:value={heightCut}/><span>{heightCut}</span></label>
+        <label><input type="checkbox" bind:checked={drawPoles}/>{text.showPoles}</label>
         <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
         <button disabled={!selectedTrain} onclick={() => focusTrain()}>{text.findTrain}</button><button onclick={home}>{text.homeMap}</button>
       </div>
@@ -375,8 +377,8 @@
   {#if railway && tool === 'remove' && !panel}
     {#key cornerGeneration}<RemoveControls bind:this={removeControls} {model} {view} picked={removePicked} bind:level={removeLevel} {heightCut} onpreview={p=>{terrainSites=[...(p?.positions??[]).map(position=>({position,skipped:false})),...(p?.skipped??[]).map(s=>({position:s.position,skipped:true}))];removalPath=p?.path??[];dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreset={()=>{removePicked=undefined;}} onreveal={()=>{heightCut=removeLevel;}}/>{/key}
   {/if}
-  {#if railway && (tool === 'build' || tool === 'bridge' || tool === 'girder' || tool === 'tunnel' || tool === 'signal' || tool === 'garage') && !panel}
-    {#key cornerGeneration}<TrackControls infrastructure={tool==='signal'?'signal':tool==='garage'?'garage':tool==='tunnel'?'tunnel':tool==='girder'?'girder':tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
+  {#if railway && (tool === 'build' || tool === 'bridge' || tool === 'girder' || tool === 'tunnel' || tool === 'pole' || tool === 'signal' || tool === 'garage') && !panel}
+    {#key cornerGeneration}<TrackControls infrastructure={tool==='pole'?'pole':tool==='signal'?'signal':tool==='garage'?'garage':tool==='tunnel'?'tunnel':tool==='girder'?'girder':tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
   {/if}
   {#if !railway && tool !== 'inspect' && tool !== 'terrain' && !panel}
     <section class="tool-card" use:primaryAction aria-label={reference ? text.spatialTarget : text[tool === 'build' ? 'buildTool' : 'removeTool']}>

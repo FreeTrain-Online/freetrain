@@ -34,6 +34,11 @@ ground-level cardinal garage tracks, compatible-track replacement, exact backgro
 art, and protected conversion back to ordinary rail. Preview explains the source's half-open
 removal and repeated-subtotal billing. Garages are decorative; train mechanics remain P5.
 
+[P4-17 Electric poles](doc/web-parity-pole-tool.md) adds the EN/JA **Electric poles** task (**E**):
+all four bundled types, track-derived cardinal orientation, exact before/after art,
+point preview/confirm, accessory replacement/removal and zero booking. View can
+hide poles locally. Poles are visual accessories without simulated electrification.
+
 [P4-16 Signals](doc/web-parity-signal-tool.md) adds the EN/JA **Signals** task (**F**):
 three-aspect and shunting signals in four directions, point placement on empty or
 ordinary track, protected removal restoring normal rail, exact bundled art and
