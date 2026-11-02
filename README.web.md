@@ -85,6 +85,16 @@ allocator and preserve tunnel/terrace backups. A peer railway edit invalidates a
 open terrain preview. Rail/road crossing and protected car/platform interfaces
 are verified with trusted fixtures; their real gameplay remains P5/P6/P7.
 
+
+[P4-23 Railway capacity](doc/web-parity-railway-capacity.md) validates the proposed
+city ring modules and a connected railway-only network at1500×1090×45. The current
+limits are8,192 railway voxels and8,192 durable accounting entries, also subject
+to route, occupancy and byte admission. These are separate from future train,
+station and population budgets. Rejected edits preserve the world and show
+separate EN/JA railway-space and construction-history messages; reopening a save
+does not reset a full history. The report records local/100ms-RTT measurements,
+explicit P4 latency misses and Linux save/checkpoint restart evidence.
+
 # FreeTrain Online
 
 FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail and business simulation game FreeTrain by Kohsuke Kawaguchi.
@@ -160,6 +170,32 @@ Selections admit at most 64 inclusive cells; Repair includes the far edges while
 Raise/Excavate operate on shared corners before those edges.
 [P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save8 continuation. Full-size editing has [P3-17 acceptance](doc/web-parity-p3-acceptance.md);
 resource-heavy authoritative edits retain the documented 250 ms target miss.
+
+## Current limits
+
+These limits apply separately to each world:
+
+| Resource | Limit |
+| --- | --- |
+| Map width and length (stored H/V dimensions) | Up to 2,048 cells each, with **width × length no greater than 1,700,000 cells** |
+| Map height (Z) | Up to 64 levels |
+| Railway space | **8,192 occupied 3D cells (voxels)**, including tracks, piers, slope members and railway objects; larger footprints use multiple cells |
+| Construction accounting history | **8,192 entries**, retained with the saved world |
+
+For example, a 2,048 × 2,048 map exceeds the total-cell limit. Maps measuring
+**1,500 × 1,090 × 45** have been tested with terrain and railway networks;
+this is a tested size, rather than the maximum allowed dimensions. Very dense
+worlds can reach resource or save-size limits sooner.
+
+Edits exceeding a railway or accounting limit are blocked with an English or
+Japanese explanation, without changing the world or charging money. Removing
+railway objects frees railway space, but existing accounting entries are retained.
+Saving and reopening does **not** reset either count. When the accounting history
+is full, further changes needing a new entry require a new world; you can still
+view, run and save the existing world.
+
+See the [capacity report](doc/web-parity-railway-capacity.md) for measured
+performance, remaining latency issues and detailed limits.
 
 ## Parity source policy
 

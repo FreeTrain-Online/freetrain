@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-02",
+  "scope": "Owner-requested live upper-limit diagnostics; prior P4-23 performance/release artifacts retain their original hashes",
+  "limits": {
+    "railwayVoxels": 8192,
+    "accountEntries": 8192
+  },
+  "fixtures": {
+    "voxel-edge": {
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "railwayVoxels": 8191,
+      "railwayOwners": 8191,
+      "transactions": 1817,
+      "saveSha256": "a9e27f82361122e39b5204c75edc067e41816b3795e24ce10b11f26c5265026e",
+      "saveBytes": 8626212,
+      "chunks": 176
+    },
+    "journal": {
+      "h": 64,
+      "v": 64,
+      "z": 16,
+      "railwayVoxels": 2,
+      "railwayOwners": 2,
+      "transactions": 8191,
+      "saveSha256": "7df10d5c7a1c033c92b00e2339374ee27cf57fdda2fc409796360dd983fb51a0",
+      "saveBytes": 1699206,
+      "chunks": 35
+    }
+  },
+  "browser": {
+    "voxel-edge-en": {
+      "kind": "voxel-edge",
+      "locale": "en",
+      "railwayVoxels": 8192,
+      "accountEntries": 1818,
+      "reason": "railwayCapacityLimit",
+      "receipt": {
+        "type": "rejected",
+        "requestId": "forced-capacity-overflow",
+        "code": "invalidPlacement",
+        "arguments": {}
+      },
+      "sha256": "18cd55ea3b9bb4a2f76dfe9757f3d488c0251cf56622eeddd2a3d5f77dcb4222",
+      "noPartialEffect": true,
+      "reopenedExactly": true,
+      "clockStillWorks": true,
+      "pageErrors": [],
+      "rawReportSha256": "434615e403136f823ff759e6b7def2a9fe04f2aa3a5f5743ef1299c4e99180f1"
+    },
+    "voxel-edge-ja": {
+      "kind": "voxel-edge",
+      "locale": "ja",
+      "railwayVoxels": 8192,
+      "accountEntries": 1818,
+      "reason": "railwayCapacityLimit",
+      "receipt": {
+        "type": "rejected",
+        "requestId": "forced-capacity-overflow",
+        "code": "invalidPlacement",
+        "arguments": {}
+      },
+      "sha256": "18cd55ea3b9bb4a2f76dfe9757f3d488c0251cf56622eeddd2a3d5f77dcb4222",
+      "noPartialEffect": true,
+      "reopenedExactly": true,
+      "clockStillWorks": true,
+      "pageErrors": [],
+      "rawReportSha256": "b86ee8e3d05753f88bae3b9f43c384aaf7d01b7e26672133b84ef5c716c8e043"
+    },
+    "journal-en": {
+      "kind": "journal",
+      "locale": "en",
+      "railwayVoxels": 3,
+      "accountEntries": 8192,
+      "reason": "accountCapacityLimit",
+      "receipt": {
+        "type": "rejected",
+        "requestId": "forced-capacity-overflow",
+        "code": "invalidPlacement",
+        "arguments": {}
+      },
+      "sha256": "e40fcde8df16a10a1d7c3e96157dd042019d08d45142a8c81dbec1e558c500c9",
+      "noPartialEffect": true,
+      "reopenedExactly": true,
+      "clockStillWorks": true,
+      "pageErrors": [],
+      "rawReportSha256": "4e19dddaaa486f4c6c0a158c2cd66745bcd1c41690837a5a1f2021fd548aace5"
+    },
+    "journal-ja": {
+      "kind": "journal",
+      "locale": "ja",
+      "railwayVoxels": 3,
+      "accountEntries": 8192,
+      "reason": "accountCapacityLimit",
+      "receipt": {
+        "type": "rejected",
+        "requestId": "forced-capacity-overflow",
+        "code": "invalidPlacement",
+        "arguments": {}
+      },
+      "sha256": "e40fcde8df16a10a1d7c3e96157dd042019d08d45142a8c81dbec1e558c500c9",
+      "noPartialEffect": true,
+      "reopenedExactly": true,
+      "clockStillWorks": true,
+      "pageErrors": [],
+      "rawReportSha256": "f43ecc861871e87f0605aab4748146fe2ae17120a42f77b821c9c123b54674b1"
+    }
+  },
+  "checks": {
+    "capacityDotnet": 8,
+    "client": 221,
+    "upperLimitChromium": 4,
+    "svelteErrors": 0,
+    "svelteWarnings": 0
+  },
+  "sourceHashes": {
+    "tools/TerrainTransportProbe/RailwayCapacity.cs": "1f1ee9ceeb1875f4f763cae753625af355ec1bd690671a568888eb9c32341989",
+    "web/tests/browser/railway-capacity.spec.ts": "dd0bcc03559d7d5291edac4706dc80477fc123d6f69b197058ac84818281cd29",
+    "web/src/lib/railway-edit.ts": "de5d351c68fb6cb3efa697cb7f366a2f40d35ae98fea81095b6c8a2cdba12977",
+    "web/src/locales/en/app.json": "214d9fe13d07b87eeb5fb41f8a468fe3911f2f49661c8f064c3c4e5608663a8a",
+    "web/src/locales/ja/app.json": "b177a8dc8afd373c6af614ec414e0127b3ce4deebd09ce8f150e7e3409ffa877"
+  },
+  "artifactHashes": {
+    "web/dist/index.html": "8142cd3a6a0c37bb7eed4273bf5a4a2101d77c2915619610136b0f15d2bc4c42",
+    "web/dist/assets/app-B_h7Zmoz.js": "e8628f4d92e2663baea7419dabe03b59371151fda7efdd2e1fcb04c63b5b233c",
+    "web/dist/assets/content-recipes-DUKxohev.js": "28598cc5ad0cb6f21c78c942fb89c716fd70b4b9b58b5e2d58aa2b22b78af743",
+    "web/dist/assets/contentGallery-DdXPkuTw.js": "e5ebc6e4f7d2811fd3cccf76e4162948addbd93ae0036495b84b7b26895015c6",
+    "web/dist/assets/contentGallery-B0JRc-wT.css": "bd18727a22c83e953629c7922299f1613fce8b5184da1976bf9bd91629026d8c",
+    "web/dist/assets/app-DKQP07FI.css": "f8c761d4cbff91126fd0a03d4f5c9dd8a5e10691dd04986715c2d71d849e9107"
+  }
+}

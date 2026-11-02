@@ -42,8 +42,8 @@ export const railwayReasons = {
   unusableStart:'railStart',underwater:'railUnderwater',obstacle:'railObstacle',carOccupied:'railCar',
   existingMiddleRail:'railMiddle',cannotAttach:'railAttach',invalidRailPattern:'railPattern',
   unavailableRailBinding:'railBinding',unavailablePierBinding:'railBinding',unavailableCrossingBinding:'railBinding',
-  unavailableReclamationHandler:'railBinding',platformDependency:'railPlatform',railwayCapacityLimit:'railCapacity',
-  accountCapacityLimit:'railCapacity',constructionOverflow:'railOverflow',
+  unavailableReclamationHandler:'railBinding',platformDependency:'railPlatform',railwayCapacityLimit:'railVoxelCapacity',
+  accountCapacityLimit:'railJournalCapacity',constructionOverflow:'railOverflow',
 } as const;
 
 // Distinguish an unreadable request (including an older running server) from a

@@ -75,12 +75,13 @@ def run(image, platform):
                                          headers={'Content-Type': 'application/json'})
         with opener.open(request, timeout=5) as response:
             assert response.status == 204
-        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=6&contentVersion=reference-spatial-content-2'))
-        assert bootstrap['snapshot']['ruleset'] == 'reference-spatial-4'
-        assert bootstrap['snapshot']['requiredPacks'][0]['id'] == 'reference-spatial'
+        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=6&contentVersion=terrain-content-1&metadataOnly=true'))
+        assert bootstrap['type'] == 'sessionOffer'
+        assert bootstrap['ruleset'] == 'terrain-state-1'
+        assert bootstrap['requiredPacks'][0]['id'] == catalog['packId']
         print(json.dumps(dict(health=health['status'], catalogHash=digest, assets=len(catalog['assets']),
                               uniqueMedia=len(artifacts), notices=len(catalog['notices']),
-                              ruleset=bootstrap['snapshot']['ruleset'], result='container check passed')))
+                              ruleset=bootstrap['ruleset'], result='container check passed')))
     finally:
         if container:
             subprocess.run(['docker', 'rm', '-f', container], check=False, stdout=subprocess.DEVNULL)

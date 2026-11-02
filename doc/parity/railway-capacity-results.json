@@ -1,0 +1,2044 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-02",
+  "scope": "P4 railway-only legal capacity; performance misses retained; no future city/train/population credit",
+  "environment": {
+    "date": "2026-11-02",
+    "commit": "72594abf0b3a732adeaa4b5cb0d1fb15b8d9317a",
+    "diffSha256": "e2895f9e484c0a3d877fa4b301af26a38cf0db24c68e6fa72ca3fd757cec2b3f",
+    "hardware": "Hardware:\n\n    Hardware Overview:\n\n      Model Name: MacBook Pro\n      Model Identifier: MacBookPro18,2\n      Model Number: Z14X000GDLL/A\n      Chip: Apple M1 Max\n      Total Number of Cores: 10 (8 Performance and 2 Efficiency)\n      Memory: 64 GB\n      System Firmware Version: 20457.1.29\n      OS Loader Version: 18000.161.10.701.1\n      Activation Lock Status: Enabled",
+    "os": "macOS-26.7.1-arm64-arm-64bit-Mach-O",
+    "dotnet": "10.0.402",
+    "deno": "deno 2.9.8 (stable, release, aarch64-apple-darwin)\nv8 15.0.245.2-rusty\ntypescript 6.0.3",
+    "display": "Headless Chromium; emulated 1880x1040 CSS viewport, DPR1; no physical display acceptance",
+    "network": "loopback; control-only injected 50ms each way; snapshots use loopback throughput",
+    "participants": "Owner and Observer; both browser and server on same host",
+    "hashes": {
+      "web/dist/index.html": "3930bae7a65142a52991f0633b0d1d30371196adaf53747320669d694682f317",
+      "web/deno.lock": "8348c6b32add8dcceff0c98032eeb8650137a323cd1809bbf0f7c6b158da5d91",
+      "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll": "f88d32edacaba05da9b9c03595fad68e579ae03035a46ffe454d2ba05bca7066",
+      "tools/TerrainTransportProbe/RailwayCapacity.cs": "2fc5ecf0f2564a02093071b1da2a13ecd5511ad35cbf5a253b2f55867068109b",
+      "web/tests/browser/railway-capacity.spec.ts": "e71dbc6b3f6cf59156792d77535f52bf2353671ae6ee1888c5435b8463a4e6c0",
+      "doc/parity/exav-scenarios.json": "0f589e512e9301b42d5e5fdcc26b0c3dd0519710116c419799545056c1beb285",
+      "src/FreeTrain.Online.Content/bundled-v2.json": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e"
+    },
+    "implementationTrackedDiffSha256": "a5b20dad963d88818c5d612cbbd425793184144e076e6f48f660389a5c51a9de"
+  },
+  "fixtures": {
+    "small": {
+      "mode": "small",
+      "h": 64,
+      "v": 64,
+      "z": 16,
+      "rings": 4,
+      "ringCells": 144,
+      "networkOrigin": null,
+      "railwayVoxels": 144,
+      "railwayOwners": 144,
+      "terrainEntities": 0,
+      "transactions": 32,
+      "constructedMs": 201.3547,
+      "saveMs": 2.1078,
+      "readMs": 28.3046,
+      "packetMs": 16.7475,
+      "saveBytes": 125160,
+      "packetBytes": 118831,
+      "chunks": 3,
+      "saveSha256": "64308b9f3174653e514fd6a80ce932fa671c894ae69382f29bb5a526d8718795",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "63040000",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "small",
+        "Components": 4,
+        "OpenPorts": 0,
+        "sha256": "64308b9f3174653e514fd6a80ce932fa671c894ae69382f29bb5a526d8718795",
+        "exact": true
+      },
+      "packetSha256": "359b9884f7901e5b3c0c7e37d2efd5ecc7fb86f66a3cbc06c5565cd67774290b",
+      "voxelsSha256": "9e03783f908d66381117e9bffa2fd30527d20717dde351f57b14136a2cb0aca8",
+      "accountsSha256": "6a36b690da6bd53c807e1d3144c5e15258308fc634d9d607b680b718d423066a",
+      "spatialSha256": "896b2645c60314d9edca5e113655aa0e916776636fa9765e6d9487d0f622faad",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 0.434,
+        "p95": 7.235,
+        "max": 27.316
+      },
+      "applyMs": {
+        "p50": 0.74,
+        "p95": 1.46,
+        "max": 1.625
+      }
+    },
+    "medium": {
+      "mode": "medium",
+      "h": 128,
+      "v": 128,
+      "z": 32,
+      "rings": 16,
+      "ringCells": 576,
+      "networkOrigin": null,
+      "railwayVoxels": 576,
+      "railwayOwners": 576,
+      "terrainEntities": 0,
+      "transactions": 128,
+      "constructedMs": 705.7425,
+      "saveMs": 7.6359,
+      "readMs": 46.8352,
+      "packetMs": 21.1567,
+      "saveBytes": 479734,
+      "packetBytes": 473405,
+      "chunks": 10,
+      "saveSha256": "a842e9bc98c4f96d1516ec42981d759028867dc59796c68f7384df47c6cd66bb",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "69972168",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "medium",
+        "Components": 16,
+        "OpenPorts": 0,
+        "sha256": "a842e9bc98c4f96d1516ec42981d759028867dc59796c68f7384df47c6cd66bb",
+        "exact": true
+      },
+      "packetSha256": "62d4b804d22246f65b4ce659e922303587639d706bb22e714c325cbbf3814c0a",
+      "voxelsSha256": "c6e0911fba185e2a0103807427e92119bb22669c8292a351f69ca81ee61cb47e",
+      "accountsSha256": "db7838a1ecc5a4b77f6070a78cf177d497c2751258181c73cee3b5df57c4b1b8",
+      "spatialSha256": "830abdd5b2b7407c0a35cf209e774af6394a84aaf1b772275ed3e3659ff00d01",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 1.455,
+        "p95": 2.803,
+        "max": 23.839
+      },
+      "applyMs": {
+        "p50": 2.717,
+        "p95": 5.092,
+        "max": 6.112
+      }
+    },
+    "large": {
+      "mode": "large",
+      "h": 256,
+      "v": 256,
+      "z": 64,
+      "rings": 64,
+      "ringCells": 2304,
+      "networkOrigin": null,
+      "railwayVoxels": 2304,
+      "railwayOwners": 2304,
+      "terrainEntities": 0,
+      "transactions": 512,
+      "constructedMs": 2799.3776,
+      "saveMs": 17.2927,
+      "readMs": 108.1745,
+      "packetMs": 25.2703,
+      "saveBytes": 1903166,
+      "packetBytes": 1896835,
+      "chunks": 39,
+      "saveSha256": "b9bc13cefd0fcbb4d0e2c00b65b870d00467e5e93ac711e9f12e0bd0dc679d06",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "66147776",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "large",
+        "Components": 64,
+        "OpenPorts": 0,
+        "sha256": "b9bc13cefd0fcbb4d0e2c00b65b870d00467e5e93ac711e9f12e0bd0dc679d06",
+        "exact": true
+      },
+      "packetSha256": "c04691cdb3192ee926b66f06aca7024ad48a2808671b8350d9785d09d8939948",
+      "voxelsSha256": "4201a5b7274552128e0c7060f7face93169ecd3c40f163c3c83d1597e02c7544",
+      "accountsSha256": "f8af7794995ae9e483004db79a97fcb6649e50cd5c2a3360b7f545e0d7d90805",
+      "spatialSha256": "f74e44b5038c759e9db5649ee6db8f3200ea79ee9773a97e90f24d78e83e5e8b",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 1.648,
+        "p95": 2.771,
+        "max": 24.694
+      },
+      "applyMs": {
+        "p50": 3.153,
+        "p95": 5.549,
+        "max": 22.241
+      }
+    },
+    "limit": {
+      "mode": "limit",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "rings": 227,
+      "ringCells": 8172,
+      "networkOrigin": null,
+      "components": 228,
+      "openPorts": 2,
+      "overflowReason": "railwayCapacityLimit",
+      "railwayVoxels": 8192,
+      "railwayOwners": 8192,
+      "terrainEntities": 0,
+      "transactions": 1817,
+      "constructedMs": 32681.0726,
+      "saveMs": 38.9582,
+      "readMs": 456.9888,
+      "packetMs": 80.8252,
+      "saveBytes": 8626942,
+      "packetBytes": 8620611,
+      "chunks": 176,
+      "saveSha256": "c6972f95ab6a476adc41259028be568faffdf7049d927e5dd5357d9f453e787a",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "119298976",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "limit",
+        "Components": 228,
+        "OpenPorts": 2,
+        "sha256": "c6972f95ab6a476adc41259028be568faffdf7049d927e5dd5357d9f453e787a",
+        "exact": true
+      },
+      "packetSha256": "638519e62f66829c71d75abf97012aed6f678a8537d65b67397b2c8d37844f49",
+      "voxelsSha256": "88d41bbfa553d78e51cc975a3b1d579f3f6b31e8218005edd39f018c74b12f2a",
+      "accountsSha256": "8cd3be7f80f65b0be89235de8d11570d2fe4ff62a141c7186e753779d8d5b1f9",
+      "spatialSha256": "5aceaac9940df91c1e214b7bdb5633d9fcc5ab5bfd0852758608f2149126e654",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 5.472,
+        "p95": 11.034,
+        "max": 53.948
+      },
+      "applyMs": {
+        "p50": 10.987,
+        "p95": 25.477,
+        "max": 77.518
+      }
+    },
+    "route": {
+      "mode": "route",
+      "h": 2048,
+      "v": 830,
+      "z": 45,
+      "rings": 0,
+      "ringCells": 0,
+      "networkOrigin": null,
+      "components": 1,
+      "openPorts": 2,
+      "overflowReason": null,
+      "railwayVoxels": 2048,
+      "railwayOwners": 2048,
+      "terrainEntities": 0,
+      "transactions": 1,
+      "constructedMs": 326.9182,
+      "saveMs": 17.759,
+      "readMs": 215.874,
+      "packetMs": 38.5735,
+      "saveBytes": 3792573,
+      "packetBytes": 3786242,
+      "chunks": 78,
+      "saveSha256": "4e3303f5355ec7558c2005c0dbb9e0d9b9406b5386c26afb7de3b888c9a84d3c",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "150397656",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "route",
+        "Components": 1,
+        "OpenPorts": 2,
+        "sha256": "4e3303f5355ec7558c2005c0dbb9e0d9b9406b5386c26afb7de3b888c9a84d3c",
+        "exact": true
+      },
+      "packetSha256": "2d1d200b1cea38272e18fb155baa8547607601e285ee496ff472385f99c301e2",
+      "voxelsSha256": "342dcffff603de33f138b5e9bfeb1732f9b8ecb70c133f18765a7a7d17f46631",
+      "accountsSha256": "d858f7140b5fa4242218e5d20c71bc3a227264793810cd75965afa53c012d738",
+      "spatialSha256": "24f4e5f52223da280bfce38ba7226a07d1effddeb3bd7110eaab309c4baa9395",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 45.455,
+        "p95": 45.455,
+        "max": 45.455
+      },
+      "applyMs": {
+        "p50": 45.058,
+        "p95": 45.058,
+        "max": 45.058
+      }
+    },
+    "empty": {
+      "mode": "empty",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "rings": 64,
+      "ringCells": 2304,
+      "networkOrigin": {
+        "x": 478,
+        "y": 194,
+        "z": 2
+      },
+      "components": 65,
+      "openPorts": 4,
+      "railwayVoxels": 2410,
+      "railwayOwners": 2403,
+      "terrainEntities": 0,
+      "transactions": 524,
+      "constructedMs": 3495.7504,
+      "saveMs": 16.2258,
+      "readMs": 220.8815,
+      "packetMs": 79.6273,
+      "saveBytes": 4071353,
+      "packetBytes": 4065022,
+      "chunks": 83,
+      "saveSha256": "528bd103dab0c399711df1a040842f40a2904b32f00f3eec846d3458b3b8e9ec",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "109972928",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/32",
+          "recipeId": "system:pattern/32"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/33",
+          "recipeId": "system:pattern/33"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/34",
+          "recipeId": "system:pattern/34"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/slope-support-6",
+          "recipeId": "system:pattern/slope-support-6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/35",
+          "recipeId": "system:pattern/35"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/slope-support-7",
+          "recipeId": "system:pattern/slope-support-7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+          "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/23",
+          "recipeId": "system:pattern/23"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+          "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:bridge-pier/0",
+          "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+          "recipeId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+          "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+          "recipeId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "empty",
+        "Components": 65,
+        "OpenPorts": 4,
+        "sha256": "528bd103dab0c399711df1a040842f40a2904b32f00f3eec846d3458b3b8e9ec",
+        "exact": true
+      },
+      "packetSha256": "c944bcb380fe23717338de3e18638915ce632ae7559da4ea64ea7421e415ec25",
+      "voxelsSha256": "0fa53e8e1385906864203c0ab2fa4b2b693b19430069641d2d92c3d87791d2a1",
+      "accountsSha256": "62673f5bfb2ee717459e60a1bc3e81042ed3a682b8be887ddfbded0f68c5db2c",
+      "spatialSha256": "34d1fe4bcf773539f2aee6c3f84d5e0bfd163ffac86e27c09b984bff9a5c58d6",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 1.792,
+        "p95": 4.981,
+        "max": 93.121
+      },
+      "applyMs": {
+        "p50": 3.405,
+        "p95": 6.248,
+        "max": 20.368
+      }
+    },
+    "heavy": {
+      "mode": "heavy",
+      "h": 1500,
+      "v": 1090,
+      "z": 45,
+      "rings": 64,
+      "ringCells": 2304,
+      "networkOrigin": {
+        "x": 478,
+        "y": 194,
+        "z": 2
+      },
+      "railwayVoxels": 2410,
+      "railwayOwners": 2403,
+      "terrainEntities": 397950,
+      "transactions": 524,
+      "constructedMs": 480594.8633,
+      "saveMs": 114.1315,
+      "readMs": 889.0214,
+      "packetMs": 140.8641,
+      "saveBytes": 31674842,
+      "packetBytes": 31668509,
+      "chunks": 645,
+      "saveSha256": "fa8ea7869a7da87670d90613645a35f95f101a4cfc1d140483124421ece9aa74",
+      "contentSha256": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+      "managedRetainedBytes": "403204032",
+      "bindings": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/3",
+          "recipeId": "system:pattern/3"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/4",
+          "recipeId": "system:pattern/4"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/6",
+          "recipeId": "system:pattern/6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/7",
+          "recipeId": "system:pattern/7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/9",
+          "recipeId": "system:pattern/9"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/10",
+          "recipeId": "system:pattern/10"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/11",
+          "recipeId": "system:pattern/11"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/1",
+          "recipeId": "system:pattern/1"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/2",
+          "recipeId": "system:pattern/2"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/5",
+          "recipeId": "system:pattern/5"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/8",
+          "recipeId": "system:pattern/8"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/0",
+          "recipeId": "system:pattern/0"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/32",
+          "recipeId": "system:pattern/32"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/33",
+          "recipeId": "system:pattern/33"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/34",
+          "recipeId": "system:pattern/34"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/slope-support-6",
+          "recipeId": "system:pattern/slope-support-6"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/35",
+          "recipeId": "system:pattern/35"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/slope-support-7",
+          "recipeId": "system:pattern/slope-support-7"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+          "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pattern/23",
+          "recipeId": "system:pattern/23"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+          "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:bridge-pier/0",
+          "recipeId": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+          "recipeId": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+          "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+          "recipeId": "{93481807-D998-46d7-B1BE-CB2B5D086D67}"
+        }
+      ],
+      "limits": {
+        "railwayVoxels": 8192,
+        "accountTransactions": 8192,
+        "routeCells": 8192
+      },
+      "graphValidation": {
+        "mode": "heavy",
+        "Components": 65,
+        "OpenPorts": 4,
+        "sha256": "fa8ea7869a7da87670d90613645a35f95f101a4cfc1d140483124421ece9aa74",
+        "exact": true
+      },
+      "packetSha256": "bac7a1008c390ce98731acdfee12a8d37e13fbd9b26c03f4f8097d75008a729d",
+      "voxelsSha256": "ce746ccc1072aa27d543b5a0cec6dd09586f6607b989a434f84c21df78cf71d7",
+      "accountsSha256": "62673f5bfb2ee717459e60a1bc3e81042ed3a682b8be887ddfbded0f68c5db2c",
+      "spatialSha256": "3d9767003b60ebd46108aba68284fb0532d4b2e05d7e88c1a92958139051519f",
+      "randomSha256": "61d141c57bd214da0fde22b2a1ed9fb4489ec0d6348e8a07c14ea3714921cf32",
+      "previewMs": {
+        "p50": 304.52,
+        "p95": 409.276,
+        "max": 628.977
+      },
+      "applyMs": {
+        "p50": 619.727,
+        "p95": 764.199,
+        "max": 945.448
+      }
+    }
+  },
+  "browser": {
+    "small-en": {
+      "mode": "small",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 76,
+      "cold": [
+        569,
+        567,
+        558
+      ],
+      "rejoinMs": 559,
+      "restartMs": 1827,
+      "summary": {
+        "paint": {
+          "p50": 1.7,
+          "p95": 1.8,
+          "max": 1.9
+        },
+        "pick": {
+          "p50": 3,
+          "p95": 6,
+          "max": 14
+        },
+        "zoom": {
+          "p50": 6.299999997019768,
+          "p95": 16.099999994039536,
+          "max": 16.700000002980232
+        },
+        "local": {},
+        "preview": {},
+        "commitLocal": {},
+        "commit100msRTT": {}
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": null,
+        "authoritativeP95Below250msAt100msRTT": null,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "1040.0,232.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 260997120,
+      "sampledBrowserPeakRss": 1342783488,
+      "retainedJSHeapAfterGC": 23898288,
+      "finalSha": "64308b9f3174653e514fd6a80ce932fa671c894ae69382f29bb5a526d8718795",
+      "rawReport": "tmp/p4-23-capacity/browser-final/small-en.json",
+      "rawReportSha256": "9b633fae882c5136068e0f5bbc7542ae00124771cab70bbf063d39d5a12e6423",
+      "chunksObserved": 0,
+      "deltaBytes": null,
+      "renderedMs": null,
+      "renderedLocalMs": null,
+      "rendered100msRTTMs": null
+    },
+    "medium-en": {
+      "mode": "medium",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 50,
+      "cold": [
+        647,
+        642,
+        668
+      ],
+      "rejoinMs": 638,
+      "restartMs": 1896,
+      "summary": {
+        "paint": {
+          "p50": 3.7,
+          "p95": 4.2,
+          "max": 4.5
+        },
+        "pick": {
+          "p50": 5,
+          "p95": 7,
+          "max": 8
+        },
+        "zoom": {
+          "p50": 9.899999991059303,
+          "p95": 17.099999994039536,
+          "max": 18.100000008940697
+        },
+        "local": {},
+        "preview": {},
+        "commitLocal": {},
+        "commit100msRTT": {}
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": null,
+        "authoritativeP95Below250msAt100msRTT": null,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "2064.0,488.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 211894272,
+      "sampledBrowserPeakRss": 1483882496,
+      "retainedJSHeapAfterGC": 37949744,
+      "finalSha": "a842e9bc98c4f96d1516ec42981d759028867dc59796c68f7384df47c6cd66bb",
+      "rawReport": "tmp/p4-23-capacity/browser-final/medium-en.json",
+      "rawReportSha256": "b395fca7e2321460160b039710af303378006dd4d858506d811b5ff129aabbec",
+      "chunksObserved": 10,
+      "deltaBytes": null,
+      "renderedMs": null,
+      "renderedLocalMs": null,
+      "rendered100msRTTMs": null
+    },
+    "large-en": {
+      "mode": "large",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 137,
+      "cold": [
+        1424,
+        1395,
+        1410
+      ],
+      "rejoinMs": 1476,
+      "restartMs": 2759,
+      "summary": {
+        "paint": {
+          "p50": 1,
+          "p95": 1,
+          "max": 1.1
+        },
+        "pick": {
+          "p50": 4,
+          "p95": 5,
+          "max": 6
+        },
+        "zoom": {
+          "p50": 14.200000002980232,
+          "p95": 16.900000005960464,
+          "max": 18.299999997019768
+        },
+        "local": {},
+        "preview": {},
+        "commitLocal": {},
+        "commit100msRTT": {}
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": null,
+        "authoritativeP95Below250msAt100msRTT": null,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "4112.0,1000.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 284786688,
+      "sampledBrowserPeakRss": 1690419200,
+      "retainedJSHeapAfterGC": 51440548,
+      "finalSha": "b9bc13cefd0fcbb4d0e2c00b65b870d00467e5e93ac711e9f12e0bd0dc679d06",
+      "rawReport": "tmp/p4-23-capacity/browser-final/large-en.json",
+      "rawReportSha256": "56c06774c04c4e911e46e82f5f5e43fe3ba19e20a894383288cd956000bfed14",
+      "chunksObserved": 39,
+      "deltaBytes": null,
+      "renderedMs": null,
+      "renderedLocalMs": null,
+      "rendered100msRTTMs": null
+    },
+    "limit-en": {
+      "mode": "limit",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 526,
+      "cold": [
+        2080,
+        1989,
+        2008
+      ],
+      "rejoinMs": 1922,
+      "restartMs": 4349,
+      "summary": {
+        "paint": {
+          "p50": 0.9,
+          "p95": 1,
+          "max": 1
+        },
+        "pick": {
+          "p50": 5,
+          "p95": 9,
+          "max": 39
+        },
+        "zoom": {
+          "p50": 12.299999997019768,
+          "p95": 17.100000008940697,
+          "max": 18
+        },
+        "local": {},
+        "preview": {},
+        "commitLocal": {},
+        "commit100msRTT": {}
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": null,
+        "authoritativeP95Below250msAt100msRTT": null,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "24032.0,4336.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 666501120,
+      "sampledBrowserPeakRss": 1793572864,
+      "retainedJSHeapAfterGC": 78985844,
+      "finalSha": "c6972f95ab6a476adc41259028be568faffdf7049d927e5dd5357d9f453e787a",
+      "rawReport": "tmp/p4-23-capacity/browser-final/limit-en.json",
+      "rawReportSha256": "3966083615e9a0e6ed96f0668518f66875e30467d2164660828909cd6c883bf3",
+      "chunksObserved": 176,
+      "deltaBytes": null,
+      "renderedMs": null,
+      "renderedLocalMs": null,
+      "rendered100msRTTMs": null
+    },
+    "route-en": {
+      "mode": "route",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 293,
+      "cold": [
+        1758,
+        1621,
+        1694
+      ],
+      "rejoinMs": 1724,
+      "restartMs": 2918,
+      "summary": {
+        "paint": {
+          "p50": 0.9,
+          "p95": 1,
+          "max": 1
+        },
+        "pick": {
+          "p50": 6,
+          "p95": 7,
+          "max": 10
+        },
+        "zoom": {
+          "p50": 7.5,
+          "p95": 17.100000008940697,
+          "max": 18.700000002980232
+        },
+        "local": {},
+        "preview": {},
+        "commitLocal": {},
+        "commit100msRTT": {}
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": null,
+        "authoritativeP95Below250msAt100msRTT": null,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "32800.0,3296.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 468516864,
+      "sampledBrowserPeakRss": 2170814464,
+      "retainedJSHeapAfterGC": 69752304,
+      "finalSha": "4e3303f5355ec7558c2005c0dbb9e0d9b9406b5386c26afb7de3b888c9a84d3c",
+      "rawReport": "tmp/p4-23-capacity/browser-final/route-en.json",
+      "rawReportSha256": "cc0e2167b152b2d43f1db60047add78992fad6ed076a8f5fbafc0a8dfca25729",
+      "chunksObserved": 78,
+      "deltaBytes": null,
+      "renderedMs": null,
+      "renderedLocalMs": null,
+      "rendered100msRTTMs": null
+    },
+    "empty-en": {
+      "mode": "empty",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 360,
+      "cold": [
+        1622,
+        1752,
+        1762
+      ],
+      "rejoinMs": 1758,
+      "restartMs": 3083,
+      "summary": {
+        "paint": {
+          "p50": 0.9,
+          "p95": 1,
+          "max": 1.3
+        },
+        "pick": {
+          "p50": 5,
+          "p95": 7,
+          "max": 9
+        },
+        "zoom": {
+          "p50": 11.699999988079071,
+          "p95": 17.799999997019768,
+          "max": 18.299999997019768
+        },
+        "local": {
+          "p50": 0.5,
+          "p95": 0.5999999940395355,
+          "max": 1.1000000089406967
+        },
+        "preview": {
+          "p50": 28,
+          "p95": 60,
+          "max": 65
+        },
+        "commitLocal": {
+          "p50": 155.59999999403954,
+          "p95": 247.79999999701977,
+          "max": 247.79999999701977
+        },
+        "commit100msRTT": {
+          "p50": 250.79999999701977,
+          "p95": 280.79999999701977,
+          "max": 280.79999999701977
+        }
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": true,
+        "authoritativeP95Below250msAt100msRTT": false,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "24032.0,4336.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 880640000,
+      "sampledBrowserPeakRss": 3254566912,
+      "retainedJSHeapAfterGC": 71148636,
+      "finalSha": "66936a1167970490164020098622b9e6f78ec95556b6cea9cf23b8cd59a7b0cd",
+      "rawReport": "tmp/p4-23-capacity/browser-final/empty-en.json",
+      "rawReportSha256": "d57ae7a70160a9d1cffd3f716672d1b35b7c0924cbdd491fa5790bb495fa9c49",
+      "chunksObserved": 83,
+      "deltaBytes": {
+        "p50": 1171076,
+        "p95": 1180134,
+        "max": 1180781
+      },
+      "renderedMs": {
+        "p50": 1056,
+        "p95": 1115,
+        "max": 1121
+      },
+      "renderedLocalMs": {
+        "p50": 1013,
+        "p95": 1084,
+        "max": 1084
+      },
+      "rendered100msRTTMs": {
+        "p50": 1089,
+        "p95": 1121,
+        "max": 1121
+      }
+    },
+    "empty-ja": {
+      "mode": "empty",
+      "locale": "ja",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 317,
+      "cold": [
+        1739,
+        1750,
+        1638
+      ],
+      "rejoinMs": 1790,
+      "restartMs": 3026,
+      "summary": {
+        "paint": {
+          "p50": 0.9,
+          "p95": 1.1,
+          "max": 1.2
+        },
+        "pick": {
+          "p50": 6,
+          "p95": 8,
+          "max": 38
+        },
+        "zoom": {
+          "p50": 11.400000005960464,
+          "p95": 19.100000008940697,
+          "max": 19.200000002980232
+        },
+        "local": {
+          "p50": 0.4000000059604645,
+          "p95": 0.6000000089406967,
+          "max": 0.9000000059604645
+        },
+        "preview": {
+          "p50": 28,
+          "p95": 81,
+          "max": 120
+        },
+        "commitLocal": {
+          "p50": 159.8999999910593,
+          "p95": 257.8999999910593,
+          "max": 257.8999999910593
+        },
+        "commit100msRTT": {
+          "p50": 246.6000000089407,
+          "p95": 273.29999999701977,
+          "max": 273.29999999701977
+        }
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": true,
+        "authoritativeP95Below250msAt100msRTT": false,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "24032.0,4336.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 809205760,
+      "sampledBrowserPeakRss": 3167240192,
+      "retainedJSHeapAfterGC": 71153328,
+      "finalSha": "66936a1167970490164020098622b9e6f78ec95556b6cea9cf23b8cd59a7b0cd",
+      "rawReport": "tmp/p4-23-capacity/browser-final/empty-ja.json",
+      "rawReportSha256": "5eda0a2dad20905590fa61dee840e5e29baefe2ed3468d5fbf9a09275d9d47ef",
+      "chunksObserved": 83,
+      "deltaBytes": {
+        "p50": 1171076,
+        "p95": 1180134,
+        "max": 1180781
+      },
+      "renderedMs": {
+        "p50": 1055,
+        "p95": 1131,
+        "max": 1156
+      },
+      "renderedLocalMs": {
+        "p50": 1021,
+        "p95": 1109,
+        "max": 1109
+      },
+      "rendered100msRTTMs": {
+        "p50": 1093,
+        "p95": 1156,
+        "max": 1156
+      }
+    },
+    "heavy-en": {
+      "mode": "heavy",
+      "locale": "en",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 1840,
+      "cold": [
+        9643,
+        9507,
+        9509
+      ],
+      "rejoinMs": 7626,
+      "restartMs": 13256,
+      "summary": {
+        "paint": {
+          "p50": 1,
+          "p95": 1,
+          "max": 1.2
+        },
+        "pick": {
+          "p50": 7,
+          "p95": 13,
+          "max": 41
+        },
+        "zoom": {
+          "p50": 9.5,
+          "p95": 17.399999991059303,
+          "max": 17.700000002980232
+        },
+        "local": {
+          "p50": 0.4000000059604645,
+          "p95": 0.6000000089406967,
+          "max": 1.4000000059604645
+        },
+        "preview": {
+          "p50": 797,
+          "p95": 876,
+          "max": 1295
+        },
+        "commitLocal": {
+          "p50": 3182.0999999940395,
+          "p95": 4697.5999999940395,
+          "max": 4697.5999999940395
+        },
+        "commit100msRTT": {
+          "p50": 3331.699999988079,
+          "p95": 3867.5,
+          "max": 3867.5
+        }
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": true,
+        "authoritativeP95Below250msAt100msRTT": false,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "24032.0,4336.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 2605465600,
+      "sampledBrowserPeakRss": 5753094144,
+      "retainedJSHeapAfterGC": 318964108,
+      "finalSha": "2f92b4a50acf26ee4fe100799323d56f2ace8d0ec8eefbe5314a84df95676338",
+      "rawReport": "tmp/p4-23-capacity/browser-final/heavy-en.json",
+      "rawReportSha256": "5e31cc85d9bb8538af80d4d369059876d4662aa1390763ee82101521df7862c4",
+      "chunksObserved": 645,
+      "deltaBytes": {
+        "p50": 1177083,
+        "p95": 1186169,
+        "max": 1186818
+      },
+      "renderedMs": {
+        "p50": 4132,
+        "p95": 5771,
+        "max": 6093
+      },
+      "renderedLocalMs": {
+        "p50": 4049,
+        "p95": 6093,
+        "max": 6093
+      },
+      "rendered100msRTTMs": {
+        "p50": 4217,
+        "p95": 4717,
+        "max": 4717
+      }
+    },
+    "heavy-ja": {
+      "mode": "heavy",
+      "locale": "ja",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "dpr": 1,
+      "browser": "156.0.8078.4",
+      "uploadMs": 1310,
+      "cold": [
+        7412,
+        7861,
+        9048
+      ],
+      "rejoinMs": 7489,
+      "restartMs": 12758,
+      "summary": {
+        "paint": {
+          "p50": 0.9,
+          "p95": 1.1,
+          "max": 1.1
+        },
+        "pick": {
+          "p50": 6,
+          "p95": 9,
+          "max": 42
+        },
+        "zoom": {
+          "p50": 11.900000005960464,
+          "p95": 16.5,
+          "max": 17.30000001192093
+        },
+        "local": {
+          "p50": 0.4000000059604645,
+          "p95": 0.5,
+          "max": 1.4000000059604645
+        },
+        "preview": {
+          "p50": 792,
+          "p95": 823,
+          "max": 1301
+        },
+        "commitLocal": {
+          "p50": 2923.9000000059605,
+          "p95": 4441.5,
+          "max": 4441.5
+        },
+        "commit100msRTT": {
+          "p50": 3036.6000000089407,
+          "p95": 3949.2999999970198,
+          "max": 3949.2999999970198
+        }
+      },
+      "targets": {
+        "localFeedbackP95Below100ms": true,
+        "authoritativeP95Below250msAt100msRTT": false,
+        "paintP95Below33_4ms": true,
+        "pickP95Below100ms": true,
+        "zoomP95Below100ms": true
+      },
+      "canvas": {
+        "width": 1840,
+        "height": 1000,
+        "bounds": {
+          "x": 40,
+          "y": 40,
+          "width": 1840,
+          "height": 1000,
+          "top": 40,
+          "right": 1880,
+          "bottom": 1040,
+          "left": 40
+        },
+        "camera": "24032.0,4336.0",
+        "zoom": "1.500"
+      },
+      "sampledServerPeakRss": 3089006592,
+      "sampledBrowserPeakRss": 5964398592,
+      "retainedJSHeapAfterGC": 318798560,
+      "finalSha": "2f92b4a50acf26ee4fe100799323d56f2ace8d0ec8eefbe5314a84df95676338",
+      "rawReport": "tmp/p4-23-capacity/browser-final/heavy-ja.json",
+      "rawReportSha256": "75bc727e6cee407d1f5706a40798ad60fc4bb93225aa0b542fdf1f77096c6341",
+      "chunksObserved": 645,
+      "deltaBytes": {
+        "p50": 1177083,
+        "p95": 1186169,
+        "max": 1186818
+      },
+      "renderedMs": {
+        "p50": 3825,
+        "p95": 4778,
+        "max": 5280
+      },
+      "renderedLocalMs": {
+        "p50": 3771,
+        "p95": 5280,
+        "max": 5280
+      },
+      "rendered100msRTTMs": {
+        "p50": 3903,
+        "p95": 4778,
+        "max": 4778
+      }
+    }
+  },
+  "linux": {
+    "empty": {
+      "result": "Linux chunked publication/save/reopen exact",
+      "saveBytes": 4071353,
+      "chunks": 83,
+      "sha256": "528bd103dab0c399711df1a040842f40a2904b32f00f3eec846d3458b3b8e9ec",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "occupants": 0,
+      "generation": null
+    },
+    "heavy-final": {
+      "result": "Linux chunked publication/save/reopen exact",
+      "saveBytes": 31674842,
+      "chunks": 645,
+      "sha256": "fa8ea7869a7da87670d90613645a35f95f101a4cfc1d140483124421ece9aa74",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "occupants": 397950,
+      "railwayVoxels": 2410,
+      "railwayOwners": 2403,
+      "generation": null
+    },
+    "limit": {
+      "result": "Linux chunked publication/save/reopen exact",
+      "saveBytes": 8626942,
+      "chunks": 176,
+      "sha256": "c6972f95ab6a476adc41259028be568faffdf7049d927e5dd5357d9f453e787a",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "occupants": 0,
+      "railwayVoxels": 8192,
+      "railwayOwners": 8192,
+      "generation": null
+    },
+    "heavy-final-restart": {
+      "result": "checkpoint restart exact",
+      "saveBytes": 31674842,
+      "sha256": "fa8ea7869a7da87670d90613645a35f95f101a4cfc1d140483124421ece9aa74",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "epoch": "2"
+    },
+    "limit-restart": {
+      "result": "checkpoint restart exact",
+      "saveBytes": 8626942,
+      "sha256": "c6972f95ab6a476adc41259028be568faffdf7049d927e5dd5357d9f453e787a",
+      "map": {
+        "width": 1500,
+        "height": 1090,
+        "levels": 45,
+        "coordinateSystem": "hv"
+      },
+      "epoch": "2"
+    },
+    "image": "sha256:b9cdfe7bce89a043aaea515e73f4d57869291460847efbb06d16959aef55502a",
+    "uploadReopenPeakBytes": 1842270208,
+    "restartPeakBytes": 1162215424
+  },
+  "resourceField": {
+    "railPicks": [
+      10,
+      6,
+      6,
+      5,
+      5,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      5,
+      6,
+      5,
+      6,
+      6,
+      6,
+      5,
+      6,
+      5,
+      9,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "paints": [
+      1,
+      0.9,
+      0.9,
+      1,
+      0.9,
+      0.8,
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      1,
+      1,
+      0.9,
+      0.9,
+      0.9,
+      0.8,
+      1,
+      0.9,
+      1,
+      0.9,
+      0.8,
+      0.9,
+      0.9,
+      0.9,
+      1,
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.9
+    ],
+    "railPick": {
+      "p50": 6,
+      "p95": 9,
+      "max": 10
+    },
+    "paint": {
+      "p50": 0.9,
+      "p95": 1,
+      "max": 1
+    },
+    "zoomSamples": [
+      {
+        "feedbackMs": 17.80000001192093,
+        "settledMs": 473.5
+      },
+      {
+        "feedbackMs": 9.5,
+        "settledMs": 2297.3999999910593
+      },
+      {
+        "feedbackMs": 13,
+        "settledMs": 488.5
+      },
+      {
+        "feedbackMs": 6.700000002980232,
+        "settledMs": 729.6000000089407
+      },
+      {
+        "feedbackMs": 10.799999997019768,
+        "settledMs": 432
+      },
+      {
+        "feedbackMs": 11.200000002980232,
+        "settledMs": 740.5
+      },
+      {
+        "feedbackMs": 4.899999991059303,
+        "settledMs": 443.5
+      },
+      {
+        "feedbackMs": 10.399999991059303,
+        "settledMs": 757.0999999940395
+      },
+      {
+        "feedbackMs": 4.299999997019768,
+        "settledMs": 426.40000000596046
+      },
+      {
+        "feedbackMs": 9.899999991059303,
+        "settledMs": 733.2999999970198
+      },
+      {
+        "feedbackMs": 11.099999994039536,
+        "settledMs": 438.59999999403954
+      },
+      {
+        "feedbackMs": 5.5,
+        "settledMs": 729.3000000119209
+      },
+      {
+        "feedbackMs": 9.799999997019768,
+        "settledMs": 431.69999998807907
+      },
+      {
+        "feedbackMs": 11.200000002980232,
+        "settledMs": 762.5
+      },
+      {
+        "feedbackMs": 15.399999991059303,
+        "settledMs": 437
+      },
+      {
+        "feedbackMs": 11.5,
+        "settledMs": 746.5
+      },
+      {
+        "feedbackMs": 16.099999994039536,
+        "settledMs": 436.3999999910593
+      },
+      {
+        "feedbackMs": 11.799999997019768,
+        "settledMs": 751.0999999940395
+      },
+      {
+        "feedbackMs": 11.900000005960464,
+        "settledMs": 432.1000000089407
+      },
+      {
+        "feedbackMs": 11.799999997019768,
+        "settledMs": 734.8999999910593
+      },
+      {
+        "feedbackMs": 11.299999997019768,
+        "settledMs": 438.29999999701977
+      },
+      {
+        "feedbackMs": 4.5,
+        "settledMs": 728.0999999940395
+      },
+      {
+        "feedbackMs": 10.700000002980232,
+        "settledMs": 432.40000000596046
+      },
+      {
+        "feedbackMs": 11.200000002980232,
+        "settledMs": 751.3999999910593
+      },
+      {
+        "feedbackMs": 10.900000005960464,
+        "settledMs": 431.20000000298023
+      },
+      {
+        "feedbackMs": 11.600000008940697,
+        "settledMs": 734.9000000059605
+      },
+      {
+        "feedbackMs": 17.399999991059303,
+        "settledMs": 431.59999999403954
+      },
+      {
+        "feedbackMs": 11.299999997019768,
+        "settledMs": 735
+      },
+      {
+        "feedbackMs": 10.899999991059303,
+        "settledMs": 432
+      },
+      {
+        "feedbackMs": 17.69999998807907,
+        "settledMs": 763.5
+      }
+    ],
+    "zoomFeedback": {
+      "p50": 11.200000002980232,
+      "p95": 17.69999998807907,
+      "max": 17.80000001192093
+    },
+    "zoomSettled": {
+      "p50": 488.5,
+      "p95": 763.5,
+      "max": 2297.3999999910593
+    },
+    "owner": "411060",
+    "clockAdvanced": true,
+    "sampledServerPeakRss": 1447149568,
+    "sampledBrowserPeakRss": 2232975360,
+    "sampleIntervalMs": 250,
+    "rawReportSha256": "b0946d39f82caa09b2107ff7aca2dc299490feb0183e069b6c16d51287700483"
+  },
+  "sourceHashes": {
+    "tools/TerrainTransportProbe/Program.cs": "cfa1c83e18f46b120d013e0c17961207ce94e9da3fcdbd0c0f4aab595093a5c5",
+    "tools/TerrainTransportProbe/RailwayCapacity.cs": "2fc5ecf0f2564a02093071b1da2a13ecd5511ad35cbf5a253b2f55867068109b",
+    "web/tests/browser/railway-capacity.spec.ts": "e71dbc6b3f6cf59156792d77535f52bf2353671ae6ee1888c5435b8463a4e6c0",
+    "web/playwright.railway-capacity.config.ts": "edb9264cc4aa6603e33c8dcbc834704c2319560f48b4b9811d2d369eb340a969",
+    "scripts/check-map-capacity.py": "40c8337a45fb49079a0d555b9aa145f9d100306a252018cde1dde29c15e42f87",
+    "scripts/check-bundled-deployment.py": "665a570ca6377075b15f1c5a3a89f461ee42a4eebd9e4474d711763d1b003c43",
+    "doc/parity/exav-scenarios.json": "0f589e512e9301b42d5e5fdcc26b0c3dd0519710116c419799545056c1beb285",
+    "web/deno.lock": "8348c6b32add8dcceff0c98032eeb8650137a323cd1809bbf0f7c6b158da5d91"
+  },
+  "artifactHashes": {
+    "web/dist/index.html": "3930bae7a65142a52991f0633b0d1d30371196adaf53747320669d694682f317",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll": "f88d32edacaba05da9b9c03595fad68e579ae03035a46ffe454d2ba05bca7066",
+    "src/FreeTrain.Online.Content/bundled-v2.json": "316dc169c56d3096bb9e49031ab10d47a2d9015c960b730ecb394f8371dc8b6e",
+    "web/dist/assets/app-DTailRT0.js": "cedfb3d4e3af653e9d94a32da3f9d87c0c6cb604eaf053b5b1177b3caa826228",
+    "web/dist/assets/contentGallery-BZ2NVzo9.js": "fdb72b2f810baf7e64055f3f8f4d650d09658e49b097172269c04104e7ba9ee1",
+    "web/dist/assets/content-recipes-CypQc213.js": "646bd4be39a00e6888dcc89054b63f34ae73d4fa1604aed9f0b8b60e062d8ec5",
+    "web/dist/assets/contentGallery-B0JRc-wT.css": "bd18727a22c83e953629c7922299f1613fce8b5184da1976bf9bd91629026d8c",
+    "web/dist/assets/app-DKQP07FI.css": "f8c761d4cbff91126fd0a03d4f5c9dd8a5e10691dd04986715c2d71d849e9107"
+  },
+  "checks": {
+    "dotnet": {
+      "passed": 1114,
+      "failed": 0
+    },
+    "client": {
+      "passed": 221,
+      "failed": 0
+    },
+    "python": {
+      "total": 163,
+      "skipped": 1,
+      "failed": 0
+    },
+    "capacityChromium": {
+      "passed": 10,
+      "failed": 0,
+      "runs": [
+        "tmp/p4-23-browser-final.log",
+        "tmp/p4-23-browser-supplement.log"
+      ]
+    },
+    "ordinaryChromium": {
+      "passed": 14,
+      "failed": 0,
+      "log": "tmp/p4-23-browser-regression.log"
+    },
+    "sourceFiles": 66,
+    "literalRailwayFixtures": 1484,
+    "svelteErrors": 0,
+    "svelteWarnings": 0,
+    "linuxDistribution": "passed",
+    "performanceAcceptance": "P4-CAP-001 and P4-CAP-002 remain unmet; no inherited P3 waiver"
+  }
+}

@@ -107,6 +107,11 @@ recipe. `EXAV-CITY-S/M/L` specify 64×64×16 / 128×128×32 / 256×256×64 world
 8/32/128 trains, 32/256/1,024 cars and target structure budgets of
 200/2,000/10,000. They are not supported limits or generated save files.
 
+[P4-23](web-parity-railway-capacity.md) instantiates and measures the railway-only
+stage:4/16/64 legal rings, a connected full-size infrastructure network and an
+exact8,192-voxel boundary scene. The train/car/station/population budgets and
+full-city simulation procedure below retain their later-phase acceptance gates.
+
 A 16×32 H,V storage-grid module contains a 36-cell octagonal rail ring at
 ground z=2, water=0,
 with cardinal/diagonal segments and 45-degree turns. The JSON fixes every vertex,

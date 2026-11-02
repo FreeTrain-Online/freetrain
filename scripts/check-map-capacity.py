@@ -34,7 +34,7 @@ saved = json.loads(expected)
 assert saved['saveVersion'] == 8
 jar = http.cookiejar.CookieJar()
 http = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-compat = 'protocolVersion=6&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1'
+compat = 'protocolVersion=6&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1'
 
 
 def call(path, data=None):
@@ -198,14 +198,21 @@ try:
     assert snapshot['type'] == 'snapshot' and chunks > 1
     assert snapshot['map'] == saved['map']
     assert terrain == saved['packedTerrain']
+    assert snapshot.get('mixed') == saved.get('mixed')
+    if saved.get('mixed') is not None:
+        assert snapshot['entities'] == saved['spatial']['entities']
     assert snapshot['tick'] == saved['clock']['absoluteMinute']
     assert hashlib.sha256(call('/api/saves/download').read()).hexdigest() == expected_hash
     call('/api/saves/upload?expectedWorldEpoch=' + snapshot['worldEpoch'], expected).read()
     reopened, reopened_terrain, _ = state()
     assert reopened['type'] == 'snapshot' and reopened_terrain == terrain
+    assert reopened.get('mixed') == saved.get('mixed')
+    if saved.get('mixed') is not None:
+        assert reopened['entities'] == saved['spatial']['entities']
     assert hashlib.sha256(call('/api/saves/download').read()).hexdigest() == expected_hash
     print(json.dumps({'result': 'Linux chunked publication/save/reopen exact', 'saveBytes': len(expected), 'chunks': chunks,
-                      'sha256': expected_hash, 'map': saved['map'], 'occupants': terrain['occupantCount'], 'generation': generation}))
+                      'sha256': expected_hash, 'map': saved['map'], 'occupants': terrain['occupantCount'], 'railwayVoxels': len(saved.get('mixed', {}).get('voxels', [])),
+                      'railwayOwners': len(saved['spatial']['entities']), 'generation': generation}))
 finally:
     stop.set()
     sock.close()
