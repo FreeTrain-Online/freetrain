@@ -97,6 +97,7 @@ public class OptionalPluginTests : IDisposable
         var registry = OptionalPluginRegistry.Load([Pack()]);
         var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Services.AddSingleton(registry); builder.Services.AddSingleton(new NetworkOptions());
+        builder.Services.AddSingleton(TestWorlds.SmallStartup());
         builder.Services.AddSingleton<NetworkSession>(); builder.Services.AddHostedService<SessionDriver>();
         await using var app = builder.Build(); app.MapNetwork(); app.MapPluginContent(); await app.StartAsync();
         using var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };

@@ -14,6 +14,7 @@ using Xunit;
 // Obsolete prototype gameplay compatibility regressions, not canonical rule fixtures.
 public class SimulationTests
 {
+    private static readonly JsonSerializerOptions FrameOptions = WireJson.CreateOptions();
     private static readonly ParticipantContext Owner = new("operator-1");
     private static SessionHost Host(ScenarioDefinition? scenario = null, int capacity = 256) => new(
         scenario ?? ReferenceScenario.Create(), Owner.ParticipantId,
@@ -49,7 +50,7 @@ public class SimulationTests
         bool left = false, bool right = false, bool reset = false) => Accept(host,
             new ControllerInputCommand("train-1", sequence, pass, depart, reverse, left, right, reset, "1"));
     private static string Frame(SessionHost host, ImmutableArray<SimulationEvent> events) => JsonSerializer.Serialize(
-        new { state = host.ReadState(), events }, WireJson.CreateOptions());
+        new { state = host.ReadState(), events }, FrameOptions);
 
     [Fact]
     public void Fresh_typed_scenario_matches_shared_snapshot()

@@ -63,7 +63,7 @@ public class SaveRejectionTests
         try
         {
             using var storage = new SaveStorage(directory);
-            var session = new NetworkSession(new(), storage);
+            var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup());
             Assert.Equal(error, session.StartupSaveError);
             Assert.True(session.SavingAvailable);
             Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(FreeTrain.Online.Simulation.GameTime.StartMinute, session.Bootstrap().Snapshot.Tick);

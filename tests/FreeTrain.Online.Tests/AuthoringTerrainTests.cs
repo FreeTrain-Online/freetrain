@@ -168,7 +168,7 @@ public class AuthoringTerrainTests
             byte[] checkpointBytes;
             using(var storage=new SaveStorage(directory))
             {
-                var session=new NetworkSession(new(),storage);var now=DateTimeOffset.UtcNow;
+                var session=new NetworkSession(new(),storage, startupWorld: TestWorlds.SmallStartup());var now=DateTimeOffset.UtcNow;
                 var owner=session.Connect(now,Owner)!;var viewer=session.Connect(now,Observer)!;
                 owner.Output.Reader.TryRead(out _);viewer.Output.Reader.TryRead(out _);
                 var load=session.LoadSave(bytes,1);while(!load.IsCompleted){session.Tick(now);await Task.Delay(1);}await load;
@@ -189,7 +189,7 @@ public class AuthoringTerrainTests
             }
             using(var storage=new SaveStorage(directory))
             {
-                var restarted=new NetworkSession(new(),storage);Assert.Null(restarted.StartupSaveError);Assert.False(restarted.Bootstrap().Snapshot.Terrain!.ConstructionMode);
+                var restarted=new NetworkSession(new(),storage, startupWorld: TestWorlds.SmallStartup());Assert.Null(restarted.StartupSaveError);Assert.False(restarted.Bootstrap().Snapshot.Terrain!.ConstructionMode);
                 var capture=restarted.CaptureSave();restarted.Tick(DateTimeOffset.UtcNow);Assert.Equal(checkpointBytes,await capture);
             }
         }

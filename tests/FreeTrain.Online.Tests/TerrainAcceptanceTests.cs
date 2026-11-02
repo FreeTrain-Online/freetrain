@@ -9,6 +9,8 @@ using Xunit;
 
 public class TerrainAcceptanceTests
 {
+    private static readonly JsonSerializerOptions WireOptions = WireJson.CreateOptions();
+
     static async Task<byte[]> Save(SessionHost host)
     { var pending=host.CaptureSave();host.Pump(0);return await pending; }
     static async Task Send(SessionHost host,CommandPayload command)
@@ -41,11 +43,11 @@ public class TerrainAcceptanceTests
             Assert.Equal(bytes,SaveCodec.Write(restored));
             Assert.True(SaveCodec.TerrainSaveUpperBound(restored)>=bytes.LongLength);
             var expanded=TerrainWire.Snapshot(restored,1);
-            Assert.Equal(JsonSerializer.Serialize<WireMessage>(after,WireJson.CreateOptions()),JsonSerializer.Serialize<WireMessage>(expanded,WireJson.CreateOptions()));
+            Assert.Equal(JsonSerializer.Serialize<WireMessage>(after,WireOptions),JsonSerializer.Serialize<WireMessage>(expanded,WireOptions));
             Assert.True(TerrainWire.TryDifference(before,after,out var fast));
             // Clones have no publication certificate and exercise the general comparator.
             var ordinary=NetworkSession.Difference(before with {},after with {});
-            Assert.Equal(JsonSerializer.Serialize<WireMessage>(ordinary,WireJson.CreateOptions()),JsonSerializer.Serialize<WireMessage>(fast,WireJson.CreateOptions()));
+            Assert.Equal(JsonSerializer.Serialize<WireMessage>(ordinary,WireOptions),JsonSerializer.Serialize<WireMessage>(fast,WireOptions));
             if(history.Count>1)Assert.False(TerrainWire.TryDifference(history[^2],after,out _));
             history.Add(after);
         }

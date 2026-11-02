@@ -158,7 +158,7 @@ public class HeightmapTests(ITestOutputHelper output)
     [Fact]
     public async Task Upload_reservations_are_global_released_on_cancel_and_fenced_to_the_original_connection()
     {
-        var session=new NetworkSession(new());var identity=new ParticipantContext("upload-owner",ParticipantRole.Owner);
+        var session=new NetworkSession(new(), startupWorld: TestWorlds.SmallStartup());var identity=new ParticipantContext("upload-owner",ParticipantRole.Owner);
         var peer=session.Connect(DateTimeOffset.UtcNow,identity)!;
         var leases=new List<NetworkSession.CreationWorkerLease>();
         try

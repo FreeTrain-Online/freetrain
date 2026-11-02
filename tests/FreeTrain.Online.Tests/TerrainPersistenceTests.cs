@@ -95,7 +95,7 @@ public class TerrainPersistenceTests
             byte[] saved;
             using (var storage = new SaveStorage(directory))
             {
-                var session = new NetworkSession(new(), storage);
+                var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup());
                 var now = DateTimeOffset.UtcNow;
                 var a = session.Connect(now, new("a"))!; var b = session.Connect(now, new("b", ParticipantRole.Observer))!;
                 a.Output.Reader.TryRead(out _); b.Output.Reader.TryRead(out _);
@@ -120,7 +120,7 @@ public class TerrainPersistenceTests
             }
             using (var storage = new SaveStorage(directory))
             {
-                var restarted = new NetworkSession(new(), storage); Assert.Null(restarted.StartupSaveError);
+                var restarted = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup()); Assert.Null(restarted.StartupSaveError);
                 Assert.Equal(TerrainProfile.Ruleset, restarted.Bootstrap().Ruleset);
                 var capture = restarted.CaptureSave(); restarted.Tick(DateTimeOffset.UtcNow); Assert.Equal(saved, await capture);
             }
@@ -223,7 +223,7 @@ public class TerrainPersistenceTests
         try
         {
             using var storage = new SaveStorage(directory); await storage.Write("checkpoint", rejected);
-            var session = new NetworkSession(new(), storage); Assert.Equal("incompatibleSave", session.StartupSaveError);
+            var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup()); Assert.Equal("incompatibleSave", session.StartupSaveError);
             Assert.Equal(TerrainProfile.Ruleset, session.Bootstrap().Ruleset);
             session.PrepareShutdown(); await session.FinalCheckpoint(); Assert.Equal(rejected, storage.Read("checkpoint"));
         }

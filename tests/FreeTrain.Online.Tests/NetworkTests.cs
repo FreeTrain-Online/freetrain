@@ -367,7 +367,8 @@ public class NetworkTests
             if (saveDirectory != null) builder.Services.AddSingleton(_ => new SaveStorage(saveDirectory));
             builder.Services.AddSingleton(new NetworkOptions()); builder.Services.AddSingleton<NetworkSession>(services => new(new NetworkOptions(), services.GetService<SaveStorage>(),
                 hostFactory: referenceFixture ? (epoch,expiry) => SessionComposition.CreateReferenceHost(epoch,expiry)
-                    : canonical ? null : (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry))); builder.Services.AddHostedService<SessionDriver>();
+                    : canonical ? null : (epoch,expiry) => SessionComposition.CreatePrototypeHost(epoch,expiry),
+                startupWorld: TestWorlds.SmallStartup())); builder.Services.AddHostedService<SessionDriver>();
             builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = SaveCodec.MaximumBytes);
             var app = builder.Build(); app.UseDeployment(); app.MapNetwork(); await app.StartAsync();
             var cookies = new CookieContainer();
