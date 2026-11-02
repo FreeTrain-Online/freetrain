@@ -499,3 +499,54 @@ removal does not remove ramps. The tested journey connects flat rail through a
 ramp to elevated rail and reopens exactly. Shared time/canvas/camera and existing
 preview/confirmation safety are preserved. Train transition timing is P5; source
 native/human/platform acceptance retains its recorded status.
+
+
+## P5-01 train/controller source reconciliation
+
+**2 November 2026 — source specification only.** The
+[P5-01 contract](web-parity-train-contract.md),
+[operation/dependency/decision evidence](parity/train-review.json) and
+[source-bound text review](parity/train-localization-review.json) supply the
+current train/controller semantics. These reciprocal bindings cover actual
+controls and source consumers; they do not credit runtime or browser delivery.
+Historical manuals/DEV articles are workflow/donor evidence, with stable ExAV
+source deciding V2 fare, capacities, movement cost, timers and registered delegation.
+
+| Operation | Requirements | Implementing owner | Controls and source obligation |
+| --- | --- | --- | --- |
+| `stock` | MAN-W07, DEV-P18, DEV-P19 | P5-03 | company/type/nickname catalog; permitted length; price/native speed/fare/amenity/triprange; normal/seated/packed capacity. Preserve configured V2 fields, amenity clamp, explicit compositions and reverse/color references; one-car Param tail wins. |
+| `trade` | MAN-T07, MAN-W07, MAN-A10, MAN-A11, DEV-P19, DEV-P24 | P5-06 | length × quantity quote; buy; sale quote/confirm; purchase timestamp. One purchase batch/date and one RAIL_SERVICE spending entry; nullable-date sale uses completed365-day price/(years+2). UI sale requires withdrawal while domain sell can remove placed stock. |
+| `deploy` | MAN-T06, MAN-W08, MAN-A11, DEV-P14 | P5-07 | select owned train; map/coordinate tail anchor; source initial orientation; reverse selected formation; withdraw. Tail-first walk with temporary head guide, no slope zdiff, duplicate/missing/occupied rejection; native initial rr.dir1. Additional arbitrary heading preview is a browser adaptation only for a valid equivalent reversed pose. |
+| `movement` | MAN-A11, DEV-P14 | P5-08 | run/pause/step; live state/reason. Guide then incoming-heading zdiff; border before reciprocal track; occupied destination including own tail blocks. Head-to-tail old-state shift is atomic. |
+| `reversal` | MAN-W08, MAN-A11, DEV-P18 | P5-12 | explicit reverse; emergency-state reason. guide().opposite per Inside car then reverse array/toggle; missing connection reverses once, blocked connection does not. Preserve original car index/type identity. |
+| `timing-cost` | MAN-A11, MAN-A12, DEV-P24 | P5-13 | speed-limit feedback; operating costs. Capture old Inside head before any handler mutation; positive wait returns first; Outside/native path bypasses local limits. Charge successful moves1/5/9 etc including countdown. |
+| `outside` | MAN-W08, MAN-A11 | P5-14 | Outside state/countdown; return status. 100 countdown, exchange at resulting50 before chain shift, attempt after counter0, missing-track retry10; first connected candidate wins before occupancy. Return/opposite formation and forwarding follow source. |
+| `simple` | MAN-T08, MAN-W09, MAN-A12, DEV-P20 | P5-16 | built-in default assignment; read-only defaults. Junction straight; only Station harbor first wait30 then0, signal/nonstation ignored. |
+| `manual` | MAN-T08, MAN-W09, MAN-A12, DEV-P20 | P5-17 | left/right; Shift pass; Up depart; Down reverse; lease/status/reset. Valid-left before valid-right; first Shift0 else5, later Up0 before Down-1 else5. Do not poll server/native keyboard or persist held input. |
+| `manager` | MAN-T08, MAN-W09, MAN-A12, DEV-P20 | P5-18 | new/provider; configure; rename; deep copy; delete with usages; train/group assignment. Independent shared controller identities; built-ins not deletable plugin instances; source deep-copy intent becomes typed copy, referenced deletion rejected until explicit reassignment. |
+| `tat-junction` | MAN-T08, MAN-W02, MAN-A12, DEV-P20 | P5-19 | pick junction; default straight/curve; month/day/weekday/hour masks; add/replace/up/down/remove. Location-keyed junction default straight, first matching stored rule; UI sets minute wildcard-1; only missing-junction entries refreshed. |
+| `tat-stop` | MAN-T08, MAN-W09, MAN-A12, DEV-P20 | P5-19 | pick harbor via station/platform/signal; pass/fixed/daily/advanced; duration; daily time; reverse on departure. Location-keyed harbor on chosen train controller; unconfigured default10; daily equality waits1440. Signals consult effective train controller, not a signal-owned override. |
+| `tat-advanced` | MAN-A12, MAN-O09, DEV-P20 | P5-20 | five mask fields; eight actions; add/replace/copy; up/down/remove; confirmed clear-all. Stored order; initial pass/stop only, later go/reverse/forwarding/stop; next ten-minute boundary polling. Add duplicate mask guard differs from replace/copy/import. Sorter is commented out. |
+| `turning` | MAN-A11, MAN-A12 | P5-21 | reverse2; reverse-forwarding2. checkTurn mutates before return; preserve early reversal and special one-car nonsharp return-1000, then yard effects then central sentinel handling. Re-place cars without remove/place train callbacks. |
+| `groups` | MAN-W08, MAN-O08, MAN-A17 | P5-22 | create/name group; move-to-group; choose parent timetable; per-train override; effective controller. Registered delegation, not a source-only alternative. Root explicit simple; null means simple fallback; reject cycles/missing references. No source group-delete action; retain no-delete disposition. |
+| `diagram` | MAN-A12, MAN-O09 | P5-23 | read/append preview; portable save/export; copy rule; clear confirmation. Source BinaryFormatter RuleCollection append/save; commented SOAP inactive. Use bounded inert reader and explicit portable JSON export, not a promise of native binary writer compatibility. |
+| `information-tracking` | MAN-M02, MAN-W10, MAN-A13 | P5-25 | nested select; name/state/length/capacity/passengers%; Move; continuous follow; local train labels/font/color. Information/Move distinct from map-local tracking; normal-capacity denominator can yield >100% for packed passengers; Outside reference is placed, Unplaced disables Move/follow. |
+| `color-test` | MAN-M02, MAN-A10, DEV-P18, DEV-P32 | P5-25 | template; body/three line colors; day/night preview; colorMap XML copy/export; explicit apply. Reachable authored zero-capacity train remains included. Local preview/export; any shared apply uses world-local persisted override for the color-test definition, never mutable process-global registry. |
+
+TRAIN-D001/002 specify safe null-next/delegation/graph handling; D003/004 retain
+source placement and positive-stop state quirks. D005 corrects both day editors;
+D006 preserves ordered TURNING/forwarding effects; D007/008 specify positive
+speed and checked original-width arithmetic. D009 rejects referenced deletion;
+D010 confirms signals call the passing train's effective controller. D011 records
+the inactive sorter and stored execution order; D012 retains TAT Location keys.
+D013–018 cover inert rule files/typed clone, leased input, atomic lifecycle,
+measured-limit follow-ups, withdrawal-before-sale UI and world-local color-test
+state. Detailed acceptance obligations and source bindings live in the contract.
+
+P4's nullable signal ControllerId is reserved web metadata, not native dispatch
+ownership. Select a shared train controller's settings **at** the signal; do not
+introduce a signal-wide override. Simple ignores non-Station harbors, whereas
+manual/TAT can wait at signals. P6 owns real platform/Station passenger/bell
+integration. `.ftdd` rules remain P5; `.ftgd`/`.ftgt` world imports remain P10.
+The existing TAT resource/native/optional qualifications and P11 performance
+findings retain their owners; every feature still needs EN/JA/browser evidence.

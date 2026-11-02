@@ -1,0 +1,3650 @@
+{
+  "schemaVersion": 1,
+  "slice": "P5-01",
+  "reviewedOn": "2026-11-02",
+  "status": "source-contract-specified",
+  "authority": {
+    "sourceId": "exav-883cf7d-trunk",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12",
+    "pluginFamily": "V2"
+  },
+  "evidence": "Pinned raw Git blobs and source/caller reasoning, with explicit reuse of P0/P1/P2/P4 contracts. No source assembly, production movement, browser or native runtime acceptance in P5-01.",
+  "inputs": [
+    {
+      "path": "doc/parity/exav-action-review.json",
+      "sha256": "4494ab2bf4456f4eff43ef5bbca778bafbe8240fdb5fc65c32eaae64e18fb94d"
+    },
+    {
+      "path": "doc/parity/exav-content-review.json",
+      "sha256": "cf18549b3f41267c444325cfedf6ce7504f3f9d8ff2cc7d4f86c4ffad4940a1a"
+    },
+    {
+      "path": "doc/parity/exav-scenarios.json",
+      "sha256": "0f589e512e9301b42d5e5fdcc26b0c3dd0519710116c419799545056c1beb285"
+    },
+    {
+      "path": "doc/parity/exav-geometry-dependency-review.json",
+      "sha256": "a3348ab774a904b8d5a27ce56de53e85a52dcb321ddba21269624b1a5e96aed6"
+    },
+    {
+      "path": "doc/parity/railway-p5-handoff.json",
+      "sha256": "387dc28f0555d64eb9c742d764a0aa1a7ac256b468923591b3fc70eaf381357f"
+    },
+    {
+      "path": "doc/parity/speed-limit-handoff.json",
+      "sha256": "5fc25def74dac24c168f8f33c9fb0b19a1423cfa63e95eaa3e4aab80d1eae47d"
+    },
+    {
+      "path": "doc/parity/clock-review.json",
+      "sha256": "60fc85d77d5272db9813c61c5d475a468545287efa8861123d6dd6cc84cb4df6"
+    }
+  ],
+  "sourceReviews": [
+    {
+      "path": "core/FreeTrain.Core.2008.csproj",
+      "sha256": "0db0721bf89d685366f80213c9a28efacbd953f4f049eb4c8579711d2d1cb54d",
+      "encoding": "utf-8-sig",
+      "reviewKind": "project-membership-review",
+      "review": "Pinned selected project membership/resource closure; source existence does not prove desktop build/runtime. Retain known TrainInformation path and TAT Straight.bmp diagnostics from P0.",
+      "bindings": [
+        {
+          "symbol": "<Compile Include=",
+          "line": 159,
+          "text": "    <Compile Include=\"AssemblyInfo.cs\">"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/rail/TrainControllerContribution.cs",
+      "sha256": "52d65ad73c81cbe0e830c66dbad9ded32eca1e4dc12949f66ad84d884d0cd932",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Manifest provider factory creates independent named TrainController instances.",
+      "bindings": [
+        {
+          "symbol": "abstract TrainController newController",
+          "line": 20,
+          "text": "\t\tpublic abstract TrainController newController( string name );"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/AbstractTrainContributionImpl.cs",
+      "sha256": "9a80d7ab9863413b83d028193c9d2381bc9fe28456ce508e7b9562b9fb0cc806",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "V2 reads int price/fare/amenity, clamps effective amenity50..200, triprange short/middle/long default0, speed tokens4/3/2/1 or arbitrary int; price(length) multiplies Int32. Native numeric speed lacks positivity guard.",
+      "bindings": [
+        {
+          "symbol": "_fare = int.Parse",
+          "line": 26,
+          "text": "\t\t\t_fare = int.Parse( XmlUtil.selectSingleNode(e,\"fare\").InnerText );"
+        },
+        {
+          "symbol": "_amenity = int.Parse",
+          "line": 27,
+          "text": "\t\t\t_amenity = int.Parse( XmlUtil.selectSingleNode(e,\"amenity\").InnerText );"
+        },
+        {
+          "symbol": "_minutesPerVoxel = int.Parse",
+          "line": 60,
+          "text": "\t\t\t\t\t_minutesPerVoxel = int.Parse(speedStr);"
+        },
+        {
+          "symbol": "return _price*length;",
+          "line": 86,
+          "text": "\t\tpublic override int price( int length ) { return _price*length; }"
+        },
+        {
+          "symbol": "if( _amenity < 50 )",
+          "line": 97,
+          "text": "            if( _amenity < 50 ) return 50;"
+        },
+        {
+          "symbol": "_triprange = 2;",
+          "line": 38,
+          "text": "\t\t\t\t        _triprange = 2; break;"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/AsymTrainCarImpl.cs",
+      "sha256": "1e282ebfc0efdcd4607453a6da4f696022dde07649cd77e5649d7f0e7c324aa5",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Sixteen planar/eight slope frames; slope index depends on heading/climb, independent of wrapper reversal.",
+      "bindings": [
+        {
+          "symbol": "new Sprite[16]",
+          "line": 25,
+          "text": "\t\t\tlevelSprites = new Sprite[16];"
+        },
+        {
+          "symbol": "new Sprite[8]",
+          "line": 26,
+          "text": "\t\t\tslopeSprites = new Sprite[8];"
+        },
+        {
+          "symbol": "angle.index + (isClimbing?0:1)",
+          "line": 56,
+          "text": "\t\t\tslopeSprites[ angle.index + (isClimbing?0:1) ].draw( display, pt );"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/ColoredTrainCarImpl.cs",
+      "sha256": "e5f8159f56caa04c8d8565f30bd314bc177feefe7809ca6b1f0f9e406e5f448c",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Four primary colors plus180/255 shades,8+4 template sprites and mutable shared color-test definitions; portable overrides must be world-local and durable.",
+      "bindings": [
+        {
+          "symbol": "value[0],",
+          "line": 66,
+          "text": "\t\t\t\t\tvalue[0],"
+        },
+        {
+          "symbol": "c.R*180/255",
+          "line": 104,
+          "text": "\t\t\treturn Color.FromArgb( c.R*180/255, c.G*180/255, c.B*180/255 );"
+        },
+        {
+          "symbol": "levelSprites[angle&7]",
+          "line": 112,
+          "text": "\t\t\tlevelSprites[angle&7].draw( display, pt );"
+        },
+        {
+          "symbol": "ColoredTrainPictureContribution[] list()",
+          "line": 195,
+          "text": "\t\tpublic static ColoredTrainPictureContribution[] list() {"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/ParamTrainImpl.cs",
+      "sha256": "d8314e062e1387a6a8ee6da308f579ee1b978b779112927747c7cd416f85747a",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Body required; optional head then tail replacements mean a one-car formation uses tail if both exist. No hard maximum in create; missing-ref test checks id rather than idref.",
+      "bindings": [
+        {
+          "symbol": "if(carBodyType==null)",
+          "line": 36,
+          "text": "\t\t\tif(carBodyType==null)"
+        },
+        {
+          "symbol": "if(id==null)",
+          "line": 47,
+          "text": "\t\t\tif(id==null)\tthrow new FormatException(\"carRef属性がありません\");"
+        },
+        {
+          "symbol": "r[0] = carHeadType;",
+          "line": 64,
+          "text": "\t\t\t\tr[0] = carHeadType;"
+        },
+        {
+          "symbol": "r[r.Length-1] = carTailType;",
+          "line": 67,
+          "text": "\t\t\t\tr[r.Length-1] = carTailType;"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/PatternTrainImpl.cs",
+      "sha256": "8f5cb330f8186ccb6d8de00b1d5d964ad3ffbed8e0c09720a915cdb5fa1de010",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Character map and explicit whitespace-stripped compositions keyed by count; unsupported length null; duplicate lengths fail Hashtable.Add, returned arrays cloned.",
+      "bindings": [
+        {
+          "symbol": "compositions.Add( a.Count",
+          "line": 83,
+          "text": "\t\t\tcompositions.Add( a.Count, a.ToArray(typeof(TrainCarContribution)) );"
+        },
+        {
+          "symbol": "if( Char.IsWhiteSpace(head) )",
+          "line": 73,
+          "text": "\t\t\t\tif( Char.IsWhiteSpace(head) )"
+        },
+        {
+          "symbol": "if(r==null)",
+          "line": 88,
+          "text": "\t\t\tif(r==null)\t\treturn null;"
+        },
+        {
+          "symbol": "r.Clone()",
+          "line": 89,
+          "text": "\t\t\telse\t\t\treturn (TrainCarContribution[])r.Clone();"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/ReverseTrainCarImpl.cs",
+      "sha256": "7a416b4c432b1f9a0d3dcb91134103b5adbeba8c3fb4b1b7531f260f7adfe55e",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Wrapper inherits normal and seated capacities and reverses planar/slope drawing independently of train reversal.",
+      "bindings": [
+        {
+          "symbol": "this._seatedcapacity = core.seatedcapacity;",
+          "line": 35,
+          "text": "\t\t\tthis._seatedcapacity = core.seatedcapacity;"
+        },
+        {
+          "symbol": "angle ^= 8;",
+          "line": 43,
+          "text": "\t\t\tangle ^= 8;"
+        },
+        {
+          "symbol": "isClimbing = !isClimbing;",
+          "line": 49,
+          "text": "\t\t\tisClimbing = !isClimbing;"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/SymTrainCarImpl.cs",
+      "sha256": "54dbee917f03abcc7015954b590fc92df079e6f626ce988750b041c970a5c737",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Eight planar/four slope frames; masks planar angle; descending slope flips direction.",
+      "bindings": [
+        {
+          "symbol": "new Sprite[8]",
+          "line": 24,
+          "text": "\t\t\tlevelSprites = new Sprite[8];"
+        },
+        {
+          "symbol": "new Sprite[4]",
+          "line": 25,
+          "text": "\t\t\tslopeSprites = new Sprite[4];"
+        },
+        {
+          "symbol": "levelSprites[angle&7]",
+          "line": 51,
+          "text": "\t\t\tlevelSprites[angle&7].draw( display, pt );"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/TrainCarContribution.cs",
+      "sha256": "9d4a88767aaa92ace6f9a3fc2dabfbb414704fd5268a7bfb6a6149054b2afa86",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "V2 normal/seated capacities are independent int fields; train-level seated fallback differs from accepting invalid capacities blindly.",
+      "bindings": [
+        {
+          "symbol": "_capacity = int.Parse",
+          "line": 18,
+          "text": "\t\t\t_capacity = int.Parse(XmlUtil.selectSingleNode(e,\"capacity\").InnerText);"
+        },
+        {
+          "symbol": "_seatedcapacity = int.Parse",
+          "line": 19,
+          "text": "\t\t\t_seatedcapacity = int.Parse(XmlUtil.selectSingleNode(e,\"seatedcapacity\").InnerText);"
+        },
+        {
+          "symbol": "public int seatedcapacity",
+          "line": 37,
+          "text": "\t\tpublic int seatedcapacity { get { return _seatedcapacity; } }"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/TrainContribution.cs",
+      "sha256": "b84521f1aa69697934f66f80bdb5a2ca58119b116470caf8c2f10e60ffeb6a86",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Source display speed/triprange names and preview composition search are presentation, not movement/frame or formation limits.",
+      "bindings": [
+        {
+          "symbol": "public abstract int price",
+          "line": 37,
+          "text": "\t\tpublic abstract int price( int length );"
+        },
+        {
+          "symbol": "case 4: return",
+          "line": 63,
+          "text": "\t\t\t\tcase 4: return \"低速\";"
+        },
+        {
+          "symbol": "TrainCarContribution[] cars = create(5);",
+          "line": 98,
+          "text": "\t\t\tTrainCarContribution[] cars = create(5);"
+        }
+      ]
+    },
+    {
+      "path": "core/contributions/train/TrainContributionFactory.cs",
+      "sha256": "3102ac25bafe9bb54e8f5b1b645c43231e1e8e8eba722dec87faae57264db39b",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Default ParamTrainImpl without class; source custom implementations become explicit trusted portable factories.",
+      "bindings": [
+        {
+          "symbol": "return new ParamTrainImpl(e);",
+          "line": 21,
+          "text": "\t\t\t\treturn new ParamTrainImpl(e);"
+        },
+        {
+          "symbol": "PluginUtil.loadObjectFromManifest",
+          "line": 24,
+          "text": "\t\t\t\treturn (Contribution)PluginUtil.loadObjectFromManifest(e);"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/TrainControllerDialog.cs",
+      "sha256": "e01da0eb8e2b95d6d43943ad90d733d2f8a3a5d8f1cf86cf2351ccd2f442c3d9",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Only plugin-created instances appear; create/configure/name/copy/delete. Delete removes collection entry without repairing references. Copy via BinaryFormatter deep clone and unique suffix must become typed clone.",
+      "bindings": [
+        {
+          "symbol": "if( tc.contribution==null)",
+          "line": 43,
+          "text": "\t\t\t\tif( tc.contribution==null)\tcontinue;\t// those are system controllers"
+        },
+        {
+          "symbol": "World.world.trainControllers.remove(selectedItem);",
+          "line": 257,
+          "text": "\t\t\tWorld.world.trainControllers.remove(selectedItem);"
+        },
+        {
+          "symbol": "formatter.Deserialize(ms)",
+          "line": 328,
+          "text": "                        newtc = (TrainController)formatter.Deserialize(ms);     // メモリーストリームから新しいトレインコントローラーにデシリアライズする"
+        },
+        {
+          "symbol": "originalName, incNo",
+          "line": 336,
+          "text": "    \t\t\t        newName = string.Format(\"{0} {1}\", originalName, incNo);                // 仮の新しい名前を決定"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/TrainInformationWindow.cs",
+      "sha256": "d35a05b858bd46346c52b3c086ff974c87738f96b18095371788f6523f599288",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Manifest docking route, nested group/train selection, name/state/car count/capacity/normal-capacity percentage and one-time Move. UI listener lifetime must not become durable callback state.",
+      "bindings": [
+        {
+          "symbol": "private void populateMenu",
+          "line": 252,
+          "text": "\t\tprivate void populateMenu( Menu.MenuItemCollection menu, TrainGroup group ) {"
+        },
+        {
+          "symbol": "train.passenger*100/train.passengerCapacity",
+          "line": 241,
+          "text": "\t\t\t\tratio = (train.passenger*100/train.passengerCapacity).ToString();"
+        },
+        {
+          "symbol": "private void onMove()",
+          "line": 287,
+          "text": "\t\tprivate void onMove() {"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/TrainPlacementController.cs",
+      "sha256": "a16274994ea5f41f37ba092a45b1c67083994999f0825e268be55d228ef40cc4",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Owned groups and trains, rename, controller assignment, click same formation reverse, map withdrawal any train, nested move, group creation and unplaced-only sale UI. No group delete action.",
+      "bindings": [
+        {
+          "symbol": "tr.reverse();",
+          "line": 481,
+          "text": "\t\t\t\t\t\ttr.reverse();"
+        },
+        {
+          "symbol": "if(!tr.place(loc))",
+          "line": 496,
+          "text": "\t\t\t\tif(!tr.place(loc)) {"
+        },
+        {
+          "symbol": "item.moveUnder(newGroup);",
+          "line": 656,
+          "text": "\t\t\titem.moveUnder(newGroup);"
+        },
+        {
+          "symbol": "item.controller =",
+          "line": 662,
+          "text": "\t\t\t\titem.controller = (TrainController)controllerCombo.SelectedItem;"
+        },
+        {
+          "symbol": "tr!=null && !tr.isPlaced",
+          "line": 684,
+          "text": "\t\t\t\tif( tr!=null && !tr.isPlaced )"
+        }
+      ]
+    },
+    {
+      "path": "core/controllers/rail/TrainTradingDialog.cs",
+      "sha256": "7124579b0f78952904039471605c424a2a47af41668f0db2d904b6b0c00b32c6",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Company/type/nickname hierarchy disambiguates duplicate nickname keys with trailing spaces; quantity/length validation and capacity quote; create all trains using same cloned purchase time then one spending call. No pre-spend funds check. Source UI min1; maximum is not explicitly set here.",
+      "bindings": [
+        {
+          "symbol": "NickName = NickName + \" \";",
+          "line": 53,
+          "text": "                        NickName = NickName + \" \";"
+        },
+        {
+          "symbol": "this.length.Minimum",
+          "line": 184,
+          "text": "            this.length.Minimum = new decimal(new int[] {"
+        },
+        {
+          "symbol": "private long getTotalPrice",
+          "line": 506,
+          "text": "\t\tprivate long getTotalPrice() {"
+        },
+        {
+          "symbol": "selectedTrain.create((int)length.Value)",
+          "line": 547,
+          "text": "\t\t\t\tTrainCarContribution[] cars = selectedTrain.create((int)length.Value);"
+        },
+        {
+          "symbol": "Time now =",
+          "line": 571,
+          "text": "            Time now = (Time)World.world.clock.Clone();"
+        },
+        {
+          "symbol": "new Train(World.world.rootTrainGroup",
+          "line": 574,
+          "text": "                new Train(World.world.rootTrainGroup,"
+        },
+        {
+          "symbol": "spend( getTotalPrice()",
+          "line": 581,
+          "text": "\t\t\tAccountManager.theInstance.spend( getTotalPrice(), AccountGenre.RAIL_SERVICE );"
+        }
+      ]
+    },
+    {
+      "path": "core/util/PriorityQueue.cs",
+      "sha256": "e656663d3d836e39a80fea438e2f2b2383e7041c284362be32a50b2f1c305425",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused GEO-002 queue dependency; no new scheduler semantics.",
+      "bindings": [
+        {
+          "symbol": "removeMin",
+          "line": 78,
+          "text": "\t\tpublic void removeMin() {"
+        }
+      ]
+    },
+    {
+      "path": "core/views/map/TrainTrackingWindow.cs",
+      "sha256": "6159e6c8308aed437c2d75290894586dae2a2e64a585758d8a110ce6de63b0b1",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Map-owned separate tracking instance/checkbox; source Move can use Outside placed reference; Unplaced disables follow. Sale/stale selection/null listener handling requires browser lifecycle guards.",
+      "bindings": [
+        {
+          "symbol": "trackingTrainMode = false;",
+          "line": 43,
+          "text": "        private Boolean trackingTrainMode = false;"
+        },
+        {
+          "symbol": "public void trackingtoTrain()",
+          "line": 351,
+          "text": "        public void trackingtoTrain()"
+        },
+        {
+          "symbol": "mapView.moveTo( train.head.state.asPlaced().location )",
+          "line": 373,
+          "text": "                mapView.moveTo( train.head.state.asPlaced().location );    // 先頭車両の位置に移動"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Car.cs",
+      "sha256": "996a334c9352048c03d53dea36c4ab5b581a86312a4db94637475c405230d03d",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Car.setState clears old Inside slot, installs new Inside slot and invalidates each; temporary placement mutates live source occupancy and must become detached planning.",
+      "bindings": [
+        {
+          "symbol": "protected CarState setState",
+          "line": 26,
+          "text": "\t\tprotected CarState setState( CarState s ) {"
+        },
+        {
+          "symbol": "ss.voxel.car = null;",
+          "line": 32,
+          "text": "\t\t\t\tss.voxel.car = null;"
+        },
+        {
+          "symbol": "ss.voxel.car = this;",
+          "line": 41,
+          "text": "\t\t\t\tss.voxel.car = this;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/CarState.cs",
+      "sha256": "c68ad252be432207df5f59b551b5dced074fc80d07ea9cd526e30f5c3787999e",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Immutable Unplaced/Inside/Outside tagged states; only Inside may dereference Traffic; Outside retains location/direction/countdown.",
+      "bindings": [
+        {
+          "symbol": "public class Inside",
+          "line": 61,
+          "text": "\t\tpublic class Inside : Placed"
+        },
+        {
+          "symbol": "public class Unplaced",
+          "line": 73,
+          "text": "\t\tpublic class Unplaced : CarState, IObjectReference"
+        },
+        {
+          "symbol": "public class Outside",
+          "line": 94,
+          "text": "\t\tpublic class Outside : Placed"
+        },
+        {
+          "symbol": "public readonly int timeLeft;",
+          "line": 99,
+          "text": "\t\t\tpublic readonly int timeLeft;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Clock.cs",
+      "sha256": "f9b34df78bb4e3d0530303568962af38413df406c45a11c4ff248b6b1d3517f4",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused P1 queue ownership/cancellation and source timer bindings; GEO-002 disposition remains unchanged.",
+      "bindings": [
+        {
+          "symbol": "registerOneShot",
+          "line": 62,
+          "text": "\t\tpublic void registerOneShot( ClockHandler handler, TimeLength time ) {"
+        },
+        {
+          "symbol": "unregister",
+          "line": 84,
+          "text": "\t\t/// The cookie, which shall be then used to unregister the timer."
+        }
+      ]
+    },
+    {
+      "path": "core/world/Location.cs",
+      "sha256": "c0096ebe0ace4e1c61e237654bbbf32b1a425a943ecd622010377d103adbf126",
+      "encoding": "cp932",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused truncated3D distance in fare and Outside source-state accounting.",
+      "bindings": [
+        {
+          "symbol": "getDistanceTo",
+          "line": 49,
+          "text": "\t\tpublic int getDistanceTo( Location to ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Matrix.cs",
+      "sha256": "bc79661f2cb6544028f8a4d88c3a1a55f3c9f3ed02bdfa52f0009229f9e2d4cd",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused doubled integer matrix arithmetic/truncation for ordered return candidates.",
+      "bindings": [
+        {
+          "symbol": "operator *",
+          "line": 37,
+          "text": "\t\tpublic static Matrix operator * ( int s, Matrix x ) {"
+        },
+        {
+          "symbol": "L90",
+          "line": 57,
+          "text": "\t\tpublic static readonly Matrix L90 = new Matrix(0,1,-1,0);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Time.cs",
+      "sha256": "35895f60a90ddd3bc99b42294b6b1caa57be60a8e1aab5ca024d237d2c8fcdf7",
+      "encoding": "cp932",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused source calendar accessors for masks/daily departure; civil calendar is irrelevant.",
+      "bindings": [
+        {
+          "symbol": "public int month",
+          "line": 63,
+          "text": "\t\tpublic int month {"
+        },
+        {
+          "symbol": "public int day",
+          "line": 80,
+          "text": "\t\tpublic int day {"
+        },
+        {
+          "symbol": "public int minutes",
+          "line": 104,
+          "text": "\t\tpublic int minutes { get { return (int)((currentTime/MINUTE)%60); } }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/TimeLength.cs",
+      "sha256": "aa61fda8d34f58729a8bcee201132258cbde29188bb8500fb6f4b847acf54b33",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused source-minute duration and completed365-day division.",
+      "bindings": [
+        {
+          "symbol": "fromMinutes",
+          "line": 14,
+          "text": "\t\tpublic static TimeLength fromMinutes( long min   ) { return new TimeLength(min); }"
+        },
+        {
+          "symbol": "fromDays",
+          "line": 16,
+          "text": "\t\tpublic static TimeLength fromDays   ( long days)   { return TimeLength.fromHours(days*24); }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "encoding": "cp932",
+      "reviewKind": "reused-P4-contract-with-pinned-symbol-verification",
+      "review": "Reused P4 Traffic car ownership, lifecycle protection and before/car/after dispatch; P5 replaces trusted test components with registered stock.",
+      "bindings": [
+        {
+          "symbol": "class TrafficVoxel",
+          "line": 16,
+          "text": "\tpublic sealed class TrafficVoxel : AbstractVoxelImpl, Entity"
+        },
+        {
+          "symbol": "public Car car",
+          "line": 56,
+          "text": "\t\tpublic Car car {"
+        },
+        {
+          "symbol": "car.draw(",
+          "line": 211,
+          "text": "\t\t\tif(_car!=null)\t\t\t_car.draw(display,pt);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/World.cs",
+      "sha256": "2d446eddb4c3ceee24334b3ffe29e8f227ac4bec96f781eed6ff2fb2293ee0d2",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "World registers simple and delegation outside temporary preview mode; named root group controller remains null. Train visible-border HV/Z predicate is separate from storage bounds.",
+      "bindings": [
+        {
+          "symbol": "trainControllers.add( DelegationTrainControllerImpl.theInstance );",
+          "line": 83,
+          "text": "\t\t\t\ttrainControllers.add( DelegationTrainControllerImpl.theInstance );"
+        },
+        {
+          "symbol": "rootTrainGroup = new TrainGroup",
+          "line": 507,
+          "text": "\t\tpublic readonly TrainGroup rootTrainGroup = new TrainGroup(null,\"保有する列車\");"
+        },
+        {
+          "symbol": "return h<0 || size.x<=h || v<loc.z*2",
+          "line": 245,
+          "text": "\t\t\treturn h<0 || size.x<=h || v<loc.z*2 || size.y-(size.z-loc.z)*2<=v;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/accounting/AccountManager.cs",
+      "sha256": "402292886da4fa0464dc28639aef67ff98c578519e74e978e7ee49d2e2a6936a",
+      "encoding": "cp932",
+      "reviewKind": "reused-P0-P1-P4-dependency-with-pinned-symbol-verification",
+      "review": "Reused P4 accounting boundary: source spends without prechecking affordability and replenishes bankruptcy; never invent a train-only affordability gate.",
+      "bindings": [
+        {
+          "symbol": "private void transact",
+          "line": 65,
+          "text": "\t\tprivate void transact( long delta, AccountGenre genre ) {"
+        },
+        {
+          "symbol": "while( _liquidAssets < 0 )",
+          "line": 67,
+          "text": "\t\t\twhile( _liquidAssets < 0 ) {"
+        },
+        {
+          "symbol": "public void spend",
+          "line": 76,
+          "text": "\t\tpublic void spend( long delta, AccountGenre genre ) {"
+        },
+        {
+          "symbol": "public void earn",
+          "line": 83,
+          "text": "\t\tpublic void earn( long delta, AccountGenre genre ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/DelegationTrainControllerImpl.cs",
+      "sha256": "8f092209729a8b885660a9610e18f05e1654bf6cb537dbfa5d17727d31db0e9f",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Registered delegation traverses current item and ancestors; null is returned as a non-delegation controller. Only exhausted all-delegating chains default. Root/cycle safety needs portable disposition.",
+      "bindings": [
+        {
+          "symbol": "if( ti.controller!=theInstance )",
+          "line": 38,
+          "text": "\t\t\t\tif( ti.controller!=theInstance )\treturn ti.controller;"
+        },
+        {
+          "symbol": "ti = ti.ownerGroup;",
+          "line": 39,
+          "text": "\t\t\t\tti = ti.ownerGroup;"
+        },
+        {
+          "symbol": "return SimpleTrainControllerImpl.theInstance;",
+          "line": 43,
+          "text": "\t\t\treturn SimpleTrainControllerImpl.theInstance;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/JunctionRailRoad.cs",
+      "sha256": "43c6fef5f1c8873dbf86867cdb8f779780a84d68fd8049226282d76aaeb00fc4",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Head asks train.controller; followers select using previous placed position, including Outside states; mandatory branches precede discretionary controller choice.",
+      "bindings": [
+        {
+          "symbol": "car.parent.controller.onJunction",
+          "line": 30,
+          "text": "\t\t\t\t\tif( car.parent.controller.onJunction( car.parent, this )==JunctionRoute.Straight )"
+        },
+        {
+          "symbol": "Train.TrainCar previous",
+          "line": 26,
+          "text": "\t\t\t\tTrain.TrainCar previous = car.previous;"
+        },
+        {
+          "symbol": "previous.state.asPlaced().location",
+          "line": 34,
+          "text": "\t\t\t\t\tif( previous.state.asPlaced().location == state.location+d )"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "encoding": "cp932",
+      "reviewKind": "reused-P4-contract-with-pinned-symbol-verification",
+      "review": "Reused P4 serialized60-pattern topology and slope height/orientation table; not a new movement oracle.",
+      "bindings": [
+        {
+          "symbol": "public int zdiff",
+          "line": 274,
+          "text": "\t\tpublic int zdiff  { get { return _zdiff; } }"
+        },
+        {
+          "symbol": "public Direction zangle",
+          "line": 275,
+          "text": "\t\tpublic Direction zangle { get { return _zangle; } }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Base ports, guide and stop contract; exact subtype remains needed alongside patterns.",
+      "bindings": [
+        {
+          "symbol": "abstract Direction guide",
+          "line": 38,
+          "text": "\t\tpublic abstract Direction guide();"
+        },
+        {
+          "symbol": "getStopTimeSpan",
+          "line": 156,
+          "text": "\t\tpublic virtual TimeLength getStopTimeSpan( Train tr, int callCount ) {"
+        },
+        {
+          "symbol": "hasRail",
+          "line": 68,
+          "text": "\t\t\t\tif(hasRail(d)) {"
+        },
+        {
+          "symbol": "public int zdiff",
+          "line": 44,
+          "text": "\t\tpublic int zdiff( Direction d ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SimpleTrainControllerImpl.cs",
+      "sha256": "436ef3578c8f972175572970701d388f2e17fa8b1e14f78180e1bc9961aaafbc",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Straight junction; non-Station ignored, first Station call waits30 then0. Comment saying one hour does not control behavior.",
+      "bindings": [
+        {
+          "symbol": "return JunctionRoute.Straight;",
+          "line": 24,
+          "text": "\t\t\treturn JunctionRoute.Straight;"
+        },
+        {
+          "symbol": "if(!(harbor is Station))",
+          "line": 29,
+          "text": "\t\t\tif(!(harbor is Station))\treturn TimeLength.ZERO;\t// ignore everything but a station"
+        },
+        {
+          "symbol": "TimeLength.fromMinutes(30)",
+          "line": 31,
+          "text": "\t\t\tif( callCount==0 )\treturn TimeLength.fromMinutes(30);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P4-contract-with-pinned-symbol-verification",
+      "review": "Reused P4 slope/zdiff/draw dispatch; incoming-heading height transition differs from placement.",
+      "bindings": [
+        {
+          "symbol": "pattern.zdiff==1",
+          "line": 282,
+          "text": "\t\t\tif(!(srr.pattern.zangle==dir && srr.pattern.zdiff==1))"
+        },
+        {
+          "symbol": "zangle",
+          "line": 276,
+          "text": "\t\t\t// the 2nd block has a distinctive zangle and zdiff. check it."
+        },
+        {
+          "symbol": "climbDir",
+          "line": 76,
+          "text": "\t\tpublic Direction climbDir { get { return pattern.climbDir; } }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SpeedLimit.cs",
+      "sha256": "9136d1a9716debe1fc4fe84d6cf7c0b619d8120612e1c9d96b21d8904b9c92dd",
+      "encoding": "utf-8-sig",
+      "reviewKind": "reused-P4-contract-with-pinned-symbol-verification",
+      "review": "Reused P4 world-local ordered lists and lifecycle; movement consumes prior-head limits, not icon state.",
+      "bindings": [
+        {
+          "symbol": "class SpeedLimit",
+          "line": 15,
+          "text": "    public class SpeedLimit"
+        },
+        {
+          "symbol": "LowSpeedLimit",
+          "line": 60,
+          "text": "        public ArrayList LowSpeedLimit"
+        },
+        {
+          "symbol": "MediumSpeedLimit",
+          "line": 73,
+          "text": "        public ArrayList MediumSpeedLimit"
+        },
+        {
+          "symbol": "FastSpeedLimit",
+          "line": 86,
+          "text": "        public ArrayList FastSpeedLimit"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Reviewed constructors/purchase-date presence, placement temporary car and no zdiff, withdrawal/sale, mutable callback side effects, prior-head scheduling, forwarding resets, move-cost cadence, Outside matrices, original car indices and drawing. Both-null scheduling dereferences null; positive waits always set StoppingAtStation.",
+      "bindings": [
+        {
+          "symbol": "public bool place(",
+          "line": 115,
+          "text": "\t\tpublic bool place( Location loc ) {"
+        },
+        {
+          "symbol": "d = rr.guide();",
+          "line": 138,
+          "text": "\t\t\t\td = rr.guide();"
+        },
+        {
+          "symbol": "if( next.isOutside )",
+          "line": 394,
+          "text": "            if( next.isOutside )"
+        },
+        {
+          "symbol": "state = State.StoppingAtStation;",
+          "line": 342,
+          "text": "\t\t\t\t\tstate = State.StoppingAtStation;"
+        },
+        {
+          "symbol": "time.totalMinutes == -999",
+          "line": 352,
+          "text": "                if (time.totalMinutes == -999) {                                // if time = -999 is forwarding"
+        },
+        {
+          "symbol": "if( ((moveCount++)&3)==0 )",
+          "line": 443,
+          "text": "\t\t\tif( ((moveCount++)&3)==0 ) {"
+        },
+        {
+          "symbol": "r * type.fare * dist * 2,",
+          "line": 561,
+          "text": "\t\t\t\t\tr * type.fare * dist * 2,"
+        },
+        {
+          "symbol": "private static CarState.Inside calcReturnPoint",
+          "line": 647,
+          "text": "\t\tprivate static CarState.Inside calcReturnPoint( CarState.Outside state ) {"
+        },
+        {
+          "symbol": "private class ReverseCarState",
+          "line": 710,
+          "text": "\t\tprivate class ReverseCarState : CarState.Visitor"
+        },
+        {
+          "symbol": "public TrainCar previous",
+          "line": 778,
+          "text": "\t\t\tpublic TrainCar previous {"
+        },
+        {
+          "symbol": "private Time boughtThisTrain;",
+          "line": 82,
+          "text": "        private Time boughtThisTrain;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TrainController.cs",
+      "sha256": "769ac432c72c813b372321c41d6ab0351218670f06545184cb53b170db96d36e",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Named shared configured controller instances supply junction and stop callbacks; plugin contribution is null for built-ins.",
+      "bindings": [
+        {
+          "symbol": "public abstract JunctionRoute onJunction",
+          "line": 26,
+          "text": "\t\tpublic abstract JunctionRoute onJunction( Train train, JunctionRailRoad railRoad );"
+        },
+        {
+          "symbol": "public abstract TimeLength getStopTimeSpan",
+          "line": 49,
+          "text": "\t\tpublic abstract TimeLength getStopTimeSpan( Train train, TrainHarbor platform, int callCount );"
+        },
+        {
+          "symbol": "public string name;",
+          "line": 62,
+          "text": "\t\tpublic string name;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TrainGroup.cs",
+      "sha256": "97ad5bee15ea7b535fbdad0665806f070211d719c46cb38ec395624a539098b8",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Named constructor leaves controller null; generated-name constructor assigns delegation. No group deletion API exists in this class.",
+      "bindings": [
+        {
+          "symbol": "public TrainGroup(TrainGroup group,string name)",
+          "line": 12,
+          "text": "\t\tpublic TrainGroup(TrainGroup group,string name) : base(group,name) {}"
+        },
+        {
+          "symbol": "controller = DelegationTrainControllerImpl.theInstance;",
+          "line": 14,
+          "text": "\t\t\tcontroller = DelegationTrainControllerImpl.theInstance;"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TrainHarbor.cs",
+      "sha256": "2f76b14784a69ae4d1d9e0ae1bdb8b73fcc65ff01fd79fe7c55abd9507ece51d",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Harbor contract is its location, resolved by queryInterface; no separate controller ownership follows.",
+      "bindings": [
+        {
+          "symbol": "interface TrainHarbor",
+          "line": 12,
+          "text": "\tpublic interface TrainHarbor"
+        },
+        {
+          "symbol": "Location location",
+          "line": 17,
+          "text": "\t\tLocation location { get; }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TrainItem.cs",
+      "sha256": "8820be8ce5c188a0137d26a8de1096a2c13b54d42a215293f5f36dca594d9e1b",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Train/group common controller and group membership; moveUnder removes before assigning without null/cycle validation.",
+      "bindings": [
+        {
+          "symbol": "public TrainController controller;",
+          "line": 28,
+          "text": "\t\tpublic TrainController controller;"
+        },
+        {
+          "symbol": "public void moveUnder",
+          "line": 36,
+          "text": "\t\tpublic void moveUnder( TrainGroup newGroup ) {"
+        },
+        {
+          "symbol": "_ownerGroup.items.add(this);",
+          "line": 41,
+          "text": "\t\t\t_ownerGroup.items.add(this);"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/YardRailRoad.cs",
+      "sha256": "7db261e01be0c6c0dd0e7bbb95ed970161378f28c0963482e718e8eb8c15a798",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Both directional stop-index truncations and resolved host gate; controller handler can mutate before unload/board/bell branches. Forwarding sentinels suppress boarding but still ring on departure.",
+      "bindings": [
+        {
+          "symbol": "pos = ( owner.length + tr.length )/2 -1;",
+          "line": 44,
+          "text": "\t\t\t\tpos = ( owner.length + tr.length )/2 -1;"
+        },
+        {
+          "symbol": "pos = ( owner.length - tr.length )/2;",
+          "line": 47,
+          "text": "\t\t\t\tpos = ( owner.length - tr.length )/2;"
+        },
+        {
+          "symbol": "if(owner.hostStation==null)",
+          "line": 57,
+          "text": "\t\t\tif(owner.hostStation==null)"
+        },
+        {
+          "symbol": "tr.controller.getStopTimeSpan",
+          "line": 61,
+          "text": "\t\t\tTimeLength ts = tr.controller.getStopTimeSpan(tr,owner.hostStation,callCount);"
+        },
+        {
+          "symbol": "callCount != 0 && (ts.totalMinutes == -999",
+          "line": 75,
+          "text": "            if (callCount != 0 && (ts.totalMinutes == -999 || ts.totalMinutes == -1000)) {"
+        }
+      ]
+    },
+    {
+      "path": "plugins/SpeedLimit/plugin.xml",
+      "sha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 10,
+          "text": "\t<contribution type=\"picture\" id=\"{CFC7C99B-4EDE-493B-9DD1-268633902901}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"specialRail\" id=\"{93481807-D998-46d7-B1BE-CB2B5D086D67}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 8,
+          "text": "\t<contribution type=\"contribution\" id=\"{59465CA9-C45E-4D11-8D57-95088E16E0F1}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+      "sha256": "630c218420cd62c480995b8394237ff91ae151c6417c5daa225968d32e60bfd1",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Native signal has direction/type and calls passing tr.controller within angle<=1. No native per-signal ControllerId; P4 reserved web field must not become a dispatch override.",
+      "bindings": [
+        {
+          "symbol": "Direction.angle(",
+          "line": 31,
+          "text": "\t\t\tif( Direction.angle( tr.head.state.asInside().direction, direction )<=1 )"
+        },
+        {
+          "symbol": "return tr.controller.getStopTimeSpan",
+          "line": 32,
+          "text": "\t\t\t\treturn tr.controller.getStopTimeSpan(tr,this,callCount);"
+        },
+        {
+          "symbol": "public override object queryInterface",
+          "line": 58,
+          "text": "\t\tpublic override object queryInterface( Type aspect ) {"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"specialRail\" id=\"{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.manual/FreeTrain.ManualTrainController.2008.csproj",
+      "sha256": "2fbd8b7dae611a47e1fa26942c96d09f19de3b96aa37304dc84be4d07d5327aa",
+      "encoding": "utf-8-sig",
+      "reviewKind": "project-membership-review",
+      "review": "Pinned selected project membership/resource closure; source existence does not prove desktop build/runtime. Retain known TrainInformation path and TAT Straight.bmp diagnostics from P0.",
+      "bindings": [
+        {
+          "symbol": "<Compile Include=",
+          "line": 135,
+          "text": "    <Compile Include=\"src\\AssemblyInfo.cs\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"trainController\" id=\"{5567FE11-FC2C-4a1d-836F-722EF9DC957C}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs",
+      "sha256": "b08115a7518f70dbb246d1d772d8b86ac15a4c2e01ba6a6077f9ec7e084e903f",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Registered provider returns a separate manual controller for each name.",
+      "bindings": [
+        {
+          "symbol": "newController",
+          "line": 27,
+          "text": "\t\tpublic override TrainController newController( string name ) {"
+        },
+        {
+          "symbol": "new ManualTrainController",
+          "line": 28,
+          "text": "\t\t\treturn new ManualTrainController(name,this);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs",
+      "sha256": "8e7fbfcb4c3f998d7e447caaf716562f6c61e27d057a30a95a9e1e57cf04fcc8",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Left valid before right, else straight; initial Shift pass else5-minute wait; later Up departure wins over Down reverse, else5-minute poll. Applies to all harbors. User32 polling becomes explicit leased input.",
+      "bindings": [
+        {
+          "symbol": "GetAsyncKeyState",
+          "line": 31,
+          "text": "\t\tprivate static extern short GetAsyncKeyState( int vKey );"
+        },
+        {
+          "symbol": "isKeyPressed(VK_LEFT",
+          "line": 45,
+          "text": "//\t\t\treturn isKeyPressed(VK_LEFT) || isKeyPressed(VK_RIGHT) || isKeyPressed(VK_UP);"
+        },
+        {
+          "symbol": "isKeyPressed(VK_RIGHT",
+          "line": 45,
+          "text": "//\t\t\treturn isKeyPressed(VK_LEFT) || isKeyPressed(VK_RIGHT) || isKeyPressed(VK_UP);"
+        },
+        {
+          "symbol": "isKeyPressed(VK_UP)",
+          "line": 45,
+          "text": "//\t\t\treturn isKeyPressed(VK_LEFT) || isKeyPressed(VK_RIGHT) || isKeyPressed(VK_UP);"
+        },
+        {
+          "symbol": "isKeyPressed(VK_DOWN)",
+          "line": 74,
+          "text": "\t\t\t\tif( isKeyPressed(VK_DOWN) )"
+        },
+        {
+          "symbol": "TimeLength.fromMinutes(5)",
+          "line": 69,
+          "text": "\t\t\t\t\treturn TimeLength.fromMinutes(5);\t// make a five minutes stop"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.2008.csproj",
+      "sha256": "a4fd84d36439b3b28dcc4129aff9fd105a67004ba907d8e8889bed11ef64653d",
+      "encoding": "utf-8-sig",
+      "reviewKind": "project-membership-review",
+      "review": "Pinned selected project membership/resource closure; source existence does not prove desktop build/runtime. Retain known TrainInformation path and TAT Straight.bmp diagnostics from P0.",
+      "bindings": [
+        {
+          "symbol": "<Compile Include=",
+          "line": 142,
+          "text": "    <Compile Include=\"src\\AdvancedStationHandler.cs\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"trainController\" id=\"{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+      "sha256": "0534a69e85abd3b6032b6c6d7979c8065dd1f2ad5c7760a1e581af3aeb858d04",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Ordered first-call pass/stop and later go/reverse/forwarding/stop branches;10-minute polling; checkTurn reverses before validation and retains early mutations, can replace cars without train callback cancellation; one-car nonsharp branch returns-1000 even requested-1.",
+      "bindings": [
+        {
+          "symbol": "internal TimeLength checkTurn",
+          "line": 36,
+          "text": "\t\tinternal TimeLength checkTurn(Train train, int forwarding) {"
+        },
+        {
+          "symbol": "train.reverse();",
+          "line": 59,
+          "text": "\t\t\t\ttrain.reverse();"
+        },
+        {
+          "symbol": "if(d.isSharp == false)",
+          "line": 99,
+          "text": "\t\t\t\t\t    if(d.isSharp == false) {"
+        },
+        {
+          "symbol": "return TimeLength.fromMinutes(-1000);",
+          "line": 100,
+          "text": "\t\t\t\t\t\t    return TimeLength.fromMinutes(-1000);"
+        },
+        {
+          "symbol": "car.remove();",
+          "line": 139,
+          "text": "\t\t\t\t\tcar.remove();"
+        },
+        {
+          "symbol": "cars[idx2].place(loc, d);",
+          "line": 173,
+          "text": "\t\t\t\t\t\tcars[idx2].place(loc, d);"
+        },
+        {
+          "symbol": "if( rule.action==StationAction.pass",
+          "line": 196,
+          "text": "\t\t\t\t\tif( rule.action==StationAction.pass && rule.matches(clock) )"
+        },
+        {
+          "symbol": "int next = (60-clock.minutes)%10;",
+          "line": 239,
+          "text": "\t\t\t\tint next = (60-clock.minutes)%10;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+      "sha256": "3fc01860ee3a39db70c59271ec3a3eb616f2b39dbae6b29659ecdd87d3768ab7",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "First matching ordered junction rule wins, else configured default straight; rules own masks, including minute wildcard from UI.",
+      "bindings": [
+        {
+          "symbol": "foreach( AdvJunctionRule rule",
+          "line": 28,
+          "text": "\t\t\tforeach( AdvJunctionRule rule in advancedRules )"
+        },
+        {
+          "symbol": "return rule.route;",
+          "line": 30,
+          "text": "\t\t\t\t\treturn rule.route;"
+        },
+        {
+          "symbol": "return defaultRoute;",
+          "line": 31,
+          "text": "\t\t\treturn defaultRoute;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs",
+      "sha256": "c5d1e06641a96d303a4091e1c2f954d8cac6084ea90a1d965c70524adf88646a",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Four visible mask fields and implicit minute wildcard, explicit up/down order; same day-from-month edit typo occurs here, not just station editor.",
+      "bindings": [
+        {
+          "symbol": "tm.minutes = -1;",
+          "line": 533,
+          "text": "\t\t\ttm.minutes = -1;"
+        },
+        {
+          "symbol": "junction.advancedRules.insert(idx+offset,rule);",
+          "line": 502,
+          "text": "\t\t\tjunction.advancedRules.insert(idx+offset,rule);"
+        },
+        {
+          "symbol": "dayBox.SelectedIndex = rule.month;",
+          "line": 579,
+          "text": "\t\t\t\telse\t\t\t\t\tdayBox.SelectedIndex = rule.month;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionConfigDialog.cs",
+      "sha256": "7556f6bea8d57cafc8279d14da47b492d7bcfa445e793ea9fb3daf5a3285a04b",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Default straight/curve plus advanced rules; source dialogs mutate shared junction, portable forms use detached draft.",
+      "bindings": [
+        {
+          "symbol": "JunctionConfigDialog(",
+          "line": 14,
+          "text": "\t\tinternal JunctionConfigDialog( Junction jc ) {"
+        },
+        {
+          "symbol": "new JunctionAdvancedDialog",
+          "line": 154,
+          "text": "\t\t\tnew JunctionAdvancedDialog(junction).ShowDialog(this);"
+        },
+        {
+          "symbol": "defaultRoute",
+          "line": 136,
+          "text": "\t\t\tjunction.defaultRoute ="
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+      "sha256": "8221bb823a5b476658268817feadaa3ab6af805e6ce895764db58993bb1ebb46",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Add rejects identical five-field masks regardless of action; replace/copy/file append bypass duplicate check. Active sorter assignment is commented out in pinned stable source. Up/down changes rule collection order; day edit erroneously loads month. Source read/save uses BinaryFormatter RuleCollection, not commented SOAP.",
+      "bindings": [
+        {
+          "symbol": "//          this.triggerList.ListViewItemSorter",
+          "line": 38,
+          "text": "//          this.triggerList.ListViewItemSorter = new TriggerListViewItemComparer();"
+        },
+        {
+          "symbol": "advRule.month     == tm.month",
+          "line": 662,
+          "text": "                if (advRule.month     == tm.month     &&"
+        },
+        {
+          "symbol": "station.rules.set( idx, tm );",
+          "line": 698,
+          "text": "\t\t\tstation.rules.set( idx, tm );"
+        },
+        {
+          "symbol": "station.rules.insert(idx+offset,rule);",
+          "line": 719,
+          "text": "\t\t\tstation.rules.insert(idx+offset,rule);"
+        },
+        {
+          "symbol": "station.rules.add(copyStationRule);",
+          "line": 741,
+          "text": "\t\t\tstation.rules.add(copyStationRule);                                 // Add diagram rule to station"
+        },
+        {
+          "symbol": "openFormatter.Deserialize(openStream)",
+          "line": 797,
+          "text": "                    AdvancedStationHandler.RuleCollection readDiagram = (AdvancedStationHandler.RuleCollection)openFormatter.Deserialize(openStream);"
+        },
+        {
+          "symbol": "saveFormatter.Serialize(saveStream, station.rules);",
+          "line": 833,
+          "text": "                    saveFormatter.Serialize(saveStream, station.rules);              "
+        },
+        {
+          "symbol": "dayBox.SelectedIndex = rule.month;",
+          "line": 941,
+          "text": "\t\t\t\telse\t\t\t\t\tdayBox.SelectedIndex = rule.month;"
+        },
+        {
+          "symbol": "tm.minutes -= 10;",
+          "line": 855,
+          "text": "\t\t\telse\t\t\t\ttm.minutes -= 10;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationConfigDialog.cs",
+      "sha256": "fd94797101a22166cea6616bb598a381a6a4b944989dbc869fd5b0bcce271a02",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Four harbor modes with fixed-duration/daily reversal options and separate advanced editor; new draft/adoption must not mutate shared handler on cancel.",
+      "bindings": [
+        {
+          "symbol": "currentHandler = new FixedDurationStationHandler",
+          "line": 333,
+          "text": "\t\t\t\tcurrentHandler = new FixedDurationStationHandler(TimeLength.fromMinutes((long)durationBox.Value),checkTurn1.Checked);"
+        },
+        {
+          "symbol": "currentHandler = new PassStationHandler",
+          "line": 335,
+          "text": "\t\t\t\tcurrentHandler = new PassStationHandler();"
+        },
+        {
+          "symbol": "currentHandler = new OnceADayStationHandler",
+          "line": 337,
+          "text": "\t\t\t\tcurrentHandler = new OnceADayStationHandler(getMinutes(),checkTurn2.Checked);"
+        },
+        {
+          "symbol": "new StationAdvancedDialog",
+          "line": 306,
+          "text": "\t\t\tnew StationAdvancedDialog( (AdvancedStationHandler)currentHandler ).ShowDialog(this);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+      "sha256": "5b519ce58cc02b6007ad300e514c73bc97cd3ec8aca9771db98f5e94f21d6332",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Pass/fixed/daily modes; default10,false; daily exact-departure arrival waits a full day; later call leaves/reverses.",
+      "bindings": [
+        {
+          "symbol": "TimeLength.fromMinutes(10), false",
+          "line": 14,
+          "text": "\t\t\tnew FixedDurationStationHandler( TimeLength.fromMinutes(10), false );"
+        },
+        {
+          "symbol": "if( callCount==0 )",
+          "line": 45,
+          "text": "\t\t\tif( callCount==0 )\treturn duration;"
+        },
+        {
+          "symbol": "if( minutes>m )",
+          "line": 82,
+          "text": "\t\t\tif( minutes>m )\t\treturn TimeLength.fromMinutes( minutes-m );"
+        },
+        {
+          "symbol": "TimeLength.ONEDAY",
+          "line": 83,
+          "text": "\t\t\telse\t\t\t\treturn TimeLength.fromMinutes( minutes-m ) + TimeLength.ONEDAY;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs",
+      "sha256": "b56f469f396d33a4c9e2fdcd5a8ba006e8b8efd244be6b704b2e05bea4d5d3ab",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Map click chooses junction before TrainHarbor; harbor can resolve station through platform; setting is on selected controller by harbor.location; overlays show default route, not current dynamic result.",
+      "bindings": [
+        {
+          "symbol": "JunctionRailRoad.get(loc)",
+          "line": 42,
+          "text": "\t\t\tJunctionRailRoad jrr = JunctionRailRoad.get(loc);"
+        },
+        {
+          "symbol": "v.queryInterface(typeof(TrainHarbor))",
+          "line": 52,
+          "text": "\t\t\tTrainHarbor harbor = (TrainHarbor)v.queryInterface(typeof(TrainHarbor));"
+        },
+        {
+          "symbol": "controller.setStationHandler",
+          "line": 58,
+          "text": "\t\t\t\tcontroller.setStationHandler( harbor, dialog.currentHandler );"
+        },
+        {
+          "symbol": "go = j.defaultRoute;",
+          "line": 92,
+          "text": "\t\t\t\tgo = j.defaultRoute;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+      "sha256": "fe78353f887c684dd135fe67036e1409cb866471a0b1f3e756217a0bc9e7fcb9",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Configured junctions and harbors are keyed by Location, not train/signal ownership; unconfigured junction straight, harbor default10. Config refresh prunes only missing junction entries, not harbor settings.",
+      "bindings": [
+        {
+          "symbol": "junctions[railRoad.location]",
+          "line": 23,
+          "text": "\t\t\tJunction jc = (Junction)junctions[railRoad.location];"
+        },
+        {
+          "symbol": "stations[harbor.location]",
+          "line": 60,
+          "text": "\t\t\treturn (StationHandler)stations[harbor.location];"
+        },
+        {
+          "symbol": "return StationHandler.defaultHandler",
+          "line": 51,
+          "text": "\t\t\telse\t\t\t\treturn StationHandler.defaultHandler.getStopTimeSpan(train, callCount);"
+        },
+        {
+          "symbol": "if( JunctionRailRoad.get(loc)==null )",
+          "line": 81,
+          "text": "\t\t\t\tif( JunctionRailRoad.get(loc)==null )"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs",
+      "sha256": "29f054f5de9847bf833e18e9992e789fca35cde4c75c22919afa472efcb41762",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Registered TAT provider returns independent named instances; resource build gaps remain explicit.",
+      "bindings": [
+        {
+          "symbol": "newController",
+          "line": 30,
+          "text": "\t\tpublic override TrainController newController( string name ) {"
+        },
+        {
+          "symbol": "new TATTrainController",
+          "line": 31,
+          "text": "\t\t\treturn new TATTrainController(name);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs",
+      "sha256": "29accc14be3d45086c8e629f077c10951341beaba01b87cc43ef8fd375d6a0a4",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "All five fields compare conjunctively, wildcard-1; nextMatch throws and must not be used by port.",
+      "bindings": [
+        {
+          "symbol": "public const sbyte WILDCARD = -1;",
+          "line": 25,
+          "text": "\t\tpublic const sbyte WILDCARD = -1;"
+        },
+        {
+          "symbol": "if( minutes!=WILDCARD",
+          "line": 35,
+          "text": "\t\t\tif( minutes!=WILDCARD && clock.minutes!=minutes )\t\treturn false;"
+        },
+        {
+          "symbol": "throw new NotImplementedException();",
+          "line": 57,
+          "text": "\t\t\tthrow new NotImplementedException();"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.2008.csproj",
+      "sha256": "d04eafc72a72e332663be371c1d7ab2025cd8285c6136a2f2960f127c70f66a1",
+      "encoding": "utf-8-sig",
+      "reviewKind": "project-membership-review",
+      "review": "Pinned selected project membership/resource closure; source existence does not prove desktop build/runtime. Retain known TrainInformation path and TAT Straight.bmp diagnostics from P0.",
+      "bindings": [
+        {
+          "symbol": "<Compile Include=",
+          "line": 135,
+          "text": "    <Compile Include=\"src\\AssemblyInfo.cs\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 7,
+          "text": "\t<contribution type=\"menu\" id=\"{8CA8F000-4DC6-4441-8F53-A628C952BD9F}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs",
+      "sha256": "fd5003fbb320cf295a0a585ddf2bb710ce01827372195b8381371ed91be1356c",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Reachable View/settings menu creates color dialog; not excluded debug window.",
+      "bindings": [
+        {
+          "symbol": "item.Text =",
+          "line": 21,
+          "text": "\t\t\titem.Text = \"試験列車の色設定\";"
+        },
+        {
+          "symbol": "new ColorConfigDialog",
+          "line": 28,
+          "text": "\t\t\tForm form = new ColorConfigDialog(ColorTestTrainCar.theInstance);"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.cs",
+      "sha256": "d356007af5b478276e5b92d18a9584b5af56d5b26eb8bd3fee9f97780641fe2d",
+      "encoding": "cp932",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Template selection and four colors mutate one shared test-car contribution; XML clipboard export is colorMap metadata, not runtime arbitrary code. Port local preview versus explicit world-local shared apply.",
+      "bindings": [
+        {
+          "symbol": "car.picture = picture;",
+          "line": 257,
+          "text": "\t\t\tcar.picture = picture;"
+        },
+        {
+          "symbol": "car.colors = colors;",
+          "line": 258,
+          "text": "\t\t\tcar.colors = colors;"
+        },
+        {
+          "symbol": "<colorMap picture=",
+          "line": 289,
+          "text": "\t\t\t\tstring.Format(\"<colorMap picture=\\\"{0}\\\" base=\\\"{1}\\\" line1=\\\"{2}\\\" line2=\\\"{3}\\\" line3=\\\"{4}\\\" />\","
+        },
+        {
+          "symbol": "comboType.SelectedItem",
+          "line": 302,
+          "text": "\t\t\tpicture = (ColoredTrainPictureContribution)comboType.SelectedItem;"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+      "sha256": "f739ec46cd033c793d5c94c6970bea253e3f3cc5600f0ec660b465cc0cc64c56",
+      "encoding": "utf-8-sig",
+      "reviewKind": "direct-symbol-and-caller-review",
+      "review": "Registered test car uses first color template with zero capacity; purchased color-test stock is real source content, not P4 synthetic car permission.",
+      "bindings": [
+        {
+          "symbol": "ColoredTrainPictureContribution.list()[0]",
+          "line": 17,
+          "text": "\t\t\t\tColoredTrainPictureContribution.list()[0],"
+        },
+        {
+          "symbol": "e.Attributes[\"id\"].Value,0",
+          "line": 19,
+          "text": "\t\t\t\te.Attributes[\"id\"].Value,0) {"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 11,
+          "text": "\t<contribution type=\"trainCar\" id=\"{9EE438DE-B766-4b37-A474-9CE6EE73FE75}\">"
+        }
+      ]
+    },
+    {
+      "path": "plugins/system/plugin.xml",
+      "sha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "encoding": "cp932",
+      "reviewKind": "manifest-and-existing-consumer-review",
+      "review": "Pinned declaration/consumer graph; P5 scope selected by exact coverage IDs. P4 infrastructure ownership remains its source review; all trainCar support declarations are included even when P0 assigned only P2.",
+      "bindings": [
+        {
+          "symbol": "<contribution",
+          "line": 21,
+          "text": "\t<contribution type=\"contribution\" id=\"{312E3101-E7A6-4276-8AC9-617FA6D7ADEA}\">"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "stock",
+      "owner": "P5-03",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/contributions/train/AbstractTrainContributionImpl.cs",
+        "core/contributions/train/ParamTrainImpl.cs",
+        "core/contributions/train/PatternTrainImpl.cs",
+        "core/contributions/train/TrainCarContribution.cs"
+      ],
+      "requirements": [
+        "MAN-W07",
+        "DEV-P18",
+        "DEV-P19"
+      ],
+      "controls": [
+        "company/type/nickname catalog",
+        "permitted length",
+        "price/native speed/fare/amenity/triprange",
+        "normal/seated/packed capacity"
+      ],
+      "semantics": "Preserve configured V2 fields, amenity clamp, explicit compositions and reverse/color references; one-car Param tail wins.",
+      "acceptance": "All bundled bindings and supported lengths reconcile; invalid references and numeric inputs diagnosed before gameplay.",
+      "decisions": [
+        "TRAIN-D007",
+        "TRAIN-D008",
+        "TRAIN-D016",
+        "TRAIN-D018"
+      ]
+    },
+    {
+      "id": "trade",
+      "owner": "P5-06",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/controllers/rail/TrainTradingDialog.cs",
+        "core/world/rail/Train.cs"
+      ],
+      "requirements": [
+        "MAN-T07",
+        "MAN-W07",
+        "MAN-A10",
+        "MAN-A11",
+        "DEV-P19",
+        "DEV-P24"
+      ],
+      "controls": [
+        "length × quantity quote",
+        "buy",
+        "sale quote/confirm",
+        "purchase timestamp"
+      ],
+      "semantics": "One purchase batch/date and one RAIL_SERVICE spending entry; nullable-date sale uses completed365-day price/(years+2). UI sale requires withdrawal while domain sell can remove placed stock.",
+      "acceptance": "SCN-026 dates0/364/365/730 and missing date; atomic repeated/cancel/stale purchase/sale and quote arithmetic.",
+      "decisions": [
+        "TRAIN-D008",
+        "TRAIN-D015",
+        "TRAIN-D016",
+        "TRAIN-D017"
+      ]
+    },
+    {
+      "id": "deploy",
+      "owner": "P5-07",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/controllers/rail/TrainPlacementController.cs",
+        "core/world/rail/Train.cs",
+        "core/world/Car.cs",
+        "core/world/rail/RailRoad.cs"
+      ],
+      "requirements": [
+        "MAN-T06",
+        "MAN-W08",
+        "MAN-A11",
+        "DEV-P14"
+      ],
+      "controls": [
+        "select owned train",
+        "map/coordinate tail anchor",
+        "source initial orientation",
+        "reverse selected formation",
+        "withdraw"
+      ],
+      "semantics": "Tail-first walk with temporary head guide, no slope zdiff, duplicate/missing/occupied rejection; native initial rr.dir1. Additional arbitrary heading preview is a browser adaptation only for a valid equivalent reversed pose.",
+      "acceptance": "Exact car states/IDs and first native-speed timer; invalid candidate preserves inventory and occupancy.",
+      "decisions": [
+        "TRAIN-D003",
+        "TRAIN-D015",
+        "TRAIN-D017"
+      ]
+    },
+    {
+      "id": "movement",
+      "owner": "P5-08",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/Car.cs",
+        "core/world/CarState.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/World.cs",
+        "core/world/Traffic.cs"
+      ],
+      "requirements": [
+        "MAN-A11",
+        "DEV-P14"
+      ],
+      "controls": [
+        "run/pause/step",
+        "live state/reason"
+      ],
+      "semantics": "Guide then incoming-heading zdiff; border before reciprocal track; occupied destination including own tail blocks. Head-to-tail old-state shift is atomic.",
+      "acceptance": "SCN-005 and all P4 guide/ramp cases run against actual stock; deterministic occupancy and callback/account publication.",
+      "decisions": [
+        "TRAIN-D001",
+        "TRAIN-D015"
+      ]
+    },
+    {
+      "id": "reversal",
+      "owner": "P5-12",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/rail/JunctionRailRoad.cs"
+      ],
+      "requirements": [
+        "MAN-W08",
+        "MAN-A11",
+        "DEV-P18"
+      ],
+      "controls": [
+        "explicit reverse",
+        "emergency-state reason"
+      ],
+      "semantics": "guide().opposite per Inside car then reverse array/toggle; missing connection reverses once, blocked connection does not. Preserve original car index/type identity.",
+      "acceptance": "SCN-004/005 curved/junction/mixed-state traces; both-null adapter retains performed reversal and schedules one retry.",
+      "decisions": [
+        "TRAIN-D001",
+        "TRAIN-D015"
+      ]
+    },
+    {
+      "id": "timing-cost",
+      "owner": "P5-13",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/rail/SpeedLimit.cs"
+      ],
+      "requirements": [
+        "MAN-A11",
+        "MAN-A12",
+        "DEV-P24"
+      ],
+      "controls": [
+        "speed-limit feedback",
+        "operating costs"
+      ],
+      "semantics": "Capture old Inside head before any handler mutation; positive wait returns first; Outside/native path bypasses local limits. Charge successful moves1/5/9 etc including countdown.",
+      "acceptance": "SCN-006/014,32 numeric plus7 timing handoff rows; no move-count increment/charge for blocked or waiting callbacks.",
+      "decisions": [
+        "TRAIN-D001",
+        "TRAIN-D007",
+        "TRAIN-D008",
+        "TRAIN-D015"
+      ]
+    },
+    {
+      "id": "outside",
+      "owner": "P5-14",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/World.cs",
+        "core/world/Matrix.cs",
+        "core/world/Location.cs"
+      ],
+      "requirements": [
+        "MAN-W08",
+        "MAN-A11"
+      ],
+      "controls": [
+        "Outside state/countdown",
+        "return status"
+      ],
+      "semantics": "100 countdown, exchange at resulting50 before chain shift, attempt after counter0, missing-track retry10; first connected candidate wins before occupancy. Return/opposite formation and forwarding follow source.",
+      "acceptance": "SCN-007 all borders/cardinal/diagonal/occupied-first/missing returns; controlled passenger/fare companion, P6 station game still open.",
+      "decisions": [
+        "TRAIN-D007",
+        "TRAIN-D008"
+      ]
+    },
+    {
+      "id": "simple",
+      "owner": "P5-16",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/SimpleTrainControllerImpl.cs",
+        "core/world/rail/TrainController.cs",
+        "core/world/rail/YardRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "requirements": [
+        "MAN-T08",
+        "MAN-W09",
+        "MAN-A12",
+        "DEV-P20"
+      ],
+      "controls": [
+        "built-in default assignment",
+        "read-only defaults"
+      ],
+      "semantics": "Junction straight; only Station harbor first wait30 then0, signal/nonstation ignored.",
+      "acceptance": "CallCount and Station/nonstation/Signal distinctions with labeled source-derived adapters.",
+      "decisions": [
+        "TRAIN-D002",
+        "TRAIN-D004",
+        "TRAIN-D010"
+      ]
+    },
+    {
+      "id": "manual",
+      "owner": "P5-17",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs",
+        "core/world/rail/TrainController.cs"
+      ],
+      "requirements": [
+        "MAN-T08",
+        "MAN-W09",
+        "MAN-A12",
+        "DEV-P20"
+      ],
+      "controls": [
+        "left/right",
+        "Shift pass",
+        "Up depart",
+        "Down reverse",
+        "lease/status/reset"
+      ],
+      "semantics": "Valid-left before valid-right; first Shift0 else5, later Up0 before Down-1 else5. Do not poll server/native keyboard or persist held input.",
+      "acceptance": "Two-peer leases/expiry and focus/disconnect/reconnect neutralization; exact source5-minute callbacks.",
+      "decisions": [
+        "TRAIN-D004",
+        "TRAIN-D010",
+        "TRAIN-D014"
+      ]
+    },
+    {
+      "id": "manager",
+      "owner": "P5-18",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/controllers/rail/TrainControllerDialog.cs",
+        "core/contributions/rail/TrainControllerContribution.cs",
+        "core/world/rail/TrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs"
+      ],
+      "requirements": [
+        "MAN-T08",
+        "MAN-W09",
+        "MAN-A12",
+        "DEV-P20"
+      ],
+      "controls": [
+        "new/provider",
+        "configure",
+        "rename",
+        "deep copy",
+        "delete with usages",
+        "train/group assignment"
+      ],
+      "semantics": "Independent shared controller identities; built-ins not deletable plugin instances; source deep-copy intent becomes typed copy, referenced deletion rejected until explicit reassignment.",
+      "acceptance": "Shared assignments versus copy isolation; no dangling refs; cancellation/stale/receipt and save round trip.",
+      "decisions": [
+        "TRAIN-D002",
+        "TRAIN-D009",
+        "TRAIN-D010",
+        "TRAIN-D013"
+      ]
+    },
+    {
+      "id": "tat-junction",
+      "owner": "P5-19",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs"
+      ],
+      "requirements": [
+        "MAN-T08",
+        "MAN-W02",
+        "MAN-A12",
+        "DEV-P20"
+      ],
+      "controls": [
+        "pick junction",
+        "default straight/curve",
+        "month/day/weekday/hour masks",
+        "add/replace/up/down/remove"
+      ],
+      "semantics": "Location-keyed junction default straight, first matching stored rule; UI sets minute wildcard-1; only missing-junction entries refreshed.",
+      "acceptance": "Wildcard/conjunction/order boundaries; no-match default; source-valid location retention and corrected day editor.",
+      "decisions": [
+        "TRAIN-D005",
+        "TRAIN-D011",
+        "TRAIN-D012"
+      ]
+    },
+    {
+      "id": "tat-stop",
+      "owner": "P5-19",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs",
+        "core/world/rail/YardRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "requirements": [
+        "MAN-T08",
+        "MAN-W09",
+        "MAN-A12",
+        "DEV-P20"
+      ],
+      "controls": [
+        "pick harbor via station/platform/signal",
+        "pass/fixed/daily/advanced",
+        "duration",
+        "daily time",
+        "reverse on departure"
+      ],
+      "semantics": "Location-keyed harbor on chosen train controller; unconfigured default10; daily equality waits1440. Signals consult effective train controller, not a signal-owned override.",
+      "acceptance": "SCN-008 arrival479/480/481 =>1/1440/1439; station identity shared by platforms; signal no boarding.",
+      "decisions": [
+        "TRAIN-D004",
+        "TRAIN-D006",
+        "TRAIN-D010",
+        "TRAIN-D012"
+      ]
+    },
+    {
+      "id": "tat-advanced",
+      "owner": "P5-20",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs"
+      ],
+      "requirements": [
+        "MAN-A12",
+        "MAN-O09",
+        "DEV-P20"
+      ],
+      "controls": [
+        "five mask fields",
+        "eight actions",
+        "add/replace/copy",
+        "up/down/remove",
+        "confirmed clear-all"
+      ],
+      "semantics": "Stored order; initial pass/stop only, later go/reverse/forwarding/stop; next ten-minute boundary polling. Add duplicate mask guard differs from replace/copy/import. Sorter is commented out.",
+      "acceptance": "SCN-008 all action/mask/callCount boundaries, typed values and duplicate/order outcomes; no nextMatch call.",
+      "decisions": [
+        "TRAIN-D005",
+        "TRAIN-D006",
+        "TRAIN-D011"
+      ]
+    },
+    {
+      "id": "turning",
+      "owner": "P5-21",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "core/world/rail/Train.cs",
+        "core/world/rail/YardRailRoad.cs"
+      ],
+      "requirements": [
+        "MAN-A11",
+        "MAN-A12"
+      ],
+      "controls": [
+        "reverse2",
+        "reverse-forwarding2"
+      ],
+      "semantics": "checkTurn mutates before return; preserve early reversal and special one-car nonsharp return-1000, then yard effects then central sentinel handling. Re-place cars without remove/place train callbacks.",
+      "acceptance": "SCN-009 expanded poses/early returns/captured head/callback identity; invalid re-placement rolls whole callback back under portable atomic guard.",
+      "decisions": [
+        "TRAIN-D006",
+        "TRAIN-D015"
+      ]
+    },
+    {
+      "id": "groups",
+      "owner": "P5-22",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/world/rail/TrainItem.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/world/rail/DelegationTrainControllerImpl.cs",
+        "core/controllers/rail/TrainPlacementController.cs",
+        "core/world/World.cs"
+      ],
+      "requirements": [
+        "MAN-W08",
+        "MAN-O08",
+        "MAN-A17"
+      ],
+      "controls": [
+        "create/name group",
+        "move-to-group",
+        "choose parent timetable",
+        "per-train override",
+        "effective controller"
+      ],
+      "semantics": "Registered delegation, not a source-only alternative. Root explicit simple; null means simple fallback; reject cycles/missing references. No source group-delete action; retain no-delete disposition.",
+      "acceptance": "Nested inheritance/reparent/override, root/null/all-delegating lookup and save graph; malformed references rejected.",
+      "decisions": [
+        "TRAIN-D002",
+        "TRAIN-D009",
+        "TRAIN-D016"
+      ]
+    },
+    {
+      "id": "diagram",
+      "owner": "P5-23",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "core/controllers/rail/TrainControllerDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs"
+      ],
+      "requirements": [
+        "MAN-A12",
+        "MAN-O09"
+      ],
+      "controls": [
+        "read/append preview",
+        "portable save/export",
+        "copy rule",
+        "clear confirmation"
+      ],
+      "semantics": "Source BinaryFormatter RuleCollection append/save; commented SOAP inactive. Use bounded inert reader and explicit portable JSON export, not a promise of native binary writer compatibility.",
+      "acceptance": "SCN-009 ordered[A]+[B,C]=>[A,B,C]; malformed/type/size/reference failures preserve files/current rules.",
+      "decisions": [
+        "TRAIN-D011",
+        "TRAIN-D013"
+      ]
+    },
+    {
+      "id": "information-tracking",
+      "owner": "P5-25",
+      "status": "source-contract-specified",
+      "sources": [
+        "core/controllers/rail/TrainInformationWindow.cs",
+        "core/views/map/TrainTrackingWindow.cs",
+        "core/world/rail/Train.cs"
+      ],
+      "requirements": [
+        "MAN-M02",
+        "MAN-W10",
+        "MAN-A13"
+      ],
+      "controls": [
+        "nested select",
+        "name/state/length/capacity/passengers%",
+        "Move",
+        "continuous follow",
+        "local train labels/font/color"
+      ],
+      "semantics": "Information/Move distinct from map-local tracking; normal-capacity denominator can yield >100% for packed passengers; Outside reference is placed, Unplaced disables Move/follow.",
+      "acceptance": "Stable selection across reversal/return; sale/replacement clears subscriptions/follow; no shared domain mutation from camera/settings.",
+      "decisions": [
+        "TRAIN-D015"
+      ]
+    },
+    {
+      "id": "color-test",
+      "owner": "P5-25",
+      "status": "source-contract-specified",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+        "core/contributions/train/ColoredTrainCarImpl.cs"
+      ],
+      "requirements": [
+        "MAN-M02",
+        "MAN-A10",
+        "DEV-P18",
+        "DEV-P32"
+      ],
+      "controls": [
+        "template",
+        "body/three line colors",
+        "day/night preview",
+        "colorMap XML copy/export",
+        "explicit apply"
+      ],
+      "semantics": "Reachable authored zero-capacity train remains included. Local preview/export; any shared apply uses world-local persisted override for the color-test definition, never mutable process-global registry.",
+      "acceptance": "Source colors/shades/templates and all affected cars match, separate sessions isolated; actual art/effects and safe XML export.",
+      "decisions": [
+        "TRAIN-D018"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "TRAIN-D001",
+      "title": "Both next states null",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-12",
+      "sources": [
+        "core/world/rail/Train.cs"
+      ],
+      "operations": [
+        "movement",
+        "reversal",
+        "timing-cost"
+      ],
+      "sourceBehavior": "DEP-013/SCN-D03: reverse then null dereference before scheduling.",
+      "disposition": "Retain source reversal/handler effects in detached candidate, EmergencyStopping, no position shift/count/charge, exactly one future retry using captured prior Inside limit timing, or native interval when not Inside. Never access null next.",
+      "acceptance": "Independent both-null pose/time/queue trace and save/reload recovery; no claim source executes retry.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D002",
+      "title": "Delegation/root/cycles",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-04/P5-22",
+      "sources": [
+        "core/world/rail/DelegationTrainControllerImpl.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/world/rail/TrainItem.cs",
+        "core/world/World.cs"
+      ],
+      "operations": [
+        "groups",
+        "manager",
+        "simple"
+      ],
+      "sourceBehavior": "DEP-014: named root null is returned; reparent has no domain cycle guard.",
+      "disposition": "New root explicitly simple; null controller resolves simple instead of dereferencing; delegation climbs only delegation ancestors. Reject missing nonnull IDs, duplicate memberships, cycles/self-parent/root movement before mutation and on load.",
+      "acceptance": "Null/root/all-delegating/nested/cycle graphs; report effective identity and reject invalid files intact.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D003",
+      "title": "Placement without slope zdiff",
+      "status": "retain-source",
+      "owner": "P5-07",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/controllers/rail/TrainPlacementController.cs",
+        "core/world/rail/SlopeRailRoad.cs"
+      ],
+      "operations": [
+        "deploy"
+      ],
+      "sourceBehavior": "GEO-008: placement increments XY guide with no zdiff, starts tail at clicked rail using rr.dir1.",
+      "disposition": "Retain source walk and tail/head orientation; reject any resulting missing/duplicate/occupied/invalid graph atomically. Do not reuse movement slope walker. Optional explicit reversed orientation must equal a legal reversed source placement.",
+      "acceptance": "Slope-specific deployment witnesses separate from valid moving-ramp traces.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D004",
+      "title": "Positive-stop operational label",
+      "status": "retain-source",
+      "owner": "P5-16/P5-24",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/rail/SimpleTrainControllerImpl.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "operations": [
+        "simple",
+        "tat-stop",
+        "manual"
+      ],
+      "sourceBehavior": "GEO-005: all positive waits set StoppingAtStation, even signal waits; StoppingAtSignal exists but this handler never sets it.",
+      "disposition": "Retain domain state; translate as waiting for departure with separately identified harbor in UI, not a claim of source signal-state differentiation.",
+      "acceptance": "Signal/station positive waits and forwarding prefix independently checked.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D005",
+      "title": "Day editor loads month",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-20",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs"
+      ],
+      "operations": [
+        "tat-advanced",
+        "tat-junction"
+      ],
+      "sourceBehavior": "Both active onSelectionChanged methods assign rule.month into nonwildcard dayBox.",
+      "disposition": "Load actual rule.day; unchanged edit must preserve exact mask. This is a UI integrity correction, not a mask/calendar algorithm change.",
+      "acceptance": "Distinct month2/day17 and wildcard round trips in both editors.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D006",
+      "title": "Sentinels and TURNING side effects",
+      "status": "retain-source",
+      "owner": "P5-16/P5-21",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "core/world/rail/YardRailRoad.cs"
+      ],
+      "operations": [
+        "turning",
+        "tat-advanced",
+        "tat-stop"
+      ],
+      "sourceBehavior": "Stop callbacks mutate before central interpretation; -999 forward,-1000 reverse+forward,other negative reverse. one-car nonsharp checkTurn returns-1000 even requested-1.",
+      "disposition": "Typed results must carry ordered handler effects before yard unload/boarding/bell and central reversal/reset. Preserve nonpositive forwarding reset and early reversals. Unsafe re-placement fails entire detached callback, never partial occupancy.",
+      "acceptance": "SCN-008/009 poses, unusual one-car action, prior-head timing and one callback; P6 companion records passenger/bell order.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D007",
+      "title": "Positive native speed validity",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-03",
+      "sources": [
+        "core/contributions/train/AbstractTrainContributionImpl.cs",
+        "core/world/rail/Train.cs",
+        "core/world/Clock.cs"
+      ],
+      "operations": [
+        "stock",
+        "timing-cost",
+        "outside"
+      ],
+      "sourceBehavior": "Tokens slow/medium/fast/superb=4/3/2/1; arbitrary Int32 numeric accepted, including<=0.",
+      "disposition": "Admit positive Int32 native minutes only; zero/negative content diagnosed before registration/deployment. Do not clamp>4 or normalize source speed limits. Checked future due time must fit existing P1 clock.",
+      "acceptance": "Numeric1/5/Int32Max plus0/-1/malformed; negative numeric handoff rows are arithmetic-only.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D008",
+      "title": "Checked source integer boundaries",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-03/P5-06/P5-13",
+      "sources": [
+        "core/contributions/train/AbstractTrainContributionImpl.cs",
+        "core/world/rail/Train.cs",
+        "core/controllers/rail/TrainTradingDialog.cs"
+      ],
+      "operations": [
+        "stock",
+        "trade",
+        "timing-cost",
+        "outside"
+      ],
+      "sourceBehavior": "Int32 price(length), capacity sums, movement expense and fare products can overflow before long accounts; trading quote uses decimal multiplication then long cast.",
+      "disposition": "Preserve source evaluation/truncation and valid-range outputs; compute with explicit checks at each original Int32 intermediate and checked long/decimal conversion. Reject invalid metadata/quotes before mutation; unexpected callback overflow aborts detached advance under existing clock policy. Never silently wrap, saturate, or widen economic range.",
+      "acceptance": "SCN-014/026 ordinary values plus near-boundary overflow, negative amounts, future purchase date and no partial IDs/accounts/queue.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D009",
+      "title": "Delete referenced controller",
+      "status": "specified-portable-adaptation",
+      "owner": "P5-18",
+      "sources": [
+        "core/controllers/rail/TrainControllerDialog.cs",
+        "core/world/rail/TrainController.cs",
+        "core/world/rail/TrainItem.cs"
+      ],
+      "operations": [
+        "manager",
+        "groups"
+      ],
+      "sourceBehavior": "Manager removes controller collection entry, leaves object references attached to trains/groups.",
+      "disposition": "Reject deletion while referenced; list train/group usages and require explicit reassignment. Built-ins retained. Typed deep-copy creates fresh controller/rule IDs, same ordered settings, no source serialization activation.",
+      "acceptance": "Copy isolation and referenced deletion with shared train/group effective identity across reload.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D010",
+      "title": "Signal dispatch is train-owned",
+      "status": "retain-source",
+      "owner": "P5-18/P5-24",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs"
+      ],
+      "operations": [
+        "tat-stop",
+        "manager",
+        "simple",
+        "manual"
+      ],
+      "sourceBehavior": "Signal getStopTimeSpan calls tr.controller, not a per-signal controller. TAT settings are in chosen controller at harbor.location.",
+      "disposition": "Use effective train/group controller. P4 RailComponent.ControllerId remains reserved null for baseline P5, not an override. Signal inspector chooses controller-editing context locally; no signal-wide override assignment command. Current-format nonnull reserved references must be explicitly rejected/diagnosed by P5 codec until a separately approved extension exists.",
+      "acceptance": "Two trains with different controllers share one signal and wait differently; nonnull reserved field never changes dispatch.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D011",
+      "title": "Rule ordering/duplicates/sorter",
+      "status": "retain-source",
+      "owner": "P5-20",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs"
+      ],
+      "operations": [
+        "tat-advanced",
+        "tat-junction",
+        "diagram"
+      ],
+      "sourceBehavior": "Station sorter assignment and comparer are commented out. Rules execute stored order; station Add alone rejects identical five-field masks; replace/copy/import allow them.",
+      "disposition": "Retain active order, no automatic sorting and no invented enable checkbox. Up/down edits execution order. Preserve branch-specific duplicate rules subject to structural validation.",
+      "acceptance": "Overlapping masks, stop before go, copy/replace/import duplicates; any later view sort must not reorder saved execution.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D012",
+      "title": "TAT location keys and cleanup",
+      "status": "retain-source",
+      "owner": "P5-19/P5-24",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs",
+        "core/world/rail/YardRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs"
+      ],
+      "operations": [
+        "tat-junction",
+        "tat-stop"
+      ],
+      "sourceBehavior": "Junction and harbor dictionaries key Location; only removed junction keys pruned on config, harbor entries retained. Yard passes resolved station, signal passes itself.",
+      "disposition": "Persist typed location-keyed settings, preserving same-location reuse rather than silently keying by new entity identity. Browser query/open stays read-only; present missing-junction cleanup as part of explicit confirmed configuration mutation. Validate coordinate/mask shape but do not reject retained absent-harbor locations.",
+      "acceptance": "Shared station platforms, removed/rebuilt harbor, configure cleanup versus cancel, two signals and train-specific controllers.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D013",
+      "title": "Rule files and cloning",
+      "status": "existing-plan-adaptation",
+      "owner": "P5-18/P5-23",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "core/controllers/rail/TrainControllerDialog.cs"
+      ],
+      "operations": [
+        "diagram",
+        "manager"
+      ],
+      "sourceBehavior": "BinaryFormatter controller deep copy and RuleCollection ftdd read/save; SOAP calls commented.",
+      "disposition": "Use typed clone and bounded inert allowlisted record reader; no runtime legacy deserialization. Append ordered validated rules atomically after preview. Export versioned portable JSON plus original input retention; native-writable binary export unimplemented and not promised.",
+      "acceptance": "Wrong root/types/references, sizes, malformed data; source-authentic or source-generated fixtures labeled accurately; portable round trip distinct from desktop compatibility.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D014",
+      "title": "Manual input authority",
+      "status": "existing-plan-adaptation",
+      "owner": "P5-17",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs"
+      ],
+      "operations": [
+        "manual"
+      ],
+      "sourceBehavior": "GetAsyncKeyState reads process-global keyboard, not participant ownership.",
+      "disposition": "Leased per-world/train manual intent with expiry and neutralization on blur/disconnect/generation change; keyboard/touch equivalents retain left/right and Up/Down priorities. No persisted held input, automatic replay or UI pause.",
+      "acceptance": "Two-participant contention, release/expiry/reconnect and5-minute polling independent of UI refresh.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D015",
+      "title": "Atomic mutations and callback continuity",
+      "status": "existing-plan-adaptation",
+      "owner": "P5-04/P5-26/P5-27",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/Car.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "core/controllers/rail/TrainTradingDialog.cs",
+        "core/controllers/rail/TrainInformationWindow.cs",
+        "core/views/map/TrainTrackingWindow.cs",
+        "core/world/Clock.cs"
+      ],
+      "operations": [
+        "trade",
+        "deploy",
+        "movement",
+        "reversal",
+        "turning",
+        "timing-cost",
+        "information-tracking"
+      ],
+      "sourceBehavior": "Desktop operations mutate car slots/accounting progressively; temporary placement and handler-side TURNING act on live world.",
+      "disposition": "Plan/copy/revalidate/publish complete consist+occupancy+queue+accounts in session FIFO. Keep source effect order inside candidate. GEO-002 remains P1 executing-entry cancellation correction; never unregister/re-register train for TURNING or reuse prototype movement as oracle. UI listeners and camera are transient; clear sold/stale selections without leaking subscriptions into saved/domain callbacks.",
+      "acceptance": "Failure injection/rejection, concurrent occupancy change, equal-time callback cancellation and exact checkpoint continuation.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D016",
+      "title": "Formation/resource and group removal boundaries",
+      "status": "named-follow-up",
+      "owner": "P5-03/P5-22/P5-28",
+      "sources": [
+        "core/controllers/rail/TrainTradingDialog.cs",
+        "core/contributions/train/ParamTrainImpl.cs",
+        "core/contributions/train/PatternTrainImpl.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/controllers/rail/TrainPlacementController.cs"
+      ],
+      "operations": [
+        "stock",
+        "groups",
+        "trade"
+      ],
+      "sourceBehavior": "Param creates any requested positive length; Pattern only explicit compositions. UI source sets minimum1 and leaves numeric control Maximum implicit. Group-delete action absent.",
+      "disposition": "P5-03 must resolve actual WinForms default-max dependency against historical UI evidence and declare measured portable admission limits before enabling requests; no claimed100-car domain ceiling or unknown total train limit. Retain no group deletion for baseline, move contents/groups through existing commands; capacity proposals are not accepted limits.",
+      "acceptance": "Named bounded-admission follow-up remains open through P5-03/28; no extra approval gate or runtime capacity credit.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D017",
+      "title": "Placed sale versus source UI",
+      "status": "retain-source",
+      "owner": "P5-06/P5-10",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/controllers/rail/TrainPlacementController.cs"
+      ],
+      "operations": [
+        "trade",
+        "deploy"
+      ],
+      "sourceBehavior": "Domain sell withdraws placed stock; reachable source sale context enabled only for unplaced train.",
+      "disposition": "Baseline sale UI requires withdrawal, then quote+confirm. Domain sale teardown remains safe if invoked as internal operation; no new one-click placed sale promised. Null purchase time produces no refund, never invented date.",
+      "acceptance": "Withdrawal/sale distinction, cancelled quote, anniversary boundaries and one booking/callback cancellation.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    },
+    {
+      "id": "TRAIN-D018",
+      "title": "Color-test shared state isolation",
+      "status": "existing-plan-adaptation",
+      "owner": "P5-25",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+        "core/contributions/train/ColoredTrainCarImpl.cs"
+      ],
+      "operations": [
+        "color-test",
+        "stock"
+      ],
+      "sourceBehavior": "Color dialog mutates shared car definition/template and all purchased users; global singleton can leak across worlds.",
+      "disposition": "Detached local previews/XML export; explicit authoritative apply persists a world-local override for the registered color-test definition and all its cars, preserving source shared-within-world behavior. Source template/car IDs remain immutable references; do not mutate process catalog or other sessions.",
+      "acceptance": "Two purchased color-test trains change together, another world unchanged; save/reopen exact four colors/template; zero capacity valid.",
+      "authority": "P5-01 source review / portable engineering contract; no new owner approval or runtime acceptance claimed"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "fleet-occupancy",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/Car.cs",
+        "core/world/CarState.cs",
+        "core/world/Traffic.cs",
+        "core/world/rail/JunctionRailRoad.cs",
+        "core/world/rail/SlopeRailRoad.cs",
+        "core/world/rail/RailPattern.cs"
+      ],
+      "operations": [
+        "movement",
+        "deploy",
+        "reversal"
+      ],
+      "contract": "Car state ↔ Traffic.Car ↔ registered car definition/TrainId/CarId; all graph directions validated together.",
+      "owner": "P5-04/P5-08"
+    },
+    {
+      "id": "scheduler-accounts",
+      "sources": [
+        "core/world/rail/Train.cs",
+        "core/world/Clock.cs",
+        "core/util/PriorityQueue.cs",
+        "core/world/accounting/AccountManager.cs"
+      ],
+      "operations": [
+        "timing-cost",
+        "outside",
+        "turning"
+      ],
+      "contract": "Pending named callbacks/counters/bookings advance transactionally; preserve GEO-002 and insertion order with construction jobs.",
+      "owner": "P5-04/P5-13/P5-27"
+    },
+    {
+      "id": "content-composition",
+      "sources": [
+        "core/contributions/train/AbstractTrainContributionImpl.cs",
+        "core/contributions/train/ParamTrainImpl.cs",
+        "core/contributions/train/PatternTrainImpl.cs",
+        "core/contributions/train/TrainCarContribution.cs"
+      ],
+      "operations": [
+        "stock",
+        "trade"
+      ],
+      "contract": "Factory registration → referenced car/wrapper/template closure → exact formations/capacities/price; P0 content graph and P2 art reused.",
+      "owner": "P5-03"
+    },
+    {
+      "id": "controller-inheritance",
+      "sources": [
+        "core/world/rail/TrainController.cs",
+        "core/world/rail/TrainItem.cs",
+        "core/world/rail/TrainGroup.cs",
+        "core/world/rail/DelegationTrainControllerImpl.cs",
+        "core/world/World.cs"
+      ],
+      "operations": [
+        "manager",
+        "groups",
+        "manual",
+        "simple"
+      ],
+      "contract": "World controller registry → train override/delegation ancestors → effective controller; null/cycle/deletion dispositions explicit.",
+      "owner": "P5-18/P5-22"
+    },
+    {
+      "id": "harbor-dispatch",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+        "core/world/rail/YardRailRoad.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TATModalController.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationHandler.cs",
+        "core/world/rail/TrainHarbor.cs"
+      ],
+      "operations": [
+        "tat-stop",
+        "simple",
+        "manual"
+      ],
+      "contract": "Rail callback → effective train controller → Location-keyed harbor handler; Station identity distinct from signal, P6 owns actual platform/passengers/bells.",
+      "owner": "P5-16/P5-24/P6"
+    },
+    {
+      "id": "masks-and-turning",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/TimeMask.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/JunctionAdvancedDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/Junction.cs",
+        "core/world/rail/Train.cs"
+      ],
+      "operations": [
+        "tat-advanced",
+        "tat-junction",
+        "turning"
+      ],
+      "contract": "Form masks and stored rule order → ordered side effects → yard effects → central reversal/forwarding → prior-head timer.",
+      "owner": "P5-20/P5-21"
+    },
+    {
+      "id": "files-and-clone",
+      "sources": [
+        "plugins/org.kohsuke.freetrain.tc.tat/src/StationAdvancedDialog.cs",
+        "core/controllers/rail/TrainControllerDialog.cs",
+        "plugins/org.kohsuke.freetrain.tc.tat/src/AdvancedStationHandler.cs"
+      ],
+      "operations": [
+        "diagram",
+        "manager"
+      ],
+      "contract": "Typed graphs/allowlisted inert records, bounded append/deep copy, no object activation; P10 world-save import remains separate.",
+      "owner": "P5-18/P5-23/P10"
+    },
+    {
+      "id": "presentation",
+      "sources": [
+        "core/controllers/rail/TrainInformationWindow.cs",
+        "core/views/map/TrainTrackingWindow.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigDialog.cs",
+        "plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs",
+        "core/world/rail/Train.cs"
+      ],
+      "operations": [
+        "information-tracking",
+        "color-test"
+      ],
+      "contract": "Stable selection and local camera/view/input lifecycles separate from durable fleet/color overrides; no UI listeners or camera in save.",
+      "owner": "P5-25/P5-27"
+    }
+  ],
+  "contributions": [
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:SpeedLimit:3:{998985DC-5A8E-4C72-96B6-56EDC545305B}",
+      "id": "{998985DC-5A8E-4C72-96B6-56EDC545305B}",
+      "type": "menu",
+      "source": "plugins/SpeedLimit/plugin.xml",
+      "sourceSha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "handler": {
+        "name": "freetrain.world.rail.speedlimit.MenuContributionImpl",
+        "codebase": "bin/Debug/SpeedLimit.dll",
+        "assembly": "SpeedLimit",
+        "projects": [
+          "trunk/plugins/SpeedLimit/FreeTrain.SpeedLimit.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/SpeedLimit/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "timing-cost",
+      "owner": "P5-13",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.garage:0:{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "id": "{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "type": "specialRail",
+      "source": "plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sourceSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "handler": {
+        "name": "freetrain.world.rail.garage.TrainGarageContributionImpl",
+        "codebase": "bin/FreeTrain.TrainGarage.dll",
+        "assembly": "FreeTrain.TrainGarage",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/FreeTrain.TrainGarage.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.garage/src/TrainGarage.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "movement",
+      "owner": "P5-08",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:1:{DFB5CC3B-B0B0-4421-80DC-4E9D1E39A1E8}",
+      "id": "{DFB5CC3B-B0B0-4421-80DC-4E9D1E39A1E8}",
+      "type": "menu",
+      "source": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "handler": {
+        "name": "freetrain.world.rail.signal.MenuContributionImpl",
+        "codebase": "bin/FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/MenuContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "tat-stop",
+      "owner": "P5-19",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:2:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "id": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "type": "railSignal",
+      "source": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "handler": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "operation": "tat-stop",
+      "owner": "P5-19",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:3:{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "id": "{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "type": "railSignal",
+      "source": "plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "handler": {
+        "name": "freetrain.world.rail.signal.RailSignalContribution",
+        "codebase": "FreeTrain.RailSignal.dll",
+        "assembly": "FreeTrain.RailSignal",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/FreeTrain.RailSignal.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.rail.signal/src/RailSignalContribution.cs"
+        ],
+        "otherSources": [
+          "trunk/plugins/jp.co.tripod.chiname.lib/src/DummyCars/RailSignalContribution.cs"
+        ],
+        "resolution": "source-and-project"
+      },
+      "operation": "tat-stop",
+      "owner": "P5-19",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:0:{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "id": "{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "type": "specialRail",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "handler": {
+        "name": "freetrain.world.rail.BridgeRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/BridgeRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "movement",
+      "owner": "P5-08",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:1:{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "id": "{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "type": "specialRail",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "handler": {
+        "name": "freetrain.world.rail.StealSupportedRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/StealSupportedRailContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "movement",
+      "owner": "P5-08",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:2:{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "id": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "type": "specialRail",
+      "source": "plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "handler": {
+        "name": "freetrain.world.rail.TunnelRailContributionImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/world/rail/TunnelRail.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "movement",
+      "owner": "P5-08",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tc.manual:0:{5567FE11-FC2C-4a1d-836F-722EF9DC957C}",
+      "id": "{5567FE11-FC2C-4a1d-836F-722EF9DC957C}",
+      "type": "trainController",
+      "source": "plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sourceSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "handler": {
+        "name": "freetrain.world.rail.manualtc.TrainConrollerContributionImpl",
+        "codebase": "bin/FreeTrain.ManualTrainController.dll",
+        "assembly": "FreeTrain.ManualTrainController",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/FreeTrain.ManualTrainController.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/FreeTrain.ManualTrainController.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.manual/src/ContributionImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "manager",
+      "owner": "P5-18",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.tc.tat:0:{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}",
+      "id": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}",
+      "type": "trainController",
+      "source": "plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "handler": {
+        "name": "freetrain.world.rail.tattc.TATTrainControllerPlugIn",
+        "codebase": "bin/FreeTrain.TATTrainController.dll",
+        "assembly": "FreeTrain.TATTrainController",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/FreeTrain.TATTrainController.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.tc.tat/src/TATTrainControllerPlugIn.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "manager",
+      "owner": "P5-18",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:0:{8CA8F000-4DC6-4441-8F53-A628C952BD9F}",
+      "id": "{8CA8F000-4DC6-4441-8F53-A628C952BD9F}",
+      "type": "menu",
+      "source": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "handler": {
+        "name": "freetrain.world.rail.cttrain.ColorConfigCommand",
+        "codebase": "bin/FreeTrain.ColorTestTrain.dll",
+        "assembly": "FreeTrain.ColorTestTrain",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorConfigCommand.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "color-test",
+      "owner": "P5-25",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:1:{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "id": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "handler": {
+        "name": "freetrain.world.rail.cttrain.ColorTestTrainCar",
+        "codebase": "bin/FreeTrain.ColorTestTrain.dll",
+        "assembly": "FreeTrain.ColorTestTrain",
+        "projects": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.2008.csproj",
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/FreeTrain.ColorTestTrain.csproj"
+        ],
+        "sources": [
+          "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/src/ColorTestTrainCar.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:2:{719F0922-EA74-409C-B829-C4950201C226}",
+      "id": "{719F0922-EA74-409C-B829-C4950201C226}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:0:{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "id": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:1:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "id": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:2:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "id": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:3:{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "id": "{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:4:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.AsymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/AsymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:5:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:6:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ReverseTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ReverseTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:7:{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:8:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.AsymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/AsymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:9:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.SymTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/SymTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:10:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "type": "trainCar",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ReverseTrainCarImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ReverseTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:11:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "type": "train",
+      "source": "plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "handler": {
+        "name": "freetrain.contributions.train.ParamTrainImpl",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ParamTrainImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:36:{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}",
+      "id": "{CBB96A74-1201-4A26-82ED-B7A8C71EC5AD}",
+      "type": "dockingContent",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.controllers.rail.TrainControllerDialog",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/controllers/rail/TrainControllerDialog.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "manager",
+      "owner": "P5-18",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:37:{533F5EF1-2E97-46aa-A231-49BB0D2A724D}",
+      "id": "{533F5EF1-2E97-46aa-A231-49BB0D2A724D}",
+      "type": "dockingContent",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.controllers.rail.TrainInformationWindow",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/controllers/rail/TrainInformationWindow.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "information-tracking",
+      "owner": "P5-25",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P4 infrastructure or P5 UI route consumed by trains"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:51:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:52:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:53:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:54:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:55:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:56:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:57:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "type": "colorMapTrainPicture",
+      "source": "plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "handler": {
+        "name": "freetrain.contributions.train.ColoredTrainPictureContribution",
+        "codebase": null,
+        "assembly": "FreeTrain.Core",
+        "projects": [
+          "trunk/core/FreeTrain.Core.2008.csproj",
+          "trunk/core/FreeTrain.Core.csproj"
+        ],
+        "sources": [
+          "trunk/core/contributions/train/ColoredTrainCarImpl.cs"
+        ],
+        "otherSources": [],
+        "resolution": "source-and-project"
+      },
+      "operation": "stock",
+      "owner": "P5-03",
+      "status": "source-bound-runtime-unimplemented",
+      "scope": "P5 stock/provider/consumer"
+    }
+  ],
+  "policies": {
+    "signalDispatch": "effective-train-controller",
+    "signalControllerId": "reserved-null-not-dispatch",
+    "bothNull": "emergency-one-prior-head-retry-after-source-reversal",
+    "delegationNull": "simple-fallback-reject-cycles",
+    "placement": "retain-source-no-zdiff",
+    "positiveStopState": "StoppingAtStation",
+    "dayEditor": "restore-rule-day-in-both-editors",
+    "rules": "stored-order-sorter-commented",
+    "arithmetic": "checked-at-original-source-width",
+    "numericSpeed": "positive-int32-native-branches-retained",
+    "save": "current-format-only-no-P5-world-import",
+    "ge002": "preserve-P1-executing-entry-cancellation"
+  },
+  "followUps": [
+    {
+      "id": "TRAIN-F001",
+      "owner": "P5-03/P5-28",
+      "status": "open-measured-admission",
+      "requirement": "Resolve UI implicit numeric Maximum and freeze measured train/car/request limits; no100-car domain claim."
+    },
+    {
+      "id": "TRAIN-F002",
+      "owner": "P5-02",
+      "status": "open-independent-fixtures",
+      "requirement": "Expand actual TURNING poses/early returns, both-null adaptation and shared-signal train-controller traces before implementation."
+    },
+    {
+      "id": "TRAIN-F003",
+      "owner": "P5-03/P5-29",
+      "status": "open-existing-resource-qualification",
+      "requirement": "Retain P0 TAT Straight.bmp project/resource diagnostic, P2 human/native and optional-suite qualifications; no resource repair or missing-type runtime credit here."
+    }
+  ],
+  "runtimeStatus": "unimplemented",
+  "approvalGates": [],
+  "reviewSha256": "050c689e621fba84cc712720a0003e6ef7d5e67a0fee00148b5fc31bf08adc0a"
+}

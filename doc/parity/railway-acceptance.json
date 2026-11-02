@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "slice": "P4-24",
+  "reviewedOn": "2026-11-02",
+  "phaseGate": "accepted-browser-portable",
+  "inputs": [
+    {
+      "path": "doc/parity/railway-review.json",
+      "sha256": "96a9015474f0817700945ec2d13a33593035b100b7df99cb226b02c887844d96"
+    },
+    {
+      "path": "doc/parity/railway-localization-review.json",
+      "sha256": "3730695c16fc487263e539f5e0d9be3c6950da6a8da8447854b1a8c922c73d1d"
+    },
+    {
+      "path": "doc/parity/railway-accessories.json",
+      "sha256": "55559cb2c5f68007f9067bde9c6c258edf6825186bc96c69ba5b008d5119bdde"
+    },
+    {
+      "path": "doc/parity/railway-capacity-results.json",
+      "sha256": "5988c0490f4c00d0e434a2100f903ffa5f16dac8596754a135f01eacbc1506b5"
+    },
+    {
+      "path": "doc/parity/railway-p5-handoff.json",
+      "sha256": "387dc28f0555d64eb9c742d764a0aa1a7ac256b468923591b3fc70eaf381357f"
+    }
+  ],
+  "operations": [
+    {
+      "id": "normal-route",
+      "owner": "P4-06/07/09",
+      "decisions": [
+        "RAIL-D001",
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D008",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-normal-rail-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "attachment-detachment",
+      "owner": "P4-06",
+      "decisions": [
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-railway-topology.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "slope",
+      "owner": "P4-10/11",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D007",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-slope-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "piers",
+      "owner": "P4-07/10/12/13",
+      "decisions": [
+        "RAIL-D006",
+        "RAIL-D007"
+      ],
+      "evidence": "doc/web-parity-railway-slopes.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "bridge",
+      "owner": "P4-12",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-bridge-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "girder",
+      "owner": "P4-13",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D006",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-girder-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "tunnel",
+      "owner": "P4-14",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D009",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-tunnel-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "garage",
+      "owner": "P4-15",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D004",
+        "RAIL-D005",
+        "RAIL-D010",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-garage-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "signal",
+      "owner": "P4-16",
+      "decisions": [
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D011"
+      ],
+      "evidence": "doc/web-parity-signal-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "pole",
+      "owner": "P4-17",
+      "decisions": [
+        "RAIL-D003",
+        "RAIL-D011"
+      ],
+      "evidence": "doc/web-parity-pole-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "stationary-accessory",
+      "owner": "P4-18/P7",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D005",
+        "RAIL-D014",
+        "RAIL-D013"
+      ],
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "speed-limit-flat",
+      "owner": "P4-19",
+      "decisions": [
+        "RAIL-D001",
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D012"
+      ],
+      "evidence": "doc/web-parity-speed-limits.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "speed-limit-slope",
+      "owner": "P4-19",
+      "decisions": [
+        "RAIL-D002",
+        "RAIL-D003",
+        "RAIL-D012"
+      ],
+      "evidence": "doc/web-parity-speed-limits.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    },
+    {
+      "id": "crossing",
+      "owner": "P4-20/P7",
+      "decisions": [
+        "RAIL-D005",
+        "RAIL-D008",
+        "RAIL-D011"
+      ],
+      "evidence": "doc/web-parity-cross-tool.md",
+      "status": "browser/portable infrastructure accepted; later-phase/native gates retained"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "RAIL-D001",
+      "disposition": "existing-plan-adaptation",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D002",
+      "disposition": "existing-plan-adaptation",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D003",
+      "disposition": "existing-plan-adaptation",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D004",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D005",
+      "disposition": "existing-plan-adaptation",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D006",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D007",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D008",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D009",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D010",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D011",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D012",
+      "disposition": "existing-plan-adaptation",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D013",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    },
+    {
+      "id": "RAIL-D014",
+      "disposition": "retain-source",
+      "evidence": "doc/web-parity-railway-contract.md"
+    }
+  ],
+  "contributions": [
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:2:{DDF7F835-8100-45fd-8AE7-EC498796D387}",
+      "type": "electricPole",
+      "owner": "P4-17",
+      "evidence": "doc/web-parity-pole-tool.md",
+      "portableHandler": "PoleRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:3:{DD7D4548-5E0E-48e4-AB6E-64A443C240F7}",
+      "type": "electricPole",
+      "owner": "P4-17",
+      "evidence": "doc/web-parity-pole-tool.md",
+      "portableHandler": "PoleRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:4:{86E56A60-19DF-4ba7-BFE8-ABFBDF5DFA0A}",
+      "type": "electricPole",
+      "owner": "P4-17",
+      "evidence": "doc/web-parity-pole-tool.md",
+      "portableHandler": "PoleRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.electricPole:5:{FD1635C1-05BF-41af-9185-4891B983E2A4}",
+      "type": "electricPole",
+      "owner": "P4-17",
+      "evidence": "doc/web-parity-pole-tool.md",
+      "portableHandler": "PoleRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.garage:0:{93481807-D998-46d7-B1BE-CB2B5D086D67}",
+      "type": "specialRail",
+      "owner": "P4-12–15",
+      "evidence": "doc/web-parity-garage-tool.md",
+      "portableHandler": "GarageRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:2:{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+      "type": "railSignal",
+      "owner": "P4-16",
+      "evidence": "doc/web-parity-signal-tool.md",
+      "portableHandler": "SignalRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail.signal:3:{6FA55842-E693-414f-A120-0A3D0C613B21}",
+      "type": "railSignal",
+      "owner": "P4-16",
+      "evidence": "doc/web-parity-signal-tool.md",
+      "portableHandler": "SignalRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:0:{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}",
+      "type": "specialRail",
+      "owner": "P4-12–15",
+      "evidence": "doc/web-parity-bridge-tool.md",
+      "portableHandler": "BridgeRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:1:{7FD493FF-D6A7-4a13-A471-FB737641D8A0}",
+      "type": "specialRail",
+      "owner": "P4-12–15",
+      "evidence": "doc/web-parity-girder-tool.md",
+      "portableHandler": "GirderRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.rail:2:{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+      "type": "specialRail",
+      "owner": "P4-12–15",
+      "evidence": "doc/web-parity-tunnel-tool.md",
+      "portableHandler": "TunnelRailwayConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:1:{98619BD4-46C3-4B91-85FE-11147914F2A5}-A",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:2:{98619BD4-46C3-4B91-85FE-11147914F2A5}-B",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:3:{98619BD4-46C3-4B91-85FE-11147914F2A5}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:4:{98619BD4-46C3-4B91-85FE-11147914F2A5}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:5:{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:6:{98619BD4-46C3-4B91-85FE-11147914F2A5}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:7:{98619BD4-46C3-4B91-85FE-11147914F2A5}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:8:{98619BD4-46C3-4B91-85FE-11147914F2A5}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:9:{98619BD4-46C3-4B91-85FF-11147914F2A5}-A",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:10:{98619BD4-46C3-4B91-85FF-11147914F2A5}-B",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:11:{98619BD4-46C3-4B91-85FF-11147914F2A5}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:12:{98619BD4-46C3-4B91-85FF-11147914F2A5}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:13:{98619BD4-46C3-4B91-85FF-11147914F2A5}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:14:{98619BD4-46C3-4B91-85FF-11147914F2A5}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:15:{98619BD4-46C3-4B91-85FF-11147914F2A5}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:16:{98619BD4-46C3-4B91-85FF-11147914F2A5}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:18:{98619BD4-46C3-4B90-1703d-kokakyo2}-A",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:19:{98619BD4-46C3-4B90-1703d-kokakyo2}-B",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:20:{98619BD4-46C3-4B90-1703d-kokakyo2}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:21:{98619BD4-46C3-4B90-1703d-kokakyo2}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:22:{{98619BD4-46C3-4B90-1703d-kokakyo2}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:23:{98619BD4-46C3-4B90-1703d-kokakyo2}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:24:{98619BD4-46C3-4B90-1703d-kokakyo2}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:25:{98619BD4-46C3-4B90-1703d-kokakyo2}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:26:{98619BD4-46C3-4B91-1703d-kokakyo2}-A",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:27:{98619BD4-46C3-4B91-1703d-kokakyo2}-B",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:28:{98619BD4-46C3-4B91-1703d-kokakyo2}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:29:{98619BD4-46C3-4B91-1703d-kokakyo2}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:30:{98619BD4-46C3-4B91-1703d-kokakyo2}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:31:{98619BD4-46C3-4B91-1703d-kokakyo2}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:32:{98619BD4-46C3-4B91-1703d-kokakyo2}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:33:{98619BD4-46C3-4B91-1703d-kokakyo2}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:35:{98619BD4-46C3-4B91-1703d-kokakyo3}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:36:{98619BD4-46C3-4B91-1703d-kokakyo3}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:37:{98619BD4-46C3-4B91-1703d-kokakyo3}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:38:{98619BD4-46C3-4B91-1703d-kokakyo3}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:39:{98619BD4-46C3-4B91-1703d-kokakyo3}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:40:{98619BD4-46C3-4B91-1703d-kokakyo3}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:42:{98619BD4-46C3-4B91-1703d-kokakyo4}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:43:{98619BD4-46C3-4B91-1703d-kokakyo4}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:44:{98619BD4-46C3-4B91-1703d-kokakyo4}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:45:{98619BD4-46C3-4B91-1703d-kokakyo4}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:46:{98619BD4-46C3-4B91-1703d-kokakyo4}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:47:{98619BD4-46C3-4B91-1703d-kokakyo4}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:49:{98619BD4-46C3-4B91-1703d-kokakyo5}-C",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:50:{98619BD4-46C3-4B91-1703d-kokakyo5}-D",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:51:{98619BD4-46C3-4B91-1703d-kokakyo5}-E",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:52:{98619BD4-46C3-4B91-1703d-kokakyo5}-F",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:53:{98619BD4-46C3-4B91-1703d-kokakyo5}-G",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.ayase:54:{98619BD4-46C3-4B91-1703d-kokakyo5}-H",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.c915:1:{6EFAC132-DEAF-4989-BDE4-5865B1669986}",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.c915:2:{FB233435-5BA0-4699-8CB8-F6D0E435BF4F}",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:1:{DF1FC459-80D0-4A83-8F6E-63255E7ACA17}",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.stationary.hima:2:{FCD0126A-4B66-48D4-824A-936EB06FC44B}",
+      "type": "railStationary",
+      "owner": "P4-18",
+      "evidence": "doc/web-parity-stationary-tool.md",
+      "portableHandler": "StationaryConstruction"
+    }
+  ],
+  "translations": {
+    "count": 78,
+    "evidence": "doc/web-parity-construction-regression.md",
+    "checker": "scripts/review-railway.py"
+  },
+  "scope": "Infrastructure only; P5 motion, P6 platforms/passengers and P7 roads remain future gameplay. Existing P2/native/deferred-browser/P6–P11/import/optional gates unchanged.",
+  "ownerDisposition": {
+    "date": "2026-11-02",
+    "choice": "defer-performance-findings-to-P11",
+    "reason": "Address performance bottlenecks together after all parity features are implemented; reassess a possible map-size-limit increase.",
+    "evidence": "doc/web-parity-p4-acceptance.md#performance-disposition"
+  },
+  "deferredFindings": [
+    {
+      "id": "P4-CAP-001",
+      "status": "open-deferred-to-P11",
+      "owner": "P11 integrated performance and capacity review",
+      "disposition": "Owner-directed deferral, 2 November 2026: address with complete-game bottlenecks and reassess a possible map-size-limit increase. Retain measured misses and baseline targets; no runtime limit change.",
+      "evidence": "doc/web-parity-railway-capacity.md"
+    },
+    {
+      "id": "P4-CAP-002",
+      "status": "open-deferred-to-P11",
+      "owner": "P11 integrated performance and capacity review",
+      "disposition": "Owner-directed deferral, 2 November 2026: address with complete-game bottlenecks and reassess a possible map-size-limit increase. Retain measured misses and baseline targets; no runtime limit change.",
+      "evidence": "doc/web-parity-railway-capacity.md"
+    }
+  ]
+}

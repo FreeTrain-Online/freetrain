@@ -1,0 +1,1077 @@
+{
+  "schemaVersion": 1,
+  "slice": "P4-24/P5",
+  "status": "source-derived interface fixtures; P5 runtime pending",
+  "authority": {
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "version": "2.1.1.12"
+  },
+  "sources": [
+    {
+      "path": "core/world/Direction.cs",
+      "sha256": "53bc4122b0df7c8c5f4909cc2982f1474354c4ab91efe049f2c316510069ec96",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "Direction left",
+          "line": 78,
+          "text": "\t\tpublic Direction left { get { return directions[(index+7)%8]; } }"
+        },
+        {
+          "symbol": "Direction right",
+          "line": 84,
+          "text": "\t\tpublic Direction right { get { return directions[(index+1)%8]; } }"
+        },
+        {
+          "symbol": "Direction opposite",
+          "line": 88,
+          "text": "\t\tpublic Direction opposite { get { return directions[(index+4)%8]; } }"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Car.cs",
+      "sha256": "996a334c9352048c03d53dea36c4ab5b581a86312a4db94637475c405230d03d",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "CarState setState",
+          "line": 26,
+          "text": "\t\tprotected CarState setState( CarState s ) {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/Traffic.cs",
+      "sha256": "17a6f32834865e95480bda14c9e4ca1d82ee74f379f106c52a979292a3b3b56d",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "bool isOccupied",
+          "line": 111,
+          "text": "\t\tpublic bool isOccupied { get { return car!=null; }}"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "abstract Direction guide",
+          "line": 38,
+          "text": "\t\tpublic abstract Direction guide();"
+        },
+        {
+          "symbol": "int zdiff",
+          "line": 44,
+          "text": "\t\tpublic int zdiff( Direction d ) {"
+        },
+        {
+          "symbol": "bool isWellConnected",
+          "line": 64,
+          "text": "\t\tpublic bool isWellConnected { get {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SingleRailRoad.cs",
+      "sha256": "999171a080e821cd9d6aa3a839171eb898440acb1fca18783877c79d562a5937",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "override Direction guide",
+          "line": 17,
+          "text": "\t\tpublic override Direction guide() {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/JunctionRailRoad.cs",
+      "sha256": "43c6fef5f1c8873dbf86867cdb8f779780a84d68fd8049226282d76aaeb00fc4",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "override Direction guide",
+          "line": 15,
+          "text": "\t\tpublic override Direction guide() {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "override Direction guide",
+          "line": 89,
+          "text": "\t\tpublic override Direction guide() {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/SpecialPurposeRailRoad.cs",
+      "sha256": "2fc4805573fad2e04c9b614b1e18b24b566bad29948b08bac4d1d6b456188598",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "override Direction guide",
+          "line": 30,
+          "text": "\t\tpublic override Direction guide() {"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/RailPattern.cs",
+      "sha256": "f7e54db7291c3b2a1e31b766bf0afc1351bc6298b02e959b217a6f234ef5ef2a",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "createSlope(railChips, 1,0, 1,0,true)",
+          "line": 62,
+          "text": "\t\t\tRailPattern.createSlope(railChips, 1,0, 1,0,true),"
+        },
+        {
+          "symbol": "createSlope(railChips, 2,0,-1,4,false)",
+          "line": 63,
+          "text": "\t\t\tRailPattern.createSlope(railChips, 2,0,-1,4,false),"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "void clockHandler",
+          "line": 329,
+          "text": "\t\tpublic void clockHandler() {"
+        },
+        {
+          "symbol": "object onInside( CarState.Inside state )",
+          "line": 607,
+          "text": "\t\t\tpublic object onInside( CarState.Inside state ) {"
+        },
+        {
+          "symbol": "bool isConnected",
+          "line": 666,
+          "text": "\t\tprivate static bool isConnected( Location loc, Direction d ) {"
+        },
+        {
+          "symbol": "class IsBlocked",
+          "line": 737,
+          "text": "\t\tprivate class IsBlocked : CarState.Visitor"
+        }
+      ]
+    },
+    {
+      "path": "core/world/rail/TrainController.cs",
+      "sha256": "769ac432c72c813b372321c41d6ab0351218670f06545184cb53b170db96d36e",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "abstract JunctionRoute onJunction",
+          "line": 26,
+          "text": "\t\tpublic abstract JunctionRoute onJunction( Train train, JunctionRailRoad railRoad );"
+        },
+        {
+          "symbol": "abstract TimeLength getStopTimeSpan",
+          "line": 49,
+          "text": "\t\tpublic abstract TimeLength getStopTimeSpan( Train train, TrainHarbor platform, int callCount );"
+        }
+      ]
+    },
+    {
+      "path": "plugins/org.kohsuke.freetrain.rail.signal/src/SignalRailRoad.cs",
+      "sha256": "630c218420cd62c480995b8394237ff91ae151c6417c5daa225968d32e60bfd1",
+      "encoding": "cp932",
+      "bindings": [
+        {
+          "symbol": "override TimeLength getStopTimeSpan",
+          "line": 30,
+          "text": "\t\tpublic override TimeLength getStopTimeSpan( Train tr, int callCount ) {"
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "path": "doc/parity/railway-fixtures.json",
+      "sha256": "e41ec77ca5bd627e35deee90918a4957e1cb8f82a01c7d9da5c073b78513a5ff"
+    },
+    {
+      "path": "doc/parity/speed-limit-handoff.json",
+      "sha256": "5fc25def74dac24c168f8f33c9fb0b19a1423cfa63e95eaa3e4aab80d1eae47d"
+    },
+    {
+      "path": "doc/parity/exav-geometry-dependency-review.json",
+      "sha256": "a3348ab774a904b8d5a27ce56de53e85a52dcb321ddba21269624b1a5e96aed6"
+    }
+  ],
+  "guideCases": [
+    {
+      "id": "guide-1",
+      "pattern": 10,
+      "incoming": 0,
+      "outgoing": 0,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-2",
+      "pattern": 1,
+      "incoming": 1,
+      "outgoing": 1,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-3",
+      "pattern": 4,
+      "incoming": 2,
+      "outgoing": 2,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-4",
+      "pattern": 7,
+      "incoming": 3,
+      "outgoing": 3,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-5",
+      "pattern": 10,
+      "incoming": 4,
+      "outgoing": 4,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-6",
+      "pattern": 1,
+      "incoming": 5,
+      "outgoing": 5,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-7",
+      "pattern": 4,
+      "incoming": 6,
+      "outgoing": 6,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-8",
+      "pattern": 7,
+      "incoming": 7,
+      "outgoing": 7,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-9",
+      "pattern": 0,
+      "incoming": 0,
+      "outgoing": 1,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-10",
+      "pattern": 0,
+      "incoming": 5,
+      "outgoing": 4,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-11",
+      "pattern": 2,
+      "incoming": 2,
+      "outgoing": 1,
+      "kind": "normal"
+    },
+    {
+      "id": "guide-12",
+      "pattern": 2,
+      "incoming": 5,
+      "outgoing": 6,
+      "kind": "normal"
+    },
+    {
+      "id": "head-straight",
+      "pattern": 19,
+      "incoming": 0,
+      "outgoing": 0,
+      "kind": "junction",
+      "location": [
+        8,
+        8,
+        2
+      ],
+      "previous": null,
+      "controller": "straight"
+    },
+    {
+      "id": "head-curve",
+      "pattern": 19,
+      "incoming": 0,
+      "outgoing": 1,
+      "kind": "junction",
+      "location": [
+        8,
+        8,
+        2
+      ],
+      "previous": null,
+      "controller": "curve"
+    },
+    {
+      "id": "tail-straight",
+      "pattern": 19,
+      "incoming": 0,
+      "outgoing": 0,
+      "kind": "junction",
+      "location": [
+        8,
+        8,
+        2
+      ],
+      "previous": [
+        8,
+        7,
+        2
+      ],
+      "controller": "curve"
+    },
+    {
+      "id": "tail-curve",
+      "pattern": 19,
+      "incoming": 0,
+      "outgoing": 1,
+      "kind": "junction",
+      "location": [
+        8,
+        8,
+        2
+      ],
+      "previous": [
+        9,
+        7,
+        2
+      ],
+      "controller": "straight"
+    },
+    {
+      "id": "forced-curve",
+      "pattern": 19,
+      "incoming": 5,
+      "outgoing": 4,
+      "kind": "junction",
+      "location": [
+        8,
+        8,
+        2
+      ],
+      "previous": null,
+      "controller": "straight"
+    }
+  ],
+  "rampCases": [
+    {
+      "id": "ramp-0-False-up",
+      "climb": 0,
+      "heading": 0,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          8,
+          7,
+          2
+        ],
+        [
+          8,
+          6,
+          3
+        ],
+        [
+          8,
+          5,
+          3
+        ]
+      ],
+      "patterns": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-0-False-down",
+      "climb": 0,
+      "heading": 4,
+      "locations": [
+        [
+          8,
+          5,
+          3
+        ],
+        [
+          8,
+          6,
+          3
+        ],
+        [
+          8,
+          7,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        31,
+        30,
+        29,
+        28
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-0-True-up",
+      "climb": 0,
+      "heading": 0,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          8,
+          7,
+          2
+        ],
+        [
+          8,
+          6,
+          3
+        ],
+        [
+          8,
+          5,
+          3
+        ]
+      ],
+      "patterns": [
+        44,
+        45,
+        46,
+        47
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-0-True-down",
+      "climb": 0,
+      "heading": 4,
+      "locations": [
+        [
+          8,
+          5,
+          3
+        ],
+        [
+          8,
+          6,
+          3
+        ],
+        [
+          8,
+          7,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        47,
+        46,
+        45,
+        44
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-2-False-up",
+      "climb": 2,
+      "heading": 2,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          9,
+          8,
+          2
+        ],
+        [
+          10,
+          8,
+          3
+        ],
+        [
+          11,
+          8,
+          3
+        ]
+      ],
+      "patterns": [
+        32,
+        33,
+        34,
+        35
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-2-False-down",
+      "climb": 2,
+      "heading": 6,
+      "locations": [
+        [
+          11,
+          8,
+          3
+        ],
+        [
+          10,
+          8,
+          3
+        ],
+        [
+          9,
+          8,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        35,
+        34,
+        33,
+        32
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-2-True-up",
+      "climb": 2,
+      "heading": 2,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          9,
+          8,
+          2
+        ],
+        [
+          10,
+          8,
+          3
+        ],
+        [
+          11,
+          8,
+          3
+        ]
+      ],
+      "patterns": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-2-True-down",
+      "climb": 2,
+      "heading": 6,
+      "locations": [
+        [
+          11,
+          8,
+          3
+        ],
+        [
+          10,
+          8,
+          3
+        ],
+        [
+          9,
+          8,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        51,
+        50,
+        49,
+        48
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-4-False-up",
+      "climb": 4,
+      "heading": 4,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          8,
+          9,
+          2
+        ],
+        [
+          8,
+          10,
+          3
+        ],
+        [
+          8,
+          11,
+          3
+        ]
+      ],
+      "patterns": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-4-False-down",
+      "climb": 4,
+      "heading": 0,
+      "locations": [
+        [
+          8,
+          11,
+          3
+        ],
+        [
+          8,
+          10,
+          3
+        ],
+        [
+          8,
+          9,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        39,
+        38,
+        37,
+        36
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-4-True-up",
+      "climb": 4,
+      "heading": 4,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          8,
+          9,
+          2
+        ],
+        [
+          8,
+          10,
+          3
+        ],
+        [
+          8,
+          11,
+          3
+        ]
+      ],
+      "patterns": [
+        52,
+        53,
+        54,
+        55
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-4-True-down",
+      "climb": 4,
+      "heading": 0,
+      "locations": [
+        [
+          8,
+          11,
+          3
+        ],
+        [
+          8,
+          10,
+          3
+        ],
+        [
+          8,
+          9,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        55,
+        54,
+        53,
+        52
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-6-False-up",
+      "climb": 6,
+      "heading": 6,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          7,
+          8,
+          2
+        ],
+        [
+          6,
+          8,
+          3
+        ],
+        [
+          5,
+          8,
+          3
+        ]
+      ],
+      "patterns": [
+        40,
+        41,
+        42,
+        43
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-6-False-down",
+      "climb": 6,
+      "heading": 2,
+      "locations": [
+        [
+          5,
+          8,
+          3
+        ],
+        [
+          6,
+          8,
+          3
+        ],
+        [
+          7,
+          8,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        43,
+        42,
+        41,
+        40
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-6-True-up",
+      "climb": 6,
+      "heading": 6,
+      "locations": [
+        [
+          8,
+          8,
+          2
+        ],
+        [
+          7,
+          8,
+          2
+        ],
+        [
+          6,
+          8,
+          3
+        ],
+        [
+          5,
+          8,
+          3
+        ]
+      ],
+      "patterns": [
+        56,
+        57,
+        58,
+        59
+      ],
+      "zdiffs": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "ramp-6-True-down",
+      "climb": 6,
+      "heading": 2,
+      "locations": [
+        [
+          5,
+          8,
+          3
+        ],
+        [
+          6,
+          8,
+          3
+        ],
+        [
+          7,
+          8,
+          2
+        ],
+        [
+          8,
+          8,
+          2
+        ]
+      ],
+      "patterns": [
+        59,
+        58,
+        57,
+        56
+      ],
+      "zdiffs": [
+        0,
+        -1,
+        0,
+        0
+      ]
+    }
+  ],
+  "signalCases": [
+    {
+      "id": "signal-heading-0",
+      "signalDirection": 0,
+      "heading": 0,
+      "delegates": true
+    },
+    {
+      "id": "signal-heading-1",
+      "signalDirection": 0,
+      "heading": 1,
+      "delegates": true
+    },
+    {
+      "id": "signal-heading-2",
+      "signalDirection": 0,
+      "heading": 2,
+      "delegates": false
+    },
+    {
+      "id": "signal-heading-3",
+      "signalDirection": 0,
+      "heading": 3,
+      "delegates": false
+    },
+    {
+      "id": "signal-heading-4",
+      "signalDirection": 0,
+      "heading": 4,
+      "delegates": false
+    },
+    {
+      "id": "signal-heading-5",
+      "signalDirection": 0,
+      "heading": 5,
+      "delegates": false
+    },
+    {
+      "id": "signal-heading-6",
+      "signalDirection": 0,
+      "heading": 6,
+      "delegates": false
+    },
+    {
+      "id": "signal-heading-7",
+      "signalDirection": 0,
+      "heading": 7,
+      "delegates": true
+    }
+  ],
+  "occupancyCases": [
+    {
+      "id": "empty-destination",
+      "destinationCar": null,
+      "blocked": false
+    },
+    {
+      "id": "other-car",
+      "destinationCar": "other-train",
+      "blocked": true
+    },
+    {
+      "id": "own-tail",
+      "destinationCar": "same-train-tail",
+      "blocked": true
+    }
+  ],
+  "boundaries": [
+    "No moving train implementation or original-runtime capture.",
+    "Guide assumes a legal placed car with a reciprocal incoming port; invalid states require P5 validation.",
+    "P5 must specify safe handling of EXAV-DEP-013 null-next and EXAV-DEP-014 delegation defects before implementation."
+  ]
+}

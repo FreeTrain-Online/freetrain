@@ -4,6 +4,7 @@
 
 | Location | Status |
 | --- | --- |
+| [P5-01 train/controller contract](../web-parity-train-contract.md), [source/operation/decision review](train-review.json), [translation scope](train-localization-review.json) | Source specification: 70 pinned files, 18 operations/decisions, eight dependency chains, 34 scoped declarations and 638 source literals/55 catalog texts. Explicit portable dispositions, location-keyed TAT and train-owned signal dispatch; independent fixtures/runtime/EN-JA delivery remain P5-02 onward |
 | [P4-24 acceptance](../web-parity-p4-acceptance.md), [reconciliation ledger](railway-acceptance.json) | All 14 operations/decisions, 64 definitions and 78 source-text dispositions; focused integrated smoke evidence. P4 accepted at browser/portable infrastructure scope; owner deferred P4-CAP-001/002 to P11 integrated performance work |
 | [P5 railway contract](../web-parity-p5-railway-handoff.md), [literal witnesses](railway-p5-handoff.json) | Twelve pinned sources; topology, guide/zdiff, car occupancy and signal/controller interfaces; legal railway fixture inputs. Source-derived handoff, no moving-train runtime credit |
 | [P4-19 speed-limit authoring](../web-parity-speed-limits.md), [P5 handoff](speed-limit-handoff.json) | World-local flat/slope authoring, ordered membership, Traffic cleanup and EN/JA workflow; source-derived numeric/prior-head timing vectors are a P5 handoff, without moving-train runtime credit |
