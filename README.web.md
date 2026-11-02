@@ -86,6 +86,14 @@ open terrain preview. Rail/road crossing and protected car/platform interfaces
 are verified with trusted fixtures; their real gameplay remains P5/P6/P7.
 
 
+[P4-24 Integrated acceptance](doc/web-parity-p4-acceptance.md) reconciles railway
+delivery and focused smoke evidence. P4 is accepted at browser/portable
+infrastructure scope; the owner deferred P4-CAP-001/002 latency/completion findings
+to P11 integrated performance work, including possible map-size-limit reassessment. The
+[P5 railway handoff](doc/web-parity-p5-railway-handoff.md) supplies pinned topology,
+guide/zdiff, occupancy, signal/controller and speed contracts with legal witnesses;
+moving-train runtime acceptance remains P5.
+
 [P4-23 Railway capacity](doc/web-parity-railway-capacity.md) validates the proposed
 city ring modules and a connected railway-only network at1500×1090×45. The current
 limits are8,192 railway voxels and8,192 durable accounting entries, also subject

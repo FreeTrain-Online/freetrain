@@ -147,7 +147,8 @@ checking, sampled picking, pan paint and wheel feedback meet their respective
 **P4-CAP-002 — visible construction completion remains slow.** Complete
 replacement presentation takes roughly1s in the empty scene and several seconds
 in the heavy scene, beyond command confirmation. These measured misses are not
-covered by the P3 terrain waiver and require an explicit P4-24 disposition.
+covered by the P3 terrain waiver. The owner subsequently deferred both to P11
+on 2 November; see the [P4-24 disposition](web-parity-p4-acceptance.md#performance-disposition).
 No whole-P4 performance acceptance is claimed. The maintained manifest retains
 p50/p95/max, byte sizes, fixture/graph/random/artifact hashes and raw-report hashes.
 
@@ -178,7 +179,9 @@ existing Vite bundle-size advisory remains informational. The final inspected
 captures include the EN/JA network, source rings and actual forest/terrace field.
 
 P4-23 verification is complete with the two explicit performance findings above;
-P4-24 integrated acceptance must resolve or explicitly disposition them. Native,
+P4-24 records the owner's explicit deferral to P11 integrated performance work,
+alongside later bottlenecks and possible map-size-limit reassessment. The measured
+misses remain open; they no longer block P4 infrastructure acceptance. Native,
 optional-suite, future train/city budgets and long-form full-city simulation
 acceptance are not closed by these authoring measurements.
 
