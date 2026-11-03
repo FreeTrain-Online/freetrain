@@ -58,6 +58,29 @@ class CompleteRecipes(unittest.TestCase):
     @classmethod
     def setUpClass(cls): cls.catalog,cls.artifacts=bundled.prepare()
 
+    def test_p5_independent_stock_frame_crops_including_reverse_tail_slopes(self):
+        fixtures=json.loads((SCRIPTS.parent/'doc/parity/train-fixtures.json').read_text())
+        recipes={r['id']:r for r in self.catalog['renderRecipes']}
+        for case in fixtures['groups']['rendering']['cases']:
+            i,e=case['input'],case['expected']
+            key='angle' if i['kind']=='level' else 'slope'
+            with self.subTest(case=case['id']):
+                frames=[f for f in recipes[i['recipe']]['frames'] if f['selector'].get(key)==e['selector']]
+                self.assertEqual(1,len(frames))
+                self.assertEqual(e['rectangle'],frames[0]['rectangle'])
+
+    def test_symmetric_reverse_wrapper_preserves_both_source_masked_frame_families(self):
+        # No bundled symmetric wrapper exists. Feed the actual symmetric base
+        # through the same generic compiler path used by optional definitions.
+        from copy import deepcopy
+        from content_recipes import Compiler
+        base=deepcopy(next(r for r in self.catalog['renderRecipes'] if r['id']=='{9EE438DE-B766-4b37-A474-9CE6EE73FE75}'))
+        wrapper=dict(id='controlled-symmetric-tail',handler='reverse-train-car',fields={'base':base['id']})
+        compiler=Compiler(dict(pictures=[],assets=[],contributions=[base,wrapper]))
+        compiler.compile=deepcopy
+        result=compiler.run()[1]
+        self.assertEqual(base['frames'],result['frames'])
+
     def test_all_definitions_and_code_pictures_accounted_for_without_fabricated_gameplay(self):
         c=self.catalog
         self.assertEqual(159,c['counts']['preparedPictures'])

@@ -229,8 +229,11 @@ gameplay implementation follows the existing UX handoff gate.
 
 Browser test runs create a fresh evidence directory under the checkout's temporary
 directory. `FREETRAIN_ONLINE_BROWSER_EVIDENCE` selects an explicit run directory, with
-`ux1`, `ux2`, `ux3` subdirectories and the network measurement. Existing
-`FREETRAIN_ONLINE_UX1_EVIDENCE`, `FREETRAIN_ONLINE_UX2_EVIDENCE` and `FREETRAIN_ONLINE_UX3_EVIDENCE`
-overrides are honored. Use new directories for acceptance runs: the old fixed
+`responsive-layout`, `ui-preferences` and `map` measurement subdirectories,
+plus the network measurement. The former `FREETRAIN_ONLINE_UX1_EVIDENCE`,
+`FREETRAIN_ONLINE_UX2_EVIDENCE` and `FREETRAIN_ONLINE_UX3_EVIDENCE` overrides have
+been replaced by the shared `FREETRAIN_ONLINE_BROWSER_EVIDENCE` directory.
+Tests are organized by [functional category](../web/tests/browser/README.md).
+Use new directories for acceptance runs: the old fixed
 date defaults reused historical captures. The browser harness now isolates its
 default output so later runs preserve prior evidence.

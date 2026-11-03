@@ -352,6 +352,11 @@ class Compiler:
                 r['fields'].update({k:v for k,v in base['fields'].items() if k!='base'})
                 r['frames']=copy.deepcopy(base['frames'])
                 for f in r['frames']:
-                    if 'angle' in f['selector']: f['selector']['angle'] ^= 8
-                    if 'slope' in f['selector']: f['selector']['slope'] ^= 1
+                    # ReverseTrainCarImpl flips BOTH direction and climbing.
+                    # Asymmetric slope index = direction + !climbing, so the
+                    # inverse selector flips bits 4 and 1. Symmetric art masks
+                    # reversal away on level ground and retains the climb axis.
+                    if base['fields']['asymmetric']:
+                        if 'angle' in f['selector']: f['selector']['angle'] ^= 8
+                        if 'slope' in f['selector']: f['selector']['slope'] ^= 5
         return recipes

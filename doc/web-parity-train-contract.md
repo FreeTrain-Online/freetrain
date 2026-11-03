@@ -1,7 +1,8 @@
 # P5-01 train/controller source contract — 2 November 2026
 
-**P5-01 is complete at source-specification scope. Next: P5-02 independent
-fixtures.** This review adds no train gameplay, controller command, browser UI,
+**P5-01 is complete at source-specification scope.** The
+[P5-02 companion fixtures](web-parity-train-fixtures.md) supply independent
+source vectors and existing-interface checks. This review adds no train gameplay, controller command, browser UI,
 save/protocol version or runtime-limit change. The entry contract remains
 Save8/protocol6. P5 runtime and phase acceptance remain open.
 

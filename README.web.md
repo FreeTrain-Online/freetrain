@@ -288,6 +288,9 @@ IME behavior.
 The unit task runs test files in parallel (`DENO_JOBS=4 deno task test` bounds
 concurrency to four). Browser validation has the following commands:
 
+Tests are organized by behavior; the [browser test guide](web/tests/browser/README.md)
+maps functional suites and shows how to run an individual category.
+
 | Task (from `web/`) | Scope |
 | --- | --- |
 | `deno task test:browser` | Build/check and default browser regressions, with representative content and language/direction lifecycles |
