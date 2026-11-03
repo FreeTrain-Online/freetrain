@@ -81,7 +81,8 @@ export class MapRenderer {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night,drawPoles:options.drawPoles!==false,drawSpeedLimits:options.drawSpeedLimits!==false};
       const worldKey=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,decorative]);
       const presentationKey=JSON.stringify([worldKey,variant,options.heightCut]);
-      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision]);
+      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision,
+        read.mixed?.fleet?.trains.map(t=>[t.isReversed,t.cars])]);
       if(this.terrainKey!==key) {
         this.canvas.dataset.presentation='pending';
         // Keep the front buffer during edits and sprite/cut changes in this world.
@@ -111,6 +112,7 @@ export class MapRenderer {
       // The previous scene stays usable while replacement assets/raster work
       // finish. Expose completion separately from retained-buffer readiness.
       this.canvas.dataset.presentation=this.terrainPreparedKey===key&&!progressive?.pending?'ready':'pending';
+      if(this.canvas.dataset.presentation==='ready')this.canvas.dataset.renderRevision=read.revision;
       this.canvas.dataset.refinement=progressive?.pending?'pending':'ready';
       this.canvas.dataset.terrainUpdate=progressive?.updateKind??'full';
       this.canvas.dataset.renderZoom=String(progressive?.renderZoom??camera.zoom);
@@ -119,7 +121,10 @@ export class MapRenderer {
         ?this.demoRailway.draw(ctx,this.terrainScene,this.terrainView,width,height,dpr,options.demoTime!)
         :this.terrainScene.draw(ctx,this.terrainView,width,height));
       if(this.demoRailway){this.canvas.dataset.demoLoop=String(demoLoop.length);this.canvas.dataset.demoTrain=JSON.stringify(demoCar(options.demoTime!,0));}
-      for(const [position,color] of [[options.preview,'#126e79'],[options.selection?.position,'#ffeaa0']] as const) {
+      const selected=options.selection;
+      const selectedPosition=selected?.kind==='train'&&'carId' in selected
+        ?read.mixed?.fleet?.trains.find(t=>t.id===selected.id)?.cars.find(c=>c.id===selected.carId)?.state.location??undefined:selected?.position;
+      for(const [position,color] of [[options.preview,'#126e79'],[selectedPosition,'#ffeaa0']] as const) {
         if(!position||position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space),z=camera.zoom;
         ctx.beginPath();ctx.moveTo(p.x,p.y-8*z);ctx.lineTo(p.x+16*z,p.y);ctx.lineTo(p.x,p.y+8*z);ctx.lineTo(p.x-16*z,p.y);ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();

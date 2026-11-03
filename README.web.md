@@ -1,3 +1,8 @@
+**P5-09 moving stock art:** [Exact car poses, occlusion and picking](doc/web-parity-moving-stock-art.md)
+now render deployed stock through the live terrain/rail scene, with curve/ramp
+offsets, reversed formations, stable car inspection and retained redraws.
+Purchase/deployment browser controls remain P5-10/11.
+
 **P5-06 trading domain:** [Atomic purchase, inventory and resale](doc/web-parity-fleet-trading.md)
 now quote exact formations/quantities, create timestamped stock and book purchases
 or resale revenue with durable fleet/callback cleanup. Browser trading controls

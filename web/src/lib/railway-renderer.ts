@@ -7,12 +7,13 @@ import type { ReadState } from './session-client.ts';
 import { WorldSpace, type Point } from './map-geometry.ts';
 import { instantiate, variantKey, type Layer, type RenderCatalog, type Variant } from './content-recipes.ts';
 import { railwayProfile } from './mixed-state.ts';
+import { prepareCar, type TrainTarget } from './train-renderer.ts';
 
 export interface RailwayTarget {
   kind:'railway'; id:string; position:Position;
   component:'rail'|'pier'|'support'|'accessory'|'stationary'|'speedLimit'; definition:Definition; controllerId?:string;
 }
-export interface RailwayOperation {target:RailwayTarget;layer:Layer}
+export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
 export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
@@ -27,8 +28,8 @@ export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,
     if(policy.kind==='sameLevel'?z===policy.level:policy.kind==='ground'?z===ground:rails.has(key(p))||z<=ground)return p;
   }
 }
-/** Preflight every saved binding, including offscreen and cut voxels. No
- * reference-line fallback and no P5 car art inferred from a missing pose. */
+/** Preflight every saved binding, including offscreen and cut voxels. A car
+ * requires its exact fleet pose and recipe; missing art never gains a fallback. */
 export class RailwayRenderPlan {
   readonly layers:Layer[]=[];
   private columns=new Map<number,RailwayOperation[]>();
@@ -41,6 +42,7 @@ export class RailwayRenderPlan {
     const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     this.space=space;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
+    const cars=new Map(read.mixed!.fleet?.trains.flatMap(train=>train.cars.map((car,index)=>[car.id,{train,index}] as const)));
     const states=new Map<number,RailwayVoxel[]>();
     const ownerIds=new Set(read.mixed!.voxels.filter(v=>v.kind==='stationary').map(v=>v.ownerId));
     const owners=new Map(read.entities!.filter(e=>ownerIds.has(e.id)).map(e=>[e.id,e]));
@@ -102,7 +104,13 @@ export class RailwayRenderPlan {
       if(v.kind==='slopefiller')continue; // Explicit invisible occupancy still controls holes.
       if(v.kind!=='traffic'){add(v.definition!,v.kind==='pier'?'pier':'support');continue;}
       const c=v.traffic!;
-      if(c.road||c.platform||c.car)throw new Error('Railway consumer unavailable'); // P5/P6/P7 supply their exact pose/dispatch.
+      if(c.road||c.platform)throw new Error('Railway consumer unavailable'); // P6/P7 supply their exact dispatch.
+      if(c.car) {
+        const owner=cars.get(c.car.carId),recipe=recipes.get(c.car.definition.recipeId);
+        if(!owner||!recipe||!c.rail)throw new Error('Car binding unavailable');
+        const op=prepareCar(read,owner.train,owner.index,c.rail,binding(c.rail.definition).handler,recipe,variant,space.centerX);
+        this.layers.push(op.layer);ops.push(op);
+      }
       if(c.accessory)add(c.accessory.definition,'accessory',{axis:c.accessory.direction});
       if(c.rail) {
         const r=c.rail,b=binding(r.definition);
@@ -116,14 +124,22 @@ export class RailwayRenderPlan {
         const layer:Layer={entityId:v.ownerId,recipeId:icon.id,frame:speedLimitFrame(speed),position:[v.position.x-space.centerX,v.position.y,v.position.z]};
         this.layers.push(layer);ops.push({target:{kind:'railway',id:v.ownerId,position:v.position,component:'speedLimit',definition},layer});
       }
-      // Traffic: accessory-before, rail-before, [P5 car], rail-after, accessory-after.
+      // Traffic: accessory-before, rail-before, car, rail-after, accessory-after.
       ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     }
     for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
-    for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position)))]));
+    for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position))),
+      this.columns.get(index)?.filter(o=>o.target.kind==='train').map(o=>[o.target,o.layer.recipeId,o.layer.frame.key,o.layer.frame.anchor])]));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}
+  changedColumns(previous:RailwayRenderPlan):number[] {
+    // TunnelRail.invalidateVoxel suppresses a car update behind another S/W
+    // tunnel. Keep conservative damage here so retained pick/state operations
+    // remain current too; source foreground occlusion still hides the car.
+    return [...new Set([...this.signatures.keys(),...previous.signatures.keys()])].filter(i=>this.signature(i)!==previous.signature(i));
+  }
   private order(op:RailwayOperation):number {
+    if(op.target.kind==='train')return 30;
     if(op.target.component==='speedLimit')return 60;
     const after=(op.layer.frame.stage??20)>=30;
     return op.target.component==='accessory'?(after?50:10):(after?40:20);

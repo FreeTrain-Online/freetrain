@@ -9,9 +9,10 @@ import { isTerrainWorld, isMixedWorld, validSnapshot } from './world-identity.ts
 import { RailwayRenderPlan, pickRailwayLocation, type RailwayTarget, type RailwayPickPolicy } from './railway-renderer.ts';
 import paletteData from './terrain-palettes.json' with { type: 'json' };
 import type { ReadState } from './session-client.ts';
+import type { TrainTarget } from './train-renderer.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
-export type SceneTarget=TerrainTarget|RailwayTarget;
+export type SceneTarget=TerrainTarget|RailwayTarget|TrainTarget;
 type Operation = { target:SceneTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer};
 export type TerrainOperation = Operation;
 type Bounds={left:number;top:number;right:number;bottom:number};
@@ -58,6 +59,7 @@ export class TerrainScene {
   private cacheIdentity='';
   private read?:Snapshot;
   private space?:WorldSpace;
+  private railway?:RailwayRenderPlan;
   private locationPicker?:(p:Point,view:View,policy:RailwayPickPolicy)=>Position|undefined;
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
@@ -100,7 +102,7 @@ export class TerrainScene {
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
-      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;
+      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;
       if(previous?.cacheIdentity===cacheIdentity)scene.bounds=previous.bounds;
       scene.locationPicker=(p,view,policy)=>pickRailwayLocation(read,{x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom},heightCut,policy);
       return scene;
@@ -201,7 +203,7 @@ export class TerrainScene {
       }
       } finally {
         // Every column is complete before the next H/V cell: source Z order,
-        // then Traffic's before / reserved car / after passes at that voxel.
+        // then Traffic's before / car / after passes at that voxel.
         if(railway) {
           if(!reused) {
             const column=ops.splice(start);
@@ -242,8 +244,13 @@ export class TerrainScene {
     return finish(new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9'));
   }
   changedColumns(previous:TerrainScene):readonly number[]|undefined {
-    if(this.cacheIdentity!==previous.cacheIdentity||!this.read||!previous.read||this.read.mixed||previous.read.mixed)return;
-    return terrainChangedColumns(previous.read,this.read);
+    if(this.cacheIdentity!==previous.cacheIdentity||!this.read||!previous.read)return;
+    if(!this.railway&&!previous.railway)return terrainChangedColumns(previous.read,this.read);
+    const terrain=this.read.terrain!.geometryRevision===previous.read.terrain!.geometryRevision?[]:terrainChangedColumns(previous.read,this.read);
+    if(!terrain)return;
+    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway)])];
+    if(this.railway||previous.railway)return;
+    return terrain;
   }
   columnIndex(op:TerrainOperation):number {
     const s=this.space!.storage(op.target.position);return s.v*this.space!.horizontalSize+s.h;

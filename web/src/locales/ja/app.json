@@ -189,6 +189,7 @@
   "inspector": "列車情報",
   "train": "列車",
   "cars": "両数",
+  "trainCar": "車両",
   "controller": "運転方式",
   "automatic": "自動",
   "manual": "手動",

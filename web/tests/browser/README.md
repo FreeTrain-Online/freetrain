@@ -14,13 +14,16 @@ Tests are grouped by the behavior they protect.
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
 | `multiplayer.spec.ts` | Shared state, authority, leases and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
-| `fleet-persistence.spec.ts` | Save9 inventory/revenue, two-peer moving-consist/occupancy/booking publication, exact HTTP reopen and reconnect; the moving case uses `FREETRAIN_MOVING_FLEET_OUTPUT` emitted by focused `FleetMovementTests` |
+| `fleet-persistence.spec.ts` | Save9 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the moving case uses `FREETRAIN_MOVING_FLEET_OUTPUT` emitted by focused `FleetMovementTests` |
+| `train-rendering.spec.ts` | All eight bundled car recipes against independent poses and actual PNG pixels/alpha picks in eight seasonal/light variants; infrastructure overlap contacts, hidden tunnel movement and local/full redraw identity |
 
 Construction and terrain suites retain their existing functional names.
 `browser-helpers.ts` holds shared interaction and world fixtures;
 `layout-helpers.ts` holds viewport checks. Helpers do not register tests or hooks.
 Tests requiring the prototype regression world remain in the
 `prototype-regression` project; file organization does not change their backend.
+The moving-art test bundles its production-renderer harness through the pinned
+Vite API into a Playwright route; the harness is absent from the shipped build.
 
 See [browser validation commands](../../../README.web.md#prerequisites-and-checks)
 for default, extended, performance and continuation coverage. From `web/`, run

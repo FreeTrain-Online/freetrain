@@ -77,13 +77,12 @@ says “this world” rather than misidentifying mixed worlds as the spatial
 reference world. This is an existing browser diagnostic adaptation, not a new
 translation of a pinned source literal.
 
-The renderer deliberately retains its unsupported-car guard until P5-09. A
-deployed fleet currently reaches “Map unavailable”; this step does **not** remove
-that guard, hide the cars or substitute fixture art. The new browser case sends
-ordinary Step commands through the real connected sockets while checking live
-transport/decoding and continuation. Actual moving-map art, picks and retained
-canvas acceptance remain P5-09/11. The existing inventory browser case still
-exercises visible UI, canvas retention and reload.
+At P5-08 completion, the renderer retained its unsupported-car guard: deployed
+stock reached “Map unavailable”. Its browser case sent ordinary Step commands
+through real connected sockets to verify transport/decoding and continuation.
+That historical run claimed no moving-map pixels. [P5-09 now supplies exact art,
+picks and retained redraws](web-parity-moving-stock-art.md), and upgrades the same
+case to exercise the rendered scene. P5-11 still owns deployment browser controls.
 
 ## Verification
 

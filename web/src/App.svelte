@@ -65,12 +65,15 @@
   const synchronizing = $derived(view.connection === 'loading' && view.connectionStage === 'synchronizing');
   const live = $derived((view.connection === 'ready' || synchronizing) && !!read && !view.leaving && !view.signedOut && renderState === 'ready');
   const train = $derived(mapSelection?.kind === 'train' ? read?.trains.find(item => item.id === mapSelection?.id) : undefined);
+  const fleetTrain = $derived(mapSelection?.kind === 'train' ? read?.mixed?.fleet?.trains.find(item=>item.id===mapSelection?.id) : undefined);
+  const selectedCarId = $derived(mapSelection?.kind === 'train' && 'carId' in mapSelection ? mapSelection.carId : undefined);
+  const fleetCar = $derived(fleetTrain?.cars.find(c=>c.id===selectedCarId));
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const railwayVoxel = $derived(mapSelection?.kind === 'railway' ? read?.mixed?.voxels.find(v=>v.ownerId===mapSelection?.id&&v.position.x===mapSelection.position.x&&v.position.y===mapSelection.position.y&&v.position.z===mapSelection.position.z) : undefined);
   const railwayDefinition = $derived(mapSelection?.kind === 'railway' ? mapSelection.component==='speedLimit' ? speedLimitAt(read?.mixed?.speedLimits,mapSelection.position,mapSelection.definition) : mapSelection.component==='rail' ? railwayVoxel?.traffic?.rail?.definition : mapSelection.component==='accessory' ? railwayVoxel?.traffic?.accessory?.definition : railwayVoxel?.definition : undefined);
-  const mapObjectPosition = $derived(train?.position ?? mapSelection?.position);
+  const mapObjectPosition = $derived(fleetCar?.state.location ?? train?.position ?? mapSelection?.position);
   const terrain = $derived(!!read && isTerrainWorld(read));
   const mixed = $derived(!!read && isMixedWorld(read));
   const reference = $derived(isReferenceWorld(read) || terrain || mixed);
@@ -122,7 +125,8 @@
     request(() => { if (source) launcher = source; panel = nextPanel; if (!panel) returnFocus(); });
   }
   function select(selection: Selection | undefined) {
-    if (selection?.kind === mapSelection?.kind && selection?.id === mapSelection?.id) { if (selection) { panel = 'inspector'; menu = false; } return; }
+    if (selection?.kind === mapSelection?.kind && selection?.id === mapSelection?.id &&
+      (selection?.kind!=='train'||!('carId' in selection)||mapSelection?.kind==='train'&&'carId' in mapSelection&&selection.carId===mapSelection.carId)) { if (selection) { panel = 'inspector'; menu = false; } return; }
     request(() => {
       mapSelection = selection;
       if (selection?.kind === 'station') model.selectStation(selection.id);
@@ -258,6 +262,10 @@
             <div class="form-actions" aria-describedby="mutation-help lease-help"><button disabled={disabled} onclick={() => model.acquireControl(train!.id)}>{text.takeControl}</button><button disabled={disabled || train.controlLease?.participantId !== view.participantId} onclick={() => model.releaseControl(train!.id)}>{text.releaseControl}</button></div>
             <label class="field">{text.controller}<select disabled={disabled} value={train.controller} onchange={event => { const value = event.currentTarget.value as 'automatic' | 'manual'; const id = train!.id; event.currentTarget.value = train!.controller; void model.controller(value, id, () => mapSelection?.kind === 'train' && mapSelection.id === id); }}><option value="automatic">{text.automatic}</option><option value="manual">{text.manual}</option></select></label>
             <button onclick={() => map.focusTrain(train!.id)}>{text.findTrain}</button><p class="hint">{text.manualHelp}</p>
+          {:else if fleetTrain && fleetCar}
+            <h3>{fleetTrain.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{fleetTrain.cars.length}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{fleetCar.state.location ? `${fleetCar.state.location.x}, ${fleetCar.state.location.y}, ${fleetCar.state.location.z}` : text.unavailableObject}</dd></div></dl>
+            <dl class="details"><div><dt>{text.trainCar}</dt><dd data-testid="train-car-id">{fleetCar.id}</dd></div></dl>
+            <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>
             <form id="station-name-form" onsubmit={event => { event.preventDefault(); if (canApply) void model.rename(); }}>

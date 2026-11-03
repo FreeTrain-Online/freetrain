@@ -189,6 +189,7 @@
   "inspector": "Train inspector",
   "train": "Train",
   "cars": "Cars",
+  "trainCar": "Car",
   "controller": "Controller",
   "automatic": "Automatic",
   "manual": "Manual",
