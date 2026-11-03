@@ -482,7 +482,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-root',type=Path); parser.add_argument('--check',action='store_true')
     args=parser.parse_args(); count,sources=validate(json.loads(FIXTURES.read_text()),args.source_root)
-    print(f'P5-02: {count} literal cases, {len(EVALUATORS)} families, {sources} pinned sources; train gameplay remains unimplemented.')
+    print(f'P5-02: {count} literal cases, {len(EVALUATORS)} families, {sources} pinned sources; runtime evidence is recorded per implementing P5 slice.')
 
 
 if __name__=='__main__': main()

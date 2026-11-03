@@ -81,6 +81,12 @@ P1/P3/P4 APIs. They do not implement or mock a production train state machine.
 the same literal data for live movement, controllers and rendering offsets;
 production output must never generate their expected results.
 
+P5-08's [production movement consumer](../tests/FreeTrain.Online.Tests/FleetMovementTests.cs)
+now executes 13 zero-stop/simple callback literals, all16 real surface/underground
+ramp traces (48 shifts), all eight visible exits and both predecessor route
+cases. [Runtime evidence and later-handler limits](web-parity-fleet-movement.md)
+keep the remaining fixture families with their numbered implementing slices.
+
 The new independent crops exposed a P2 preparation defect in reverse-tail slope
 selectors. `ReverseTrainCarImpl.drawSlope` flips direction by four **and** flips
 climbing. The asymmetric frame index is `direction + !climbing`; reversing its

@@ -224,7 +224,7 @@ public class FleetDeploymentTests
     }
 
     [Fact]
-    public void Replays_duplicate_operations_and_missing_dispatcher_reject_and_first_delay_ignores_speed_limits()
+    public void Replays_and_duplicate_operations_reject_and_default_dispatcher_uses_native_first_delay()
     {
         var w=Rail(Empty(),P);var s=Buy(w,1);var id=s.Fleet!.Trains[0].Id;
         Assert.Throws<InvalidOperationException>(()=>FleetDeployment.PreviewWithdrawal(s,id));
@@ -233,8 +233,9 @@ public class FleetDeploymentTests
         Assert.Throws<InvalidOperationException>(()=>FleetDeployment.PreviewPlacement(after,id,P));
         var withdrawal=FleetDeployment.PreviewWithdrawal(after,id);var withdrawn=FleetDeployment.Commit(after,withdrawal);
         Assert.Throws<InvalidOperationException>(()=>FleetDeployment.Commit(withdrawn,withdrawal));
-        var unbound=new MixedSessionState(s.Construction,s.Provenance,revision:s.Revision);
-        Assert.Throws<ArgumentException>(()=>FleetDeployment.PreviewPlacement(unbound,id,P));
+        var production=new MixedSessionState(s.Construction,s.Provenance,revision:s.Revision);
+        Assert.Equal((TrainCallback)FleetMovement.Tick,production.TrainDispatcher);
+        Assert.NotNull(FleetDeployment.PreviewPlacement(production,id,P));
         w=s.World;var limited=w.Replace(w.Revision,w.Terrain,w.Spatial.Capture(),w.Voxels,w.Slopes,new([P],[],[]),w.Fleet);
         s=Session(limited);after=Place(s,id,P);Assert.Equal(2,Assert.Single(after.Clock.Capture().Pending).DueMinute-s.Clock.Time.AbsoluteMinute);
     }

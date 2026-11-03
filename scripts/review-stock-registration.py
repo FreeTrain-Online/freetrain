@@ -56,7 +56,7 @@ def check(runtime=None):
         assert report['safeLengths'] == [dict(id=r['binding']['contributionId'], minimum=r['permittedLengths'][0],
                                              maximum=r['permittedLengths'][-1]) for r in result['bindings']]
     print('P5-03: 21 stock registrations, 2 reverse selections, exact pack/source bindings and bounded admission evidence pass.')
-    print('Registration scope only; fleet gameplay and moving-fleet capacity remain later P5 steps.')
+    print('Registration scope only; gameplay and moving-capacity evidence is recorded per implementing P5 slice.')
 
 
 if __name__ == '__main__':

@@ -578,3 +578,15 @@ Curve `dir1` validation follows source guidance in both backend and browser.
 The [reciprocal manual scope](web-parity-manual.md#p5-07-deployment-domain)
 keeps EN/JA map/keyboard controls, confirmations and network receipt lifecycle
 with P5-11; moving trains and already placed reversal remain P5-08/12.
+
+## P5-08 Inside movement domain
+
+The [movement contract and evidence](web-parity-fleet-movement.md) implement the
+Inside portion of the source `movement`, `guide` and `timing-cost` operations:
+current-rail guidance/zdiff, visible borders before reciprocal destinations,
+old-state consist shifts, occupied waits and atomic callback/accounting publication.
+Simple junctions choose straight; followers reuse the predecessor's actual route.
+MAN-T07/W07/W10 and DEV-P19/P24 retain [reciprocal manual scope](web-parity-manual.md#p5-08-inside-movement-domain).
+The existing shared Run/Pause/Step protocol drives gameplay-bound trains after
+save restore. Moving art/picking remain P5-09 and browser trade/deployment remain
+P5-10/11. Full reversal, timing, Outside and controller gates retain P5-12–24.

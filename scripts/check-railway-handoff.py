@@ -98,7 +98,7 @@ def check(source_root=None):
     for case in handoff['occupancyCases']:
         assert case['blocked'] == (case['destinationCar'] is not None)
     print('P4 reconciliation: 14 operations/decisions, 64 contributions, 78 translation dispositions; P4 accepted at browser/portable scope; performance deferred to P11.')
-    print('P5 source witnesses: 17 guide, 16 ramp, 8 signal, 3 occupancy cases; movement runtime PENDING.')
+    print('P5 source witnesses: 17 guide, 16 ramp, 8 signal, 3 occupancy cases; runtime evidence is recorded per implementing P5 slice.')
 
 
 if __name__ == '__main__':

@@ -333,7 +333,24 @@ public sealed partial class SessionHost : IDisposable
     private long CanonicalRevision => mixedState?.Revision ?? terrainState?.Revision ?? referenceWorld!.Revision;
     private long CanonicalMinute => mixedState?.Clock.Time.AbsoluteMinute ?? terrainState?.Clock.Time.AbsoluteMinute ?? referenceWorld!.Clock.Time.AbsoluteMinute;
     private void CanonicalPause(bool paused) { if (mixedState != null) mixedState.SetPaused(paused); else if (terrainState != null) terrainState.SetPaused(paused); else referenceWorld!.SetPaused(paused); }
-    private void CanonicalAdvance() { if (mixedState != null) mixedState.AdvanceOneMinute(); else if (terrainState != null) terrainState.AdvanceOneMinute(); else referenceWorld!.AdvanceOneMinute(); }
+    private bool CanonicalAdvance()
+    {
+        try
+        {
+            if (mixedState != null) mixedState.AdvanceOneMinute();
+            else if (terrainState != null) terrainState.AdvanceOneMinute();
+            else referenceWorld!.AdvanceOneMinute();
+            return true;
+        }
+        catch (InvalidOperationException e) when (e.Message is "unboundOutsideMovement" or "unboundOutsideReversal" or
+            "unboundJunctionController" or "unboundHarborController")
+        {
+            // A later-phase handler is unavailable. The detached minute has
+            // already rolled back; keep the host responsive for withdrawal/load.
+            CanonicalPause(true);
+            return false;
+        }
+    }
     private PumpResult PumpReference(int tickBudget)
     {
         var advanced = 0;
@@ -363,7 +380,8 @@ public sealed partial class SessionHost : IDisposable
                             case RunCommand: code = "invalidInput"; break;
                             case PauseCommand: CanonicalPause(true); break;
                             case StepCommand when CanonicalPaused && CanonicalCanAdvance:
-                                CanonicalAdvance(); advanced++; break;
+                                if (CanonicalAdvance()) advanced++; else code="operationUnavailable";
+                                break;
                             case StepCommand: code = "invalidInput"; break;
                             default: code = "operationUnavailable"; break;
                         }
@@ -379,7 +397,8 @@ public sealed partial class SessionHost : IDisposable
             if (safetyPause) { CanonicalPause(true); safetyPause = false; }
             if (!CanonicalCanAdvance) CanonicalPause(true);
             if (advanced >= tickBudget || CanonicalPaused) break;
-            CanonicalAdvance(); advanced++;
+            if (!CanonicalAdvance()) break;
+            advanced++;
         } while (advanced < tickBudget);
         lostParticipants.Clear(); resetParticipants.Clear();
         MaintainCreation();

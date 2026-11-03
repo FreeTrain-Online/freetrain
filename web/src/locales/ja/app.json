@@ -111,7 +111,7 @@
   "referenceWorldHint": "8方向の環状線を確認し、時計の進行・一時停止・1分送りを操作できる。経済・列車・建設の機能はまだ利用できない。",
   "normalRail": "通常線路パターン",
   "spatialTarget": "位置を確認",
-  "operationUnavailable": "この操作は空間参照ワールドでは利用できない。",
+  "operationUnavailable": "このワールドではこの操作を利用できない。",
   "savingUnavailable": "この参照ワールドでは保存できない。",
   "invalidSave": "無効な保存データ。現在のゲームは保持された。",
   "saveTooLarge": "保存データは256 MiBまで。",

@@ -39,9 +39,11 @@ public class FleetPersistenceTests
         Assert.Equal(130084,Assert.Single(MixedWire.Snapshot(restored,1).Mixed!.Queue!.Pending).DueMinute);
     }
     [Fact]
-    public void Deployed_restore_requires_explicit_trusted_dispatcher_and_never_activates_input_code()
+    public void Deployed_restore_binds_production_dispatcher_and_never_activates_input_code()
     {
-        Assert.Equal("invalidSave",Assert.Throws<InvalidDataException>(()=>SaveCodec.ReadWorld(Fixture,TerrainProfiles.Resolve,RailwayProfiles.Resolve)).Message);
+        var deployed=SaveCodec.ReadWorld(Fixture,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        Assert.Equal((TrainCallback)FleetMovement.Tick,deployed.TrainDispatcher);
+        Assert.Equal(SaveCodec.Write(Decode(Fixture)),SaveCodec.Write(deployed));
         var save=JsonNode.Parse(Fixture)!;save["mixed"]!["fleet"]!["trains"]!.AsArray().RemoveAt(0);
         save["mixed"]!["fleet"]!["groups"]![1]!["members"]=new JsonArray();
         save["mixed"]!["voxels"]![0]!["traffic"]!["car"]=null;

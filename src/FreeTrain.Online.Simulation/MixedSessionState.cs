@@ -5,7 +5,7 @@ namespace FreeTrain.Online.Simulation;
 
 // The dispatcher is trusted domain code, retained on detached copies. It returns
 // one atomic result and its next one-shot delay; no delegate enters durable state.
-// P5-08 supplies movement. P5-04 never silently substitutes no-op movement.
+// The production dispatcher supplies Inside movement; tests may bind a controlled dispatcher.
 public sealed record TrainCallbackResult(MixedConstructionState Candidate, long? NextDelay);
 public delegate TrainCallbackResult TrainCallback(MixedSessionState session, long trainId);
 
@@ -21,8 +21,8 @@ public sealed class MixedSessionState
     public RandomStreams Random { get; private set; }
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
-    private readonly TrainCallback? trainCallback;
-    public TrainCallback? TrainDispatcher => trainCallback;
+    private readonly TrainCallback trainCallback;
+    public TrainCallback TrainDispatcher => trainCallback;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public static string TrainHandler(long trainId) => "train/" + trainId.ToString(CultureInfo.InvariantCulture);
     private IReadOnlyDictionary<string, Action> Bindings(MixedWorld world, bool dispatch = true)
@@ -40,7 +40,7 @@ public sealed class MixedSessionState
         if (revision < construction.World.Revision) throw new ArgumentException("Invalid mixed session revision.");
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
-        this.trainCallback=trainCallback;
+        this.trainCallback=trainCallback ?? FleetMovement.Tick;
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
@@ -56,7 +56,6 @@ public sealed class MixedSessionState
         if (pending.Length != expected.Count || pending.Any(a => a.Interval != 0 || !expected.Contains(a.HandlerId) ||
                 construction.ContainsKey(a.HandlerId) && a.DueMinute - Clock.Time.AbsoluteMinute > 119) ||
             pending.Select(a => a.HandlerId).Distinct().Count() != expected.Count ||
-            deployed.Length > 0 && trainCallback == null ||
             sites > 0 && Construction.Accounts.Transactions.Length + sites > NormalRailwayConstruction.MaximumAccountTransactions)
             throw new ArgumentException("Invalid mixed callback schedule/capacity/binding.");
         if (Construction.Accounts.Transactions.Any(t => t.AbsoluteMinute > Clock.Time.AbsoluteMinute) ||
@@ -71,7 +70,7 @@ public sealed class MixedSessionState
     private void TickTrain(long trainId)
     {
         var before=Construction;
-        var result=(trainCallback ?? throw new InvalidOperationException("Unbound train callback."))(this,trainId);
+        var result=trainCallback(this,trainId);
         var candidate=result.Candidate ?? throw new ArgumentException("Missing train callback candidate.");
         ValidateCandidate(candidate,allowUnchanged:true);
         var after=candidate.World.Fleet?.Train(trainId) ?? throw new ArgumentException("Callback cannot sell its train.");

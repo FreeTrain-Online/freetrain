@@ -111,7 +111,7 @@
   "referenceWorldHint": "Explore the eight-direction rail loop and run, pause or step the calendar. Economy, trains and construction are not available yet.",
   "normalRail": "Normal rail pattern",
   "spatialTarget": "Check a location",
-  "operationUnavailable": "This operation is not available in the spatial reference world.",
+  "operationUnavailable": "This operation is not available in this world.",
   "savingUnavailable": "Saving is unavailable for this reference world.",
   "invalidSave": "Invalid save data. The current game was preserved.",
   "saveTooLarge": "Save exceeds the 256 MiB limit.",

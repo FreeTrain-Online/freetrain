@@ -85,34 +85,10 @@ public static class FleetDeployment
     }
 
     private static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,RailComponent rail,Heading heading)
-    {
-        var handler=w.Profile.Resolve(rail.Definition).Handler;
-        if (handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading) &&
-            (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)) &&
-            fleet.EffectiveController(train.Id).Kind!=FleetControllerKind.Simple)
-            throw new InvalidOperationException("unboundJunctionController"); // later controller slices must supply actual decisions
-        return FleetRailGuidance.Guide(handler,rail.Pattern,heading);
-    }
+        => FleetRailGuidance.GuideHead(w,fleet,train,rail,heading);
 
     private static FleetDeploymentPlan Plan(MixedSessionState session,FleetTrain train,ClockState clock)
-    {
-        var w=session.World;var f=w.Fleet!;
-        var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Select(t=>t.Id==train.Id?train:t),f.Groups,f.Controllers);
-        var slots=train.Cars.Where(c=>c.State is FleetCarState.Inside).ToDictionary(c=>((FleetCarState.Inside)c.State).Location);
-        var changed=new HashSet<long>();
-        var voxels=w.Voxels.Select(v=>
-        {
-            var traffic=v.Traffic;if(traffic==null)return v;
-            var car=slots.TryGetValue(v.Position,out var c)?new CarComponent(c.Definition,train.Id,c.Id):
-                traffic.Car?.TrainId==train.Id?null:traffic.Car;
-            if(car==traffic.Car)return v;
-            changed.Add(v.OwnerId);return v with {Traffic=traffic with {Car=car}};
-        }).ToImmutableArray();
-        var spatial=new SpatialState(w.Spatial.NextEntityId,w.Spatial.Entities.Select(e=>changed.Contains(e.Id)
-            ?e with {Revision=checked(e.Revision+1)}:e).ToImmutableArray());
-        var world=w.Replace(w.Revision,w.Terrain,spatial,voxels,w.Slopes,w.SpeedLimits,graph);
-        return new(session,new(world,session.Construction.Accounts),clock,train.Id);
-    }
+        => new(session,new(FleetOccupancy.ReplaceTrain(session.World,train),session.Construction.Accounts),clock,train.Id);
 
     public static MixedSessionState Commit(MixedSessionState session,FleetDeploymentPlan plan)
     {
@@ -126,8 +102,41 @@ public static class FleetDeployment
     }
 }
 
+// Shared complete-consist publication for placement, withdrawal and movement.
+internal static class FleetOccupancy
+{
+    internal static MixedWorld ReplaceTrain(MixedWorld w,FleetTrain train)
+    {
+        var f=w.Fleet!;
+        var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Select(t=>t.Id==train.Id?train:t),f.Groups,f.Controllers);
+        var slots=train.Cars.Where(c=>c.State is FleetCarState.Inside).ToDictionary(c=>((FleetCarState.Inside)c.State).Location);
+        var changed=new HashSet<long>();
+        var voxels=w.Voxels.Select(v=>
+        {
+            var traffic=v.Traffic;if(traffic==null)return v;
+            var car=slots.TryGetValue(v.Position,out var c)?new CarComponent(c.Definition,train.Id,c.Id):
+                traffic.Car?.TrainId==train.Id?null:traffic.Car;
+            if(car==traffic.Car)return v;
+            changed.Add(v.OwnerId);return v with {Traffic=traffic with {Car=car}};
+        }).ToImmutableArray();
+        var spatial=new SpatialState(w.Spatial.NextEntityId,w.Spatial.Entities.Select(e=>changed.Contains(e.Id)
+            ?e with {Revision=checked(e.Revision+1)}:e).ToImmutableArray());
+        return w.Replace(w.Revision,w.Terrain,spatial,voxels,w.Slopes,w.SpeedLimits,graph);
+    }
+}
+
 public static class FleetRailGuidance
 {
+    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,RailComponent rail,Heading heading)
+    {
+        var handler=w.Profile.Resolve(rail.Definition).Handler;
+        if (handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading) &&
+            (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)) &&
+            fleet.EffectiveController(train.Id).Kind!=FleetControllerKind.Simple)
+            throw new InvalidOperationException("unboundJunctionController");
+        return Guide(handler,rail.Pattern,heading);
+    }
+
     // A deployment heading can already name an outgoing curve port (rr.dir1).
     // Requiring its opposite would reject legal SOURCE initial/tail states.
     public static bool CanGuide(RailwayHandler handler,int pattern,Heading heading) =>

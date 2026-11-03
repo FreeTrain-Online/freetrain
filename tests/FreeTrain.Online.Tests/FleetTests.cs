@@ -205,7 +205,7 @@ public class FleetTests
 
     [Theory]
     [InlineData("missing")][InlineData("duplicate")][InlineData("repeated")][InlineData("unknown")][InlineData("unplaced")]
-    [InlineData("due-now")][InlineData("no-engine")]
+    [InlineData("due-now")]
     public void Malformed_train_schedules_reject(string bad)
     {
         var w=Add(Empty(),new FleetCarState.Inside(P,new(2)));var handler=MixedSessionState.TrainHandler(w.Fleet!.Trains[0].Id);
@@ -219,7 +219,7 @@ public class FleetTests
             case "unplaced":w=Add(Empty(),new FleetCarState.Unplaced());break;
             case "due-now":pending=[pending[0] with{DueMinute=3420}];break;
         }
-        Assert.Throws<ArgumentException>(()=>Session(w,bad=="no-engine"?null:Wait,new(3420,2,pending)));
+        Assert.Throws<ArgumentException>(()=>Session(w,Wait,new(3420,2,pending)));
     }
 
     [Fact]

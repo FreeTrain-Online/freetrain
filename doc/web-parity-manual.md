@@ -604,3 +604,18 @@ source and contribution bindings. EN/JA selection/map/keyboard/confirmation and
 network workflows remain P5-11; movement and already placed reversal keep
 P5-08/12. Placement resets the source stop counter while preserving the running
 move counter, passengers, boarding origin and forwarding across withdrawal.
+
+## P5-08 Inside movement domain
+
+The [movement contract and tests](web-parity-fleet-movement.md) deliver the Inside
+simulation portion of MAN-T07/W07/W10 and DEV-P19/P24, with [reciprocal action
+bindings](web-parity-actions.md#p5-08-inside-movement-domain). Real registered,
+purchased/deployed trains run on gameplay-built rails through the shared clock,
+preserving complete consists, occupancy, operating expense and save continuation.
+Simple control keeps the straight junction route; an occupied connected route
+waits without reversing. The existing portable unavailable-operation diagnostic
+now refers to “this world” in EN/JA, covering later handlers without incorrectly
+calling a mixed world the spatial reference world. An unavailable Step rejects
+without changing the minute; Run pauses safely. Moving art/picking and actual
+purchase/deployment controls remain P5-09–11. This domain slice adds no new
+player control and grants no moving-map visual/native acceptance.

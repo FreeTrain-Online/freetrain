@@ -69,7 +69,8 @@ P5-04 adds immutable `FleetGraph`, shared controller/ordered group references an
 real stock car state linked bidirectionally with Traffic occupancy, using the
 existing allocator. `MixedSessionState` binds construction and exactly one
 one-shot callback per deployed train, with detached rollback and rebinding.
-A trusted dispatcher is required; movement follows in P5-08. P5-05 now supplies
+A trusted dispatcher owns simulation; P5-08 now binds `FleetMovement.Tick` by
+default while retaining explicit controlled-dispatcher overrides. P5-05 supplies
 [Save9/protocol7 fleet persistence and transport](../../doc/web-parity-fleet-transport.md),
 including exact-profile restoration and explicit callback reconstruction.
 See [fleet state, source bindings and verification](../../doc/web-parity-fleet-state.md).
@@ -80,3 +81,12 @@ Inside slots, removes membership and cancels exactly its train callback while
 preserving shared controllers and other work. `ConstructionAccounts.Earn` keeps
 revenue distinct from expenditure and bankruptcy funding, including exact durable
 restore. See [trading contract and verification](../../doc/web-parity-fleet-trading.md).
+
+P5-08 adds current-rail Inside movement, reciprocal destination ports, source
+visible exits, complete-consist shifting, occupied-track waits and a single
+Inside dead-end reversal/retry. Native/prior-head timing and operating bookings
+publish with occupancy and the future callback in one detached minute. The
+simple controller chooses straight at junctions and passes non-Station signals.
+Outside callbacks and advanced junction/harbor handlers retain explicit later
+phase boundaries; the host safely rejects Step or pauses Run when encountered.
+See [movement scope, literal traces and verification](../../doc/web-parity-fleet-movement.md).
