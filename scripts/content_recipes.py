@@ -243,15 +243,19 @@ class Compiler:
                             source=mapping['attributes']['from']; idx=source.split(',').index('*')
                             targets=[None,None,None]; targets[idx]=col; settings=dict(kind='hue',targets=targets)
                         self.add(f'pattern/{pi}/{si}/{ci}',p,[*origin,24,8+h*16],[off[0],off[1]+h*16],settings=settings,direction=direction,side=si,color=ci)
-        elif name in ('SymTrainCarImpl','AsymTrainCarImpl','ColorTestTrainCar'):
+        elif name in ('SymTrainCarImpl','AsymTrainCarImpl','ColorTestTrainCar','ColoredTrainCarImpl'):
             handler='train-car'; asym=name=='AsymTrainCarImpl'
-            if name=='ColorTestTrainCar':
-                p=next(v['id'] for v in self.catalog['contributions'] if v['type']=='colorMapTrainPicture')
+            if name in ('ColorTestTrainCar','ColoredTrainCarImpl'):
+                mapping=child(e,'colorMap') if name=='ColoredTrainCarImpl' else None
+                p=mapping['attributes']['picture'] if mapping else next(v['id'] for v in self.catalog['contributions'] if v['type']=='colorMapTrainPicture')
+                if p not in self.definitions or self.definitions[p]['type']!='colorMapTrainPicture':
+                    raise ValueError('Invalid colored train template: '+p)
                 ox,oy=0,0; source=[(0,0,255),(0,0,180),(0,255,0),(0,180,0),(255,0,0),(180,0,0),(255,255,0),(180,180,0)]
-                target=[(255,0,0),(0,0,255),(0,255,0),(255,255,0)]
+                target=[color(mapping['attributes'][key]) for key in ('base','line1','line2','line3')] if mapping else [(255,0,0),(0,0,255),(0,255,0),(255,255,0)]
+                if mapping: fields.update(colorTemplate=p,colors=target)
                 target=[v for c in target for v in (c,tuple(n*180//255 for n in c))]
                 settings=dict(kind='color-map',maps=[dict(source=list(s),target=list(v)) for s,v in zip(source,target)])
-                fields.update(capacity='0',seatedcapacity='0')
+                if not mapping: fields.update(capacity='0',seatedcapacity='0')
             else:
                 spr=child(e,'sprite'); p=self.picture(spr); ox,oy=pair(spr['attributes']['origin']); settings=effect(spr)
             for i in range(16 if asym else 8):
@@ -262,10 +266,28 @@ class Compiler:
         elif name=='ReverseTrainCarImpl':
             handler='reverse-train-car'; fields['base']=child(e,'base')['attributes']['carRef']
         elif t=='train':
-            handler='train-composition'; comp=child(e,'composition'); fields['composition']={n['tag']:n['attributes']['carRef'] for n in comp['children']}
-            if 'body' not in fields['composition']:
-                raise ValueError('Train composition requires body')
-            for target in fields['composition'].values():
+            handler='train-composition'
+            if name=='PatternTrainImpl':
+                config=child(e,'config'); cars={}
+                for car in children(config,'car'):
+                    symbol=car['attributes']['char']
+                    if len(symbol)!=1 or symbol in cars: raise ValueError('Invalid/duplicate pattern character')
+                    cars[symbol]=car['attributes']['ref']
+                patterns={}
+                for composition in children(config,'composition'):
+                    symbols=''.join(composition['text'].split())
+                    if not 1 <= len(symbols) <= 100 or str(len(symbols)) in patterns: raise ValueError('Invalid/duplicate pattern length')
+                    try: patterns[str(len(symbols))]=[cars[c] for c in symbols]
+                    except KeyError as err: raise ValueError('Undefined pattern character: '+str(err)) from err
+                if not patterns: raise ValueError('Missing train patterns')
+                fields['patterns']=patterns; targets=cars.values()
+            elif name=='ParamTrainImpl':
+                comp=child(e,'composition'); fields['composition']={n['tag']:n['attributes']['carRef'] for n in comp['children']}
+                if 'body' not in fields['composition']:
+                    raise ValueError('Train composition requires body')
+                targets=fields['composition'].values()
+            else: raise ValueError('Unsupported train composition implementation: '+name)
+            for target in targets:
                 if target not in self.definitions or self.definitions[target]['type']!='trainCar':
                     raise ValueError('Invalid train car reference: '+target)
             speed=text(e,'speed').lower(); fields['minutesPerVoxel']={'slow':4,'medium':3,'fast':2,'superb':1}.get(speed)

@@ -188,6 +188,9 @@ def prepare(roots, bundled_catalog, bundled_input, output=None, reference_catalo
     allowed_classes = {d['implementation']['name'] for d in base['contributions'] + base['factories'] if 'implementation' in d}
     allowed_classes.update(n['attributes']['name'] for d in base['factories']
                            for n in children(d['declaration'], 'implementation'))
+    # P5-03 exact source-reviewed stock adapters; these never activate pack DLLs.
+    allowed_classes.update({'freetrain.contributions.train.PatternTrainImpl',
+                            'freetrain.contributions.train.ColoredTrainCarImpl'})
     errors = []
     for d in declarations:
         try:

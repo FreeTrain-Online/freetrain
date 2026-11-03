@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using FreeTrain.Online.Content;
 using FreeTrain.Online.Server;
+using FreeTrain.Online.Simulation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,6 +73,41 @@ public class OptionalPluginTests : IDisposable
         Assert.Null(registry.ReadFile(descriptor.CatalogUrl + "/../prepared-pack.json"));
         File.WriteAllText(Path.Combine(one, "catalog.json"), "tampered");
         Assert.Throws<InvalidDataException>(() => registry.ReadFile(descriptor.CatalogUrl));
+    }
+
+    [Fact]
+    public void Optional_stock_uses_only_selected_verified_packs_and_never_leaks_into_bundled_registry()
+    {
+        var directory = Pack();
+        var catalogPath = Path.Combine(directory, "catalog.json");
+        var catalog = JsonNode.Parse(File.ReadAllBytes(catalogPath))!;
+        using var source = typeof(PreparedContentCatalog).Assembly.GetManifestResourceStream("BundledCatalog")!;
+        var bundled = JsonNode.Parse(source)!;
+        const string ft1 = "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}";
+        var definition = bundled["contributions"]!.AsArray().Single(d => d!["id"]!.GetValue<string>() == ft1)!.DeepClone();
+        var recipe = bundled["renderRecipes"]!.AsArray().Single(d => d!["id"]!.GetValue<string>() == ft1)!.DeepClone();
+        definition["id"] = "optional-train"; recipe["id"] = "optional-train";
+        definition["pluginId"] = "synthetic-one"; recipe["pluginId"] = "synthetic-one";
+        definition["declaration"]!["attributes"]!["id"] = "optional-train";
+        catalog["contributions"] = new JsonArray(definition); catalog["renderRecipes"] = new JsonArray(recipe);
+        var bytes = Encoding.UTF8.GetBytes(catalog.ToJsonString()); File.WriteAllBytes(catalogPath, bytes);
+        var manifestPath = Path.Combine(directory, "prepared-pack.json");
+        var manifest = JsonNode.Parse(File.ReadAllBytes(manifestPath))!;
+        manifest["files"]!["catalog.json"] = JsonSerializer.SerializeToNode(new PluginFile(Hash(bytes), bytes.Length), Json);
+        File.WriteAllText(manifestPath, manifest.ToJsonString());
+
+        var optional = OptionalPluginRegistry.Load([directory]);
+        var stocks = optional.RollingStock;
+        Assert.Empty(stocks.Diagnostics); Assert.Equal(7, stocks.Trains.Length);
+        var train = stocks.Trains.Single(t => t.Binding.ContributionId == "optional-train");
+        Assert.Equal("synthetic-one", train.Binding.PackId); Assert.Equal(264, train.Create(2).NormalCapacity);
+        Assert.Equal(PreparedContentCatalog.BundledPackId, train.Create(2).Cars[0].Reference.PackId);
+        Assert.Same(stocks, optional.RollingStock);
+        Assert.Throws<ArgumentException>(() => RollingStockCatalog.Bundled.ResolveTrain(train.Binding));
+        Assert.Throws<ArgumentException>(() => stocks.ResolveTrain(train.Binding with { CatalogHash = new string('0', 64) }));
+        Assert.False(stocks.Matches(RollingStockCatalog.Bundled.Packs));
+        Assert.Equal(6, OptionalPluginRegistry.Empty.RollingStock.Trains.Length);
+        Assert.Equal(6, RollingStockCatalog.Bundled.Trains.Length);
     }
 
     [Theory]

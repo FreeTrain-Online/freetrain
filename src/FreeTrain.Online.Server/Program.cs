@@ -20,6 +20,10 @@ builder.Services.AddSingleton(optionalPlugins);
 // Validate and register prepared authoring data. WorldProfiles continues to
 // select only implemented rules/content; this does not enable recipe handlers.
 builder.Services.AddSingleton(PreparedContentCatalog.Bundled);
+// Typed P5-03 stock handlers are registered independently of authoring metadata.
+// Fleet commands/occupancy remain gated by the later fleet implementation.
+var rollingStock = optionalPlugins.RollingStock;
+builder.Services.AddSingleton(rollingStock);
 // Loopback only unless an explicit deployment URL is configured.
 if (string.IsNullOrEmpty(builder.Configuration["urls"]))
     builder.WebHost.UseUrls("http://127.0.0.1:5080");
@@ -44,6 +48,9 @@ builder.Services.AddSingleton<NetworkSession>(services => new(networkOptions, se
 builder.Services.AddSingleton<SessionDriver>();
 builder.Services.AddHostedService(services => services.GetRequiredService<SessionDriver>());
 var app = builder.Build();
+foreach (var diagnostic in rollingStock.Diagnostics)
+    app.Logger.LogWarning("Rolling stock {PackId}/{ContributionId} unavailable ({Code}): {Detail}",
+        diagnostic.Binding.PackId, diagnostic.Binding.ContributionId, diagnostic.Code, diagnostic.Detail);
 app.UseDeployment();
 app.MapGet("/health", (SessionDriver driver) => Results.Json(new { status = driver.CheckpointError == null ? "ok" : "degraded", stage = "deployment", protocolVersion = ProtocolIdentity.Version, checkpointError = driver.CheckpointError }, statusCode: driver.CheckpointError == null ? 200 : 503));
 app.MapNetwork();

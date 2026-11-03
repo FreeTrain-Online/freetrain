@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "slice": "P5-03",
+  "status": "registration-complete-no-fleet-gameplay",
+  "authority": {
+    "sourceId": "exav-883cf7d-trunk",
+    "revision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+    "subtree": "trunk",
+    "engineVersion": "2.1.1.12",
+    "pluginFamily": "V2"
+  },
+  "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+  "definitions": [
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:51:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:52:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:53:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:54:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:55:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:56:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:system:57:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "id": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "type": "colorMapTrainPicture",
+      "pluginId": "system",
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "implementation": "freetrain.contributions.train.ColoredTrainPictureContribution",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:0:{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "id": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.SymTrainCarImpl",
+      "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:1:{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "id": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:2:{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "id": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:3:{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "id": "{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:4:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.AsymTrainCarImpl",
+      "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:5:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.SymTrainCarImpl",
+      "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-m",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:6:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ReverseTrainCarImpl",
+      "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:7:{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:8:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.AsymTrainCarImpl",
+      "recipeId": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:9:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.SymTrainCarImpl",
+      "recipeId": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-m",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:10:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ReverseTrainCarImpl",
+      "recipeId": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:11:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:1:{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "id": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "type": "trainCar",
+      "pluginId": "org.kohsuke.freetrain.trains.colorTest",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "implementation": "freetrain.world.rail.cttrain.ColorTestTrainCar",
+      "recipeId": "{6E5E12DD-69CB-4DF2-B4F0-2BCDA703CBB0}",
+      "status": "registered"
+    },
+    {
+      "coverageId": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains.colorTest:2:{719F0922-EA74-409C-B829-C4950201C226}",
+      "id": "{719F0922-EA74-409C-B829-C4950201C226}",
+      "type": "train",
+      "pluginId": "org.kohsuke.freetrain.trains.colorTest",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "implementation": "freetrain.contributions.train.ParamTrainImpl",
+      "recipeId": "{719F0922-EA74-409C-B829-C4950201C226}",
+      "status": "registered"
+    }
+  ],
+  "reverseSelections": [
+    {
+      "owner": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:6:{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+      "target": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+      "registeredAlias": true,
+      "transform": "level angle XOR 8; slope opposite direction and inverted climb",
+      "resolution": "registered"
+    },
+    {
+      "owner": "exav-883cf7d-trunk:contribution:org.kohsuke.freetrain.trains:10:{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-t",
+      "target": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}-h",
+      "registeredAlias": true,
+      "transform": "level angle XOR 8; slope opposite direction and inverted climb",
+      "resolution": "registered"
+    }
+  ],
+  "generatedStockDefinitions": [],
+  "adapters": {
+    "parameterized": "freetrain.contributions.train.ParamTrainImpl",
+    "pattern": "freetrain.contributions.train.PatternTrainImpl",
+    "colored": "freetrain.contributions.train.ColoredTrainCarImpl"
+  },
+  "limits": {
+    "formationCars": 100,
+    "quantity": 100,
+    "requestCars": 1024,
+    "fleetTrains": 128,
+    "fleetCars": 1024
+  },
+  "numericalPolicy": "checked-source-Int32-price-and-capacities-before-fleet-admission; positive-Int32-native-speed",
+  "safeLengths": [
+    {
+      "id": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}",
+      "minimum": 1,
+      "maximum": 71
+    },
+    {
+      "id": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}",
+      "minimum": 1,
+      "maximum": 76
+    },
+    {
+      "id": "{F7134C8E-6B63-4780-AF16-90D33131CD07}",
+      "minimum": 1,
+      "maximum": 85
+    },
+    {
+      "id": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}",
+      "minimum": 1,
+      "maximum": 42
+    },
+    {
+      "id": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}",
+      "minimum": 1,
+      "maximum": 30
+    },
+    {
+      "id": "{719F0922-EA74-409C-B829-C4950201C226}",
+      "minimum": 1,
+      "maximum": 21
+    }
+  ],
+  "sourceUi": {
+    "path": "core/controllers/rail/TrainTradingDialog.cs",
+    "sha256": "7124579b0f78952904039471605c424a2a47af41668f0db2d904b6b0c00b32c6",
+    "lengthMinimum": 1,
+    "implicitLengthMaximum": 100,
+    "implicitQuantityMaximum": 100,
+    "defaultMaximumReference": "https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.numericupdown.maximum?view=netframework-4.8.1",
+    "qualification": "source controls, not universal source factory ceiling"
+  },
+  "admission": {
+    "hardware": "Apple M1 Max, 64 GiB RAM, 10 logical processors",
+    "runtime": ".NET 10.0.13",
+    "os": "macOS 26.7.1",
+    "architecture": "Arm64",
+    "configuration": "Release",
+    "scope": "registration-and-detached-formation-admission; moving-fleet-capacity-remains-P5-28",
+    "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+    "coldCatalogAndRegistrationMs": 120.3855,
+    "registration": {
+      "samples": 200,
+      "medianMs": 2.0616,
+      "p95Ms": 2.3879,
+      "maximumMs": 2.7427,
+      "allocatedBytesPerOperation": 559805
+    },
+    "request100Trains1000Cars": {
+      "samples": 1000,
+      "medianMs": 0.0064,
+      "p95Ms": 0.0073,
+      "maximumMs": 0.6038,
+      "allocatedBytesPerOperation": 16400
+    },
+    "maximumRequest64Trains1024Cars": {
+      "samples": 1000,
+      "medianMs": 0.0055,
+      "p95Ms": 0.0058,
+      "maximumMs": 0.165,
+      "allocatedBytesPerOperation": 13760
+    },
+    "detachedFleet128Trains1024Cars": {
+      "samples": 1000,
+      "medianMs": 0.0129,
+      "p95Ms": 0.0135,
+      "maximumMs": 0.1686,
+      "allocatedBytesPerOperation": 40984
+    },
+    "passed": true
+  },
+  "handoffs": [
+    "P5-04 fleet graph/occupancy/callbacks",
+    "P5-05 save/transport bindings",
+    "P5-06 inventory/accounting commands",
+    "P5-10 EN/JA purchase/owned-stock UI",
+    "P5-25 color settings/template export",
+    "P5-28 moving fleet capacity",
+    "P5-29 P2/native/optional qualifications"
+  ]
+}

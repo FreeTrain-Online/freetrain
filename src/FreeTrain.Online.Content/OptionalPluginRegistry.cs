@@ -25,6 +25,9 @@ public sealed class OptionalPluginRegistry
     private readonly FrozenDictionary<string, (string Path, PluginFile File)> files;
     public EnabledContent Content { get; }
     public ImmutableArray<JsonElement> Catalogs { get; }
+    // Only the explicitly selected, verified packs enter this registry.
+    public RollingStockCatalog RollingStock => rollingStock.Value;
+    private readonly Lazy<RollingStockCatalog> rollingStock;
     public static OptionalPluginRegistry Empty { get; } = Load([]);
 
     public bool Compatible(string? setHash) => setHash == Content.SetHash || (Content.Packs.IsEmpty && string.IsNullOrEmpty(setHash));
@@ -182,6 +185,7 @@ public sealed class OptionalPluginRegistry
         var sorted = packs.OrderBy(p => p.Id, StringComparer.Ordinal).ToImmutableArray();
         var setHash = Digest(Encoding.UTF8.GetBytes(PreparedContentCatalog.Bundled.CatalogHash + "\n" + string.Join("\n", sorted.Select(p => p.Id + ":" + p.Hash))));
         Content = new(setHash, sorted); Catalogs = catalogs.ToImmutableArray(); files = exposed.ToFrozenDictionary(StringComparer.Ordinal);
+        rollingStock = new(() => RollingStockCatalog.Build(PreparedContentCatalog.Bundled, this));
     }
 
     private static void Register(JsonElement catalog, string owner, Dictionary<string, (string Owner, string[] Dependencies)> plugins, Dictionary<string, string> ids)

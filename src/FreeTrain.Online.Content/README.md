@@ -2,7 +2,7 @@
 
 `PreparedContentCatalog.Bundled` validates and indexes the prepared stable ExAV
 bundled catalog at server startup. Its 448 contribution records remain inert
-for gameplay. All 159 picture bindings and 812 browser render recipes are
+for gameplay. All 159 picture bindings and 813 browser render recipes are
 available as immutable, pack-qualified metadata with exact hashes. Original
 notices ship in managed output; generated media preserve original plugin
 namespaces and per-image provenance. Default preparation reads
@@ -42,3 +42,11 @@ creation remain P3-05/06 work.
 `RailwayProfiles.Bundled` registers P4-03's 87 exact railway **state** bindings
 against the prepared pack. It does not enable live railway operations, rendering
 or save/wire dispatch. See [mixed-state handoff](../../doc/web-parity-railway-state.md).
+
+`RollingStockCatalog.Bundled` registers exact typed factories alongside prepared
+art: six trains, eight cars and seven color templates. Server startup registers
+`OptionalPluginRegistry.RollingStock` for its explicitly selected pack set;
+bundled registration remains separate. Immutable formation creation and quotes
+enforce source compositions, checked numeric fields and admission limits. This
+supplies P5-04 fleet work; it enables no occupancy or purchase command by itself.
+See [P5-03 bindings, limits and checks](../../doc/web-parity-rolling-stock.md).

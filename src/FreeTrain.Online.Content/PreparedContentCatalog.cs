@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace FreeTrain.Online.Content;
 
-public sealed record PreparedDefinition(string Id, string PluginId, string Type, JsonElement Declaration);
+public sealed record PreparedDefinition(string Id, string PluginId, string Type, JsonElement Declaration, string Implementation = "");
 public sealed record RenderRecipe(string Id, string PluginId, string Handler, JsonElement Data);
 public sealed record PreparedPicture(string Id, bool HasPreparedVariants, JsonElement Data);
 
@@ -74,7 +74,8 @@ public sealed class PreparedContentCatalog
             if (!pluginIds.Contains(plugin) || row.GetProperty("status").GetString() != "prepared; gameplay-unavailable")
                 throw new ArgumentException("Invalid prepared definition.");
             return new PreparedDefinition(row.GetProperty("id").GetString()!, plugin, row.GetProperty("type").GetString()!,
-                row.TryGetProperty("declaration", out var declaration) ? declaration.Clone() : row.Clone());
+                row.TryGetProperty("declaration", out var declaration) ? declaration.Clone() : row.Clone(),
+                row.TryGetProperty("implementation", out var implementation) ? implementation.GetProperty("name").GetString()! : "");
         }).ToImmutableArray();
         Pictures = root.GetProperty("pictures").EnumerateArray().Select(row =>
             new PreparedPicture(row.GetProperty("id").GetString()!, row.GetProperty("status").GetString() == "prepared-picture", row.Clone()))

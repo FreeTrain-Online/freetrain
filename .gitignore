@@ -12,6 +12,8 @@ src/**/bin/
 src/**/obj/
 tests/**/bin/
 tests/**/obj/
+tools/**/bin/
+tools/**/obj/
 TestResults/
 data/
 deploy/.env
