@@ -3,8 +3,8 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-// P5-03 registration/admission only. Fleet identities, occupancy and callbacks
-// belong to P5-04; a P4 trusted CarComponent is never a stock definition.
+// Registration/formation admission. Fleet.cs owns identities and occupancy;
+// a P4 trusted CarComponent is never a stock definition.
 public static class StockAdmission
 {
     // Source purchase controls: length minimum 1, implicit Maximum 100;

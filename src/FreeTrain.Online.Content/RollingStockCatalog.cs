@@ -23,6 +23,9 @@ public sealed class RollingStockCatalog
     public ImmutableArray<StockCar> Cars { get; }
     public ImmutableArray<StockTemplate> Templates { get; }
     public ImmutableArray<StockDiagnostic> Diagnostics { get; }
+    // Shared immutable state profile. Controller execution/configuration follows
+    // in P5-16 onward; these are exact registered provider identities only.
+    public FleetProfile FleetProfile { get; }
 
     public StockTrain ResolveTrain(ContentBinding binding) => trains.TryGetValue(binding, out var train)
         ? train : throw new ArgumentException("Unavailable rolling-stock definition or incompatible pack.");
@@ -70,6 +73,16 @@ public sealed class RollingStockCatalog
     private RollingStockCatalog(IEnumerable<TerrainPack> packs, List<Input> inputs)
     {
         Packs = packs.ToImmutableArray();
+        var controllerProviders = inputs.Where(i => i.Definition.Type == "trainController").Select(i =>
+        {
+            var kind = i.Definition.Implementation switch
+            {
+                "freetrain.world.rail.manualtc.TrainConrollerContributionImpl" => FleetControllerKind.Manual,
+                "freetrain.world.rail.tattc.TATTrainControllerPlugIn" => FleetControllerKind.Timetable,
+                _ => (FleetControllerKind?)null
+            };
+            return kind is {} k ? new FleetControllerProvider(new(i.Pack.Id,i.Pack.Version,i.Pack.CatalogHash,i.Definition.Id),k) : null;
+        }).OfType<FleetControllerProvider>().ToImmutableArray();
         var byId = inputs.ToDictionary(i => i.Definition.Id, StringComparer.Ordinal);
         var templateList = new List<StockTemplate>();
         var carMap = new Dictionary<string, StockCar>(StringComparer.Ordinal);
@@ -240,6 +253,7 @@ public sealed class RollingStockCatalog
         Trains = trainList.ToImmutableArray(); Cars = carMap.Values.ToImmutableArray(); Templates = templateList.ToImmutableArray();
         Diagnostics = diagnostics.Values.ToImmutableArray();
         trains = Trains.ToFrozenDictionary(t => t.Binding); cars = Cars.ToFrozenDictionary(c => c.Reference);
+        FleetProfile = new(Packs,Trains,controllerProviders);
     }
 
     private static bool Invalid(Exception e) => e is ArgumentException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException;

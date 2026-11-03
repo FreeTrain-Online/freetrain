@@ -59,7 +59,8 @@ public sealed record RailComponent(DefinitionReference Definition, int Pattern, 
     QuarterCorners? TerrainBackup = null, int Direction = 0, long? ControllerId = null);
 public sealed record RoadComponent(DefinitionReference Definition, int Edges);
 public sealed record AccessoryComponent(DefinitionReference Definition, int Direction = 0);
-// Future train consumer reference, not a second whole-voxel owner.
+// Fleet car reference, not a second whole-voxel owner. Trusted P4 fixtures keep
+// their separate explicit-handler contract until a canonical FleetGraph is used.
 public sealed record CarComponent(DefinitionReference Definition, long TrainId, long CarId);
 public sealed record TrafficComponents(RailComponent? Rail = null, RoadComponent? Road = null,
     AccessoryComponent? Accessory = null, CarComponent? Car = null, DefinitionReference? Platform = null);

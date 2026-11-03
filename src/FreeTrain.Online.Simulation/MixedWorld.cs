@@ -15,6 +15,7 @@ public sealed class MixedWorld
     public ImmutableArray<RailwayVoxel> Voxels { get; }
     public ImmutableArray<SlopeOwnership> Slopes { get; }
     public SpeedLimits SpeedLimits { get; }
+    public FleetGraph? Fleet { get; }
     private readonly FrozenDictionary<Location, RailwayVoxel> voxels;
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
@@ -22,7 +23,8 @@ public sealed class MixedWorld
     public RailwayVoxel? At(Location p) => voxels.GetValueOrDefault(p);
 
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
-        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null)
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null,
+        FleetGraph? fleet = null)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(terrain);
@@ -30,7 +32,7 @@ public sealed class MixedWorld
         if (spatial.Entities.IsDefault || profile.Terrain != terrain.Profile || revision < terrain.Revision ||
             spatial.NextEntityId < terrain.Spatial.NextEntityId)
             throw new ArgumentException("Invalid mixed-world profile/revision/allocator.");
-        Profile = profile; Terrain = terrain; Revision = revision;
+        Profile = profile; Terrain = terrain; Revision = revision; Fleet = fleet;
         Voxels = voxels.Take(SpatialIndex.MaximumOccupiedCells + 1).ToImmutableArray();
         Slopes = slopes.Take(SpatialIndex.MaximumOccupiedCells / 8 + 1).ToImmutableArray();
         if (Voxels.Length > SpatialIndex.MaximumOccupiedCells || Voxels.Any(v => v is null || !Enum.IsDefined(v.Kind)) ||
@@ -80,6 +82,7 @@ public sealed class MixedWorld
         var cars = Voxels.Where(v => v.Traffic?.Car != null).Select(v => v.Traffic!.Car!).ToArray();
         if (cars.Select(c => c.CarId).Distinct().Count() != cars.Length)
             throw new ArgumentException("Car occupies multiple voxels.");
+        Fleet?.ValidateWorld(this);
     }
 
     public static MixedWorld FromTerrain(RailwayProfile profile, TerrainWorld terrain) =>
@@ -189,7 +192,7 @@ public sealed class MixedWorld
             (t.Rail == null || t.Road == null ||
                 !TrafficLifecycle.HasCrossing(t)))
             throw new ArgumentException("Invalid crossing components.");
-        if (t.Car is {} car && (Profile.Resolve(car.Definition).Handler != RailwayHandler.Car || car.TrainId < 1 || car.CarId < 1))
+        if (t.Car is {} car && (Fleet == null && Profile.Resolve(car.Definition).Handler != RailwayHandler.Car || car.TrainId < 1 || car.CarId < 1))
             throw new ArgumentException("Invalid car reference.");
         if (t.Platform is {} platform && (Profile.Resolve(platform).Handler != RailwayHandler.Platform || t.Rail == null))
             throw new ArgumentException("Invalid platform component.");
@@ -200,13 +203,16 @@ public sealed class MixedWorld
 
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
-        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null)
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null, FleetGraph? fleet = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("staleRevision");
         if (spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Allocator rewind.");
         var members=voxels.ToImmutableArray();
         var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
-        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits);
+        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet);
+        if (Fleet != null) candidate.Fleet!.ValidateSuccessor(Fleet,Spatial.NextEntityId);
+        else if (candidate.Fleet != null && candidate.Fleet.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
+            throw new ArgumentException("Reused initial fleet identity.");
         if (!ReferenceEquals(terrain, Terrain))
         {
             if (terrain.Profile != Terrain.Profile || terrain.Name != Terrain.Name ||
@@ -239,5 +245,12 @@ public sealed class MixedWorld
             else if (e.Revision != checked(previous.Revision + 1)) throw new ArgumentException("Invalid entity revision.");
         }
         return candidate;
+    }
+
+    public MixedWorld EnableFleet(FleetProfile profile)
+    {
+        if (Fleet != null) throw new InvalidOperationException("Fleet already initialized.");
+        var fleet = FleetGraph.Empty(profile,Spatial.NextEntityId);
+        return Replace(Revision,Terrain,new(checked(Spatial.NextEntityId+3),Spatial.Entities),Voxels,Slopes,fleet:fleet);
     }
 }

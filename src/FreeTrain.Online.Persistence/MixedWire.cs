@@ -22,6 +22,7 @@ public static class MixedWire
     public static MixedRead Read(MixedConstructionState state)
     {
         var w = state.World; var a = state.Accounts;
+        if (w.Fleet != null) throw new InvalidOperationException("Fleet save/transport requires P5-05.");
         if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
             throw new InvalidDataException("saveTooLarge");
         return new(w.Revision,w.Spatial.NextEntityId,w.Voxels.OrderBy(v => v.OwnerId).ThenBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z).Select(v =>

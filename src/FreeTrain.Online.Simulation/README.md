@@ -64,3 +64,11 @@ whole-entity reclamation, source support election/owner-agnostic teardown,
 crossing cleanup and exact booking validate before replacement. `RailwaySupports`
 accepts explicit top/body bindings for later infrastructure consumers. No live
 rail tool or rendering is enabled. See [construction and verification](../../doc/web-parity-railway-construction.md).
+
+P5-04 adds immutable `FleetGraph`, shared controller/ordered group references and
+real stock car state linked bidirectionally with Traffic occupancy, using the
+existing allocator. `MixedSessionState` binds construction and exactly one
+one-shot callback per deployed train, with detached rollback and rebinding.
+A trusted dispatcher is required; movement follows in P5-08. Current save/wire
+entry points reject fleet state until P5-05 supplies its complete contract.
+See [fleet state, source bindings and verification](../../doc/web-parity-fleet-state.md).

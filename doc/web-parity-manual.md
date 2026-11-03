@@ -550,3 +550,17 @@ manual/TAT can wait at signals. P6 owns real platform/Station passenger/bell
 integration. `.ftdd` rules remain P5; `.ftgd`/`.ftgt` world imports remain P10.
 The existing TAT resource/native/optional qualifications and P11 performance
 findings retain their owners; every feature still needs EN/JA/browser evidence.
+
+## P5-04 fleet foundation
+
+MAN-T06/T07/T08 (owned trains/controllers), MAN-W07/W08/W09/W10 (stock,
+placement, diagrams and information), MAN-A10/A11/A12/A13/A17 and MAN-O08
+(group/formation/operation workflows) now consume the
+[canonical fleet and callback foundation](web-parity-fleet-state.md).
+DEV-P14/P18/P19/P20/P24 and the
+[reciprocal action bindings](web-parity-actions.md#p5-04-fleet-foundation)
+map these requirements to exact stock identities, original car indices/current
+order, shared controllers/ordered groups, source car states and atomic scheduled
+continuation. The detached implementation does not enable their controls or
+claim movement, sale, grouping UI, EN/JA presentation or native acceptance;
+P5-05 onward retains the corresponding delivery gates.

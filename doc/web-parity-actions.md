@@ -527,3 +527,16 @@ manual/TAT can wait at signals. P6 owns real platform/Station passenger/bell
 integration. `.ftdd` rules remain P5; `.ftgd`/`.ftgt` world imports remain P10.
 The existing TAT resource/native/optional qualifications and P11 performance
 findings retain their owners; every feature still needs EN/JA/browser evidence.
+
+## P5-04 fleet foundation
+
+The [canonical fleet/callback contract](web-parity-fleet-state.md) implements the
+state prerequisites of the P5-01 `trade`, `deploy`, `movement`, `reversal`,
+`outside`, `manager`, `groups` and `information-tracking` rows. MAN-T06–08,
+MAN-W07–10, MAN-A10–13/17, MAN-O08 and DEV-P14/18–20/24 now bind concrete
+`FleetTrain`/`FleetCarState`, reciprocal Traffic occupancy, stable shared
+controllers/ordered group references and one callback per deployed train.
+The [production checks](../tests/FreeTrain.Online.Tests/FleetTests.cs) cover
+independent identity poses, fallback/cycle guards, atomic rollback and coexistence
+with construction. This detached foundation ships no browser control or new
+EN/JA wording; the rows' existing later P5 owners retain command/UI acceptance.
