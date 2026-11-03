@@ -371,6 +371,8 @@ public sealed partial class SessionHost : IDisposable
                     {
                         switch (queued.Command.Payload)
                         {
+                            case TradeFleetCommand trade when trade.Query != null: code = CommitFleetTrade(trade); break;
+                            case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;

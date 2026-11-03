@@ -56,7 +56,7 @@ export async function confirmRemoval(page:Page,ja=false){
  await expect(page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true})).toBeDisabled();
 }
 export async function openPanel(page: Page, id: string, language = 'en') {
-  const labels: Record<string, string[]> = { newWorld: ['New world', '新しい世界'], inspector: ['Selected object', '選択した対象'], catalog: ['Building catalog', '建物一覧'], saves: ['Save and restore', '保存と復元'], view: ['View', '表示'], settings: ['Settings', '設定'], session: ['Session', '接続情報'], help: ['Help', 'ヘルプ'] };
+  const labels: Record<string, string[]> = { fleet: ['Trains', '列車'], newWorld: ['New world', '新しい世界'], inspector: ['Selected object', '選択した対象'], catalog: ['Building catalog', '建物一覧'], saves: ['Save and restore', '保存と復元'], view: ['View', '表示'], settings: ['Settings', '設定'], session: ['Session', '接続情報'], help: ['Help', 'ヘルプ'] };
   await closePanel(page);
   await page.locator('.command-bar').getByRole('button', { name: language === 'ja' ? 'ゲーム ▾' : 'Game ▾', exact: true }).click();
   await page.locator('#game-menu').getByRole('button', { name: labels[id][language === 'ja' ? 1 : 0], exact: true }).click();

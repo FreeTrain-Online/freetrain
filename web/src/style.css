@@ -165,3 +165,11 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 
 .track-confirm { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
 .track-confirm p { margin-block: 4px; }
+
+.fleet-controls { min-width: 0; overflow-wrap: anywhere; }
+.fleet-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)); gap: 8px; }
+.fleet-filters select, .fleet-filters input { width: 100%; min-width: 0; }
+.fleet-catalog { max-height: 220px; overflow-y: auto; overscroll-behavior: contain; }
+.formation-preview { display: flex; max-width: 100%; overflow-x: auto; overscroll-behavior: contain; }
+.formation-preview .catalog-preview { flex: 0 0 96px; }
+.fleet-controls .catalog-item-main > span:last-child { min-width: 0; }

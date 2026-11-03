@@ -1,0 +1,126 @@
+{
+  "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+  "review": "P5-10; source fields checked against pinned ExAV train declarations; source company attribution preserved",
+  "entries": {
+    "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/company": {
+      "original": "FreeTrain",
+      "text": "FreeTrain"
+    },
+    "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/type": {
+      "original": "FT",
+      "text": "FT"
+    },
+    "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/name": {
+      "original": "ＦＴ１型",
+      "text": "FT1"
+    },
+    "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/author": {
+      "original": "川口耕介",
+      "text": "Kohsuke Kawaguchi"
+    },
+    "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}/description": {
+      "original": "架空の列車です",
+      "text": "A fictional train."
+    },
+    "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/company": {
+      "original": "FreeTrain",
+      "text": "FreeTrain"
+    },
+    "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/type": {
+      "original": "FT",
+      "text": "FT"
+    },
+    "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/name": {
+      "original": "ＦＴ２型",
+      "text": "FT2"
+    },
+    "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/author": {
+      "original": "川口耕介",
+      "text": "Kohsuke Kawaguchi"
+    },
+    "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}/description": {
+      "original": "架空の列車です",
+      "text": "A fictional train."
+    },
+    "{F7134C8E-6B63-4780-AF16-90D33131CD07}/company": {
+      "original": "FreeTrain",
+      "text": "FreeTrain"
+    },
+    "{F7134C8E-6B63-4780-AF16-90D33131CD07}/type": {
+      "original": "FT",
+      "text": "FT"
+    },
+    "{F7134C8E-6B63-4780-AF16-90D33131CD07}/name": {
+      "original": "ＦＴ３型",
+      "text": "FT3"
+    },
+    "{F7134C8E-6B63-4780-AF16-90D33131CD07}/author": {
+      "original": "川口耕介",
+      "text": "Kohsuke Kawaguchi"
+    },
+    "{F7134C8E-6B63-4780-AF16-90D33131CD07}/description": {
+      "original": "架空の列車です",
+      "text": "A fictional train."
+    },
+    "{3983B298-ADB1-4905-94E5-03B7AAE5A221}/company": {
+      "original": "JR東日本",
+      "text": "JR East"
+    },
+    "{3983B298-ADB1-4905-94E5-03B7AAE5A221}/type": {
+      "original": "485系",
+      "text": "485 series"
+    },
+    "{3983B298-ADB1-4905-94E5-03B7AAE5A221}/name": {
+      "original": "雷鳥",
+      "text": "Raicho"
+    },
+    "{3983B298-ADB1-4905-94E5-03B7AAE5A221}/author": {
+      "original": "477",
+      "text": "477"
+    },
+    "{3983B298-ADB1-4905-94E5-03B7AAE5A221}/description": {
+      "original": "説明募集中",
+      "text": "Description wanted."
+    },
+    "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/company": {
+      "original": "JR東日本",
+      "text": "JR East"
+    },
+    "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/type": {
+      "original": "E3系",
+      "text": "E3 series"
+    },
+    "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/name": {
+      "original": "こまち",
+      "text": "Komachi"
+    },
+    "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/author": {
+      "original": "477",
+      "text": "477"
+    },
+    "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}/description": {
+      "original": "説明募集中",
+      "text": "Description wanted."
+    },
+    "{719F0922-EA74-409C-B829-C4950201C226}/company": {
+      "original": "FreeTrain",
+      "text": "FreeTrain"
+    },
+    "{719F0922-EA74-409C-B829-C4950201C226}/type": {
+      "original": "FTct",
+      "text": "FTct"
+    },
+    "{719F0922-EA74-409C-B829-C4950201C226}/name": {
+      "original": "色設定の試験列車",
+      "text": "Color test train"
+    },
+    "{719F0922-EA74-409C-B829-C4950201C226}/author": {
+      "original": "主に477さん",
+      "text": "Mainly 477"
+    },
+    "{719F0922-EA74-409C-B829-C4950201C226}/description": {
+      "original": "新しい列車を設計するのに使えます",
+      "text": "Use this to design new trains."
+    }
+  }
+}

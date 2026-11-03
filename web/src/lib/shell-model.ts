@@ -137,6 +137,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   reconnect();
   return {
     get state() { return state; },
+    async previewFleetTrade(query:import('../generated/contracts.ts').FleetTradeQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewFleetTrade)throw new Error('Unavailable');
+      const result=await active.previewFleetTrade(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.revision!==query.expectedRevision||state.read?.tick!==query.expectedMinute)throw new Error('Stale fleet quote');
+      return result;
+    },
     async previewRemoval(query:import('../generated/contracts.ts').RemovalQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRemoval)throw new Error('Unavailable');

@@ -43,7 +43,25 @@ public static class FleetTrading
     public static FleetTradePlan QuotePurchase(MixedSessionState session, ContentBinding definition, int length, int quantity)
     {
         var w=session.World;
-        var f=w.Fleet ?? throw new InvalidOperationException("Fleet is not initialized.");
+        if (w.Fleet == null)
+        {
+            var profile=w.Profile.FleetProfile ?? throw new InvalidOperationException("operationUnavailable");
+            var initial=FleetGraph.Empty(profile,w.Spatial.NextEntityId);
+            var initialized=new MixedWorld(w.Profile,w.Terrain,new(checked(w.Spatial.NextEntityId+3),w.Spatial.Entities),
+                w.Voxels,w.Slopes,w.Revision,w.SpeedLimits,initial);
+            var detached=new MixedSessionState(new(initialized,session.Construction.Accounts),session.Provenance,
+                session.ConstructionMode,session.Clock.Capture(),session.Paused,session.Random.Capture(),session.Revision,
+                trainCallback:session.TrainDispatcher);
+            var firstQuote=QuotePurchase(detached,definition,length,quantity);
+            var candidate=firstQuote.Candidate.World;
+            // These members are first published together: every new identity starts at revision zero.
+            var firstGraph=new FleetGraph(profile,initial.RootGroupId,candidate.Fleet!.Trains,
+                candidate.Fleet.Groups.Select(g=>g with {Revision=0}),candidate.Fleet.Controllers);
+            var firstWorld=new MixedWorld(w.Profile,w.Terrain,candidate.Spatial.Capture(),candidate.Voxels,candidate.Slopes,
+                candidate.Revision,candidate.SpeedLimits,firstGraph);
+            return Plan(session,firstWorld,firstQuote.Candidate.Accounts,firstQuote.TrainIds,firstQuote.Price,firstQuote.Purchase);
+        }
+        var f=w.Fleet;
         var quote=f.Profile.Resolve(definition).Quote(length,quantity,f.Trains.Length,f.Trains.Sum(t=>t.Cars.Length));
         var trains=f.Trains.ToBuilder(); var ids=ImmutableArray.CreateBuilder<long>(quantity);
         var next=w.Spatial.NextEntityId;

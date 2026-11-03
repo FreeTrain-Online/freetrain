@@ -2,6 +2,8 @@ import { locales } from '../src/lib/localization.ts';
 import { canonicalLocale } from '../src/lib/locale-matching.ts';
 import { bundledLocalization } from '../src/lib/content-localization.ts';
 import { sha256 } from '../src/lib/content-recipes.ts';
+import stockCatalog from '../src/generated/stock-catalog.json' with {type:'json'};
+import stockEnglish from '../../content/localization/exav-stable-bundled/stock-en.json' with {type:'json'};
 
 export function parameters(text: string): string[] {
   return [...new Set([...text.matchAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g)].map(m => m[1]))].sort();
@@ -14,6 +16,12 @@ export function validateMessages(source: Record<string, string>, translated: Rec
   }
 }
 export async function checkLocales() {
+  const stockEntries=stockEnglish.entries as Record<string,{original:string;text:string}>;
+  if(Object.keys(stockEntries).length!==stockCatalog.length*5)throw new Error('Stock translation coverage changed');
+  for(const stock of stockCatalog)for(const field of ['company','type','name','author','description'] as const){
+    const e=stockEntries[`${stock.id}/${field}`];
+    if(stock.binding.catalogHash!==stockEnglish.catalogHash||!e?.text.trim()||e.original!==stock[field])throw new Error(`Stale stock translation: ${stock.id}/${field}`);
+  }
   const source = locales.en;
   for (const [id, locale] of Object.entries(locales)) {
     if (canonicalLocale(id) !== id || !locale.label.trim() || !['ltr','rtl'].includes(locale.direction)) throw new Error(`Invalid locale: ${id}`);

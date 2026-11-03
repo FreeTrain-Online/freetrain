@@ -13,7 +13,7 @@ export function catalogPreview(id: string, direction?: SignalDirection): Promise
       const content = await bundledCatalog();
       const recipe = content.renderRecipes.find(recipe => recipe.id === id);
       if (!recipe) throw new Error('Catalog preview unavailable');
-      const layers = traversal(instantiate(recipe, id, [0, 0, 0], direction === undefined ? {} : { selectors: { direction } })).filter(layer => layer.frame.status === 'ready');
+      const layers = traversal(instantiate(recipe, id, [0, 0, 0], ['train-car','reverse-train-car'].includes(recipe.handler) ? { angle: 4 } : direction === undefined ? {} : { selectors: { direction } })).filter(layer => layer.frame.status === 'ready');
       if (!layers.length) throw new Error('Catalog preview unavailable');
       const bounds = layers.map(({ position: [x, y, z], frame }) => ({
         x: 16 * (x + y) - frame.anchor![0], y: 8 * (y - x) - 16 * z - frame.anchor![1],

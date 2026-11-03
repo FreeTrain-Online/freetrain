@@ -34,6 +34,13 @@ export function parseSlopePreview(value:unknown):import('../generated/contracts.
   if(BigInt(p.cost)<0n || (p.legal ? p.reason!==null||p.members.length!==8||unique.size!==8||p.rails.length!==4 : p.reason===null||p.cost!=='0'))throw new Error('Inconsistent slope preview');
   return p;
 }
+const validateFleetTrade=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/FleetTradePreview'});
+export function parseFleetTradePreview(value:unknown):import('../generated/contracts.ts').FleetTradePreview {
+  if(!validateFleetTrade(value))throw new Error('Invalid fleet quote');
+  const p=value as import('../generated/contracts.ts').FleetTradePreview;
+  if([p.price,p.normalCapacity,p.seatedCapacity,p.packedCapacity].some(n=>BigInt(n)<0n)||BigInt(p.seatedCapacity)>BigInt(p.normalCapacity)||BigInt(p.packedCapacity)!==2n*BigInt(p.normalCapacity)-BigInt(p.seatedCapacity))throw new Error('Inconsistent fleet quote');
+  return p;
+}
 const validateRailway=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/RailwayPreview'});
 export function parseRailwayPreview(value:unknown):import('../generated/contracts.ts').RailwayPreview {
   if(!validateRailway(value))throw new Error('Invalid railway preview');

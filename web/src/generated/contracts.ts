@@ -11,7 +11,9 @@ export type GameDocument =
   | SlopeQuery
   | SlopePreview
   | RemovalQuery
-  | RemovalPreview;
+  | RemovalPreview
+  | FleetTradeQuery
+  | FleetTradePreview;
 export type WireMessage =
   | Join
   | Command
@@ -123,6 +125,17 @@ export type CommandPayload =
   | {
       kind: "removeObject";
       query: RemovalQuery;
+    }
+  | {
+      kind: "tradeFleet";
+      query: FleetTradeQuery;
+      expectedPrice: Counter;
+    }
+  | {
+      kind: "renameFleet";
+      trainId: Counter;
+      expectedRevision: Counter;
+      name: string;
     };
 
 export interface Join {
@@ -608,6 +621,17 @@ export interface RemovalQuery {
   expectedEntityRevision: Counter;
   end?: Position | null;
 }
+export interface FleetTradeQuery {
+  expectedWorldEpoch: Counter;
+  expectedRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: string;
+  action: "buy" | "sell";
+  definition: ContentBinding | null;
+  length: number;
+  quantity: number;
+  trainId: Counter;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -955,4 +979,11 @@ export interface RemovalPreview {
 export interface RemovalSkip {
   position: Position;
   reason: string;
+}
+export interface FleetTradePreview {
+  query: FleetTradeQuery;
+  price: Counter;
+  normalCapacity: Counter;
+  seatedCapacity: Counter;
+  packedCapacity: Counter;
 }

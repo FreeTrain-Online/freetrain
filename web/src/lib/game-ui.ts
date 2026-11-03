@@ -1,7 +1,7 @@
 import type { messages } from './localization.ts';
 export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal' | 'pole' | 'stationary' | 'speed';
 export const panels = {
-  newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', saves: 'saves', view: 'view',
+  newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', fleet: 'fleet', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
 } as const satisfies Record<string, keyof typeof messages.en>;
 export type Panel = keyof typeof panels;
@@ -37,6 +37,7 @@ export const registry = {
   demolish: { kind: 'tool', tool: 'remove', labelKey: 'removeTool', icon: 'cross', availability: 'mutation' },
   inspector: { kind: 'panel', panel: 'inspector', labelKey: 'inspector', icon: 'window', availability: 'live' },
   catalog: { kind: 'panel', panel: 'catalog', labelKey: 'buildings', icon: 'window', availability: 'live' },
+  fleet: { kind: 'panel', panel: 'fleet', labelKey: 'fleet', icon: 'window', availability: 'live' },
   newWorld: { kind: 'panel', panel: 'newWorld', labelKey: 'newWorld', icon: 'window', availability: 'owner-save' },
   saves: { kind: 'panel', panel: 'saves', labelKey: 'saves', icon: 'window', availability: 'live' },
   view: { kind: 'panel', panel: 'view', labelKey: 'view', icon: 'window', availability: 'live' },

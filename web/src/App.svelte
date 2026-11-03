@@ -18,6 +18,7 @@
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import EmptyWorldControls from './EmptyWorldControls.svelte';
   import SaveControls from './SaveControls.svelte';
+  import FleetControls from './FleetControls.svelte';
   import MapView from './MapView.svelte';
   import PanelFrame from './PanelFrame.svelte';
   import BuildingCatalog from './BuildingCatalog.svelte';
@@ -46,6 +47,8 @@
   let licenseOpen = $state(false);
   let renderState = $state<'loading' | 'ready' | 'failed'>('loading');
   let launcher: HTMLElement | undefined;
+  let fleetControls=$state<FleetControls>();
+  let fleetDirty=$state(false),fleetCanApply=$state(false),fleetDraft=$state('');
   let gameLauncher = $state<HTMLButtonElement>();
   let menuLeft = $state(0);
   let menuTop = $state(0);
@@ -105,7 +108,7 @@
   function request(action: () => void) {
     if (saveBusy) return;
     map?.resetInteraction(); menu = false;
-    if (view.draftDirty) navigation = action;
+    if (view.draftDirty||fleetDirty) navigation = action;
     else action();
   }
   function closeMenu() { menu = false; gameLauncher?.focus({ preventScroll: true }); }
@@ -163,8 +166,10 @@
   async function resolveDraft(apply: boolean) {
     const action = navigation, epoch = read?.worldEpoch;
     if (apply) {
-      if (!canApply || !await model.rename() || view.draftDirty || !live || read?.worldEpoch !== epoch || navigation !== action) return;
-    } else model.resetDraft();
+      if(fleetDirty){if(!fleetCanApply||!await fleetControls?.applyDraft())return;}
+      else if (!canApply || !await model.rename() || view.draftDirty) return;
+      if(!live||read?.worldEpoch!==epoch||navigation!==action)return;
+    } else {model.resetDraft();fleetControls?.discardDraft();}
     navigation = undefined; await tick(); action?.();
   }
   function leaveNow() { if (saveBusy) return; audio.disable(); soundEnabled = false; map?.resetInteraction(); void model.leave(leaveGame); }
@@ -252,8 +257,10 @@
       {#snippet stationActions()}
           <button class="primary" type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
-        {#if panel === 'inspector'}
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
+        {#if panel === 'fleet'}
+          <FleetControls bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
+        {:else if panel === 'inspector'}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}
             <h3>{train.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{train.cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{train.position.x}, {train.position.y}, {train.position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[train.state]}</dd></div></dl>
@@ -314,11 +321,11 @@
     {/if}
   </main>
   {#if live && navigation}
-    <DecisionModal title={text.dirtyTitle} oncancel={() => { navigation = undefined; }}>
-      <p>{text.dirtyHint}</p><p>{view.draft}</p>
+    <DecisionModal title={text[fleetDirty?'stockDirtyTitle':'dirtyTitle']} oncancel={() => { navigation = undefined; }}>
+      <p>{text[fleetDirty?'stockDirtyHint':'dirtyHint']}</p><p>{fleetDirty?fleetDraft:view.draft}</p>
       {#if draftConflict}<p role="alert">{text.draftConflict}</p>{/if}
       {#snippet actions()}
-        <button class="primary" disabled={!canApply} onclick={() => resolveDraft(true)}>{text.rename}</button>
+        <button class="primary" disabled={fleetDirty?!fleetCanApply:!canApply} onclick={() => resolveDraft(true)}>{text.rename}</button>
         <button disabled={view.pending} onclick={() => resolveDraft(false)}>{text.discard}</button>
         <button onclick={() => { navigation = undefined; }}>{text.keepEditing}</button>
       {/snippet}

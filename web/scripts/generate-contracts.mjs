@@ -108,3 +108,14 @@ const fleet={requiredPacks:terrain.requiredPacks,cars:carDefinitions.map(c=>({re
   kind:c.implementation.name==='freetrain.world.rail.manualtc.TrainConrollerContributionImpl'?'manual':'timetable'}))};
 const fleetOutput=new URL('../src/generated/fleet-profile.json',import.meta.url),fleetJson=JSON.stringify(fleet,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(fleetOutput,'utf8')!==fleetJson)throw new Error('Generated fleet profile is stale.');}else await writeFile(fleetOutput,fleetJson);
+
+// Source presentation is kept separate from exact runtime bindings and admission.
+const stockCatalog=catalog.contributions.filter(c=>c.type==='train').map(c=>{
+  const e=c.declaration,stock=fleet.trains.find(t=>t.binding.contributionId===c.id);
+  const fields=Object.fromEntries(['company','type','name','author','description'].map(key=>[key,child(e,key)?.text??'']));
+  const speed=child(e,'speed').text,minutes=({slow:4,medium:3,fast:2,superb:1})[speed]??Number(speed);
+  const lengths=Array.from({length:100},(_,i)=>i+1).filter(n=>(stock.body||stock.patterns.some(p=>p.length===n))&&stock.pricePerCar*n<=2147483647);
+  return {id:c.id,pluginId:c.pluginId,binding:stock.binding,...fields,minutes,fare:Number(child(e,'fare').text),amenity:Math.max(50,Math.min(200,Number(child(e,'amenity').text))),lengths};
+});
+const stockOutput=new URL('../src/generated/stock-catalog.json',import.meta.url),stockJson=JSON.stringify(stockCatalog,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(stockOutput,'utf8')!==stockJson)throw new Error('Generated stock catalog is stale.');}else await writeFile(stockOutput,stockJson);

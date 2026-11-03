@@ -35,6 +35,12 @@
     },
     {
       "$ref": "#/$defs/RemovalPreview"
+    },
+    {
+      "$ref": "#/$defs/FleetTradeQuery"
+    },
+    {
+      "$ref": "#/$defs/FleetTradePreview"
     }
   ],
   "$defs": {
@@ -812,6 +818,51 @@
             "kind",
             "query"
           ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "tradeFleet"
+            },
+            "query": {
+              "$ref": "#/$defs/FleetTradeQuery"
+            },
+            "expectedPrice": {
+              "$ref": "#/$defs/Counter"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedPrice"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "renameFleet"
+            },
+            "trainId": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "kind",
+            "trainId",
+            "expectedRevision",
+            "name"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -3785,6 +3836,92 @@
         "nextOrder",
         "pending"
       ]
+    },
+    "FleetTradeQuery": {
+      "type": "object",
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "buy",
+            "sell"
+          ]
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContentBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "trainId": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "definition",
+        "length",
+        "quantity",
+        "trainId"
+      ],
+      "additionalProperties": false
+    },
+    "FleetTradePreview": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/FleetTradeQuery"
+        },
+        "price": {
+          "$ref": "#/$defs/Counter"
+        },
+        "normalCapacity": {
+          "$ref": "#/$defs/Counter"
+        },
+        "seatedCapacity": {
+          "$ref": "#/$defs/Counter"
+        },
+        "packedCapacity": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "query",
+        "price",
+        "normalCapacity",
+        "seatedCapacity",
+        "packedCapacity"
+      ],
+      "additionalProperties": false
     }
   }
 }

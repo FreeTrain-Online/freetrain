@@ -590,3 +590,17 @@ MAN-T07/W07/W10 and DEV-P19/P24 retain [reciprocal manual scope](web-parity-manu
 The existing shared Run/Pause/Step protocol drives gameplay-bound trains after
 save restore. Moving art/picking remain P5-09 and browser trade/deployment remain
 P5-10/11. Full reversal, timing, Outside and controller gates retain P5-12–24.
+
+## P5-10 purchase and owned-stock browser workflows
+
+[Browser trading and evidence](web-parity-fleet-browser.md) bind MAN-T07/W07/A10
+and purchase/resale portions of bilingual workflow01 to Game → Trains. Source
+company/type/name browsing, exact formation/quantity quotes, source-art previews,
+owned inventory, revision-fenced naming and unplaced-only resale now use real
+atomic commands and durable shared stock. Observer browsing, draft/locale/focus
+safety, stale quotes and receipt deduplication retain the existing session rules.
+Deployment/withdrawal controls remain P5-11; full groups/controllers/tracking,
+passengers/fares, recovery/capacity and native/optional acceptance keep their
+numbered owners.
+
+[Reciprocal manual bindings](web-parity-manual.md#p5-10-purchase-and-owned-stock-browser-workflows).

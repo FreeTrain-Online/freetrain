@@ -16,6 +16,7 @@ export interface SessionClient {
   subscribeStatus?(listener: (status: ConnectionStatus) => void): () => void;
   readonly unresolved?: boolean;
   send(command: Command): Promise<Accepted | Rejected>;
+  previewFleetTrade?(query:import('../generated/contracts.ts').FleetTradeQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').FleetTradePreview>;
   previewCorner?(query:CornerTerrainQuery,signal:AbortSignal):Promise<CornerTerrainPreview>;
   previewSlope?(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').SlopePreview>;
   previewRailway?(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').RailwayPreview>;

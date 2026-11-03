@@ -140,7 +140,14 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 [JsonDerivedType(typeof(EditSlopeCommand), "editSlope")]
 [JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
+[JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
+[JsonDerivedType(typeof(RenameFleetCommand), "renameFleet")]
 public abstract record CommandPayload;
+public sealed record FleetTradeQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
+    string ExpectedContentVersion, string Action, ContentBindingRead? Definition, int Length, int Quantity, long TrainId);
+public sealed record FleetTradePreviewRead(FleetTradeQuery Query, long Price, long NormalCapacity, long SeatedCapacity, long PackedCapacity);
+public sealed record TradeFleetCommand(FleetTradeQuery Query, long ExpectedPrice) : CommandPayload;
+public sealed record RenameFleetCommand(long TrainId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
 public sealed record RunCommand : CommandPayload;

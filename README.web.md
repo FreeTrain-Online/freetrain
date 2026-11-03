@@ -1,12 +1,15 @@
+**P5-10 purchase and owned stock:** [Bilingual trading workflows](doc/web-parity-fleet-browser.md)
+now provide Game → Trains, source previews/search, authoritative purchase/sale
+quotes, owned inventory and revision-fenced names. Deployment controls remain P5-11.
+
 **P5-09 moving stock art:** [Exact car poses, occlusion and picking](doc/web-parity-moving-stock-art.md)
 now render deployed stock through the live terrain/rail scene, with curve/ramp
 offsets, reversed formations, stable car inspection and retained redraws.
-Purchase/deployment browser controls remain P5-10/11.
+Deployment browser controls remain P5-11.
 
 **P5-06 trading domain:** [Atomic purchase, inventory and resale](doc/web-parity-fleet-trading.md)
 now quote exact formations/quantities, create timestamped stock and book purchases
-or resale revenue with durable fleet/callback cleanup. Browser trading controls
-remain P5-10; placement and movement follow P5-07/08.
+or resale revenue with durable fleet/callback cleanup. Browser trading controls are delivered by P5-10; deployment controls remain P5-11.
 
 **P5-05 fleet foundation:** [Save9/protocol7 fleet persistence and transport](doc/web-parity-fleet-transport.md)
 add complete fleet/controller/group graphs, location-keyed harbor data and explicit

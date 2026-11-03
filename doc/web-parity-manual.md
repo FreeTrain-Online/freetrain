@@ -619,3 +619,17 @@ calling a mixed world the spatial reference world. An unavailable Step rejects
 without changing the minute; Run pauses safely. Moving art/picking and actual
 purchase/deployment controls remain P5-09–11. This domain slice adds no new
 player control and grants no moving-map visual/native acceptance.
+
+## P5-10 purchase and owned-stock browser workflows
+
+[Browser trading and evidence](web-parity-fleet-browser.md) bind MAN-T07/W07/A10
+and purchase/resale portions of bilingual workflow01 to Game → Trains. Source
+company/type/name browsing, exact formation/quantity quotes, source-art previews,
+owned inventory, revision-fenced naming and unplaced-only resale now use real
+atomic commands and durable shared stock. Observer browsing, draft/locale/focus
+safety, stale quotes and receipt deduplication retain the existing session rules.
+Deployment/withdrawal controls remain P5-11; full groups/controllers/tracking,
+passengers/fares, recovery/capacity and native/optional acceptance keep their
+numbered owners.
+
+[Reciprocal actions bindings](web-parity-actions.md#p5-10-purchase-and-owned-stock-browser-workflows).
