@@ -14,7 +14,7 @@ Tests are grouped by the behavior they protect.
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
 | `multiplayer.spec.ts` | Shared state, authority, leases and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
-| `fleet-persistence.spec.ts` | Save9 inventory graph, two-peer scalar publication, rejected upload and reconnect; deployed continuation uses controlled-dispatcher backend/client tests |
+| `fleet-persistence.spec.ts` | Save9 inventory and resale revenue, two-peer scalar publication, rejected graph/receipt uploads and reconnect; deployed continuation uses controlled-dispatcher backend/client tests |
 
 Construction and terrain suites retain their existing functional names.
 `browser-helpers.ts` holds shared interaction and world fixtures;

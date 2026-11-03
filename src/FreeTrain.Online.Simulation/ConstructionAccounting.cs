@@ -41,11 +41,11 @@ public sealed class ConstructionBooking
     public static ConstructionBooking Spend(long amount, AccountGenre genre = AccountGenre.RailService) => new([new(genre,amount)]);
 }
 
-// One record per source spend call. Rescue funding is separate from genre sales:
+// One record per source spend/earn call. Rescue funding is separate from genre sales:
 // source transact() adds cash without calling history.earn(). WorldRevision groups
 // one atomic operation; sequence preserves same-minute ordering for P8 reports.
 public sealed record AccountTransaction(long Sequence, long WorldRevision, long AbsoluteMinute,
-    string Operation, AccountGenre Genre, long Expenditure, long TopUps, long CashAfter);
+    string Operation, AccountGenre Genre, long Expenditure, long TopUps, long CashAfter, long Revenue = 0);
 public sealed record ConstructionAccountState(long InitialCash, EconomicSettings Settings,
     ImmutableArray<AccountTransaction> Transactions);
 
@@ -82,8 +82,9 @@ public sealed class ConstructionAccounts
         {
             if (entry is null) throw new ArgumentException("Missing transaction.");
             ValidateContext(entry.WorldRevision,new(entry.AbsoluteMinute),entry.Operation,previous,allowSameRevision:true);
-            if (entry.Expenditure < 0 || !Enum.IsDefined(entry.Genre)) throw new ArgumentException("Invalid transaction.");
-            (cash, var rescues) = Spend(cash,entry.Expenditure,state.Settings.BankruptcyIncrement);
+            if (entry.Expenditure < 0 || entry.Revenue < 0 || entry.Expenditure > 0 && entry.Revenue > 0 ||
+                !Enum.IsDefined(entry.Genre)) throw new ArgumentException("Invalid transaction.");
+            (cash, var rescues) = Spend(cash,checked(entry.Expenditure-entry.Revenue),state.Settings.BankruptcyIncrement);
             if (entry.Sequence != sequence || entry.TopUps != rescues || entry.CashAfter != cash)
                 throw new ArgumentException("Inconsistent transaction history.");
             sequence = checked(sequence + 1); topUps = checked(topUps + rescues); previous = entry;
@@ -114,6 +115,16 @@ public sealed class ConstructionAccounts
             sequence = checked(sequence + 1);
         }
         return new(InitialCash,Settings,entries.ToImmutable(),cash,topUps,sequence);
+    }
+
+    public ConstructionAccounts Earn(long amount, long worldRevision, GameTime time, string operation,
+        AccountGenre genre = AccountGenre.RailService)
+    {
+        if (amount < 0 || !Enum.IsDefined(genre)) throw new ArgumentException("Invalid revenue.");
+        ValidateContext(worldRevision,time,operation,Transactions.IsEmpty ? null : Transactions[^1],allowSameRevision:false);
+        var (cash, rescues) = Spend(Cash,-amount,Settings.BankruptcyIncrement);
+        var entry = new AccountTransaction(NextSequence,worldRevision,time.AbsoluteMinute,operation,genre,0,rescues,cash,amount);
+        return new(InitialCash,Settings,Transactions.Add(entry),cash,checked(TopUps+rescues),checked(NextSequence+1));
     }
 
     // Closed form of the source while(cash < 0) loop. Widening the rescue

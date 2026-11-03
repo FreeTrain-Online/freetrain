@@ -17,6 +17,9 @@ and [P1-03](web-parity-random.md) adds versioned random streams.
 persisted authoring mode/provenance.
 [P3-16a capacity](web-parity-map-capacity.md) packs the actual state and introduces **Save 7**.
 [P5-05 fleet transport](web-parity-fleet-transport.md) advances the current contract to **Save9/protocol7**. Only Save9 is read and written. Full gameplay and complete-world persistence remain with P2–P10.
+[P5-06 trading](web-parity-fleet-trading.md) adds optional zero-default transaction
+revenue to both current schemas and decoders; existing expenditure-only entries
+and format/protocol numbers remain unchanged.
 
 ## Current behavior
 

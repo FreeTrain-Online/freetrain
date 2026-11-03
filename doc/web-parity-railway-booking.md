@@ -1,5 +1,9 @@
 # P4-04 atomic construction/removal booking — 30 October 2026
 
+**P5-06 follow-up:** [Fleet trading](web-parity-fleet-trading.md) extends these
+accounts with source earn/revenue records and exact Save9/protocol7 continuation.
+Earlier spend-only scope and evidence below remain historical.
+
 **P4-05 follow-up — 31 October 2026:** [Mixed persistence and dispatch](web-parity-railway-persistence.md)
 now provide Save8/protocol6, the exact mixed profile and validated session/network
 publication. Next is P4-06. The original step-boundary descriptions below retain

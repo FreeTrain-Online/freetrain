@@ -35,7 +35,7 @@ public static class MixedWire
                 Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null)).ToArray(),
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
-                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()),
+                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToArray()),
             w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null, FleetWire.Read(w.Fleet));
     }
     public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
@@ -72,7 +72,7 @@ public static class MixedWire
             FleetWire.Restore(data.Fleet, profile.FleetProfile));
         var accounts = ConstructionAccounts.Restore(new(data.Accounts.InitialCash,new(data.Accounts.BankruptcyIncrement),
             data.Accounts.Transactions.Select(t => new AccountTransaction(t.Sequence,t.WorldRevision,t.AbsoluteMinute,t.Operation,
-                Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter)).ToImmutableArray()));
+                Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToImmutableArray()));
         return new(world,accounts);
     }
     public static MixedRead Read(MixedSessionState state)

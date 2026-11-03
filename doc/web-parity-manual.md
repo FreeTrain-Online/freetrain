@@ -579,3 +579,15 @@ those of the source-bound P5-03 stock/provider ledger. Save9/protocol7 schemas,
 C# codec and browser decoders consume the same complete fleet/queue contract.
 No new feature controls or source text ship here: EN/JA controls, trading,
 motion, full TAT rules and native acceptance keep their numbered P5 owners.
+
+## P5-06 trading domain
+
+The [trading contract and tests](web-parity-fleet-trading.md) deliver the domain
+portion of MAN-T07, MAN-W07, MAN-A10/A11 and DEV-P19/P24: exact allowed
+formation/quantity totals, one batch/date/spend, durable inventory and resale
+arithmetic, atomic placed-sale cleanup and distinct revenue continuation.
+[Reciprocal actions](web-parity-actions.md#p5-06-trading-domain) retain source
+and contribution bindings. No new player text or control ships here; P5-10/11
+still own the EN/JA catalog, owned-stock manager, withdraw → quote → confirm sale,
+keyboard/focus and multiplayer command workflows. Domain placed-sale capability
+does not change the source UI's requirement to withdraw before selling.

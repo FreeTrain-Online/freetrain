@@ -7,8 +7,10 @@ const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).sn
 // by the controlled-dispatcher backend and client literal tests, before P5-08.
 function inventory(){
  const save=JSON.parse(readFileSync('../prototype/protocol/saves/fleet-v9.json','utf8'));
- save.mixed.fleet.trains.shift();save.mixed.fleet.groups[1].members=[];
- save.mixed.voxels[0].traffic.car=null;save.clock.pending=[];save.mixed.queue.pending=[];save.clock.absoluteMinute='130089';
+ const sold=JSON.parse(readFileSync('../prototype/protocol/fixtures/delta-fleet-sale.json','utf8'));
+ save.mixed=sold.mixed;save.revision=sold.revision;
+ save.spatial.entities=save.spatial.entities.map((e:any)=>sold.entities.find((changed:any)=>changed.id===e.id)??e);
+ save.clock.pending=[];save.clock.absoluteMinute='130089';
  return save;
 }
 test('fleet Save9 two-peer load, scalar delta, rejected upload and reconnect retain one exact graph',async({page,browser,baseURL})=>{
@@ -25,6 +27,7 @@ test('fleet Save9 two-peer load, scalar delta, rejected upload and reconnect ret
   for(const p of [page,peer])await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','fleet-preserved'));
   const joined=messages.map(rows=>rows.find(m=>m.type==='join').snapshot);
   expect(joined[0]).toEqual(joined[1]);expect(joined[0].mixed.fleet).toEqual(save.mixed.fleet);
+  expect(joined[0].cash).toBe('7050000000');expect(joined[0].mixed.accounts.transactions.at(-1).revenue).toBe('50000000');
   const beforeTime=await peer.getByTestId('game-time').textContent();
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await snapshot(page)).tick).toBe('130090');
@@ -34,6 +37,8 @@ test('fleet Save9 two-peer load, scalar delta, rejected upload and reconnect ret
   const bad=structuredClone(saved);bad.mixed.fleet.trains[0].controllerId='999';
   const current=await snapshot(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(bad))})).status()).toBe(400);
+  const badRevenue=structuredClone(saved);badRevenue.mixed.accounts.transactions.at(-1).revenue='50000001';
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(badRevenue))})).status()).toBe(400);
   expect(await snapshot(peer)).toEqual(current);
   expect((await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=mixed-railway-content-1')).status()).toBe(426);
   await peer.reload();await ready(peer);

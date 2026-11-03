@@ -73,3 +73,10 @@ A trusted dispatcher is required; movement follows in P5-08. P5-05 now supplies
 [Save9/protocol7 fleet persistence and transport](../../doc/web-parity-fleet-transport.md),
 including exact-profile restoration and explicit callback reconstruction.
 See [fleet state, source bindings and verification](../../doc/web-parity-fleet-state.md).
+
+P5-06 adds `FleetTrading` formation/quantity quotes and atomic inventory/accounting
+commits. Purchase uses one timestamp and spend call per batch; sale clears all
+Inside slots, removes membership and cancels exactly its train callback while
+preserving shared controllers and other work. `ConstructionAccounts.Earn` keeps
+revenue distinct from expenditure and bankruptcy funding, including exact durable
+restore. See [trading contract and verification](../../doc/web-parity-fleet-trading.md).

@@ -6,6 +6,38 @@ import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
 const root=new URL('../../prototype/protocol/',import.meta.url);
 const json=async(path:string)=>JSON.parse(await Deno.readTextFile(new URL(path,root)));
 const scene=async()=>parseMessageValue(await json('fixtures/snapshot-fleet.json')) as Snapshot;
+Deno.test('source-priced sale delta removes reversed Inside/Outside stock and books revenue coherently for two peers',async()=>{
+ const one=immutable(await scene()),two=immutable(await scene());
+ const delta=parseMessageValue(await json('fixtures/delta-fleet-sale.json')) as Delta;
+ const a=applyDelta(one,delta),b=applyDelta(two,structuredClone(delta));assert(a&&b);assert.deepEqual(a,b);
+ assert.equal(a.cash,'7050000000');assert.equal(a.mixed!.accounts.transactions.at(-1)!.revenue,'50000000');
+ assert.equal(a.mixed!.accounts.transactions.at(-1)!.expenditure,'0');
+ assert.deepEqual(a.mixed!.fleet!.trains.map(t=>t.id),['20']);assert.deepEqual(a.mixed!.fleet!.groups[1].members,[]);
+ assert.equal(a.mixed!.fleet!.controllers.length,one.mixed!.fleet!.controllers.length);
+ assert.equal(a.mixed!.voxels[0].traffic!.car,null);assert.deepEqual(a.mixed!.queue!.pending,[]);
+ assert.equal(a.mixed!.nextEntityId,one.mixed!.nextEntityId);assert.equal(a.entities!.find(e=>e.id==='7')!.revision,'1');
+ assert.equal(one.cash,'7000000000');assert.equal(one.mixed!.fleet!.trains.length,2);
+ const bad:((d:Delta)=>void)[]=[
+  d=>d.mixed!.accounts.transactions.at(-1)!.revenue='50000001',
+  d=>d.mixed!.accounts.transactions.at(-1)!.expenditure='1',
+  d=>d.mixed!.accounts.transactions.at(-1)!.revenue='-1',
+  d=>d.mixed!.accounts.transactions.at(-1)!.revenue='9223372036854775808',
+  d=>d.mixed!.accounts.transactions[0].revenue='1',
+  d=>d.mixed!.queue=structuredClone(one.mixed!.queue),
+  d=>d.mixed!.fleet!.groups[1].members=['17'],
+ ];
+ for(const change of bad){const d=structuredClone(delta);change(d);assert.equal(applyDelta(one,d),undefined);}
+ // Exact Int64 revenue and cash arithmetic beyond the JS safe integer boundary.
+ const read=structuredClone(a) as Snapshot;read.mixed!.accounts.initialCash='9007199254740993';
+ read.mixed!.accounts.transactions=[{...read.mixed!.accounts.transactions.at(-1)!,sequence:'1',revenue:'9007199254740993',cashAfter:'18014398509481986'}];
+ read.cash='18014398509481986';assert.equal((parseMessage(JSON.stringify(read)) as Snapshot).cash,read.cash);
+ read.mixed!.accounts.transactions[0].revenue='9223372036854775807';
+ assert.throws(()=>parseMessage(JSON.stringify(read)));
+ const save=await json('saves/fleet-v9.json');save.mixed=structuredClone(a.mixed);save.spatial.entities=read.entities!.filter(e=>BigInt(e.id)>=7n);
+ save.revision=a.revision;save.clock.pending=[];
+ const validate=new Ajv({strict:true}).compile(await json('save-v9.schema.json'));
+ assert(validate(save),JSON.stringify(validate.errors));
+});
 Deno.test('literal Save9 fleet preserves reversed stock, shared controllers, absent harbor locations and exact queue integers',async()=>{
  const read=await scene(),f=read.mixed!.fleet!,q=read.mixed!.queue!;
  assert.equal(read.mixed!.nextEntityId,'9007199254741003');assert.equal(q.pending[0].registration,'9007199254740993');

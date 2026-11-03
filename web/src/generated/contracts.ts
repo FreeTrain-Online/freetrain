@@ -414,6 +414,7 @@ export interface AccountTransaction {
   expenditure: Counter;
   topUps: Counter;
   cashAfter: Counter;
+  revenue?: Counter;
 }
 export interface SpeedLimits {
   /**

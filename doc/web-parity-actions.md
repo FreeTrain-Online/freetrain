@@ -555,3 +555,15 @@ those of the source-bound P5-03 stock/provider ledger. Save9/protocol7 schemas,
 C# codec and browser decoders consume the same complete fleet/queue contract.
 No new feature controls or source text ship here: EN/JA controls, trading,
 motion, full TAT rules and native acceptance keep their numbered P5 owners.
+
+## P5-06 trading domain
+
+The [trading contract and tests](web-parity-fleet-trading.md) implement the `trade`
+operation's allowed formation × quantity quotes, timestamped root inventory,
+one RAIL_SERVICE batch expenditure, completed365-day resale and absent-date
+no-receipt rule. Sale clears Inside occupancy, removes ordered membership and
+cancels only its train callback while preserving shared controllers and other
+scheduled work. `ConstructionAccounts.Earn`, Save9/protocol7 and browser replay
+retain distinct source revenue. MAN-T07/W07/A10/A11 and DEV-P19/P24 bind these
+domain semantics; [reciprocal manual scope](web-parity-manual.md#p5-06-trading-domain)
+keeps the actual EN/JA purchase/inventory/withdraw/sale controls with P5-10/11.

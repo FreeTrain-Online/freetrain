@@ -2611,6 +2611,9 @@
         },
         "cashAfter": {
           "$ref": "#/$defs/Counter"
+        },
+        "revenue": {
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [

@@ -1,3 +1,8 @@
+**P5-06 trading domain:** [Atomic purchase, inventory and resale](doc/web-parity-fleet-trading.md)
+now quote exact formations/quantities, create timestamped stock and book purchases
+or resale revenue with durable fleet/callback cleanup. Browser trading controls
+remain P5-10; placement and movement follow P5-07/08.
+
 **P5-05 fleet foundation:** [Save9/protocol7 fleet persistence and transport](doc/web-parity-fleet-transport.md)
 add complete fleet/controller/group graphs, location-keyed harbor data and explicit
 callback queues. Save8 is retired; train commands and movement retain their P5 owners.

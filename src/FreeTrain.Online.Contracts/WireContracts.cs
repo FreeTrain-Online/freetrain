@@ -238,7 +238,8 @@ public sealed record RailwayVoxelRead(PositionRead Position, long OwnerId, strin
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ConstructionCellRead? Construction = null);
 public sealed record SlopeOwnerRead(long EntityId, int Climb);
 public sealed record AccountTransactionRead(long Sequence, long WorldRevision, long AbsoluteMinute, string Operation,
-    string Genre, long Expenditure, long TopUps, long CashAfter);
+    string Genre, long Expenditure, long TopUps, long CashAfter,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] long Revenue = 0);
 public sealed record ConstructionAccountsRead(long InitialCash, long BankruptcyIncrement, AccountTransactionRead[] Transactions);
 public sealed record MixedRead(long GeometryRevision, long NextEntityId, RailwayVoxelRead[] Voxels, SlopeOwnerRead[] Slopes,
     ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null,

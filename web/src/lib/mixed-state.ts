@@ -109,10 +109,11 @@ export function validMixed(read:Snapshot):boolean {
  let cash=BigInt(m.accounts.initialCash),sequence=1n,revision=0n,minute=0n,operation='',topUps=0n;
  const increment=BigInt(m.accounts.bankruptcyIncrement);if(increment<=0n)return false;
  for(const e of m.accounts.transactions){
-  const r=BigInt(e.worldRevision),time=BigInt(e.absoluteMinute),amount=BigInt(e.expenditure);
+  const r=BigInt(e.worldRevision),time=BigInt(e.absoluteMinute),amount=BigInt(e.expenditure),revenue=BigInt(e.revenue??'0');
   if(BigInt(e.sequence)!==sequence++||r<1n||r<revision||r>BigInt(m.geometryRevision)||time<minute||time>BigInt(read.tick)||
      r===revision&&(time!==minute||e.operation!==operation)||!e.operation.trim()||e.operation.length>128||/[\u0000-\u001f\u007f-\u009f]/u.test(e.operation))return false;
-  cash-=amount;if(cash<minimum||cash>maximum)return false;
+  if(amount>0n&&revenue>0n)return false;
+  cash+=revenue-amount;if(cash<minimum||cash>maximum)return false;
   const rescue=cash<0n?(-cash+increment-1n)/increment:0n;cash+=rescue*increment;topUps+=rescue;
   if(rescue!==BigInt(e.topUps)||cash!==BigInt(e.cashAfter)||cash>maximum||topUps>maximum||sequence>maximum)return false;
   revision=r;minute=time;operation=e.operation;
