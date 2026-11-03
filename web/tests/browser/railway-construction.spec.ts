@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import type { StateChunk } from '../../src/generated/contracts.ts';
 import { expect,test,type Browser,type Page } from './fixtures.ts';
 import { closePanel,confirmRemoval,openPanel,previewRemovalLine,ready,canonicalState as state } from './browser-helpers.ts';
-const compat='protocolVersion=6&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=7&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 async function save(page:Page){return (await page.request.get('/api/saves/download')).body();}
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function empty(page:Page,locale='en'){

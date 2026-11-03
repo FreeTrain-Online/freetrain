@@ -22,7 +22,7 @@ public static class MixedWire
     public static MixedRead Read(MixedConstructionState state)
     {
         var w = state.World; var a = state.Accounts;
-        if (w.Fleet != null) throw new InvalidOperationException("Fleet save/transport requires P5-05.");
+        if (w.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
         if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
             throw new InvalidDataException("saveTooLarge");
         return new(w.Revision,w.Spatial.NextEntityId,w.Voxels.OrderBy(v => v.OwnerId).ThenBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z).Select(v =>
@@ -36,11 +36,14 @@ public static class MixedWire
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
                 t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter)).ToArray()),
-            w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null);
+            w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null, FleetWire.Read(w.Fleet));
     }
     public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
         .Where(v => v.Construction is {State: < 4}).ToDictionary(v => StationaryConstruction.Handler(new(
-            new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,RailwayVoxelKind.Stationary)), _ => (Action)(() => {}));
+            new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,RailwayVoxelKind.Stationary)), _ => (Action)(() => {}))
+        .Concat((data.Fleet?.Trains ?? []).Where(t => t.State != "unplaced")
+            .Select(t => new KeyValuePair<string, Action>(MixedSessionState.TrainHandler(t.Id), () => {})))
+        .ToDictionary();
     public static IReadOnlyDictionary<Location, QuarterCorners> TunnelBackups(MixedRead data, RailwayProfile profile) =>
         data.Voxels.Where(v => v.Traffic?.Rail is {} r && profile.Resolve(Restore(r.Definition)!).Handler == RailwayHandler.Tunnel)
             .ToDictionary(v => new Location(v.Position.X,v.Position.Y,v.Position.Z), v => {
@@ -52,6 +55,7 @@ public static class MixedWire
         if (data.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || data.Slopes.Length > ProtocolIdentity.MaximumRailwayVoxels / 8 ||
             data.Accounts.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions || railwayEntities.Length > ProtocolIdentity.MaximumRailwayVoxels)
             throw new ArgumentException("Mixed state limit.");
+        if (data.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
         var voxels = data.Voxels.Select(v => new RailwayVoxel(new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,
             Enum.GetValues<RailwayVoxelKind>().Single(k => k.ToString().ToLowerInvariant() == v.Kind),
             v.Traffic is not {} t ? null : new(t.Rail is {} r ? new(Restore(r.Definition)!,r.Pattern,r.Variant,
@@ -64,11 +68,18 @@ public static class MixedWire
         var spatial = TerrainWire.Spatial(data.NextEntityId,railwayEntities);
         var world = new MixedWorld(profile,terrain,spatial with { Entities = terrain.Spatial.Entities.AddRange(spatial.Entities) },voxels,
             data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision,
-            data.SpeedLimits is {} limits ? new SpeedLimits(Locations(limits.Low),Locations(limits.Medium),Locations(limits.Fast)) : null);
+            data.SpeedLimits is {} limits ? new SpeedLimits(Locations(limits.Low),Locations(limits.Medium),Locations(limits.Fast)) : null,
+            FleetWire.Restore(data.Fleet, profile.FleetProfile));
         var accounts = ConstructionAccounts.Restore(new(data.Accounts.InitialCash,new(data.Accounts.BankruptcyIncrement),
             data.Accounts.Transactions.Select(t => new AccountTransaction(t.Sequence,t.WorldRevision,t.AbsoluteMinute,t.Operation,
                 Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter)).ToImmutableArray()));
         return new(world,accounts);
+    }
+    public static MixedRead Read(MixedSessionState state)
+    {
+        var data = Published(state).Mixed;
+        var clock = state.Clock.Capture();
+        return data with { Queue = state.Fleet == null ? null : FleetWire.Queue(clock) };
     }
     public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
     {
@@ -79,12 +90,12 @@ public static class MixedWire
     {
         var terrain = TerrainWire.Snapshot(state.CaptureTerrain(),epoch);
         return terrain with { Ruleset = ProtocolIdentity.MixedRuleset, ContentVersion = ProtocolIdentity.MixedContent,
-            Cash = state.Construction.Accounts.Cash, Entities = Published(state).Combined, Mixed = Published(state).Mixed };
+            Cash = state.Construction.Accounts.Cash, Entities = Published(state).Combined, Mixed = Read(state) };
     }
     // Bound complete save/snapshot bytes; successor delta bytes are checked below.
     public static void ValidateAdmission(MixedSessionState state)
     {
-        var mixed = Read(state.Construction);
+        var mixed = Read(state);
         var mixedBytes = JsonSerializer.SerializeToUtf8Bytes(mixed,WireJson.CreateOptions()).LongLength;
         if (mixedBytes > 8 * 1024 * 1024)
             throw new InvalidDataException("saveTooLarge");

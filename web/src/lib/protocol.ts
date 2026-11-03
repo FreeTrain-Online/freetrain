@@ -1,3 +1,4 @@
+import {validFleetSuccessor} from './fleet-state.ts';
 import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
 import type { Delta, Snapshot, SpatialPreview, CornerTerrainPreview, WireMessage } from '../generated/contracts.ts';
@@ -74,7 +75,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
   const mixed=isMixedWorld(state);
   const terrain=isTerrainWorld(state)||mixed;
-  if(mixed!==!!delta.mixed)return;
+  if(mixed!==!!delta.mixed||mixed&&BigInt(delta.tick)<BigInt(state.tick))return;
   if((isReferenceWorld(state)||terrain)&&(!delta.entities||!delta.removed.entityIds))return;
   if(!isReferenceWorld(state)&&!terrain&&(delta.entities!==undefined||delta.removed.entityIds!==undefined))return;
   if(delta.entities&&(new Set(delta.entities.map(e=>e.id)).size!==delta.entities.length||
@@ -104,7 +105,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.terrain.waterLevel!==state.terrain.waterLevel||delta.terrain.constructionMode!==state.terrain.constructionMode)&&
       BigInt(delta.terrain.geometryRevision)<=BigInt(state.terrain.geometryRevision))return;
   } else if(delta.terrain!==undefined)return;
-  if(terrain&&delta.terrain&&state.terrain&&delta.entities!.length===0&&delta.removed.entityIds!.length===0&&
+  if((!mixed||JSON.stringify(delta.mixed)===JSON.stringify(state.mixed))&&terrain&&delta.terrain&&state.terrain&&delta.entities!.length===0&&delta.removed.entityIds!.length===0&&
     delta.terrain.cells.length===0&&delta.terrain.occupants.length===0&&
     delta.terrain.geometryRevision===state.terrain.geometryRevision&&delta.terrain.nextEntityId===state.terrain.nextEntityId&&
     delta.terrain.waterLevel===state.terrain.waterLevel&&delta.terrain.constructionMode===state.terrain.constructionMode&&
@@ -114,7 +115,8 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     // never clone or revalidate millions of terrain cells.
     if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
-    if(mixed&&JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed))return;
+    if(mixed&&(JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed)||
+      state.mixed?.queue?.pending.some(a=>BigInt(a.dueMinute)<=BigInt(delta.tick))))return;
     const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash});
     shareTerrainValidation(state,next);validatedReads.add(next);return next;
   }
@@ -152,6 +154,8 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   if(mixed) {
     if(!validSnapshot(next)||!state.mixed||!next.mixed)return;
     const before=state.mixed,after=next.mixed;
+    if(!validFleetSuccessor(before.fleet,after.fleet,before.nextEntityId)||
+      before.queue&&after.queue&&BigInt(after.queue.nextOrder)<BigInt(before.queue.nextOrder))return;
     if(BigInt(after.nextEntityId)<BigInt(before.nextEntityId)||BigInt(after.geometryRevision)<BigInt(before.geometryRevision))return;
     if(after.accounts.initialCash!==before.accounts.initialCash||after.accounts.bankruptcyIncrement!==before.accounts.bankruptcyIncrement||
       after.accounts.transactions.length<before.accounts.transactions.length||before.accounts.transactions.some((t,i)=>JSON.stringify(t)!==JSON.stringify(after.accounts.transactions[i])))return;
@@ -165,7 +169,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.entities!.some(e=>terrainIds.has(e.id)||nextTerrainIds.has(e.id))||delta.removed.entityIds!.some(id=>terrainIds.has(id))||
       delta.terrain!.waterLevel!==state.terrain!.waterLevel;
     if(terrainChanged&&BigInt(delta.terrain!.geometryRevision)<=BigInt(state.terrain!.geometryRevision))return;
-    if((JSON.stringify(before)!==JSON.stringify(after)||terrainChanged||delta.entities!.length||delta.removed.entityIds!.length||
+    if((JSON.stringify({...before,queue:undefined})!==JSON.stringify({...after,queue:undefined})||terrainChanged||delta.entities!.length||delta.removed.entityIds!.length||
         delta.terrain!.constructionMode!==state.terrain!.constructionMode)&&BigInt(after.geometryRevision)<=BigInt(before.geometryRevision))return;
     const priorVoxels=new Map<string,unknown[]>(),nowVoxels=new Map<string,unknown[]>();
     for(const [rows,index] of [[before.voxels,priorVoxels],[after.voxels,nowVoxels]] as const)

@@ -1,5 +1,7 @@
 # P4-05 mixed-world persistence and dispatch — 31 October 2026
 
+**Current boundary:** [P5-05](web-parity-fleet-transport.md) supersedes the historical Save8/protocol6 values below with Save9/protocol7.
+
 P4-05 connects the [mixed state](web-parity-railway-state.md) and
 [atomic booking unit](web-parity-railway-booking.md) to session, save and wire
 boundaries. Next is **P4-06 normal routes, attachment and detachment**. This is an
@@ -18,7 +20,7 @@ not original-runtime captures or railway gameplay acceptance.
 
 | Boundary | Current identity |
 | --- | --- |
-| Canonical save | **Save8**, [schema](../prototype/protocol/save-v8.schema.json) |
+| Canonical save | **Save8**, [schema](../prototype/protocol/historical/save-v8/save-v8.schema.json) |
 | Wire | **protocol6**, [schema](../prototype/protocol/schema.json), generated TypeScript and C# DTOs |
 | Mixed ruleset/content | `mixed-railway-1` / `mixed-railway-content-1` |
 | Bundled pack | `exav-stable-bundled`, version `2`, exact catalog SHA-256 `d8a407b6dd1827ff4caa13e4c4d8bfcba629a4c453ef74ec871a12f9467c7d21` |
@@ -102,7 +104,7 @@ actual 16 MiB delta size before publication; P4-23/P8 retain measured larger-cit
 
 ## Fixtures and verification
 
-The hand-authored [mixed save](../prototype/protocol/saves/mixed-v8.json),
+The hand-authored [mixed save](../prototype/protocol/historical/save-v8/mixed-v8.json),
 [snapshot](../prototype/protocol/fixtures/snapshot-mixed.json) and
 [removal delta](../prototype/protocol/fixtures/delta-mixed.json) extend the existing
 independent terrain transport fixture with disconnected normal rail, tunnel backup,

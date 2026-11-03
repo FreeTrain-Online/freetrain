@@ -15,7 +15,7 @@ fixture. Both use the canonical source-minute clock/calendar/scheduler and
 versioned world-owned random streams, with no prototype subsystem dependencies.
 See [P1-02](../../doc/web-parity-clock.md) and [P1-03](../../doc/web-parity-random.md).
 [P1-04](../../doc/web-parity-spatial-contracts.md) adds Cube, explicit footprints,
-stable entity IDs and world-owned voxel occupancy. Only Save 8 is supported; it
+stable entity IDs and world-owned voxel occupancy. Only Save 9 is supported; it
 captures entities, allocator, clock and all random states.
 Earlier save formats are rejected without conversion;
 the running application rejects prototype saves and does not write them. They are not
@@ -37,7 +37,7 @@ explicit; prepared art cannot authorize a terrain handler. [P3-03](../../doc/web
 ground/corner/water and decoration occupancy, zero-rail worlds, atomic graph
 validation and an in-process read model. Content binds the exact prepared terrain
 recipes. [P3-04](../../doc/web-parity-terrain-transport.md) adds composed terrain
-session state and Save 8/protocol 6 while preserving the distinct reference profile.
+session state and Save 9/protocol 7 while preserving the distinct reference profile.
 Rendering and browser creation follow in P3-05/06.
 
 P4-03 adds detached `MixedWorld`/`RailwayState` composition: one combined occupancy
@@ -69,6 +69,7 @@ P5-04 adds immutable `FleetGraph`, shared controller/ordered group references an
 real stock car state linked bidirectionally with Traffic occupancy, using the
 existing allocator. `MixedSessionState` binds construction and exactly one
 one-shot callback per deployed train, with detached rollback and rebinding.
-A trusted dispatcher is required; movement follows in P5-08. Current save/wire
-entry points reject fleet state until P5-05 supplies its complete contract.
+A trusted dispatcher is required; movement follows in P5-08. P5-05 now supplies
+[Save9/protocol7 fleet persistence and transport](../../doc/web-parity-fleet-transport.md),
+including exact-profile restoration and explicit callback reconstruction.
 See [fleet state, source bindings and verification](../../doc/web-parity-fleet-state.md).

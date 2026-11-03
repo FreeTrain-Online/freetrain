@@ -24,6 +24,7 @@ public class SaveRejectionTests
     [InlineData(5)]
     [InlineData(6)]
     [InlineData(7)]
+    [InlineData(8)]
     [InlineData(999)]
     public void No_legacy_or_version_relabelled_save_is_accepted(int version)
     {
@@ -84,6 +85,7 @@ public class SaveRejectionTests
     [InlineData(2)][InlineData(3)][InlineData(4)][InlineData(5)]
     [InlineData(6)]
     [InlineData(7)]
+    [InlineData(8)]
     public async Task Retired_canonical_fixtures_are_rejected_without_replacing_the_current_world(int version)
     {
         var data=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,$"RetiredSaves/reference-v{version}.json"));

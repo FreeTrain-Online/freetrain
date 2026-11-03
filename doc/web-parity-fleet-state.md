@@ -1,5 +1,7 @@
 # P5-04 canonical fleet and callback ownership — 3 November 2026
 
+**P5-05 follow-up:** [Fleet save/transport](web-parity-fleet-transport.md) now supplies Save9/protocol7 and removes the temporary guards described below. Earlier counts and scopes remain historical.
+
 P5-04 is complete at detached domain scope. [`Fleet.cs`](../src/FreeTrain.Online.Simulation/Fleet.cs)
 adds immutable owned stock, shared controllers and ordered group membership to
 [`MixedWorld`](../src/FreeTrain.Online.Simulation/MixedWorld.cs).

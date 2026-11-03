@@ -4,7 +4,7 @@
 [P5-02 companion fixtures](web-parity-train-fixtures.md) supply independent
 source vectors and existing-interface checks. This review adds no train gameplay, controller command, browser UI,
 save/protocol version or runtime-limit change. The entry contract remains
-Save8/protocol6. P5 runtime and phase acceptance remain open.
+Save8/protocol6 at entry; [P5-05](web-parity-fleet-transport.md) advances the live contract to Save9/protocol7. P5 runtime and phase acceptance remain open.
 
 Authority is stable ExAV **2.1.1.12/V2**, archive Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`. Reads use raw pinned Git

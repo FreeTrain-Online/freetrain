@@ -138,13 +138,13 @@ public class OptionalPluginTests : IDisposable
         await using var app = builder.Build(); app.MapNetwork(); app.MapPluginContent(); await app.StartAsync();
         using var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
         using var http = new HttpClient(handler) { BaseAddress = new(app.Urls.Single()) };
-        var bootstrap = await http.GetAsync("/api/bootstrap?protocolVersion=6&contentVersion=terrain-content-1");
+        var bootstrap = await http.GetAsync("/api/bootstrap?protocolVersion=7&contentVersion=terrain-content-1");
         Assert.Equal(HttpStatusCode.OK, bootstrap.StatusCode);
         Assert.Equal(registry.Content.SetHash, bootstrap.Headers.GetValues("X-FreeTrain-Content-Set").Single());
         var descriptor = registry.Content.Packs.Single();
         Assert.Equal(descriptor.CatalogHash, Hash(await http.GetByteArrayAsync(descriptor.CatalogUrl)));
         Assert.Equal(HttpStatusCode.NotFound, (await http.GetAsync(descriptor.CatalogUrl.Replace("catalog.json", "prepared-pack.json"))).StatusCode);
-        const string query = "/api/session?protocolVersion=6&contentVersion=terrain-content-1";
+        const string query = "/api/session?protocolVersion=7&contentVersion=terrain-content-1";
         using var rejected = new ClientWebSocket(); rejected.Options.Cookies = handler.CookieContainer;
         var socketBase = http.BaseAddress!.ToString().Replace("http:", "ws:");
         await Assert.ThrowsAsync<WebSocketException>(() => rejected.ConnectAsync(new(new Uri(socketBase), query), CancellationToken.None));

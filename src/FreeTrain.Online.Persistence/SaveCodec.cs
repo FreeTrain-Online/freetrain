@@ -10,7 +10,7 @@ namespace FreeTrain.Online.Persistence;
 public static class SaveCodec
 {
     public const int MaximumBytes = ProtocolIdentity.MaximumStateBytes;
-    public const int Version = 8;
+    public const int Version = 9;
     public sealed record MapData(int Width, int Height, int Levels, string CoordinateSystem);
     public sealed record RailData(int X, int Y, int Z, int Pattern, long EntityId);
     public sealed record SpatialData(long NextEntityId, SpatialEntityRead[] Entities);
@@ -57,10 +57,11 @@ public static class SaveCodec
     }
     public static byte[] Write(MixedSessionState state)
     {
+        MixedWire.ValidateAdmission(state);
         var terrain = TerrainDocument(state.CaptureTerrain());
         var bytes = JsonSerializer.SerializeToUtf8Bytes(terrain with { Ruleset = ProtocolIdentity.MixedRuleset,
             ContentVersion = ProtocolIdentity.MixedContent, Spatial = new(state.World.Spatial.NextEntityId,MixedWire.RailwayEntities(state.World)),
-            Mixed = MixedWire.Read(state.Construction) },Json);
+            Mixed = MixedWire.Read(state) },Json);
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         return bytes;
     }
@@ -90,7 +91,8 @@ public static class SaveCodec
     public static ReferenceWorld Read(ReadOnlySpan<byte> bytes) => ReadWorld(bytes).Reference ?? throw new InvalidDataException("incompatibleSave");
     public static LoadedWorld ReadWorld(ReadOnlySpan<byte> bytes,
         Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null,
-        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null)
+        Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null,
+        TrainCallback? trainCallback = null)
     {
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         try
@@ -119,10 +121,11 @@ public static class SaveCodec
                     !mixedProfile.Terrain.Matches(TerrainProfile.Ruleset,TerrainProfile.ContentVersion,packs)) throw new InvalidDataException("incompatibleSave");
                 if (data.Map.CoordinateSystem != "hv" || data.Rails.Length != 0 || data.PackedTerrain == null || data.Mixed == null ||
                     data.Spatial.NextEntityId != data.Mixed.NextEntityId) throw new JsonException();
+                FleetWire.ValidateQueue(data.Mixed,data.Clock);
                 var t = data.PackedTerrain.Restore(new(data.Map.Width,data.Map.Height,data.Map.Levels,"hv"),mixedProfile.Terrain,
                     data.Clock,data.Paused,data.Random,data.Revision, MixedWire.TunnelBackups(data.Mixed,mixedProfile),MixedWire.ConstructionBindings(data.Mixed));
                 var construction = MixedWire.Restore(data.Mixed,mixedProfile,t.World,data.Spatial.Entities);
-                var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision);
+                var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision,trainCallback);
                 MixedWire.ValidateAdmission(state);
                 return new(null,null,state);
             }
@@ -178,6 +181,18 @@ public static class SaveCodec
             var state = ObjectProperty(root,"mixed");
             ArrayBound(state,"voxels",ProtocolIdentity.MaximumRailwayVoxels);
             ArrayBound(state,"slopes",ProtocolIdentity.MaximumRailwayVoxels / 8);
+            if (state.TryGetProperty("fleet", out var fleet))
+            {
+                var cars = 0;
+                foreach (var train in ArrayBound(fleet,"trains",StockAdmission.MaximumFleetTrains).EnumerateArray())
+                    cars += ArrayBound(train,"cars",StockAdmission.MaximumFormationCars).GetArrayLength();
+                if (cars > StockAdmission.MaximumFleetCars) throw new JsonException("Fleet car limit.");
+                foreach (var group in ArrayBound(fleet,"groups",FleetGraph.MaximumGroups).EnumerateArray())
+                    ArrayBound(group,"members",FleetGraph.MaximumGroups + StockAdmission.MaximumFleetTrains);
+                foreach (var controller in ArrayBound(fleet,"controllers",FleetGraph.MaximumControllers).EnumerateArray())
+                    ArrayBound(controller,"harbors",8192);
+                ArrayBound(ObjectProperty(state,"queue"),"pending",Clock.MaximumPending);
+            }
             ArrayBound(ObjectProperty(state,"accounts"),"transactions",ProtocolIdentity.MaximumAccountTransactions);
         }
         if (terrain)

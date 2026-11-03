@@ -18,7 +18,7 @@ async function docker(args:string[],environment=env) {
   if(!result.success)throw new Error(`docker ${args[0]} failed: ${new TextDecoder().decode(result.stderr)}`);
   return new TextDecoder().decode(result.stdout).trim();
 }
-const url='https://localhost:8443',boot='/api/bootstrap?protocolVersion=6&contentVersion=reference-spatial-content-2';
+const url='https://localhost:8443',boot='/api/bootstrap?protocolVersion=7&contentVersion=reference-spatial-content-2';
 let client:Deno.HttpClient|undefined;
 const sleep=(ms:number)=>new Promise(r=>setTimeout(r,ms));
 async function healthy(){for(let i=0;i<200;i++){try{const response=await fetch(url+'/health',{client});if(response.ok){const health=await response.json();expect(health.status).toBe('ok');return;}}catch{}await sleep(100);}throw new Error('Deployment not healthy');}

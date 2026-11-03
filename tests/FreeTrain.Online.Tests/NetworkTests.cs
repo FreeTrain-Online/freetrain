@@ -18,7 +18,7 @@ public class NetworkTests
     public async Task Spatial_preview_is_authenticated_read_only_and_fenced_by_world_epoch()
     {
         await using var server = await Harness.Start();
-        const string path = "/api/spatial/preview?protocolVersion=6&contentVersion=prototype-content-1";
+        const string path = "/api/spatial/preview?protocolVersion=7&contentVersion=prototype-content-1";
         var query = new SpatialQuery(1, new(12, 25, 1), new(10, 20, 1), 8);
         Task<HttpResponseMessage> Preview(SpatialQuery q) => server.Http.PostAsync(path, new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(q, NetworkSession.Json)));
         Assert.Equal(HttpStatusCode.Unauthorized, (await Preview(query)).StatusCode);
@@ -47,7 +47,7 @@ public class NetworkTests
         var before = await server.Bootstrap();
         Assert.Equal("observer", before.Role);
         var query = new SpatialQuery(1, new(10, 20, 1), null, 0);
-        var response = await server.Http.PostAsync("/api/spatial/preview?protocolVersion=6&contentVersion=prototype-content-1", new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(query, NetworkSession.Json)));
+        var response = await server.Http.PostAsync("/api/spatial/preview?protocolVersion=7&contentVersion=prototype-content-1", new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(query, NetworkSession.Json)));
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(before.Snapshot.Revision, (await server.Bootstrap()).Snapshot.Revision);
     }
@@ -215,7 +215,7 @@ public class NetworkTests
         var cookie = Assert.Single(login.Headers.GetValues("Set-Cookie"));
         Assert.Contains("httponly", cookie); Assert.Contains("samesite=strict", cookie);
         Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=99&contentVersion=prototype-content-1")).StatusCode);
-        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=6&contentVersion=bad")).StatusCode);
+        Assert.Equal((HttpStatusCode)426, (await server.Http.GetAsync("/api/bootstrap?protocolVersion=7&contentVersion=bad")).StatusCode);
         var join = await server.Bootstrap(); Assert.Equal("operator-1", join.ParticipantId);
         using var socket = await server.Connect(); Assert.IsType<JoinMessage>(await Read(socket));
         using var competitor = new ClientWebSocket(); competitor.Options.Cookies = server.Cookies;
@@ -355,10 +355,10 @@ public class NetworkTests
     }
     internal sealed class Harness(WebApplication app, HttpClient http, CookieContainer cookies, bool canonical) : IAsyncDisposable
     {
-        public const string BootstrapPath = "/api/bootstrap?protocolVersion=6&contentVersion=prototype-content-1";
+        public const string BootstrapPath = "/api/bootstrap?protocolVersion=7&contentVersion=prototype-content-1";
         public HttpClient Http => http;
         public CookieContainer Cookies => cookies;
-        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=6&contentVersion=prototype-content-1");
+        public Uri SocketUri => new(new Uri(http.BaseAddress!.ToString().Replace("http:", "ws:")), "/api/session?protocolVersion=7&contentVersion=prototype-content-1");
         public static async Task<Harness> Start(string? secret = null, string? saveDirectory = null, string? trustedProxy = null, Dictionary<string, string?>? participants = null, bool canonical = false, bool referenceFixture = false)
         {
             var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls("http://127.0.0.1:0");

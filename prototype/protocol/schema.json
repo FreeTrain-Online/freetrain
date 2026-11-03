@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v6.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v7.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -923,7 +923,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 6
+          "const": 7
         },
         "contentVersion": {
           "type": "string",
@@ -1716,7 +1716,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 6
+          "const": 7
         },
         "contentVersion": {
           "type": "string",
@@ -2348,14 +2348,7 @@
           "maximum": 7
         },
         "controllerId": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/EntityId"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "null"
         }
       },
       "required": [
@@ -2684,6 +2677,12 @@
         },
         "speedLimits": {
           "$ref": "#/$defs/SpeedLimits"
+        },
+        "fleet": {
+          "$ref": "#/$defs/Fleet"
+        },
+        "queue": {
+          "$ref": "#/$defs/MixedQueue"
         }
       },
       "required": [
@@ -2692,7 +2691,15 @@
         "voxels",
         "slopes",
         "accounts"
-      ]
+      ],
+      "dependencies": {
+        "fleet": [
+          "queue"
+        ],
+        "queue": [
+          "fleet"
+        ]
+      }
     },
     "RailwayQuery": {
       "type": "object",
@@ -3330,6 +3337,450 @@
         "low",
         "medium",
         "fast"
+      ]
+    },
+    "ContentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contributionId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "packId",
+        "version",
+        "catalogHash",
+        "contributionId"
+      ]
+    },
+    "FleetPose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "unplaced",
+            "inside",
+            "outside"
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 7
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "countdown": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "location",
+        "heading",
+        "countdown"
+      ]
+    },
+    "FleetCar": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "originalIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "state": {
+          "$ref": "#/$defs/FleetPose"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "originalIndex",
+        "definition",
+        "state"
+      ]
+    },
+    "FleetTrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "definition": {
+          "$ref": "#/$defs/ContentBinding"
+        },
+        "groupId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetCar"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "isReversed": {
+          "type": "boolean"
+        },
+        "state": {
+          "enum": [
+            "unplaced",
+            "moving",
+            "stoppingatstation",
+            "stoppingatsignal",
+            "emergencystopping"
+          ]
+        },
+        "passengers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "boardingOrigin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FleetPose"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forwarding": {
+          "type": "boolean"
+        },
+        "moveCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "stopCallCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "purchaseMinute": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "definition",
+        "groupId",
+        "controllerId",
+        "cars",
+        "isReversed",
+        "state",
+        "passengers",
+        "boardingOrigin",
+        "forwarding",
+        "moveCount",
+        "stopCallCount",
+        "purchaseMinute"
+      ]
+    },
+    "FleetGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "parentId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "minItems": 0,
+          "maxItems": 384,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "parentId",
+        "controllerId",
+        "members"
+      ]
+    },
+    "FleetHarbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "kind": {
+          "enum": [
+            "pass",
+            "fixed",
+            "daily"
+          ]
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "reverse": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "location",
+        "kind",
+        "minutes",
+        "reverse"
+      ]
+    },
+    "FleetController": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "kind": {
+          "enum": [
+            "simple",
+            "delegation",
+            "manual",
+            "timetable"
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContentBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "harbors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetHarbor"
+          },
+          "minItems": 0,
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "kind",
+        "provider",
+        "harbors"
+      ]
+    },
+    "Fleet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootGroupId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "trains": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetTrain"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetGroup"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "controllers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetController"
+          },
+          "minItems": 2,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "rootGroupId",
+        "trains",
+        "groups",
+        "controllers"
+      ]
+    },
+    "MixedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "registration": {
+          "$ref": "#/$defs/Counter"
+        },
+        "order": {
+          "$ref": "#/$defs/Counter"
+        },
+        "dueMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "handlerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "interval": {
+          "const": "0"
+        }
+      },
+      "required": [
+        "registration",
+        "order",
+        "dueMinute",
+        "handlerId",
+        "interval"
+      ]
+    },
+    "MixedQueue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextOrder": {
+          "$ref": "#/$defs/Counter"
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MixedAction"
+          },
+          "minItems": 0,
+          "maxItems": 65536
+        }
+      },
+      "required": [
+        "nextOrder",
+        "pending"
       ]
     }
   }

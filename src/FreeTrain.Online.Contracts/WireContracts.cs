@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 6;
+    public const int Version = 7;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
     public const string MixedRuleset = "mixed-railway-1";
@@ -188,7 +188,7 @@ public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLe
     long GeometryRevision, long NextEntityId, TerrainProvenanceRead Provenance,
     DefinitionRead[] Definitions, byte[] Cells, int OccupantCount, byte[] Occupants);
 
-// Additive terrain tool contract; durable state uses Save8 / protocol6.
+// Additive terrain tool contract; durable state uses Save9 / protocol7.
 public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
     string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DefinitionRead? Forest = null);
@@ -241,5 +241,21 @@ public sealed record AccountTransactionRead(long Sequence, long WorldRevision, l
     string Genre, long Expenditure, long TopUps, long CashAfter);
 public sealed record ConstructionAccountsRead(long InitialCash, long BankruptcyIncrement, AccountTransactionRead[] Transactions);
 public sealed record MixedRead(long GeometryRevision, long NextEntityId, RailwayVoxelRead[] Voxels, SlopeOwnerRead[] Slopes,
-    ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null);
+    ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRead? Fleet = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedQueueRead? Queue = null);
 public sealed record SpeedLimitsRead(PositionRead[] Low, PositionRead[] Medium, PositionRead[] Fast);
+
+// Explicit data-only fleet contract. IDs/counters use the canonical Int64 converter.
+public sealed record ContentBindingRead(string PackId, string Version, string CatalogHash, string ContributionId);
+public sealed record FleetPoseRead(string Kind, PositionRead? Location, int? Heading, int? Countdown);
+public sealed record FleetCarRead(long Id, long Revision, int OriginalIndex, DefinitionRead Definition, FleetPoseRead State);
+public sealed record FleetTrainRead(long Id, long Revision, string Name, ContentBindingRead Definition, long GroupId,
+    long? ControllerId, FleetCarRead[] Cars, bool IsReversed, string State, int Passengers,
+    FleetPoseRead? BoardingOrigin, bool Forwarding, int MoveCount, int StopCallCount, long? PurchaseMinute);
+public sealed record FleetGroupRead(long Id, long Revision, string Name, long? ParentId, long? ControllerId, long[] Members);
+public sealed record FleetHarborRead(PositionRead Location, string Kind, int Minutes, bool Reverse);
+public sealed record FleetControllerRead(long Id, long Revision, string Name, string Kind, ContentBindingRead? Provider, FleetHarborRead[] Harbors);
+public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers);
+public sealed record MixedActionRead(long Registration, long Order, long DueMinute, string HandlerId, long Interval);
+public sealed record MixedQueueRead(long NextOrder, MixedActionRead[] Pending);

@@ -16,7 +16,10 @@ public abstract record FleetCarState
 public enum TrainOperationalState { Unplaced, Moving, StoppingAtStation, StoppingAtSignal, EmergencyStopping }
 public enum FleetControllerKind { Simple, Delegation, Manual, Timetable }
 public sealed record FleetControllerProvider(ContentBinding Binding, FleetControllerKind Kind);
-public sealed record FleetController(long Id, long Revision, string Name, FleetControllerKind Kind, ContentBinding? Provider = null);
+public enum FleetHarborKind { Pass, Fixed, Daily }
+public sealed record FleetHarborSetting(Location Location, FleetHarborKind Kind, int Minutes, bool Reverse);
+public sealed record FleetController(long Id, long Revision, string Name, FleetControllerKind Kind, ContentBinding? Provider = null,
+    ImmutableArray<FleetHarborSetting> Harbors = default);
 public sealed record FleetGroup(long Id, long Revision, string Name, long? ParentId, long? ControllerId,
     ImmutableArray<long> Members);
 public sealed record FleetCar(long Id, long Revision, int OriginalIndex, DefinitionReference Definition, FleetCarState State);
@@ -111,6 +114,16 @@ public sealed class FleetGraph
             if (!Name(c.Name) || !Enum.IsDefined(c.Kind) || (c.Kind is FleetControllerKind.Simple or FleetControllerKind.Delegation
                 ? c.Provider != null : !profile.Providers.Contains(new(c.Provider!, c.Kind))))
                 throw new ArgumentException("Invalid fleet controller/provider.");
+        foreach (var c in Controllers)
+        {
+            var harbors = c.Harbors.IsDefault ? [] : c.Harbors;
+            if (harbors.Length > 8192 || c.Kind != FleetControllerKind.Timetable && harbors.Length != 0 ||
+                harbors.Any(h => h == null || !Enum.IsDefined(h.Kind) || h.Minutes < 0 ||
+                    h.Kind == FleetHarborKind.Pass && (h.Minutes != 0 || h.Reverse) ||
+                    h.Kind == FleetHarborKind.Daily && h.Minutes >= 1440) ||
+                harbors.Select(h => h.Location).Distinct().Count() != harbors.Length)
+                throw new ArgumentException("Invalid location-keyed harbor settings.");
+        }
         foreach (var g in Groups)
         {
             if (!Name(g.Name) || g.Members.IsDefault || g.Members.Length > MaximumGroups + StockAdmission.MaximumFleetTrains ||
@@ -205,6 +218,8 @@ public sealed class FleetGraph
             // Cars carry their own revisions; train equality includes their order/content.
             var equal = m.Value is FleetTrain train && before.Value is FleetTrain bt
                 ? train with { Cars = bt.Cars } == bt && train.Cars.SequenceEqual(bt.Cars) :
+                m.Value is FleetController fc && before.Value is FleetController bc
+                ? fc with { Harbors = bc.Harbors } == bc && (fc.Harbors.IsDefault ? [] : fc.Harbors).SequenceEqual(bc.Harbors.IsDefault ? [] : bc.Harbors) :
                 m.Value is FleetGroup group && before.Value is FleetGroup bg
                 ? group with { Members = bg.Members } == bg && group.Members.SequenceEqual(bg.Members) : Equals(m.Value, before.Value);
             if (m.Revision == before.Revision ? !equal : m.Revision != checked(before.Revision + 1))

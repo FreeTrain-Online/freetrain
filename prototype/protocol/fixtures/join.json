@@ -1,6 +1,6 @@
 {
   "type": "join",
-  "protocolVersion": 6,
+  "protocolVersion": 7,
   "contentVersion": "prototype-content-1",
   "serverIncarnation": "fixture-incarnation",
   "sessionId": "reference",

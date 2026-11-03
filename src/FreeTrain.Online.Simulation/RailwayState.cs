@@ -21,13 +21,16 @@ public sealed class RailwayProfile
     public const string ContentVersion = "mixed-railway-content-1";
     public TerrainProfile Terrain { get; }
     public ImmutableArray<RailwayBinding> Bindings { get; }
+    public FleetProfile? FleetProfile { get; }
     private readonly FrozenDictionary<DefinitionReference, RailwayBinding> bindings;
     public DefinitionReference TrafficOwner { get; }
     public DefinitionReference SlopeOwner { get; }
-    public RailwayProfile(TerrainProfile terrain, IEnumerable<RailwayBinding> bindings)
+    public RailwayProfile(TerrainProfile terrain, IEnumerable<RailwayBinding> bindings, FleetProfile? fleetProfile = null)
     {
         ArgumentNullException.ThrowIfNull(terrain);
-        Terrain = terrain;
+        Terrain = terrain; FleetProfile = fleetProfile;
+        if (fleetProfile != null && !terrain.Packs.OrderBy(p => p.Id).SequenceEqual(fleetProfile.Packs.OrderBy(p => p.Id)))
+            throw new ArgumentException("Railway/fleet pack mismatch.");
         var pack = terrain.Packs[0].Id;
         TrafficOwner = new(pack, "system:traffic", "geometry:traffic-components-1");
         SlopeOwner = new(pack, "system:slope", "geometry:eight-cell-slope-1");

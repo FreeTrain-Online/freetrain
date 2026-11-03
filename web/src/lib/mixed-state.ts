@@ -1,3 +1,4 @@
+import {validFleet} from './fleet-state.ts';
 import profile from '../generated/railway-profile.json' with {type:'json'};
 import ports from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with {type:'json'};
 import type {Snapshot,Definition,RailwayVoxel,SpatialEntity} from '../generated/contracts.ts';
@@ -89,7 +90,7 @@ export function validMixed(read:Snapshot):boolean {
    const b=binding(r.definition),h=b?.handler;
    if(!h||!['normal','junction','slope','bridge','girder','tunnel','garage','signal'].includes(h)||
       ['normal','junction','slope'].includes(h)&&b!.variant!==r.pattern||h!=='slope'&&r.pattern>=28||h==='slope'&&!slopes.has(v.ownerId)||
-      (r.terrainBackup!==null)!==(h==='tunnel')||h!=='signal'&&r.controllerId!==null||
+      (r.terrainBackup!==null)!==(h==='tunnel')||r.controllerId!==null||
       ['normal','junction','slope'].includes(h)&&(r.variant!==0||r.direction!==0)||h==='girder'&&r.variant>3||h==='signal'&&r.variant>3||
       ['tunnel','garage'].includes(h)&&r.variant>1)return false;
    if(r.terrainBackup&&Object.values(r.terrainBackup).some(c=>c>4*(read.map.levels-v.position.z)-1))return false;
@@ -98,7 +99,7 @@ export function validMixed(read:Snapshot):boolean {
       h==='signal'&&(r.direction%2!==0||!p.includes(r.direction)))return false;
    }
   }
-  if(c.road&&binding(c.road.definition)?.handler!=='road'||c.car&&binding(c.car.definition)?.handler!=='car'||
+  if(c.road&&binding(c.road.definition)?.handler!=='road'||c.car&&!m.fleet&&binding(c.car.definition)?.handler!=='car'||
      c.platform&&(!r||binding(c.platform)?.handler!=='platform'))return false;
   if(c.car){if(cars.has(c.car.carId))return false;cars.add(c.car.carId);}
   if(c.accessory){const h=binding(c.accessory.definition)?.handler;
@@ -116,5 +117,5 @@ export function validMixed(read:Snapshot):boolean {
   if(rescue!==BigInt(e.topUps)||cash!==BigInt(e.cashAfter)||cash>maximum||topUps>maximum||sequence>maximum)return false;
   revision=r;minute=time;operation=e.operation;
  }
- return cash===BigInt(read.cash);
+ return cash===BigInt(read.cash)&&validFleet(read);
 }

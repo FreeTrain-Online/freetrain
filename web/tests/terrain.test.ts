@@ -48,8 +48,8 @@ Deno.test('terrain snapshot validator rejects mismatched payloads, footprints, d
 });
 Deno.test('terrain wire and save schemas accept server fixtures including zero occupants and reject retired Save 5',async()=>{
   const {default:Ajv}=await import('ajv');
-  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v8.schema.json',import.meta.url)));
-  const fixture=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v8.json',import.meta.url)));
+  const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v9.schema.json',import.meta.url)));
+  const fixture=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/terrain-v9.json',import.meta.url)));
   const validate=new Ajv({strict:true}).compile(schema);assert(validate(fixture));
   for(const patch of [{saveVersion:5},{packedTerrain:undefined},{revision:1},{requiredPacks:[]},{map:{...fixture.map,width:2049}}])assert(!validate({...fixture,...patch}));
   const empty={...fixture,spatial:{nextEntityId:'7',entities:[]},packedTerrain:{...fixture.packedTerrain,occupantCount:0,occupants:'',definitions:[],cells:btoa(String.fromCharCode(...Array(9).fill(1))) }};

@@ -89,7 +89,7 @@ Small worlds replace their completed scene as one unit. The canvas and camera
 survive panels and ordinary geometry updates.
 
 For review before P4-09, load
-[`mixed-v8.json`](../prototype/protocol/saves/mixed-v8.json) through Save and restore.
+[`mixed-v8.json`](../prototype/protocol/historical/save-v8/mixed-v8.json) through Save and restore.
 This small synthetic saved world exposes elevated rail/pier and signal art in its
 full view, with the tunnel visible in the lower cut views. It is a renderer fixture,
 not a playable city or construction demonstration.

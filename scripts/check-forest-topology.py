@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent actual Save8 forest legality and connected level reservation check."""
+"""Independent actual Save9 forest legality and connected level reservation check."""
 import argparse
 from array import array
 import base64
@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 
 def check(path):
-    raw=path.read_bytes();saved=json.loads(raw);assert saved['saveVersion']==8
+    raw=path.read_bytes();saved=json.loads(raw);assert saved['saveVersion']==9
     packed=saved['packedTerrain'];r=json.loads(packed['provenance']['requestJson']);o=r['Options']
     h,v,z=[r['Dimensions'][k] for k in ('H','V','Z')];water=r['WaterLevel'];center=(v-1)//2
     assert saved['map']['width']==h and saved['map']['height']==v and saved['map']['levels']==z

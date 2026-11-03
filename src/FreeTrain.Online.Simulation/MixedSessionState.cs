@@ -22,6 +22,7 @@ public sealed class MixedSessionState
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
     private readonly TrainCallback? trainCallback;
+    public TrainCallback? TrainDispatcher => trainCallback;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public static string TrainHandler(long trainId) => "train/" + trainId.ToString(CultureInfo.InvariantCulture);
     private IReadOnlyDictionary<string, Action> Bindings(MixedWorld world, bool dispatch = true)
@@ -80,11 +81,10 @@ public sealed class MixedSessionState
         Construction=candidate;
         if (!ReferenceEquals(before,candidate)) Revision=checked(Revision+1);
     }
-    // Until P5-05 adds the fleet codec/wire contract, fail closed rather than
-    // allowing terrain projections to silently erase owned inventory/graph IDs.
+    // Terrain projection for mixed encoding/authoring; fleet and queue are carried
+    // separately by MixedWire. These inert bindings never execute simulation.
     public TerrainSessionState CaptureTerrain()
     {
-        if (Fleet != null) throw new InvalidOperationException("Fleet save/transport requires P5-05.");
         return new(World.Terrain,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,Bindings(World,false));
     }
     public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback);

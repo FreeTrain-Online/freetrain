@@ -83,3 +83,28 @@ for(const [index,speed] of ['Low','Medium','Fast'].entries()){
 }
 const speedOutput=new URL('../src/generated/speed-limit-icons.json',import.meta.url),speedJson=JSON.stringify(speedIcons,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(speedOutput,'utf8')!==speedJson)throw new Error('Generated speed-limit icons are stale.');}else await writeFile(speedOutput,speedJson);
+
+// Data-only stock identities for untrusted fleet reads; no pack activation.
+const child=(e,tag)=>e.children.find(c=>c.tag===tag);
+const carDefinitions=catalog.contributions.filter(c=>c.type==='trainCar');
+const capacity=(id,seen=new Set())=>{
+  if(seen.has(id))throw new Error('Cyclic car');seen.add(id);
+  const c=carDefinitions.find(c=>c.id===id),e=c.declaration;
+  if(c.implementation.name==='freetrain.contributions.train.ReverseTrainCarImpl')return capacity(child(e,'base').attributes.carRef,seen);
+  return c.implementation.name==='freetrain.world.rail.cttrain.ColorTestTrainCar'?[0,0]:[Number(child(e,'capacity').text),Number(child(e,'seatedcapacity').text)];
+};
+const stockBinding=id=>({packId,version:catalog.version,catalogHash:terrain.requiredPacks[0].catalogHash,contributionId:id});
+const fleet={requiredPacks:terrain.requiredPacks,cars:carDefinitions.map(c=>({reference:definition(c.id),normal:capacity(c.id)[0],seated:capacity(c.id)[1]})),
+ trains:catalog.contributions.filter(c=>c.type==='train').map(c=>{
+  const e=c.declaration,comp=child(e,'composition'),config=child(e,'config');
+  let head=null,body=null,tail=null,patterns=[];
+  if(comp){head=child(comp,'head')?.attributes.carRef??null;body=child(comp,'body')?.attributes.carRef??null;tail=child(comp,'tail')?.attributes.carRef??null;}
+  else {
+   const chars=Object.fromEntries(config.children.filter(c=>c.tag==='car').map(c=>[c.attributes.char,c.attributes.ref]));
+   patterns=config.children.filter(c=>c.tag==='composition').map(c=>[...c.text.replace(/\s/gu,'')].map(c=>chars[c]));
+  }
+  return {binding:stockBinding(c.id),pricePerCar:Number(child(e,'price').text),head,body,tail,patterns};
+ }),providers:catalog.contributions.filter(c=>c.type==='trainController').map(c=>({binding:stockBinding(c.id),
+  kind:c.implementation.name==='freetrain.world.rail.manualtc.TrainConrollerContributionImpl'?'manual':'timetable'}))};
+const fleetOutput=new URL('../src/generated/fleet-profile.json',import.meta.url),fleetJson=JSON.stringify(fleet,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(fleetOutput,'utf8')!==fleetJson)throw new Error('Generated fleet profile is stale.');}else await writeFile(fleetOutput,fleetJson);

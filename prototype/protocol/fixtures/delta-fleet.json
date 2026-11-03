@@ -1,0 +1,362 @@
+{
+  "type": "delta",
+  "worldEpoch": "1",
+  "baseRevision": "6",
+  "revision": "7",
+  "tick": "130082",
+  "paused": true,
+  "cash": "7000000000",
+  "trains": [],
+  "stations": [],
+  "buildings": [],
+  "tracks": [],
+  "removed": {
+    "trainIds": [],
+    "stationIds": [],
+    "buildingIds": [],
+    "trackPositions": [],
+    "entityIds": []
+  },
+  "ruleset": "mixed-railway-1",
+  "contentVersion": "mixed-railway-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9"
+    }
+  ],
+  "entities": [],
+  "terrain": {
+    "waterLevel": 3,
+    "constructionMode": true,
+    "geometryRevision": "4",
+    "nextEntityId": "7",
+    "cells": [],
+    "occupants": []
+  },
+  "mixed": {
+    "geometryRevision": "6",
+    "nextEntityId": "9007199254741003",
+    "voxels": [
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 4
+        },
+        "ownerId": "7",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "system:pattern/1",
+              "recipeId": "system:pattern/1"
+            },
+            "pattern": 1,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+              "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+            },
+            "trainId": "17",
+            "carId": "19"
+          },
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 3
+        },
+        "ownerId": "8",
+        "kind": "pier",
+        "traffic": null,
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": "7"
+      },
+      {
+        "position": {
+          "x": 3,
+          "y": 2,
+          "z": 2
+        },
+        "ownerId": "9",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+              "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": {
+              "ne": 1,
+              "se": 2,
+              "sw": 3,
+              "nw": 4
+            },
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 2,
+          "z": 4
+        },
+        "ownerId": "10",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+              "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      }
+    ],
+    "slopes": [],
+    "accounts": {
+      "initialCash": "15000000000",
+      "bankruptcyIncrement": "10000000000",
+      "transactions": [
+        {
+          "sequence": "1",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "18000000000",
+          "topUps": "1",
+          "cashAfter": "7000000000"
+        },
+        {
+          "sequence": "2",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "0",
+          "topUps": "0",
+          "cashAfter": "7000000000"
+        }
+      ]
+    },
+    "fleet": {
+      "rootGroupId": "11",
+      "trains": [
+        {
+          "id": "17",
+          "revision": "1",
+          "name": "Renamed",
+          "definition": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}"
+          },
+          "groupId": "16",
+          "controllerId": "13",
+          "cars": [
+            {
+              "id": "19",
+              "revision": "0",
+              "originalIndex": 1,
+              "definition": {
+                "packId": "exav-stable-bundled",
+                "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+                "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+              },
+              "state": {
+                "kind": "inside",
+                "location": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 4
+                },
+                "heading": 1,
+                "countdown": null
+              }
+            },
+            {
+              "id": "18",
+              "revision": "0",
+              "originalIndex": 0,
+              "definition": {
+                "packId": "exav-stable-bundled",
+                "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+                "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h"
+              },
+              "state": {
+                "kind": "outside",
+                "location": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 2
+                },
+                "heading": 0,
+                "countdown": 50
+              }
+            }
+          ],
+          "isReversed": true,
+          "state": "stoppingatstation",
+          "passengers": 100,
+          "boardingOrigin": {
+            "kind": "outside",
+            "location": {
+              "x": 0,
+              "y": 0,
+              "z": 2
+            },
+            "heading": 0,
+            "countdown": 51
+          },
+          "forwarding": true,
+          "moveCount": 2147483647,
+          "stopCallCount": 2,
+          "purchaseMinute": "100"
+        }
+      ],
+      "groups": [
+        {
+          "id": "11",
+          "revision": "1",
+          "name": "Root",
+          "parentId": null,
+          "controllerId": "12",
+          "members": [
+            "16"
+          ]
+        },
+        {
+          "id": "16",
+          "revision": "0",
+          "name": "Group",
+          "parentId": "11",
+          "controllerId": "15",
+          "members": [
+            "17"
+          ]
+        }
+      ],
+      "controllers": [
+        {
+          "id": "12",
+          "revision": "0",
+          "name": "Simple",
+          "kind": "simple",
+          "provider": null,
+          "harbors": []
+        },
+        {
+          "id": "13",
+          "revision": "0",
+          "name": "Delegation",
+          "kind": "delegation",
+          "provider": null,
+          "harbors": []
+        },
+        {
+          "id": "15",
+          "revision": "0",
+          "name": "Shared TAT",
+          "kind": "timetable",
+          "provider": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
+          },
+          "harbors": [
+            {
+              "location": {
+                "x": -123,
+                "y": 456,
+                "z": 2
+              },
+              "kind": "daily",
+              "minutes": 480,
+              "reverse": true
+            },
+            {
+              "location": {
+                "x": 1,
+                "y": 2,
+                "z": 4
+              },
+              "kind": "fixed",
+              "minutes": 10,
+              "reverse": false
+            }
+          ]
+        }
+      ]
+    },
+    "queue": {
+      "nextOrder": "9007199254740995",
+      "pending": [
+        {
+          "registration": "9007199254740994",
+          "order": "9007199254740994",
+          "dueMinute": "130084",
+          "handlerId": "train/17",
+          "interval": "0"
+        }
+      ]
+    }
+  }
+}

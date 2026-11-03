@@ -14,7 +14,7 @@ namespace FreeTrain.Online.Tests;
 
 public class MixedPersistenceTests
 {
-    static byte[] Fixture => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/mixed-v8.json"));
+    static byte[] Fixture => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/mixed-v9.json"));
     static MixedSessionState Decode(byte[] bytes) => SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
     static string Json<T>(T data) => JsonSerializer.Serialize(data,WireJson.CreateOptions());
     static MixedConstructionState Edit(MixedSessionState s)
@@ -96,7 +96,7 @@ public class MixedPersistenceTests
             case "mode":node["packedTerrain"]!["constructionMode"]="true";break;
             case "tooMany":var a=mixed["voxels"]!.AsArray();while(a.Count<=ProtocolIdentity.MaximumRailwayVoxels)a.Add(a[0]!.DeepClone());break;
         }
-        var text=node.ToJsonString();if(change=="duplicate")text=text.Replace("\"saveVersion\":8","\"saveVersion\":8,\"saveVersion\":8");
+        var text=node.ToJsonString();if(change=="duplicate")text=text.Replace("\"saveVersion\":9","\"saveVersion\":9,\"saveVersion\":9");
         using var host=SessionComposition.CreateSavedHost(bytes);
         var snapshot=Json(host.Snapshot());var load=host.LoadSave(Encoding.UTF8.GetBytes(text),host.WorldEpoch);host.Pump();
         await Assert.ThrowsAsync<InvalidDataException>(()=>load);Assert.Equal(snapshot,Json(host.Snapshot()));Assert.Equal(bytes,Fixture);
@@ -143,7 +143,7 @@ public class MixedPersistenceTests
             await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true)){
                 await server.Bootstrap();using var first=await server.Connect();
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
-                await http.GetStringAsync("/api/bootstrap?protocolVersion=6&contentVersion=terrain-content-1");using var second=await server.Connect(cookies);
+                await http.GetStringAsync("/api/bootstrap?protocolVersion=7&contentVersion=terrain-content-1");using var second=await server.Connect(cookies);
                 await NetworkTests.Read(first);await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1",new ByteArrayContent(data))).IsSuccessStatusCode);
                 Assert.True((await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1",new ByteArrayContent(data))).IsSuccessStatusCode);

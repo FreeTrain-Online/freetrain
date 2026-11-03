@@ -16,7 +16,7 @@ const canonical = [
   'tunnel-construction.spec.ts', 'slope-construction.spec.ts', 'railway-rendering.spec.ts',
   'reference-world.spec.ts', 'terrain.spec.ts', 'corner-terrain.spec.ts',
   'rectangle-terrain.spec.ts', 'terrace-terrain.spec.ts', 'authoring-terrain.spec.ts',
-  'paint-terrain.spec.ts',
+  'paint-terrain.spec.ts', 'fleet-persistence.spec.ts',
 ];
 
 export default defineConfig({

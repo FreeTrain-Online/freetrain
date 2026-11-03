@@ -64,9 +64,9 @@ public class FleetTests
         world=Change(world,t);var session=Session(world,Wait);var frozen=session.Freeze();
         Assert.Same(world,frozen.World);Assert.Equal(t,frozen.Fleet!.Train(t.Id));Assert.Single(frozen.Clock.Capture().Pending);
         Assert.Empty(empty.Fleet.Trains);Assert.Single(world.Spatial.Entities);
-        Assert.Throws<InvalidOperationException>(()=>SaveCodec.Write(session));
-        Assert.Throws<InvalidOperationException>(()=>MixedWire.Read(session.Construction));
-        Assert.Throws<InvalidOperationException>(()=>MixedWire.Snapshot(session,1));
+        Assert.NotEmpty(SaveCodec.Write(session));
+        Assert.NotNull(MixedWire.Read(session.Construction).Fleet);
+        Assert.NotNull(MixedWire.Snapshot(session,1).Mixed!.Queue);
         Assert.Throws<ArgumentException>(()=>Session(world,Wait,new(99,1,[new(0,0,100,MixedSessionState.TrainHandler(t.Id),0)])));
     }
 
@@ -258,7 +258,9 @@ public class FleetTests
         Assert.Equal(new[]{site.HandlerId}.Concat(calls.Select(MixedSessionState.TrainHandler)),pending.Select(a=>a.HandlerId));
         Assert.Equal(expected.GetProperty("pending").EnumerateArray().Select(e=>e.GetProperty("order").GetInt64()),pending.Select(a=>a.Order));
         Assert.All(pending,a=>Assert.Equal(due,a.DueMinute));Assert.Equal(5,s.Clock.Capture().NextOrder);
-        var frozen=s.Freeze();Assert.Equal(s.Clock.Capture().Pending.AsEnumerable(),frozen.Clock.Capture().Pending.AsEnumerable());
+        var frozen=SaveCodec.ReadWorld(SaveCodec.Write(s),TerrainProfiles.Resolve,RailwayProfiles.Resolve,Callback).Mixed!;
+        Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(frozen));
+        Assert.Equal(s.Clock.Capture().Pending.AsEnumerable(),frozen.Clock.Capture().Pending.AsEnumerable());
         for(var n=0;n<120;n++){s.AdvanceOneMinute();frozen.AdvanceOneMinute();}
         Assert.Equal(JsonSerializer.Serialize(s.Random.Capture()),JsonSerializer.Serialize(frozen.Random.Capture()));
         Assert.Equal(s.Clock.Capture().Pending.AsEnumerable(),frozen.Clock.Capture().Pending.AsEnumerable());
@@ -273,6 +275,9 @@ public class FleetTests
         var graph=Graph(f,rows,f.Groups.Select(g=>g with{Revision=1,Members=rows.Select(t=>t.Id).ToImmutableArray()}));
         var full=w.Replace(w.Revision,w.Terrain,new(next,[]),[],[],fleet:graph);
         Assert.Equal(1024,full.Fleet!.Trains.Sum(t=>t.Cars.Length));
+        var state=Session(full);MixedWire.ValidateAdmission(state);
+        var bytes=SaveCodec.Write(state);
+        Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
         Assert.Throws<ArgumentException>(()=>Graph(f,rows.Append(Train(next,next+1,f,new FleetCarState.Unplaced()))));
         var extra=rows.ToArray();extra[0]=Train(rows[0].Id,next,f,new FleetCarState.Unplaced(),9);
         Assert.Throws<ArgumentException>(()=>Graph(f,extra));

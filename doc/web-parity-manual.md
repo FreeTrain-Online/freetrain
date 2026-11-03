@@ -564,3 +564,18 @@ order, shared controllers/ordered groups, source car states and atomic scheduled
 continuation. The detached implementation does not enable their controls or
 claim movement, sale, grouping UI, EN/JA presentation or native acceptance;
 P5-05 onward retains the corresponding delivery gates.
+
+
+## P5-05 fleet persistence foundation
+
+The [fleet save/transport contract](web-parity-fleet-transport.md) binds the
+P5-01 `trade`, `deploy`, `movement`, `reversal`, `outside`, `manager`, `groups`
+and `information-tracking` rows and MAN-T06–08, MAN-W07–10, MAN-A10–13/17,
+MAN-O08, DEV-P14/18–20/24 to durable stock/controller identities, original/current
+car order, retained Location-keyed harbor settings and explicit scheduled callbacks.
+TRAIN-D010 rejects every nonnull reserved signal-controller field; TRAIN-D012
+retains absent-harbor settings and their order. Contribution identities remain
+those of the source-bound P5-03 stock/provider ledger. Save9/protocol7 schemas,
+C# codec and browser decoders consume the same complete fleet/queue contract.
+No new feature controls or source text ship here: EN/JA controls, trading,
+motion, full TAT rules and native acceptance keep their numbered P5 owners.

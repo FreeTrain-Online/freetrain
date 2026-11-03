@@ -127,7 +127,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 6;
+  protocolVersion: 7;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -335,6 +335,8 @@ export interface Mixed {
   slopes: SlopeOwner[];
   accounts: ConstructionAccounts;
   speedLimits?: SpeedLimits;
+  fleet?: Fleet;
+  queue?: MixedQueue;
 }
 export interface RailwayVoxel {
   position: Position;
@@ -361,7 +363,7 @@ export interface RailComponent {
   variant: number;
   terrainBackup: Corners | null;
   direction: number;
-  controllerId: EntityId | null;
+  controllerId: null;
 }
 export interface Corners {
   ne: number;
@@ -426,6 +428,109 @@ export interface SpeedLimits {
    * @maxItems 8192
    */
   fast: Position[];
+}
+export interface Fleet {
+  rootGroupId: EntityId;
+  /**
+   * @minItems 0
+   * @maxItems 128
+   */
+  trains: FleetTrain[];
+  /**
+   * @minItems 1
+   * @maxItems 256
+   */
+  groups: [FleetGroup, ...FleetGroup[]];
+  /**
+   * @minItems 2
+   * @maxItems 256
+   */
+  controllers: [FleetController, FleetController, ...FleetController[]];
+}
+export interface FleetTrain {
+  id: EntityId;
+  revision: Counter;
+  name: string;
+  definition: ContentBinding;
+  groupId: EntityId;
+  controllerId: EntityId | null;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  cars: [FleetCar, ...FleetCar[]];
+  isReversed: boolean;
+  state: "unplaced" | "moving" | "stoppingatstation" | "stoppingatsignal" | "emergencystopping";
+  passengers: number;
+  boardingOrigin: FleetPose | null;
+  forwarding: boolean;
+  moveCount: number;
+  stopCallCount: number;
+  purchaseMinute: Counter | null;
+}
+export interface ContentBinding {
+  packId: string;
+  version: string;
+  catalogHash: string;
+  contributionId: string;
+}
+export interface FleetCar {
+  id: EntityId;
+  revision: Counter;
+  originalIndex: number;
+  definition: Definition;
+  state: FleetPose;
+}
+export interface FleetPose {
+  kind: "unplaced" | "inside" | "outside";
+  location: Position | null;
+  heading: number | null;
+  countdown: number | null;
+}
+export interface FleetGroup {
+  id: EntityId;
+  revision: Counter;
+  name: string;
+  parentId: EntityId | null;
+  controllerId: EntityId | null;
+  /**
+   * @minItems 0
+   * @maxItems 384
+   */
+  members: EntityId[];
+}
+export interface FleetController {
+  id: EntityId;
+  revision: Counter;
+  name: string;
+  kind: "simple" | "delegation" | "manual" | "timetable";
+  provider: ContentBinding | null;
+  /**
+   * @minItems 0
+   * @maxItems 8192
+   */
+  harbors: FleetHarbor[];
+}
+export interface FleetHarbor {
+  location: Position;
+  kind: "pass" | "fixed" | "daily";
+  minutes: number;
+  reverse: boolean;
+}
+export interface MixedQueue {
+  nextOrder: Counter;
+  /**
+   * @minItems 0
+   * @maxItems 65536
+   */
+  pending: MixedAction[];
+}
+export interface MixedAction {
+  registration: Counter;
+  order: Counter;
+  dueMinute: Counter;
+  handlerId: string;
+  interval: "0";
 }
 export interface Command {
   type: "command";
@@ -613,7 +718,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 6;
+  protocolVersion: 7;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
