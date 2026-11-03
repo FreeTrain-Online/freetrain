@@ -1,0 +1,2820 @@
+{
+  "authority": "ExAV 2.1.1.12 / 883cf7d81cf49db25ff38cd3a25d0f140afe31a0 / trunk",
+  "derivation": "Independent source-tail-first straight-axis arithmetic and in-place reversal. Original identities remain fixed; head-to-tail order reverses. No production imports or captured production outputs. Curves/junctions/slopes/failures use additional literal tests.",
+  "sources": [
+    {
+      "path": "core/world/rail/Train.cs",
+      "sha256": "0130739ef685f252a8e1cd639fcf6d0908d3e3da6ef028e0418f3cb72cdfd404"
+    },
+    {
+      "path": "core/world/rail/RailRoad.cs",
+      "sha256": "86f1f18b61ae974ae54f290c29e957b1c97de556ca84e630762c981aa72b2be8"
+    },
+    {
+      "path": "core/world/rail/SingleRailRoad.cs",
+      "sha256": "999171a080e821cd9d6aa3a839171eb898440acb1fca18783877c79d562a5937"
+    },
+    {
+      "path": "core/world/rail/JunctionRailRoad.cs",
+      "sha256": "43c6fef5f1c8873dbf86867cdb8f779780a84d68fd8049226282d76aaeb00fc4"
+    },
+    {
+      "path": "core/world/rail/SlopeRailRoad.cs",
+      "sha256": "99e2f9324ee4e6019b168f3fda27ff5ee651f254dc543e983d3990181735c275"
+    },
+    {
+      "path": "core/world/rail/SpecialPurposeRailRoad.cs",
+      "sha256": "2fc4805573fad2e04c9b614b1e18b24b566bad29948b08bac4d1d6b456188598"
+    },
+    {
+      "path": "core/world/rail/SimpleTrainControllerImpl.cs",
+      "sha256": "436ef3578c8f972175572970701d388f2e17fa8b1e14f78180e1bc9961aaafbc"
+    }
+  ],
+  "cases": [
+    {
+      "id": "place-0-0-0-1",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-0-0-3",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-0-0-9",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              16,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              17,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              18,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              24,
+              19,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              24,
+              20,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              24,
+              21,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-0-1-1",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-0-1-3",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-0-1-9",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              24,
+              21,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              24,
+              20,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              24,
+              19,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              18,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              17,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              16,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-0-1",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-0-3",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-0-9",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              16,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              24,
+              17,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              24,
+              18,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              24,
+              19,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              24,
+              20,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              24,
+              21,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 0
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-1-1",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-1-3",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-0-1-1-9",
+      "input": {
+        "pattern": 10,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              24,
+              23,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              22,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              24,
+              21,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              24,
+              20,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              24,
+              19,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              24,
+              18,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              24,
+              17,
+              2
+            ],
+            "heading": 4
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              16,
+              2
+            ],
+            "heading": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-0-1",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-0-3",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-0-9",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              16,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              17,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              18,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              19,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              20,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              21,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-1-1",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-1-3",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-0-1-9",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              21,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              20,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              19,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              18,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              17,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              16,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-0-1",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-0-3",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-0-9",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              16,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              17,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              18,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              19,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              20,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              21,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 1
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-1-1",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-1-3",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-1-1-1-9",
+      "input": {
+        "pattern": 1,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              23,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              22,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              21,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              20,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              19,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              18,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              17,
+              2
+            ],
+            "heading": 5
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              16,
+              2
+            ],
+            "heading": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-0-1",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-0-3",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-0-9",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-1-1",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-1-3",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-0-1-9",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-0-1",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-0-3",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-0-9",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 2
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-1-1",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-1-3",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-2-1-1-9",
+      "input": {
+        "pattern": 4,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              24,
+              2
+            ],
+            "heading": 6
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              24,
+              2
+            ],
+            "heading": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-0-1",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-0-3",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-0-9",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              32,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              31,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              30,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              29,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              28,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              27,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-1-1",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-1-3",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-0-1-9",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": false,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              27,
+              27,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              28,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              29,
+              29,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              30,
+              30,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              31,
+              31,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              32,
+              32,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-0-1",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-0-3",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-0-9",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": false
+      },
+      "expected": {
+        "isReversed": true,
+        "cars": [
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              32,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              31,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              30,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              29,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              28,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              27,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 3
+          },
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-1-1",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 1,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-1-3",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 3,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "place-3-1-1-9",
+      "input": {
+        "pattern": 7,
+        "tail": [
+          24,
+          24,
+          2
+        ],
+        "length": 9,
+        "initialReversed": true,
+        "reverse": true
+      },
+      "expected": {
+        "isReversed": false,
+        "cars": [
+          {
+            "originalIndex": 0,
+            "location": [
+              24,
+              24,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 1,
+            "location": [
+              25,
+              25,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 2,
+            "location": [
+              26,
+              26,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 3,
+            "location": [
+              27,
+              27,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 4,
+            "location": [
+              28,
+              28,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 5,
+            "location": [
+              29,
+              29,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 6,
+            "location": [
+              30,
+              30,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 7,
+            "location": [
+              31,
+              31,
+              2
+            ],
+            "heading": 7
+          },
+          {
+            "originalIndex": 8,
+            "location": [
+              32,
+              32,
+              2
+            ],
+            "heading": 7
+          }
+        ]
+      }
+    }
+  ]
+}

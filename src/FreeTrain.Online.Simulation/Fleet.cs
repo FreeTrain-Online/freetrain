@@ -192,7 +192,8 @@ public sealed class FleetGraph
                 {
                     if (!occupied.Remove(c.Id, out var voxel) || voxel.Position != inside.Location || voxel.Traffic!.Rail == null ||
                         voxel.Traffic.Car != new CarComponent(c.Definition, t.Id, c.Id) ||
-                        !RailwayTopology.HasPort(voxel.Traffic.Rail.Pattern, inside.Heading.Opposite))
+                        !FleetRailGuidance.CanGuide(world.Profile.Resolve(voxel.Traffic.Rail.Definition).Handler,
+                            voxel.Traffic.Rail.Pattern, inside.Heading))
                         throw new ArgumentException("Fleet/Traffic occupancy mismatch.");
                 }
                 else if (c.State is FleetCarState.Outside outside && !world.Terrain.IsTrainBorder(outside.Location))

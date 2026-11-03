@@ -591,3 +591,16 @@ and contribution bindings. No new player text or control ships here; P5-10/11
 still own the EN/JA catalog, owned-stock manager, withdraw → quote → confirm sale,
 keyboard/focus and multiplayer command workflows. Domain placed-sale capability
 does not change the source UI's requirement to withdraw before selling.
+
+## P5-07 deployment domain
+
+The [placement/withdrawal contract and tests](web-parity-fleet-deployment.md)
+deliver the domain portion of MAN-T07/W07 and DEV-P19/P24: selected owned stock,
+tail-first rail planning with a temporary head, source/reversed direction choice,
+fixed-level GEO-008 slope placement, native first callback and withdrawal without
+sale. Source `rr.dir1` curves now survive both canonical and browser validation.
+[Reciprocal actions](web-parity-actions.md#p5-07-deployment-domain) retain the
+source and contribution bindings. EN/JA selection/map/keyboard/confirmation and
+network workflows remain P5-11; movement and already placed reversal keep
+P5-08/12. Placement resets the source stop counter while preserving the running
+move counter, passengers, boarding origin and forwarding across withdrawal.

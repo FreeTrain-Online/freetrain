@@ -6,6 +6,41 @@ import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
 const root=new URL('../../prototype/protocol/',import.meta.url);
 const json=async(path:string)=>JSON.parse(await Deno.readTextFile(new URL(path,root)));
 const scene=async()=>parseMessageValue(await json('fixtures/snapshot-fleet.json')) as Snapshot;
+Deno.test('source deployment and withdrawal deltas publish exact occupancy, native initial delay and retained inventory to two peers',async()=>{
+ let one=immutable(await scene()),two=immutable(await scene());const source=one;
+ for(const action of ['placement','withdrawal']){
+  const delta=parseMessageValue(await json(`fixtures/delta-fleet-${action}.json`)) as Delta;
+  const a=applyDelta(one,delta),b=applyDelta(two,structuredClone(delta));assert(a&&b);assert.deepEqual(a,b);
+  const train=a.mixed!.fleet!.trains[1];assert.equal(train.id,'20');assert.equal(a.cash,source.cash);
+  assert.deepEqual(a.mixed!.fleet!.groups,source.mixed!.fleet!.groups);assert.deepEqual(a.mixed!.accounts,source.mixed!.accounts);
+  assert.deepEqual(a.mixed!.voxels[2].traffic!.rail,source.mixed!.voxels[2].traffic!.rail);
+  assert.equal(a.entities!.find(e=>e.id==='9')!.revision,action==='placement'?'1':'2');
+  if(action==='placement'){
+   assert.equal(train.state,'moving');assert.deepEqual(train.cars[0].state,{kind:'inside',location:{x:3,y:2,z:2},heading:0,countdown:null});
+   assert.equal(a.mixed!.queue!.pending[1].dueMinute,'130083');assert.equal(a.mixed!.voxels[2].traffic!.car!.carId,'21');
+   for(const change of [(d:Delta)=>d.mixed!.queue!.pending.pop(),(d:Delta)=>d.mixed!.voxels[2].traffic!.car=null,
+    (d:Delta)=>d.mixed!.fleet!.trains[1].cars[0].state.heading=2]){
+    const bad=structuredClone(delta);change(bad);assert.equal(applyDelta(one,bad),undefined);
+   }
+  }else{
+   assert.equal(train.state,'unplaced');assert.equal(train.cars[0].state.location,null);assert.equal(a.mixed!.voxels[2].traffic!.car,null);
+   assert.deepEqual(a.mixed!.queue!.pending,source.mixed!.queue!.pending);assert.equal(a.mixed!.queue!.nextOrder,'9007199254740995');
+  }
+  one=a;two=b;
+ }
+ assert.equal(source.mixed!.fleet!.trains[1].state,'unplaced');assert.equal(source.mixed!.queue!.nextOrder,'9007199254740994');
+});
+Deno.test('source rr.dir1 on a curve without an opposite port survives decoding while impossible normal and special headings reject',async()=>{
+ const source=await scene(),rail=source.mixed!.voxels[0].traffic!.rail!,car=source.mixed!.fleet!.trains[0].cars[0];
+ rail.pattern=11;rail.definition={packId:rail.definition.packId,contributionId:'system:pattern/11',recipeId:'system:pattern/11'};
+ car.state.heading=0;assert.equal((parseMessage(JSON.stringify(source)) as Snapshot).mixed!.fleet!.trains[0].cars[0].state.heading,0);
+ car.state.heading=2;assert.throws(()=>parseMessage(JSON.stringify(source)));
+ // The literal tunnel has N/S ports: a special-purpose guide cannot turn an eighth.
+ const special=await json('fixtures/delta-fleet-placement.json') as Delta;
+ const placed=applyDelta(immutable(await scene()),special);assert(placed);
+ const bad=structuredClone(placed) as Snapshot;bad.mixed!.fleet!.trains[1].cars[0].state.heading=1;
+ assert.throws(()=>parseMessage(JSON.stringify(bad)));
+});
 Deno.test('source-priced sale delta removes reversed Inside/Outside stock and books revenue coherently for two peers',async()=>{
  const one=immutable(await scene()),two=immutable(await scene());
  const delta=parseMessageValue(await json('fixtures/delta-fleet-sale.json')) as Delta;

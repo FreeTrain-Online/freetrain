@@ -1,5 +1,6 @@
 import profile from '../generated/fleet-profile.json' with {type:'json'};
 import railPorts from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with {type:'json'};
+import railwayProfile from '../generated/railway-profile.json' with {type:'json'};
 import type {Snapshot,FleetPose,Fleet,ContentBinding} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import {WorldSpace,int32} from './map-geometry.ts';
@@ -55,7 +56,13 @@ export function validFleet(read:Snapshot):boolean {
    const s=c.state;
    if(s.kind==='inside'){
     const v=occupied.get(c.id),r=v?.traffic?.rail,car=v?.traffic?.car;
-    if(!v||!r||!car||key(v.position)!==key(s.location!)||car.trainId!==t.id||!equal(car.definition,c.definition)||!ports(r.pattern).includes((s.heading!+4)%8))return false;
+    if(!v||!r||!car||key(v.position)!==key(s.location!)||car.trainId!==t.id||!equal(car.definition,c.definition))return false;
+    // Source placement starts at rr.dir1, even on a curve with no opposite port.
+    // Normal/junction guides can turn one eighth; special-purpose/slope guides keep heading.
+    const edges=ports(r.pattern),handler=railwayProfile.bindings.find(b=>b.reference.packId===r.definition.packId&&
+      b.reference.contributionId===r.definition.contributionId&&b.reference.recipeId===r.definition.recipeId)?.handler;
+    if(!edges.includes(s.heading!)&&!((handler==='normal'||handler==='junction')&&
+      [((s.heading!+7)%8),((s.heading!+1)%8)].some(d=>edges.includes(d))))return false;
     occupied.delete(c.id);
    }else if(s.kind==='outside'){
     const p=s.location!,storage=space.storage(p);

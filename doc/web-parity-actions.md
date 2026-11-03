@@ -567,3 +567,14 @@ scheduled work. `ConstructionAccounts.Earn`, Save9/protocol7 and browser replay
 retain distinct source revenue. MAN-T07/W07/A10/A11 and DEV-P19/P24 bind these
 domain semantics; [reciprocal manual scope](web-parity-manual.md#p5-06-trading-domain)
 keeps the actual EN/JA purchase/inventory/withdraw/sale controls with P5-10/11.
+
+## P5-07 deployment domain
+
+The [placement/withdrawal contract](web-parity-fleet-deployment.md) implements
+`deploy` for MAN-T07/W07 and DEV-P19/P24: exact tail-first temporary-head
+planning, source/reversed direction choice, fixed-level GEO-008 slope behavior,
+atomic occupancy/native callback registration and withdrawal retaining inventory.
+Curve `dir1` validation follows source guidance in both backend and browser.
+The [reciprocal manual scope](web-parity-manual.md#p5-07-deployment-domain)
+keeps EN/JA map/keyboard controls, confirmations and network receipt lifecycle
+with P5-11; moving trains and already placed reversal remain P5-08/12.
