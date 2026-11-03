@@ -47,6 +47,7 @@
   let licenseOpen = $state(false);
   let renderState = $state<'loading' | 'ready' | 'failed'>('loading');
   let launcher: HTMLElement | undefined;
+  let deploymentPicking=$state(false),deploymentPicked=$state<import('./generated/contracts.ts').Position>(),deploymentPreview=$state<import('./generated/contracts.ts').FleetDeploymentPreview>();
   let fleetControls=$state<FleetControls>();
   let fleetDirty=$state(false),fleetCanApply=$state(false),fleetDraft=$state('');
   let gameLauncher = $state<HTMLButtonElement>();
@@ -182,7 +183,7 @@
     // focused. Both should still activate the visible panel's default action.
     if (event.key === 'Enter' && live && !synchronizing && !menu && !navigation && !creditsOpen && !optionalCredits && !licenseOpen
       && event.target instanceof HTMLElement && event.target.matches('canvas, body, html')) {
-      const scope = document.querySelector<HTMLElement>('.map-stage .primary-panel, .map-stage .tool-card');
+      const scope = document.querySelector<HTMLElement>('.map-stage .deployment-controls') ?? document.querySelector<HTMLElement>('.map-stage .primary-panel, .map-stage .tool-card');
       if (scope) activatePrimary(event, scope);
       return;
     }
@@ -191,6 +192,7 @@
     if (catalogOpen && event.target instanceof HTMLElement && event.target.closest('#building-catalog')) { event.preventDefault(); closeCatalog(); return; }
     if (event.target instanceof HTMLElement && event.target.matches('input,select,textarea,[contenteditable="true"]')) return;
     event.preventDefault();
+    if(panel==='fleet'&&fleetControls?.cancelDeployment())return;
     if (panel) closePanel(); else map?.escape();
   }
   function uiFocus(event: FocusEvent) { if (!(event.target instanceof HTMLCanvasElement)) map?.suspendInput(); }
@@ -234,8 +236,8 @@
       </div>
     </div>
   {/if}
-  <main class="map-stage" class:with-catalog={live && catalogOpen && !panel}>
-    <MapView bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog}/>
+  <main class="map-stage" class:fleet-open={panel==='fleet'} class:fleet-picking={panel==='fleet'&&deploymentPicking} class:with-catalog={live && catalogOpen && !panel}>
+    <MapView deploymentPicking={deploymentPicking&&panel==='fleet'} {deploymentPreview} ondeploymentpick={p=>{deploymentPicked={...p};}} bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
@@ -259,7 +261,7 @@
       {/snippet}
       <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
         {#if panel === 'fleet'}
-          <FleetControls bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
+          <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
         {:else if panel === 'inspector'}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}

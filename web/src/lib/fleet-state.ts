@@ -101,3 +101,17 @@ export function validFleetSuccessor(before:ReadFleet|undefined,after:Fleet|undef
  }
  return true;
 }
+
+// Source Train.getController: only explicit delegation walks parent groups;
+// a null assignment and an exhausted delegation chain fall back to Simple.
+export function effectiveFleetController(fleet:ReadFleet,trainId:string) {
+ const train=fleet.trains.find(t=>t.id===trainId);if(!train)return undefined;
+ let id=train.controllerId,group=fleet.groups.find(g=>g.id===train.groupId);
+ const seen=new Set<string>();
+ while(id!==null&&fleet.controllers.find(c=>c.id===id)?.kind==='delegation'&&group){
+  if(seen.has(group.id))return undefined;seen.add(group.id);
+  id=group.controllerId;group=fleet.groups.find(g=>g.id===group!.parentId);
+ }
+ const controller=fleet.controllers.find(c=>c.id===id);
+ return !controller||controller.kind==='delegation'?fleet.controllers.find(c=>c.kind==='simple'):controller;
+}

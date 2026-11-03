@@ -371,6 +371,7 @@ public sealed partial class SessionHost : IDisposable
                     {
                         switch (queued.Command.Payload)
                         {
+                            case DeployFleetCommand deploy when deploy.Query != null: code = CommitFleetDeployment(deploy); break;
                             case TradeFleetCommand trade when trade.Query != null: code = CommitFleetTrade(trade); break;
                             case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;

@@ -604,3 +604,15 @@ passengers/fares, recovery/capacity and native/optional acceptance keep their
 numbered owners.
 
 [Reciprocal manual bindings](web-parity-manual.md#p5-10-purchase-and-owned-stock-browser-workflows).
+
+## P5-11 deployment browser slice
+
+[Deployment controls and evidence](web-parity-fleet-deployment-browser.md) bind
+MAN-T06/W08/A11 and DEV-P14/P19/P24 to owned-train map/keyboard targeting,
+complete authoritative footprint/heading previews, source reversal during
+placement and distinct confirmed withdrawal. Real shared Run/Pause/Step connects
+purchase, P4 ramp motion, car inspection and canonical continuation in EN/JA.
+Stale/role/receipt/draft/camera safeguards retain the established shell boundary.
+Full manager/groups/tracking, manual/TAT and Outside behavior, integrated recovery,
+capacity and native/optional acceptance retain their subsequent P5 owners.
+[Reciprocal manual bindings](web-parity-manual.md#p5-11-deployment-browser-slice).

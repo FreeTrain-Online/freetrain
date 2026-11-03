@@ -13,7 +13,9 @@ export type GameDocument =
   | RemovalQuery
   | RemovalPreview
   | FleetTradeQuery
-  | FleetTradePreview;
+  | FleetTradePreview
+  | FleetDeploymentQuery
+  | FleetDeploymentPreview;
 export type WireMessage =
   | Join
   | Command
@@ -136,6 +138,10 @@ export type CommandPayload =
       trainId: Counter;
       expectedRevision: Counter;
       name: string;
+    }
+  | {
+      kind: "deployFleet";
+      query: FleetDeploymentQuery;
     };
 
 export interface Join {
@@ -632,6 +638,16 @@ export interface FleetTradeQuery {
   quantity: number;
   trainId: Counter;
 }
+export interface FleetDeploymentQuery {
+  expectedWorldEpoch: Counter;
+  expectedRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: string;
+  trainId: Counter;
+  action: "place" | "withdraw";
+  tail: Position | null;
+  reverse: boolean;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -986,4 +1002,19 @@ export interface FleetTradePreview {
   normalCapacity: Counter;
   seatedCapacity: Counter;
   packedCapacity: Counter;
+}
+export interface FleetDeploymentPreview {
+  query: FleetDeploymentQuery;
+  legal: boolean;
+  reason: string | null;
+  isReversed: boolean;
+  /**
+   * @maxItems 100
+   */
+  cars: FleetDeploymentCar[];
+}
+export interface FleetDeploymentCar {
+  carId: Counter;
+  location: Position;
+  heading: number;
 }

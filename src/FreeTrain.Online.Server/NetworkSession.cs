@@ -226,6 +226,7 @@ public sealed partial class NetworkSession
     public CornerTerrainPreviewRead PreviewCorner(CornerTerrainQuery query) { lock (gate) return host.PreviewCorner(query); }
     public SlopePreviewRead PreviewSlope(SlopeQuery query) { lock (gate) return host.PreviewSlope(query); }
     public RailwayPreviewRead PreviewRailway(RailwayQuery query) { lock (gate) return host.PreviewRailway(query); }
+    public FleetDeploymentPreviewRead PreviewFleetDeployment(FleetDeploymentQuery query) { lock (gate) return host.PreviewFleetDeployment(query); }
     public FleetTradePreviewRead PreviewFleetTrade(FleetTradeQuery query) { lock (gate) return host.PreviewFleetTrade(query); }
     public RemovalPreviewRead PreviewRemoval(RemovalQuery query) { lock (gate) return host.PreviewRemoval(query); }
     public SpatialPreviewRead PreviewSpatial(SpatialQuery query) { lock (gate) return host.PreviewSpatial(query); }

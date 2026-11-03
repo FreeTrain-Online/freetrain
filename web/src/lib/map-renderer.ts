@@ -16,7 +16,7 @@ import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -192,6 +192,17 @@ export class MapRenderer {
           const p=toScreen(loss.position,camera,width,height,this.space),r=5*camera.zoom;
           ctx.beginPath();ctx.moveTo(p.x-r,p.y-r);ctx.lineTo(p.x+r,p.y+r);ctx.moveTo(p.x+r,p.y-r);ctx.lineTo(p.x-r,p.y+r);ctx.stroke();
         }
+      }
+      this.canvas.dataset.fleetGhostCars=String(options.fleetPreview?.length??0);
+      for(const [i,car] of (options.fleetPreview??[]).entries()){
+        const position=car.location;if(position.z>options.heightCut)continue;
+        const p=toScreen(position,camera,width,height,this.space),rx=15*camera.zoom,ry=8*camera.zoom;
+        ctx.fillStyle='#0c9c8880';ctx.strokeStyle='#006451';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(p.x-rx,p.y);ctx.lineTo(p.x,p.y-ry);ctx.lineTo(p.x+rx,p.y);ctx.lineTo(p.x,p.y+ry);ctx.closePath();ctx.fill();ctx.stroke();
+        const [dx,dy]=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]][car.heading];
+        const next=toScreen({...position,x:position.x+dx,y:position.y+dy},camera,width,height,this.space),end={x:p.x+(next.x-p.x)*.6,y:p.y+(next.y-p.y)*.6};
+        const angle=Math.atan2(end.y-p.y,end.x-p.x);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(end.x,end.y);ctx.lineTo(end.x-6*Math.cos(angle-.6),end.y-6*Math.sin(angle-.6));ctx.moveTo(end.x,end.y);ctx.lineTo(end.x-6*Math.cos(angle+.6),end.y-6*Math.sin(angle+.6));ctx.stroke();
+        ctx.fillStyle='#003c32';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(String(i+1),p.x,p.y-12*camera.zoom);
       }
       for(const {position,label} of options.railPoints??[]){
         if(position.z>options.heightCut)continue;

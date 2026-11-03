@@ -144,3 +144,17 @@ Deno.test('out-of-order fleet chunks publish only the complete validated header 
 Deno.test('protocol6 peers reject under protocol7 even with otherwise exact identity',async()=>{
  const s=await scene();assert.throws(()=>parseMessage(JSON.stringify({type:'sessionOffer',protocolVersion:6,contentVersion:s.contentVersion,ruleset:s.ruleset,requiredPacks:s.requiredPacks,worldEpoch:'1',serverIncarnation:'old',sessionId:'shared',participantId:'owner',role:'owner'})));
 });
+
+Deno.test('effective controller follows explicit delegation and preserves null/root fallback for unavailable-control diagnostics',async()=>{
+ const {effectiveFleetController}=await import('../src/lib/fleet-state.ts');
+ const fleet=(await scene()).mixed!.fleet!,train=fleet.trains[0],simple=fleet.controllers.find(c=>c.kind==='simple')!;
+ const delegation=fleet.controllers.find(c=>c.kind==='delegation')!,manual=fleet.controllers.find(c=>c.kind==='manual')!;
+ train.controllerId=manual.id;assert.equal(effectiveFleetController(fleet,train.id)?.id,manual.id);
+ train.controllerId=null;assert.equal(effectiveFleetController(fleet,train.id)?.id,simple.id);
+ train.controllerId=delegation.id;
+ const group=fleet.groups.find(g=>g.id===train.groupId)!;group.controllerId=manual.id;
+ assert.equal(effectiveFleetController(fleet,train.id)?.id,manual.id);
+ group.controllerId=delegation.id;const root=fleet.groups.find(g=>g.id===fleet.rootGroupId)!;root.controllerId=delegation.id;
+ assert.equal(effectiveFleetController(fleet,train.id)?.id,simple.id);
+ assert.equal(effectiveFleetController(fleet,'missing'),undefined);
+});

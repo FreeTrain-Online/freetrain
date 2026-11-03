@@ -30,10 +30,17 @@ export function formationCars(stock:Stock,length:number):string[] {
   if(row.head)cars[0]=row.head;if(row.tail)cars[length-1]=row.tail;
   return cars;
 }
+export function formationPreviewCars(stock:Stock,length:number):string[] {
+  const cars=formationCars(stock,length);
+  const row=profile.trains.find(t=>t.binding.contributionId===stock.id)!;
+  // Purchase artwork has one leading cab and connected carriages. A rear cab
+  // facing backwards is useful on the map, but reads as another engine here.
+  return cars.map((id,index)=>index===0?(row.head??id):(row.body??id));
+}
 export function tradeQuery(read:ReadState,stock:Stock,length:number,quantity:number):FleetTradeQuery {
   return {expectedWorldEpoch:read.worldEpoch,expectedRevision:read.revision,expectedMinute:read.tick,
     expectedContentVersion:read.contentVersion!,action:'buy',definition:stock.binding,length,quantity,trainId:'0'};
 }
-export function currentQuote(read:ReadState,query:FleetTradeQuery):boolean {
+export function currentQuote(read:ReadState,query:Pick<FleetTradeQuery,'expectedWorldEpoch'|'expectedRevision'|'expectedMinute'|'expectedContentVersion'>):boolean {
   return read.worldEpoch===query.expectedWorldEpoch&&read.revision===query.expectedRevision&&read.tick===query.expectedMinute&&read.contentVersion===query.expectedContentVersion;
 }

@@ -166,10 +166,45 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .track-confirm { position: sticky; bottom: -8px; padding-block: 4px; background: var(--ui-window-background); }
 .track-confirm p { margin-block: 4px; }
 
-.fleet-controls { min-width: 0; overflow-wrap: anywhere; }
-.fleet-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)); gap: 8px; }
+/* The fleet browser keeps selection separate from the selected train's task. */
+.fleet-controls { min-width: 0; min-height: 0; overflow-wrap: anywhere; container-type: inline-size; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.fleet-tabs { flex-shrink: 0; }
+.fleet-layout { min-height: 0; }
+.fleet-sidebar, .fleet-details { min-width: 0; }
+.fleet-details > :first-child { margin-block-start: 0; }
+.fleet-details > :last-child { margin-block-end: 0; }
+.fleet-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)); gap: 4px 8px; }
+.fleet-filters .field { margin-block: 4px; }
+.fleet-search { grid-column: 1 / -1; }
 .fleet-filters select, .fleet-filters input { width: 100%; min-width: 0; }
-.fleet-catalog { max-height: 220px; overflow-y: auto; overscroll-behavior: contain; }
-.formation-preview { display: flex; max-width: 100%; overflow-x: auto; overscroll-behavior: contain; }
-.formation-preview .catalog-preview { flex: 0 0 96px; }
+.fleet-sidebar > .fleet-filters { margin-block-end: 8px; }
+.fleet-sidebar .catalog { max-height: 260px; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
+.fleet-controls .catalog-item-main { min-height: 52px; padding: 2px 6px; gap: 6px; }
+.fleet-controls .catalog-item-main > .catalog-preview { flex: 0 0 60px; height: 46px; }
+.fleet-controls .catalog-item-main > .catalog-preview img { width: 60px; height: 46px; }
 .fleet-controls .catalog-item-main > span:last-child { min-width: 0; }
+.fleet-controls .catalog-item-main small { line-height: 1.25; }
+.formation-preview { display: flex; max-width: 100%; overflow-x: auto; overscroll-behavior: contain; }
+.formation-preview { min-height: 48px; align-items: center; }
+.formation-preview img { flex: none; max-width: none; image-rendering: pixelated; }
+.fleet-rename .field { margin-block-start: 0; }
+.deployment-target { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-block: 8px; padding: 6px; border: 1px solid var(--border); }
+.deployment-target .field { margin: 0; }
+.deployment-reverse { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; }
+.deployment-help { margin-block: 8px; }
+.deployment-help summary { cursor: pointer; }
+.deployment-review ol { max-height: 9rem; overflow-y: auto; overscroll-behavior: contain; }
+@media (min-width: 1024px) {
+  .map-stage.fleet-open { --panel: min(780px, 64vw); }
+  .fleet-open > .primary-panel { height: min(680px, calc(100% - 60px)); }
+  .fleet-open > .primary-panel > .panel-body { overflow: hidden; display: flex; }
+  .fleet-open.fleet-picking > .primary-panel { width: min(352px, calc(100% - var(--strip) - 16px)); }
+  .fleet-open.fleet-picking > .primary-panel > .panel-body { overflow: auto; display: block; }
+  .fleet-open .map-navigation.beside-panel { inset-inline-end: 8px; }
+}
+@container (min-width: 600px) {
+  .fleet-layout { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 16px; }
+  .fleet-sidebar, .fleet-details { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px; }
+  .fleet-sidebar { border-inline-end: 1px solid var(--border); padding-inline-end: 12px; }
+  .fleet-sidebar .catalog { max-height: none; overflow: visible; }
+}

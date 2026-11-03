@@ -196,6 +196,27 @@ public static class NetworkEndpoints
             catch (InvalidOperationException ex)
             { return Results.Json(new { code = ex.Message },statusCode:409); }
         });
+        app.MapPost("/api/fleet/deployment/preview", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk,0,count);
+                }
+                var query = JsonSerializer.Deserialize<FleetDeploymentQuery>(buffer.ToArray(),NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PreviewFleetDeployment(query),NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message },statusCode:409); }
+        });
         app.MapPost("/api/railway/preview", async Task<IResult> (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
@@ -484,6 +505,8 @@ public static class NetworkEndpoints
     }
     private static bool Valid(CommandMessage command) => !string.IsNullOrWhiteSpace(command.RequestId) && command.RequestId.Length <= 128 && command.ExpectedWorldEpoch >= 0 && command.Payload switch
     {
+        DeployFleetCommand deploy => deploy.Query is {} q && q.TrainId>0 && q.ExpectedWorldEpoch>=0 && q.ExpectedRevision>=0 && q.ExpectedMinute>=0 &&
+            q.ExpectedContentVersion==ProtocolIdentity.MixedContent && (q.Action=="place"&&q.Tail!=null||q.Action=="withdraw"&&q.Tail==null&&!q.Reverse),
         TradeFleetCommand trade => trade.Query != null && trade.ExpectedPrice >= 0,
         RenameFleetCommand rename => rename.TrainId > 0 && rename.ExpectedRevision >= 0 && rename.Name is {Length: <= 256},
         AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),

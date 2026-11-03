@@ -4,6 +4,22 @@ import {canonicalState,closePanel,openPanel,ready} from './browser-helpers.ts';
 
 const state=canonicalState;
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
+async function desktopColumns(page:Page){
+  const boxes=await page.locator('.fleet-controls').evaluate(el=>{
+    const sidebar=el.querySelector<HTMLElement>('.fleet-sidebar')!,details=el.querySelector<HTMLElement>('.fleet-details')!,body=el.closest('.panel-body')!;
+    const a=sidebar.getBoundingClientRect(),b=details.getBoundingClientRect(),panel=body.getBoundingClientRect();
+    const canvas=document.querySelector('canvas')!.getBoundingClientRect(),stage=document.querySelector('.map-stage')!.getBoundingClientRect();
+    return {canvasRight:canvas.right,stageRight:stage.right,left:a.right,right:b.left,top:a.top,detailsTop:b.top,bodyOverflow:body.scrollHeight-body.clientHeight,
+      detailsOverflow:details.scrollHeight-details.clientHeight,sidebarOverflow:sidebar.scrollHeight-sidebar.clientHeight,
+      panelRight:panel.right,viewport:innerWidth,rows:[...sidebar.querySelectorAll('li')].map(row=>row.getBoundingClientRect().height)};
+  });
+  expect(boxes.canvasRight).toBe(boxes.stageRight);
+  expect(boxes.right).toBeGreaterThan(boxes.left);expect(Math.abs(boxes.top-boxes.detailsTop)).toBeLessThan(2);
+  expect(boxes.bodyOverflow).toBeLessThanOrEqual(1);expect(boxes.detailsOverflow).toBeLessThanOrEqual(1);expect(boxes.sidebarOverflow).toBeLessThanOrEqual(1);
+  expect(boxes.panelRight).toBeLessThanOrEqual(boxes.viewport);
+  for(const height of boxes.rows)expect(height).toBeLessThanOrEqual(60);
+}
+
 test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resale publish once to two peers and reopen exactly',async({page,browser,baseURL})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   let socket:WebSocketRoute|undefined,lastTrade:any;
@@ -16,8 +32,14 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
   await page.goto('/');await ready(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','trade-preserved'));
   const context=await browser.newContext({baseURL}),peer=await context.newPage();
   try{
-    await peer.goto('/');await ready(peer);await openPanel(page,'fleet');await openPanel(peer,'fleet');
+    await peer.goto('/');await ready(peer);await openPanel(page,'fleet');await expect(page.locator('.primary-panel').getByRole('combobox',{name:'Language',exact:true})).toHaveCount(0);await openPanel(peer,'fleet');
     await peer.getByRole('button',{name:'Owned stock',exact:false}).click();await expect(peer.getByText('No trains owned.',{exact:false})).toBeVisible();
+    for(const [width,height] of [[1024,768],[1280,900]]){
+      await page.setViewportSize({width,height});
+      await expect.poll(async()=>page.locator('.fleet-layout').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(2);
+      await desktopColumns(page);
+    }
+    await page.screenshot({path:`${evidence}/fleet-columns-purchase-en.png`});
     const before=await state(page);
     await page.getByLabel('Company',{exact:true}).selectOption('JR東日本');await expect(page.locator('.fleet-catalog li')).toHaveCount(2);
     await page.getByLabel('Type',{exact:true}).selectOption('485系');await expect(page.locator('.fleet-catalog li')).toHaveCount(1);
@@ -25,7 +47,8 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await page.getByLabel('Search catalog',{exact:true}).fill('no-such-stock');await expect(page.getByText('No rolling stock matches these filters.')).toBeVisible();
     await page.getByLabel('Search catalog',{exact:true}).fill('Raicho');await expect(page.locator('.fleet-catalog li')).toHaveCount(1);
     await page.getByLabel('Formation length (cars)',{exact:true}).selectOption('3');await page.getByLabel('Quantity (trains)',{exact:true}).fill('2');
-    await expect(page.locator('.formation-preview img')).toHaveCount(3);
+    await expect(page.locator('.formation-preview')).toHaveAttribute('data-car-count','3');
+    await expect(page.locator('.formation-preview img')).toHaveCount(1);
     await page.screenshot({path:`${evidence}/fleet-purchase-en.png`});
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();let dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
     await expect(dialog).toBeVisible();await expect(dialog.getByTestId('stock-total')).toHaveText('300,000,000');
@@ -47,11 +70,15 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     socket!.send(JSON.stringify({...lastTrade,requestId:'stale-trade-new-id'}));await expect.poll(()=>receipts.at(-1)?.requestId).toBe('stale-trade-new-id');expect(receipts.at(-1).code).toBe('staleRevision');
     await page.getByRole('button',{name:'Owned stock',exact:false}).click();
     const id=bought.mixed.fleet.trains[0].id;await page.getByRole('button',{name:new RegExp(`TR${id}.*#${id}`)}).click();
+    for(const [width,height] of [[1024,768],[1280,900]]){await page.setViewportSize({width,height});await desktopColumns(page);}
+    await page.screenshot({path:`${evidence}/fleet-columns-owned-en.png`});
     await page.getByLabel('Name',{exact:true}).fill('Northern Star');
     await closePanel(page);await expect(page.getByRole('dialog',{name:'Unsaved train name',exact:true})).toBeVisible();
     await page.getByRole('button',{name:'Keep editing',exact:true}).click();
-    await page.getByLabel('Language',{exact:true}).selectOption('ja');await expect(page.getByLabel('名称',{exact:true})).toHaveValue('Northern Star');
-    await page.getByLabel('名称',{exact:true}).press('Enter');await expect(peer.getByRole('button',{name:/Northern Star/})).toBeVisible();
+    await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Northern Star');
+    await page.getByLabel('Name',{exact:true}).press('Enter');await expect(peer.getByRole('button',{name:/Northern Star/})).toBeVisible();
+    await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');
+    await openPanel(page,'fleet','ja');await page.getByRole('button',{name:'保有車両',exact:false}).click();await page.getByRole('button',{name:/Northern Star/}).click();await desktopColumns(page);
     await page.getByRole('button',{name:'売却見積もり',exact:true}).click();dialog=page.getByRole('dialog',{name:'売却見積もり',exact:true});
     await expect(dialog.getByTestId('stock-total')).toHaveText('75,000,000');await dialog.getByRole('button',{name:'キャンセル',exact:true}).click();
     expect((await state(page)).mixed.fleet.trains).toHaveLength(2);
@@ -69,8 +96,8 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
 });
 
 test('Japanese narrow purchase and observer catalog browse preserve controls at enlarged text',async({page,browser,baseURL})=>{
-  await page.setViewportSize({width:390,height:844});await page.goto('/');await ready(page);await openPanel(page,'fleet');
-  await page.getByLabel('Language',{exact:true}).selectOption('ja');
+  await page.setViewportSize({width:390,height:844});await page.goto('/');await ready(page);await openPanel(page,'settings');
+  await page.getByLabel('Language',{exact:true}).selectOption('ja');await openPanel(page,'fleet','ja');
   await page.locator('.primary-panel .sheet-toggle').click();
   await page.locator('html').evaluate(el=>el.style.fontSize='200%');
   await page.getByLabel('編成両数（両）',{exact:true}).selectOption('2');await page.getByLabel('購入編成数（編成）',{exact:true}).fill('1');

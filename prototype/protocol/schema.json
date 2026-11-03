@@ -41,6 +41,12 @@
     },
     {
       "$ref": "#/$defs/FleetTradePreview"
+    },
+    {
+      "$ref": "#/$defs/FleetDeploymentQuery"
+    },
+    {
+      "$ref": "#/$defs/FleetDeploymentPreview"
     }
   ],
   "$defs": {
@@ -861,6 +867,22 @@
             "trainId",
             "expectedRevision",
             "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "deployFleet"
+            },
+            "query": {
+              "$ref": "#/$defs/FleetDeploymentQuery"
+            }
+          },
+          "required": [
+            "kind",
+            "query"
           ],
           "additionalProperties": false
         }
@@ -3920,6 +3942,113 @@
         "normalCapacity",
         "seatedCapacity",
         "packedCapacity"
+      ],
+      "additionalProperties": false
+    },
+    "FleetDeploymentQuery": {
+      "type": "object",
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "type": "string"
+        },
+        "trainId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "action": {
+          "enum": [
+            "place",
+            "withdraw"
+          ]
+        },
+        "tail": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reverse": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "trainId",
+        "action",
+        "tail",
+        "reverse"
+      ],
+      "additionalProperties": false
+    },
+    "FleetDeploymentCar": {
+      "type": "object",
+      "properties": {
+        "carId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "heading": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        }
+      },
+      "required": [
+        "carId",
+        "location",
+        "heading"
+      ],
+      "additionalProperties": false
+    },
+    "FleetDeploymentPreview": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/FleetDeploymentQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isReversed": {
+          "type": "boolean"
+        },
+        "cars": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/FleetDeploymentCar"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "isReversed",
+        "cars"
       ],
       "additionalProperties": false
     }

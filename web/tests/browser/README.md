@@ -14,6 +14,7 @@ Tests are grouped by the behavior they protect.
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
 | `multiplayer.spec.ts` | Shared state, authority, leases and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
+| `fleet-deployment.spec.ts` | Real EN/JA ramp purchase/deploy/run/inspect/withdraw/redeploy, map/keyboard footprint review, stale/cancel/replay, two peers, exact reopen and backend checkpoint restart; JA 390×844/200% text, late previews and Observer/draft guards |
 | `fleet-trading.spec.ts` | Real EN/JA purchase/rename/resale, exact quotes, stale/cancel/replay, two peers, Observer/unavailable states, draft/focus safety and 390×844/200% text |
 | `fleet-persistence.spec.ts` | Save9 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the moving case uses `FREETRAIN_MOVING_FLEET_OUTPUT` emitted by focused `FleetMovementTests` |
 | `train-rendering.spec.ts` | All eight bundled car recipes against independent poses and actual PNG pixels/alpha picks in eight seasonal/light variants; infrastructure overlap contacts, hidden tunnel movement and local/full redraw identity |

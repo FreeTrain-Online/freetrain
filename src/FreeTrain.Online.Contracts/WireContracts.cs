@@ -142,7 +142,13 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
 [JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
 [JsonDerivedType(typeof(RenameFleetCommand), "renameFleet")]
+[JsonDerivedType(typeof(DeployFleetCommand), "deployFleet")]
 public abstract record CommandPayload;
+public sealed record FleetDeploymentQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
+    string ExpectedContentVersion, long TrainId, string Action, PositionRead? Tail, bool Reverse);
+public sealed record FleetDeploymentCarRead(long CarId, PositionRead Location, int Heading);
+public sealed record FleetDeploymentPreviewRead(FleetDeploymentQuery Query, bool Legal, string? Reason, bool IsReversed, FleetDeploymentCarRead[] Cars);
+public sealed record DeployFleetCommand(FleetDeploymentQuery Query) : CommandPayload;
 public sealed record FleetTradeQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
     string ExpectedContentVersion, string Action, ContentBindingRead? Definition, int Length, int Quantity, long TrainId);
 public sealed record FleetTradePreviewRead(FleetTradeQuery Query, long Price, long NormalCapacity, long SeatedCapacity, long PackedCapacity);

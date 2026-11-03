@@ -26,8 +26,8 @@
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
-  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, ontool, onselect, onclose, onclock, oncatalog }:
-    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
+  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog }:
+    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
   const text = $derived(messages[view.locale]);
   const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
@@ -245,7 +245,8 @@
     if(selectIntersection&&!blocked&&!panel){pickCorner(event,false);return;}
     if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.paint || was.moved || was.panOnly || event.button !== 0) return;
     const p = point(event);
-    if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
+    if(deploymentPicking&&!blocked){const location=renderer?.pickLocation(p,{kind:'railOrGround'});if(location)ondeploymentpick(location);}
+    else if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
     else if(railway&&tool==='remove'&&!blocked&&!panel){
       const pick=removeControls?.pickMode();
@@ -316,7 +317,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
     $effect(() => { void heightCut;cancelGesture(); });
-    $effect(() => { void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+    $effect(() => { void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -341,7 +342,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // Terrain revisions keep the completed scene visible while preparing

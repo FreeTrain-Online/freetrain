@@ -633,3 +633,18 @@ passengers/fares, recovery/capacity and native/optional acceptance keep their
 numbered owners.
 
 [Reciprocal actions bindings](web-parity-actions.md#p5-10-purchase-and-owned-stock-browser-workflows).
+
+## P5-11 deployment browser slice
+
+[Deployment controls and evidence](web-parity-fleet-deployment-browser.md) bind
+MAN-T06/W08/A11 and DEV-P14/P19/P24 to Game → Trains → Owned stock. Select a
+train, pick its tail on the map or enter X/Y/Z, preview the complete formation,
+review direction and confirm. Reverse selects the source reversal on that same
+footprint; placement retains the selected height even on a ramp. Pause shared
+time before confirming if running time makes the preview stale. Use the shared
+Run/Pause/Step controls for actual motion. Withdraw clears the track and movement
+timer while retaining stock; selling remains a separate unplaced-only action.
+The panel displays the actual effective controller and current unsupported
+controller/Outside behavior. Subsequent P5 gates retain full manager, reversal,
+Outside, controller, recovery/capacity and native/optional acceptance.
+[Reciprocal action bindings](web-parity-actions.md#p5-11-deployment-browser-slice).

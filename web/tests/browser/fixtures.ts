@@ -7,7 +7,7 @@ import { join, resolve } from 'node:path';
 
 export * from '@playwright/test';
 
-type WorldServer = { baseURL?: string; reset?: () => Promise<void> };
+type WorldServer = { baseURL?: string; restart?: () => Promise<void>; reset?: () => Promise<void> };
 
 async function freePort(): Promise<number> {
   const server = createServer();
@@ -88,7 +88,10 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
       children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', 'preview', '--host', '127.0.0.1',
         '--port', String(webPort), '--strictPort'], { ...process.env, FREETRAIN_ONLINE_API_TARGET: apiURL }, baseURL));
       let first = true;
-      await use({ baseURL, reset: async () => {
+      await use({ baseURL, restart: async () => {
+        await stop(children[0]);
+        children[0] = await startBackend();
+      }, reset: async () => {
         if (first) { first = false; return; }
         // Also isolate access throttles, credentials, receipts and save slots.
         // A world upload alone leaves those server-wide states behind.

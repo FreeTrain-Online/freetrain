@@ -116,3 +116,31 @@ Reproduce selected browser checks from `web/` after building web and Debug serve
 ```sh
 FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION=Debug FREETRAIN_ONLINE_BROWSER_EVIDENCE=../tmp/p5-10-browser deno task test:browser:run fleet-trading.spec.ts fleet-persistence.spec.ts building-catalog.spec.ts --project=canonical --workers=1 --grep 'purchase, stale|Japanese narrow purchase|placed inventory|reference worlds expose|catalog keyboard selection|fleet Save9'
 ```
+
+## Owner Trains dialog layout follow-up — 3 November 2026
+
+The desktop Trains dialog now puts catalog filters and compact stock/owned-train
+rows on the left, with selected details and actions on the right. At widths of
+1,024px and above it uses a bounded wider panel over the full-size map canvas.
+While picking a tail, the panel temporarily narrows to expose more of the map.
+Its desktop height stays stable when placement changes the available actions,
+so a rapid second confirmation click cannot fall through to the canvas.
+Long columns scroll independently; narrow screens retain the stacked sheet. X/Y/Z share one row, and placement instructions
+are available under Help. Language selection uses the existing Settings panel.
+
+Production/generated/content/locales pass with zero Svelte errors/warnings and
+the existing bundle advisory. **7/7 selected purchase/deployment Chromium cases**
+pass, including no vertical scrolling for normal purchase and owned-stock views
+at **1,024×768 and 1,280×900**, compact bundled rows, EN/JA map placement/camera
+retention and Japanese390×844/200% text, drafts, focus, Observer and continuation.
+The initial attempt to reserve map space shrank the canvas and exposed the
+green page backing below the dialog. Owner correction removes that reservation;
+layout checks now require the canvas to cover the full map stage. The canvas
+retains its dimensions during map picking; map checks wait for the layout paint.
+EN purchase/owned, deployment footprint and JA narrow captures were visually inspected. Logs: `tmp/trains-columns-build.log`,
+`tmp/trains-columns-browser.log`; captures: `tmp/trains-columns-browser/`.
+Only the selected browser suites ran.
+
+The background correction passes a fresh **7/7 selected Chromium** and production
+build. Logs: `tmp/trains-background-fix-{build,browser}.log`; final inspected
+captures: `tmp/trains-background-fix-browser/`.

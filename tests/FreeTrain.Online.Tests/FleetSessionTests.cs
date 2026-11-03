@@ -89,4 +89,54 @@ public class FleetSessionTests
         Assert.Equal("invalidInput",Assert.IsType<RejectedMessage>(await Send(h,new TradeFleetCommand(q,0))).Code);
         Assert.Equal(before,await Save(h));
     }
+
+    static FleetDeploymentQuery Deployment(SessionHost h,string action="place",bool reverse=false)
+    {
+        var s=h.Snapshot();return new(s.WorldEpoch,s.Revision,s.Tick,s.ContentVersion,s.Mixed!.Fleet!.Trains[0].Id,action,
+            action=="place"?new PositionRead(14,10,1):null,reverse);
+    }
+    static async Task BuyAndBuild(SessionHost h)
+    {
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditRailwayCommand(new(h.WorldEpoch,0,TerrainProfile.ContentVersion,new(12,10,1),new(20,10,1),"lay","source"))));
+        var q=Query(h,3,1);Assert.IsType<AcceptedMessage>(await Send(h,new TradeFleetCommand(q,h.PreviewFleetTrade(q).Price)));
+    }
+    [Theory]
+    [InlineData(false)][InlineData(true)]
+    public async Task Deployment_commands_publish_exact_previews_withdraw_without_sale_and_continue_after_reopen(bool reverse)
+    {
+        using var h=Host();await BuyAndBuild(h);var before=await Save(h);var q=Deployment(h,reverse:reverse);
+        var preview=h.PreviewFleetDeployment(q);Assert.True(preview.Legal);Assert.Equal(3,preview.Cars.Length);
+        Assert.Equal(reverse,preview.IsReversed);Assert.Equal(before,await Save(h));
+        Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(q)));
+        var s=h.Snapshot();var placed=s.Mixed!.Fleet!.Trains[0];Assert.Equal(reverse,placed.IsReversed);
+        Assert.Equal(preview.Cars.Select(c=>(c.CarId,c.Location,c.Heading)),placed.Cars.Select(c=>(c.Id,c.State.Location!,c.State.Heading!.Value)));
+        var bytes=await Save(h);Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q))).Code);
+        Assert.Equal(bytes,await Save(h));
+        using var reopened=new SessionHost(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        // Actual production callback continues identically through the current codec.
+        for(var i=0;i<4;i++){Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));Assert.IsType<AcceptedMessage>(await Send(reopened,new StepCommand()));}
+        Assert.Equal(await Save(h),await Save(reopened));
+        var accounts=h.Snapshot().Mixed!.Accounts;var withdraw=Deployment(h,"withdraw");Assert.Empty(h.PreviewFleetDeployment(withdraw).Cars);
+        Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(withdraw)));
+        s=h.Snapshot();Assert.Equal("unplaced",s.Mixed!.Fleet!.Trains[0].State);
+        Assert.All(s.Mixed.Voxels,v=>Assert.Null(v.Traffic?.Car));Assert.Empty(s.Mixed.Queue!.Pending);
+        Assert.Equal(accounts.InitialCash,s.Mixed.Accounts.InitialCash);Assert.Equal(accounts.Transactions,s.Mixed.Accounts.Transactions);Assert.Equal(placed.Id,s.Mixed.Fleet.Trains[0].Id);
+        Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(Deployment(h,reverse:!reverse))));
+    }
+    [Fact]
+    public async Task Deployment_fences_peer_edits_clock_replacement_and_observer_without_partial_occupancy()
+    {
+        using var h=Host();await BuyAndBuild(h);var q=Deployment(h);var original=await Save(h);
+        var observer=new ParticipantContext("viewer",ParticipantRole.Observer);h.RegisterParticipant(observer);
+        Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q),observer)).Code);
+        var bad=q with{Tail=new(14,11,1)};Assert.Equal("missingRail",h.PreviewFleetDeployment(bad).Reason);
+        Assert.Equal("invalidPlacement",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(bad))).Code);
+        Assert.Equal(original,await Save(h));
+        await Send(h,new StepCommand());Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q))).Code);
+        q=Deployment(h);var train=h.Snapshot().Mixed!.Fleet!.Trains[0];await Send(h,new RenameFleetCommand(train.Id,train.Revision,"Peer edit"));
+        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q))).Code);
+        q=Deployment(h);var replacement=h.LoadSave(original);h.Pump(0);await replacement;
+        Assert.Equal("staleEpoch",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q))).Code);
+        Assert.All(h.Snapshot().Mixed!.Voxels,v=>Assert.Null(v.Traffic?.Car));
+    }
 }
