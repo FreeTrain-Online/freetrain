@@ -159,13 +159,18 @@ public static class WaterTerrain
                 Span<int> neighbors = stackalloc int[4];
                 for (int lake = 0; lake < request.Options.Lakes.Count; lake++)
                 {
-                    var distance = Distances(d, reserved, work); int center = -1;
+                    var distance = Distances(d, reserved, work);
+                    int area = size * request.Options.Lakes.AreaPercent / 100;
+                    // Choose among roomy locations instead of always maximizing distance
+                    // from the rim. Crowded maps fall back to their available clearance.
+                    int maximum = 0;
+                    for (int i = 0; i < size; i++) { work.Spend(1); maximum = Math.Max(maximum, distance[i]); }
+                    int clearance = Math.Min(maximum, CeilRoot(2 * area) + 4), center = -1;
                     for (int i = 0; i < size; i++)
                     {
                         work.Spend(1);
-                        if (center < 0 || distance[i] > distance[center] || distance[i] == distance[center] && Hash(lakeSeed + lake, i) < Hash(lakeSeed + lake, center)) center = i;
+                        if (distance[i] >= clearance && (center < 0 || Hash(lakeSeed + lake, i) < Hash(lakeSeed + lake, center))) center = i;
                     }
-                    int area = size * request.Options.Lakes.AreaPercent / 100;
                     int target = Math.Max(1, area - 4 * CeilRoot(2 * area));
                     var seen = new bool[size]; var core = new List<int>(target);
                     var queue = new PriorityQueue<int, (long Score, int Index)>();

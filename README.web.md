@@ -126,8 +126,10 @@ FreeTrain Online is a multiplayer-capable, bilingual reimagination of the rail a
 
 The localized Svelte app connects to an authoritative C# session over HTTP and
 WebSocket. Without a usable saved checkpoint, the server generates a fresh seeded
-400(H)×600(V) terrain world with rolling hills, sparse trees, and a random choice of
-dry land, a lake, a river, or a coast. Existing saved worlds restore exactly.
+400(H)×600(V) terrain world with rolling hills, 15% sparse forest cover using
+a single seeded tree type, and a random choice of dry land, a lake, a river, or a
+coast. Lakes occupy roughly 3% of the map and use seeded random locations with
+room for a dry shoreline. Existing saved worlds restore exactly.
 You can inspect terrain, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
 with **Save 9**. Economy, construction, trains and stations remain future slices.
@@ -366,7 +368,7 @@ receive independent Owner identities. Train/construction operations are
 unavailable until their canonical implementations arrive.
 
 Fresh-world defaults can be configured with `FreeTrainOnline__StartupWorld__…`:
-`Width` (H: 400), `Height` (V: 600), `Hills` (35, range 0–100), `TreesPercent` (2, range
+`Width` (H: 400), `Height` (V: 600), `Hills` (35, range 0–100), `TreesPercent` (15, range
 0–90), and `Water` (`Random`, `Dry`, `Lake`, `River`, or `Coast`). Set `Seed` to an
 integer for reproducible terrain; omit it for a fresh random seed. These settings
 only apply when there is no usable checkpoint. The chosen seed and generation

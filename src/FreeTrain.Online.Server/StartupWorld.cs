@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Security.Cryptography;
+using System.Text;
 using FreeTrain.Online.Content;
 using FreeTrain.Online.Simulation;
 
@@ -15,7 +16,7 @@ public sealed class StartupWorldOptions
     public int Height { get; init; } = 600;
     public int? Seed { get; init; }
     public int Hills { get; init; } = 35;
-    public int TreesPercent { get; init; } = 2;
+    public int TreesPercent { get; init; } = 15;
     public StartupWater Water { get; init; } = StartupWater.Random;
 
     public GeneratedWorldRequest Request(int seed)
@@ -28,11 +29,15 @@ public sealed class StartupWorldOptions
         var coast = water == StartupWater.Coast
             ? new CoastOptions(CoastKind.Sides, (CoastSides)(1 << ((choice / 4) % 4)), 20)
             : new CoastOptions(CoastKind.Inland, CoastSides.None, 0);
+        int forestSeed = WorldCreationProfile.StageSeed(seed, GenerationStage.ForestMask);
         var palette = TreesPercent == 0 ? [] : WorldCreationCapabilities.ForestChoices()
-            .Where(c => c.Variant == "natural").Select(c => c.Binding).ToImmutableArray();
+            .Where(c => c.Variant == "natural")
+            .OrderBy(c => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+                $"freetrain.startup-forest\n{forestSeed}\n{c.Binding.ContributionId}"))), StringComparer.Ordinal)
+            .Take(1).Select(c => c.Binding).ToImmutableArray();
         var request = new GeneratedWorldRequest(WorldCreationProfile.Id, "New world", new(Width, Height, 24), 4,
             new(seed, new(ReliefKind.Hills, Hills, 64, 75), coast,
-                water == StartupWater.Lake ? new(1, 4) : new(0, 0),
+                water == StartupWater.Lake ? new(1, 3) : new(0, 0),
                 new(water == StartupWater.River
                     ? ((choice / 4) % 2 == 0 ? RiverDirection.NorthSouth : RiverDirection.EastWest)
                     : RiverDirection.None, 3, 30),

@@ -8,7 +8,7 @@ using Xunit;
 public class StartupWorldTests
 {
     [Fact]
-    public async Task Fresh_server_has_medium_generated_hills_sparse_trees_and_no_demo_rails()
+    public async Task Fresh_server_has_medium_generated_hills_forests_and_no_demo_rails()
     {
         var session = new NetworkSession(new(), startupWorld: new() { Seed = 42 });
         var snapshot = session.Bootstrap().Snapshot;
@@ -18,7 +18,7 @@ public class StartupWorldTests
         var capture = session.CaptureSave(); session.Tick(DateTimeOffset.UtcNow);
         var terrain = SaveCodec.ReadWorld(await capture, TerrainProfiles.Resolve).Terrain!;
         Assert.True(terrain.World.Cells.Select(c => c.Ground).Distinct().Count() > 2);
-        Assert.InRange(terrain.World.RealizedTreeCount, 1, terrain.World.Cells.Length / 10);
+        Assert.True(terrain.World.RealizedTreeCount > 0);
         var request = JsonSerializer.Deserialize<WorldCreationRequest>(terrain.Provenance.RequestJson) as GeneratedWorldRequest;
         Assert.NotNull(request); Assert.Equal(42, request.Options.Seed);
         Assert.Equal(ReliefKind.Hills, request.Options.Relief.Kind);
@@ -69,6 +69,44 @@ public class StartupWorldTests
             Assert.Equal(saved, await restored);
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
+    }
+
+    [Fact]
+    public void Startup_lakes_are_smaller_and_move_across_the_map_with_the_seed()
+    {
+        var centers = new List<(double H, double V)>();
+        for (int seed = 0; seed < 6; seed++)
+        {
+            var options = new StartupWorldOptions { Width = 128, Height = 128, Seed = seed, Water = StartupWater.Lake, TreesPercent = 0 };
+            Assert.Equal(3, options.Request(seed).Options.Lakes.AreaPercent);
+            var world = options.Create().World;
+            var wet = CoastTerrain.SeaMask(world);
+            var cells = Enumerable.Range(0, wet.Length).Where(i => wet[i]).ToArray();
+            Assert.InRange(cells.Length, 1, wet.Length * 4 / 100);
+            centers.Add((cells.Average(i => i % 128), cells.Average(i => i / 128)));
+        }
+        Assert.True(centers.Max(p => p.H) - centers.Min(p => p.H) > 15);
+        Assert.True(centers.Max(p => p.V) - centers.Min(p => p.V) > 15);
+    }
+
+    [Fact]
+    public void Startup_forests_use_sparse_coverage_and_one_seeded_tree_type()
+    {
+        var options = new StartupWorldOptions();
+        var palettes = new HashSet<string>();
+        var natural = WorldCreationCapabilities.ForestChoices().Where(c => c.Variant == "natural")
+            .Select(c => c.Binding).ToHashSet();
+        for (int seed = 0; seed < 64; seed++)
+        {
+            var forests = options.Request(seed).Options.Forests;
+            Assert.Equal(15, forests.CoveragePercent); Assert.Equal(35, forests.Clustering);
+            Assert.Single(forests.Palette);
+            Assert.All(forests.Palette, binding => Assert.Contains(binding, natural));
+            Assert.Equal(forests.Palette.ToArray(), options.Request(seed).Options.Forests.Palette.ToArray());
+            palettes.Add(string.Join(";", forests.Palette.Select(b => b.ContributionId)));
+        }
+        Assert.True(palettes.Count > 3);
+        Assert.Empty(new StartupWorldOptions { TreesPercent = 0 }.Request(42).Options.Forests.Palette);
     }
 
     [Fact]

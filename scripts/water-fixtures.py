@@ -115,9 +115,10 @@ def fixture(lakes=1, direction=0, sides=0, island=False, width=1, seed=0, meande
             lake_seed=stage(seed,'lakes',attempt)
             for lake in range(lakes):
                 distance=distances(reserved)
-                center=min(range(size),key=lambda i:(-distance[i],hashed(lake_seed+lake,i)))
                 root=math.isqrt(2*(size*area//100))
                 if root*root<2*(size*area//100): root+=1
+                clearance=min(max(distance),root+4)
+                center=min((i for i in range(size) if distance[i]>=clearance),key=lambda i:(hashed(lake_seed+lake,i),i))
                 target=max(1,size*area//100-4*root)
                 radius=math.isqrt(size*area//100)
                 if radius*radius<size*area//100:radius+=1

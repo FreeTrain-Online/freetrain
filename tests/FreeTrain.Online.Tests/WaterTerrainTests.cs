@@ -206,7 +206,8 @@ public class WaterTerrainTests(ITestOutputHelper output)
     [InlineData(RiverDirection.NorthSouth,8)] [InlineData(RiverDirection.EastWest,8)]
     public void River_and_lake_overlay_preserves_both_water_surfaces_without_a_separating_bank(RiverDirection direction,int width)
     {
-        var r=Request(1,direction,width:width);
+        // This seed places the randomized basin across both river axes.
+        var r=Request(1,direction,width:width,seed:4);
         var lake=ReliefTerrain.Create(r with {Options=r.Options with {Rivers=r.Options.Rivers with {Direction=RiverDirection.None}}},TerrainProfiles.Bundled);
         var river=ReliefTerrain.Create(r with {Options=r.Options with {Lakes=new(0,0)}},TerrainProfiles.Bundled);
         var combined=ReliefTerrain.Create(r,TerrainProfiles.Bundled);
