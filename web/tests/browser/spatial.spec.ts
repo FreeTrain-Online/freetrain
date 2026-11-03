@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
-import { readFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { ready, bootstrap, clickTile, worldReplacementFixture } from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test } from './fixtures.ts';
+import { bootstrap,clickTile,ready,worldReplacementFixture } from './browser-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 
 test('aligned targets use server-checked geometry without spending or changing the shared world',async({page})=>{
@@ -26,8 +25,7 @@ test('aligned targets use server-checked geometry without spending or changing t
   await expect(page.getByTestId('preview-position')).toHaveText('22, 21, 1');
   await expect(page.getByTestId('preview-heading')).toHaveText('Direction: South · Distance in cells: 5');
   await expect(canvas).toHaveAttribute('data-instance','spatial-preserved');
-  const evidence=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'spatial');mkdirSync(evidence,{recursive:true});
-  await page.screenshot({path:join(evidence,'alignment-en.png'),fullPage:true});
+
   expect(await bootstrap(page)).toEqual(before);
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
   await expect(page.getByTestId('snap-anchor')).toHaveCount(0);
@@ -105,7 +103,6 @@ test('Japanese alignment labels and source direction names fit a narrow high-DPI
     await page.getByRole('button',{name:'方向合わせの基準にする',exact:true}).click();await page.getByLabel('対象の方向合わせ',{exact:true}).selectOption('8');
     await clickTile(page,{x:24,y:21,z:1});await expect(page.getByTestId('preview-heading')).toHaveText('方向: 南東 · 距離（マス）: 2');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    const evidence=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'spatial');mkdirSync(evidence,{recursive:true});
-    await page.screenshot({path:join(evidence,'alignment-ja-2x.png'),fullPage:true});
+
   } finally {await context.close();}
 });

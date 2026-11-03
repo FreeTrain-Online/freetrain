@@ -1,10 +1,9 @@
-import {test,expect,type Page} from '@playwright/test';
-import {mkdirSync,readFileSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,openPanel,closePanel,canonicalState as state} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const tunnel='{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}';
-const out=(name:string)=>{const d=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'tunnel');mkdirSync(d,{recursive:true});return join(d,name);};
+
 async function selectTunnel(p:Page,ja=false){const button=p.getByRole('button',{name:ja?'トンネル':'Tunnel',exact:true});if(await button.getAttribute('aria-pressed')!=='true')await button.click();}
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
 async function replace(p:Page,bytes:Buffer){const s=await state(p);const r=await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes});expect(r.ok(),await r.text()).toBe(true);await ready(p,(await p.locator('html').getAttribute('lang'))??'en');}
@@ -78,7 +77,7 @@ test('four cardinal routes, both removal orders, mixed ordinary rail and exact s
    expect((await pixels(page,s.mixed.voxels.filter((v:any)=>v.traffic.rail.definition.recipeId===tunnel))).every(n=>n>10)).toBe(true);
    await page.getByRole('button',{name:'Inspect',exact:true}).click();
    await click(page,(30+x)/2,(27+y)/2,2);await expect(page.getByTestId('selected-object')).toContainText('Railway');await closePanel(page);
-   await page.screenshot({path:out(`tunnel-${x}-${y}-cut2.png`),fullPage:true});await cut(page,5);
+   await cut(page,5);
    await selectTunnel(page);await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[x,y]);await expect(page.getByTestId('rail-cost')).toContainText('4,000,000');await confirm(page);
    let after=await state(page);expect(after.mixed.voxels).toHaveLength(4);expect(after.mixed.voxels.find((v:any)=>v.position.x===x&&v.position.y===y).traffic.rail.definition.recipeId).toBe(tunnel);
    await target(page,[x,y],[30,27]);await confirm(page);after=await state(page);
@@ -103,7 +102,7 @@ test('cut map picks, keyboard shortcut, illegal and cancelled work, stale quote 
   await target(page);await selectTunnel(peer);await target(peer);await confirm(page);
   await expect(peer.getByTestId('rail-status')).toContainText('world changed');await expect(peer.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeDisabled();
   expect(await canvas.evaluate(el=>(el as any).__tunnelIdentity)).toBe(true);expect(await state(peer)).toEqual(await state(page));
-  await page.screenshot({path:out('tunnel-two-peer-cut.png'),fullPage:true});
+
  }finally{await peer.close();await replace(page,original);}
 });
 
@@ -114,7 +113,7 @@ test('Japanese narrow DPR2 tunnel confirmation, automatic level and destination 
   await mountains(page,[[30,27],[34,27]]);await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await ready(page,'ja');
   await selectTunnel(page,true);await target(page,[30,27],[34,27],2,true);
   await page.getByLabel('始点の高さを自動検出',{exact:true}).check();await expect(page.getByLabel('線路の高さ',{exact:true})).toHaveValue('2');
-  await expect(page.getByRole('button',{name:'トンネルの変更を確定',exact:true})).toBeEnabled();await page.screenshot({path:out('tunnel-ja-narrow-preview.png'),fullPage:true});await confirm(page,true);
+  await expect(page.getByRole('button',{name:'トンネルの変更を確定',exact:true})).toBeEnabled();await confirm(page,true);
   await page.getByLabel('線路の操作',{exact:true}).selectOption('remove');await target(page,[30,27],[34,27],2,true);await confirm(page,true);
   expect((await state(page)).mixed.voxels).toHaveLength(4);
  }finally{await replace(page,original);await context.close();}
@@ -157,7 +156,7 @@ test('outside and inside sloped-hill clicks resolve portals, automatic height an
   await page.getByRole('button',{name:'Preview route',exact:true}).click();
   const quote=await(await refreshed).json();expect(quote.query.from.z).toBe(7);expect(quote.cells[0].position.z).toBe(6);
   await expect(page.getByRole('button',{name:'Confirm tunnel change',exact:true})).toBeEnabled();
-  await page.screenshot({path:out('tunnel-resolved-natural-portals.png'),fullPage:true});
+
   await confirm(page);const built=await state(page);expect(built.mixed.voxels).toHaveLength(14);expect(built.mixed.voxels.every((v:any)=>v.position.z===6)).toBe(true);
   const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);await cut(page,6);await selectTunnel(page);
   await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,[30,27],[43,27],6);await confirm(page);
@@ -178,8 +177,7 @@ test('an older server rejecting the route request gives actionable feedback and 
  }finally{await replace(page,original);}
 });
 
-
-test('large-world tunnel placement and restoration retain the socket, canvas and live screen through promotion and deltas',async({page})=>{
+test('large-world tunnel placement and restoration retain the socket, canvas and live screen through promotion and deltas',{tag:'@performance'},async({page})=>{
  test.setTimeout(120_000);let bootstraps=0,closes=0,resyncs=0,chunks=0;const durations:number[]=[];
  page.on('request',r=>{if(r.url().includes('/api/bootstrap?'))bootstraps++;});
  page.on('websocket',ws=>{
@@ -206,6 +204,6 @@ test('large-world tunnel placement and restoration retain the socket, canvas and
   expect(bootstraps).toBe(0);expect(closes).toBe(0);expect(resyncs).toBe(0);expect(await page.evaluate(()=>(window as any).__tunnelGates)).toBe(0);
   expect(await canvas.evaluate(el=>(el as any).__largeTunnelCanvas)).toBe(true);await expect(canvas).toHaveAttribute('data-camera',camera!);
   console.log(JSON.stringify({configuration:process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION??'Release',durations,bootstraps,closes,resyncs,chunks}));
-  await page.screenshot({path:out('tunnel-large-world-same-connection.png'),fullPage:true});
+
  }finally{await replace(page,original);}
 });

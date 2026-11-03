@@ -283,6 +283,20 @@ fidelity evidence. P2-02 and overall P2 are not closed by this implementation.
 
 ## Verification
 
+For current test commands and when to run each suite, see
+[browser validation in README.web.md](../README.web.md#prerequisites-and-checks).
+Routine `test:browser` runs representative recipe/status choices across all
+season/light variants, plus the 54-variant live-world stationary-object test.
+`test:browser:extended` adds the exhaustive bundled recipe sweep and full
+lifecycle/performance matrices; `test:browser:all` also runs generated
+mixed-network continuation. Run extended coverage after asset, importer, recipe
+or shared renderer changes, and all coverage for comprehensive/release validation.
+These automated checks remain useful regression coverage after initial review,
+but do not establish per-object visual fidelity against approved reference images.
+
+The following counts and screenshots record the original P2-02 validation run,
+rather than the current suite size:
+
 Validation: **276 .NET, 90 client and 123 Python tests pass**, along with the
 production build, pinned source regeneration, generated checks and project
 boundaries. Chromium covers **15 canonical cases** including all **6,496 recipe

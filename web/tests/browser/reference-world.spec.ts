@@ -1,8 +1,7 @@
-import { expect,test,type Page } from '@playwright/test';
-import { readFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { ready,openPanel,closePanel } from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { closePanel,openPanel,ready } from './browser-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const bootPath='/api/bootstrap?protocolVersion=6&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
@@ -67,7 +66,7 @@ test('source H/V targeting checks eight-direction snapping without changing the 
   await page.getByRole('button',{name:'Use as alignment anchor',exact:true}).click();await page.getByLabel('Align target',{exact:true}).selectOption('8');
   await target(page,{x:29,y:29,z:0});await expect(page.getByTestId('preview-position')).toHaveText('29, 26, 0');await expect(page.getByTestId('preview-heading')).toContainText('South-east');
   await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();expect(await bootstrap(page)).toEqual(before);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-en.png'),fullPage:true});
+
 });
 
 test('real Save 8 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
@@ -75,7 +74,8 @@ test('real Save 8 download, upload confirmation and socket epoch replacement pre
   const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(8);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
-  await expect(page.getByRole('dialog')).toBeVisible();await page.getByRole('button',{name:'Confirm load',exact:true}).click();
+  const confirmation=page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true});
+  await expect(confirmation).toBeVisible();await confirmation.getByRole('button',{name:'Confirm load',exact:true}).click();
   await expect(canvas).toHaveAttribute('data-world-epoch',String(BigInt(before.worldEpoch)+1n));await expect(canvas).toHaveAttribute('data-instance','save-preserved');
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(save);
 });
@@ -136,7 +136,7 @@ test('canonical Japanese presentation fits narrow DPR 2 and retains canvas throu
     await page.getByRole('button',{name:'方向合わせの基準にする',exact:true}).click();await page.getByLabel('対象の方向合わせ',{exact:true}).selectOption('8');
     await target(page,{x:29,y:29,z:0});await expect(page.getByTestId('preview-heading')).toContainText('南東');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'canonical');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'reference-ja-2x.png'),fullPage:true});
+
   }finally{await context.close();}
 });
 
@@ -230,14 +230,16 @@ test('invalid entity graphs report localized save errors before confirmation and
   }
 });
 
-test('bundled recipe gallery renders every source frame in all season/light variants with attributed paths',async({page})=>{
-  test.setTimeout(300_000);
+for(const exhaustive of [false,true])test(`bundled recipe gallery ${exhaustive?'exhaustive':'representative'} season/light variants with attributed paths`,{tag:exhaustive?'@extended':'@smoke'},async({page})=>{
+  test.setTimeout(exhaustive?300_000:30_000);
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
   const before=await bootstrap(page);
   await page.goto('/content-gallery.html');
   const canvas=page.locator('#composition');await expect(canvas).toHaveAttribute('data-ready','true');
   const catalog=await (await page.request.get('/content/bundled-v2/catalog.json')).json();
-  const result=await page.evaluate(async()=>{
+  const selected=exhaustive?catalog.renderRecipes:[...new Map(catalog.renderRecipes.map((r:any)=>[`${r.handler}:${r.status}`,r])).values()];
+  const ids=selected.map((r:any)=>r.id);
+  const result=await page.evaluate(async(ids)=>{
     const recipe=document.getElementById('recipe') as HTMLSelectElement,season=document.getElementById('season') as HTMLSelectElement,
       night=document.getElementById('night') as HTMLInputElement,canvas=document.getElementById('composition') as HTMLCanvasElement;
     let variants=0,frames=0,diagnostics=0;
@@ -248,22 +250,21 @@ test('bundled recipe gallery renders every source frame in all season/light vari
         await new Promise(requestAnimationFrame);
       }
     };
-    for(const option of [...recipe.options]) {
+    for(const id of ids) {
       for(const s of ['spring','summer','autumn','winter'])for(const n of [false,true]) {
-        recipe.value=option.value;season.value=s;night.checked=n;recipe.dispatchEvent(new Event('change'));
-        await wait(option.value,`${s}/${n?'night':'day'}`);variants++;
+        recipe.value=id;season.value=s;night.checked=n;recipe.dispatchEvent(new Event('change'));
+        await wait(id,`${s}/${n?'night':'day'}`);variants++;
         frames+=document.querySelectorAll('#frames canvas').length;diagnostics+=document.querySelectorAll('[data-diagnostic]').length;
       }
     }
     return {variants,frames,diagnostics};
-  });
-  expect(result.variants).toBe(catalog.renderRecipes.length*8);expect(result.frames).toBeGreaterThan(20000);
+  },ids);
+  expect(result.variants).toBe(ids.length*8);expect(result.frames).toBeGreaterThan(exhaustive?20000:0);
   expect(result.diagnostics).toBeGreaterThan(0);expect(errors).toEqual([]);
   const example=catalog.renderRecipes.find((r:any)=>r.handler==='variable-height'&&r.status==='ready');
   await page.locator('#recipe').selectOption(example.id);await expect(canvas).toHaveAttribute('data-recipe',example.id);
   await expect(page.locator('#credits')).toContainText(example.pluginId);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'recipes');mkdirSync(directory,{recursive:true});
-  await page.screenshot({path:join(directory,'variable-night-winter.png'),fullPage:true});
+
   const provenance=await(await page.request.get('/content/bundled-v2/provenance.json')).body();
   expect(createHash('sha256').update(provenance).digest('hex')).toBe(catalog.provenance.sha256);
   for(const metadata of catalog.pluginMetadata){const response=await page.request.get(metadata.url);expect(response.ok()).toBeTruthy();expect(createHash('sha256').update(await response.body()).digest('hex')).toBe(metadata.sha256);}
@@ -320,8 +321,7 @@ test('bundled bells keep gesture-gated localized previews with BGM deferred and 
     await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
   }
   expect(await page.evaluate(()=>(window as any).__audioPeak)).toBeGreaterThan(.0001);
-  const evidence=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'audio');mkdirSync(evidence,{recursive:true});
-  await page.screenshot({path:join(evidence,'settings-en.png'),fullPage:true});
+
   await page.getByLabel('Language',{exact:true}).selectOption('ja');
   await expect(page.locator('html')).toHaveAttribute('lang','ja');await expect(page.locator('html')).toHaveAttribute('dir','ltr');
   await expect(page.getByLabel('発車ベル',{exact:true}).locator('option')).toHaveCount(6);
@@ -329,7 +329,7 @@ test('bundled bells keep gesture-gated localized previews with BGM deferred and 
   await page.setViewportSize({width:360,height:800});
   await page.getByRole('button',{name:'ベルを試聴',exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
-  await page.screenshot({path:join(evidence,'settings-ja-bells.png'),fullPage:true});
+
   await closePanel(page);
   await expect(page.locator('canvas')).toHaveAttribute('data-identity','audio-preserved');
   await openPanel(page,'settings','ja');

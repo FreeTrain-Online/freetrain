@@ -1,6 +1,6 @@
-import {test, expect, type Page} from '@playwright/test';
-import {ready, openPanel, closePanel, canonicalState as state} from './ux-helpers.ts';
-import {readFileSync} from 'node:fs';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 test.use({actionTimeout:10_000});
@@ -44,7 +44,6 @@ for(const locale of ['en','ja'] as const)test(`all construction tasks: roles, to
    for(const field of await p.locator('.tool-card input:not([type=checkbox]),.tool-card select').all()){await field.scrollIntoViewIfNeeded();await expect(field).toBeInViewport();if(await field.evaluate(el=>el.tagName==='INPUT')){await field.tap();await expect(field).toBeFocused();}else {await field.focus();await expect(field).toBeFocused();}}
    const primary=p.locator('.tool-card button.primary');await primary.scrollIntoViewIfNeeded();await expect(primary).toBeInViewport();await expect(primary).toBeDisabled();
    expect(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-   if(task==='speedTask'){const {mkdirSync}=await import('node:fs');const dir=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!+'/construction';mkdirSync(dir,{recursive:true});await p.screenshot({path:dir+'/'+locale+'-touch-200.png'});}
    await canvas.focus();await p.keyboard.press('Escape');await button(p,text.referenceInspect).click();
    await expect(canvas).toHaveAttribute('data-camera',camera!);
    expect(await canvas.evaluate(el=>(el as any).regressionIdentity)).toBe(true);expect(await canvas.boundingBox()).toEqual(bounds);expect(await canvas.getAttribute('data-camera')).toBe(camera);

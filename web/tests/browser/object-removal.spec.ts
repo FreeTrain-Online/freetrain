@@ -1,7 +1,6 @@
-import {test,expect,type Page} from '@playwright/test';
-import {readFileSync,mkdirSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,canonicalState as state,openPanel,closePanel,previewRemovalLine,confirmRemoval} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { closePanel,confirmRemoval,openPanel,previewRemovalLine,ready,canonicalState as state } from './browser-helpers.ts';
 const mixed=readFileSync('../prototype/protocol/saves/mixed-v8.json');
 const terrain=readFileSync('../prototype/protocol/saves/terrain-v8.json');
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
@@ -74,7 +73,7 @@ test('Japanese narrow two-point removal accepts keyboard coordinates and confirm
   const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:mixed})).ok()).toBe(true);await ready(page,'ja');
   await previewRemovalLine(page,[1,0],[1,2],4,true);await expect(page.locator('canvas')).toHaveAttribute('data-removal-path-cells','3');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const dir=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'remove');mkdirSync(dir,{recursive:true});await page.screenshot({path:join(dir,'remove-line-ja-narrow.png'),fullPage:true});
+
   await page.locator('canvas').focus();await page.keyboard.press('Enter');await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');
   await expect.poll(async()=>(await state(page)).mixed.voxels.length).toBe(1);
  }finally{const s=await state(page);await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:original});await context.close();}
@@ -143,7 +142,7 @@ test('Japanese narrow Remove keeps selection reachable and confirms a forest wit
   const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:terrain})).ok()).toBe(true);await ready(page,'ja');await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
   await revealForest(page,true);await remove(page,true).click();expect(await page.evaluate(()=>scrollX)).toBe(0);await click(page,0,-58);await expect(confirm(page,true)).toBeEnabled();await expect(page.getByTestId('remove-target')).toContainText('森林');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const dir=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'remove');mkdirSync(dir,{recursive:true});await page.screenshot({path:join(dir,'remove-ja-narrow.png'),fullPage:true});
+
   await page.keyboard.press('Enter');await expect(page.locator('.command-feedback')).toContainText('サーバーで確定');await expect(confirm(page,true)).toBeDisabled();expect((await state(page)).terrain.occupants.every((o:any)=>o.forest===null)).toBe(true);
  }finally{const s=await state(page);await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:original});await context.close();}
 });

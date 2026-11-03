@@ -1,6 +1,6 @@
-import { expect, test, type Locator } from '@playwright/test';
 import { appName } from '../../src/lib/app-identity.ts';
-import { openPanel, ready, selectStation } from './ux-helpers.ts';
+import { expect,test,type Locator } from './fixtures.ts';
+import { openPanel,ready,selectStation } from './browser-helpers.ts';
 
 async function soleHighlight(scope: Locator, label: string) {
   const primary = scope.locator('button.primary');

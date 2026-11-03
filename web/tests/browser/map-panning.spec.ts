@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { ready } from './ux-helpers.ts';
+import { at,clickTile,ready } from './browser-helpers.ts';
+import { expect,test } from './fixtures.ts';
 
 test('owner and observer inspect drags survive running world updates', async ({ page, browser }) => {
   await page.goto('/'); await ready(page);
@@ -76,4 +76,25 @@ test('trackpad pans, wheel and keyboard zoom, and tool shortcuts select without 
   await expect(help).toContainText('I — Inspect');
   await expect(help).not.toContainText('Diagnostics');
   await expect(help).not.toContainText('Network');
+});
+
+test('middle and Space pan never pick or target, including Space released before pointer-up', async ({ page }) => {
+  await page.goto('/'); await ready(page);
+  if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Pause', exact: false }).click();
+  const canvas = page.locator('canvas');
+  await page.getByRole('button', { name: 'Build track', exact: true }).click();
+  const p = await at(page, { x: 22, y: 16, z: 0 }); const camera = await canvas.getAttribute('data-camera');
+  await page.mouse.move(p.x, p.y); await page.mouse.down({ button: 'middle' }); await page.mouse.move(p.x + 60, p.y + 20); await page.mouse.up({ button: 'middle' });
+  await expect(canvas).not.toHaveAttribute('data-camera', camera!); await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
+  await canvas.focus(); await page.keyboard.down('Space'); await page.mouse.down(); await page.keyboard.up('Space'); await page.mouse.up();
+  await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
+  await page.keyboard.down('Space'); await page.mouse.down(); await page.mouse.move(p.x + 100, p.y + 50); await page.keyboard.up('Space'); await page.mouse.up();
+  await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
+  await clickTile(page, { x: 37, y: 16, z: 1 });
+  await page.getByLabel('Track shape', { exact: true }).selectOption('eastWest');
+  await expect(page.getByRole('button', { name: 'Confirm track change', exact: true })).toBeDisabled();
+  await clickTile(page, { x: 37, y: 16, z: 1 }); await canvas.focus(); await page.keyboard.press('Escape');
+  await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
+  await expect(page.getByRole('button', { name: 'Build track', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
 });

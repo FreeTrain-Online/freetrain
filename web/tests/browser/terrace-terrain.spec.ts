@@ -1,7 +1,5 @@
-import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
-import {mkdirSync} from 'node:fs';
-import {join} from 'node:path';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1';
 const state=canonicalState;
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
@@ -75,7 +73,7 @@ test('Japanese narrow terrace controls support keyboard confirmation and diagnos
  try{
   await empty(page,'ja');await slope(page,'ja');await terraceTarget(page,'placeTerrace','ja');await expect(confirm(page,'ja')).toBeEnabled();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const path=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrace-terrain');mkdirSync(path,{recursive:true});await page.screenshot({path:join(path,'terrace-ja-narrow.png'),fullPage:true});
+
   await confirm(page,'ja').focus();await page.keyboard.press('Enter');await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(130);
   await terraceTarget(page,'placeCut','ja');await expect(page.getByTestId('corner-status')).toContainText('地表');await expect(confirm(page,'ja')).toBeDisabled();expect((await state(page)).paused).toBe(true);
  }finally{await replace(page,original);await context.close();}
@@ -101,7 +99,7 @@ test('two map corners select terrace batch; Escape and peer edits invalidate rev
   await empty(page);await slope(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrace-batch'));
   const a=await pixel(page,20,20),b=await pixel(page,21,21);await page.mouse.click(a.x,a.y);await expect(confirm(page)).toBeDisabled();await page.mouse.click(b.x,b.y);
   await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');expect(await save(page)).toEqual(before);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrace-batch');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'terrace-batch-en.png'),fullPage:true});
+
   await page.keyboard.press('Escape');await expect(confirm(page)).toBeDisabled();await batchTarget(page);
   await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer);await confirm(peer).click();await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await expect(canvas).toHaveAttribute('data-instance','terrace-batch');
  }finally{await peer.close();await replace(page,original);}

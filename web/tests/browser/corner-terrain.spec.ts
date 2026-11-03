@@ -1,7 +1,6 @@
-import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
-import {mkdirSync,readFileSync} from 'node:fs';
-import {join} from 'node:path';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1';
 const state=canonicalState;
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
@@ -43,6 +42,11 @@ test('corner EN coordinate preview is read-only, confirms exactly once, preserve
 });
 
 test('intersection selection stays fixed while held buttons raise and lower all four touching tiles; release and Escape stop',async({page})=>{
+ const pending=new Set<string>();
+ page.on('websocket',socket=>{
+  socket.on('framesent',frame=>{const message=JSON.parse(String(frame.payload));if(message.type==='command'&&message.payload?.kind==='editCorner')pending.add(message.requestId);});
+  socket.on('framereceived',frame=>{const message=JSON.parse(String(frame.payload));if(message.type==='accepted'||message.type==='rejected')pending.delete(message.requestId);});
+ });
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  try{
   await empty(page);await page.getByRole('button',{name:'Modify terrain',exact:true}).click();
@@ -59,14 +63,17 @@ test('intersection selection stays fixed while held buttons raise and lower all 
   await raise.hover();await page.mouse.down();
   await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThanOrEqual(2);
   await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  // A commit sent before release may finish after the hold becomes inactive.
+  await expect.poll(()=>pending.size).toBe(0);
   const raised=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(raised.terrain.geometryRevision);
   expect(raised.terrain.occupants).toHaveLength(4);
   expect(raised.terrain.occupants.every((o:any)=>o.ne+o.se+o.sw+o.nw>=2)).toBe(true);
   await expect(page.locator('canvas')).toHaveAttribute('data-terrain-corner','20,20');
-  await page.screenshot({path:test.info().outputPath('intersection-marker.png')});
+
   await lower.focus();await page.keyboard.down(' ');
   await expect.poll(async()=>Number((await state(page)).terrain.geometryRevision)).toBeGreaterThan(Number(raised.terrain.geometryRevision));
   await page.keyboard.up(' ');await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
+  await expect.poll(()=>pending.size).toBe(0);
   const stopped=await state(page);await page.waitForTimeout(350);expect((await state(page)).terrain.geometryRevision).toBe(stopped.terrain.geometryRevision);
   await raise.hover();await page.mouse.down();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','true');
   await page.keyboard.press('Escape');await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
@@ -104,14 +111,14 @@ test('Japanese narrow terrain controls work by keyboard, scroll internally, and 
   await empty(page,'ja');await openPanel(page,'help','ja');await closePanel(page);
   await page.getByRole('button',{name:'地形操作',exact:true}).focus();await page.keyboard.press('Enter');await target(page,'ja');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const path=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'corner-terrain');mkdirSync(path,{recursive:true});await page.screenshot({path:join(path,'corner-ja-narrow.png'),fullPage:true});
+
   await page.getByRole('button',{name:'地形の変更を確定',exact:true}).focus();await page.keyboard.press('Enter');
   await expect.poll(async()=>JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString()).packedTerrain.occupantCount).toBe(4);
   expect((await state(page)).paused).toBe(true);
  }finally{await replace(page,original);await context.close();}
 });
 
-test('large terrain edits redraw locally and match a full render with overlapping forests and removed art',async({page})=>{
+test('large terrain edits redraw locally and match a full render with overlapping forests and removed art',{tag:'@performance'},async({page})=>{
  test.setTimeout(120_000);await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body(),errors:string[]=[];
  page.on('pageerror',e=>errors.push(String(e)));
  try{

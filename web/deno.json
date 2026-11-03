@@ -21,13 +21,18 @@
     "generate:contracts": "deno run -A scripts/generate-contracts.mjs",
     "check:generated": "deno run -A scripts/generate-contracts.mjs --check",
     "check": "deno task check:generated && deno task check:content && deno task check:locales && deno run -A npm:svelte-check@4.7.7 --tsconfig ./tsconfig.json",
-    "test": "deno test -A --no-check tests/contracts.test.mjs tests/content.test.ts tests/content-recipes.test.ts tests/optional-content.test.ts tests/shell-model.test.ts tests/remote-client.test.ts tests/map.test.ts tests/spatial.test.ts tests/audio.test.ts tests/save-transfer.test.ts tests/ui-preferences.test.ts tests/localization.test.ts tests/terrain.test.ts tests/terrain-painter.test.ts tests/terrain-renderer.test.ts tests/railway-renderer.test.ts tests/railway-edit.test.ts tests/object-removal.test.ts tests/state-transfer.test.ts tests/mixed-state.test.ts tests/world-preview.test.ts",
+    "test": "deno test -A --no-check --parallel tests/contracts.test.mjs tests/content.test.ts tests/content-recipes.test.ts tests/optional-content.test.ts tests/shell-model.test.ts tests/remote-client.test.ts tests/map.test.ts tests/spatial.test.ts tests/audio.test.ts tests/save-transfer.test.ts tests/ui-preferences.test.ts tests/localization.test.ts tests/terrain.test.ts tests/terrain-painter.test.ts tests/terrain-renderer.test.ts tests/railway-renderer.test.ts tests/railway-edit.test.ts tests/object-removal.test.ts tests/state-transfer.test.ts tests/mixed-state.test.ts tests/world-preview.test.ts",
     "install:browser": "deno run -A npm:@playwright/test@1.64.1 install chromium",
-    "test:browser": "deno task build && deno run -A npm:@playwright/test@1.64.1 test",
+    "test:browser": "deno task build && deno task test:browser:run",
     "profile": "deno task build && deno run -A npm:vite@8.3.4 build --config vite.profile.config.ts && deno run -A scripts/profile-web.ts",
     "test:deployment": "deno run -A scripts/check-deployment.ts",
     "import:content": "deno run --allow-run=python3 scripts/import-content.ts",
     "check:content": "deno run --allow-run=python3 scripts/import-content.ts --check",
-    "check:locales": "deno run --allow-read scripts/check-locales.ts"
+    "check:locales": "deno run --allow-read scripts/check-locales.ts",
+    "test:browser:run": "deno run -A npm:@playwright/test@1.64.1 test",
+    "test:browser:extended": "deno task build && deno task test:browser:run --config playwright.extended.config.ts",
+    "test:browser:performance": "deno task build && deno task test:browser:run --config playwright.performance.config.ts",
+    "test:browser:continuation": "deno task build && deno run -A scripts/test-mixed-continuation.ts",
+    "test:browser:all": "deno task test:browser:extended && deno run -A scripts/test-mixed-continuation.ts"
   }
 }

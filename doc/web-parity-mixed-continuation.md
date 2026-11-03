@@ -79,7 +79,17 @@ These identify this run, rather than introducing a new permanent pack pin.
   Captures in `tmp/browser-evidence-hiLVMR/mixed-continuation/` were visually
   inspected. Reconnect proxy-reset messages did not cause page errors.
 
-Generate the optional browser scenario artifact from the repository root:
+Run the required mixed-network browser acceptance lane after a Release .NET build:
+
+```sh
+deno task --cwd web test:browser:continuation
+```
+
+This generates a temporary gameplay-built network through `MixedContinuationTests`
+and requires both browser cases. Missing or failed fixture generation fails the
+lane. Comprehensive validation (`test:browser:all`) includes this lane.
+
+To generate a retained scenario artifact manually from the repository root:
 
 ```sh
 FREETRAIN_MIXED_NETWORK_OUTPUT="$PWD/tmp/p4-21-network.json" \
@@ -87,11 +97,11 @@ FREETRAIN_MIXED_NETWORK_OUTPUT="$PWD/tmp/p4-21-network.json" \
   -m:1 -p:UseSharedCompilation=false --filter FullyQualifiedName~MixedContinuationTests
 ```
 
-Then run `mixed-continuation.spec.ts` in the canonical Playwright project with
-the same absolute `FREETRAIN_MIXED_NETWORK_OUTPUT` value. Without that variable,
-these two browser cases explicitly skip; ordinary backend regression always
-builds and tests the scenario. The generated save is an execution artifact, not
-a committed expected-output oracle.
+Then use `playwright.continuation.config.ts` with the same absolute
+`FREETRAIN_MIXED_NETWORK_OUTPUT` value. The default browser configuration excludes
+these cases; the dedicated configuration fails if its required fixture is absent.
+Ordinary backend regression also builds and tests the scenario. The generated save
+is an execution artifact, not a committed expected-output oracle.
 
 The owner-requested network was uploaded to the running local game, saved via
 the **slot2 HTTP endpoint**, and compared byte-for-byte with the live download

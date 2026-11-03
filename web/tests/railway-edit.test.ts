@@ -46,21 +46,6 @@ Deno.test('automatic keyboard level uses actual ground, higher existing rail and
  assert.equal(JSON.stringify(read),before);
 });
 
-Deno.test('late railway preview cannot survive an edit, profile change, aborted request or connection replacement',async()=>{
- for(const change of ['geometry','profile','abort','connection']){
-  const service=createFixtureService();service.publish(terrain);let complete!:(p:RailwayPreview)=>void;
-  const model=createShellModel(()=>({...service.connect(),previewRailway:()=>new Promise<RailwayPreview>(resolve=>complete=resolve)}),'en',1);
-  try{
-   await until(()=>model.state.connection==='ready');const request=new AbortController();const result=model.previewRailway(q,request.signal);const rejected=assert.rejects(result);
-   if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
-   if(change==='profile')service.publish({...terrain,...railwayProfile} as unknown as Snapshot);
-   if(change==='abort')request.abort();
-   if(change==='connection')model.reconnect();
-   complete(preview);await rejected;
-  }finally{model.dispose();}
- }
-});
-
 Deno.test('slope preview rejects malformed occupancy, illegal money and unsupported command directions',async()=>{
  const {parseSlopePreview}=await import('../src/lib/protocol.ts');
  const {slopeQueryKey}=await import('../src/lib/railway-edit.ts');
@@ -201,7 +186,7 @@ Deno.test('speed-limit preview identity includes typed speed, shape and directio
 
 Deno.test('every delivered route/accessory preview fences epoch, geometry, content, cancellation and reconnect independently of locale',async()=>{
  for(const infrastructure of ['normal','bridge','girder','tunnel','garage','signal','pole','stationary','speed'] as const){
-  for(const change of ['epoch','geometry','content','abort','connection','dispose','locale']){
+  for(const change of ['epoch','geometry','profile','content','abort','connection','dispose','locale']){
    const service=createFixtureService();service.publish(terrain);let complete!:(p:RailwayPreview)=>void;
    const model=createShellModel(()=>({...service.connect(),previewRailway:()=>new Promise<RailwayPreview>(r=>complete=r)}),'en',1);
    try{
@@ -209,6 +194,7 @@ Deno.test('every delivered route/accessory preview fences epoch, geometry, conte
     const result=model.previewRailway(query,abort.signal),rejected=change==='locale'?undefined:assert.rejects(result);
     if(change==='epoch')service.publish({...terrain,worldEpoch:'999'});
     if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
+    if(change==='profile')service.publish({...terrain,...railwayProfile} as unknown as Snapshot);
     if(change==='content')service.publish({...terrain,contentVersion:'changed-content'} as unknown as Snapshot);
     if(change==='abort')abort.abort();
     if(change==='connection')model.reconnect();

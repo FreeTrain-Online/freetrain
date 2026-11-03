@@ -1,9 +1,7 @@
-import {test,expect,type Page,type Browser} from '@playwright/test';
-import {mkdirSync} from 'node:fs';
-import {join} from 'node:path';
-import {createHash} from 'node:crypto';
-import type {StateChunk} from '../../src/generated/contracts.ts';
-import {ready,openPanel,closePanel,canonicalState as state,previewRemovalLine,confirmRemoval} from './ux-helpers.ts';
+import { createHash } from 'node:crypto';
+import type { StateChunk } from '../../src/generated/contracts.ts';
+import { expect,test,type Browser,type Page } from './fixtures.ts';
+import { closePanel,confirmRemoval,openPanel,previewRemovalLine,ready,canonicalState as state } from './browser-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 async function save(page:Page){return (await page.request.get('/api/saves/download')).body();}
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
@@ -22,7 +20,6 @@ async function click(page:Page,x:number,y:number,z=1){
  const p=await page.locator('canvas').evaluate((el,a)=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);return {x:r.x+r.width/2+(16*(a.x+a.y-20)+16-cx)*zoom,y:r.y+r.height/2+(8*(-a.x+a.y+20)-16*a.z+8-cy)*zoom};},{x,y,z});
  await page.mouse.click(p.x,p.y);
 }
-const output=(name:string)=>{const d=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'track');mkdirSync(d,{recursive:true});return join(d,name);};
 
 for (const focus of ['map', 'preview button', 'preview form']) {
  test(`Return confirms track changes from the ${focus} without replaying the command`, async ({page}) => {
@@ -136,7 +133,7 @@ test('two map points preview/cancel/build, attach, branch and remove in two peer
   let bootstrap=0;page.on('request',r=>{if(r.url().includes('/api/bootstrap'))bootstrap++;});
   await page.getByRole('button',{name:'Track',exact:true}).click();await click(page,30,27);await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
   await click(page,34,27);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('30,000,000');
-  expect(await save(page)).toEqual(bytes);await page.screenshot({path:output('track-en-preview.png'),fullPage:true});
+  expect(await save(page)).toEqual(bytes);
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);
   const built=await state(page);expect(built.mixed.voxels).toHaveLength(5);expect(await state(peer)).toEqual(built);expect(built.tick).toBe(before.tick);expect(built.worldEpoch).toBe(before.worldEpoch);expect(built.terrain).toEqual(before.terrain);
@@ -174,7 +171,7 @@ test('automatic map picking builds visible surface track above level one and reu
   await closePanel(page);await page.getByRole('button',{name:'Track',exact:true}).click();
   // The next A sits on elevated rail above ground 2, so its rail level wins.
   await click(page,34,27,4);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await click(page,36,27,4);await expect(page.getByTestId('rail-status')).toContainText('route is legal');
-  await page.screenshot({path:output('track-auto-level.png'),fullPage:true});
+
  }finally{await replace(page,original);}
 });
 
@@ -225,7 +222,7 @@ test('elevated and buried normal routes build, preview exact support losses, sav
   const authored=JSON.parse((await save(page)).toString()),cells=Buffer.from(authored.packedTerrain.cells,'base64');cells[17*30+18]=0x43;
   authored.packedTerrain.cells=cells.toString('base64');authored.packedTerrain.geometryRevision='1';authored.revision='1';await replace(page,Buffer.from(JSON.stringify(authored)));await ready(page);
   await page.getByRole('button',{name:'Track',exact:true}).click();await target(page,[30,27],[32,27],3);await expect(page.getByTestId('rail-cost')).toContainText('42,000,000');await expect(page.getByTestId('rail-cost')).toContainText('New piers: 4');await confirm(page);
-  const elevated=await save(page);await replace(page,elevated);await ready(page);await previewRemovalLine(page,[30,27],[32,27],3);await expect(page.locator('.remove-task .rail-losses li')).toHaveCount(7);await page.screenshot({path:output('track-elevated-removal.png'),fullPage:true});await confirmRemoval(page);
+  const elevated=await save(page);await replace(page,elevated);await ready(page);await previewRemovalLine(page,[30,27],[32,27],3);await expect(page.locator('.remove-task .rail-losses li')).toHaveCount(7);await confirmRemoval(page);
   await page.getByRole('button',{name:'Track',exact:true}).click();await target(page,[30,29],[32,29],0);await expect(page.getByTestId('rail-cost')).toContainText('36,000,000');await confirm(page);
   const buried=await save(page);await replace(page,buried);await ready(page);await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('0');await closePanel(page);await expect(page.locator('canvas')).toHaveAttribute('data-terrain-cut','0');
   await previewRemovalLine(page,[30,29],[32,29],0);await confirmRemoval(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
@@ -238,7 +235,7 @@ test('Japanese narrow DPR2 keyboard controls keep the canvas and shared clock, c
   await empty(page,'ja');const before=await state(page);await page.getByRole('button',{name:'線路',exact:true}).focus();await page.keyboard.press('Enter');await page.locator('canvas').evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
   const camera=await page.locator('canvas').getAttribute('data-camera');await page.getByRole('button',{name:'線路',exact:true}).click();await page.getByRole('button',{name:'線路',exact:true}).click();await expect(page.locator('canvas')).toHaveAttribute('data-camera',camera!);
   await target(page,[30,27],[34,27],1,true);await page.getByLabel('始点の高さを自動検出',{exact:true}).check();await page.getByRole('button',{name:'経路をプレビュー',exact:true}).click();await expect(page.getByTestId('rail-level-state')).toContainText('検出した高さ: 1');await expect(page.getByTestId('rail-cost')).toBeInViewport();
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:output('track-ja-narrow.png'),fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'線路の変更を確定',exact:true})).toBeDisabled();
   await target(page,[30,27],[34,27],1,true);await confirm(page,true);expect((await state(page)).tick).toBe(before.tick);
   const bytes=await save(page);await page.reload();await ready(page,'ja');expect(await save(page)).toEqual(bytes);await openPanel(page,'help','ja');await expect(page.locator('.primary-panel')).toContainText('遠回りの探索は行いません');

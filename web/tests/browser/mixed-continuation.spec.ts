@@ -1,10 +1,10 @@
-import {test,expect} from '@playwright/test';
-import {readFileSync,mkdirSync,mkdtempSync,writeFileSync,truncateSync,rmSync} from 'node:fs';
-import {join} from 'node:path';
-import {tmpdir} from 'node:os';
-import {ready,canonicalState,openPanel,closePanel} from './ux-helpers.ts';
+import { mkdtempSync,readFileSync,rmSync,truncateSync,writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { expect,test } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const fixture=process.env.FREETRAIN_MIXED_NETWORK_OUTPUT;
-test.skip(!fixture,'Generate the gameplay network with MixedContinuationTests and FREETRAIN_MIXED_NETWORK_OUTPUT first.');
+if(!fixture)throw new Error('Use deno task test:browser:continuation to generate the required gameplay fixture.');
 for(const locale of ['en','ja'] as const)test(`complete P4 network slot 2, replacement, reconnect and recovery ${locale}`,async({page,browser})=>{
  test.setTimeout(120_000);await page.goto('/');await ready(page);
  const original=await(await page.request.get('/api/saves/download')).body(),network=readFileSync(fixture!);
@@ -44,7 +44,6 @@ for(const locale of ['en','ja'] as const)test(`complete P4 network slot 2, repla
   const recoveryEpoch=(await canonicalState(page)).worldEpoch;
   await page.getByRole('button',{name:text.confirmLoad,exact:true}).click();await expect.poll(async()=>(await canonicalState(page)).worldEpoch).not.toBe(recoveryEpoch);await ready(page,locale);await openPanel(page,'saves',locale);
   expect(await saved()).toEqual(network);expect(errors).toEqual([]);
-  const dir=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'mixed-continuation');mkdirSync(dir,{recursive:true});
-  await page.screenshot({path:join(dir,locale+'.png'),fullPage:true});
+
  }finally{await peer.close();await replace(original);}
 });

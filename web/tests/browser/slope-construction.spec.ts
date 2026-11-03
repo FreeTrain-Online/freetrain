@@ -1,9 +1,8 @@
-import {test,expect,type Page,type Browser} from '@playwright/test';
-import {mkdirSync,readFileSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,openPanel,closePanel,canonicalState as state} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Browser,type Page } from './fixtures.ts';
+import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
-const out=(name:string)=>{const d=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'slope');mkdirSync(d,{recursive:true});return join(d,name);};
+
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
 async function replace(p:Page,bytes:Buffer){const s=await state(p);expect((await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(p);}
 async function empty(p:Page,ja=false){
@@ -80,7 +79,7 @@ test('map slope preview/cancel and flat-to-slope-to-elevated network synchronize
   const slopeButton=page.getByRole('button',{name:'Slope',exact:true});await expect(slopeButton).toHaveAttribute('aria-pressed','true');await expect(slopeButton).toHaveAttribute('aria-keyshortcuts','S');
   await page.keyboard.press('s');await expect(slopeButton).toHaveAttribute('aria-pressed','true');await click(page,30,27,1);
   await expect(page.getByTestId('slope-status')).toContainText('route is legal');await expect(canvas).toHaveAttribute('data-slope-ghost-cells','8');await expect(page.getByTestId('slope-cost')).toContainText('40,000,000');
-  expect(await save(page)).toEqual(bytes);await page.screenshot({path:out('slope-en-eight-cell-preview.png'),fullPage:true});
+  expect(await save(page)).toEqual(bytes);
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');
   await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toBeEnabled();await expect(page.getByRole('button',{name:'Modify terrain',exact:true})).toHaveAttribute('title','Modify terrain (G)');
@@ -90,7 +89,7 @@ test('map slope preview/cancel and flat-to-slope-to-elevated network synchronize
   built=await state(page);const captured=await save(page);expect(built.mixed.accounts.transactions).toHaveLength(3);expect(built.mixed.voxels.filter((v:any)=>v.kind==='slopefiller')).toHaveLength(2);
   await expect(canvas).toHaveAttribute('data-instance','slope-canvas');await expect(canvas).toHaveAttribute('data-camera',camera!);
   await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect(canvas).toHaveAttribute('data-slope-ghost-cells','0');await expect(canvas).toHaveAttribute('data-assets','ready');
-  await page.screenshot({path:out('slope-en-connected-network.png'),fullPage:true});
+
   const counts=await sourcePixels(page,built.mixed.voxels.filter((v:any)=>v.traffic?.rail?.pattern>=28));expect(counts.filter(n=>n>8),JSON.stringify(counts)).toHaveLength(2);expect(counts.filter(n=>n===0),JSON.stringify(counts)).toHaveLength(2);
   await replace(page,captured);await expect.poll(()=>save(page)).toEqual(captured);expect(await state(peer)).toEqual(await state(page));
   await page.reload();await ready(page);expect(await save(page)).toEqual(captured);
@@ -116,9 +115,9 @@ test('all cardinal ramps show exact surface, underground and cut paired art with
    if(ground===3)await cut(page,2);
    await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
    const counts=await sourcePixels(page,members.filter((v:any)=>v.traffic?.rail));expect(counts.filter(n=>n>8),JSON.stringify(counts)).toHaveLength(2);expect(counts.filter(n=>n===0),JSON.stringify(counts)).toHaveLength(2);
-   await page.screenshot({path:out(`slope-${ground===1?'surface':'underground'}-${d}-cut2.png`),fullPage:true});
+
    const captured=await save(page);await replace(page,captured);expect(await save(page)).toEqual(captured);
-   await cut(page,1);await page.screenshot({path:out(`slope-paired-${ground}-${d}-cut1.png`),fullPage:true});
+   await cut(page,1);
    await page.getByRole('button',{name:'Slope',exact:true}).click();await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,30,27,1,d);await expect(page.getByTestId('slope-status')).toContainText('route is legal');await confirm(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
   }
  }finally{await replace(page,original);}
@@ -128,7 +127,7 @@ test('elevated slope loss preview, mixed column art and invalid drafts preserve 
  await page.goto('/');await ready(page);const original=await save(page);
  try{
   await empty(page);await page.getByRole('button',{name:'Slope',exact:true}).click();await target(page,30,27,3,4);await expect(page.getByTestId('slope-cost')).toContainText('120,000,000');await expect(page.getByTestId('slope-cost')).toContainText('New piers: 8');await confirm(page);
-  const bytes=await save(page);await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,30,29,4,4);await expect(page.getByTestId('slope-cost')).toContainText('32,000,000');await expect(page.getByTestId('slope-losses').locator('li')).toHaveCount(8);await page.screenshot({path:out('slope-elevated-pier-losses.png'),fullPage:true});
+  const bytes=await save(page);await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,30,29,4,4);await expect(page.getByTestId('slope-cost')).toContainText('32,000,000');await expect(page.getByTestId('slope-losses').locator('li')).toHaveCount(8);
   await page.getByLabel('Uphill direction',{exact:true}).selectOption('2');await page.getByRole('button',{name:'Preview slope',exact:true}).click();await expect(page.getByTestId('slope-status')).toContainText('must match');expect(await save(page)).toEqual(bytes);
   await target(page,30,29,4,4);await confirm(page);expect((await state(page)).mixed.voxels).toHaveLength(0);
   await page.getByLabel('Track action',{exact:true}).selectOption('lay');await target(page,30,27,5,2);await expect(page.getByTestId('slope-status')).toContainText('outside');await expect(page.locator('canvas')).toHaveAttribute('data-slope-ghost-cells','8');await expect(page.getByRole('button',{name:'Confirm slope change',exact:true})).toBeDisabled();
@@ -138,7 +137,7 @@ test('elevated slope loss preview, mixed column art and invalid drafts preserve 
   authored.packedTerrain.cells=cells.toString('base64');authored.packedTerrain.geometryRevision='1';authored.revision='1';await replace(page,Buffer.from(JSON.stringify(authored)));
   await page.getByRole('button',{name:'Slope',exact:true}).click();await target(page);await confirm(page);const mixed=await state(page);
   expect(mixed.mixed.voxels.filter((v:any)=>v.traffic?.rail).sort((a:any,b:any)=>a.position.x-b.position.x).map((v:any)=>v.traffic.rail.pattern)).toEqual([32,49,34,51]);
-  const built=await save(page);await target(page);await expect(page.getByTestId('slope-status')).toContainText('blocks this route');expect(await save(page)).toEqual(built);await cut(page,1);await page.screenshot({path:out('slope-mixed-art-holes-cut1.png'),fullPage:true});
+  const built=await save(page);await target(page);await expect(page.getByTestId('slope-status')).toContainText('blocks this route');expect(await save(page)).toEqual(built);await cut(page,1);
  }finally{await replace(page,original);}
 });
 
@@ -158,7 +157,7 @@ test('Japanese narrow DPR2 slope task supports keyboard, map removal, Escape and
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,locale:'ja-JP',hasTouch:true}),page=await context.newPage();await page.goto('/');await ready(page,'ja');const original=await save(page);
  try{
   await empty(page,true);await page.locator('canvas').focus();await page.keyboard.press('s');await expect(page.getByRole('button',{name:'勾配線路',exact:true})).toHaveAttribute('aria-pressed','true');await target(page,30,27,1,6,true);await expect(page.getByTestId('slope-status')).toContainText('施工可能');
-  await expect(page.getByTestId('slope-cost')).toBeInViewport();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:out('slope-ja-narrow-dpr2.png'),fullPage:true});
+  await expect(page.getByTestId('slope-cost')).toBeInViewport();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'勾配の変更を確定',exact:true})).toBeDisabled();
   await target(page,30,27,1,6,true);await confirm(page,true);const bytes=await save(page);await page.reload();await ready(page,'ja');expect(await save(page)).toEqual(bytes);
   await page.getByRole('button',{name:'勾配線路',exact:true}).click();await page.getByLabel('線路の操作',{exact:true}).selectOption('remove');await click(page,30,27,2);await expect(page.getByTestId('slope-base')).toContainText('30, 27, 1');await confirm(page,true);expect((await state(page)).mixed.voxels).toHaveLength(0);

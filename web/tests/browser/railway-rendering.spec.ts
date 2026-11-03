@@ -1,7 +1,6 @@
-import {test,expect,type Page} from '@playwright/test';
-import {readFileSync,mkdirSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const save=readFileSync('../prototype/protocol/saves/mixed-v8.json');
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 async function replace(page:Page,data:Buffer) {const before=await canonicalState(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data})).ok()).toBe(true);}
@@ -9,7 +8,6 @@ async function point(page:Page,x:number,y:number) {return page.locator('canvas')
  const canvas=el as HTMLCanvasElement,r=canvas.getBoundingClientRect(),[cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom);
  return {x:r.x+r.width/2+(p.x-cx)*zoom,y:r.y+r.height/2+(p.y-cy)*zoom};
 },{x,y});}
-const output=(name:string)=>{const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'railway');mkdirSync(directory,{recursive:true});return join(directory,name);};
 
 test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exactly and reopens in two peers with one canvas',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
@@ -32,7 +30,7 @@ test('mixed railway art matches prepared pixels, picks rail/pier IDs, cuts exact
    return {expected,actual:[...canvas.getContext('2d')!.getImageData(Math.floor(x),Math.floor(y),1,1).data]};
   },{set:catalog.surfaceSets[f.surfaceSet],rectangle:f.rectangle});expect(pixels.actual).toEqual(pixels.expected);
   await closePanel(page);const pier=await point(page,16.5,-40.5);await page.mouse.click(pier.x,pier.y);await expect(page.getByTestId('selected-object')).toHaveText('Railway · 8 · 1, 0, 3');await expect(page.getByTestId('railway-component')).toHaveText('Railroad pier');
-  await page.screenshot({path:output('rail-pier-en.png'),fullPage:true});
+
   await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('3');await expect(canvas).toHaveAttribute('data-terrain-cut','3');await expect(canvas).toHaveAttribute('data-presentation','ready');await closePanel(page);
   const cut=await point(page,16.5,-55.5);await page.mouse.click(cut.x,cut.y);await expect(page.getByTestId('selected-object')).toContainText('Railway · 8');
   await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('5');await expect(canvas).toHaveAttribute('data-terrain-cut','5');
@@ -54,7 +52,7 @@ test('Japanese DPR2 railway inspector stays localized and failed railway media b
  try {
   await replace(page,save);await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(page,'ja');
   const p=await point(page,16.5,-55.5);await page.mouse.click(p.x,p.y);await expect(page.getByTestId('selected-object')).toHaveText('鉄道 · 7 · 1, 0, 4');
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:output('rail-ja-dpr2.png'),fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const frame=catalog.renderRecipes.find((r:any)=>r.id==='system:pattern/1').frames[0],url=catalog.surfaceSets[frame.surfaceSet]['spring/day'].image.url;
   await page.route('**'+url,route=>route.abort());await page.reload();await expect(page.locator('.command-bar')).toHaveCount(0);await expect(page.locator('canvas')).not.toHaveAttribute('data-assets','ready');
  }finally {await replace(page,original);await context.close();}

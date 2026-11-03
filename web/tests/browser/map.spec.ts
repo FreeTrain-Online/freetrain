@@ -1,5 +1,7 @@
-import { expect, test, type Page } from '@playwright/test';
-import { ready, bootstrap, at, clickTile, clickSprite, closePanel, openPanel, selectTrain, selectStation } from './ux-helpers.ts';
+import { writeFile } from 'node:fs/promises';
+import { at,bootstrap,clickSprite,clickTile,closePanel,evidenceDirectory,openPanel,ready,selectStation,selectTrain,worldReplacementFixture } from './browser-helpers.ts';
+import { settled } from './layout-helpers.ts';
+import { expect,test } from './fixtures.ts';
 
 test('map clock shortcuts toggle on Space press and step on N without disrupting panning or text',async({page})=>{
   const commands:string[]=[];
@@ -68,15 +70,15 @@ test('source sprites pick real buildings and station; camera, cut and display ef
   await expect(canvas).toHaveAttribute('data-camera',pannedCamera!);
   await openPanel(page, 'view');
   await page.getByLabel('Night',{exact:true}).check();
-  await page.screenshot({path:'test-results/map-night.png',fullPage:true});
+
   await page.getByLabel('Night',{exact:true}).uncheck();await page.getByLabel('Recolor',{exact:true}).check();await page.getByLabel('Winter ground',{exact:true}).check();
-  await page.screenshot({path:'test-results/map-winter-recolor.png',fullPage:true});
+
   await page.getByLabel('Height cut',{exact:true}).focus();await page.keyboard.press('Home');await expect(page.getByLabel('Height cut',{exact:true})).toHaveValue('0');
   await closePanel(page);await clickTile(page,{x:34,y:22,z:0});await expect(page.getByTestId('selected-object')).toContainText('building-2');
-  await page.screenshot({path:'test-results/map-height-cut.png',fullPage:true});
+
   await openPanel(page, 'view');
   await page.getByLabel('Height cut',{exact:true}).focus();await page.keyboard.press('End');await page.getByLabel('Winter ground',{exact:true}).uncheck();await page.getByLabel('Recolor',{exact:true}).uncheck();
-  await page.screenshot({path:'test-results/map-en.png',fullPage:true});
+
   const after=await bootstrap(page);expect(after.cash).toBe(before.cash);expect(after.tracks).toEqual(before.tracks);expect(after.tick).toBe(before.tick);
   expect(Number(await canvas.getAttribute('data-culled'))).toBeGreaterThan(0);expect(errors).toEqual([]);
 });
@@ -166,7 +168,7 @@ test('Japanese playable map fits narrow doubled-density displays with scaled pic
   const dimensions=await page.locator('canvas').evaluate(el=>({pixels:(el as HTMLCanvasElement).width,css:el.getBoundingClientRect().width}));expect(dimensions.pixels).toBe(Math.round(dimensions.css*2));
   await clickSprite(page,{x:16,y:16,z:0},'pier');await expect(page.getByTestId('selected-object')).toContainText('building-1');
   for(const width of [720,640,360]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
-  await page.screenshot({path:'test-results/map-ja-narrow-2x.png',fullPage:true});await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'test-results/map-ja.png',fullPage:true});await context.close();
+  await page.setViewportSize({width:1280,height:900});await context.close();
 });
 
 test('real automatic reference loop reaches station, dwells, departs and returns through the junction',async({page})=>{
@@ -188,4 +190,43 @@ test('real automatic reference loop reaches station, dwells, departs and returns
   expect([...positions].some(p=>p.startsWith('28,'))).toBe(true);expect([...positions].some(p=>p.endsWith(',24'))).toBe(true);
   const snapshot=await bootstrap(page);const tracks=new Set(snapshot.tracks.map((t:any)=>`${t.position.x},${t.position.y},${t.position.z}`));
   for(const p of snapshot.trains[0].carPositions)expect(tracks.has(`${p.x},${p.y},${p.z}`)).toBe(true);
+});
+
+test('epoch snapshot fixture discards old geometry and restores initial framing', async ({ page }) => {
+  const replaceWorld=await worldReplacementFixture(page);
+  await page.goto('/'); await ready(page);
+  await page.locator('canvas').evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const homeZoom = await page.locator('canvas').evaluate(el => Math.min(1.5, Math.max(.5, el.getBoundingClientRect().width / 850)).toFixed(3));
+  const homeCamera = await page.locator('canvas').getAttribute('data-camera');
+  await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await page.getByRole('button', { name: 'Build track', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
+  await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
+  const next=await replaceWorld();
+  await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',next.worldEpoch);
+  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.tool-card')).toHaveCount(0); await expect(page.locator('canvas')).toHaveAttribute('data-zoom', homeZoom!);
+  await expect(page.locator('canvas')).toHaveAttribute('data-camera', homeCamera!);
+});
+
+test('DPR, resize, pan and zoom preserve backing size, camera and sprite picking', async ({ browser }) => {
+  const evidence = await evidenceDirectory('map');
+  const results: unknown[] = [];
+  for (const dpr of [1,2]) {
+    const context = await browser.newContext({ deviceScaleFactor:dpr, viewport:{width:1280,height:720} });
+    try {
+      const page = await context.newPage(); await page.goto('/'); await ready(page);
+      const canvas = page.locator('canvas');
+      await page.getByRole('button',{name:'Zoom in',exact:true}).click(); await settled(page);
+      const box = (await canvas.boundingBox())!; await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+      await page.mouse.down(); await page.mouse.move(box.x+box.width/2+35,box.y+box.height/2+20); await page.mouse.up(); await settled(page);
+      const camera = await canvas.getAttribute('data-camera'), zoom = await canvas.getAttribute('data-zoom');
+      await page.setViewportSize({width:1024,height:768}); await settled(page);
+      await expect(canvas).toHaveAttribute('data-camera',camera!); await expect(canvas).toHaveAttribute('data-zoom',zoom!);
+      const dimensions = await canvas.evaluate(el => {const c=el as HTMLCanvasElement,r=c.getBoundingClientRect();return {w:c.width,h:c.height,cssW:r.width,cssH:r.height,dpr:devicePixelRatio};});
+      expect(dimensions.w).toBe(Math.round(dimensions.cssW*dpr)); expect(dimensions.h).toBe(Math.round(dimensions.cssH*dpr));
+      await clickSprite(page,{x:16,y:16,z:0},'pier'); await expect(page.getByTestId('selected-object')).toContainText('building-1');
+      results.push(dimensions);
+    } finally { await context.close(); }
+  }
+  await writeFile(`${evidence}/dpr.json`,JSON.stringify(results,null,2));
 });

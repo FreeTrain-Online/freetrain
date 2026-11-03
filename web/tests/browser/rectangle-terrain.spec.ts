@@ -1,7 +1,5 @@
-import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
-import {mkdirSync} from 'node:fs';
-import {join} from 'node:path';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const compat='protocolVersion=6&contentVersion=terrain-content-1';
 const state=canonicalState;
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
@@ -93,7 +91,7 @@ test('Japanese narrow keyboard rectangle excavation, bounded errors and repair c
   await empty(page,'ja');await tool(page,'ja');await target(page,'ja','lower');await expect(page.getByTestId('rectangle-status')).toContainText('変更できます');
   await expect(page.locator('.corner-changes li')).toHaveCount(4);expect((await state(page)).paused).toBe(true);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const path=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'rectangle-terrain');mkdirSync(path,{recursive:true});await page.screenshot({path:join(path,'rectangle-ja-narrow.png'),fullPage:true});
+
   await confirm(page,'ja').focus();await page.keyboard.press('Enter');await expect.poll(async()=>JSON.parse((await save(page)).toString()).packedTerrain.occupantCount).toBe(4);
   await target(page,'ja','repair',[20,20,1],[20,20]);await expect(page.getByTestId('rectangle-status')).toContainText('変更はありません');
   await target(page,'ja','raise',[20,20,1],[30,30]);await expect(page.getByTestId('rectangle-status')).toContainText('最大64セル');await expect(confirm(page,'ja')).toBeDisabled();expect(errors).toEqual([]);

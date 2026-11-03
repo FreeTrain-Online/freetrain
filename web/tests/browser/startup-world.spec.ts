@@ -1,5 +1,5 @@
-import {expect,test} from '@playwright/test';
-import {ready} from './ux-helpers.ts';
+import { expect,test } from './fixtures.ts';
+import { ready } from './browser-helpers.ts';
 
 test('fresh service renders generated hills and trees and reopens the saved terrain',async({page})=>{
   const errors:string[]=[];page.on('pageerror',error=>errors.push(String(error)));

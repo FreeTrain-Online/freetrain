@@ -1,3 +1,5 @@
+import { mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
@@ -81,4 +83,11 @@ export async function selectStation(page: Page) {
   await closePanel(page);
   const station = (await bootstrap(page)).stations[0], q = await at(page, station.position, { x: 0, y: -12 });
   await page.mouse.click(q.x, q.y); await expect(page.getByTestId('confirmed-name')).toBeVisible();
+}
+
+/** Store measurements alongside the current run, grouped by behavior. */
+export async function evidenceDirectory(category: string) {
+  const directory = join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!, category);
+  await mkdir(directory, { recursive: true });
+  return directory;
 }

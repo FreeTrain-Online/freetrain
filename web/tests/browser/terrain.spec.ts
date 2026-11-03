@@ -1,7 +1,6 @@
-import {test,expect,type Page} from '@playwright/test';
-import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const state=canonicalState;
 const savedGround=(s:any)=>[...Buffer.from(s.packedTerrain.cells,'base64')].map(n=>n&63);
@@ -36,7 +35,7 @@ test('real terrain save replacement renders sea/cut/forest, picks independently,
   await closePanel(page);
   // H0,V0's realized cedar at X0,Y0 is visible above the slope, independently of its diamond.
   const tree=await point(page,0,-58);await page.mouse.click(tree.x,tree.y);await expect(page.getByTestId('selected-object')).toContainText('Terrain · 2 · 1, 0, 2');
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrain');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'terrain-cut-en.png'),fullPage:true});
+
   const captured=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(captured.toString()).packedTerrain.occupantCount).toBe(3);
   await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
   expect(errors).toEqual([]);
@@ -50,7 +49,7 @@ test('terrain Japanese narrow DPR2 view and failed recipe decoding gate the live
   await replace(page,save);await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page,'ja');
   await openPanel(page,'view','ja');await page.getByLabel('高さ表示',{exact:true}).fill('4');await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrain');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'terrain-cut-ja-dpr2.png'),fullPage:true});
+
   await page.route('**/content/bundled-v2/**/*.png',route=>route.abort());
   await page.reload();await expect(page.locator('.command-bar')).toHaveCount(0);await expect(page.locator('canvas')).not.toHaveAttribute('data-assets','ready');
  }finally{await replace(page,original);await context.close();}
@@ -120,11 +119,10 @@ test('synthetic full-terrain landscape renders behind the connection gate and gi
   const stillTrain=await canvas.getAttribute('data-demo-train'),stillFrame=await canvas.evaluate(el=>el.toDataURL());
   await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
   await expect(canvas).toHaveAttribute('data-demo-train',stillTrain!);expect(await canvas.evaluate(el=>el.toDataURL())).toBe(stillFrame);
-  const decoded=images,directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'terrain');mkdirSync(directory,{recursive:true});
-  const terrainPNG=await canvas.evaluate(el=>el.toDataURL().split(',')[1]);writeFileSync(join(directory,'island-terrain.png'),Buffer.from(terrainPNG,'base64'));
-  await page.screenshot({path:join(directory,'connection-landscape-desktop.png'),fullPage:true});
+  const decoded = images;
+
   await page.setViewportSize({width:360,height:800});await expect.poll(async()=>Number(await canvas.getAttribute('data-zoom'))).toBeCloseTo(800/736,2);
-  await page.screenshot({path:join(directory,'connection-landscape-portrait.png'),fullPage:true});
+
   expect(images).toBe(decoded);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(360);
   await expect(page.locator('.map-viewport')).toHaveAttribute('inert','');
   release();await ready(page);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-instance','synthetic-demo');
@@ -141,7 +139,7 @@ test('empty-world preview cancellation, exact owner confirmation, zero rails, se
   await openPanel(page,'newWorld');await page.getByLabel('World name',{exact:true}).fill('Empty railway');
   await expect(page.getByLabel('Stored width (H)',{exact:true})).toHaveValue('30');await expect(page.getByLabel('Stored length (V)',{exact:true})).toHaveValue('42');
   await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('30 × 42 × 6');
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'empty-world');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'empty-en-preview.png'),fullPage:true});
+
   expect((await state(page)).worldEpoch).toBe(before.worldEpoch);
   await page.getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect((await state(page)).worldEpoch).toBe(before.worldEpoch);
   await page.getByRole('button',{name:'Preview world',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
@@ -167,11 +165,11 @@ test('Japanese narrow empty-world form, custom limits, candidate invalidation an
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toContainText('1 × 1 × 1');
   await page.getByLabel('世界名',{exact:true}).fill('変更');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'empty-world');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'empty-ja-narrow.png'),fullPage:true});
+
   // Advance the authoritative clock after a ready preview. It must disappear without replacement.
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
   await page.getByRole('button',{name:'世界を作成',exact:true}).click();await expect(page.locator('dialog.decision-dialog')).toBeVisible();
-  await page.screenshot({path:join(directory,'empty-ja-confirm.png'),fullPage:true});
+
   await page.locator('dialog.decision-dialog').getByRole('button',{name:'キャンセル',exact:true}).click();
   const s=await state(page),captured=await(await page.request.get('/api/saves/download')).body();await replace(page,captured);
   await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect((await state(page)).worldEpoch).not.toBe(s.worldEpoch);
@@ -230,13 +228,13 @@ test('heightmap browser preview is detached, confirms exact terrain to both clie
 await expect(page.getByRole('img',{name:'North-up terrain overview of the retained candidate',exact:true})).toBeVisible();
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'heightmap');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'ramp-preview-en.png'),fullPage:true});
+
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await ready(peer);
   await expect(canvas).toHaveAttribute('data-instance','heightmap-preserved');
   const captured=await(await page.request.get('/api/saves/download')).body(),saved=JSON.parse(captured.toString());
   expect(savedGround(saved)).toEqual([0,1,2,3,1,2,3,4,0,1,2,3,1,2,3,4]);expect(saved.rails).toEqual([]);
-  await closePanel(page);await page.screenshot({path:join(directory,'ramp-live-en.png'),fullPage:true});
+  await closePanel(page);
   await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-assets','ready');expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
   await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(savedGround(saved));
  }finally{await replace(page,original);await other.close();}
@@ -252,7 +250,7 @@ test('heightmap Japanese narrow form reports image failures, invalidates drafts 
   await page.getByLabel('格納幅（H）',{exact:true}).fill('4');await page.getByLabel('格納奥行（V）',{exact:true}).fill('4');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'heightmap');mkdirSync(directory,{recursive:true});await page.screenshot({path:join(directory,'ramp-preview-ja-narrow.png'),fullPage:true});
+
   await page.getByLabel('世界名',{exact:true}).fill('変更');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   let release=()=>{};const held=new Promise<void>(r=>{release=r;});await page.route('**/api/worlds/heightmap/preview?*',async route=>{await held;await route.continue().catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();
@@ -279,13 +277,13 @@ test('seeded relief controls preview reproducibly, commit exact mountains to bot
   await page.getByLabel('Relief (0–100)',{exact:true}).fill('0');const flat=await preview();expect(new Set(flat.ground).size).toBe(1);expect(flat.ground[0]).toBe(5);
   await page.getByLabel('Relief (0–100)',{exact:true}).fill('85');await page.getByLabel('Feature scale (cells)',{exact:true}).fill('8');const scaled=await preview();expect(scaled.ground).not.toEqual(varied.ground);await page.getByLabel('Feature scale (cells)',{exact:true}).fill('32');
   await page.getByLabel('Generation seed',{exact:true}).fill('0');const final=await preview();expect(final.candidateHash).toBe(first.candidateHash);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'relief');mkdirSync(directory,{recursive:true});await page.getByTestId('empty-world-preview').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'relief-en-preview.png'),fullPage:true});
+  await page.getByTestId('empty-world-preview').scrollIntoViewIfNeeded();
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect(canvas).toHaveAttribute('data-ruleset','terrain-state-1');await expect(canvas).toHaveAttribute('data-assets','ready');await expect(canvas).toHaveAttribute('data-instance','relief-preserved');
   await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before.worldEpoch);
   const committed=await state(page);expect(committed.terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);expect(committed.tracks).toEqual([]);
   const captured=await(await page.request.get('/api/saves/download')).body();expect(captured.length).toBe(final.saveBytes);
-  await closePanel(page);await ready(page);await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');await page.screenshot({path:join(directory,'relief-en-live.png'),fullPage:true});
+  await closePanel(page);await ready(page);await expect(page.getByTestId('reference-world')).toHaveText('Terrain world');
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
   await replace(page,original);await replace(page,captured);expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
  }finally{await replace(page,original);await context.close();}
@@ -303,7 +301,7 @@ test('Japanese narrow seeded relief form validates ranges, changes presets, inva
   await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
   await page.getByLabel('滑らかさ（0～100）',{exact:true}).fill('100');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'relief');mkdirSync(directory,{recursive:true});await page.getByLabel('地形の種類',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'relief-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('地形の種類',{exact:true}).scrollIntoViewIfNeeded();
   // Let the server finish a job but hold its response while the user cancels.
   const held=new Promise<void>(r=>release=r);let seen=false;
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
@@ -352,13 +350,13 @@ test('coast directions, realized preview, impossible diagnostics and exact islan
   const final=await preview();expect(final.geography.metrics.seaComponents).toBe(1);expect(final.geography.metrics.seaSides).toBe(15);
   await page.getByLabel('Generation seed',{exact:true}).fill('42');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   await page.getByLabel('Generation seed',{exact:true}).fill('0');expect((await preview()).candidateHash).toBe(final.candidateHash);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'coasts');mkdirSync(directory,{recursive:true});await page.getByTestId('geography-metrics').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'coast-en-preview.png'),fullPage:true});
+  await page.getByTestId('geography-metrics').scrollIntoViewIfNeeded();
   const before=(await state(page)).worldEpoch;await page.locator('canvas').evaluate(c=>c.dataset.instance='coast-preserved');
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
   await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','coast-preserved');
   expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
-  const saved=await(await page.request.get('/api/saves/download')).body();await closePanel(page);await ready(page);await page.screenshot({path:join(directory,'coast-en-live.png'),fullPage:true});
+  const saved=await(await page.request.get('/api/saves/download')).body();await closePanel(page);await ready(page);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
  }finally{await replace(page,original);await context.close();}
@@ -373,7 +371,7 @@ test('Japanese narrow coast controls and compass remain reachable and invalidate
   await page.getByLabel('海の目標面積（%）',{exact:true}).fill('40');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();
   await expect(page.getByTestId('geography-metrics')).toContainText('水面：');await expect(page.getByRole('img',{name:'世界の方位',exact:true})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'coasts');mkdirSync(directory,{recursive:true});await page.getByLabel('海岸の配置',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'coast-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('海岸の配置',{exact:true}).scrollIntoViewIfNeeded();
   await page.getByRole('checkbox',{name:'南',exact:true}).check();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
  }finally{await context.close();}
 });
@@ -399,7 +397,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await page.getByLabel('River direction',{exact:true}).selectOption('northSouth');
   await page.getByLabel('Coast layout',{exact:true}).selectOption('island');await page.getByLabel('Target sea coverage (%)',{exact:true}).fill('30');
   const final=await preview();expect(final.geography.metrics).toMatchObject({lakeComponents:0,riverCount:1,seaSides:15});
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'water');mkdirSync(directory,{recursive:true});await page.getByTestId('water-metrics').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'water-en-preview.png'),fullPage:true});
+  await page.getByTestId('water-metrics').scrollIntoViewIfNeeded();
   const before=(await state(page)).worldEpoch;
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();
   await expect(page.getByTestId('empty-world-preview')).toBeVisible();expect((await state(page)).worldEpoch).toBe(before);
@@ -409,7 +407,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(8);
   const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(1);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
-  await closePanel(page);await page.screenshot({path:join(directory,'water-en-live.png'),fullPage:true});
+  await closePanel(page);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
  }finally{await replace(page,original);await context.close();}
@@ -430,7 +428,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   await page.getByLabel('川の方向',{exact:true}).selectOption('northSouth');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('water-metrics')).toContainText('湖：0');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'water');mkdirSync(directory,{recursive:true});await page.getByLabel('川の方向',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'water-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('川の方向',{exact:true}).scrollIntoViewIfNeeded();
   await page.getByLabel('蛇行（0〜100）',{exact:true}).fill('80');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
@@ -456,7 +454,7 @@ test('forest controls reserve connected level land, show realized cover and conf
   await page.getByLabel('Forest ground appearance',{exact:true}).selectOption('grass');const final=await preview();
   expect(final.ground).toEqual(bare.ground);expect(final.geography.startingMask).toBe(bare.geography.startingMask);
   await expect(page.getByTestId('forest-metrics')).toContainText('Reserved: 64');
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'forests');mkdirSync(directory,{recursive:true});await page.getByTestId('forest-metrics').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'forest-en-preview.png'),fullPage:true});
+  await page.getByTestId('forest-metrics').scrollIntoViewIfNeeded();
   const before=(await state(page)).worldEpoch;expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toBeVisible();
   await page.getByRole('button',{name:'Create world',exact:true}).click();await page.locator('dialog.decision-dialog').getByRole('button',{name:'Create world',exact:true}).click();
@@ -465,7 +463,7 @@ test('forest controls reserve connected level land, show realized cover and conf
   expect((await state(watcher)).terrain.occupants).toEqual(actual.occupants);
   expect(actual.occupants.filter((o:any)=>o.forest).every((o:any)=>o.forest.definition.contributionId==='{FBD0CD06-016A-4037-AB15-02040218CBAA}-g')).toBe(true);
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);
-  await closePanel(page);await ready(page);await page.screenshot({path:join(directory,'forest-en-live.png'),fullPage:true});
+  await closePanel(page);await ready(page);
   const pixels=await page.locator('canvas').evaluate(c=>c.toDataURL());await openPanel(page,'view');await page.getByLabel('Winter ground',{exact:true}).check();await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','winter/day');await closePanel(page);
   expect(await page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
@@ -487,7 +485,7 @@ test('Japanese narrow forests validate species and starting-area failure, invali
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.startingAreaImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
   await page.getByLabel('連続した平坦な開始区域（セル）',{exact:true}).fill('16');await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('forest-metrics')).toContainText('開始区域：16');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'forests');mkdirSync(directory,{recursive:true});await page.getByLabel('森林の地面表示',{exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'forest-ja-narrow.png'),fullPage:true});
+  await page.getByLabel('森林の地面表示',{exact:true}).scrollIntoViewIfNeeded();
   await page.getByLabel('森林のまとまり（0〜100）',{exact:true}).fill('100');await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   const held=new Promise<void>(r=>release=r);let seen=false;await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response}).catch(()=>{});});
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect.poll(()=>seen).toBe(true);await page.getByRole('button',{name:'キャンセル',exact:true}).click();release();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
@@ -511,7 +509,7 @@ test('generation UX previews both compass projections, regenerates deterministic
   await expect(overview.locator('line').first()).toHaveAttribute('x2','72');await expect(overview.locator('line').first()).toHaveAttribute('y2','19');
   await page.getByRole('button',{name:'Isometric',exact:true}).click();await expect(overview).toHaveAttribute('data-mode','isometric');
   expect(await image.getAttribute('src')).not.toBe(top);await expect(overview.locator('line').first()).toHaveAttribute('x2','48');await expect(overview.locator('line').first()).toHaveAttribute('y2','31');
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'generation-ux');mkdirSync(directory,{recursive:true});await overview.scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'isometric-en.png'),fullPage:true});
+  await overview.scrollIntoViewIfNeeded();
   const again=await preview('Regenerate with same seed');expect(again.id).not.toBe(first.id);expect(again.candidateHash).toBe(first.candidateHash);expect(again.overview).toEqual(first.overview);
   await page.getByRole('button',{name:'New seed',exact:true}).click();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);expect(await page.getByLabel('Generation seed',{exact:true}).inputValue()).not.toBe('0');
   await page.getByLabel('Generation seed',{exact:true}).fill('0');const final=await preview();expect(final.candidateHash).toBe(first.candidateHash);
@@ -578,7 +576,7 @@ test('generation UX Japanese narrow previews support keyboard view changes, moda
   const mode=page.getByRole('button',{name:'等角図',exact:true});await mode.focus();await expect(mode).toBeFocused();await page.keyboard.press('Enter');await expect(mode).toHaveAttribute('aria-pressed','true');
   await expect(page.getByRole('img',{name:'世界の方位',exact:true})).toBeVisible();await expect(page.getByTestId('buildable-metrics')).toContainText('連続区域');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  const directory=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'generation-ux');mkdirSync(directory,{recursive:true});await page.getByTestId('world-overview').scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'isometric-ja-narrow.png'),fullPage:true});
+  await page.getByTestId('world-overview').scrollIntoViewIfNeeded();
   const create=page.getByRole('button',{name:'世界を作成',exact:true});await create.click();await page.keyboard.press('Escape');await expect(create).toBeFocused();
   await page.getByRole('button',{name:'キャンセル',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText('キャンセル');
   await page.route('**/api/worlds/generated/preview',async route=>{const response=await route.fetch();const result=await response.json();result.expiresAt=new Date(Date.now()+1000).toISOString();await route.fulfill({response,json:result});});

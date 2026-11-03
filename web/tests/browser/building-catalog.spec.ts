@@ -1,7 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
-import { mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { ready, openPanel, closePanel, canonicalState } from './ux-helpers.ts';
+import { expect,extended,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 
 test.use({ actionTimeout: 10_000 });
 const map = (page: Page) => page.locator('canvas.world-canvas');
@@ -22,9 +20,6 @@ async function restore(page: Page, bytes: Buffer) {
   const state = await canonicalState(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch=' + state.worldEpoch, { data: bytes })).ok()).toBe(true);
 }
-const evidence = (name: string) => {
-  const dir = join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!, 'catalog'); mkdirSync(dir, { recursive: true }); return join(dir, name);
-};
 
 for (const ja of [false, true]) test(`independent catalog, category browsing and synchronized construction ${ja ? 'JA' : 'EN'}`, async ({ page }) => {
   test.setTimeout(90_000);
@@ -32,6 +27,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
   try {
     await empty(page);
     if (ja) { await openPanel(page, 'settings'); await page.getByLabel('Language', { exact: true }).selectOption('ja'); await closePanel(page); }
+    if(ja&&!extended())await page.setViewportSize({width:430,height:850});
     const lang = ja ? 'ja' : 'en', catalog = page.locator('#building-catalog');
     const category = catalog.getByLabel(ja ? 'カテゴリ' : 'Category', { exact: true });
     const search = catalog.getByLabel(ja ? '一覧を検索' : 'Search catalog', { exact: true });
@@ -58,7 +54,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
       const ctx = canvas.getContext('2d')!; ctx.drawImage(image as HTMLImageElement, 0, 0);
       return ctx.getImageData(0, 0, 96, 80).data.some((value, index) => index % 4 === 3 && value > 0);
     }))).toBe(true);
-    await page.screenshot({ path: evidence(`accessories-${lang}.png`) });
+
     await search.fill('no such item'); await expect(catalog.locator('.catalog-item')).toHaveCount(0);
     await category.selectOption('signal'); await expect(search).toHaveValue('');
     await category.selectOption('stationary'); await expect(search).toHaveValue('no such item'); await search.fill('');
@@ -72,6 +68,10 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     for (const [label, value] of [[ja ? '始点 X' : 'Start X', '30'], [ja ? '始点 Y' : 'Start Y', '27'], [ja ? '線路の高さ' : 'Track level', '1']]) await page.getByLabel(label, { exact: true }).fill(value);
     await page.getByRole('button', { name: ja ? '経路をプレビュー' : 'Preview route', exact: true }).click();
     const confirm = page.getByRole('button', { name: ja ? '信号の変更を確定' : 'Confirm signal change', exact: true }); await expect(confirm).toBeEnabled();
+    if(ja&&!extended()){
+      await expect(confirm).toBeInViewport();await confirm.focus();await page.keyboard.press('Enter');await expect(page.getByTestId('rail-route')).toHaveCount(0);
+      const built=await canonicalState(page);expect(built.mixed.voxels[0].traffic.rail.direction).toBe(4);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);return;
+    }
     await category.selectOption('stationary'); await expect(confirm).toBeEnabled();
     await category.selectOption('signal');
     await catalog.getByRole('button', { name: ja ? '三灯式' : 'Three-aspect signal', exact: true }).click();
@@ -83,7 +83,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     await expect(page.getByLabel(ja ? '始点 X' : 'Start X', { exact: true })).toHaveValue('30');
     await expect(catalog.locator('.catalog-active .catalog-preview')).toHaveAttribute('data-direction', '0');
     await page.getByRole('button', { name: ja ? '経路をプレビュー' : 'Preview route', exact: true }).click(); await expect(confirm).toBeEnabled();
-    await page.screenshot({ path: evidence(`desktop-${lang}.png`) });
+
     await catalog.getByRole('button', { name: ja ? '建物一覧を閉じる' : 'Close building catalog', exact: true }).click();
     await expect(catalog).toHaveCount(0); await expect(confirm).toBeEnabled();
     await page.getByRole('button', { name: ja ? '一覧から選択' : 'Choose from catalog', exact: true }).click();
@@ -105,7 +105,7 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     const family = catalog.locator('.catalog-active');
     await family.locator('.catalog-item-main').click(); await expect(fifth).toHaveAttribute('aria-pressed', 'true');
     await expect(family).toHaveAttribute('data-variant', '{{98619BD4-46C3-4B91-85FE-11147914F2A5}-E');
-    await page.screenshot({ path: evidence(`grouped-variants-${lang}.png`) });
+
     expect(await save(page)).toEqual(before);
   } finally { await restore(page, original); }
 });
@@ -122,7 +122,7 @@ test('catalog keyboard selection, narrow layout and observer browsing', async ({
     await shunting.focus(); await page.keyboard.press('Enter'); await expect(shunting).toHaveAttribute('aria-pressed', 'true');
     await catalog.getByRole('button', { name: 'Reduce panel', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Confirm signal change', exact: true })).toBeInViewport();
-    await page.screenshot({ path: evidence('narrow.png') });
+
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
     expect((await viewer.request.post('/api/access', { data: { secret: 'observer-test' } })).ok()).toBe(true);
     await viewer.goto('/'); await ready(viewer); await openPanel(viewer, 'catalog');

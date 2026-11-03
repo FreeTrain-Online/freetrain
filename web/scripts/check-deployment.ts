@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import { chromium, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import { openPanel } from '../tests/browser/ux-helpers.ts';
+import { openPanel } from '../tests/browser/browser-helpers.ts';
 import { resolve } from 'node:path';
 
 // Run from web/ after docker build. Owns only the freetrain-online-stage7-check project.

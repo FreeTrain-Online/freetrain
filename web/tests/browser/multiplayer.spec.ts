@@ -1,5 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
-import { ready, openPanel, selectStation, selectTrain } from './ux-helpers.ts';
+import { bootstrap,openPanel,ready,selectStation,selectTrain } from './browser-helpers.ts';
+import { expect,test,type Page } from './fixtures.ts';
 
 test('independent browsers share edits and leases; reconnect and hidden tabs preserve the shared world', async ({ browser }) => {
   const first = await browser.newContext({ locale: 'en-US' });
@@ -115,4 +115,25 @@ test('a failed Leave game request offers a retry and clears the displayed world'
   await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
   await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
   expect(attempts).toBe(2);
+});
+
+test('independent UI state and observer explanations retain shared clock and authority', async ({ browser }) => {
+  const aContext=await browser.newContext(),bContext=await browser.newContext();
+  try {
+    const a=await aContext.newPage(),b=await bContext.newPage(); await a.goto('/'); await ready(a); await b.goto('/'); await ready(b);
+    await a.getByRole('button',{name:'Run',exact:false}).click(); await expect(b.getByTestId('clock-state')).toHaveText('Running');
+    const bCamera=await b.locator('canvas').getAttribute('data-camera'); await a.getByRole('button',{name:'Zoom in',exact:true}).click(); await openPanel(a,'settings');
+    await expect(b.locator('canvas')).toHaveAttribute('data-camera',bCamera!); await expect(b.locator('.primary-panel')).toHaveCount(0);
+    const tick=await b.getByTestId('tick').textContent(); await expect(b.getByTestId('tick')).not.toHaveText(tick!);
+    await openPanel(a,'session'); await a.getByRole('button',{name:'Leave game',exact:true}).click();
+    await a.getByLabel('Enter access key to join game',{exact:true}).fill('observer-test'); await a.getByRole('button',{name:'Connect',exact:true}).click(); await ready(a);
+    await expect(a.getByTestId('participant-role')).toHaveText('Observer');
+    await expect(a.getByRole('button',{name:'Build track',exact:true})).toBeDisabled();
+    await a.getByRole('button',{name:'Inspect / drive',exact:true}).focus();
+    await expect(a.locator('#mutation-help')).toContainText('Observers can inspect');
+    await openPanel(a,'saves'); await expect(a.locator('#saves-help')).toContainText('Owner'); await expect(a.getByRole('button',{name:'Save slot',exact:true})).toBeDisabled();
+    await openPanel(a,'view'); await a.getByLabel('Night',{exact:true}).check();
+    await expect(b.getByTestId('clock-state')).toHaveText('Running');
+    await b.getByRole('button',{name:'Pause',exact:false}).click();
+  } finally {await aContext.close();await bContext.close();}
 });

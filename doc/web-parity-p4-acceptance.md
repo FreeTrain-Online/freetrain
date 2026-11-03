@@ -151,8 +151,10 @@ After `deno task --cwd web build`, run from `web/` (with `dotnet` on PATH):
 FREETRAIN_ONLINE_TEST_SERVER_PORT=5180 FREETRAIN_ONLINE_TEST_WEB_PORT=4273 \
 FREETRAIN_MIXED_NETWORK_OUTPUT="$PWD/../tmp/p4-24-network.json" \
 FREETRAIN_ONLINE_BROWSER_EVIDENCE="$PWD/../tmp/p4-24-browser" \
-deno run -A node_modules/@playwright/test/cli.js test --config playwright.config.ts \
-  --project canonical --grep 'two map points preview/cancel/build|map slope preview/cancel|all four bridge directions|all eight girder directions|four cardinal routes, both removal orders|garage axes.*EN|signal types.*EN|pole types.*EN|speed-limit level sections.*EN|stationary source lifecycle.*EN|cross-tool terrain protection|complete P4 network slot 2'
+deno run -A node_modules/@playwright/test/cli.js test --config playwright.extended.config.ts \
+  --project canonical --grep 'two map points preview/cancel/build|map slope preview/cancel|all four bridge directions|all eight girder directions|four cardinal routes, both removal orders|garage axes.*EN|signal types.*EN|pole types.*EN|speed-limit level sections.*EN|stationary source lifecycle.*EN|cross-tool terrain protection'
+FREETRAIN_MIXED_NETWORK_OUTPUT="$PWD/../tmp/p4-24-network.json" \
+deno run -A node_modules/@playwright/test/cli.js test --config playwright.continuation.config.ts
 ```
 
 Local artifacts use `tmp/p4-24-*`; ignored artifacts are evidence for this execution,

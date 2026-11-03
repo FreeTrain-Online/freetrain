@@ -1,9 +1,10 @@
-import { expect, test } from '@playwright/test';
+import { openPanel,ready } from './browser-helpers.ts';
+import { mkdtempSync,readFileSync,rmSync,truncateSync,writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import {readFileSync,mkdtempSync,writeFileSync,truncateSync,rmSync} from 'node:fs';
-import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import { ready, openPanel } from './ux-helpers.ts';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { expect,test } from './fixtures.ts';
+
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=6&contentVersion=prototype-content-1')).json()).snapshot;
 const pause = async(page:any)=>{if(!(await bootstrap(page)).paused)await page.getByRole('button',{name:'Pause',exact:false}).click();};
@@ -51,7 +52,7 @@ test('ignored checkpoint diagnostic has a readable Japanese error and disables w
     await expect(page.getByTestId('saving-unavailable')).toHaveText(ja.savingUnavailable);
     await expect(page.getByText(ja.loadHint,{exact:true})).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-    await page.screenshot({path:'../tmp/parity-p1/save-policy-ja.png',fullPage:true});
+
   } finally {await context.close();}
 });
 
@@ -86,4 +87,26 @@ test('bundled WAV and a transport sound fixture play once; reconnect never repla
   await openPanel(page, 'settings');
   await page.getByRole('button', { name: 'Disable sound', exact: true }).click();
   await expect(page.getByTestId('sound-feedback')).toHaveText('Sound off');
+});
+
+test('replacement modal blocks the game, cancels without changes and preserves safe slot choice', async ({ page }) => {
+  await page.goto('/'); await ready(page);
+  if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Pause', exact: false }).click();
+  await openPanel(page, 'saves');
+  await page.getByLabel('Slot', { exact: true }).selectOption('slot2');
+  await expect(page.getByRole('button', { name: 'Save slot', exact: true })).toBeDisabled();
+  // Future supported-save modal lifecycle fixture; no prototype codec is enabled.
+  await page.route('**/api/saves',route=>route.fulfill({json:[{id:'slot2',exists:true}]}));
+  await page.route('**/api/saves/status',route=>route.fulfill({json:{savingAvailable:false,loadingAvailable:true,startupError:null}}));
+  await openPanel(page, 'settings'); await openPanel(page, 'saves');
+  await expect(page.getByLabel('Slot', { exact: true })).toHaveValue('slot2');
+  const before = await bootstrap(page), camera = await page.locator('canvas').getAttribute('data-camera');
+  await page.getByRole('button', { name: 'Load slot', exact: true }).click();
+  const dialog = page.locator('.decision-dialog'); await expect(dialog).toContainText('every participant');
+
+  await page.mouse.click(600, 450); await page.mouse.wheel(0, -250); await page.keyboard.press('ArrowUp');
+  await expect(dialog).toBeVisible(); await expect(page.locator('canvas')).toHaveAttribute('data-camera', camera!);
+  await page.keyboard.press('Escape'); await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Load slot', exact: true })).toBeFocused();
+  expect(await bootstrap(page)).toEqual(before);
 });

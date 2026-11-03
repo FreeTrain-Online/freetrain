@@ -1,6 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import { bootstrap,clickTile,closePanel,openPanel,ready,selectStation,selectTrain } from './browser-helpers.ts';
+import { expect,test,type Page } from './fixtures.ts';
 
-import { ready, openPanel, closePanel, selectTrain, selectStation } from './ux-helpers.ts';
 const step = (page: Page) => page.getByRole('button', { name: 'Single step', exact: false });
 
 test('real game runs, steps, renames Japanese station and recovers on refresh', async ({ page }) => {
@@ -32,14 +32,14 @@ test('real game runs, steps, renames Japanese station and recovers on refresh', 
   await openPanel(page, 'settings');
   await page.getByLabel('Language').selectOption('ja');
   await expect(page.getByRole('heading', { name: '設定' })).toBeVisible();
-  await page.screenshot({ path: 'test-results/network-ja.png', fullPage: true });
+
   await page.reload();
   await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
   await selectStation(page);
   await expect(page.getByLabel('駅名', { exact: true })).toHaveValue('新宿駅');
   await openPanel(page, 'settings', 'ja');
   await page.getByLabel('言語').selectOption('en');
-  await page.screenshot({ path: 'test-results/network-en.png', fullPage: true });
+
   expect(errors).toEqual([]);
 });
 
@@ -156,7 +156,7 @@ test('Japanese labels fit narrow doubled-density layouts and hidden tab keeps sh
   await selectStation(page);
   const input = page.getByLabel('駅名', { exact: true }); await input.focus(); await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: '駅名を適用', exact: true })).toBeFocused();
-  await page.screenshot({ path: 'test-results/network-ja-narrow-2x.png', fullPage: true });
+
   await context.close();
 });
 
@@ -183,7 +183,7 @@ test('real stale station edit is rejected without losing the Japanese draft', as
   await expect(page.getByTestId('confirmed-name')).toHaveText('下書きの駅');
 });
 
-test('measure live running publication rate and JSON payload volume', async ({ page, browser }, testInfo) => {
+test('measure live running publication rate and JSON payload volume',{tag:'@performance'}, async ({ page, browser }, testInfo) => {
   const frames: { at: number; bytes: number }[] = []; let sampling = false;
   page.on('websocket', socket => socket.on('framereceived', frame => {
     const text = String(frame.payload);
@@ -211,4 +211,31 @@ test('measure live running publication rate and JSON payload volume', async ({ p
   const { writeFile } = await import('node:fs/promises');
   const { resolve } = await import('node:path');
   await writeFile(resolve(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!, 'network-publication-measurement.json'), body + '\n');
+});
+
+test('selected inspectors, clock and explicit rail confirm/cancel remain playable', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/'); await ready(page);
+  if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Ⅱ Pause', exact: true }).click();
+  await selectTrain(page); await expect(page.getByRole('combobox', { name: 'Controller', exact: true })).toBeVisible();
+
+  await selectStation(page); const old = (await bootstrap(page)).stations[0].name;
+  await page.getByLabel('Station name', { exact: true }).fill('UX1 検証駅'); await page.getByRole('button', { name: 'Apply name', exact: true }).click();
+  await expect(page.getByTestId('confirmed-name')).toHaveText('UX1 検証駅');
+  await page.getByLabel('Station name', { exact: true }).fill(old); await page.getByRole('button', { name: 'Apply name', exact: true }).click();
+  await expect(page.getByTestId('confirmed-name')).toHaveText(old); await closePanel(page);
+  await page.getByRole('button', { name: 'Run', exact: false }).click(); await expect(page.getByTestId('clock-state')).toHaveText('Running');
+  await page.getByRole('button', { name: 'Build track', exact: true }).click(); await expect(page.getByTestId('clock-state')).toHaveText('Running');
+  await page.getByRole('button', { name: 'Pause', exact: false }).click(); await expect(page.getByTestId('clock-state')).toHaveText('Paused');
+  const before = await bootstrap(page);
+  await clickTile(page, { x: 37, y: 16, z: 1 }); await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
+
+  await page.getByRole('button', { name: 'Cancel preview', exact: true }).click();
+  expect(await bootstrap(page)).toEqual(before);
+  await clickTile(page, { x: 37, y: 16, z: 1 });
+  await page.getByRole('button', { name: 'Confirm track change', exact: true }).dblclick(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
+  await expect(page.getByRole('button', { name: 'Confirm track change', exact: true })).toBeDisabled();
+  expect(BigInt(before.cash) - BigInt((await bootstrap(page)).cash)).toBe(before.tracks.find((track:any)=>track.position.x===36&&track.position.y===16&&track.position.z===1)?.shape==='buffer'?200n:100n);
+  await page.getByRole('button', { name: 'Remove', exact: true }).click(); await clickTile(page, { x: 37, y: 16, z: 1 });
+  await page.getByRole('button', { name: 'Confirm track change', exact: true }).click(); await expect(page.getByRole('status')).toHaveText('Confirmed by server');
 });

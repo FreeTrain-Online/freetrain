@@ -274,11 +274,56 @@ deno task install:browser
 deno task test:browser
 ```
 
-These tests build the Svelte shell into `web/dist/`, run
-Chromium against those release static files, and capture English/Japanese
-screenshots in `web/test-results/`. The `canonical` project exercises the default server, while `prototype-regression`
-explicitly starts a loopback-only `--prototype-regression-harness`. These tests do
-not establish the final cross-platform browser matrix or native IME behavior.
+These tests build the Svelte shell into `web/dist/` and run Chromium against those
+release static files. Two workers run by default; every worker owns its backend,
+preview server, and temporary save directory. Each case starts a fresh backend,
+also resetting credentials, access throttles, receipts and save slots. Canonical
+cases restore a small real Save 8 fixture. The separate `startup` project exercises fresh
+production world generation, while `prototype-regression` explicitly starts a
+loopback-only `--prototype-regression-harness`. Routine screenshot captures have
+been removed; functional canvas/pixel, focus, layout and EN/JA assertions remain.
+These tests do not establish the final cross-platform browser matrix or native
+IME behavior.
+
+The unit task runs test files in parallel (`DENO_JOBS=4 deno task test` bounds
+concurrency to four). Browser validation has the following commands:
+
+| Task (from `web/`) | Scope |
+| --- | --- |
+| `deno task test:browser` | Build/check and default browser regressions, with representative content and language/direction lifecycles |
+| `deno task test:browser:run` | Same browser selection using an already-current build; accepts Playwright filters and `--workers` |
+| `deno task test:browser:extended` | Build/check and comprehensive regressions, including all recipe variants, full EN/JA and direction lifecycles, and large-world/performance cases |
+| `deno task test:browser:performance` | Build/check and only the publication/large-world regressions, using one worker |
+| `deno task test:browser:continuation` | Build/check, generate the gameplay network with .NET tests, and require both mixed-network browser continuations |
+| `deno task test:browser:all` | Extended validation followed by generated mixed-network continuation; builds the frontend once |
+
+Use `test:browser` for routine development, including ordinary UI and gameplay
+changes. Its representative gallery exercises one recipe per handler/status
+combination across all four seasons and both lighting modes. The default suite
+also retains the 54-variant stationary-object gallery on the live world canvas:
+it checks source pixel samples, save/reload, removal behavior, keyboard controls,
+narrow layout and observer restrictions. This is ongoing integration coverage,
+even after the initial asset review.
+
+Use `test:browser:extended` after changes to asset inputs, content generation,
+recipe bindings or shared rendering, or when validating the full language,
+direction and performance matrices. It includes the default tests and the
+exhaustive gallery sweep of every bundled recipe in every season/light variant.
+Use `test:browser:continuation` for generated mixed-network save/gameplay
+continuation coverage, especially after shared construction/transport changes.
+Use `test:browser:all` for comprehensive/release validation or when both extended
+and continuation coverage apply. The exhaustive gallery currently runs as part
+of both `extended` and `all`; there is no separate asset-validation task.
+
+Gallery sweeps check browser image decoding, recipe rendering, frame/diagnostic
+counts and errors, with focused pixel assertions for effects. They do not compare
+every object's appearance against an approved reference image or establish full
+visual fidelity. Asset hashes and recipe/mask structure are also checked by the
+unit tests; human visual acceptance remains separate.
+
+The continuation task requires an existing Release .NET test build. A missing
+fixture fails that task rather than silently skipping acceptance coverage.
+Optional-content and dedicated capacity configurations retain their own commands.
 
 ## Local development
 
@@ -434,10 +479,11 @@ covers configuration, local certificates, controlled public hosting, health,
 updates, shutdown and independent backup restoration. Performance evidence lives
 in `tmp/`.
 
-If a development server already uses browser-test ports, set
-`FREETRAIN_ONLINE_TEST_SERVER_PORT=5182 FREETRAIN_ONLINE_TEST_WEB_PORT=4182` when running
-`deno task --cwd web test:browser`. The canonical test servers use the next port
-number in each pair (defaults 5081/4174). `FREETRAIN_ONLINE_API_TARGET` changes the Vite
+Browser workers choose available loopback ports automatically. To select port
+ranges, set `FREETRAIN_ONLINE_TEST_SERVER_PORT=5182 FREETRAIN_ONLINE_TEST_WEB_PORT=4182`.
+Each parallel slot reserves a stride of four from those bases; canonical/startup
+servers add one to that slot's base. Reserve both ranges when overriding ports.
+Only servers required by the selected tests are started. `FREETRAIN_ONLINE_API_TARGET` changes the Vite
 development/preview proxy target only; the production client uses its own origin.
 Browser tests use Release server builds by default. To check development-build
 latency and connection behavior, build the server with `-c Debug` and set

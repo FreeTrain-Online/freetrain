@@ -1,7 +1,5 @@
-import {test,expect,type Page} from '@playwright/test';
-import {mkdirSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,canonicalState as state,openPanel,closePanel} from './ux-helpers.ts';
+import { expect,extended,test,type Page } from './fixtures.ts';
+import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
 async function replace(p:Page,b:Buffer){const s=await state(p);expect((await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:b})).ok()).toBe(true);}
 async function empty(p:Page){
@@ -25,6 +23,10 @@ for(const ja of [false,true])test(`cross-tool terrain protection, peer invalidat
   }
   await corner(30,27);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
   await corner(20,20);await expect(page.getByRole('button',{name:confirm,exact:true})).toBeEnabled();expect(await save(page)).toEqual(before);
+  if(ja&&!extended()){
+   const primary=page.getByRole('button',{name:confirm,exact:true});await expect(primary).toBeInViewport();await primary.focus();await page.keyboard.press('Enter');await expect(primary).toBeDisabled();
+   await expect.poll(async()=>(await state(page)).terrain.occupants.length).toBe(4);await expect(canvas).toHaveAttribute('data-instance','cross-tool');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);return;
+  }
   // A pole changes mixed geometry while terrain stays unchanged. The captured
   // terrain preview must become stale on the other participant's publication.
   await peer.getByRole('button',{name:'Electric poles',exact:true}).click();
@@ -38,7 +40,7 @@ for(const ja of [false,true])test(`cross-tool terrain protection, peer invalidat
   await page.getByRole('button',{name:ja?'マップ作成を開始':'Enter map authoring',exact:true}).click();await page.getByRole('button',{name:ja?'モード変更を確定':'Confirm mode change',exact:true}).click();
   await expect(page.getByTestId('authoring-mode')).toContainText(ja?'有効':'on');
   await expect(canvas).toHaveAttribute('data-instance','cross-tool');expect(await canvas.getAttribute('data-camera')).toBe(camera);
-  const dir=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'cross-tool');mkdirSync(dir,{recursive:true});await page.screenshot({path:join(dir,ja?'ja-narrow.png':'en.png'),fullPage:true});
+
   const saved=await save(page);await replace(page,saved);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(saved);expect(errors).toEqual([]);
  }finally{await peer.close();await replace(page,original);}
 });

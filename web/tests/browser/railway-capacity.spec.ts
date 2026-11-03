@@ -4,7 +4,7 @@ import {readFileSync,mkdirSync,writeFileSync,mkdtempSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
-import {openPanel,closePanel} from './ux-helpers.ts';
+import {openPanel,closePanel} from './browser-helpers.ts';
 const digest=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 
 const serverURL='http://127.0.0.1:5420',webURL='http://127.0.0.1:4493';

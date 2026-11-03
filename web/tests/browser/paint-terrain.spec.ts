@@ -1,5 +1,5 @@
-import {test,expect,type Page} from '@playwright/test';
-import {ready,openPanel,closePanel,canonicalState} from './ux-helpers.ts';
+import { expect,test,type Page } from './fixtures.ts';
+import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
 const state=canonicalState;
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
 async function empty(page:Page,locale="en"){
@@ -36,7 +36,7 @@ test('held painting and Shift reversal keep terrain visible across every revisio
   const other=await pixel(page,24,20);await page.mouse.move(other.x,other.y);const before=await revision(page);await expect.poll(()=>revision(page)).toBeGreaterThan(before);
   await page.mouse.up();await expect(page.getByTestId('paint-status')).toHaveAttribute('data-active','false');
   await expect(page.locator('.command-feedback')).toContainText('Confirmed');const stopped=await revision(page);await page.waitForTimeout(350);expect(await revision(page)).toBe(stopped);
-  const raised=await state(page);expect(raised.terrain.occupants.some((o:any)=>o.ne>0)).toBe(true);expect(raised.paused).toBe(true);await page.screenshot({path:test.info().outputPath('paint-en.png'),fullPage:true});
+  const raised=await state(page);expect(raised.terrain.occupants.some((o:any)=>o.ne>0)).toBe(true);expect(raised.paused).toBe(true);
   const sum=(s:any)=>s.terrain.cells.reduce((n:number,c:any)=>n+16*c.ground,0)+s.terrain.occupants.reduce((n:number,o:any)=>n+o.ne+o.se+o.sw+o.nw,0);
   await page.keyboard.down('Shift');await page.mouse.move(other.x,other.y);await page.mouse.down();
   await expect.poll(async()=>sum(await state(page))).toBeLessThan(sum(raised));
@@ -69,6 +69,6 @@ test('Japanese narrow paint has accessible action/coordinate alternatives and sh
   await empty(page,'ja');await page.getByRole('button',{name:'運転',exact:false}).first().click();await tool(page,true);await expect(page.getByTestId('paint-status')).toContainText('ドラッグ');
   for(const [label,value] of [['隅のセル X',20],['隅のセル Y',20],['隅のセル Z',1]] as const)await page.getByLabel(label,{exact:true}).fill(String(value));
   await page.getByRole('button',{name:'隅をプレビュー',exact:true}).click();await expect(page.getByRole('button',{name:'地形の変更を確定',exact:true})).toBeEnabled();await page.getByRole('button',{name:'地形の変更を確定',exact:true}).focus();await page.keyboard.press('Enter');await expect.poll(()=>revision(page)).toBe(1);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await state(page)).paused).toBe(false);await page.screenshot({path:test.info().outputPath('paint-ja.png'),fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect((await state(page)).paused).toBe(false);
  }finally{await restore(page,original);await context.close();}
 });

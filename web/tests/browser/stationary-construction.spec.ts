@@ -1,11 +1,11 @@
-import {test,expect,type Page} from '@playwright/test';
-import {mkdirSync,readFileSync} from 'node:fs';
-import {join} from 'node:path';
-import {ready,openPanel,closePanel,canonicalState as state} from './ux-helpers.ts';
+import { readFileSync } from 'node:fs';
+import { expect,extended,test,type Page } from './fixtures.ts';
+import { sourcePixelCounts } from './pixel-helpers.ts';
+import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 const types=JSON.parse(readFileSync('src/generated/stationary-types.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const map=(p:Page)=>p.locator('canvas.world-canvas');
-const out=(name:string)=>{const d=join(process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!,'stationary');mkdirSync(d,{recursive:true});return join(d,name);};
+
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
 async function replace(p:Page,bytes:Buffer){const s=await state(p);const r=await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes});expect(r.ok(),await r.text()).toBe(true);await ready(p,(await p.locator('html').getAttribute('lang'))??'en');}
 async function empty(p:Page){
@@ -25,18 +25,21 @@ for(const ja of [false,true])test(`stationary source lifecycle, detached preview
   // Start on a weekday, so actual source callbacks advance during the browser test.
   const initial=JSON.parse((await save(page)).toString());initial.clock.absoluteMinute='3420';await replace(page,Buffer.from(JSON.stringify(initial)));
   if(ja)await language(page,true);
+  if(ja&&!extended())await page.setViewportSize({width:430,height:850});
   const tool=page.getByRole('button',{name:ja?'鉄道アクセサリ':'Railway accessories',exact:true});await tool.click();
   const selector=page.locator('#building-catalog .catalog');await expect(selector.locator('.catalog-item')).toHaveCount(9);await expect(selector.locator('[data-catalog-variant]')).toHaveCount(54);
   const tall=types.find((t:any)=>t.height===2);await selector.getByRole('button',{name:`${ja?tall.groupJa:tall.groupEn} · ${tall.variant}`,exact:true}).click();
   await expect(page.locator('.track-task canvas')).toHaveCount(0);await expect(page.locator('#building-catalog .catalog-active img')).toBeVisible();
   const before=await save(page);await target(page,ja);const confirm=page.getByRole('button',{name:ja?'アクセサリの操作を確定':'Confirm accessory action',exact:true});await expect(confirm).toBeEnabled();await expect(page.getByTestId('rail-cost')).toContainText('0');expect(await save(page)).toEqual(before);
-  await confirm.click();await expect(page.getByTestId('rail-route')).toHaveCount(0);let built=await state(page);expect(built.mixed.voxels).toHaveLength(2);expect(built.mixed.voxels.every((v:any)=>v.construction.state===0)).toBe(true);expect(built.mixed.accounts.transactions).toHaveLength(0);
+  if(ja&&!extended()){await expect(confirm).toBeInViewport();await confirm.focus();await page.keyboard.press('Enter');}else await confirm.click();
+  await expect(page.getByTestId('rail-route')).toHaveCount(0);let built=await state(page);expect(built.mixed.voxels).toHaveLength(2);expect(built.mixed.voxels.every((v:any)=>v.construction.state===0)).toBe(true);expect(built.mixed.accounts.transactions).toHaveLength(0);
+  if(ja&&!extended()){expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);return;}
   await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
   const bytes=await save(page);await replace(page,bytes);expect(await save(page)).toEqual(bytes);await tool.click();
   await page.getByRole('button',{name:ja?'運転':'Run',exact:false}).click();
   await expect.poll(async()=>(await state(page)).mixed.voxels.some((v:any)=>v.construction?.state>0),{timeout:20000}).toBe(true);
   await page.getByRole('button',{name:ja?'一時停止':'Pause',exact:false}).click();await expect(map(page)).toHaveAttribute('data-presentation','ready');
-  await page.screenshot({path:out(`construction-${ja?'ja':'en'}.png`),fullPage:true});
+
   await page.getByLabel(ja?'線路の操作':'Track action',{exact:true}).selectOption('remove');await target(page,ja,30,27,2);await expect(confirm).toBeEnabled();await confirm.click();await expect(page.getByTestId('rail-route')).toHaveCount(0);
   built=await state(page);expect(built.mixed.voxels).toHaveLength(0);expect(built.mixed.accounts.transactions).toHaveLength(0);expect(JSON.parse((await save(page)).toString()).clock.pending).toHaveLength(0);
   await target(page,ja);await expect(confirm).toBeDisabled();
@@ -59,27 +62,14 @@ test('all 54 completed variants form a live source-art gallery, with actual-type
   await empty(page);const fixture=gallery(JSON.parse((await save(page)).toString()));await replace(page,Buffer.from(JSON.stringify(fixture)));await expect(map(page)).toHaveAttribute('data-presentation','ready');
   const saved=await save(page);await replace(page,saved);expect(await save(page)).toEqual(saved);
   // Verify visible opaque samples against each prepared source rectangle on the actual world canvas.
-  const counts=await map(page).evaluate(async(el,args)=>{
-   const canvas=el as HTMLCanvasElement,r=canvas.getBoundingClientRect(),[cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom),variant=canvas.dataset.terrainVariant!,actual=canvas.getContext('2d')!;
-   const result=[];for(const e of args.entities){let count=0;const recipe=args.catalog.renderRecipes.find((r:any)=>r.id===e.definition.recipeId);
-    for(const f of recipe.frames.filter((f:any)=>f.status==='ready')){
-     const image=new Image();image.src=args.catalog.surfaceSets[f.surfaceSet][variant].image.url;await image.decode();const sheet=document.createElement('canvas');sheet.width=image.width;sheet.height=image.height;const ctx=sheet.getContext('2d')!;ctx.drawImage(image,0,0);
-     const [sx,sy,w,h]=f.rectangle,[ax,ay]=f.anchor,[dx,dy,dz]=f.cell,p={x:e.anchor.x+dx,y:e.anchor.y+dy,z:e.anchor.z+dz};
-     for(let y=0;y<h;y++)for(let x=0;x<w;x++){const expected=ctx.getImageData(sx+x,sy+y,1,1).data;if(expected[3]!==255)continue;
-      const px=(r.width/2+(16*(p.x+p.y-20)-ax+x+.5-cx)*zoom)*canvas.width/r.width,py=(r.height/2+(8*(-p.x+p.y+20)-16*p.z-ay+y+.5-cy)*zoom)*canvas.height/r.height;
-      if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;const a=actual.getImageData(Math.floor(px),Math.floor(py),1,1).data;
-      if(a[0]===expected[0]&&a[1]===expected[1]&&a[2]===expected[2]&&a[3]===255)count++;
-     }
-    }result.push(count);
-   }return result;
-  },{catalog,entities:fixture.spatial.entities});
+  const counts=await sourcePixelCounts(page,catalog,fixture.spatial.entities,'stationary');
   expect(counts).toHaveLength(54);for(const n of counts)expect(n).toBeGreaterThan(2);
-  await page.screenshot({path:out('gallery-all-54.png'),fullPage:true});
+
   await map(page).focus();await page.keyboard.press('a');await expect(page.getByRole('button',{name:'Railway accessories',exact:true})).toHaveAttribute('aria-pressed','true');
   const tall=fixture.spatial.entities.find((e:any)=>e.footprint.length===2);await target(page,false,tall.anchor.x,tall.anchor.y,2);
   const confirm=page.getByRole('button',{name:'Confirm accessory action',exact:true});await expect(confirm).toBeDisabled();
   await page.getByLabel('Track action',{exact:true}).selectOption('remove');await target(page,false,tall.anchor.x,tall.anchor.y,2);await expect(confirm).toBeEnabled();await expect(page.getByTestId('rail-cost')).toContainText('500,000');
-  await page.setViewportSize({width:430,height:850});await page.screenshot({path:out('narrow-remove.png'),fullPage:true});await expect(confirm).toBeInViewport();
+  await page.setViewportSize({width:430,height:850});await expect(confirm).toBeInViewport();
   const camera=await map(page).getAttribute('data-camera');await page.getByRole('button',{name:'Inspect',exact:true}).focus();await page.keyboard.press('End');
   await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeFocused();await expect(page.getByRole('button',{name:'Remove',exact:true})).toBeInViewport();
   expect(await page.evaluate(()=>scrollX)).toBe(0);expect(await map(page).getAttribute('data-camera')).toBe(camera);await confirm.click();await expect(page.getByTestId('rail-route')).toHaveCount(0);
