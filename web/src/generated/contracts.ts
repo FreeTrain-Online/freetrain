@@ -33,6 +33,7 @@ export type Counter = string;
 export type Money = string;
 export type Heading = number;
 export type EntityId = string;
+export type PlaybackRate = 0.125 | 0.25 | 0.5 | 1 | 2;
 export type CommandPayload =
   | {
       kind: "run";
@@ -142,6 +143,10 @@ export type CommandPayload =
   | {
       kind: "deployFleet";
       query: FleetDeploymentQuery;
+    }
+  | {
+      kind: "setPlaybackRate";
+      rate: PlaybackRate;
     };
 
 export interface Join {
@@ -184,6 +189,7 @@ export interface Snapshot {
   entities?: SpatialEntity[];
   terrain?: Terrain;
   mixed?: Mixed;
+  playbackRate?: PlaybackRate;
 }
 export interface Map {
   width: number;
@@ -701,6 +707,7 @@ export interface Delta {
   entities?: SpatialEntity[];
   terrain?: TerrainDelta;
   mixed?: Mixed;
+  playbackRate?: PlaybackRate;
 }
 export interface Removed {
   trainIds: string[];

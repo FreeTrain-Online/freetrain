@@ -92,13 +92,13 @@ public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, 
     string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
     TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
@@ -130,6 +130,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(RunCommand), "run")]
 [JsonDerivedType(typeof(PauseCommand), "pause")]
 [JsonDerivedType(typeof(StepCommand), "step")]
+[JsonDerivedType(typeof(SetPlaybackRateCommand), "setPlaybackRate")]
 [JsonDerivedType(typeof(RenameStationCommand), "renameStation")]
 [JsonDerivedType(typeof(BuildTrackCommand), "buildTrack")]
 [JsonDerivedType(typeof(RemoveTrackCommand), "removeTrack")]
@@ -159,6 +160,7 @@ public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : Com
 public sealed record RunCommand : CommandPayload;
 public sealed record PauseCommand : CommandPayload;
 public sealed record StepCommand : CommandPayload;
+public sealed record SetPlaybackRateCommand(double Rate) : CommandPayload;
 public sealed record RenameStationCommand(string StationId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record BuildTrackCommand(PositionRead Position, string Shape) : CommandPayload;
 public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevision) : CommandPayload;

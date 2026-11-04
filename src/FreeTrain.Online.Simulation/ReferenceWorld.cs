@@ -27,6 +27,7 @@ public sealed class ReferenceWorld
     public void RestoreRandom(RandomStreamsState state) => Random = RandomStreams.Restore(state);
     public bool Paused { get; private set; } = true;
     public long Revision { get; private set; }
+    public void ReviseSession() => Revision = checked(Revision + 1);
     public void SetPaused(bool paused)
     {
         if (Paused == paused) return;

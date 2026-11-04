@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
 import type { Delta, Snapshot, SpatialPreview, CornerTerrainPreview, WireMessage } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, isMixedWorld, sameIdentity, supportedIdentity, validSnapshot } from './world-identity.ts';
+import { IncompatibleWorldError, isReferenceWorld, isTerrainWorld, isMixedWorld, sameIdentity, supportedIdentity, validSnapshot, shareSnapshotValidation } from './world-identity.ts';
 import { maximumGameMinute } from './game-time.ts';
 import { terrainById, validTerrainDelta, shareTerrainValidation } from './terrain-state.ts';
 const validatedReads=new WeakSet<object>(),frozenObjects=new WeakSet<object>();
@@ -132,8 +132,8 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
     if(mixed&&(JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed)||
       state.mixed?.queue?.pending.some(a=>BigInt(a.dueMinute)<=BigInt(delta.tick))))return;
-    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash});
-    shareTerrainValidation(state,next);validatedReads.add(next);return next;
+    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
+    shareTerrainValidation(state,next);shareSnapshotValidation(state,next);validatedReads.add(next);return next;
   }
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
     if(!changed.length&&!removed.length)return before as T[];
@@ -159,7 +159,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   const terrainState=terrain?{...state.terrain!,...delta.terrain!,
     cells:delta.terrain!.cells.length?terrainCells!:state.terrain!.cells,
     occupants:terrainMerge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
-  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash,
+  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash, ...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {}),
     ...(state.entities?{entities:(terrain?terrainMerge:merge)(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),
@@ -167,7 +167,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     tracks: merge(state.tracks, delta.tracks, delta.removed.trackPositions.map(position), x => position(x.position)),
   } as Snapshot;
   if(mixed) {
-    if(!validSnapshot(next)||!state.mixed||!next.mixed)return;
+    if(!validSnapshot(next,state as Snapshot)||!state.mixed||!next.mixed)return;
     const before=state.mixed,after=next.mixed;
     if(!validFleetSuccessor(before.fleet,after.fleet,before.nextEntityId)||
       before.queue&&after.queue&&BigInt(after.queue.nextOrder)<BigInt(before.queue.nextOrder))return;

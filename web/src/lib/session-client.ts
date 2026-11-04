@@ -72,6 +72,7 @@ export function createFixtureService(delays = { normal: 180, delayed: 900 }) {
               const next = structuredClone(state) as Snapshot;
               const payload = command.payload;
               switch (payload.kind) {
+                case 'setPlaybackRate': next.playbackRate = payload.rate; break;
                 case 'run': next.paused = false; break;
                 case 'pause': next.paused = true; break;
                 case 'step': next.tick = String(BigInt(next.tick) + 1n); break;

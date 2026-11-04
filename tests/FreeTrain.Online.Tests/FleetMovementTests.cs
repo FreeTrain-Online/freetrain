@@ -195,6 +195,31 @@ public class FleetMovementTests
         return s;
     }
 
+    [Fact]
+    public async Task Shared_clock_rates_preserve_exact_ring_movement_accounts_random_queue_and_save()
+    {
+        var initial=SaveCodec.Write(BuildRing());
+        byte[]? baseline=null;
+        var now=new DateTimeOffset(2026,11,4,12,0,0,TimeSpan.Zero);
+        foreach(var rate in new[]{0.125,0.25,0.5,1,2})
+        {
+            using var host=SessionComposition.CreateSavedHost(initial);
+            async Task Send(CommandPayload payload)
+            {
+                var pending=host.Enqueue(new("operator-1"),new(Guid.NewGuid().ToString(),host.WorldEpoch,payload));
+                host.Pump();Assert.IsType<AcceptedMessage>(await pending);
+            }
+            await Send(new SetPlaybackRateCommand(rate));host.PumpRealtime(now);
+            await Send(new RunCommand());host.PumpRealtime(now);
+            for(var i=1;i<=16/rate;i++)host.PumpRealtime(now.AddMilliseconds(i*50));
+            await Send(new PauseCommand());
+            var read=host.Snapshot();Assert.Equal(116,read.Tick);
+            Assert.Equal(8,read.Mixed!.Fleet!.Trains[0].MoveCount);
+            var pendingSave=host.CaptureSave();host.Pump();var save=await pendingSave;
+            if(baseline==null)baseline=save;else Assert.Equal(baseline,save);
+        }
+    }
+
     [Theory]
     [InlineData(false)][InlineData(true)]
     public async Task Purchased_and_deployed_stock_runs_gameplay_built_ring_through_simple_junction_and_reopen(bool reverse)

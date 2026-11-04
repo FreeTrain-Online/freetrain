@@ -125,15 +125,15 @@ public static class TerrainWire
         var p = data.Provenance;
         return new(world, new(p.Profile, p.Source, p.RequestHash, p.RequestJson), data.ConstructionMode, clock, paused, random, revision);
     }
-    public static SnapshotMessage Snapshot(TerrainSessionState state, long epoch)
+    public static SnapshotMessage Snapshot(TerrainSessionState state, long epoch, double? playbackRate = null)
     {
         var cache = published.GetOrCreateValue(state);
         lock (cache)
         {
-            if (cache.Snapshot is { } previous && previous.WorldEpoch == epoch && previous.Revision == state.Revision) return previous;
+            if (cache.Snapshot is { } previous && previous.WorldEpoch == epoch && previous.Revision == state.Revision && previous.PlaybackRate == playbackRate) return previous;
             var w = state.World;
             var g = GeometryFor(w);
-            var snapshot = Header(state, epoch) with { Entities = g.Entities, Terrain = Read(state) };
+            var snapshot = Header(state, epoch) with { Entities = g.Entities, Terrain = Read(state), PlaybackRate = playbackRate };
             if (cache.Snapshot is {} prior && publications.TryGetValue(prior,out var publication) && publication.Identity == w.GeometryIdentity)
             { publications.Add(snapshot,publication); return cache.Snapshot = snapshot; }
             var ids = w.ChangedEntities.ToHashSet();

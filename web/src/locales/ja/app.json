@@ -717,5 +717,10 @@
   "deploymentState": "選択した列車の状態が変わりました。再選択してください。",
   "deploymentSimple": "簡易制御",
   "deploymentTimetable": "時刻表制御",
-  "deploymentControllerUnavailable": "この列車に適用される運転方式の分岐・信号処理は現在利用できません。"
+  "deploymentControllerUnavailable": "この列車に適用される運転方式の分岐・信号処理は現在利用できません。",
+  "gameSpeed": "ゲーム速度",
+  "gameSpeedHint": "共有シミュレーションの速度（オーナーのみ変更可）",
+  "gameSpeedSlow": "ゆっくり",
+  "gameSpeedNormal": "普通",
+  "gameSpeedFast": "高速"
 }

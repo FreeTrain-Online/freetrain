@@ -717,5 +717,10 @@
   "deploymentState": "The selected train changed. Select it again.",
   "deploymentSimple": "Simple",
   "deploymentTimetable": "Timetable",
-  "deploymentControllerUnavailable": "This train’s junction and signal actions are currently unavailable with its effective controller."
+  "deploymentControllerUnavailable": "This train’s junction and signal actions are currently unavailable with its effective controller.",
+  "gameSpeed": "Game speed",
+  "gameSpeedHint": "Shared simulation speed (owner only)",
+  "gameSpeedSlow": "Slow",
+  "gameSpeedNormal": "Normal",
+  "gameSpeedFast": "Fast"
 }

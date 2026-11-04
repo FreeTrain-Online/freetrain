@@ -9,7 +9,7 @@ mkdirSync(evidence, { recursive: true });
 process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE = evidence;
 
 const canonical = [
-  'construction-regression.spec.ts', 'cross-tool.spec.ts', 'building-catalog.spec.ts',
+  'game-toolbar.spec.ts', 'construction-regression.spec.ts', 'cross-tool.spec.ts', 'building-catalog.spec.ts',
   'object-removal.spec.ts', 'railway-construction.spec.ts', 'bridge-construction.spec.ts',
   'girder-construction.spec.ts', 'garage-construction.spec.ts', 'signal-construction.spec.ts',
   'pole-construction.spec.ts', 'speed-limit.spec.ts', 'stationary-construction.spec.ts',

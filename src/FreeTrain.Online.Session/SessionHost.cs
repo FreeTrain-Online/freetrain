@@ -114,6 +114,53 @@ public sealed partial class SessionHost : IDisposable
     public const int MaximumTicksPerPump = 256;
     public const int MaximumCommandsPerBoundary = 64;
     public long WorldEpoch { get; private set; }
+    public double PlaybackRate { get; private set; } = 1;
+    private DateTimeOffset? lastRealtimePump;
+    private double minuteAllowance;
+    public static bool IsPlaybackRate(double rate) => rate is 0.125 or 0.25 or 0.5 or 1 or 2;
+    private void ResetPlayback() { PlaybackRate = 1; minuteAllowance = 0; lastRealtimePump = null; }
+    private bool IsPaused => SavingAvailable ? CanonicalPaused : world.Paused;
+    private string? SetPlaybackRate(ParticipantContext participant, double rate)
+    {
+        if (participant.Role != ParticipantRole.Owner) return "notAuthorized";
+        if (!IsPlaybackRate(rate)) return "invalidInput";
+        if (mixedState != null) mixedState.ReviseSession();
+        else if (terrainState != null) terrainState.ReviseSession();
+        else if (referenceWorld != null) referenceWorld.ReviseSession();
+        else world.ReviseSession();
+        PlaybackRate = rate;
+        minuteAllowance = 0;
+        return null;
+    }
+
+    // Commands and leases are serviced on every 50ms network pump, even at 0.125×.
+    // Preserve fractional minutes between pumps, but discard stall time and never
+    // catch up more than four minutes in one pump (100ms at the fastest preset).
+    public PumpResult PumpRealtime(DateTimeOffset now)
+    {
+        lock (gate)
+        {
+            var paused = IsPaused;
+            var rate = PlaybackRate;
+            var epoch = WorldEpoch;
+            var service = Pump(0, now);
+            var elapsed = lastRealtimePump is {} previous ? (now - previous).TotalMilliseconds : 50;
+            lastRealtimePump = now;
+            if (IsPaused || paused || rate != PlaybackRate || epoch != WorldEpoch || service.AdvancedTicks > 0)
+            {
+                minuteAllowance = 0;
+                return service;
+            }
+            if (elapsed > 100) elapsed = 50;
+            minuteAllowance += Math.Max(0, elapsed) * PlaybackRate / 50;
+            var minutes = Math.Min(4, (int)minuteAllowance);
+            minuteAllowance -= minutes;
+            if (minutes == 0) return service;
+            var simulation = Pump(minutes, now);
+            return new(service.AdvancedTicks + simulation.AdvancedTicks,
+                service.AppliedCommands + simulation.AppliedCommands, service.Events.AddRange(simulation.Events));
+        }
+    }
 
     public SessionHost(ScenarioDefinition scenario, string ownerId, IEnumerable<Func<ITrainController>> controllerFactories, int queueCapacity = 256, long worldEpoch = 1)
     {
@@ -260,6 +307,7 @@ public sealed partial class SessionHost : IDisposable
         referenceWorld = replacement.Reference;
         terrainState = replacement.Terrain; mixedState = replacement.Mixed;
         WorldEpoch = epoch;
+        ResetPlayback();
         resetInput = safetyPause = false;
         return Snapshot();
     }
@@ -379,6 +427,7 @@ public sealed partial class SessionHost : IDisposable
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
                             case EditSlopeCommand edit when edit.Query != null: code = CommitSlope(edit.Query); break;
                             case RemoveObjectCommand remove when remove.Query != null: code = CommitRemoval(remove.Query); break;
+                            case SetPlaybackRateCommand rate: code = SetPlaybackRate(queued.Participant, rate.Rate); break;
                             case RunCommand when CanonicalCanAdvance: CanonicalPause(false); break;
                             case RunCommand: code = "invalidInput"; break;
                             case PauseCommand: CanonicalPause(true); break;
@@ -422,6 +471,7 @@ public sealed partial class SessionHost : IDisposable
                 error = RequireLease(queued.Participant, release.TrainId, release.LeaseId);
                 if (error == null) ReleaseLease(release.TrainId);
                 break;
+            case SetPlaybackRateCommand rate: error = SetPlaybackRate(queued.Participant, rate.Rate); break;
             case RunCommand: world.SetPaused(false); error = null; break;
             case PauseCommand: world.SetPaused(true); error = null; break;
             case StepCommand:
@@ -470,8 +520,8 @@ public sealed partial class SessionHost : IDisposable
     {
         lock (gate)
         {
-            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch);
-            if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch);
+            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate };
+            if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
                     new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
@@ -481,7 +531,7 @@ public sealed partial class SessionHost : IDisposable
                     reference.Spatial.Entities.Select(e => new SpatialEntityRead(e.Id,e.Revision,
                         new(e.Definition.PackId,e.Definition.ContributionId,e.Definition.RecipeId),new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),
                         e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
-                        e.Owned,e.SilentlyReclaimable,e.Value)).ToArray());
+                        e.Owned,e.SilentlyReclaimable,e.Value)).ToArray(), PlaybackRate: PlaybackRate);
             var state = world.Read();
             return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
                 new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),
@@ -494,7 +544,7 @@ public sealed partial class SessionHost : IDisposable
                 state.Stations.Select(x => new StationRead(x.Id, x.Revision, x.Name, Position(x.Position))).ToArray(),
                 state.Buildings.Select(x => new BuildingRead(x.Id, x.DefinitionId, Position(x.Position), x.Height)).ToArray(),
                 state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray(),
-                ProtocolIdentity.PrototypeRuleset, scenario.ContentVersion, ProtocolIdentity.PrototypePacks);
+                ProtocolIdentity.PrototypeRuleset, scenario.ContentVersion, ProtocolIdentity.PrototypePacks, PlaybackRate: PlaybackRate);
         }
     }
 }

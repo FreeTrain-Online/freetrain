@@ -94,7 +94,9 @@ export function validFleetSuccessor(before:ReadFleet|undefined,after:Fleet|undef
  for(const row of now.values()){
   const b=old.get(row.id);
   if(!b){if(BigInt(row.id)<BigInt(firstNewId)||row.revision!=='0')return false;continue;}
-  if(row.memberType!==b.memberType||row.revision===b.revision&&!equal(row,b)||row.revision!==b.revision&&BigInt(row.revision)!==BigInt(b.revision)+1n)return false;
+  // A publication may coalesce several committed movements or commands.
+  // Revisions must advance for changed records, but need not advance by one.
+  if(row.memberType!==b.memberType||row.revision===b.revision&&!equal(row,b)||BigInt(row.revision)<BigInt(b.revision))return false;
   if('cars' in row&&'cars' in b&&(!equal(row.definition,b.definition)||!equal(row.cars.map(c=>c.id).sort(),b.cars.map(c=>c.id).sort())))return false;
   if('owner' in row&&'owner' in b&&(row.owner!==b.owner||row.originalIndex!==b.originalIndex||!equal(row.definition,b.definition)))return false;
   if('provider' in row&&'provider' in b&&(row.kind!==b.kind||!equal(row.provider,b.provider)))return false;

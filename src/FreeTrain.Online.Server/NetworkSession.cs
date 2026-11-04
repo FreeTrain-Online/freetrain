@@ -334,7 +334,7 @@ public sealed partial class NetworkSession
                 foreach (var peer in peers.Values) host.RegisterParticipant(peer.Participant);
                 receipts.Clear(); disconnectedAt = now;
             }
-            var pump = host.Pump(1, now); // 20Hz, no unbounded catch-up after a stalled process.
+            var pump = host.PumpRealtime(now); // Service input at 20Hz; pace all simulation systems together.
             // Fixed 100ms slots avoid accumulating 50ms timer jitter into a slower rate.
             // Skip missed slots after a stall; never burst an unbounded catch-up batch.
             var slot = now.UtcTicks / TimeSpan.TicksPerMillisecond / 100;

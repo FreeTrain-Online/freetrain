@@ -44,6 +44,7 @@ public sealed class World
     private long cash;
     public bool Paused { get; private set; } = true;
     public long Revision { get; private set; }
+    public void ReviseSession() => Revision = checked(Revision + 1);
     public long Tick => clock.Tick;
     public const int InputLifetimeTicks = 5;
 

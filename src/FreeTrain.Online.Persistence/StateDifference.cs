@@ -9,7 +9,7 @@ public static class StateDifference
     private static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
     public static DeltaMessage Between(SnapshotMessage previous, SnapshotMessage next)
     {
-        if (TerrainWire.TryDifference(previous,next,out var terrainDelta)) return terrainDelta;
+        if (TerrainWire.TryDifference(previous,next,out var terrainDelta)) return terrainDelta with { PlaybackRate = next.PlaybackRate };
         if (previous.WorldEpoch != next.WorldEpoch || previous.Map != next.Map || previous.Ruleset != next.Ruleset ||
             previous.ContentVersion != next.ContentVersion || !previous.RequiredPacks.OrderBy(p => p.Id).SequenceEqual(next.RequiredPacks.OrderBy(p => p.Id)) ||
             previous.Terrain?.Name != next.Terrain?.Name || previous.Terrain?.Provenance != next.Terrain?.Provenance)
@@ -35,6 +35,6 @@ public static class StateDifference
                 terrain.NextEntityId, ReferenceEquals(previous.Terrain?.Cells, terrain.Cells) ? [] : terrain.Cells.Select((c, i) => (c, i))
                     .Where(row => previous.Terrain == null || previous.Terrain.Cells[row.i] != row.c)
                     .Select(row => new TerrainCellChangeRead(row.i, row.c.Ground, row.c.Surface)).ToArray(),
-                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), next.Mixed);
+                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), next.Mixed, next.PlaybackRate);
     }
 }

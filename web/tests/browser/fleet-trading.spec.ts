@@ -62,7 +62,7 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await dialog.getByRole('button',{name:'Confirm purchase',exact:true}).dblclick();
     await expect(dialog).toHaveCount(0);await expect(peer.locator('.catalog li')).toHaveCount(2);
     const bought=await state(page);expect(bought.mixed.fleet.trains).toHaveLength(2);
-    expect(bought.cash).toBe('14700000000');expect(bought.mixed.accounts.transactions).toHaveLength(1);
+    expect(bought.cash).toBe('14700000000');await expect(page.getByTestId('current-funds')).toHaveText('¥14,700,000,000');expect(bought.mixed.accounts.transactions).toHaveLength(1);
     expect(bought.mixed.fleet.trains.map((t:any)=>t.cars.length)).toEqual([3,3]);
     // The same wire request reuses its original receipt; a new request with the old query rejects.
     const count=receipts.length;socket!.send(JSON.stringify(lastTrade));await expect.poll(()=>receipts.length).toBe(count+1);
@@ -84,7 +84,7 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     expect((await state(page)).mixed.fleet.trains).toHaveLength(2);
     await page.getByRole('button',{name:'売却見積もり',exact:true}).click();await dialog.getByRole('button',{name:'売却を確定',exact:true}).click();
     await expect(peer.locator('.catalog li')).toHaveCount(1);
-    const sold=await state(page);expect(sold.cash).toBe('14775000000');expect(sold.mixed.accounts.transactions).toHaveLength(2);expect(sold.mixed.accounts.transactions.at(-1).revenue).toBe('75000000');
+    const sold=await state(page);expect(sold.cash).toBe('14775000000');await expect(page.getByTestId('current-funds')).toHaveText('¥14,775,000,000');expect(sold.mixed.accounts.transactions).toHaveLength(2);expect(sold.mixed.accounts.transactions.at(-1).revenue).toBe('75000000');
     const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.mixed).toEqual(sold.mixed);
     expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+sold.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
     await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(sold.worldEpoch);

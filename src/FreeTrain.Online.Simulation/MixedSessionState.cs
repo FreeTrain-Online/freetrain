@@ -21,6 +21,7 @@ public sealed class MixedSessionState
     public RandomStreams Random { get; private set; }
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
+    public void ReviseSession() => Revision = checked(Revision + 1);
     private readonly TrainCallback trainCallback;
     public TrainCallback TrainDispatcher => trainCallback;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;

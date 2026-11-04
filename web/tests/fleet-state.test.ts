@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import Ajv from 'ajv';
 import {applyDelta,immutable,parseMessage,parseMessageValue} from '../src/lib/protocol.ts';
 import {StateAssembler,stateChunkBytes} from '../src/lib/state-transfer.ts';
+import {validSnapshot} from '../src/lib/world-identity.ts';
 import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
 const root=new URL('../../prototype/protocol/',import.meta.url);
 const json=async(path:string)=>JSON.parse(await Deno.readTextFile(new URL(path,root)));
@@ -115,7 +116,7 @@ Deno.test('delta revisions, car ownership, built-ins and allocator high-water re
  const before=immutable(await scene()),original=await json('fixtures/delta-fleet.json') as Delta;
  const mutations:((d:Delta)=>void)[]=[
  d=>d.mixed!.fleet!.trains[0].revision='0',d=>d.mixed!.fleet!.groups[0].revision='0',d=>d.mixed!.geometryRevision='5',
- d=>d.mixed!.fleet!.trains[0].cars[0].revision='2',d=>d.mixed!.fleet!.trains[0].cars[0].definition.recipeId='unknown',
+ d=>d.mixed!.fleet!.trains[0].cars[0].revision='-1',d=>d.mixed!.fleet!.trains[0].cars[0].definition.recipeId='unknown',
  d=>d.mixed!.fleet!.controllers[0].id='22',d=>d.mixed!.fleet!.groups[1].id='22',d=>d.mixed!.nextEntityId='22',
  d=>d.mixed!.queue!.nextOrder='9007199254740993',
  ];
@@ -157,4 +158,47 @@ Deno.test('effective controller follows explicit delegation and preserves null/r
  group.controllerId=delegation.id;const root=fleet.groups.find(g=>g.id===fleet.rootGroupId)!;root.controllerId=delegation.id;
  assert.equal(effectiveFleetController(fleet,train.id)?.id,simple.id);
  assert.equal(effectiveFleetController(fleet,'missing'),undefined);
+});
+
+Deno.test('coalesced fleet revisions accept multiple committed updates while rejecting rewind and unversioned changes',async()=>{
+ const before=immutable(await scene()),delta=await json('fixtures/delta-fleet.json') as Delta;
+ const train=delta.mixed!.fleet!.trains[0];
+ train.revision=String(BigInt(before.mixed!.fleet!.trains[0].revision)+3n);
+ train.cars[0].revision=String(BigInt(before.mixed!.fleet!.trains[0].cars[0].revision)+3n);
+ const next=applyDelta(before,parseMessageValue(delta) as Delta);assert(next);
+ assert.equal(next.mixed!.fleet!.trains[0].revision,train.revision);
+ const rewind=structuredClone(delta);rewind.mixed!.fleet!.trains[0].revision=String(BigInt(before.mixed!.fleet!.trains[0].revision)-1n);
+ assert.equal(applyDelta(before,rewind),undefined);
+ const unversioned=structuredClone(delta);unversioned.mixed!.fleet!.trains[0].revision=before.mixed!.fleet!.trains[0].revision;
+ assert.equal(applyDelta(before,unversioned),undefined);
+});
+
+Deno.test('live fleet updates reuse certified static terrain and retain the same result as full validation',async()=>{
+ const source=await json('fixtures/snapshot-fleet.json') as Snapshot;
+ let reads=0;
+ source.terrain!.cells=new Proxy(source.terrain!.cells,{get(target,key,receiver){
+  if(typeof key==='string'&&/^\d+$/.test(key))reads++;
+  return Reflect.get(target,key,receiver);
+ }});
+ const before=immutable(parseMessageValue(source) as Snapshot);
+ const d=parseMessageValue(await json('fixtures/delta-fleet.json')) as Delta;
+ const clock={...structuredClone(d),tick:before.tick,mixed:JSON.parse(JSON.stringify(before.mixed))};
+ const clockRead=applyDelta(before,clock);assert(clockRead);
+ reads=0;assert(validSnapshot(clockRead as Snapshot));assert.equal(reads,0);
+ reads=0;const next=applyDelta(before,d);assert(next);assert.equal(reads,0);
+ assert.equal(next.terrain!.cells,before.terrain!.cells);
+ assert.equal(validSnapshot(JSON.parse(JSON.stringify(next))),true);
+ const subsequent={...structuredClone(d),baseRevision:next.revision,revision:String(BigInt(next.revision)+1n),mixed:JSON.parse(JSON.stringify(next.mixed))};
+ subsequent.mixed.fleet.trains[0].revision=String(BigInt(subsequent.mixed.fleet.trains[0].revision)+1n);
+ subsequent.mixed.fleet.trains[0].name='Second confirmed name';
+ subsequent.mixed.geometryRevision=String(BigInt(subsequent.mixed.geometryRevision)+1n);
+ reads=0;assert(applyDelta(next,subsequent));assert.equal(reads,0);
+ // Static corruption must fall back to full validation and still fail closed.
+ for(const mutate of [(x:Delta)=>x.mixed!.voxels[0].traffic!.rail!.pattern=59,
+  (x:Delta)=>x.terrain!.waterLevel=6,
+  (x:Delta)=>x.mixed!.fleet!.trains[0].cars[0].state.location!.x=2,
+  (x:Delta)=>x.mixed!.accounts.transactions[0].cashAfter='1',
+  (x:Delta)=>x.mixed!.queue!.pending=[]]){
+  const bad=structuredClone(d);mutate(bad);assert.equal(applyDelta(before,bad),undefined);
+ }
 });

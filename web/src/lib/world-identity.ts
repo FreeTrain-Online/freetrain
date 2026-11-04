@@ -1,4 +1,4 @@
-import {railwayProfile,validMixed} from './mixed-state.ts';
+import {railwayProfile,validMixed,shareMixedValidation} from './mixed-state.ts';
 import { terrainProfile, validTerrain, isValidatedTerrain } from './terrain-state.ts';
 import { maximumGameMinute } from './game-time.ts';
 import canonical from '../../../prototype/protocol/canonical-profile.json' with { type: 'json' };
@@ -39,12 +39,18 @@ function validReferenceEntities(read:Snapshot,space:WorldSpace):boolean {
   return used.size===entities.size;
 }
 const validatedSnapshots=new WeakSet<object>();
-export function validSnapshot(read:Snapshot):boolean {
-  if(Object.isFrozen(read)&&validatedSnapshots.has(read)||sameIdentity(read,terrainProfile)&&isValidatedTerrain(read))return true;
-  const valid=validSnapshotUncached(read);if(valid)validatedSnapshots.add(read);return valid;
+// Clock-only publications preserve the complete validated graph. Keep the
+// renderer's certificate as well as the terrain index across those reads.
+export function shareSnapshotValidation(before:object,after:object) {
+  if(Object.isFrozen(before)&&validatedSnapshots.has(before))validatedSnapshots.add(after);
+  shareMixedValidation(before,after);
 }
-function validSnapshotUncached(read:Snapshot):boolean {
-  if (sameIdentity(read,railwayProfile)) {try{return validMixed(read);}catch{return false;}}
+export function validSnapshot(read:Snapshot,previous?:Snapshot):boolean {
+  if(Object.isFrozen(read)&&validatedSnapshots.has(read)||sameIdentity(read,terrainProfile)&&isValidatedTerrain(read))return true;
+  const valid=validSnapshotUncached(read,previous);if(valid)validatedSnapshots.add(read);return valid;
+}
+function validSnapshotUncached(read:Snapshot,previous?:Snapshot):boolean {
+  if (sameIdentity(read,railwayProfile)) {try{return validMixed(read,previous);}catch{return false;}}
   if(read.mixed!==undefined)return false;
   if (sameIdentity(read,terrainProfile)) { try { return validTerrain(read); } catch { return false; } }
   if(read.terrain!==undefined)return false;

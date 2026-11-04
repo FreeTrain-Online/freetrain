@@ -375,6 +375,9 @@
         },
         "mixed": {
           "$ref": "#/$defs/Mixed"
+        },
+        "playbackRate": {
+          "$ref": "#/$defs/PlaybackRate"
         }
       },
       "required": [
@@ -473,6 +476,9 @@
         },
         "mixed": {
           "$ref": "#/$defs/Mixed"
+        },
+        "playbackRate": {
+          "$ref": "#/$defs/PlaybackRate"
         }
       },
       "required": [
@@ -885,6 +891,22 @@
             "query"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "setPlaybackRate"
+            },
+            "rate": {
+              "$ref": "#/$defs/PlaybackRate"
+            }
+          },
+          "required": [
+            "kind",
+            "rate"
+          ]
         }
       ]
     },
@@ -4051,6 +4073,16 @@
         "cars"
       ],
       "additionalProperties": false
+    },
+    "PlaybackRate": {
+      "type": "number",
+      "enum": [
+        0.125,
+        0.25,
+        0.5,
+        1,
+        2
+      ]
     }
   }
 }

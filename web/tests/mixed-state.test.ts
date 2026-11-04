@@ -93,3 +93,16 @@ Deno.test('speed lists validate Traffic eligibility, preserve duplicate order an
  }
  const oversized=structuredClone(read);oversized.mixed!.speedLimits!.low=Array(8193).fill(traffic.position);assert.throws(()=>parseMessage(JSON.stringify(oversized)));
 });
+
+Deno.test('shared playback rates validate and update clock-only deltas without rebuilding geometry',async()=>{
+ const state=immutable(await scene()),d=await json('fixtures/delta-mixed.json') as Delta;
+ for(const playbackRate of [0.125,0.25,0.5,1,2] as const){
+  assert.doesNotThrow(()=>parseMessageValue({...state,playbackRate}));
+  assert.doesNotThrow(()=>parseMessageValue({type:'command',requestId:'speed',expectedWorldEpoch:state.worldEpoch,payload:{kind:'setPlaybackRate',rate:playbackRate}}));
+  const delta:Delta={...d,playbackRate,mixed:structuredClone(state.mixed) as Delta['mixed'],cash:state.cash,entities:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[]},tick:state.tick};
+  const next=applyDelta(state,parseMessageValue(delta) as Delta);assert(next);
+  assert.equal(next.playbackRate,playbackRate);assert.equal(next.tick,state.tick);
+  assert.equal(next.mixed,state.mixed);assert.equal(next.terrain,state.terrain);assert.equal(next.entities,state.entities);
+ }
+ for(const rate of [0,-1,0.3,3,'1',null])assert.throws(()=>parseMessageValue({...state,playbackRate:rate}));
+});

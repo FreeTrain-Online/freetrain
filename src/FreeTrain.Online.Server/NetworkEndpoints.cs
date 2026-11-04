@@ -539,6 +539,7 @@ public static class NetworkEndpoints
         BuildTrackCommand build => build.Position != null && build.Shape != null,
         SetControllerCommand controller => controller.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(controller.TrainId) && !string.IsNullOrWhiteSpace(controller.LeaseId) && controller.Controller is "manual" or "automatic",
         ControllerInputCommand input => input.InputSequence >= 0 && !string.IsNullOrWhiteSpace(input.TrainId) && !string.IsNullOrWhiteSpace(input.LeaseId),
+        SetPlaybackRateCommand rate => SessionHost.IsPlaybackRate(rate.Rate),
         RunCommand or PauseCommand or StepCommand => true,
         _ => false
     };

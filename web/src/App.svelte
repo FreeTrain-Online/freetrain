@@ -223,12 +223,21 @@
         <button disabled={clockDisabled} onclick={() => model.send({ kind: read!.paused ? 'run' : 'pause' })}>{read?.paused ? '▶' : 'Ⅱ'} {text[read?.paused ? 'run' : 'pause']}</button>
         <button class="step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>▶| {text.step}</button>
       </div>
+      <select class="game-speed" aria-label={text.gameSpeed} title={text.gameSpeedHint}
+        disabled={clockDisabled || view.role !== 'owner'} value={read?.playbackRate ?? 1}
+        onchange={event => { const rate = Number(event.currentTarget.value) as 0.125 | 0.25 | 0.5 | 1 | 2; event.currentTarget.value = String(read?.playbackRate ?? 1); void model.send({ kind: 'setPlaybackRate', rate }); }}>
+        <option value={0.125}>0.125×</option>
+        <option value={0.25}>0.25×</option>
+        <option value={0.5}>0.5× · {text.gameSpeedSlow}</option>
+        <option value={1}>1× · {text.gameSpeedNormal}</option>
+        <option value={2}>2× · {text.gameSpeedFast}</option>
+      </select>
       {#if reference}<span class="sr-only" data-testid="reference-world">{mixed ? text.mixedWorld : terrain ? text.terrainWorld : text.referenceWorld}</span>{/if}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
       {#if reference}<span class="clock-summary" data-testid="game-time">{formatGameTime(read!.tick,view.locale)}</span>{:else}
       <span class="clock-summary">{text.tick} <span data-testid="tick">{new Intl.NumberFormat(view.locale).format(BigInt(read!.tick))}</span></span>
-      <strong class="cash-summary" aria-label={text.cash}>{new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</strong>
       {/if}
+      <strong class="cash-summary" data-testid="current-funds" aria-label={`${text.cash}: ¥${new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}`} title={`${text.cash}: ¥${new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}`}>¥{new Intl.NumberFormat(view.locale).format(BigInt(read!.cash))}</strong>
       <div class="bar-end">
         <button aria-controls="primary-panel" aria-expanded={panel === 'view'} onclick={event => openPanel('view', event.currentTarget)}>{text.view}</button>
         <button aria-controls="primary-panel" aria-expanded={panel === 'session'} onclick={event => openPanel('session', event.currentTarget)}>{text.session} · <span data-testid="participant-role">{text[view.role!]}</span></button>

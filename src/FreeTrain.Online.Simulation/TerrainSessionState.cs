@@ -60,6 +60,7 @@ public sealed class TerrainSessionState
     public RandomStreams Random { get; private set; }
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
+    public void ReviseSession() => Revision = checked(Revision + 1);
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public TerrainSessionState(TerrainWorld world, TerrainProvenance provenance, bool constructionMode = false,
         ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0, IReadOnlyDictionary<string, Action>? clockHandlers = null)

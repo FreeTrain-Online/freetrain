@@ -4,14 +4,36 @@ import ports from '../../../src/FreeTrain.Online.Content/reference-spatial.json'
 import type {Snapshot,Definition,RailwayVoxel,SpatialEntity} from '../generated/contracts.ts';
 import {validTerrain,shareTerrainValidation} from './terrain-state.ts';
 import {WorldSpace,move} from './map-geometry.ts';
+import {maximumGameMinute} from './game-time.ts';
 export const railwayProfile=profile;
 const same=(a:Definition|null,b:Definition|null)=>a===b||!!a&&!!b&&a.packId===b.packId&&a.contributionId===b.contributionId&&a.recipeId===b.recipeId;
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const maximum=9223372036854775807n,minimum=-9223372036854775808n;
-export function validMixed(read:Snapshot):boolean {
+const validatedMixed=new WeakSet<object>();
+// Only reuse a certificate for immutable, already validated predecessors. These
+// comparisons cover every static field, including tunnel backups and footprints.
+function sameMovingGeometry(before:Snapshot,after:Snapshot):boolean {
+ const a=before.terrain!,b=after.terrain!,old=before.entities!,now=after.entities!;
+ if(before.worldEpoch!==after.worldEpoch||before.map!==after.map||a.cells!==b.cells||a.occupants!==b.occupants||
+  JSON.stringify({...a,cells:undefined,occupants:undefined})!==JSON.stringify({...b,cells:undefined,occupants:undefined})||old.length!==now.length)return false;
+ if(now.some((e,i)=>e!==old[i]&&(e.id!==old[i].id||JSON.stringify({...e,revision:undefined})!==JSON.stringify({...old[i],revision:undefined}))))return false;
+ const staticMixed=(m:NonNullable<Snapshot['mixed']>)=>({...m,geometryRevision:undefined,voxels:undefined,accounts:undefined,fleet:undefined,queue:undefined});
+ const x=before.mixed!,y=after.mixed!;
+ if(JSON.stringify(staticMixed(x))!==JSON.stringify(staticMixed(y))||x.voxels.length!==y.voxels.length)return false;
+ const staticVoxel=(v:RailwayVoxel)=>({...v,traffic:v.traffic?{...v.traffic,car:undefined}:null});
+ return y.voxels.every((v,i)=>v===x.voxels[i]||JSON.stringify(staticVoxel(v))===JSON.stringify(staticVoxel(x.voxels[i])));
+}
+export function shareMixedValidation(before:object,after:object) {
+ if(Object.isFrozen(before)&&validatedMixed.has(before))validatedMixed.add(after);
+}
+export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
  const m=read.mixed,t=read.terrain;
  if(!m||!t||!read.entities||read.tracks.length||read.trains.length||read.stations.length||read.buildings.length||
     BigInt(m.geometryRevision)>BigInt(read.revision)||BigInt(m.geometryRevision)<BigInt(t.geometryRevision)||BigInt(m.nextEntityId)<BigInt(t.nextEntityId))return false;
+ if(previous&&Object.isFrozen(previous)&&validatedMixed.has(previous)&&sameMovingGeometry(previous,read)) {
+  if(BigInt(read.tick)>maximumGameMinute||!validMixedAccounts(read)||!validFleet(read))return false;
+  shareTerrainValidation(previous,read);validatedMixed.add(read);return true;
+ }
  const terrainIds=new Set(t.occupants.map(o=>o.entityId)),terrainEntities=read.entities.filter(e=>terrainIds.has(e.id));
  const terrainRead={...read,cash:'0',entities:terrainEntities,mixed:undefined};
  const tunnelCorners=new Map<number,number>(),boundarySpace=new WorldSpace(read.map.width,read.map.height,read.map.levels);
@@ -106,6 +128,11 @@ export function validMixed(read:Snapshot):boolean {
    if(h!=='pole'&&h!=='crossing'||h==='pole'&&c.accessory.direction>1||h==='crossing'&&(!r||!c.road||!(r.pattern===10&&(c.road.edges&68)===68||r.pattern===4&&(c.road.edges&17)===17)))return false;
   }
  }
+ if(!validMixedAccounts(read)||!validFleet(read))return false;
+ validatedMixed.add(read);return true;
+}
+function validMixedAccounts(read:Snapshot):boolean {
+ const m=read.mixed!;
  let cash=BigInt(m.accounts.initialCash),sequence=1n,revision=0n,minute=0n,operation='',topUps=0n;
  const increment=BigInt(m.accounts.bankruptcyIncrement);if(increment<=0n)return false;
  for(const e of m.accounts.transactions){
@@ -118,5 +145,5 @@ export function validMixed(read:Snapshot):boolean {
   if(rescue!==BigInt(e.topUps)||cash!==BigInt(e.cashAfter)||cash>maximum||topUps>maximum||sequence>maximum)return false;
   revision=r;minute=time;operation=e.operation;
  }
- return cash===BigInt(read.cash)&&validFleet(read);
+ return cash===BigInt(read.cash);
 }
