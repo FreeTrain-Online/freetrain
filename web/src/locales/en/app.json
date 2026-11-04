@@ -720,6 +720,8 @@
   "deploymentControllerUnavailable": "This train’s junction and signal actions are currently unavailable with its effective controller.",
   "gameSpeed": "Game speed",
   "gameSpeedHint": "Shared simulation speed (owner only)",
+  "gameSpeedSlowest": "Slowest",
+  "gameSpeedSlower": "Slower",
   "gameSpeedSlow": "Slow",
   "gameSpeedNormal": "Normal",
   "gameSpeedFast": "Fast"

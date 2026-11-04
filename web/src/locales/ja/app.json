@@ -720,6 +720,8 @@
   "deploymentControllerUnavailable": "この列車に適用される運転方式の分岐・信号処理は現在利用できません。",
   "gameSpeed": "ゲーム速度",
   "gameSpeedHint": "共有シミュレーションの速度（オーナーのみ変更可）",
+  "gameSpeedSlowest": "最もゆっくり",
+  "gameSpeedSlower": "もっとゆっくり",
   "gameSpeedSlow": "ゆっくり",
   "gameSpeedNormal": "普通",
   "gameSpeedFast": "高速"

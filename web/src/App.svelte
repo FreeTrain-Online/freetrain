@@ -226,11 +226,11 @@
       <select class="game-speed" aria-label={text.gameSpeed} title={text.gameSpeedHint}
         disabled={clockDisabled || view.role !== 'owner'} value={read?.playbackRate ?? 1}
         onchange={event => { const rate = Number(event.currentTarget.value) as 0.125 | 0.25 | 0.5 | 1 | 2; event.currentTarget.value = String(read?.playbackRate ?? 1); void model.send({ kind: 'setPlaybackRate', rate }); }}>
-        <option value={0.125}>0.125×</option>
-        <option value={0.25}>0.25×</option>
-        <option value={0.5}>0.5× · {text.gameSpeedSlow}</option>
-        <option value={1}>1× · {text.gameSpeedNormal}</option>
-        <option value={2}>2× · {text.gameSpeedFast}</option>
+        <option value={0.125}>{text.gameSpeedSlowest}</option>
+        <option value={0.25}>{text.gameSpeedSlower}</option>
+        <option value={0.5}>{text.gameSpeedSlow}</option>
+        <option value={1}>{text.gameSpeedNormal}</option>
+        <option value={2}>{text.gameSpeedFast}</option>
       </select>
       {#if reference}<span class="sr-only" data-testid="reference-world">{mixed ? text.mixedWorld : terrain ? text.terrainWorld : text.referenceWorld}</span>{/if}
       <span data-testid="clock-state">{text[read?.paused === false ? 'running' : 'paused']}</span>
