@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { wideMovingFleetSave } from '../helpers/moving-fleet-save.ts';
 import { test, expect } from './fixtures.ts';
 import { canonicalState, openPanel, ready } from './browser-helpers.ts';
 import { fit } from './layout-helpers.ts';
@@ -116,7 +117,96 @@ test('Normal and Fast keep moving trains responsive without resync or disabled-b
   await testInfo.attach('running-clock-responsiveness.json',{body:JSON.stringify({samples,messages,sent},null,2),contentType:'application/json'});
 });
 
-test('confirmed trains animate at every slower rate across peers and settle on pause, Step, reduced motion and reconnect',async({page,browser,baseURL},testInfo)=>{
+test('running trains allow zoom refinement to finish and keep the 50 percent viewport responsive',async({page},testInfo)=>{
+ test.setTimeout(90_000);
+ await page.setViewportSize({width:1920,height:1080});
+ const before=await canonicalState(page),save=wideMovingFleetSave();
+ const uploaded=await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:JSON.stringify(save)});
+ expect(uploaded.ok(),await uploaded.text()).toBe(true);
+ await page.goto('/');await ready(page);
+ const canvas=page.locator('.world-canvas'),speed=page.getByLabel('Game speed',{exact:true});
+ await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:15_000});
+ const report=[];
+ for(const rate of ['1','2']) {
+  await speed.selectOption(rate);await expect(speed).toBeEnabled();
+  await page.getByRole('button',{name:'Run',exact:false}).first().click();
+  await expect(canvas).toHaveAttribute('data-train-motion',rate==='1'?'smooth':'discrete');
+  for(const zoom of [2,.5,1.5]) {
+   await canvas.focus();
+   const current=Number(await canvas.getAttribute('data-zoom'));
+   for(let n=0;n<Math.round(Math.abs(zoom-current)/.25);n++)await page.keyboard.press(zoom>current?'+':'-');
+   await expect(canvas).toHaveAttribute('data-zoom',zoom.toFixed(3));
+   await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:15_000});
+   await expect(canvas).toHaveAttribute('data-render-zoom',String(zoom));
+   if(zoom!==.5)continue;
+   const sample=await canvas.evaluate(el=>new Promise<{frames:number;p95Frame:number;p95Paint:number}>(resolve=>{
+    const intervals:number[]=[],paints:number[]=[],start=performance.now();let last=start;
+    const frame=(now:number)=>{
+     intervals.push(now-last);last=now;paints.push(Number((el as HTMLCanvasElement).dataset.paintMs));
+     if(now-start<3000)requestAnimationFrame(frame);
+     else {const p95=(a:number[])=>a.sort((x,y)=>x-y)[Math.floor(a.length*.95)];resolve({frames:intervals.length,p95Frame:p95(intervals),p95Paint:p95(paints)});}
+    };requestAnimationFrame(frame);
+   }));
+   expect(sample.frames).toBeGreaterThan(60);expect(sample.p95Frame).toBeLessThan(50);expect(sample.p95Paint).toBeLessThan(30);
+   report.push({rate,...sample});
+  }
+  await page.getByRole('button',{name:'Pause',exact:false}).first().click();
+ }
+ const evidence=JSON.stringify(report,null,2);
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/running-train-zoom.json`,evidence);
+ await testInfo.attach('running-train-zoom.json',{body:evidence,contentType:'application/json'});
+});
+
+test('two running trains retain bounded memory and frame times through a minute of zoom changes @performance',async({page},testInfo)=>{
+ test.setTimeout(180_000);
+ await page.setViewportSize({width:1920,height:1080});
+ const before=await canonicalState(page),save=wideMovingFleetSave(true);
+ const uploaded=await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:JSON.stringify(save)});
+ expect(uploaded.ok(),await uploaded.text()).toBe(true);
+ await page.goto('/');await ready(page);
+ const canvas=page.locator('.world-canvas'),speed=page.getByLabel('Game speed',{exact:true});
+ await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:15_000});
+ await speed.selectOption('1');await expect(speed).toBeEnabled();
+ await page.getByRole('button',{name:'Run',exact:false}).first().click();
+ const zoomTo=async(zoom:number)=>{
+  await canvas.focus();const current=Number(await canvas.getAttribute('data-zoom'));
+  for(let n=0;n<Math.round(Math.abs(zoom-current)/.25);n++)await page.keyboard.press(zoom>current?'+':'-');
+  await expect(canvas).toHaveAttribute('data-zoom',zoom.toFixed(3));
+  await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:15_000});
+ };
+ // Warm both raster scales before measuring retained memory.
+ for(const zoom of [.5,2,.5])await zoomTo(zoom);
+ const cdp=await page.context().newCDPSession(page);
+ const memory=async(collect=false)=>{if(collect)await cdp.send('HeapProfiler.collectGarbage');return await cdp.send('Runtime.getHeapUsage');};
+ const baseline=await memory(true),samples=[];
+ for(const zoom of [.5,2,.5,2,.5,2]) {
+  await zoomTo(zoom);
+  const timing=await canvas.evaluate(el=>new Promise<{frames:number;p95Frame:number;p95Paint:number}>(resolve=>{
+   const intervals:number[]=[],paints:number[]=[],start=performance.now();let last=start;
+   const frame=(now:number)=>{
+    intervals.push(now-last);last=now;paints.push(Number((el as HTMLCanvasElement).dataset.paintMs));
+    if(now-start<10_000)requestAnimationFrame(frame);
+    else {const p95=(a:number[])=>a.sort((x,y)=>x-y)[Math.floor(a.length*.95)];resolve({frames:intervals.length,p95Frame:p95(intervals),p95Paint:p95(paints)});}
+   };requestAnimationFrame(frame);
+  }));
+  const heap=await memory();samples.push({zoom,...timing,heap});
+  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/two-train-memory.json`,JSON.stringify({baseline,samples},null,2));
+  expect(timing.frames).toBeGreaterThan(300);expect(timing.p95Frame).toBeLessThan(50);expect(timing.p95Paint).toBeLessThan(40);
+ }
+ // Let normal browser GC manage the full minute; force collection only at the
+ // endpoints to distinguish retained scenes from temporary allocation churn.
+ const retained=await memory(true);
+ expect(retained.usedSize).toBeLessThan(baseline.usedSize+32*1024*1024);
+ await page.getByRole('button',{name:'Pause',exact:false}).first().click();
+ const final=await(await page.request.get('/api/saves/download')).json();
+ expect(final.mixed.fleet.trains).toHaveLength(2);
+ for(const train of final.mixed.fleet.trains)expect(train.moveCount).toBeGreaterThan(50);
+ const evidence=JSON.stringify({baseline,samples,retained},null,2);
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/two-train-memory.json`,evidence);
+ await testInfo.attach('two-train-memory.json',{body:evidence,contentType:'application/json'});
+});
+
+test('confirmed trains animate through Normal across peers, use discrete Fast and settle on pause, Step, reduced motion and reconnect',async({page,browser,baseURL},testInfo)=>{
  test.setTimeout(90_000);
  const before=await canonicalState(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:readFileSync('tests/helpers/moving-fleet-v9.json')})).ok()).toBe(true);
@@ -149,7 +239,7 @@ test('confirmed trains animate at every slower rate across peers and settle on p
   }
 
   const report=[];
-  for(const rate of ['0.125','0.25','0.5']) {
+  for(const rate of ['0.125','0.25','0.5','1']) {
    await speed.selectOption(rate);await expect(speed).toBeEnabled();
    await page.getByRole('button',{name:'Run',exact:false}).first().click();
    await expect(canvas).toHaveAttribute('data-train-motion','smooth');await expect(peerCanvas).toHaveAttribute('data-train-motion','smooth');
@@ -182,6 +272,14 @@ test('confirmed trains animate at every slower rate across peers and settle on p
    await expect.poll(async()=>(await canonicalState(page)).tick).toBe(String(BigInt(paused.tick)+1n));
    await expect(canvas).toHaveAttribute('data-train-motion','discrete');
   }
+  await page.getByRole('button',{name:'Run',exact:false}).first().click();
+  await expect(canvas).toHaveAttribute('data-train-motion','smooth');
+  await speed.selectOption('2');await expect(speed).toBeEnabled();
+  await expect(canvas).toHaveAttribute('data-train-motion','discrete');await expect(peerCanvas).toHaveAttribute('data-train-motion','discrete');
+  await expect(canvas).toHaveAttribute('data-moving-cars','0');
+  await speed.selectOption('1');await expect(speed).toBeEnabled();
+  await expect(canvas).toHaveAttribute('data-train-motion','smooth');await expect(peerCanvas).toHaveAttribute('data-train-motion','smooth');
+  await page.getByRole('button',{name:'Pause',exact:false}).first().click();
   await speed.selectOption('0.125');await expect(speed).toBeEnabled();
   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Run',exact:false}).first().click();
   await page.evaluate(()=>new Promise(r=>setTimeout(r,1000)));await expect(canvas).toHaveAttribute('data-train-motion','discrete');

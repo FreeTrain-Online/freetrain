@@ -320,8 +320,9 @@ These focused checks do not close the wider rendering/performance gates above.
 
 ## Initial live flat-track animation — 4 November 2026
 
-Gameplay trains now animate at **0.125×, 0.25× and Slow (0.5×)**. Normal and Fast
-retain the discrete baseline. Add `?smoothTrains=0` to the game URL to disable the
+Gameplay trains now animate at **0.125×, 0.25×, Slow (0.5×) and Normal (1×)**.
+Fast (2×) uses discrete committed poses. Add
+`?smoothTrains=0` to the game URL to disable the
 experiment locally. The browser's reduced-motion preference also disables it.
 These are presentation choices; no train timing, callback, controller, occupancy,
 accounting, RNG or durable-save rules change.
@@ -490,3 +491,101 @@ and samples around every car's turn entry, boundary and exit. Both day and night
 pass. Unit tests also verify continuous neighbor ordering and deterministic ties.
 The frontend build, **261 web unit tests**, the new sharp-turn browser regression
 and all seven existing toolbar/train-rendering browser regressions pass.
+
+### Zoom refinement during running trains — 4 November 2026
+
+Local train publications previously cancelled unfinished viewport builds. At wide
+zooms, repeated publications could prevent the raster from ever reaching the new
+scale. Compatible updates now let the build finish against its original scene,
+then patch the completed image to the latest state before publishing pixels and
+picks together. Global changes still replace pending work. The reported render
+zoom now reflects the displayed raster rather than the requested scale.
+
+Compatible scenes also retain the bounded terrain polygon cache, and the train
+compositor updates spatial buckets only for changed operations. A regression
+checks completion under continuous local updates, including initial rendering,
+and verifies cache reuse and bounded spatial-index work for a local change.
+
+The live browser regression uses a 512×64 map with a moving three-car ring at a
+1920×1080 window. Zooms of 200%, 50% and 150% finish at both Normal and Fast while
+running. In the 50% samples, each rate produced 181 frames over three seconds,
+with 16.7 ms p95 frame intervals and 7.1/7.7 ms p95 map paint times respectively.
+These measurements cover this flat-track fixture; dense landscapes and larger
+fleets remain separate performance cases. The fractional pixel/picking comparison
+also passes.
+
+### Scene retention during prolonged running — 4 November 2026
+
+A longer two-train session exposed an unbounded scene-retention chain. The
+viewport builder retained the shared scope of `TerrainScene.prepare`, including
+its `previous` scene reference. Each publication consequently kept older scenes,
+world reads and per-scene sprite caches alive. Zoom changes made this especially
+costly as more visible geometry and raster scales were materialized.
+
+Preparation now releases that scene reference after copying reusable cache data.
+An explicit-GC probe went from **100 retained scenes / 170 MB JavaScript heap**
+to **one current scene / 23 MB** for the same 100 preparations. The permanent
+regression checks collection for both small maps and progressive viewport maps,
+and runs as part of `deno task test` through `test:render-memory`.
+
+A separate `@performance` browser regression uses two moving three-car rings at
+2× on the 512×64 map and a 1920×1080 window. It alternates 50% and 200% zoom over
+six ten-second samples, checks continued movement for both trains and compares
+garbage-collected heap at the endpoints. Collection during the minute is left
+to the browser. The evidence is saved as `two-train-memory.json`.
+
+The minute-long run passed with 601–602 frames per ten-second sample, 16.7–16.8 ms
+p95 frame intervals and 5.8–8.9 ms p95 map paint times. Collected JavaScript heap
+was 44.0 MB at the start and 32.2 MB at the end. The frontend build and all 264
+unit tests, including the explicit-GC regression, also pass.
+
+### Runtime cost with multiple moving trains — 4 November 2026
+
+Four moving trains under 4× browser CPU throttling exposed viewport-wide work on
+each publication: regrouping every visible operation, rebuilding the animation
+index, and copying the entire overscanned terrain image. Small maps additionally
+repainted their complete terrain on every animation frame because they did not
+use `TerrainViewport`.
+
+`TerrainOperationIndex` now supplies shared column and spatial lookups for terrain
+patches and fractional train replay. Local updates replace only changed columns,
+retain the previous scene's operation array for immutable picks, and synchronously
+repaint queried damage into the retained image. Full scene/zoom replacements keep
+their progressive buffer behavior. Small maps now use the retained viewport too.
+
+For flat, same-level roadbeds, composition paints the bed once and then cars in
+continuous depth order. Other geometry keeps the general foreground/mask path,
+whose temporary mask is now bounded to the affected sprite rather than the whole
+damage rectangle. The independent fractional, roadbed-overlap and tight-turn
+pixel/picking comparisons all pass.
+
+The same four-train stress workload at 50% zoom measured:
+
+| Rate | Previous p95 frame interval | Updated p95 frame interval | Previous p95 paint | Updated p95 paint |
+| --- | ---: | ---: | ---: | ---: |
+| Normal (1×) | 133.4 ms | 50.1 ms | 64.5 ms | 26.3 ms |
+| Fast (2×) | 149.9 ms | 33.4 ms | 61.9 ms | 16.0 ms |
+
+Without CPU throttling, **six moving three-car trains** produced 361–362 frames
+over each six-second sample at both rates, with 16.7 ms p95 frame intervals and
+4.7/5.3 ms p95 paint times respectively. No sampled animation poses were missing
+or held. These are flat-ring fixture measurements at 1920×1080; CPU profiles and
+timing evidence are written by `train-runtime.spec.ts` to `train-runtime.json`
+and `train-runtime-{rate}.cpuprofile`. Optional
+`FREETRAIN_TRAIN_RUNTIME_COUNT` and `FREETRAIN_TRAIN_RUNTIME_CPU_RATE` select the
+fleet size and CPU throttling (defaults: four trains and 4×).
+
+The build/check, all 266 unit tests, existing all-rate pause/reconnect/reduced-motion
+browser checks, zoom refinement and minute-long memory regression pass. The latter
+retained 41.8 MB of collected JavaScript heap at its start and 34.0 MB at its end.
+Simulation, controller, clock and persistence rules are unchanged.
+
+### Fast returns to discrete train rendering — 4 November 2026
+
+Owner playtesting found 2× smoothing visibly choppy despite the runtime
+improvements, while 1× remains pleasant. Smooth animation is now limited to
+Normal (1×) and slower rates. Fast (2×) uses discrete committed poses and clears
+buffered travel; returning to Normal resumes smoothing from fresh confirmed
+steps. The runtime optimizations remain in place. Earlier 2× smoothing measurements
+above describe the experiment, not the current rendering policy. The sustained
+memory regression now runs at 1× to keep exercising the smooth-animation path.

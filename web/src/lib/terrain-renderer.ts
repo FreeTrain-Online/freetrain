@@ -51,8 +51,7 @@ export function inPolygon(p:Point,points:readonly Point[]):boolean {
 export class TerrainScene {
   private bounds=new WeakMap<Operation,Bounds>();
   private polygonKeys=new WeakMap<Operation,string>();
-  private polygonRasters=new Map<string,{image:OffscreenCanvas;bytes:number}>();
-  private polygonBytes=0;
+  private polygons={rasters:new Map<string,{image:OffscreenCanvas;bytes:number}>(),bytes:0};
   private raster?:{image:OffscreenCanvas;spare?:OffscreenCanvas;view:View;width:number;height:number;dpr:number;drawn:number};
   private viewKey='';
   private cellCache=new Map<number,{signature:string;operations:Operation[]}>();
@@ -60,11 +59,12 @@ export class TerrainScene {
   private read?:Snapshot;
   private space?:WorldSpace;
   private railway?:RailwayRenderPlan;
+  private columnBuilder?:(index:number)=>Operation[];
   private locationPicker?:(p:Point,view:View,policy:RailwayPickPolicy)=>Position|undefined;
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
     private background='#d8e5d9') {}
-  get supportsViewport():boolean {return !!this.region;}
+  get supportsViewport():boolean {return !!this.columnBuilder;}
   get backgroundColor():string {return this.background;}
   private viewBounds(view:View,width:number,height:number) {
     const r=this.region!;
@@ -103,7 +103,15 @@ export class TerrainScene {
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
       scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;
-      if(previous?.cacheIdentity===cacheIdentity)scene.bounds=previous.bounds;
+      if(previous?.cacheIdentity===cacheIdentity) {
+        scene.bounds=previous.bounds;scene.polygonKeys=previous.polygonKeys;
+        scene.polygons=previous.polygons;
+      }
+      // The retained viewport builder shares this preparation's closure scope.
+      // Keep reusable cache data, but release the previous scene so publications
+      // cannot form a chain retaining every old world read and sprite cache.
+      previous=undefined;
+      scene.columnBuilder=index=>build(index%read.map.width,index%read.map.width+1,Math.floor(index/read.map.width),Math.floor(index/read.map.width)+1);
       scene.locationPicker=(p,view,policy)=>pickRailwayLocation(read,{x:(p.x-view.x)/view.zoom,y:(p.y-view.y)/view.zoom},heightCut,policy);
       return scene;
     };
@@ -266,7 +274,7 @@ export class TerrainScene {
     const s=this.space!.storage(op.target.position);return s.v*this.space!.horizontalSize+s.h;
   }
   columnOperations(index:number):readonly TerrainOperation[] {
-    const r=this.region!;return r.build(index%r.width,index%r.width+1,Math.floor(index/r.width),Math.floor(index/r.width)+1);
+    return this.columnBuilder!(index);
   }
   boundsFor(op:TerrainOperation):Bounds {return this.operationBounds(op);}
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number):number {
@@ -317,16 +325,16 @@ export class TerrainScene {
     if(!shape){shape=[op.color,op.edge??'',...op.points.flatMap(p=>[p.x-b.left,p.y-b.top])].join('/');this.polygonKeys.set(op,shape);}
     const width=Math.ceil((b.right-b.left)*scale+fx),height=Math.ceil((b.bottom-b.top)*scale+fy),bytes=width*height*4;
     if(bytes>16*1024*1024)return false;
-    const key=shape+'/'+[scale,fx,fy].join(',');let cached=this.polygonRasters.get(key);
+    const key=shape+'/'+[scale,fx,fy].join(',');let cached=this.polygons.rasters.get(key);
     if(!cached) {
-      while(this.polygonBytes+bytes>64*1024*1024&&this.polygonRasters.size) {
-        const first=this.polygonRasters.keys().next().value!;this.polygonBytes-=this.polygonRasters.get(first)!.bytes;this.polygonRasters.delete(first);
+      while(this.polygons.bytes+bytes>64*1024*1024&&this.polygons.rasters.size) {
+        const first=this.polygons.rasters.keys().next().value!;this.polygons.bytes-=this.polygons.rasters.get(first)!.bytes;this.polygons.rasters.delete(first);
       }
       const image=new OffscreenCanvas(width,height),paint=image.getContext('2d')!;paint.beginPath();
       op.points.forEach((p,i)=>{const x=(p.x-b.left)*scale+fx,y=(p.y-b.top)*scale+fy;i?paint.lineTo(x,y):paint.moveTo(x,y);});
       paint.closePath();paint.fillStyle=op.color;paint.fill();
       if(op.edge){paint.strokeStyle=op.edge;paint.lineWidth=scale;paint.stroke();}
-      cached={image,bytes};this.polygonRasters.set(key,cached);this.polygonBytes+=bytes;
+      cached={image,bytes};this.polygons.rasters.set(key,cached);this.polygons.bytes+=bytes;
     }
     ctx.drawImage(cached.image,ix/dpr,iy/dpr,width/dpr,height/dpr);return true;
   }

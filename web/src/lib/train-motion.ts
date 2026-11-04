@@ -44,7 +44,7 @@ export class TrainMotionPlayer {
     const before=this.read;this.read=read;
     const motion=read.trainMotion,sequence=BigInt(motion?.sequence??'0');
     if(!before||before.worldEpoch!==read.worldEpoch||before.playbackRate!==read.playbackRate||before.paused||read.paused||
-      !this.enabled||(read.playbackRate??1)>0.5||!motion||!validTrainMotion(motion,read.tick)||motion.reset||sequence<this.sequence) {this.reset();return;}
+      !this.enabled||(read.playbackRate??1)>1||!motion||!validTrainMotion(motion,read.tick)||motion.reset||sequence<this.sequence) {this.reset();return;}
     this.observeClock(read,now);
     const steps=motion.steps.filter(s=>BigInt(s.sequence)>this.sequence);
     if(sequence>this.sequence&&(steps.length===0||BigInt(steps[0].sequence)!==this.sequence+1n)) {this.reset();return;}

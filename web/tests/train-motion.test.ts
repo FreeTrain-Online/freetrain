@@ -21,13 +21,24 @@ function advance(s:Snapshot,count=1):Snapshot {
  }
  next.tick=steps.at(-1)!.minute;next.trainMotion={sequence:steps.at(-1)!.sequence,reset:false,steps};return next;
 }
-Deno.test('committed coalesced moves replay each car at native duration and hold at underrun without changing state',()=>{
- const player=new TrainMotionPlayer(),a=initial(),b=advance(a,3),bytes=JSON.stringify(b);
+Deno.test('committed coalesced moves replay each car at native duration through Normal and hold at underrun without changing state',()=>{
+ for(const rate of [.125,.25,.5,1]) {
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=rate;
+ const b=advance(a,3),bytes=JSON.stringify(b),duration=100/rate;
  player.update(a,0);player.update(b,10);
- assert.equal(player.sample(10).length,3);assert.equal(player.sample(410+trainMotionBufferMs)[0].progress,.5);
- assert.deepEqual(player.sample(810+trainMotionBufferMs)[0].from,b.trainMotion!.steps[1].cars[0].from);
- assert.deepEqual(player.sample(1610+trainMotionBufferMs)[0].from,b.trainMotion!.steps[2].cars[0].from);
- assert.deepEqual(player.sample(2410+trainMotionBufferMs),[]);assert.deepEqual(player.sample(10000),[]);assert.equal(JSON.stringify(b),bytes);
+ assert.equal(player.sample(10).length,3);assert.equal(player.sample(10+duration/2+trainMotionBufferMs)[0].progress,.5);
+ assert.deepEqual(player.sample(10+duration+trainMotionBufferMs)[0].from,b.trainMotion!.steps[1].cars[0].from);
+ assert.deepEqual(player.sample(10+2*duration+trainMotionBufferMs)[0].from,b.trainMotion!.steps[2].cars[0].from);
+ assert.deepEqual(player.sample(10+3*duration+trainMotionBufferMs),[]);assert.deepEqual(player.sample(10000),[]);assert.equal(JSON.stringify(b),bytes);
+ }
+});
+Deno.test('Fast uses committed poses, clears queued animation, and resumes smoothing after returning to Normal',()=>{
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=1;
+ player.update(a,0);const b=advance(a);player.update(b,10);assert.equal(player.sample(20).length,3);
+ const fast={...b,playbackRate:2};player.update(fast,30);assert.deepEqual(player.sample(40),[]);
+ const c=advance(fast,3);player.update(c,50);assert.deepEqual(player.sample(60),[]);
+ const normal={...c,playbackRate:1};player.update(normal,70);assert.deepEqual(player.sample(80),[]);
+ player.update(advance(normal),90);assert.equal(player.sample(100).length,3);
 });
 Deno.test('pause, step, speed changes, reconnect/epoch, missing history, reversal and disabled motion discard travel',()=>{
  for(const kind of ['pause','rate','epoch','gap','reversal','withdrawal','reset','disabled']) {

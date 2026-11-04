@@ -4,6 +4,8 @@ import { RecipeImageCache, type RenderCatalog, type Variant, type View } from '.
 import type { Snapshot } from '../src/generated/contracts.ts';
 import { WorldSpace, move } from '../src/lib/map-geometry.ts';
 import { TerrainViewport } from '../src/lib/terrain-viewport.ts';
+import { TrainCompositor } from '../src/lib/train-compositor.ts';
+import { TerrainOperationIndex } from '../src/lib/terrain-operation-index.ts';
 function assert(v:unknown,message='Assertion failed'):asserts v {if(!v)throw new Error(message);}
 function equal(a:unknown,b:unknown){assert(JSON.stringify(a)===JSON.stringify(b),`${JSON.stringify(a)} != ${JSON.stringify(b)}`);}
 const catalog=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url))) as RenderCatalog;
@@ -57,6 +59,36 @@ Deno.test('progressive terrain publishes matching picks atomically and cancels a
     assert(scene.operations===operations);
     settle(b);assert(scene.operations!==operations);
     equal(viewport.pick({x:16,y:24},b)?.position,{x:53,y:4,z:1});
+  });
+});
+Deno.test('small gameplay maps retain terrain pixels between animation frames',async()=>{
+  await withViewport(async(_scene,_viewport,ctx)=>{
+    const scene=await TerrainScene.prepare(flat(16,32),catalog,cache(),day,5);
+    assert(scene.supportsViewport,'Small maps must use the retained viewport too');
+    const viewport=new TerrainViewport(scene),camera={x:0,y:32,zoom:1};
+    for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)break;
+    let repaints=0;const paint=scene.paintOperations.bind(scene);
+    scene.paintOperations=(...args)=>{repaints++;return paint(...args);};
+    for(let n=0;n<60;n++)assert(!viewport.draw(ctx,camera,128,96,1).pending);
+    equal(repaints,0);
+  });
+});
+Deno.test('local spatial updates retain source order, replace both moving-car entries, and remove obsolete hits',async()=>{
+  await withViewport((scene)=>{
+    const recipe=catalog.renderRecipes.find(r=>r.handler==='train-car')!;
+    const car=(column:number,carId:string)=>{
+      const base=scene.columnOperations(column)[0];
+      return {...base,target:{kind:'train' as const,id:'train',carId,position:base.target.position,definition:{packId:catalog.packId,contributionId:recipe.id,recipeId:recipe.id}}};
+    };
+    const first=car(0,'a'),second=car(1,'b'),ground=scene.columnOperations(2)[0],original=[first,second,ground];
+    const index=new TerrainOperationIndex(scene,original),a=car(1,'a'),b=car(0,'b');
+    index.replace(scene,new Map([[1,[a]],[0,[b]]]));
+    assert(index.cars.get('a')===a&&index.cars.get('b')===b,'Changing columns must retain both car identities');
+    equal(index.operations,[b,a,ground]);equal(original,[first,second,ground]);
+    equal(index.query({left:-1000,top:-1000,right:1000,bottom:1000}),[b,a,ground]);
+    index.replace(scene,new Map([[0,[]]]));
+    assert(!index.cars.has('b'));
+    equal(index.query({left:-1000,top:-1000,right:1000,bottom:1000}),[a,ground]);
   });
 });
 Deno.test('geometry replacement retains the completed viewport and matching picks until the new buffer is complete',async()=>{
@@ -138,6 +170,37 @@ Deno.test('progressive viewport keeps continuous camera picking and bounds backi
     assert(canvases.every(c=>c.width*c.height<=16_777_216),'Backing images must stay within the pixel bound');
   });
 });
+Deno.test('local scene publications cannot starve initial rendering or zoom refinement and publish the latest picks',async()=>{
+  await withViewport(async(scene,viewport,ctx)=>{
+    const raised=flat(200,100);raised.terrain!.cells[0].ground=2;
+    const edited=await TerrainScene.prepare(raised,catalog,cache(),day,5);
+    // These two fixtures differ only at column zero, as a certified edit would.
+    scene.changedColumns=edited.changedColumns=()=>[0];
+    const descriptor=Object.getOwnPropertyDescriptor(performance,'now');let time=0;
+    Object.defineProperty(performance,'now',{configurable:true,value:()=>time+=6});
+    let current=scene;
+    try {
+      for(const zoom of [1,.5,2]) {
+        const camera={x:0,y:32,zoom};let complete=false;
+        const previousZoom=viewport.presentation?.view.zoom;
+        for(let frame=0;frame<1000;frame++) {
+          if(frame%3===0){current=current===scene?edited:scene;viewport.setScene(current);}
+          const result=viewport.draw(ctx,camera,128,96,1);
+          if(frame===0&&previousZoom!==undefined)equal(result.renderZoom,previousZoom);
+          if(!result.pending) {
+            assert(viewport.presentation?.scene===current,'Completed pixels and picks must use the latest publication');
+            const point={x:16*zoom,y:32-8*zoom-(current===edited?16*zoom:0)};
+            equal(viewport.pick(point,camera)?.position.z,current===edited?2:1);
+            complete=true;break;
+          }
+        }
+        assert(complete,`Local updates starved rendering at zoom ${zoom}`);
+      }
+    }finally {
+      if(descriptor)Object.defineProperty(performance,'now',descriptor);else Reflect.deleteProperty(performance,'now');
+    }
+  });
+});
 Deno.test('zooming out replaces the buffer and publishes newly visible terrain without a pan',async()=>{
   await withViewport((scene,viewport,ctx)=>{
     const width=128,height=96,center={x:1600,y:400};
@@ -175,6 +238,29 @@ Deno.test('zooming out replaces the buffer and publishes newly visible terrain w
       equal(viewport.pick(point,view)?.position,expected.position);
       assert(!viewport.draw(ctx,view,width,height,1.3).pending,'The replacement must settle at the unchanged camera');
     }
+  });
+});
+Deno.test('local publications reuse terrain polygon rasters and update only changed animation spatial entries',async()=>{
+  await withViewport(async(scene,viewport,ctx,canvases)=>{
+    const camera={x:0,y:32,zoom:.5};
+    for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)break;
+    const compositor=new TrainCompositor(),operations=[...scene.operations];
+    assert(operations.length>100);
+    compositor.draw(ctx,camera,128,96,scene,operations,catalog,[],200,49);
+    const bounds=scene.boundsFor.bind(scene);let examined=0;
+    scene.boundsFor=op=>{examined++;return bounds(op);};
+    operations[0]={...operations[0]};
+    compositor.draw(ctx,camera,128,96,scene,operations,catalog,[],200,49);
+    assert(examined<=2,'One changed operation must not rebuild every spatial entry');
+
+    const read=mountain(),first=await TerrainScene.prepare(read,catalog,cache(),day,5);
+    const before=canvases.length;
+    first.paintOperations(ctx,view,128,96,first.operations);
+    assert(canvases.length>before,'The terrain fixture must rasterize a polygon');
+    const allocated=canvases.length;
+    const next=await TerrainScene.prepare(read,catalog,cache(),day,5,first);
+    next.paintOperations(ctx,view,128,96,next.operations);
+    equal(canvases.length,allocated);
   });
 });
 Deno.test('terrain projection uses diagonal NE/SE/SW/NW quarters and source tree slope arithmetic',()=>{
@@ -488,9 +574,15 @@ Deno.test('certified local terrain edits patch the completed raster and picks at
   const scene=await TerrainScene.prepare(before,catalog,cache(),day,5),viewport=new TerrainViewport(scene),camera={x:0,y:32,zoom:1};
   for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending)break;
   const prior=scene.operations,edited=await TerrainScene.prepare(after,catalog,cache(),day,5,scene);
+  let replayed=0;const paint=edited.paintOperations.bind(edited);
+  edited.paintOperations=(...args)=>{replayed+=args[4].length;return paint(...args);};
+  const images:unknown[]=[];ctx.drawImage=((image:unknown)=>images.push(image)) as typeof ctx.drawImage;
+  viewport.draw(ctx,camera,128,96,1);const front=images.at(-1);
   viewport.setScene(edited);const result=viewport.draw(ctx,camera,128,96,1);
   assert(result.ready&&!result.pending,'A local edit must not rebuild the overscanned viewport');
   assert(scene.operations===prior,'The previous immutable scene must keep its old picks');
+  assert(images.at(-1)===front,'Local changes must not copy the entire retained image');
+  assert(replayed<prior.length/2,'Local repaint must query nearby operations instead of scanning the viewport');
   equal(viewport.pick({x:112,y:36},camera)?.id,before.terrain!.nextEntityId);
   const water={...delta,baseRevision:after.revision,revision:String(BigInt(after.revision)+1n),entities:[],terrain:{...delta.terrain!,waterLevel:1,geometryRevision:String(BigInt(after.terrain!.geometryRevision)+1n),occupants:[]}};
   const changed=applyDelta(after,water) as Snapshot;assert(changed);

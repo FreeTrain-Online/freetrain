@@ -2,6 +2,7 @@ import type { View } from './content-recipes.ts';
 import type { Point } from './map-geometry.ts';
 import type { TerrainOperation, TerrainScene } from './terrain-renderer.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
+import {TerrainOperationIndex} from './terrain-operation-index.ts';
 
 // Physical-pixel scales keep sprite phases reusable even with fractional DPR or
 // a reduced backing resolution on large windows.
@@ -15,10 +16,10 @@ const revealOverscan=.125;
 export function terrainRasterZoom(zoom:number):number {
   return scales.reduce((best,scale)=>Math.abs(Math.log(scale/zoom))<Math.abs(Math.log(best/zoom))?scale:best);
 }
-type Raster={image:OffscreenCanvas;scene:TerrainScene;view:View;cameraZoom:number;width:number;height:number;operations:TerrainOperation[];drawn:number};
+type Raster={image:OffscreenCanvas;scene:TerrainScene;view:View;cameraZoom:number;width:number;height:number;operations:readonly TerrainOperation[];index:TerrainOperationIndex;drawn:number};
 type Region={view:View;width:number;height:number};
 type Bounds={left:number;top:number;right:number;bottom:number};
-type Work=Region&{key:string;image:OffscreenCanvas;steps:Generator<void,Raster>};
+type Work=Region&{key:string;scene:TerrainScene;image:OffscreenCanvas;steps:Generator<void,Raster>};
 
 function covers(region:Region,view:View,width:number,height:number,insetX=0,insetY=0) {
   const scale=region.view.zoom/view.zoom;
@@ -27,7 +28,7 @@ function covers(region:Region,view:View,width:number,height:number,insetX=0,inse
   return left>=xInset&&top>=yInset&&left+width*scale<=region.width-xInset&&top+height*scale<=region.height-yInset;
 }
 
-/** Two bounded, overscanned viewport images. Camera motion presents the last completed image
+/** Bounded, overscanned viewport images. Camera motion presents the last completed image
  * immediately; replacement work yields between ordered build/paint batches.
  * Only a complete image and its matching pick operations are published. */
 export class TerrainViewport {
@@ -41,8 +42,12 @@ export class TerrainViewport {
   setScene(scene:TerrainScene) {
     // Reuse the displayed image until the new geometry is fully rendered.
     // Its picks must keep using the scene that produced those visible pixels.
-    if(this.work)this.spare=this.work.image;
-    this.work=undefined;
+    // Local publications must not starve a zoom/pan rebuild. Finish its immutable
+    // source scene, then patch it to the latest publication before displaying it.
+    const columns=this.work&&scene.changedColumns(this.work.scene);
+    if(this.work&&(!columns||columns.length>2048)) {
+      this.spare=this.work.image;this.work=undefined;
+    }
     const patched=this.patch(scene);this.scene=scene;this.updateKind=patched?'local':'full';
     if(!patched)this.completedKey='';
   }
@@ -50,56 +55,56 @@ export class TerrainViewport {
   private patch(scene:TerrainScene):boolean {
     const old=this.raster;if(!old)return false;
     const columns=scene.changedColumns(old.scene);if(!columns||columns.length>2048)return false;
-    if(!columns.length){this.raster={...old,scene};scene.operations=old.operations;return true;}
-    const changed=new Set(columns),groups=new Map<number,TerrainOperation[]>();
+    if(!columns.length){old.index.replace(scene,new Map());this.raster={...old,scene};scene.operations=old.operations;return true;}
+    const changed=new Map<number,readonly TerrainOperation[]>();let drawn=old.drawn;
     let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
     const damage=(op:TerrainOperation,owner:TerrainScene)=>{
       const b=owner.boundsFor(op);left=Math.min(left,b.left);top=Math.min(top,b.top);right=Math.max(right,b.right);bottom=Math.max(bottom,b.bottom);
     };
-    for(const op of old.operations){
-      const i=old.scene.columnIndex(op);
-      if(changed.has(i)){damage(op,old.scene);continue;}
-      const group=groups.get(i)??[];group.push(op);groups.set(i,group);
-    }
-    const visible=(op:TerrainOperation)=>{
-      const b=scene.boundsFor(op),v=old.view;
+    const visible=(op:TerrainOperation,owner=scene)=>{
+      const b=owner.boundsFor(op),v=old.view;
       return v.x+b.right*v.zoom>=0&&v.y+b.bottom*v.zoom>=0&&v.x+b.left*v.zoom<=old.width&&v.y+b.top*v.zoom<=old.height;
     };
     for(const i of columns){
-      const ops=scene.columnOperations(i).filter(visible);
-      if(ops.length){groups.set(i,[...ops]);for(const op of ops)damage(op,scene);}
+      for(const op of old.index.column(i)){damage(op,old.scene);if(visible(op,old.scene))drawn--;}
+      const ops=scene.columnOperations(i).filter(op=>visible(op));changed.set(i,ops);drawn+=ops.length;
+      for(const op of ops)damage(op,scene);
     }
-    const operations=[...groups].sort(([a],[b])=>a-b).flatMap(([,ops])=>ops);
-    if(left===Infinity){this.raster={...old,scene,operations};scene.operations=operations;return true;}
+    const publish=()=>{
+      old.index.replace(scene,changed);const operations=old.index.operations;
+      this.raster={...old,scene,operations,drawn};scene.operations=operations;
+    };
+    if(left===Infinity){publish();return true;}
     // Repaint all overlapping layers, including unchanged forests/cliffs, in
     // source order. Old AND new bounds clear pixels from lowered/removed art.
     const v=old.view,clip:Bounds={left:Math.max(0,Math.floor(v.x+left*v.zoom)-2),top:Math.max(0,Math.floor(v.y+top*v.zoom)-2),
       right:Math.min(old.width,Math.ceil(v.x+right*v.zoom)+2),bottom:Math.min(old.height,Math.ceil(v.y+bottom*v.zoom)+2)};
-    if(clip.right<=clip.left||clip.bottom<=clip.top){this.raster={...old,scene,operations};scene.operations=operations;return true;}
+    if(clip.right<=clip.left||clip.bottom<=clip.top){publish();return true;}
     if((clip.right-clip.left)*(clip.bottom-clip.top)>old.width*old.height/3)return false;
-    const image=this.spare??new OffscreenCanvas(old.width,old.height);this.spare=undefined;
-    if(image.width!==old.width)image.width=old.width;if(image.height!==old.height)image.height=old.height;
-    const paint=image.getContext('2d')!;paint.setTransform(1,0,0,1,0,0);paint.imageSmoothingEnabled=false;
-    paint.globalCompositeOperation='copy';paint.drawImage(old.image,0,0);paint.globalCompositeOperation='source-over';
+    // The complete local repaint is synchronous. Updating the retained image
+    // in place avoids copying the overscanned viewport for every moving train.
+    publish();
+    const paint=old.image.getContext('2d')!;paint.setTransform(1,0,0,1,0,0);paint.imageSmoothingEnabled=false;
     paint.save();paint.beginPath();paint.rect(clip.left,clip.top,clip.right-clip.left,clip.bottom-clip.top);paint.clip();
     paint.fillStyle=scene.backgroundColor;paint.fillRect(clip.left,clip.top,clip.right-clip.left,clip.bottom-clip.top);
-    const drawn=scene.paintOperations(paint as unknown as CanvasRenderingContext2D,v,old.width,old.height,operations,[clip]);paint.restore();
-    this.spare=old.image;this.raster={...old,image,scene,operations,drawn};scene.operations=operations;return true;
+    const operations=old.index.query({left:(clip.left-v.x)/v.zoom,top:(clip.top-v.y)/v.zoom,right:(clip.right-v.x)/v.zoom,bottom:(clip.bottom-v.y)/v.zoom});
+    scene.paintOperations(paint as unknown as CanvasRenderingContext2D,v,old.width,old.height,operations,[clip]);paint.restore();
+    return true;
   }
 
-  private *render(image:OffscreenCanvas,view:View,width:number,height:number,dpr:number,cameraZoom:number):Generator<void,Raster> {
+  private *render(scene:TerrainScene,image:OffscreenCanvas,view:View,width:number,height:number,dpr:number,cameraZoom:number):Generator<void,Raster> {
     const paint=image.getContext('2d')!;
     paint.setTransform(dpr,0,0,dpr,0,0);paint.imageSmoothingEnabled=false;
-    paint.fillStyle=this.scene.backgroundColor;paint.fillRect(0,0,width,height);
+    paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,width,height);
     yield;
     const operations:TerrainOperation[]=[];
-    for(const batch of this.scene.viewportOperations(view,width,height)) {operations.push(...batch);yield;}
+    for(const batch of scene.viewportOperations(view,width,height)) {operations.push(...batch);yield;}
     let drawn=0;
     for(let i=0;i<operations.length;i+=64) {
-      drawn+=this.scene.paintOperations(paint as unknown as CanvasRenderingContext2D,view,width,height,operations.slice(i,i+64));
+      drawn+=scene.paintOperations(paint as unknown as CanvasRenderingContext2D,view,width,height,operations.slice(i,i+64));
       yield;
     }
-    return {image,scene:this.scene,view,cameraZoom,width,height,operations,drawn};
+    return {image,scene,view,cameraZoom,width,height,operations,index:new TerrainOperationIndex(scene,operations),drawn};
   }
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,dpr:number) {
     // The nearest-scale ratio squared is at most 1.5. Reserve that headroom
@@ -124,7 +129,7 @@ export class TerrainViewport {
       this.spare=undefined;
       if(image.width!==pixelWidth)image.width=pixelWidth;
       if(image.height!==pixelHeight)image.height=pixelHeight;
-      this.work={key,image,view:target,width:pixelWidth,height:pixelHeight,steps:this.render(image,target,pixelWidth,pixelHeight,1,view.zoom)};
+      this.work={key,scene:this.scene,image,view:target,width:pixelWidth,height:pixelHeight,steps:this.render(this.scene,image,target,pixelWidth,pixelHeight,1,view.zoom)};
       // Give the camera's first frame to the cached image before doing refinement.
     }else if(this.work) {
       const deadline=performance.now()+5;
@@ -132,8 +137,10 @@ export class TerrainViewport {
         const step=this.work.steps.next();
         if(step.done) {
           this.spare=this.raster?.image;this.raster=step.value;
-          this.scene.operations=step.value.operations;
-          this.completedKey=this.work.key;this.work=undefined;break;
+          this.completedKey=this.work.key;this.work=undefined;
+          if(this.raster.scene!==this.scene&&!this.patch(this.scene))this.completedKey='';
+          this.raster.scene.operations=this.raster.operations;
+          break;
         }
       }while(performance.now()<deadline);
     }
@@ -145,9 +152,9 @@ export class TerrainViewport {
     }
     // A completed reveal still needs frames to expand into the panning buffer.
     const needsBuffer=raster&&!covers(raster,view,width,height,overscanX/2,overscanY/2);
-    return {ready:!!raster,pending:!!this.work||!!needsBuffer,drawn:raster?.drawn??0,renderZoom:zoom/dpr,updateKind:this.updateKind};
+    return {ready:!!raster,pending:!!this.work||!!needsBuffer||this.completedKey!==key,drawn:raster?.drawn??0,renderZoom:(raster?.view.zoom??zoom)/dpr,updateKind:this.updateKind};
   }
-  get presentation() {return this.raster?{scene:this.raster.scene,operations:this.raster.operations,view:this.raster.view,width:this.raster.width,height:this.raster.height}:undefined;}
+  get presentation() {return this.raster?{scene:this.raster.scene,operations:this.raster.operations,index:this.raster.index,view:this.raster.view,width:this.raster.width,height:this.raster.height}:undefined;}
   pick(p:Point,view:View) {
     const raster=this.raster;if(!raster)return;
     const scale=view.zoom/raster.view.zoom,x=(p.x-view.x)/scale+raster.view.x,y=(p.y-view.y)/scale+raster.view.y;

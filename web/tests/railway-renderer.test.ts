@@ -145,7 +145,7 @@ Deno.test('all 15 literal legal ramps retain paired holes, invisible occupancy a
  }
  assert.equal(count,15);
 });
-Deno.test('large mixed viewport publishes matching railway pixels and picks together and reuses two bounded buffers',async()=>{
+Deno.test('large mixed viewport publishes matching railway pixels and picks together without copying its retained buffer',async()=>{
  const {TerrainViewport}=await import('../src/lib/terrain-viewport.ts');
  const descriptor=Object.getOwnPropertyDescriptor(globalThis,'OffscreenCanvas'),canvases:{width:number;height:number}[]=[];
  const context=()=>{let scale=1;return new Proxy({setTransform:(a:number)=>{scale=a;},getTransform:()=>({a:scale})},{get:(t,k)=>Reflect.get(t,k)??(()=>{})}) as unknown as CanvasRenderingContext2D;};
@@ -161,7 +161,7 @@ Deno.test('large mixed viewport publishes matching railway pixels and picks toge
   const update=viewport.draw(ctx,camera,128,96,1);assert(update.ready&&!update.pending);assert.equal(update.updateKind,'local');
   assert.notEqual(viewport.pick(p,camera)?.kind,'railway','A completed local patch publishes pixels and picks together');
   settle();assert.notEqual(viewport.pick(p,camera)?.kind,'railway');assert.notDeepEqual(viewport.pickLocation(p,camera,{kind:'railOrGround'}),r.position);
-  assert.equal(canvases.filter(c=>c.width===256&&c.height===288).length,2);
+  assert.equal(canvases.filter(c=>c.width===256&&c.height===288).length,1);
  }finally {if(descriptor)Object.defineProperty(globalThis,'OffscreenCanvas',descriptor);else Reflect.deleteProperty(globalThis,'OffscreenCanvas');}
 });
 Deno.test('S/W slope pier binding preserves the pinned second core crop, anchor and saved selector',async()=>{

@@ -3,6 +3,7 @@ import type { Recipe, RenderCatalog, View } from './content-recipes.ts';
 import type { TerrainOperation, TerrainScene } from './terrain-renderer.ts';
 import type { Point } from './map-geometry.ts';
 import { compareTrainLayers, movingCarLayer, type MovingCar } from './train-motion.ts';
+import type {TerrainOperationIndex} from './terrain-operation-index.ts';
 
 type Bounds={left:number;top:number;right:number;bottom:number};
 const overlaps=(a:Bounds,b:Bounds)=>a.left<=b.right&&a.right>=b.left&&a.top<=b.bottom&&a.bottom>=b.top;
@@ -13,7 +14,8 @@ const union=(a:Bounds,b:Bounds):Bounds=>({left:Math.min(a.left,b.left),top:Math.
 export class TrainCompositor {
   private source?:readonly TerrainOperation[];
   private scene?:TerrainScene;
-  private buckets=new Map<string,TerrainOperation[]>();
+  private spatial?:TerrainOperationIndex;
+  private buckets=new Map<string,Set<TerrainOperation>>();
   private order=new Map<TerrainOperation,number>();
   private cars=new Map<string,TerrainOperation>();
   private dynamic:TerrainOperation[]=[];
@@ -26,15 +28,27 @@ export class TrainCompositor {
   private recipes=new Map<string,Recipe>();
   private positions=new Map<string,Position>();
   private keys(b:Bounds) {const keys:string[]=[];for(let y=Math.floor(b.top/64);y<=Math.floor(b.bottom/64);y++)for(let x=Math.floor(b.left/64);x<=Math.floor(b.right/64);x++)keys.push(`${x},${y}`);return keys;}
-  private query(b:Bounds) {const result=new Set<TerrainOperation>();for(const key of this.keys(b))for(const op of this.buckets.get(key)??[])if(overlaps(this.scene!.boundsFor(op),b))result.add(op);return [...result];}
-  private setSource(scene:TerrainScene,source:readonly TerrainOperation[],width:number,centerX:number) {
+  private query(b:Bounds) {if(this.spatial)return this.spatial.query(b);const result=new Set<TerrainOperation>();for(const key of this.keys(b))for(const op of this.buckets.get(key)??[])if(overlaps(this.scene!.boundsFor(op),b))result.add(op);return [...result];}
+  private setSource(scene:TerrainScene,source:readonly TerrainOperation[],width:number,centerX:number,spatial?:TerrainOperationIndex) {
+    if(spatial) {
+      if(!this.spatial){this.buckets.clear();this.order.clear();}
+      this.spatial=spatial;this.scene=scene;this.source=source;this.width=width;this.centerX=centerX;this.cars=spatial.cars;
+      return;
+    }
+    if(this.spatial){this.spatial=undefined;this.source=undefined;this.cars=new Map();}
     if(this.scene===scene&&this.source===source)return;
-    this.scene=scene;this.source=source;this.width=width;this.centerX=centerX;
-    this.buckets.clear();this.order.clear();this.cars.clear();
+    this.scene=scene;this.width=width;this.centerX=centerX;
+    // Most operations retain their identity after a train move. Keep their
+    // spatial entries instead of rebuilding the entire zoomed-out terrain index.
+    const present=new Set(source),previous=new Set(this.source);
+    for(const op of previous)if(!present.has(op))for(const key of this.keys(scene.boundsFor(op))) {
+      const bucket=this.buckets.get(key);bucket?.delete(op);if(!bucket?.size)this.buckets.delete(key);
+    }
+    this.source=source;this.order.clear();this.cars.clear();
     source.forEach((op,index)=>{
       this.order.set(op,index);
       if(op.target.kind==='train')this.cars.set(op.target.carId,op);
-      for(const key of this.keys(scene.boundsFor(op))){const bucket=this.buckets.get(key)??[];bucket.push(op);this.buckets.set(key,bucket);}
+      if(!previous.has(op))for(const key of this.keys(scene.boundsFor(op))){const bucket=this.buckets.get(key)??new Set<TerrainOperation>();bucket.add(op);this.buckets.set(key,bucket);}
     });
   }
   private rank(op:TerrainOperation):number {
@@ -47,7 +61,7 @@ export class TrainCompositor {
     return column*100000+p.z*100+pass;
   }
   private compose(ops:TerrainOperation[],dynamic:TerrainOperation[]) {
-    const staticOps=ops.filter(op=>op.target.kind!=='train'||!this.hidden.has(op.target.carId)).sort((a,b)=>this.order.get(a)!-this.order.get(b)!);
+    const staticOps=ops.filter(op=>op.target.kind!=='train'||!this.hidden.has(op.target.carId)).sort((a,b)=>this.spatial?this.spatial.compare(a,b):this.order.get(a)!-this.order.get(b)!);
     for(const op of dynamic){const rank=this.rank(op);let i=0;while(i<staticOps.length&&this.rank(staticOps[i])<=rank)i++;staticOps.splice(i,0,op);}
     return staticOps;
   }
@@ -64,23 +78,37 @@ export class TrainCompositor {
    * and overlapping cars use continuous depth instead of rounded voxel slots.
    * Pixel masks leave the surrounding terrain and structural foregrounds intact. */
   paintOperations(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,ops:readonly TerrainOperation[]) {
+    // Flat roadbeds are below whole moving cars, irrespective of their voxel
+    // traversal slots. Paint them once, then the cars in continuous depth order.
+    // Structural foregrounds and mixed elevations keep the general mask path.
+    const moving=ops.filter(op=>this.isMoving(op));
+    const level=moving[0]?.target.position.z;
+    if(moving.length&&moving.every(car=>car.target.position.z===level)&&ops.every(op=>this.isMoving(op)||this.isBed(op)&&op.target.position.z===level)) {
+      this.scene!.paintOperations(ctx,view,width,height,ops.filter(op=>!this.isMoving(op)));
+      this.scene!.paintOperations(ctx,view,width,height,moving.sort((a,b)=>'layer' in a&&'layer' in b?compareTrainLayers(a.layer,b.layer):0));
+      return;
+    }
     const cars:TerrainOperation[]=[];
     for(const op of ops) {
       const covered=cars.filter(car=>this.maskedBy(op,car)&&overlaps(this.scene!.boundsFor(car),this.scene!.boundsFor(op)));
       if(covered.length) {
-        const image=this.maskedImage??=new OffscreenCanvas(width,height);
-        if(image.width<width)image.width=width;if(image.height<height)image.height=height;
-        const paint=image.getContext('2d')!;paint.setTransform(1,0,0,1,0,0);paint.clearRect(0,0,width,height);
-        this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,view,width,height,[op]);
+        const b=this.scene!.boundsFor(op),left=Math.max(0,Math.floor(view.x+b.left*view.zoom)-1),top=Math.max(0,Math.floor(view.y+b.top*view.zoom)-1);
+        const w=Math.min(width,Math.ceil(view.x+b.right*view.zoom)+1)-left,h=Math.min(height,Math.ceil(view.y+b.bottom*view.zoom)+1)-top;
+        if(w<=0||h<=0)continue;
+        const local={...view,x:view.x-left,y:view.y-top};
+        const image=this.maskedImage??=new OffscreenCanvas(w,h);
+        if(image.width<w)image.width=w;if(image.height<h)image.height=h;
+        const paint=image.getContext('2d')!;paint.setTransform(1,0,0,1,0,0);paint.clearRect(0,0,w,h);
+        this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,local,w,h,[op]);
         paint.globalCompositeOperation='destination-out';
-        this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,view,width,height,covered);
-        paint.globalCompositeOperation='source-over';ctx.drawImage(image,0,0,width,height,0,0,width,height);
+        this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,local,w,h,covered);
+        paint.globalCompositeOperation='source-over';ctx.drawImage(image,0,0,w,h,left,top,w,h);
       }else this.scene!.paintOperations(ctx,view,width,height,[op]);
       if(this.isMoving(op))cars.push(op);
     }
   }
-  draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,scene:TerrainScene,source:readonly TerrainOperation[],catalog:RenderCatalog,cars:MovingCar[],mapWidth:number,centerX:number,raster?:{view:View;width:number;height:number}) {
-    this.setSource(scene,source,mapWidth,centerX);this.dynamic=[];this.hidden.clear();this.positions.clear();
+  draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,scene:TerrainScene,source:readonly TerrainOperation[],catalog:RenderCatalog,cars:MovingCar[],mapWidth:number,centerX:number,raster?:{view:View;width:number;height:number;index?:TerrainOperationIndex}) {
+    this.setSource(scene,source,mapWidth,centerX,raster?.index);this.dynamic=[];this.hidden.clear();this.positions.clear();
     if(this.catalog!==catalog){this.catalog=catalog;this.recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));}
     const damage:Bounds[]=[];
     for(const car of cars) {
