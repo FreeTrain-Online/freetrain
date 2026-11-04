@@ -40,12 +40,113 @@ Deno.test('Fast uses committed poses, clears queued animation, and resumes smoot
  const normal={...c,playbackRate:1};player.update(normal,70);assert.deepEqual(player.sample(80),[]);
  player.update(advance(normal),90);assert.equal(player.sample(100).length,3);
 });
-Deno.test('pause, step, speed changes, reconnect/epoch, missing history, reversal and disabled motion discard travel',()=>{
- for(const kind of ['pause','rate','epoch','gap','reversal','withdrawal','reset','disabled']) {
-  const player=new TrainMotionPlayer(),a=initial(),b=advance(a);player.update(a,0);player.update(b,10);assert.equal(player.sample(20).length,3);
+Deno.test('Run fills confirmed history and calibrates a cold server before moving, without repeated startup underruns',()=>{
+ for(const rate of [1,.5,.125]) {
+  const player=new TrainMotionPlayer();let state=initial();state.paused=true;state.playbackRate=rate;
+  player.update(state,0);state={...state,paused:false};player.update(state,10);
+  // First callbacks include cold-server stalls, then settle above nominal cost.
+  const interval=Math.max(240,100/rate),arrivals=[interval+60,interval+860];
+  while(arrivals.at(-1)!<20_000)arrivals.push(arrivals.at(-1)!+interval);
+  let next=0,lastY:number|undefined,started=false,firstMovement=0;
+  for(let now=20;now<19_000;now+=10) {
+   while(next<arrivals.length&&arrivals[next]<=now){state=advance(state);player.update(state,arrivals[next++]);}
+   const before=JSON.stringify(state),cars=player.sample(now);
+   assert.equal(JSON.stringify(state),before,'presentation changed authority');
+   if(!cars.length){assert(!started,`startup underrun at ${rate}/${now}`);continue;}
+   const c=cars[0],y=c.from.position.y+(c.to.position.y-c.from.position.y)*c.progress;
+   if(lastY!==undefined&&y!==lastY){if(!started)firstMovement=now;started=true;}
+   if(started&&lastY!==undefined)assert(y<lastY,`repeated hold at ${rate}/${now}`);
+   lastY=y;
+  }
+  assert(started);assert(firstMovement<=Math.max(1520,arrivals[0]+10)); // Run at 10 ms, plus one sampled frame.
+ }
+});
+Deno.test('one late coalesced publication does not prematurely finish a fresh refill',()=>{
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=1;a.paused=true;player.update(a,0);
+ const running={...a,paused:false};player.update(running,10);
+ const b=advance(running,2);player.update(b,550);
+ assert(player.buffering);assert.equal(player.sample(650)[0].progress,0);
+ assert(player.buffering);assert.equal(player.sample(900)[0].progress,0);
+ const c=advance(b);player.update(c,1250);assert.equal(player.sample(1250)[0].progress,0);
+ const d=advance(c,8);player.update(d,1260); // Remaining queued packets arrive in a burst.
+ assert(player.buffering);assert.equal(player.sample(1290)[0].progress,0);
+ assert.equal(player.sample(1300)[0].progress,0);assert(!player.buffering);
+ const progress=player.sample(1350)[0].progress;
+ assert(progress>.3&&progress<.6,'calibration used stale, queued packets as server pacing');
+});
+Deno.test('running speed changes preserve fractional poses and confirmed routes while refilling at the new pace',()=>{
+ for(const [fromRate,toRate] of [[1,.25],[.125,1],[.5,.125],[.25,.5]])for(const pacing of [1,1.8]) {
+  const player=new TrainMotionPlayer(),a=initial();a.playbackRate=fromRate;player.update(a,0);
+  let state=advance(a,3);player.update(state,10);
+  const changed=210+50/fromRate,pose=player.sample(changed);
+  assert.equal(pose[0].progress,.5);
+  state={...state,playbackRate:toRate};player.update(state,changed);
+  assert.deepEqual(player.sample(changed),pose,'speed change snapped a fractional car');
+  const interval=100/toRate*pacing,until=changed+20_000;
+  let arrival=changed+interval,lastY=pose[0].from.position.y-.5,started=false;
+  for(let now=changed+10;now<until;now+=10) {
+   while(arrival<=now){state=advance(state);player.update(state,arrival);arrival+=interval;}
+   const bytes=JSON.stringify(state),cars=player.sample(now);assert.equal(JSON.stringify(state),bytes);
+   assert.equal(cars.length,3,`${fromRate}/${toRate}/${pacing}: lost buffered cars`);
+   const c=cars[0],y=c.from.position.y+(c.to.position.y-c.from.position.y)*c.progress;
+   if(y<lastY)started=true;
+   if(started)assert(y<lastY,`${fromRate}/${toRate}/${pacing}: repeated hold at ${now-changed}`);
+   else assert.equal(y,lastY,'refilling jumped to authority');
+   assert(lastY-y<.3,'speed transition skipped a recorded step');lastY=y;
+  }
+  assert(started);
+ }
+});
+Deno.test('rapid speed changes retain the held pose, and Pause cancels the pending refill',()=>{
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=1;player.update(a,0);
+ let state=advance(a,3);player.update(state,10);const pose=player.sample(260);
+ for(const [now,rate] of [[260,.25],[360,.5],[460,.125]]) {
+  state={...state,playbackRate:rate};player.update(state,now);assert.deepEqual(player.sample(now+1),pose);
+ }
+ player.update({...state,paused:true},500);assert.deepEqual(player.sample(501),[]);
+ assert.deepEqual(player.sample(2500),[]);
+});
+Deno.test('foreground resume discards background travel and refills fresh confirmed steps before continuous playback',()=>{
+ for(const rate of [1,.5,.125]) {
+  const player=new TrainMotionPlayer(),a=initial();a.playbackRate=rate;player.update(a,0);
+  let state=advance(a,3);player.update(state,10);player.sample(250);
+  // Publications continued while the browser stopped presenting frames.
+  state=advance(state,5);player.update(state,900);
+  const current={...state.mixed!.fleet!.trains[0].cars[0].state.location!};
+  player.resume(1000);assert(player.buffering);assert.deepEqual(player.sample(1000),[]);
+  const interval=Math.max(260,100/rate),arrivals=[1000+interval,1700+interval];
+  while(arrivals.at(-1)!<16_000)arrivals.push(arrivals.at(-1)!+interval);
+  let next=0,lastY:number|undefined,started=false;
+  for(let now=1010;now<15_000;now+=10) {
+   while(next<arrivals.length&&arrivals[next]<=now){state=advance(state);player.update(state,arrivals[next++]);}
+   const bytes=JSON.stringify(state),cars=player.sample(now);assert.equal(JSON.stringify(state),bytes);
+   if(!cars.length){assert(!started,'resume ran out of fresh history');continue;}
+   const c=cars[0],y=c.from.position.y+(c.to.position.y-c.from.position.y)*c.progress;
+   if(lastY===undefined)assert.deepEqual(c.from.position,current,'replayed stale background movement');
+   if(lastY!==undefined&&y<lastY)started=true;
+   if(started)assert(y<lastY!,`repeated foreground hold at ${rate}/${now}`);
+   lastY=y;
+  }
+  assert(started);assert(!player.buffering);
+ }
+});
+Deno.test('foreground resume respects Pause, Fast, reduced motion and canceled refills',()=>{
+ for(const kind of ['paused','fast','disabled','pauseAfterResume']) {
+  const player=new TrainMotionPlayer(),a=initial();a.playbackRate=kind==='fast'?2:1;a.paused=kind==='paused';
+  player.update(a,0);let state=advance(a);player.update(state,100);
+  if(kind==='disabled')player.setEnabled(false);
+  player.resume(1000);
+  if(kind==='pauseAfterResume'){assert(player.buffering);state={...state,paused:true};player.update(state,1100);}
+  assert(!player.buffering);assert.deepEqual(player.sample(2500),[]);
+ }
+});
+Deno.test('pause, step, reconnect/epoch, missing history, reversal and disabled motion discard travel',()=>{
+ for(const starting of [false,true])for(const kind of ['pause','epoch','gap','reversal','withdrawal','reset','disabled']) {
+  const player=new TrainMotionPlayer(),a=initial(),b=advance(a);
+  if(starting)player.update({...a,paused:true},-10);
+  player.update(a,0);player.update(b,10);assert.equal(player.sample(20).length,3);
   const c=structuredClone(b);
   if(kind==='pause')c.paused=true;
-  if(kind==='rate')c.playbackRate=.25;
   if(kind==='epoch')c.worldEpoch=String(BigInt(c.worldEpoch)+1n);
   if(kind==='gap'){c.trainMotion!.sequence='9';c.trainMotion!.steps=[];}
   if(kind==='reversal')c.mixed!.fleet!.trains[0].isReversed=true;
@@ -115,6 +216,34 @@ Deno.test('native blocked intervals remain holds, and history loss never extrapo
  // First travel is 400..600, followed by two blocked minutes (200ms).
  assert.equal(player.sample(700)[0].progress,0);assert.equal(player.sample(900)[0].progress,.5);
  assert.deepEqual(player.sample(10000),[]);
+});
+Deno.test('startup calibration retains real blocked minutes between confirmed moves',()=>{
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=.5;a.paused=true;player.update(a,0);
+ const running={...a,paused:false};player.update(running,10);
+ const b=advance(running);player.update(b,210);
+ const c=advance(b);c.tick=String(BigInt(c.tick)+2n);c.trainMotion!.steps[0].minute=c.tick;
+ player.update(c,610);assert.equal(player.sample(610)[0].progress,0);
+ assert.equal(player.sample(650)[0].progress,0); // Finish after the delivery burst settles.
+ assert.equal(player.sample(750)[0].progress,.5);
+ assert.equal(player.sample(950)[0].progress,0); // Two genuinely blocked minutes.
+ assert.equal(player.sample(1150)[0].progress,.5);
+ assert.deepEqual(player.sample(1250),[]);
+});
+Deno.test('changing speed during a genuine blocked interval preserves its remaining game minutes',()=>{
+ for(const rapid of [false,true]) {
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=.5;player.update(a,0);
+ const b=advance(a);player.update(b,200);
+ const c=advance(b);c.tick=String(BigInt(c.tick)+2n);c.trainMotion!.steps[0].minute=c.tick;player.update(c,600);
+ assert.equal(player.sample(700)[0].progress,0); // One blocked minute remains.
+ let slower={...c,playbackRate:.25};player.update(slower,700);
+ if(rapid){slower={...slower,playbackRate:.125};player.update(slower,800);}
+ const calibrated=rapid?2400:1500,minute=rapid?400:200;
+ player.update({...slower,tick:String(BigInt(slower.tick)+4n)},calibrated);
+ assert.equal(player.sample(calibrated)[0].progress,0);
+ assert.equal(player.sample(calibrated+minute/2)[0].progress,0);
+ assert.equal(player.sample(calibrated+minute*1.5)[0].progress,.25);
+ assert.deepEqual(player.sample(calibrated+minute*3),[]);
+ }
 });
 
 Deno.test('adjacent cars retain continuous depth at both ends of a tight turn without rounded-voxel order flips',()=>{

@@ -213,11 +213,15 @@ test('confirmed trains animate through Normal across peers, use discrete Fast an
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
  let resyncs=0,messages=0,lastDelivery=0;
  await page.routeWebSocket('**/api/session?*',route=>{
-  const server=route.connectToServer();
+  const server=route.connectToServer();let delivery=Promise.resolve();
   server.onMessage(message=>{
    // Preserve stream order with 100ms delivery plus bounded jitter.
    lastDelivery=Math.max(lastDelivery,Date.now()+100+(messages++%3)*20);
-   setTimeout(()=>route.send(message),Math.max(0,lastDelivery-Date.now()));
+   const target=lastDelivery;
+   delivery=delivery.then(async()=>{
+    const delay=Math.max(0,target-Date.now());if(delay)await new Promise(resolve=>setTimeout(resolve,delay));
+    route.send(message);
+   });
   });
   route.onMessage(message=>{if(JSON.parse(String(message)).type==='resync')resyncs++;server.send(message);});
  });
@@ -226,9 +230,10 @@ test('confirmed trains animate through Normal across peers, use discrete Fast an
   const canvas=page.locator('.world-canvas'),peerCanvas=peer.locator('.world-canvas'),speed=page.getByLabel('Game speed',{exact:true});
   // Put the actual ring on screen; fractional metadata alone cannot prove
   // visible gameplay animation when the initial camera faces empty terrain.
-  const scene=await canonicalState(page),centerX=Math.trunc((scene.map.height-1)/2),head=scene.mixed.fleet.trains[0].cars[0].state.location;
-  const target={x:16*(head.x-centerX+head.y)+16,y:8*(head.y-head.x+centerX)-16*head.z+8};
-  for(const client of [page,peer]) {
+  const scene=await canonicalState(page),centerX=Math.trunc((scene.map.height-1)/2);
+  const frameTrain=async(client:typeof page)=>{
+   const state=await canonicalState(client),head=state.mixed.fleet.trains[0].cars[0].state.location;
+   const target={x:16*(head.x-centerX+head.y)+16,y:8*(head.y-head.x+centerX)-16*head.z+8};
    const c=client.locator('.world-canvas'),box=(await c.boundingBox())!;
    const camera=(await c.getAttribute('data-camera'))!.split(',').map(Number),zoom=Number(await c.getAttribute('data-zoom'));
    const dx=(camera[0]-target.x)*zoom,dy=(camera[1]-target.y)*zoom,parts=Math.ceil(Math.max(Math.abs(dx),Math.abs(dy))/300);
@@ -236,13 +241,15 @@ test('confirmed trains animate through Normal across peers, use discrete Fast an
     const x=box.x+box.width/2,y=box.y+box.height/2;
     await client.mouse.move(x,y);await client.mouse.down({button:'middle'});await client.mouse.move(x+dx/parts,y+dy/parts,{steps:4});await client.mouse.up({button:'middle'});
    }
-  }
+  };
+  for(const client of [page,peer])await frameTrain(client);
 
   const report=[];
   for(const rate of ['0.125','0.25','0.5','1']) {
    await speed.selectOption(rate);await expect(speed).toBeEnabled();
    await page.getByRole('button',{name:'Run',exact:false}).first().click();
    await expect(canvas).toHaveAttribute('data-train-motion','smooth');await expect(peerCanvas).toHaveAttribute('data-train-motion','smooth');
+   await expect(canvas).toHaveAttribute('data-train-motion-phase','playing');await expect(peerCanvas).toHaveAttribute('data-train-motion-phase','playing');
    const sample=await canvas.evaluate((el,centerX)=>new Promise<{frames:number;poses:number;fractional:number;visible:number;maxOperations:number;maxHold:number;missing:number}>(resolve=>{
     const poses=new Set<string>();let frames=0,fractional=0,visible=0,maxOperations=0,maxHold=0,missing=0;
     const started=performance.now(),until=started+3400;let lastPose='',lastMoved=started;
@@ -284,7 +291,7 @@ test('confirmed trains animate through Normal across peers, use discrete Fast an
   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Run',exact:false}).first().click();
   await page.evaluate(()=>new Promise(r=>setTimeout(r,1000)));await expect(canvas).toHaveAttribute('data-train-motion','discrete');
   await page.emulateMedia({reducedMotion:'no-preference'});await expect(canvas).toHaveAttribute('data-train-motion','smooth');
-  await page.reload();await ready(page);await expect(canvas).toHaveAttribute('data-train-motion','smooth');
+  await page.reload();await ready(page);await frameTrain(page);await expect(canvas).toHaveAttribute('data-train-motion','smooth');
   await page.getByRole('button',{name:'Pause',exact:false}).first().click();await expect(canvas).toHaveAttribute('data-train-motion','discrete');
   await page.goto('/?smoothTrains=0');await ready(page);await page.getByRole('button',{name:'Run',exact:false}).first().click();
   await page.evaluate(()=>new Promise(r=>setTimeout(r,1000)));await expect(canvas).toHaveAttribute('data-train-motion','discrete');

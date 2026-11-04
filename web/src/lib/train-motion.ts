@@ -7,8 +7,12 @@ import { trainCarLayer } from './train-renderer.ts';
 type Pose=Readonly<TrainMotionPose>;
 type Step=NonNullable<ReadState['trainMotion']>['steps'][number];
 type Travel={step:Step;start:number;end:number};
+type HeldTravel={step:Step;progress:number;wait:number};
 // Covers the 100ms publication slot plus ordinary delivery/scheduling jitter.
 export const trainMotionBufferMs=200;
+// Fill after Run, speed changes or foreground return while measuring server pace.
+// Nominal pacing can drain the queue twice while a cold/Debug server warms up.
+const startupMinimumMs=600,startupMaximumMs=1500;
 export type MovingCar={trainId:string;carId:string;from:Pose;to:Pose;progress:number};
 const same=(a:Position,b:Position)=>a.x===b.x&&a.y===b.y&&a.z===b.z;
 const samePose=(a:Pose,b:Pose)=>same(a.position,b.position)&&a.heading===b.heading&&a.outgoing===b.outgoing&&a.reversed===b.reversed;
@@ -22,9 +26,20 @@ export class TrainMotionPlayer {
   private enabled=true;
   private clockSamples:{minute:bigint;time:number}[]=[];
   private wallMinute=50;
+  private startup?:{since:number;lastPublication:number;measured:boolean;publications?:number;held?:Map<string,HeldTravel>};
+  get buffering() {return !!this.startup;}
   reset() {
     this.queues.clear();this.sequence=BigInt(this.read?.trainMotion?.sequence??'0');
-    this.clockSamples=[];this.wallMinute=50/(this.read?.playbackRate??1);
+    this.clockSamples=[];this.wallMinute=50/(this.read?.playbackRate??1);this.startup=undefined;
+  }
+  resume(now:number) {
+    // Background animation frames may stop while publications keep arriving.
+    // Rejoin current authority once, then fill from fresh confirmed steps.
+    this.reset();
+    const read=this.read;
+    if(read&&!read.paused&&this.enabled&&(read.playbackRate??1)<=1&&read.trainMotion&&!read.trainMotion.reset) {
+      this.startup={since:now,lastPublication:now,measured:false,publications:0};this.observeClock(read,now);
+    }
   }
   private observeClock(read:ReadState,now:number) {
     const minute=BigInt(read.tick),samples=this.clockSamples;
@@ -35,19 +50,45 @@ export class TrainMotionPlayer {
     if(elapsed<500||minutes<2n)return;
     // Average several clock publications so a late packet does not change the
     // speed of a single voxel. Integer minutes stay bounded before conversion.
-    const nominal=50/(read.playbackRate??1),observed=elapsed/Number(minutes);
-    this.wallMinute+=.25*(Math.max(nominal*.9,Math.min(nominal*4,observed))-this.wallMinute);
+    const nominal=50/(read.playbackRate??1),observed=Math.max(nominal*.9,Math.min(nominal*20,elapsed/Number(minutes)));
+    if(this.startup){this.wallMinute=observed;this.startup.measured=true;}
+    else this.wallMinute+=.25*(observed-this.wallMinute);
   }
   setEnabled(enabled:boolean) {if(enabled!==this.enabled){this.enabled=enabled;this.reset();}}
   update(read:ReadState,now:number) {
     if(read===this.read)return;
-    const before=this.read;this.read=read;
+    const before=this.read;
     const motion=read.trainMotion,sequence=BigInt(motion?.sequence??'0');
-    if(!before||before.worldEpoch!==read.worldEpoch||before.playbackRate!==read.playbackRate||before.paused||read.paused||
-      !this.enabled||(read.playbackRate??1)>1||!motion||!validTrainMotion(motion,read.tick)||motion.reset||sequence<this.sequence) {this.reset();return;}
+    const rateChanged=!!before&&before.playbackRate!==read.playbackRate;
+    const rebuffer=rateChanged&&!before.paused&&!read.paused&&before.worldEpoch===read.worldEpoch&&
+      this.enabled&&(read.playbackRate??1)<=1&&motion&&!motion.reset&&sequence>=this.sequence&&validTrainMotion(motion,read.tick);
+    if(rebuffer) {
+      // Retain the exact fractional pose and remaining confirmed route. Clearing
+      // the queue here would snap forward to authority before filling it again.
+      const poses=this.sample(now),held=new Map<string,HeldTravel>();
+      for(const [id,queue] of this.queues) {
+        const travel=queue[0],pose=poses.find(p=>p.trainId===id);
+        const pending=this.startup?.held?.get(id);
+        const wait=pending?.step===travel.step?pending.wait:Math.max(0,travel.start-now)/this.wallMinute;
+        if(pose)held.set(id,{step:travel.step,progress:pose.progress,wait});
+      }
+      this.clockSamples=[];this.wallMinute=50/(read.playbackRate??1);
+      this.startup={since:now,lastPublication:now,measured:false,held,publications:held.size?undefined:0};this.observeClock(read,now);
+    }
+    this.read=read;
+    if(!before||before.worldEpoch!==read.worldEpoch||rateChanged&&!rebuffer||before.paused||read.paused||
+      !this.enabled||(read.playbackRate??1)>1||!motion||!validTrainMotion(motion,read.tick)||motion.reset||sequence<this.sequence) {
+      this.reset();
+      if(before?.paused&&!read.paused&&this.enabled&&(read.playbackRate??1)<=1&&motion&&!motion.reset) {
+        this.startup={since:now,lastPublication:now,measured:false,publications:0};this.observeClock(read,now);
+      }
+      return;
+    }
+    if(this.startup)this.startup.lastPublication=now;
     this.observeClock(read,now);
     const steps=motion.steps.filter(s=>BigInt(s.sequence)>this.sequence);
     if(sequence>this.sequence&&(steps.length===0||BigInt(steps[0].sequence)!==this.sequence+1n)) {this.reset();return;}
+    if(this.startup?.publications!==undefined&&steps.some(s=>s.cars.length))this.startup.publications++;
     let expected=this.sequence;
     const discontinuities=new Set<string>();
     const bufferedTails=new Set([...this.queues.values()].map(queue=>queue.at(-1)));
@@ -84,6 +125,35 @@ export class TrainMotionPlayer {
   }
   sample(now:number):MovingCar[] {
     const result:MovingCar[]=[];
+    if(this.startup) {
+      const elapsed=now-this.startup.since;
+      const filled=this.startup.publications===undefined||this.startup.publications>=2;
+      // Let a queued delivery burst drain before treating its old packets as
+      // a slow server clock. Retained speed-change routes already have pacing.
+      const settled=this.startup.publications===undefined||now-this.startup.lastPublication>=32;
+      if(elapsed>=startupMaximumMs||elapsed>=startupMinimumMs&&this.startup.measured&&filled&&settled) {
+        // Re-time every confirmed step together, including genuine blocked
+        // minutes. No queued route is consumed during the initial hold.
+        for(const queue of this.queues.values()) {
+          let previous:Travel|undefined;
+          for(const travel of queue) {
+            const held=this.startup.held?.get(travel.step.trainId);
+            const progress=held?.step===travel.step?held.progress:0;
+            const wait=previous?Math.max(0,Number(BigInt(travel.step.minute)-BigInt(previous.step.minute))-previous.step.duration)*this.wallMinute:0;
+            const duration=travel.step.duration*this.wallMinute;
+            travel.start=previous?previous.end+wait:now+(held?.step===travel.step?held.wait*this.wallMinute:0)-progress*duration;
+            travel.end=travel.start+duration;previous=travel;
+          }
+        }
+        this.startup=undefined;
+      }else {
+        for(const [trainId,queue] of this.queues)for(const car of queue[0]?.step.cars??[]) {
+          const held=this.startup.held?.get(trainId);
+          result.push({trainId,carId:car.carId,from:car.from,to:car.to,progress:held?.step===queue[0].step?held.progress:0});
+        }
+        return result;
+      }
+    }
     for(const [id,queue] of this.queues) {
       while(queue.length&&now>=queue[0].end)queue.shift();
       if(!queue.length){this.queues.delete(id);continue;}

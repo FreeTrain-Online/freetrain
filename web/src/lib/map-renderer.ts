@@ -33,6 +33,7 @@ export class MapRenderer {
   private renderCatalog?:RenderCatalog;
   private motionPainted=false;
   resetTrainMotion() {this.motion.reset();this.motionPainted=false;}
+  resumeTrainMotion(now:number) {this.motion.resume(now);this.motionPainted=false;}
   private items: Item[]=[];
   private hits: { item: Item; x: number; y: number }[]=[];
   private read?: ReadState;
@@ -148,6 +149,7 @@ export class MapRenderer {
         this.canvas.dataset.movingCars=String(stats.cars);this.canvas.dataset.motionOperations=String(stats.operations);
       }else {this.canvas.dataset.movingCars='0';this.canvas.dataset.motionOperations='0';}
       this.canvas.dataset.trainMotion=this.motionPainted?'smooth':'discrete';
+      this.canvas.dataset.trainMotionPhase=this.motionPainted?(this.motion.buffering?'buffering':'playing'):'discrete';
       this.canvas.dataset.trainMotionPose=this.motionPainted&&moving[0]?JSON.stringify(this.compositor.position(moving[0].carId)):'';
       const selected=options.selection;
       const selectedPosition=selected?.kind==='train'&&'carId' in selected

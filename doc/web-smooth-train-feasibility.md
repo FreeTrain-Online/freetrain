@@ -589,3 +589,103 @@ buffered travel; returning to Normal resumes smoothing from fresh confirmed
 steps. The runtime optimizations remain in place. Earlier 2× smoothing measurements
 above describe the experiment, not the current rendering policy. The sustained
 memory regression now runs at 1× to keep exercising the smooth-animation path.
+
+### Run startup buffering — 4 November 2026
+
+Owner playtesting found two long train-motion pauses immediately after Run while
+panning and buttons remained responsive. An isolated copy of the local 400 × 600,
+three-train save kept browser frames within 33.4 ms, but a Debug server delivered
+some consecutive movement publications 350–450 ms apart. The player initially
+assumed 50 ms per game minute and adjusted slowly, so it could exhaust its route
+buffer before learning the actual pace. This reproduction identifies a
+presentation-buffer problem alongside slower server throughput; it does not
+establish the cost of individual backend operations.
+
+After a paused-to-running transition, the player now retains confirmed steps
+during a **600–1,500 ms initial hold**. It seeds its clock measurement from Run,
+calibrates directly to observed throughput during that hold, and schedules all
+buffered steps together when playback begins. The ordinary 200 ms buffer and
+gradual corrections continue afterward. The bounded pacing estimate now permits
+up to 20 times nominal minute duration, covering the measured Debug throughput
+that exceeded the previous four-times ceiling. Pause, Step, speed changes,
+history gaps and lifecycle resets still discard travel; genuine blocked minutes
+remain holds. Simulation timing, accounting and saves are unchanged.
+
+The deterministic regression includes two cold callback delays, slower sustained
+delivery, Normal and slower presets, startup cancellation and genuine blocked
+minutes. The previous player fails the new cold-start case with an underrun.
+The Chromium regression injects ordered 300 ms and 700 ms delivery stalls and
+measures from the Run click through both cold start and resume. A focused release
+run began moving at 1.24 s and 0.66 s respectively, then recorded no missing poses
+or unchanged-pose frames during the remainder of each eight-second sample;
+maximum frame spacing was 16.8 ms. These are focused local measurements, not a
+guarantee against unbounded server or network stalls.
+
+The same browser check against the copied three-train world on a Debug server
+began moving at 1.10 s and 0.71 s, with no subsequent motion holds or missing
+poses. The frontend build, web unit checks and six clock/motion browser
+regressions pass, including two-peer Pause/Step, reduced motion and reconnect.
+
+### Running speed transitions — 4 November 2026
+
+The same refill now applies when changing a running session to Normal or a slower
+speed, including returning from Fast. Previously every rate change discarded
+confirmed travel, snapped to the current authoritative pose and restarted at the
+nominal pace. The player now retains the exact fractional position and remaining
+confirmed route during the 600–1,500 ms refill, recalibrates its presentation clock,
+then resumes from that position at the new pace. Remaining genuine blocked minutes
+are retained. Rapid speed selections keep the held pose and restart calibration
+for the latest selection; Pause still cancels the refill immediately.
+
+The shared simulation rate takes effect immediately as before. The delay affects
+animation only, with no changes to command processing, accounting or persistence.
+Fast retains its existing discrete-rendering policy.
+
+Unit coverage exercises faster and slower transitions at nominal and 1.8-times
+nominal wall time, exact fractional continuity, retained intermediate steps,
+rapid selections, Pause cancellation and a rate change during a genuine blocked
+interval. The browser regression switches through 0.25×, 1×, 0.125× and 0.5× while
+running, delaying the first two movement publications at each change by 200 ms and
+400 ms in stream order. It checks for missing poses and frame-to-frame jumps
+throughout each transition, plus continuous motion after the refill.
+The canvas exposes a buffering/playing diagnostic so regressions distinguish the
+single intentional refill from subsequent motion stalls. Existing two-peer
+continuity measurements wait for playing before sampling.
+
+Validation passes: frontend build, 271 web unit tests plus the render-memory
+check, and seven clock/motion browser cases, including multiplayer, Fast fallback,
+Pause/Step, reduced motion and reconnect. The reconnect witness reframes the
+current train after the camera resets so it continues checking visible motion.
+
+### Foreground animation recovery — 4 November 2026
+
+Returning from another window or a hidden page now uses the same calibrated
+600–1,500 ms refill. Visibility restoration previously reset the player to nominal
+pacing without refilling. Window focus return had no motion recovery, and an
+occluded window can stop animation callbacks without setting `document.hidden`.
+
+The first visible frame resyncs to the latest committed world, discards stale
+background travel and buffers fresh confirmed steps. Recovery is requested by
+window focus, visibility restoration, or a gap exceeding 250 ms between animation
+callbacks. Nearby focus/visibility notifications coalesce so they do not restart
+the refill twice. The existing terrain images and camera remain available.
+Simulation speed and persistence are unchanged. Pause cancels the refill, Fast
+and reduced motion retain their existing behavior, and returning focus never
+resumes held driving keys.
+
+Unit coverage exercises fresh-history recovery at Normal and slower rates with
+delayed publications, plus paused/disabled/Fast and cancellation guards. The
+Chromium regression covers focus events while still visible, hidden/visible
+transitions with notifications in adjacent frames, and a deterministic 750 ms
+interruption of animation callbacks without lifecycle events. Each path must
+refill once and then retain visible, continuous poses. These are automated browser
+reproductions; the test does not control native macOS window occlusion.
+
+Fresh refills wait for two movement publications and a 32 ms break in delivery
+before starting early; the 1,500 ms upper limit remains. This lets queued packets
+drain before estimating server pace, avoiding an early start or an oversized route
+backlog caused by measuring stale packets in the middle of a delivery burst.
+
+Validation passes: frontend build, 274 web unit tests plus the render-memory
+check, and ten clock/motion/manual-driving browser cases. The delayed multiplayer
+fixture serializes delivery so injected jitter retains WebSocket message order.

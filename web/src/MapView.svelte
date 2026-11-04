@@ -320,6 +320,7 @@
     $effect(() => { void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
+    let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
     const motion=()=>{lastDemoTick=undefined;renderer?.resetTrainMotion();dirty=true;};reduced.addEventListener('change',motion);
@@ -332,6 +333,13 @@
     }).catch(() => { if (active) renderState = 'failed'; });
     const paint = (now:number) => {
       if (!active) return;
+      // Occluded windows can stop rAF without reporting document.hidden. Resume
+      // once on the first visible frame, coalescing focus/visibility events.
+      const frameGap=lastFrame!==undefined&&now-lastFrame>250;lastFrame=now;
+      if(liveScene&&!document.hidden&&renderer&&(resumeMotion||frameGap)) {
+        if(frameGap||now-lastMotionResume>250){renderer.resumeTrainMotion(now);lastMotionResume=now;}
+        resumeMotion=false;dirty=true;
+      }
       const animate=!liveScene&&!document.hidden&&!reduced.matches;
       if(animate) {
         if(lastDemoTick!==undefined)demoTime=(demoTime+now-lastDemoTick)%demoLoopPeriod;
@@ -355,7 +363,12 @@
     }; frame = requestAnimationFrame(paint);
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
     const blur = () => { clearInput(); cancelGesture(); };
-    const visibility = () => { lastDemoTick=undefined;renderer?.resetTrainMotion();blur(); dirty = true; };
+    const focus = () => { resumeMotion=true;dirty=true; };
+    const visibility = () => {
+      lastDemoTick=undefined;blur();
+      if(document.hidden){renderer?.resetTrainMotion();lastMotionResume=-Infinity;}
+      resumeMotion=!document.hidden;lastFrame=undefined;dirty=true;
+    };
     const classifyWheel = createWheelClassifier();
     const wheel = (event: WheelEvent) => {
       if (!live || inputSuspended || (!event.deltaX && !event.deltaY)) return;
@@ -367,8 +380,8 @@
       }
       dirty = true;
     };
-    canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility);
-    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); };
+    canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); window.addEventListener('focus', focus); document.addEventListener('visibilitychange', visibility);
+    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
