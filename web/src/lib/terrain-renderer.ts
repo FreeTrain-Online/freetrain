@@ -110,6 +110,16 @@ export class TerrainScene {
     let ops:Operation[]=[],layers:Layer[]=[];
     const cells=new Map<number,Operation[]>(),maximumCachedCells=65536,large=read.map.width*read.map.height>16384;
     const recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
+    const carTemplates:Layer[]=[];
+    const carRecipes=new Set(read.mixed?.fleet?.trains.flatMap(t=>t.cars.filter(c=>c.state.kind==='inside').map(c=>c.definition.recipeId)));
+    for(const id of carRecipes) {
+      const recipe=recipes.get(id);if(!recipe)throw new Error('Car binding unavailable');
+      for(const frame of recipe.frames.filter(f=>f.selector.angle!==undefined)) {
+        if(frame.status!=='ready'||!frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`])throw new Error('Car variant unavailable');
+        carTemplates.push({entityId:'motion-template',recipeId:id,frame,position:[0,0,0]});
+      }
+    }
+
     const lookup=terrainLookup(read as Snapshot),entities={get:(id:string)=>lookup.entity(id)},at={get:(key:number)=>lookup.occupant(key)};
     const key=(p:Position)=>{const s=space.storage(p);return s.h<0||s.h>=read.map.width||s.v<0||s.v>=read.map.height||p.z<0||p.z>=read.map.levels?-1:(s.v*read.map.width+s.h)*read.map.levels+p.z;};
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
@@ -224,7 +234,7 @@ export class TerrainScene {
     };
     if(read.map.width*read.map.height<=16384) {
       const all=build(0,read.map.width,0,read.map.height);
-      return finish(new TerrainScene(all,await cache.ready(catalog,[...layers,...(railway?.layers??[])],variant)));
+      return finish(new TerrainScene(all,await cache.ready(catalog,[...layers,...carTemplates,...(railway?.layers??[])],variant)));
     }
     // Decode each required frame/surface once. Terrain instances and their
     // operations are materialized only for the current viewport, in source order.
@@ -237,7 +247,7 @@ export class TerrainScene {
         marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
       }
     }
-    templates.push(...(railway?.layers??[]));
+    templates.push(...carTemplates,...(railway?.layers??[]));
     for(const l of railway?.layers??[]) {
       const [ax,ay]=l.frame.anchor!,[,,w,h]=l.frame.rectangle!;marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
     }
@@ -299,7 +309,7 @@ export class TerrainScene {
     this.bounds.set(op,b);return b;
   }
   private paintPolygon(ctx:CanvasRenderingContext2D,view:View,op:Extract<Operation,{points:Point[]}>):boolean {
-    if(!this.region||typeof OffscreenCanvas==='undefined')return false;
+    if(typeof OffscreenCanvas==='undefined')return false;
     const b=this.operationBounds(op),dpr=ctx.getTransform().a,scale=view.zoom*dpr;
     const px=(view.x+b.left*view.zoom)*dpr,py=(view.y+b.top*view.zoom)*dpr;
     const ix=Math.floor(px+1e-7),iy=Math.floor(py+1e-7),fx=Math.max(0,Math.round((px-ix)*1e7)/1e7),fy=Math.max(0,Math.round((py-iy)*1e7)/1e7);
@@ -332,7 +342,7 @@ export class TerrainScene {
       drawn++;
       if(clips&&!clips.some(c=>right>=c.left&&bottom>=c.top&&left<=c.right&&top<=c.bottom))continue;
       if('layer' in op) {
-        this.ready.paintNormal(ctx,view,op.layer,!!this.region);continue;
+        this.ready.paintNormal(ctx,view,op.layer,!!this.region&&op.target.kind!=='train');continue;
       }
       if(this.paintPolygon(ctx,view,op))continue;
       const points=op.points.map(p=>({x:view.x+p.x*view.zoom,y:view.y+p.y*view.zoom}));

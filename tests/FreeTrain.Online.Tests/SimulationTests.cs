@@ -57,6 +57,7 @@ public class SimulationTests
     {
         var host = Host();
         var expected = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures/snapshot.json")));
+        expected!["playbackRate"] = 1; // Session pacing metadata is absent from the historical fixture.
         Assert.True(JsonNode.DeepEquals(expected, JsonSerializer.SerializeToNode<WireMessage>(host.Snapshot(), WireJson.CreateOptions())));
         var state = host.ReadState();
         Assert.Equal(80, state.Tracks.Length);

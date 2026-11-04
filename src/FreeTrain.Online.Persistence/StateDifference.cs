@@ -7,9 +7,19 @@ namespace FreeTrain.Online.Persistence;
 public static class StateDifference
 {
     private static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
+
+    private static TrainMotionRead? Motion(SnapshotMessage before, SnapshotMessage after)
+    {
+        if (after.TrainMotion is not {} motion) return null;
+        var sequence = before.TrainMotion?.Sequence ?? 0;
+        var steps = motion.Steps.Where(s => s.Sequence > sequence).ToArray();
+        var reset = before.WorldEpoch != after.WorldEpoch || sequence > motion.Sequence ||
+            (sequence < motion.Sequence && (steps.Length == 0 || steps[0].Sequence != sequence + 1));
+        return new(motion.Sequence, reset, reset ? [] : steps);
+    }
     public static DeltaMessage Between(SnapshotMessage previous, SnapshotMessage next)
     {
-        if (TerrainWire.TryDifference(previous,next,out var terrainDelta)) return terrainDelta with { PlaybackRate = next.PlaybackRate };
+        if (TerrainWire.TryDifference(previous,next,out var terrainDelta)) return terrainDelta with { PlaybackRate = next.PlaybackRate, TrainMotion = Motion(previous, next) };
         if (previous.WorldEpoch != next.WorldEpoch || previous.Map != next.Map || previous.Ruleset != next.Ruleset ||
             previous.ContentVersion != next.ContentVersion || !previous.RequiredPacks.OrderBy(p => p.Id).SequenceEqual(next.RequiredPacks.OrderBy(p => p.Id)) ||
             previous.Terrain?.Name != next.Terrain?.Name || previous.Terrain?.Provenance != next.Terrain?.Provenance)
@@ -35,6 +45,6 @@ public static class StateDifference
                 terrain.NextEntityId, ReferenceEquals(previous.Terrain?.Cells, terrain.Cells) ? [] : terrain.Cells.Select((c, i) => (c, i))
                     .Where(row => previous.Terrain == null || previous.Terrain.Cells[row.i] != row.c)
                     .Select(row => new TerrainCellChangeRead(row.i, row.c.Ground, row.c.Surface)).ToArray(),
-                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), next.Mixed, next.PlaybackRate);
+                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), next.Mixed, next.PlaybackRate, Motion(previous, next));
     }
 }

@@ -294,7 +294,7 @@
   export function focusTrain(id = selectedTrain?.id) {
     const train = view.read?.trains.find(t => t.id === id);
     if (train && live) {
-      const position = space.center(train.position), center = visibleCenter();
+      const position = renderer?.trainCenter(train.id)??space.center(train.position), center = visibleCenter();
       camera = { x: position.x - (center.x - width / 2) / camera.zoom, y: position.y - (center.y - height / 2) / camera.zoom, zoom: camera.zoom };
       dirty = true; focusMap();
     }
@@ -322,7 +322,7 @@
     let active = true, frame = 0;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-    const motion=()=>{lastDemoTick=undefined;dirty=true;};reduced.addEventListener('change',motion);
+    const motion=()=>{lastDemoTick=undefined;renderer?.resetTrainMotion();dirty=true;};reduced.addEventListener('change',motion);
     const compact = matchMedia('(max-width: 639px)');
     const density = () => { narrow = compact.matches; }; density(); compact.addEventListener('change', density);
     const resize = new ResizeObserver(entries => { cancelGesture();width = entries[0].contentRect.width; height = entries[0].contentRect.height; dirty = true; }); resize.observe(canvas);
@@ -342,7 +342,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           // Terrain revisions keep the completed scene visible while preparing
@@ -355,7 +355,7 @@
     }; frame = requestAnimationFrame(paint);
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
     const blur = () => { clearInput(); cancelGesture(); };
-    const visibility = () => { lastDemoTick=undefined;blur(); dirty = true; };
+    const visibility = () => { lastDemoTick=undefined;renderer?.resetTrainMotion();blur(); dirty = true; };
     const classifyWheel = createWheelClassifier();
     const wheel = (event: WheelEvent) => {
       if (!live || inputSuspended || (!event.deltaX && !event.deltaY)) return;

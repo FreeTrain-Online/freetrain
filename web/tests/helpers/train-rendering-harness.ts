@@ -1,3 +1,7 @@
+import {trainTurnScene} from './train-turn-scene.ts';
+import {normalPorts} from '../../src/lib/world-identity.ts';
+import {TrainCompositor} from '../../src/lib/train-compositor.ts';
+import {movingCarLayer} from '../../src/lib/train-motion.ts';
 // Bundled only by the focused browser test and served through a test route.
 // Uses the production pose/painter/picker with actual decoded prepared PNGs.
 import {trainCarLayer} from '../../src/lib/train-renderer.ts';
@@ -126,4 +130,136 @@ export async function tunnelMovementPixels(catalog:RenderCatalog,variant:Variant
   if(before.pick({x:x+.5,y:y+.5},view)?.kind==='train'||after.pick({x:x+.5,y:y+.5},view)?.kind==='train')throw new Error('Hidden tunnel car is pickable');picks++;
  }
  return {png,picks};
+}
+
+export async function smoothMovementPixels(catalog:RenderCatalog,variant:Variant) {
+ const stock=catalog.renderRecipes.find(r=>r.handler==='train-composition')!,cache=new RecipeImageCache();
+ const gallery=document.createElement('canvas');gallery.width=5*240;gallery.height=3*180;const contact=gallery.getContext('2d')!;
+ let picks=0,frames=0,hidden=0;
+ for(const [row,handler] of ['normal','bridge','tunnel'].entries()){
+  const s=trainSceneFixture(source as Snapshot,catalog,stock),t=s.mixed!.fleet!.trains[0];t.cars=[t.cars[0]];t.cars[0].state.heading=4;
+  for(const [i,v] of s.mixed!.voxels.entries()){
+   v.traffic!.car=i===1?{definition:t.cars[0].definition,trainId:t.id,carId:t.cars[0].id}:null;
+   if(handler!=='normal')Object.assign(v.traffic!.rail!,{definition:railwayProfile.bindings.find(b=>b.handler===handler)!.reference,variant:1,terrainBackup:handler==='tunnel'?{ne:0,se:0,sw:0,nw:0}:null});
+  }
+  const from={position:{...s.mixed!.voxels[0].position},heading:4,outgoing:4,reversed:false},to={...from,position:{...s.mixed!.voxels[1].position}};t.cars[0].state.location=to.position;
+  const scene=await TerrainScene.prepare(s,catalog,cache,variant,5),space=new WorldSpace(16,32,6),p=space.project(from.position),view={x:100-p.x,y:80-p.y,zoom:1};
+  const compositor=new TrainCompositor(),canvas=document.createElement('canvas');canvas.width=240;canvas.height=180;const paint=canvas.getContext('2d')!;
+  const staticOps=scene.operations.filter(o=>o.target.kind!=='train'),original=scene.operations.find(o=>o.target.kind==='train')!;
+  const recipe=catalog.renderRecipes.find(r=>r.id===t.cars[0].definition.recipeId)!;
+  for(const [column,progress] of [0,.25,.5,.75,1].entries()){
+   const car={trainId:t.id,carId:t.cars[0].id,from,to,progress};
+   paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,240,180);scene.draw(paint,view,240,180);
+   compositor.draw(paint,view,240,180,scene,scene.operations,catalog,handler==='tunnel'?[]:[car],16,15);
+   const dynamic={target:original.target,layer:movingCarLayer(recipe,car,15)};
+   // Independent full operation replay at the containing source voxel.
+   const position=progress<.5?from.position:to.position,storage=space.storage(position),index=storage.v*16+storage.h;
+   const expected=handler==='tunnel'?[...scene.operations]:[...staticOps];let insert=expected.findIndex(o=>scene.columnIndex(o)>index||scene.columnIndex(o)===index&&(o.target.position.z>position.z||o.target.kind==='railway'&&'layer' in o&&(o.layer.frame.stage??20)>=30));
+   if(insert<0)insert=expected.length;if(handler!=='tunnel')expected.splice(insert,0,dynamic);
+   const reference=document.createElement('canvas');reference.width=240;reference.height=180;const ref=reference.getContext('2d')!;ref.fillStyle=scene.backgroundColor;ref.fillRect(0,0,240,180);compositor.paintOperations(ref,view,240,180,expected);
+   const a=paint.getImageData(0,0,240,180).data,b=ref.getImageData(0,0,240,180).data;
+   for(let i=0;i<a.length;i++)if(a[i]!==b[i])throw new Error(`Smooth ${handler}/${progress}: damaged pixel differs at ${i}`);
+   let hits=0;
+   for(let y=45;y<125;y++)for(let x=60;x<180;x++){
+    const p={x:x+.5,y:y+.5},actual=compositor.pick(p,view);
+    const car=expected.indexOf(dynamic),carHit=handler!=='tunnel'&&scene.pickOperations(p,view,[dynamic]);
+    const visible=carHit?expected.filter((op,i)=>!(i>car&&op.target.position.z===dynamic.target.position.z&&
+     (op.target.kind==='terrain'&&op.target.surface==='ground'||op.target.kind==='railway'&&op.target.component==='rail'&&'layer' in op&&(op.layer.frame.stage??20)<30))):expected;
+    const wanted=scene.pickOperations(p,view,visible);
+    if(JSON.stringify(actual)!==JSON.stringify(wanted))throw new Error(`Smooth ${handler}/${progress}: alpha pick differs at ${x},${y}`);
+    if(actual?.kind==='train')hits++;picks++;
+   }
+   if(handler==='tunnel'){if(hits)throw new Error('Intermediate tunnel car became pickable at '+progress+' hits='+hits);hidden++;}
+   contact.drawImage(canvas,column*240,row*180);frames++;
+  }
+ }
+ return {png:gallery.toDataURL(),frames,picks,hidden};
+}
+
+/** Flat-track oracle: render every rail/ground pixel first, then whole cars.
+ * Audit both ends of a three-car consist in all eight directions. */
+export async function trainTrackOverlayPixels(catalog:RenderCatalog,variant:Variant) {
+ const offsets=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];
+ const stock=catalog.renderRecipes.find(r=>r.handler==='train-composition')!,cache=new RecipeImageCache(),space=new WorldSpace(16,32,6),anchor=space.location({h:7,v:16,z:2});
+ const gallery=document.createElement('canvas');gallery.width=5*260;gallery.height=16*200;const contact=gallery.getContext('2d')!;
+ let frames=0,carPixels=0;
+ for(const reversed of [false,true])for(let heading=0;heading<8;heading++) {
+  const s=trainSceneFixture(source as Snapshot,catalog,stock,reversed),train=s.mixed!.fleet!.trains[0],[dx,dy]=offsets[heading];
+  const position=(k:number)=>({x:anchor.x+dx*k,y:anchor.y+dy*k,z:2});
+  const pattern=Array.from({length:12},(_,i)=>i).find(i=>normalPorts(`normal${i}`)!.includes(heading)&&normalPorts(`normal${i}`)!.includes((heading+4)%8))!;
+  const template=structuredClone(s.mixed!.voxels[0]),entity=structuredClone(s.entities![0]);
+  for(const [i,c] of train.cars.entries())c.state={kind:'inside',location:position(1-i),heading,countdown:null};
+  s.entities=[];s.mixed!.voxels=[];
+  for(let k=-3;k<=5;k++) {
+   const v=structuredClone(template),id=String(k+4);v.position=position(k);v.ownerId=id;
+   const car=train.cars.find(c=>c.state.location!.x===v.position.x&&c.state.location!.y===v.position.y);
+   v.traffic!.car=car?{definition:car.definition,trainId:train.id,carId:car.id}:null;
+   v.traffic!.rail!.pattern=pattern;v.traffic!.rail!.definition={...v.traffic!.rail!.definition,contributionId:`system:pattern/${pattern}`,recipeId:`system:pattern/${pattern}`};
+   s.mixed!.voxels.push(v);s.entities.push({...structuredClone(entity),id,anchor:v.position});
+  }
+  const scene=await TerrainScene.prepare(s,catalog,cache,variant,5),p=space.project(anchor),view={x:130-p.x,y:100-p.y,zoom:1};
+  const original=new Map(scene.operations.filter(o=>o.target.kind==='train').map(o=>[o.target.kind==='train'?o.target.carId:'',o]));
+  const compositor=new TrainCompositor(),canvas=document.createElement('canvas'),reference=document.createElement('canvas');canvas.width=reference.width=260;canvas.height=reference.height=200;
+  const paint=canvas.getContext('2d')!,ref=reference.getContext('2d')!,staticOps=scene.operations.filter(o=>o.target.kind!=='train');
+  for(const [column,progress] of [0,.25,.5,.75,1].entries()) {
+   const cars=train.cars.map((c,i)=>({trainId:train.id,carId:c.id,from:{position:position(-i),heading,outgoing:heading,reversed},to:{position:position(1-i),heading,outgoing:heading,reversed},progress}));
+   paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,260,200);scene.draw(paint,view,260,200);
+   compositor.draw(paint,view,260,200,scene,scene.operations,catalog,cars,16,space.centerX);
+   const dynamic=cars.map(car=>({target:original.get(car.carId)!.target,layer:movingCarLayer(catalog.renderRecipes.find(r=>r.id===train.cars.find(c=>c.id===car.carId)!.definition.recipeId)!,car,space.centerX)}));
+   const index=(op:typeof dynamic[number])=>{const p=space.storage({x:Math.round(op.layer.position[0]+space.centerX),y:Math.round(op.layer.position[1]),z:2});return p.v*16+p.h;};dynamic.sort((a,b)=>index(a)-index(b));
+   ref.fillStyle=scene.backgroundColor;ref.fillRect(0,0,260,200);scene.paintOperations(ref,view,260,200,[...staticOps,...dynamic]);
+   const a=paint.getImageData(0,0,260,200).data,b=ref.getImageData(0,0,260,200).data;
+   for(let i=0;i<a.length;i++)if(a[i]!==b[i])throw new Error(`Track covers car: heading=${heading}, reversed=${reversed}, progress=${progress}, pixel=${i/4|0}`);
+   for(let y=40;y<160;y++)for(let x=40;x<220;x++) {
+    const p={x:x+.5,y:y+.5},expected=scene.pickOperations(p,view,dynamic);if(!expected)continue;
+    const actual=compositor.pick(p,view);if(JSON.stringify(actual)!==JSON.stringify(expected))throw new Error(`Track picks over car: ${heading}/${reversed}/${progress} at ${x},${y}`);carPixels++;
+   }
+   contact.drawImage(canvas,column*260,((reversed?8:0)+heading)*200);frames++;
+  }
+ }
+ return {png:gallery.toDataURL(),frames,carPixels};
+}
+
+/** Continuous-depth oracle for adjacent cars entering/exiting a tight bend. */
+export async function trainTurnBlendPixels(catalog:RenderCatalog,variant:Variant) {
+ const stock=catalog.renderRecipes.find(r=>r.handler==='train-composition')!,cache=new RecipeImageCache();
+ const gallery=document.createElement('canvas');gallery.width=8*240;gallery.height=8*180;const contact=gallery.getContext('2d')!;
+ const phases=[0,.01,.25,.43,.49,.5,.51,.57,.75,.99,1];
+ let frames=0,overlapPicks=0;
+ for(let rotation=0;rotation<8;rotation++)for(const turn of [-1,1])for(const reversed of [false,true]) {
+  const route=trainTurnScene(source as Snapshot,catalog,stock,rotation,turn,reversed),p=route.space.project(route.pose(5).position),view={x:120-p.x,y:90-p.y,zoom:1};
+  let previous:TerrainScene|undefined;
+  const compositor=new TrainCompositor(),canvas=document.createElement('canvas'),reference=document.createElement('canvas');canvas.width=reference.width=240;canvas.height=reference.height=180;
+  const paint=canvas.getContext('2d')!,ref=reference.getContext('2d')!;
+  for(let step=3;step<11;step++) {
+   const s=route.snapshot(step),train=s.mixed!.fleet!.trains[0],scene=await TerrainScene.prepare(s,catalog,cache,variant,5,previous);previous=scene;
+   const original=new Map(scene.operations.filter(o=>o.target.kind==='train').map(o=>[o.target.kind==='train'?o.target.carId:'',o]));
+   const staticOps=scene.operations.filter(o=>o.target.kind!=='train');
+   for(const progress of phases) {
+    const cars=train.cars.map((c,i)=>({trainId:train.id,carId:c.id,from:route.pose(step-i),to:route.pose(step-i+1),progress}));
+    paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,240,180);scene.draw(paint,view,240,180);
+    compositor.draw(paint,view,240,180,scene,scene.operations,catalog,cars,32,route.space.centerX);
+    const dynamic=cars.map(car=>({target:original.get(car.carId)!.target,layer:movingCarLayer(catalog.renderRecipes.find(r=>r.id===train.cars.find(c=>c.id===car.carId)!.definition.recipeId)!,car,route.space.centerX)}));
+    // Independent isometric depth: continuous V, continuous H, then height/ID.
+    // Integer voxel ownership never determines which overlapping car is visible.
+    dynamic.sort((a,b)=>{const [x,y,z]=a.layer.position,[xx,yy,zz]=b.layer.position;for(const d of [(y-x)-(yy-xx),(x+y)-(xx+yy),z-zz])if(Math.abs(d)>1e-8)return d;return a.layer.entityId.localeCompare(b.layer.entityId);});
+    ref.fillStyle=scene.backgroundColor;ref.fillRect(0,0,240,180);scene.paintOperations(ref,view,240,180,[...staticOps,...dynamic]);
+    const a=paint.getImageData(0,0,240,180).data,b=ref.getImageData(0,0,240,180).data;
+    for(let i=0;i<a.length;i++)if(a[i]!==b[i])throw new Error(`Bend car blending: rotation=${rotation}, turn=${turn}, reversed=${reversed}, step=${step}, progress=${progress}, pixel=${i/4|0}`);
+    for(let i=0;i<dynamic.length;i++)for(let j=i+1;j<dynamic.length;j++) {
+     const a=scene.boundsFor(dynamic[i]),b=scene.boundsFor(dynamic[j]);
+     const left=Math.max(0,Math.ceil(view.x+Math.max(a.left,b.left))),right=Math.min(240,Math.floor(view.x+Math.min(a.right,b.right)));
+     const top=Math.max(0,Math.ceil(view.y+Math.max(a.top,b.top))),bottom=Math.min(180,Math.floor(view.y+Math.min(a.bottom,b.bottom)));
+     for(let y=top;y<bottom;y+=2)for(let x=left;x<right;x+=2) {
+      const p={x:x+.5,y:y+.5};if(!scene.pickOperations(p,view,[dynamic[i]])||!scene.pickOperations(p,view,[dynamic[j]]))continue;
+      const actual=compositor.pick(p,view),expected=scene.pickOperations(p,view,dynamic);
+      if(JSON.stringify(actual)!==JSON.stringify(expected))throw new Error(`Bend overlap pick: ${rotation}/${turn}/${reversed}/${step}/${progress} at ${x},${y}`);overlapPicks++;
+     }
+    }
+    if(rotation===0&&turn===-1&&!reversed&&[0,.25,.49,.5,.51,.75,.99,1].includes(progress))contact.drawImage(canvas,[0,.25,.49,.5,.51,.75,.99,1].indexOf(progress)*240,(step-3)*180);
+    frames++;
+   }
+  }
+ }
+ return {png:gallery.toDataURL(),frames,overlapPicks};
 }

@@ -92,13 +92,15 @@ public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, 
     string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
     TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.
@@ -275,3 +277,10 @@ public sealed record FleetControllerRead(long Id, long Revision, string Name, st
 public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers);
 public sealed record MixedActionRead(long Registration, long Order, long DueMinute, string HandlerId, long Interval);
 public sealed record MixedQueueRead(long NextOrder, MixedActionRead[] Pending);
+
+// Ephemeral presentation history; never part of a durable world/save.
+public sealed record TrainMotionPoseRead(PositionRead Position, int Heading, int Outgoing, bool Reversed);
+public sealed record TrainMotionCarRead(long CarId, TrainMotionPoseRead From, TrainMotionPoseRead To);
+// Empty Cars marks a train discontinuity (slope/tunnel/reversal/Outside).
+public sealed record TrainMotionStepRead(long Sequence, long Minute, long TrainId, int Duration, TrainMotionCarRead[] Cars);
+public sealed record TrainMotionRead(long Sequence, bool Reset, TrainMotionStepRead[] Steps);

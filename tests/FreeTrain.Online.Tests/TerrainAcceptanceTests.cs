@@ -42,12 +42,12 @@ public class TerrainAcceptanceTests
             var after=host.Snapshot();var bytes=await Save(host);var restored=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve).Terrain!;
             Assert.Equal(bytes,SaveCodec.Write(restored));
             Assert.True(SaveCodec.TerrainSaveUpperBound(restored)>=bytes.LongLength);
-            var expanded=TerrainWire.Snapshot(restored,1);
+            var expanded=TerrainWire.Snapshot(restored,1,after.PlaybackRate);
             Assert.Equal(JsonSerializer.Serialize<WireMessage>(after,WireOptions),JsonSerializer.Serialize<WireMessage>(expanded,WireOptions));
             Assert.True(TerrainWire.TryDifference(before,after,out var fast));
             // Clones have no publication certificate and exercise the general comparator.
             var ordinary=NetworkSession.Difference(before with {},after with {});
-            Assert.Equal(JsonSerializer.Serialize<WireMessage>(ordinary,WireOptions),JsonSerializer.Serialize<WireMessage>(fast,WireOptions));
+            Assert.Equal(JsonSerializer.Serialize<WireMessage>(ordinary,WireOptions),JsonSerializer.Serialize<WireMessage>(fast with {PlaybackRate=after.PlaybackRate},WireOptions));
             if(history.Count>1)Assert.False(TerrainWire.TryDifference(history[^2],after,out _));
             history.Add(after);
         }

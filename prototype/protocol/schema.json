@@ -378,6 +378,9 @@
         },
         "playbackRate": {
           "$ref": "#/$defs/PlaybackRate"
+        },
+        "trainMotion": {
+          "$ref": "#/$defs/TrainMotion"
         }
       },
       "required": [
@@ -479,6 +482,9 @@
         },
         "playbackRate": {
           "$ref": "#/$defs/PlaybackRate"
+        },
+        "trainMotion": {
+          "$ref": "#/$defs/TrainMotion"
         }
       },
       "required": [
@@ -4082,6 +4088,118 @@
         0.5,
         1,
         2
+      ]
+    },
+    "TrainMotionPose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "heading": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "outgoing": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "reversed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "position",
+        "heading",
+        "outgoing",
+        "reversed"
+      ]
+    },
+    "TrainMotionCar": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "carId": {
+          "type": "string",
+          "format": "uint63"
+        },
+        "from": {
+          "$ref": "#/$defs/TrainMotionPose"
+        },
+        "to": {
+          "$ref": "#/$defs/TrainMotionPose"
+        }
+      },
+      "required": [
+        "carId",
+        "from",
+        "to"
+      ]
+    },
+    "TrainMotionStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint63"
+        },
+        "minute": {
+          "type": "string",
+          "format": "uint63"
+        },
+        "trainId": {
+          "type": "string",
+          "format": "uint63"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "cars": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/TrainMotionCar"
+          },
+          "description": "An empty array explicitly resets this train after an unsupported or discontinuous transition."
+        }
+      },
+      "required": [
+        "sequence",
+        "minute",
+        "trainId",
+        "duration",
+        "cars"
+      ]
+    },
+    "TrainMotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint63"
+        },
+        "reset": {
+          "type": "boolean"
+        },
+        "steps": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/TrainMotionStep"
+          }
+        }
+      },
+      "required": [
+        "sequence",
+        "reset",
+        "steps"
       ]
     }
   }

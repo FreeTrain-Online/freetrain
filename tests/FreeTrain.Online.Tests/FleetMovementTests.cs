@@ -196,6 +196,77 @@ public class FleetMovementTests
     }
 
     [Fact]
+    public async Task Committed_motion_history_keeps_every_coalesced_turn_and_resets_after_bounded_overflow_or_load()
+    {
+        var bytes=SaveCodec.Write(BuildRing());
+        using var host=SessionComposition.CreateSavedHost(bytes);
+        var baseline=host.Snapshot();
+        var run=host.Enqueue(new("operator-1"),new("run-motion",host.WorldEpoch,new RunCommand()));
+        host.Pump();Assert.IsType<AcceptedMessage>(await run);
+        host.Pump(24);
+        var read=host.Snapshot();var delta=StateDifference.Between(baseline,read);
+        var motion=Assert.IsType<TrainMotionRead>(delta.TrainMotion);
+        Assert.False(motion.Reset);Assert.Equal(12,motion.Sequence);Assert.Equal(12,motion.Steps.Length);
+        Assert.Equal(Enumerable.Range(1,12).Select(n=>(long)n),motion.Steps.Select(s=>s.Sequence));
+        foreach(var step in motion.Steps)
+        {
+            Assert.Equal(3,step.Cars.Length);Assert.Equal(2,step.Duration);
+            foreach(var car in step.Cars)
+            {
+                var from=car.From.Position;var to=car.To.Position;
+                Assert.Equal(from.Z,to.Z);Assert.InRange(Math.Abs(to.X-from.X),0,1);Assert.InRange(Math.Abs(to.Y-from.Y),0,1);
+                Assert.NotEqual(from,to);Assert.Equal(car.From.Outgoing,car.To.Heading);
+            }
+        }
+        var last=motion.Steps[^1];
+        foreach(var car in read.Mixed!.Fleet!.Trains[0].Cars)
+            Assert.Equal(car.State.Location,last.Cars.Single(c=>c.CarId==car.Id).To.Position);
+        Assert.Empty(StateDifference.Between(read,read).TrainMotion!.Steps);
+        host.Pump(256);host.Pump(256);
+        Assert.InRange(host.Snapshot().TrainMotion!.Steps.Length,1,SessionHost.MaximumMotionSteps);
+        var gap=StateDifference.Between(baseline,host.Snapshot()).TrainMotion!;
+        Assert.True(gap.Reset);Assert.Empty(gap.Steps);
+        var load=host.LoadSave(bytes);host.Pump();await load;
+        Assert.Equal(0,host.Snapshot().TrainMotion!.Sequence);Assert.Empty(host.Snapshot().TrainMotion!.Steps);
+    }
+
+    [Fact]
+    public async Task Failed_detached_minute_emits_no_motion_even_after_an_earlier_train_moved()
+    {
+        var s=BuildRing(quantity:2);var second=s.Fleet!.Trains[1].Id;
+        TrainCallbackResult Callback(MixedSessionState minute,long id)
+        {
+            if(id==second)throw new InvalidOperationException("unboundHarborController");
+            return FleetMovement.Tick(minute,id);
+        }
+        s=Session(s.World,s.Clock.Capture(),s.Construction.Accounts,Callback);
+        using var host=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        var before=host.Snapshot();
+        var run=host.Enqueue(new("owner"),new("rollback-motion",host.WorldEpoch,new RunCommand()));
+        host.Pump();Assert.IsType<AcceptedMessage>(await run);host.Pump(2);
+        var after=host.Snapshot();Assert.True(after.Paused);
+        Assert.Equal(before.Cash,after.Cash);Assert.Equal(before.Mixed!.Fleet!.Trains,after.Mixed!.Fleet!.Trains);
+        Assert.Equal(0,after.TrainMotion!.Sequence);Assert.Empty(after.TrainMotion.Steps);
+        Assert.Empty(StateDifference.Between(before,after).TrainMotion!.Steps);
+    }
+
+    [Fact]
+    public async Task Unsupported_tunnel_and_Outside_steps_emit_ordered_reset_markers()
+    {
+        var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json")),
+            TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        s=FleetTrading.Commit(s,FleetTrading.QuoteSale(s,17));
+        s=FleetDeployment.Commit(s,FleetDeployment.PreviewPlacement(s,20,new(3,2,2)));
+        using var host=SessionComposition.CreateSavedHost(SaveCodec.Write(s));
+        var before=host.Snapshot();
+        var run=host.Enqueue(new("operator-1"),new("unsupported-motion",host.WorldEpoch,new RunCommand()));
+        host.Pump();Assert.IsType<AcceptedMessage>(await run);host.Pump(2);
+        var motion=StateDifference.Between(before,host.Snapshot()).TrainMotion!;
+        Assert.False(motion.Reset);Assert.NotEmpty(motion.Steps);
+        Assert.All(motion.Steps,step=>{Assert.Equal(20,step.TrainId);Assert.Empty(step.Cars);});
+    }
+
+    [Fact]
     public async Task Shared_clock_rates_preserve_exact_ring_movement_accounts_random_queue_and_save()
     {
         var initial=SaveCodec.Write(BuildRing());
@@ -215,6 +286,7 @@ public class FleetMovementTests
             await Send(new PauseCommand());
             var read=host.Snapshot();Assert.Equal(116,read.Tick);
             Assert.Equal(8,read.Mixed!.Fleet!.Trains[0].MoveCount);
+            Assert.Equal(8,read.TrainMotion!.Steps.Length);
             var pendingSave=host.CaptureSave();host.Pump();var save=await pendingSave;
             if(baseline==null)baseline=save;else Assert.Equal(baseline,save);
         }

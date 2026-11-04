@@ -11,9 +11,9 @@ speeds and every other game system. Offer various slow/fast clock settings that
 scale the entire simulation together. Train-only timing changes and economic
 coefficient rebalancing are outside this enhancement.
 
-This is a code-based assessment and experiment specification. The initial shared
-clock toolbar implementation is recorded below; smooth gameplay rendering and
-economic rebalancing remain outside that delivered slice.
+This is a code-based assessment and experiment specification. The shared clock
+toolbar and initial live flat-track animation slice are recorded below. Economic
+coefficients remain unchanged, and the remaining experiment gates stay open.
 Frame rates and latency budgets below are proposed acceptance targets, not measured
 results. Existing P5 gates retain their recorded status.
 
@@ -316,3 +316,177 @@ for a 50 ms event-loop probe. The 252 web unit tests pass, including coalesced
 revisions, zero terrain-cell reads for certified updates, full-validation
 agreement and rejection of corrupted geometry, occupancy, accounts and callbacks.
 These focused checks do not close the wider rendering/performance gates above.
+
+
+## Initial live flat-track animation — 4 November 2026
+
+Gameplay trains now animate at **0.125×, 0.25× and Slow (0.5×)**. Normal and Fast
+retain the discrete baseline. Add `?smoothTrains=0` to the game URL to disable the
+experiment locally. The browser's reduced-motion preference also disables it.
+These are presentation choices; no train timing, callback, controller, occupancy,
+accounting, RNG or durable-save rules change.
+
+This slice uses the conservative alternative described above: **animate an already
+committed step after receipt**, with approximately one voxel of visual lag plus
+delivery time. Each native callback's newly scheduled interval supplies its
+presentation duration, scaled by the shared clock rate. The continuity refinement
+below adds a short buffer and adjusts presentation pacing to the observed shared
+clock. Blocked callbacks hold; there is no travel beyond confirmed endpoints. This is an initial A/B deliverable,
+not completion of every A–C acceptance case.
+
+### Committed history and reset behavior
+
+[SessionHost.TrainMotion](../src/FreeTrain.Online.Session/SessionHost.TrainMotion.cs)
+records per-train, stable-car transitions only after the detached minute commits.
+The ephemeral wire extension carries a sequence, game minute, duration and endpoint
+position/orientation. An empty car list explicitly marks a discontinuous or
+unsupported train transition. It stays in sequence even if another move occurs in
+the same publication. No controller is rerun and no random number is drawn for
+presentation.
+
+The server retains at most **128 steps / 8,192 car transitions**. Deltas carry every
+step since the peer's last queued snapshot. A bounded-history overrun sends a reset
+with the current authoritative state. Chunk-transfer coalescing uses this same
+sequence comparison. History is outside Save 9 and is cleared on world-epoch
+replacement. The browser validates history size, ordering, timestamps, identities,
+adjacent endpoints and headings before use, and limits each train's local queue to
+32 steps.
+
+Pause and Step settle directly to committed poses and discard buffered motion.
+Rate changes, visibility restoration, reconnect and replacement reset local
+playback. Deployment, withdrawal, reversal, Outside transitions, history gaps and
+queue overflows cannot interpolate between unrelated poses. A reset in a coalesced
+publication suppresses subsequent travel for that train until a fresh publication
+can establish continuity.
+
+### Fractional rendering and current geometry boundary
+
+[TrainMotionPlayer](../web/src/lib/train-motion.ts) follows each car's recorded
+route independently. Cubic segments join the exact authored planar anchors and
+use existing angular frames, with a bounded arc-length lookup for translation.
+The source curve offset is incorporated once. Immutable read states stay intact.
+All planar frames for deployed cars, including offscreen cars, are preflighted
+against the active recipe variant.
+
+[TrainCompositor](../web/src/lib/train-compositor.ts) indexes the completed scene's
+operations spatially and repaints the union of authoritative and fractional sprite
+bounds. Each damaged region replays overlapping terrain, rail, cars and foregrounds
+in source traversal order, with the same-level roadbed exception described below.
+The terrain scene and retained viewport are reused
+between animation frames. Replay uses the retained raster's scale and phase;
+cached polygon edges and a small paint halo keep terrain edges stable. Fractional
+car frames bypass the static subpixel-image cache. Alpha picking, selection and
+the existing one-time Find action use the painted pose and stable identities;
+commands still resolve against authoritative state.
+
+Flat normal track, curves, simple junction routes and flat bridge composition are
+covered by the focused checks. **Slopes and tunnel transitions explicitly use
+committed discrete poses for the entire affected consist.** An intermediate tunnel
+probe exposed 25 pickable car pixels at the half-voxel boundary even though both
+voxel endpoints were hidden. Tunnel smoothing therefore remains disabled until
+continuous interior occlusion is implemented and verified. Reversal animation and
+Outside presentation remain later geometry/lifecycle work; their existing P5
+scope is unchanged.
+
+### Verification and remaining acceptance
+
+Initial verification passed the production frontend build, generated-contract
+checks and all **257 web unit tests**. **79 affected backend tests** pass, including complete coalesced route
+history, bounded overflow, reload, unsupported-transition markers, failed-minute
+rollback after an earlier train moved, and byte-identical ring saves after equal
+minutes at every shared rate. Snapshot regression expectations now distinguish
+session pacing/presentation metadata from durable state.
+
+The six toolbar/train-rendering browser regressions pass. The live two-client
+journey exercises all three slow settings with 100 ms delivery delay plus bounded
+jitter, multiple fractional frames, pause/Step, reduced motion, reconnect and the
+discrete flag, without resyncs. Normal/Fast responsiveness and the existing
+all-stock/eight-variant source pixel and alpha-pick gallery also pass. Intermediate
+normal-track and bridge damage replay matches a complete source-order redraw;
+tunnel fallback retains hidden pixels and picks. The new composition witness
+checks 15 frames and 144,000 picks per light setting.
+
+The full backend run passes **1,326 of 1,327 tests**. Its remaining failure is the
+unrelated legacy
+`SignalConstructionTests.Shared_controller_reference_survives_exact_save_and_zero_booking_needs_no_journal_slot`
+expectation: it attempts to save signal controller `42`, while TRAIN-D010 requires
+the reserved reference to be null. That test's expectation and production signal
+policy are unchanged by this enhancement.
+
+Full stages A–C acceptance remains open for fastest-stock live smoothing,
+deliberately missed/chunked-publication journeys, broader infrastructure/cut
+combinations, hidden-tab/process-restart workflows, continuous slopes/tunnels and
+large moving-fleet capacity. The proposed 60 Hz / p95 16.7 ms target and 30 Hz
+fallback are not established by these focused tests. Stage D's Ultra and complete
+play-session pacing review also remain open.
+
+
+### Continuity and car-over-track refinement — 4 November 2026
+
+Owner playtesting found a brief pause at each voxel and track pixels covering the
+leading/trailing ends of moving cars. Both came from presentation rather than
+simulation timing.
+
+The player now schedules adjacent confirmed steps on **one contiguous timeline**.
+A **200 ms startup buffer** covers the normal 100 ms publication cadence plus
+ordinary delivery jitter. A bounded sample of shared game-clock publications
+estimates actual wall time per minute; small, bounded corrections to future
+segment durations keep the buffer aligned without moving the current car or its
+joins. Coalesced steps keep their order. Genuine blocked callback intervals remain
+holds, and an actual history underrun still holds at the confirmed endpoint.
+Pause/Step and lifecycle resets discard the buffer as before. The extra buffer is
+presentation latency, and changes no movement callbacks, costs or game-clock rate.
+
+The renderer also continues fractional painting over the **last completed scene**
+while its committed successor prepares. Previously the scene-key handoff could
+fall back to a discrete frame at every movement publication even while the motion
+player still had buffered travel.
+
+Moving car pixels now take precedence over **same-level flat ground and rail
+beds across voxel boundaries**. When a later roadbed operation overlaps a car,
+the compositor masks out the car's opaque pixels from that operation. It leaves
+the surrounding terrain in its original order and retains bridge, signal, pole
+and higher-level foreground occlusion. Alpha picking applies the same exception.
+The reusable mask surface is bounded by the damaged region. Slopes and tunnels
+retain their existing discrete fallback.
+
+Focused unit coverage plays 60 confirmed moves at each slow rate with 0–100 ms
+publication jitter and both nominal and 8% slower wall-clock pacing. It checks
+every 10 ms sample for uninterrupted progress and continuous joins, plus genuine
+blocked holds and underruns. The live two-client browser witness now measures
+3.4 seconds at each slow rate with delayed/jittered delivery, requiring no missing
+fractional frames and no unchanged-pose interval reaching 75 ms after startup.
+
+A separate pixel oracle renders all flat track first and whole cars afterward.
+It checks 80 intermediate/end frames per light setting across all eight directions
+and both formation orientations, including opaque head/tail pixels and their alpha
+picks. The infrastructure damage-replay test retains its foreground and tunnel
+fallback checks. The current frontend build, **259 web unit tests** and all
+**seven toolbar/train-rendering browser regressions** pass. The backend
+simulation/persistence implementation is unchanged by this refinement.
+
+
+### Tight-turn car overlap refinement — 4 November 2026
+
+Owner playtesting found brief car-to-car overlap flickers immediately before and
+after tight 90-degree bends, affecting cars with a following neighbor. A focused
+pixel reproduction failed on the old renderer at 51% progress entering the bend.
+The rounded voxel depths could swap neighboring cars' paint order repeatedly;
+a two-car diagnostic found up to seven swaps where continuous depth required one.
+
+Overlapping moving cars at the same level now resolve their opaque pixels using
+**continuous fractional V/H depth**. Near-equal coordinates tolerate floating-point
+noise, and stable car IDs settle exact ties. The compositor's existing pixel masks
+protect a nearer car from a later-painted farther car; picking uses the same rule.
+Terrain, roadbeds and structural foregrounds retain their existing composition.
+This does not change car positions, angular art, simulation or playback timing.
+
+A literal legal route containing two adjacent 45-degree curves supplies the tight
+90-degree regression. An independent full-frame reference paints flat track and
+then cars ordered by their fractional positions. The test compares pixels and
+picks at opaque car-to-car intersections across **2,816 frames per light setting**:
+all eight approach directions, both turn directions, both formation orientations,
+and samples around every car's turn entry, boundary and exit. Both day and night
+pass. Unit tests also verify continuous neighbor ordering and deterministic ties.
+The frontend build, **261 web unit tests**, the new sharp-turn browser regression
+and all seven existing toolbar/train-rendering browser regressions pass.

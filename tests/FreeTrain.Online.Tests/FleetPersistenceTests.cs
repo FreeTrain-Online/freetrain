@@ -142,7 +142,7 @@ public class FleetPersistenceTests
         var restored=Decode(bytes);restored.AdvanceOneMinute();
         var continuation=session.Submit(owner,new("continued",2,new StepCommand()),now.AddMilliseconds(300));
         session.Tick(now.AddMilliseconds(300));Assert.IsType<AcceptedMessage>(await continuation);
-        Assert.Equal(Json(MixedWire.Snapshot(restored,2)),Json(host.Snapshot()));
+        Assert.Equal(Json(MixedWire.Snapshot(restored,2) with {PlaybackRate=1,TrainMotion=new(0,false,[])}),Json(host.Snapshot()));
         foreach(var peer in new[]{owner,observer})Assert.IsType<DeltaMessage>(await peer.Output.Reader.ReadAsync());
         var live=prepared.Mixed!;var w=live.World;var f=w.Fleet!;
         var removal=new FleetGraph(f.Profile,f.RootGroupId,[f.Train(17)],

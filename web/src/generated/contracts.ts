@@ -190,6 +190,7 @@ export interface Snapshot {
   terrain?: Terrain;
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
+  trainMotion?: TrainMotion;
 }
 export interface Map {
   width: number;
@@ -558,6 +559,37 @@ export interface MixedAction {
   handlerId: string;
   interval: "0";
 }
+export interface TrainMotion {
+  sequence: string;
+  reset: boolean;
+  /**
+   * @maxItems 128
+   */
+  steps: TrainMotionStep[];
+}
+export interface TrainMotionStep {
+  sequence: string;
+  minute: string;
+  trainId: string;
+  duration: number;
+  /**
+   * An empty array explicitly resets this train after an unsupported or discontinuous transition.
+   *
+   * @maxItems 100
+   */
+  cars: TrainMotionCar[];
+}
+export interface TrainMotionCar {
+  carId: string;
+  from: TrainMotionPose;
+  to: TrainMotionPose;
+}
+export interface TrainMotionPose {
+  position: Position;
+  heading: number;
+  outgoing: number;
+  reversed: boolean;
+}
 export interface Command {
   type: "command";
   requestId: string;
@@ -708,6 +740,7 @@ export interface Delta {
   terrain?: TerrainDelta;
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
+  trainMotion?: TrainMotion;
 }
 export interface Removed {
   trainIds: string[];

@@ -1,3 +1,4 @@
+import {validTrainMotion} from './train-motion-contract.ts';
 import {validFleetSuccessor} from './fleet-state.ts';
 import Ajv from 'ajv';
 import schema from '../../../prototype/protocol/schema.json' with { type: 'json' };
@@ -74,6 +75,8 @@ export function validWireShape(value:unknown):value is WireMessage { return !!va
 export function parseMessageValue(value:unknown):WireMessage {
   if (!validate(value)) throw new Error('Invalid protocol message');
   const message=value as WireMessage;
+  const motionRead=message.type==='join'?message.snapshot:message;
+  if((motionRead.type==='snapshot'||motionRead.type==='delta')&&!validTrainMotion(motionRead.trainMotion,motionRead.tick))throw new Error('Invalid train motion history');
   if(message.type==='sessionOffer'&&!supportedIdentity(message))throw new IncompatibleWorldError('Incompatible world');
   if(message.type==='snapshot'&&!validSnapshot(message))throw new IncompatibleWorldError('Incompatible world');
   if(message.type==='join'&&(!sameIdentity(message,message.snapshot)||message.worldEpoch!==message.snapshot.worldEpoch||!validSnapshot(message.snapshot)))throw new IncompatibleWorldError('Incompatible world');
@@ -88,6 +91,7 @@ export function immutable<T extends object>(value: T): T {
 }
 export function applyDelta(state: ReadState, delta: Delta): ReadState | undefined {
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
+  if(!validTrainMotion(delta.trainMotion,delta.tick))return;
   const mixed=isMixedWorld(state);
   const terrain=isTerrainWorld(state)||mixed;
   if(mixed!==!!delta.mixed||mixed&&BigInt(delta.tick)<BigInt(state.tick))return;
@@ -132,7 +136,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
     if(mixed&&(JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed)||
       state.mixed?.queue?.pending.some(a=>BigInt(a.dueMinute)<=BigInt(delta.tick))))return;
-    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
+    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,trainMotion:delta.trainMotion,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
     shareTerrainValidation(state,next);shareSnapshotValidation(state,next);validatedReads.add(next);return next;
   }
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
@@ -159,7 +163,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   const terrainState=terrain?{...state.terrain!,...delta.terrain!,
     cells:delta.terrain!.cells.length?terrainCells!:state.terrain!.cells,
     occupants:terrainMerge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
-  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash, ...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {}),
+  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash, trainMotion:delta.trainMotion, ...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {}),
     ...(state.entities?{entities:(terrain?terrainMerge:merge)(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),

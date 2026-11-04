@@ -385,7 +385,12 @@ public sealed partial class SessionHost : IDisposable
     {
         try
         {
-            if (mixedState != null) mixedState.AdvanceOneMinute();
+            if (mixedState != null)
+            {
+                var before = mixedState.World;
+                mixedState.AdvanceOneMinute();
+                RecordTrainMotion(before, mixedState);
+            }
             else if (terrainState != null) terrainState.AdvanceOneMinute();
             else referenceWorld!.AdvanceOneMinute();
             return true;
@@ -520,7 +525,7 @@ public sealed partial class SessionHost : IDisposable
     {
         lock (gate)
         {
-            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate };
+            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion() };
             if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,

@@ -147,6 +147,7 @@ export class TerrainViewport {
     const needsBuffer=raster&&!covers(raster,view,width,height,overscanX/2,overscanY/2);
     return {ready:!!raster,pending:!!this.work||!!needsBuffer,drawn:raster?.drawn??0,renderZoom:zoom/dpr,updateKind:this.updateKind};
   }
+  get presentation() {return this.raster?{scene:this.raster.scene,operations:this.raster.operations,view:this.raster.view,width:this.raster.width,height:this.raster.height}:undefined;}
   pick(p:Point,view:View) {
     const raster=this.raster;if(!raster)return;
     const scale=view.zoom/raster.view.zoom,x=(p.x-view.x)/scale+raster.view.x,y=(p.y-view.y)/scale+raster.view.y;
