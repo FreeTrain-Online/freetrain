@@ -184,6 +184,7 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .fleet-filters select, .fleet-filters input { width: 100%; min-width: 0; }
 .fleet-sidebar > .fleet-filters { margin-block-end: 8px; }
 .fleet-sidebar .catalog { max-height: 260px; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
+.fleet-picking .fleet-owned > .catalog-item:not(.catalog-active) { display: none; }
 .fleet-controls .catalog-item-main { min-height: 52px; padding: 2px 6px; gap: 6px; }
 .fleet-controls .catalog-item-main > .catalog-preview { flex: 0 0 60px; height: 46px; }
 .fleet-controls .catalog-item-main > .catalog-preview img { width: 60px; height: 46px; }
@@ -199,16 +200,21 @@ dl dd { margin: 0; font-variant-numeric: tabular-nums; } dt { color: var(--muted
 .deployment-help { margin-block: 8px; }
 .deployment-help summary { cursor: pointer; }
 .deployment-review ol { max-height: 9rem; overflow-y: auto; overscroll-behavior: contain; }
+.decision-dialog.left-aligned { inset-inline-start: 8px; inset-inline-end: auto; margin-inline: 0; }
+@media (min-width: 640px) {
+  .fleet-open > .primary-panel { inset-inline-start: calc(var(--strip) + 8px); inset-inline-end: auto; }
+  .fleet-open .map-navigation.beside-panel { inset-inline-end: 8px; }
+  .decision-dialog.left-aligned { inset-inline-start: calc(var(--strip) + 8px); width: min(440px, calc(100% - var(--strip) - 16px)); }
+}
 @media (min-width: 1024px) {
   .map-stage.fleet-open { --panel: min(780px, 64vw); }
   .fleet-open > .primary-panel { height: min(680px, calc(100% - 60px)); }
-  .fleet-open > .primary-panel > .panel-body { overflow: hidden; display: flex; }
+  .fleet-open > .primary-panel > .panel-body { flex: 1; overflow: hidden; display: flex; }
   .fleet-open.fleet-picking > .primary-panel { width: min(352px, calc(100% - var(--strip) - 16px)); }
   .fleet-open.fleet-picking > .primary-panel > .panel-body { overflow: auto; display: block; }
-  .fleet-open .map-navigation.beside-panel { inset-inline-end: 8px; }
 }
 @container (min-width: 600px) {
-  .fleet-layout { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 16px; }
+  .fleet-layout { flex: 1; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 16px; }
   .fleet-sidebar, .fleet-details { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px; }
   .fleet-sidebar { border-inline-end: 1px solid var(--border); padding-inline-end: 12px; }
   .fleet-sidebar .catalog { max-height: none; overflow: visible; }

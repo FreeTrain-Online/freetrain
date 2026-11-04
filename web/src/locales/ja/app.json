@@ -659,6 +659,7 @@
   "ownedStock": "保有車両",
   "stockCompany": "会社",
   "stockType": "形式",
+  "stockModel": "車種",
   "stockName": "名称",
   "stockAll": "すべて",
   "stockLength": "編成両数（両）",

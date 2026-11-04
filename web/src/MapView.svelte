@@ -25,9 +25,10 @@
   import type { RailwayPreview } from './generated/contracts.ts';
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
+  import TrainToolIcon from './TrainToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
-  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog }:
-    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
+  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog, onfleet }:
+    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onfleet: (source: HTMLButtonElement) => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
   const text = $derived(messages[view.locale]);
   const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
@@ -393,6 +394,9 @@
     {#each tools.filter(item=>!['slope','bridge','girder','tunnel','garage','signal','pole','stationary','speed'].includes(item.id)||railway) as item}
       {@const label=reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]}
       <button aria-label={label} title={`${label} (${item.shortcut})${item.id==='terrain'&&!terrain?` · ${text.terrainUnavailable}`:''}`} aria-keyshortcuts={item.shortcut} aria-describedby={item.id==='terrain'&&!terrain?'terrain-unavailable':undefined} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='rail'}<RailToolIcon />{:else if item.icon==='pole'}<RailToolIcon pole />{:else if item.icon==='garage'}<RailToolIcon garage />{:else if item.icon==='tunnel'}<RailToolIcon tunnel />{:else if item.icon==='girder'}<RailToolIcon girder />{:else if item.icon==='bridge'}<RailToolIcon bridge />{:else if item.icon==='slope'}<RailToolIcon slope />{:else}{item.icon}{/if}</button>
+      {#if item.id === 'inspect'}
+        <button aria-label={text.fleet} title={text.fleet} aria-expanded={panel === 'fleet'} aria-controls="primary-panel" onclick={event => onfleet(event.currentTarget)}><TrainToolIcon /></button>
+      {/if}
     {/each}
   </div>
   {#if !terrain}<span id="terrain-unavailable" class="sr-only">{text.terrainUnavailable}</span>{/if}

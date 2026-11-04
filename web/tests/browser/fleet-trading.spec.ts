@@ -9,10 +9,11 @@ async function desktopColumns(page:Page){
     const sidebar=el.querySelector<HTMLElement>('.fleet-sidebar')!,details=el.querySelector<HTMLElement>('.fleet-details')!,body=el.closest('.panel-body')!;
     const a=sidebar.getBoundingClientRect(),b=details.getBoundingClientRect(),panel=body.getBoundingClientRect();
     const canvas=document.querySelector('canvas')!.getBoundingClientRect(),stage=document.querySelector('.map-stage')!.getBoundingClientRect();
-    return {canvasRight:canvas.right,stageRight:stage.right,left:a.right,right:b.left,top:a.top,detailsTop:b.top,bodyOverflow:body.scrollHeight-body.clientHeight,
+    return {panelLeft:el.closest('.primary-panel')!.getBoundingClientRect().left,toolbarRight:document.querySelector('.tool-strip')!.getBoundingClientRect().right,canvasRight:canvas.right,stageRight:stage.right,left:a.right,right:b.left,top:a.top,detailsTop:b.top,bodyOverflow:body.scrollHeight-body.clientHeight,
       detailsOverflow:details.scrollHeight-details.clientHeight,sidebarOverflow:sidebar.scrollHeight-sidebar.clientHeight,
       panelRight:panel.right,viewport:innerWidth,rows:[...sidebar.querySelectorAll('li')].map(row=>row.getBoundingClientRect().height)};
   });
+  expect(boxes.panelLeft).toBe(boxes.toolbarRight+8);
   expect(boxes.canvasRight).toBe(boxes.stageRight);
   expect(boxes.right).toBeGreaterThan(boxes.left);expect(Math.abs(boxes.top-boxes.detailsTop)).toBeLessThan(2);
   expect(boxes.bodyOverflow).toBeLessThanOrEqual(1);expect(boxes.detailsOverflow).toBeLessThanOrEqual(1);expect(boxes.sidebarOverflow).toBeLessThanOrEqual(1);
@@ -51,7 +52,7 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     await expect(page.locator('.formation-preview img')).toHaveCount(1);
     await page.screenshot({path:`${evidence}/fleet-purchase-en.png`});
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();let dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
-    await expect(dialog).toBeVisible();await expect(dialog.getByTestId('stock-total')).toHaveText('300,000,000');
+    await expect(dialog).toBeVisible();expect((await dialog.boundingBox())!.x).toBe((await page.locator('.primary-panel').boundingBox())!.x);await expect(dialog.getByTestId('stock-total')).toHaveText('300,000,000');
     await expect(dialog).toContainText('400');await expect(dialog).toContainText('Capacities below are totals');
     expect(await state(page)).toEqual(before);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Get purchase quote',exact:true})).toBeFocused();
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();await expect(dialog).toBeVisible();
@@ -69,17 +70,24 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     expect(receipts.at(-1).type).toBe('accepted');expect(await state(page)).toEqual(bought);
     socket!.send(JSON.stringify({...lastTrade,requestId:'stale-trade-new-id'}));await expect.poll(()=>receipts.at(-1)?.requestId).toBe('stale-trade-new-id');expect(receipts.at(-1).code).toBe('staleRevision');
     await page.getByRole('button',{name:'Owned stock',exact:false}).click();
+    await expect(page.locator('.fleet-owned .catalog-item-main').first()).toHaveAttribute('aria-pressed','true');
+    await page.locator('.fleet-owned .catalog-item-main').last().click();
+    await page.getByRole('button',{name:'Purchase stock',exact:true}).click();
+    await page.getByRole('button',{name:'Owned stock',exact:false}).click();
+    await expect(page.locator('.fleet-owned .catalog-item-main').first()).toHaveAttribute('aria-pressed','true');
     const id=bought.mixed.fleet.trains[0].id;await page.getByRole('button',{name:new RegExp(`TR${id}.*#${id}`)}).click();
     for(const [width,height] of [[1024,768],[1280,900]]){await page.setViewportSize({width,height});await desktopColumns(page);}
     await page.screenshot({path:`${evidence}/fleet-columns-owned-en.png`});
     await page.getByLabel('Name',{exact:true}).fill('Northern Star');
     await closePanel(page);await expect(page.getByRole('dialog',{name:'Unsaved train name',exact:true})).toBeVisible();
+    expect((await page.getByRole('dialog',{name:'Unsaved train name',exact:true}).boundingBox())!.x).toBe((await page.locator('.primary-panel').boundingBox())!.x);
     await page.getByRole('button',{name:'Keep editing',exact:true}).click();
     await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Northern Star');
     await page.getByLabel('Name',{exact:true}).press('Enter');await expect(peer.getByRole('button',{name:/Northern Star/})).toBeVisible();
     await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');
     await openPanel(page,'fleet','ja');await page.getByRole('button',{name:'保有車両',exact:false}).click();await page.getByRole('button',{name:/Northern Star/}).click();await desktopColumns(page);
     await page.getByRole('button',{name:'売却見積もり',exact:true}).click();dialog=page.getByRole('dialog',{name:'売却見積もり',exact:true});
+    expect((await dialog.boundingBox())!.x).toBe((await page.locator('.primary-panel').boundingBox())!.x);
     await expect(dialog.getByTestId('stock-total')).toHaveText('75,000,000');await dialog.getByRole('button',{name:'キャンセル',exact:true}).click();
     expect((await state(page)).mixed.fleet.trains).toHaveLength(2);
     await page.getByRole('button',{name:'売却見積もり',exact:true}).click();await dialog.getByRole('button',{name:'売却を確定',exact:true}).click();

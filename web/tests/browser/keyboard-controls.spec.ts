@@ -34,6 +34,7 @@ test('keyboard toolbars, native editing, Escape layers and deliberate map focus'
   await expect(page.locator('#game-menu button').last()).toBeFocused();
   await page.keyboard.press('Escape'); await expect(game).toBeFocused();
   const inspect = page.getByRole('button',{name:'Inspect / drive',exact:true}); await inspect.focus();
+  await page.keyboard.press('ArrowDown'); await expect(page.getByRole('button',{name:'Trains',exact:true})).toBeFocused();
   await page.keyboard.press('ArrowDown'); await expect(page.getByRole('button',{name:'Build track',exact:true})).toBeFocused();
   await page.keyboard.press('Enter'); await expect(page.locator('canvas')).toBeFocused();
   await expect(page.getByTestId('map-selection')).toContainText('Build track');

@@ -74,7 +74,7 @@
 <div class="fleet-controls">
   <div class="form-actions fleet-tabs" role="group" aria-label={text.fleet}>
     <button aria-pressed={tab==='purchase'} disabled={loading||submitting} onclick={()=>requestNavigation(()=>{cancel();tab='purchase';})}>{text.stockPurchase}</button>
-    <button aria-pressed={tab==='owned'} disabled={loading||submitting} onclick={()=>{cancel();tab='owned';}}>{text.ownedStock} ({fmt(trains.length)})</button>
+    <button aria-pressed={tab==='owned'} disabled={loading||submitting} onclick={()=>{if(tab!=='owned')requestNavigation(()=>{cancel();trainId=trains[0]?.id??'';dirty=false;failed=false;tab='owned';});}}>{text.ownedStock} ({fmt(trains.length)})</button>
   </div>
   {#if tab==='purchase'}
     <div class="fleet-layout">
@@ -134,9 +134,9 @@
             {#if conflict}<p role="status">{text.stockRenameConflict}</p>{:else if dirty&&!validName}<p role="status">{text.stockRenameInvalid}</p>{/if}
             <div class="form-actions"><button class:primary={dirty} type="submit" disabled={disabled||!dirty||conflict||!validName||composing}>{text.stockRename}</button><button type="button" disabled={submitting} onclick={()=>{dirty=false;composing=false;}}>{text.resetDraft}</button></div>
           </form>
-          <p>{text.stockName}: {ownedStock?stockText(ownedStock,'name',view.locale):text.stockUnavailable}</p>
+          <p>{text.stockModel}: {ownedStock?stockText(ownedStock,'name',view.locale):text.stockUnavailable}</p>
           {#key `${read.worldEpoch}/${train.id}`}<FleetDeploymentControls bind:this={deploymentControls} {model} {view} trainId={train.id} disabled={disabled||dirty||loading} {picked} {onmap} {onpreview}/>{/key}
-          <button class:primary={!dirty} disabled={disabled||loading||dirty||train.state!=='unplaced'} onclick={sale}>{text.stockSaleQuote}</button>
+          <button disabled={disabled||loading||dirty||train.state!=='unplaced'} onclick={sale}>{text.stockSaleQuote}</button>
           {#if train.state!=='unplaced'}<p>{text.stockWithdrawFirst}</p>{/if}
         {/if}
       </div>
@@ -145,7 +145,7 @@
   {#if failed}<p role="alert">{text.stockQuoteFailed}</p>{/if}
 </div>
 {#if quote}
-  <DecisionModal title={text[quote.query.action==='buy'?'stockBuying':'stockSelling']} oncancel={()=>{if(!submitting)cancel(true);}}>
+  <DecisionModal leftAligned title={text[quote.query.action==='buy'?'stockBuying':'stockSelling']} oncancel={()=>{if(!submitting)cancel(true);}}>
     <p>{text.stockQuoteHelp}</p>
     {#if quote.query.action==='buy'}<p>{stockText(stock,'name',view.locale)} · {quote.query.length} × {quote.query.quantity}</p>{:else}<p>{train?.name}</p>{/if}
     <dl class="details"><div><dt>{text.stockTotal}</dt><dd data-testid="stock-total">{fmt(quote.price)}</dd></div>

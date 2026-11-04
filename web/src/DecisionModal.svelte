@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, type Snippet } from 'svelte';
   import { primaryAction } from './lib/primary-action.ts';
-  let { title, oncancel, children, actions, wide = false }: { title: string; oncancel: () => void; children: Snippet; actions: Snippet; wide?: boolean } = $props();
+  let { title, oncancel, children, actions, wide = false, leftAligned = false }: { title: string; oncancel: () => void; children: Snippet; actions: Snippet; wide?: boolean; leftAligned?: boolean } = $props();
   let dialog: HTMLDialogElement;
   onMount(() => {
     const origin = document.activeElement as HTMLElement | null;
@@ -25,7 +25,7 @@
     }
   }
 </script>
-<dialog class="decision-dialog" class:wide bind:this={dialog} use:primaryAction aria-label={title} tabindex="-1" onkeydown={key} oncancel={event => { event.preventDefault(); oncancel(); }} onpointerdown={event => { if (event.target === dialog) event.preventDefault(); }}>
+<dialog class="decision-dialog" class:wide class:left-aligned={leftAligned} bind:this={dialog} use:primaryAction aria-label={title} tabindex="-1" onkeydown={key} oncancel={event => { event.preventDefault(); oncancel(); }} onpointerdown={event => { if (event.target === dialog) event.preventDefault(); }}>
   <div class="panel-title"><h2>{title}</h2></div>
   <div class="panel-body">{@render children()}</div>
   <div class="panel-footer form-actions">{@render actions()}</div>

@@ -246,13 +246,13 @@
     </div>
   {/if}
   <main class="map-stage" class:fleet-open={panel==='fleet'} class:fleet-picking={panel==='fleet'&&deploymentPicking} class:with-catalog={live && catalogOpen && !panel}>
-    <MapView deploymentPicking={deploymentPicking&&panel==='fleet'} {deploymentPreview} ondeploymentpick={p=>{deploymentPicked={...p};}} bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog}/>
+    <MapView deploymentPicking={deploymentPicking&&panel==='fleet'} {deploymentPreview} ondeploymentpick={p=>{deploymentPicked={...p};}} bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog} onfleet={source => openPanel('fleet', source)}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
         {#if terrain||mixed}<button disabled={clockDisabled} onclick={()=>requestTool('terrain')}>{text.terrainTool}</button>{/if}
         <button class="overflow-step" disabled={clockDisabled || !read?.paused} onclick={() => model.send({ kind: 'step' })}>{text.step}</button>
-        {#each Object.entries(panels).filter(([id]) => id !== 'inspector') as [id, label]}<button aria-expanded={id === 'catalog' && reference ? catalogOpen && !panel : panel === id} aria-controls={id === 'catalog' && reference ? 'building-catalog' : 'primary-panel'} onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
+        {#each Object.entries(panels).filter(([id]) => id !== 'inspector' && id !== 'fleet') as [id, label]}<button aria-expanded={id === 'catalog' && reference ? catalogOpen && !panel : panel === id} aria-controls={id === 'catalog' && reference ? 'building-catalog' : 'primary-panel'} onclick={event => openPanel(id as Panel, event.currentTarget)}>{text[label]}</button>{/each}
         <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); creditsOpen = true; }}>{text.credits}</button>
         {#each enabledPacks as pack (pack.id)}
           <button aria-haspopup="dialog" onclick={() => { map.resetInteraction(); closeMenu(); optionalCredits = pack; }}>{creditFor(pack,view.locale).button}</button>
@@ -332,7 +332,7 @@
     {/if}
   </main>
   {#if live && navigation}
-    <DecisionModal title={text[fleetDirty?'stockDirtyTitle':'dirtyTitle']} oncancel={() => { navigation = undefined; }}>
+    <DecisionModal leftAligned={fleetDirty} title={text[fleetDirty?'stockDirtyTitle':'dirtyTitle']} oncancel={() => { navigation = undefined; }}>
       <p>{text[fleetDirty?'stockDirtyHint':'dirtyHint']}</p><p>{fleetDirty?fleetDraft:view.draft}</p>
       {#if draftConflict}<p role="alert">{text.draftConflict}</p>{/if}
       {#snippet actions()}

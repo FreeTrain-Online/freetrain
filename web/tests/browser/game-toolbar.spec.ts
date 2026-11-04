@@ -4,6 +4,34 @@ import { test, expect } from './fixtures.ts';
 import { canonicalState, openPanel, ready } from './browser-helpers.ts';
 import { fit } from './layout-helpers.ts';
 
+test('Trains opens from the map toolbar in English and Japanese and returns focus on close', async ({ page }, testInfo) => {
+  await page.goto('/'); await ready(page);
+  for (const locale of ['en', 'ja'] as const) {
+    if (locale === 'ja') {
+      await openPanel(page, 'settings');
+      await page.getByLabel('Language', { exact: true }).selectOption('ja');
+      await page.locator('.primary-panel .panel-title button:last-child').click();
+    }
+    const label = locale === 'ja' ? '列車' : 'Trains';
+    const trains = page.locator('.tool-strip').getByRole('button', { name: label, exact: true });
+    for (const width of [1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(trains).toBeVisible();
+      await trains.click();
+      await expect(trains).toHaveAttribute('aria-expanded', 'true');
+      await expect(page.locator('.primary-panel h2')).toHaveText(label);
+      await page.locator('.primary-panel .panel-title button:last-child').click();
+      await expect(trains).toBeFocused();
+      await expect(trains).toHaveAttribute('aria-expanded', 'false');
+    }
+    await page.locator('.command-bar').getByRole('button', { name: locale === 'ja' ? 'ゲーム ▾' : 'Game ▾', exact: true }).click();
+    await expect(page.locator('#game-menu').getByRole('button', { name: label, exact: true })).toHaveCount(0);
+    await page.keyboard.press('Escape');
+  }
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.screenshot({ path: testInfo.outputPath('trains-toolbar.png') });
+});
+
 test('shared speed confirms across peers, survives reconnect, and keeps pause and step authoritative', async ({ page, browser, baseURL }) => {
   const before = await canonicalState(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch=' + before.worldEpoch,

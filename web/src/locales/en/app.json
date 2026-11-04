@@ -659,6 +659,7 @@
   "ownedStock": "Owned stock",
   "stockCompany": "Company",
   "stockType": "Type",
+  "stockModel": "Model",
   "stockName": "Name",
   "stockAll": "All",
   "stockLength": "Formation length (cars)",

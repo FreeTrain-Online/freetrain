@@ -13,7 +13,7 @@ async function clickCell(page:Page,x:number,y:number,z:number){
 }
 async function coords(page:Page,text:typeof en,x=28,y=27,z=1){
  for(const [key,n] of [['X',x],['Y',y],['Z',z]] as const)await page.locator('.deployment-controls').getByLabel(key,{exact:true}).fill(String(n));
- await page.getByRole('button',{name:text.deploymentPreview,exact:true}).click();
+ await page.locator('.deployment-controls').getByLabel('Z',{exact:true}).press('Enter');
 }
 async function owned(page:Page,text:typeof en){
  await openPanel(page,'fleet',text===ja?'ja':'en');await page.getByRole('button',{name:new RegExp(`^${text.ownedStock}`)}).click();await page.locator('.catalog-item-main').first().click();
@@ -51,7 +51,9 @@ for(const locale of ['en','ja'] as const)test(`${locale} playable purchase deplo
   const first=await page.getByTestId('deployment-car').allTextContents();expect(first.every(t=>t.includes(text.headingEast))).toBe(true);
   await page.getByRole('button',{name:text.cancel,exact:true}).click();expect(await save(page)).toEqual(bought);await expect(canvas).toHaveAttribute('data-fleet-ghost-cars','0');
   await page.getByRole('button',{name:text.deploymentPick,exact:true}).click();await clickCell(page,28,27,1);await expect(page.locator('.deployment-controls').getByLabel('X',{exact:true})).toHaveValue('28');
-  await page.getByRole('button',{name:text.deploymentPreview,exact:true}).click();await expect(page.getByTestId('deployment-car')).toHaveCount(2);
+  await expect(page.getByTestId('deployment-car')).toHaveCount(2);await expect(page.locator('.map-stage')).toHaveClass(/fleet-picking/);
+  await expect(page.locator('.primary-panel')).toHaveCSS('width','352px');await expect(canvas).toHaveAttribute('data-fleet-ghost-cars','2');
+  await expect(page.getByRole('button',{name:text.deploymentPreview,exact:true})).toHaveCount(0);
   await peer.getByRole('button',{name:/Single step/}).first().click();await expect(page.getByText(text.stockStale,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:text.deploymentConfirm,exact:true})).toBeDisabled();
   await page.getByRole('button',{name:text.cancel,exact:true}).click();await coords(page,text);
   await expect(page.getByTestId('deployment-car')).toHaveCount(2);await expect(canvas).toHaveAttribute('data-fleet-ghost-cars','2');await page.getByRole('button',{name:text.deploymentConfirm,exact:true}).scrollIntoViewIfNeeded();
@@ -70,7 +72,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} playable purchase deplo
   await expect(page.getByTestId('train-car-id')).toBeVisible();
   await expect(canvas).toHaveAttribute('data-instance','deployment-preserved');await expect(canvas).toHaveAttribute('data-camera',camera!);
   await owned(page,text);await page.getByRole('button',{name:text.withdrawTrain,exact:true}).click();const accounts=s.mixed.accounts;
-  await page.getByRole('button',{name:text.withdrawConfirm,exact:true}).click();await expect(page.getByRole('button',{name:text.deploymentPreview,exact:true})).toBeVisible();
+  await page.getByRole('button',{name:text.withdrawConfirm,exact:true}).click();await expect(page.getByRole('button',{name:text.deploymentPick,exact:true})).toBeVisible();
   s=await state(page);expect(s.mixed.fleet.trains[0].state).toBe('unplaced');expect(s.mixed.accounts).toEqual(accounts);expect(s.mixed.queue.pending).toEqual([]);
   const expectedReversed=!s.mixed.fleet.trains[0].isReversed;await page.getByLabel(text.deploymentReverse,{exact:true}).check();await coords(page,text);await expect(page.getByTestId('deployment-car').first()).toContainText(text.headingWest);await page.getByRole('button',{name:text.deploymentConfirm,exact:true}).click();
   await expect(page.getByRole('button',{name:text.withdrawTrain,exact:true})).toBeVisible();s=await state(page);expect(s.mixed.fleet.trains[0].isReversed).toBe(expectedReversed);const saved=await save(page);
@@ -88,7 +90,7 @@ test('Japanese narrow deployment keeps drafts and focus, discards late previews 
  await page.getByRole('button',{name:/^保有車両/}).click();await page.locator('.catalog-item-main').last().click();await page.locator('.primary-panel .sheet-toggle').click();
  await page.locator('html').evaluate(el=>el.style.fontSize='200%');
  const before=await save(page);
- await page.getByLabel(ja.stockName,{exact:true}).fill('編集中');await expect(page.getByRole('button',{name:ja.deploymentPreview,exact:true})).toBeDisabled();
+ await page.getByLabel(ja.stockName,{exact:true}).fill('編集中');await expect(page.getByRole('button',{name:ja.deploymentPick,exact:true})).toBeDisabled();
  await page.getByRole('button',{name:ja.resetDraft,exact:true}).click();
  for(const [key,n] of [['X',3],['Y',2],['Z',2]] as const)await page.locator('.deployment-controls').getByLabel(key,{exact:true}).fill(String(n));
  await page.locator('.deployment-controls').getByLabel('Z',{exact:true}).press('Enter');await expect(page.getByTestId('deployment-car')).toHaveCount(1);
@@ -98,12 +100,12 @@ test('Japanese narrow deployment keeps drafts and focus, discards late previews 
  await page.getByRole('button',{name:ja.cancel,exact:true}).click();await expect(page.locator('.deployment-controls').getByLabel('Z',{exact:true})).toBeFocused();expect(await save(page)).toEqual(before);
  let release!:()=>void;const held=new Promise<void>(r=>release=r);let requested=false;
  await page.route('**/api/fleet/deployment/preview?*',async route=>{const response=await route.fetch();requested=true;await held;try{await route.fulfill({response});}catch{/* Request was intentionally aborted. */}});
- await page.getByRole('button',{name:ja.deploymentPreview,exact:true}).click();await expect.poll(()=>requested).toBe(true);await page.keyboard.press('Escape');release();
+ await page.locator('.deployment-controls').getByLabel('Z',{exact:true}).press('Enter');await expect.poll(()=>requested).toBe(true);await page.keyboard.press('Escape');release();
  await expect(page.getByTestId('deployment-car')).toHaveCount(0);await expect(page.locator('canvas')).toHaveAttribute('data-fleet-ghost-cars','0');expect(await save(page)).toEqual(before);
  const context=await browser.newContext({baseURL}),observer=await context.newPage();
  try{
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);await owned(observer,en);
-  await expect(observer.getByRole('button',{name:en.withdrawTrain,exact:true})).toBeDisabled();await observer.locator('.catalog-item-main').last().click();await expect(observer.getByRole('button',{name:en.deploymentPreview,exact:true})).toBeDisabled();
+  await expect(observer.getByRole('button',{name:en.withdrawTrain,exact:true})).toBeDisabled();await observer.locator('.catalog-item-main').last().click();await expect(observer.locator('.deployment-controls').getByLabel('X',{exact:true})).toBeDisabled();
   await expect(observer.getByRole('button',{name:en.deploymentPick,exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
  }finally{await context.close();release();}
 });
