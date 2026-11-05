@@ -30,6 +30,76 @@ public class RailwayTopologyTests
     }
     static MixedWorld World(params (Location Position,int Pattern)[] rails) => World(rails.Select(r => (r.Position,new TrafficComponents(Rail(r.Pattern)))));
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Closed_waypoint_route_builds_a_reciprocal_loop_and_charges_each_tile_once(bool reverse)
+    {
+        var world=World();var a=P;
+        Location[] via=[a with{X=10},a with{X=12,Y=10},a with{X=12,Y=12},a with{X=10,Y=14},a with{Y=14},a with{X=6,Y=12},a with{X=6,Y=10}];
+        var plan=NormalRailwayConstruction.PreviewBuild(world,a,a,reverse,via);
+        Assert.True(plan.Legal,plan.Reason);
+        Assert.Equal(16,plan.Topology.Cells.Length);
+        Assert.Equal(16,plan.Topology.Cells.Select(c=>c.Position).Distinct().Count());
+        var built=NormalRailwayConstruction.Apply(new(world),plan,new(GameTime.StartMinute));
+        Assert.Equal(16,built.World.Voxels.Count(v=>v.Traffic?.Rail!=null));
+        foreach(var cell in plan.Topology.Cells)
+        {
+            Assert.True(RailwayTopology.IsWellConnected(built.World,cell.Position));
+            Assert.Equal(2,RailwayTopology.Ports(cell.After!.Pattern).Length);
+        }
+        Assert.Equal(16*6_000_000L,plan.Booking.Total);
+        Assert.Equal(plan.Booking.Total,built.Accounts.Transactions.Single().Expenditure);
+    }
+
+    [Fact]
+    public void Unsupported_waypoint_bend_is_an_illegal_preview_instead_of_a_request_error()
+    {
+        var b=P with{X=P.X+2};var c=b with{Y=b.Y+2};
+        foreach(var reverse in new[]{false,true})
+        {
+            var plan=NormalRailwayConstruction.PreviewBuild(World(),P,c,reverse,via:[b]);
+            Assert.False(plan.Legal);
+            Assert.Equal("invalidRailPattern",plan.Reason);
+            Assert.Empty(plan.Topology.Cells);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Construction_recomputation_preserves_every_waypoint_and_the_preview_booking(bool reverseBend)
+    {
+        var world=World();var a=P;var b=a with{X=a.X+2,Y=a.Y+2};
+        var c=b with{X=b.X+2};var d=a with{X=a.X+6};
+        var via=new[]{b,c};
+        var plan=NormalRailwayConstruction.PreviewBuild(world,a,d,reverseBend,via);
+        Assert.True(plan.Legal,plan.Reason);
+        // A caller cannot change the route after it has been quoted.
+        via[0]=a;
+        var built=NormalRailwayConstruction.Apply(new(world),plan,new(GameTime.StartMinute));
+        Assert.Equal(plan.Topology.Cells.Select(c=>c.Position).OrderBy(p=>p.X),
+            built.World.Voxels.Where(v=>v.Traffic?.Rail != null).Select(v=>v.Position).OrderBy(p=>p.X));
+        Assert.NotNull(built.World.At(b)?.Traffic?.Rail);
+        Assert.NotNull(built.World.At(c)?.Traffic?.Rail);
+        Assert.Null(built.World.At(a with{X=a.X+4})?.Traffic?.Rail);
+        Assert.Equal(plan.Booking.Total,built.Accounts.Transactions.Single().Expenditure);
+    }
+
+    [Fact]
+    public void Waypoints_form_one_continuous_route_with_validated_bends_and_bounded_nodes()
+    {
+        var a=P;var b=P.Move(Heading.East).Move(Heading.East);
+        var c=b.Move(Heading.SouthEast).Move(Heading.SouthEast);
+        var plan=NormalRailwayConstruction.PreviewBuild(World(),a,c,via:[b]);
+        Assert.True(plan.Legal,plan.Reason);
+        Assert.Equal(5,plan.Topology.Cells.Length);
+        Assert.Equal(b,plan.Topology.Cells[2].Position);
+        Assert.Equal(NormalRailPatterns.Find(Heading.West.Index,Heading.SouthEast.Index),plan.Topology.Cells[2].After!.Pattern);
+        Assert.Equal("invalidRailPattern",NormalRailway.PlanBuild(World(),a,a,via:[b]).Reason);
+        Assert.Equal("invalidInput",NormalRailway.PlanBuild(World(),a,c,via:Enumerable.Repeat(b,9).ToArray()).Reason);
+    }
+
     [Fact]
     public void All_60_pattern_ports_match_the_independent_literal_table()
     {

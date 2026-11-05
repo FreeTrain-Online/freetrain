@@ -19,6 +19,15 @@ Deno.test('railway preview validates exact money, bounded patterns and legal/blo
  assert.notEqual(railwayQueryKey(q),railwayQueryKey({...q,to:{...q.to,x:3}}));
 });
 
+Deno.test('waypoints are bounded on the wire and distinguish preview identities regardless of property order',()=>{
+ const query:RailwayQuery={...q,via:[{x:2,y:1,z:2}]};
+ assert.deepEqual(parseRailwayPreview({...preview,query}).query,query);
+ assert.notEqual(railwayQueryKey(q),railwayQueryKey(query));
+ assert.equal(railwayQueryKey(query),railwayQueryKey({...q,via:[{z:2,y:1,x:2}]}));
+ assert.equal(railwayQueryKey(q),railwayQueryKey({...q,via:[]}));
+ assert.throws(()=>parseRailwayPreview({...preview,query:{...q,via:Array(9).fill(q.from)}}));
+});
+
 Deno.test('first railway publication admits only the exact same-epoch terrain profile handoff',()=>{
  const promoted={...terrain,...railwayProfile,revision:String(BigInt(terrain.revision)+1n)} as unknown as Snapshot;
  assert(isRailwayPromotion(terrain,promoted));

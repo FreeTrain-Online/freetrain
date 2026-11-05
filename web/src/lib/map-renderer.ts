@@ -193,9 +193,13 @@ export class MapRenderer {
       if(rail){
         ctx.strokeStyle=rail.legal?(rail.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';ctx.lineWidth=3;
         ctx.beginPath();let started=false;
-        for(const cell of rail.cells){
-          if(cell.position.z>options.heightCut)continue;
-          const p=toScreen(cell.position,camera,width,height,this.space);
+        // Rejected topology can have no cells. Keep the requested segments
+        // visible so the invalid route still has clear feedback on the map.
+        const route=rail.cells.length?rail.cells.map(cell=>cell.position):rail.legal?[]:[rail.query.from,...(rail.query.via??[]),rail.query.to];
+        if(rail.legal&&rail.query.via?.length&&rail.query.from.x===rail.query.to.x&&rail.query.from.y===rail.query.to.y&&rail.query.from.z===rail.query.to.z)route.push(rail.query.from);
+        for(const position of route){
+          if(position.z>options.heightCut)continue;
+          const p=toScreen(position,camera,width,height,this.space);
           if(started)ctx.lineTo(p.x,p.y);else {ctx.moveTo(p.x,p.y);started=true;}
         }
         ctx.stroke();
@@ -235,11 +239,12 @@ export class MapRenderer {
         const angle=Math.atan2(end.y-p.y,end.x-p.x);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(end.x,end.y);ctx.lineTo(end.x-6*Math.cos(angle-.6),end.y-6*Math.sin(angle-.6));ctx.moveTo(end.x,end.y);ctx.lineTo(end.x-6*Math.cos(angle+.6),end.y-6*Math.sin(angle+.6));ctx.stroke();
         ctx.fillStyle='#003c32';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(String(i+1),p.x,p.y-12*camera.zoom);
       }
+      const illegalRoute=rail?.legal===false||slope?.legal===false;
       for(const {position,label} of options.railPoints??[]){
         if(position.z>options.heightCut)continue;
         const p=toScreen(position,camera,width,height,this.space);
-        ctx.fillStyle='#fff';ctx.strokeStyle='#126e79';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,10,0,Math.PI*2);ctx.fill();ctx.stroke();
-        ctx.fillStyle='#174b50';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,p.x,p.y);
+        ctx.fillStyle=illegalRoute?'#ffe3e8':'#fff';ctx.strokeStyle=illegalRoute?'#b00020':'#126e79';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+        ctx.fillStyle=illegalRoute?'#b00020':'#174b50';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,p.x,p.y);
       }
       ctx.restore();
       if(options.preview && options.rectangleEnd && options.preview.z<=options.heightCut){

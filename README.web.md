@@ -23,9 +23,12 @@ and stages source-priced normal-rail build/removal atomically.
 [P4-08 rendering](doc/web-parity-railway-rendering.md) displays saved rails and piers through bundled art,
 terrain cuts and English/Japanese inspection.
 [P4-09 Track](doc/web-parity-normal-rail-tool.md) now builds/removes normal routes:
-choose two map points (or XY coordinates) with automatic start-level detection
-or a manual height, preview exact cost/losses,
-then confirm. Closest legal route compares two shortest eight-direction paths;
+choose a start point, move the pointer for a live route preview, and click the
+endpoint to build the complete route. Shift-click adds intermediate nodes, up to 10 points including the start
+and end; Shift-click an existing intermediate node to remove it. Click or Shift-click the start
+node to close and build a legal loop. XY coordinates, automatic start-level detection and a manual height are
+also supported. Coordinate entry retains the preview and Confirm workflow.
+Review exact cost/losses in the live preview before placing the route. Closest legal route compares two shortest eight-direction paths;
 longer detours and roads remain future work. New worlds gain mixed railway state
 on their first successful railway confirmation.
 [P4-11 Slope](doc/web-parity-slope-tool.md) adds the distinct EN/JA ramp task:

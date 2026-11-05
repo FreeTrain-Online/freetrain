@@ -194,3 +194,9 @@ no dispatcher. Unknown definitions/providers/actions or malformed graphs reject
 before replacement. [Full contract and checks](../../doc/web-parity-fleet-transport.md).
 Save8 is retired under [historical/save-v8](historical/save-v8/README.md);
 protocol6 peers are rejected. Exact content hashes remain unchanged.
+
+Normal railway build queries optionally include `via`, an ordered array of up to
+eight intermediate positions (10 nodes including `from` and `to`). The server
+validates the continuous, coplanar route including bends at intermediate nodes,
+and previews and commits it as one atomic construction edit. Other railway
+infrastructure and removal queries do not accept nonempty `via`.

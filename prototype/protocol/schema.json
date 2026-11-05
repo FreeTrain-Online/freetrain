@@ -2809,6 +2809,13 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "via": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
         "expectedWorldEpoch": {
           "$ref": "#/$defs/Counter"
         },

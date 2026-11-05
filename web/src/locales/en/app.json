@@ -448,6 +448,7 @@
   "railwayPattern": "Rail pattern",
   "railwaySupportedOwner": "Supported rail owner",
   "trackTask": "Track",
+  "railNodeHelp": "Move the pointer to preview. Shift-click adds a node (up to 10), or removes an existing intermediate node. Click without Shift to place the complete route; click or Shift-click the start to close and build a loop.",
   "railHelp": "Pick A, then B on the map, or enter X/Y coordinates. The start level is detected automatically. Enter a level to override it, then preview, review and confirm.",
   "railAction": "Track action",
   "railLay": "Lay",

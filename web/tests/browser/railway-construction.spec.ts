@@ -16,10 +16,161 @@ async function target(page:Page,from=[30,27],to=[34,27],level=1,ja=false){
  await expect(page.getByTestId('rail-status')).toContainText(ja?'施工可能':'route is legal');
 }
 async function confirm(page:Page,ja=false){await page.getByRole('button',{name:ja?'線路の変更を確定':'Confirm track change',exact:true}).click();await expect(page.getByTestId('rail-route')).toHaveCount(0);await expect(page.locator('.command-feedback')).toContainText(ja?'サーバーで確定':'Confirmed by server');await expect(page.getByRole('button',{name:ja?'線路の変更を確定':'Confirm track change',exact:true})).toBeDisabled();}
-async function click(page:Page,x:number,y:number,z=1){
+async function click(page:Page,x:number,y:number,z=1,mode:'click'|'hover'|'shift'|'preview'='click'){
  const p=await page.locator('canvas').evaluate((el,a)=>{const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);return {x:r.x+r.width/2+(16*(a.x+a.y-20)+16-cx)*zoom,y:r.y+r.height/2+(8*(-a.x+a.y+20)-16*a.z+8-cy)*zoom};},{x,y,z});
- await page.mouse.click(p.x,p.y);
+ if(mode==='preview'){await page.mouse.move(p.x,p.y);await page.getByRole('button',{name:'Preview route',exact:true}).click();await page.locator('canvas').focus();}
+ else if(mode==='hover')await page.mouse.move(p.x,p.y);
+ else{if(mode==='shift')await page.keyboard.down('Shift');await page.mouse.click(p.x,p.y);if(mode==='shift')await page.keyboard.up('Shift');}
 }
+
+test('hover previews and Shift-click nodes build one continuous route without preview mutations',async({page})=>{
+ await page.goto('/');await ready(page);const original=await save(page);
+ try{
+  await empty(page);const bytes=await save(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();
+  await click(page,30,27);
+  await click(page,32,27,1,'hover');
+  await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  await expect(page.getByTestId('rail-route')).toContainText('30, 27, 1 → 32, 27, 1');
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
+  await click(page,34,27,1,'hover');
+  await expect(page.getByTestId('rail-route')).toContainText('30, 27, 1 → 34, 27, 1');
+  expect(await save(page)).toEqual(bytes);
+  await click(page,32,29,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('2/10');
+  await click(page,36,29,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('3/10');
+  const response=page.waitForResponse(r=>r.url().includes('/api/railway/preview')&&r.request().postDataJSON().to.x===38);
+  await click(page,38,27,1,'hover');
+  const preview=await (await response).json();
+  expect(preview.query.via).toEqual([{x:32,y:29,z:1},{x:36,y:29,z:1}]);
+  const expected=[[30,27],[31,28],[32,29],[33,29],[34,29],[35,29],[36,29],[37,28],[38,27]];
+  expect(preview.cells.map((c:any)=>[c.position.x,c.position.y])).toEqual(expected);
+  await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  expect(await save(page)).toEqual(bytes);
+  await click(page,38,27);
+  await expect(page.getByTestId('rail-route')).toHaveCount(0);
+  await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
+  const built=await state(page);
+  expect(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>[v.position.x,v.position.y]).sort()).toEqual([...expected].sort());
+  expect(built.mixed.accounts.transactions).toHaveLength(1);
+  await click(page,30,30);await click(page,32,30,1,'shift');await page.keyboard.press('Escape');
+  await expect(page.getByTestId('rail-nodes')).toContainText('0/10');
+ }finally{await replace(page,original);}
+});
+
+test('a plain endpoint click builds exactly once and never builds an illegal endpoint or an old hover route',async({page})=>{
+ let commands=0;
+ await page.routeWebSocket('**/api/session?*',route=>{
+  const server=route.connectToServer();
+  route.onMessage(message=>{if(JSON.parse(String(message)).payload?.kind==='editRailway')commands++;server.send(message);});
+ });
+ await page.goto('/');await ready(page);const original=await save(page);
+ try{
+  await empty(page);const bytes=await save(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();
+  await click(page,30,27);await click(page,34,27,1,'hover');
+  await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  await click(page,30,27);
+  await expect(page.getByTestId('rail-status')).toHaveText('Choose two different points.');
+  expect(commands).toBe(0);expect(await save(page)).toEqual(bytes);
+  await click(page,32,27);
+  await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
+  const built=await state(page);
+  expect(built.mixed.voxels.filter((v:any)=>v.traffic?.rail).map((v:any)=>v.position.x).sort()).toEqual([30,31,32]);
+  await page.keyboard.press('Enter');
+  expect(commands).toBe(1);
+  await expect(page.getByTestId('rail-nodes')).toContainText('0/10');
+ }finally{await replace(page,original);}
+});
+
+for(const closeMode of ['click','shift'] as const)
+test(`a final ${closeMode==='shift'?'Shift':'plain'} click on the initial node builds a complete closed loop`,async({page})=>{
+ await page.goto('/');await ready(page);const original=await save(page);
+ try{
+  await empty(page);const bytes=await save(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();
+  await click(page,30,27);
+  const nodes=[[32,27],[34,25],[34,23],[32,21],[30,21],[28,23],[28,25]];
+  for(const [x,y] of nodes)await click(page,x,y,1,'shift');
+  const response=page.waitForResponse(r=>r.url().includes('/api/railway/preview')&&r.request().postDataJSON().to.x===30&&r.request().postDataJSON().to.y===27);
+  await click(page,30,27,1,'hover');
+  const preview=await (await response).json();expect(preview.legal).toBe(true);expect(preview.cells).toHaveLength(16);
+  expect(new Set(preview.cells.map((c:any)=>`${c.position.x},${c.position.y}`)).size).toBe(16);
+  expect(preview.cost).toBe('96000000');
+  expect(await save(page)).toEqual(bytes);
+  await click(page,30,27,1,closeMode);
+  await expect(page.locator('.command-feedback')).toContainText('Confirmed by server');
+  const built=await state(page),rails=built.mixed.voxels.filter((v:any)=>v.traffic?.rail);
+  expect(rails.map((v:any)=>v.position).sort((a:any,b:any)=>a.x-b.x||a.y-b.y)).toEqual(preview.cells.map((c:any)=>c.position).sort((a:any,b:any)=>a.x-b.x||a.y-b.y));
+  expect(built.mixed.accounts.transactions).toHaveLength(1);
+  await expect(page.getByTestId('rail-nodes')).toContainText('0/10');
+ }finally{await replace(page,original);}
+});
+
+test('illegal topology draws red nodes and segments even without server route cells, then recovers',async({page})=>{
+ await page.goto('/');await ready(page);const original=await save(page);
+ const colors=async(samples:{x:number;y:number;offset?:number;color:number[]}[])=>page.locator('canvas').evaluate((el,samples)=>{
+  const canvas=el as HTMLCanvasElement,r=canvas.getBoundingClientRect(),[cx,cy]=canvas.dataset.camera!.split(',').map(Number),zoom=Number(canvas.dataset.zoom),dpr=canvas.width/r.width;
+  return samples.map(p=>{
+   const x=(r.width/2+(16*(p.x+p.y-20)+16-cx)*zoom+(p.offset??0))*dpr;
+   const y=(r.height/2+(8*(-p.x+p.y+20)-16+8-cy)*zoom)*dpr;
+   const pixels=canvas.getContext('2d')!.getImageData(Math.round(x)-2,Math.round(y)-2,5,5).data;
+   for(let i=0;i<pixels.length;i+=4)if(p.color.every((v,j)=>pixels[i+j]===v))return true;
+   return false;
+  });
+ },samples);
+ try{
+  await empty(page);const bytes=await save(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();
+  await click(page,30,27);await click(page,34,27,1,'shift');
+  const response=page.waitForResponse(r=>r.url().includes('/api/railway/preview')&&r.request().postDataJSON().to.y===23);
+  await click(page,34,23,1,'hover');
+  const rejected=await (await response).json();expect(rejected.legal).toBe(false);expect(rejected.cells).toEqual([]);
+  await expect.poll(()=>colors([{x:34,y:23,offset:10,color:[176,0,32]},{x:34,y:25,color:[176,0,32]}])).toEqual([true,true]);
+  await click(page,38,23,1,'hover');
+  await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  await expect.poll(()=>colors([{x:34,y:27,offset:10,color:[18,110,121]},{x:36,y:25,color:[8,126,99]}])).toEqual([true,true]);
+  expect(await save(page)).toEqual(bytes);
+ }finally{await replace(page,original);}
+});
+
+test('Shift-click removes other nodes while preserving the start node',async({page})=>{
+ await page.goto('/');await ready(page);const original=await save(page);
+ try{
+  await empty(page);const bytes=await save(page);
+  await page.getByRole('button',{name:'Track',exact:true}).click();
+  await click(page,30,27);await click(page,32,29,1,'shift');await click(page,36,29,1,'preview');
+  await expect(page.getByTestId('rail-nodes')).toContainText('3/10');
+  const response=page.waitForResponse(r=>r.url().includes('/api/railway/preview')&&r.request().postDataJSON().to.x===36&&!r.request().postDataJSON().via?.length);
+  await click(page,32,29,1,'shift');
+  const preview=await (await response).json();
+  expect(preview.query.via??[]).toEqual([]);
+  await expect(page.getByTestId('rail-nodes')).toContainText('2/10');
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeEnabled();
+  // Removing the endpoint resumes pointer preview from the remaining start.
+  await click(page,36,29,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('1/10');
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
+  await click(page,32,29,1,'shift');await click(page,36,29,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('3/10');
+  // Removing the last intermediate node leaves the earlier nodes in order.
+  await click(page,36,29,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('2/10');
+  await expect(page.getByTestId('rail-route')).toContainText('30, 27, 1 → 32, 29, 1');
+  await click(page,30,27,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('3/10');
+  await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
+  await expect(page.getByLabel('Start Y',{exact:true})).toHaveValue('27');
+  await expect(page.getByTestId('rail-route')).toContainText('30, 27, 1 → 30, 27, 1');
+  await page.getByRole('button',{name:'Cancel preview',exact:true}).click();
+  await click(page,30,27);await click(page,30,27,1,'shift');
+  await expect(page.getByTestId('rail-nodes')).toContainText('1/10');
+  await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
+  await expect(page.getByTestId('rail-route')).toHaveCount(0);
+  expect(await save(page)).toEqual(bytes);
+ }finally{await replace(page,original);}
+});
 
 for (const focus of ['map', 'preview button', 'preview form']) {
  test(`Return confirms track changes from the ${focus} without replaying the command`, async ({page}) => {
@@ -33,7 +184,7 @@ for (const focus of ['map', 'preview button', 'preview form']) {
    await empty(page);await page.getByRole('button',{name:'Track',exact:true}).click();
    const canvas=page.locator('canvas'),primary=page.getByRole('button',{name:'Confirm track change',exact:true});
    if(focus==='map') {
-    await click(page,30,27);await click(page,34,27);await expect(canvas).toBeFocused();
+    await click(page,30,27);await click(page,34,27,1,'preview');await expect(canvas).toBeFocused();
    } else {
     await target(page);
     if(focus==='preview button')await page.getByRole('button',{name:'Preview route',exact:true}).focus();
@@ -132,7 +283,7 @@ test('two map points preview/cancel/build, attach, branch and remove in two peer
   await canvas.evaluate(el=>el.dataset.instance='track-canvas');const camera=await canvas.getAttribute('data-camera'),zoom=await canvas.getAttribute('data-zoom');
   let bootstrap=0;page.on('request',r=>{if(r.url().includes('/api/bootstrap'))bootstrap++;});
   await page.getByRole('button',{name:'Track',exact:true}).click();await click(page,30,27);await expect(page.getByLabel('Start X',{exact:true})).toHaveValue('30');
-  await click(page,34,27);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('30,000,000');
+  await click(page,34,27,1,'preview');await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('30,000,000');
   expect(await save(page)).toEqual(bytes);
   await page.getByRole('button',{name:'Cancel preview',exact:true}).click();expect(await save(page)).toEqual(bytes);
   await target(page);await confirm(page);await expect(canvas).toHaveAttribute('data-ruleset','mixed-railway-1');await expect(peer.locator('canvas')).toHaveAttribute('data-ruleset','mixed-railway-1');await ready(peer);
@@ -156,21 +307,21 @@ test('automatic map picking builds visible surface track above level one and reu
   await replace(page,Buffer.from(JSON.stringify(authored)));await ready(page);
   await page.getByRole('button',{name:'Track',exact:true}).click();await expect(page.getByLabel('Auto-detect start level',{exact:true})).toBeChecked();
   await click(page,30,27,4);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await expect(page.getByTestId('rail-level-state')).toContainText('Detected level: 4');
-  await click(page,32,27,4);await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('18,000,000');
+  await click(page,32,27,4,'preview');await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-cost')).toContainText('18,000,000');
   await confirm(page);await expect.poll(async()=>(await state(page)).mixed?.voxels.filter((v:any)=>v.traffic?.rail).length).toBe(3);
   expect((await state(page)).mixed.voxels.filter((v:any)=>v.traffic?.rail).every((v:any)=>v.position.z===4)).toBe(true);
   // This is an actual alpha-mask rail inspector pick after the preview is gone.
   await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect.poll(async()=>{await click(page,31,27,4);const label=page.getByTestId('selected-object');return await label.count()?label.textContent():'';}).toContain('Railway ·');
   await expect(page.getByTestId('selected-object')).toContainText('31, 27, 4');await closePanel(page);
   await page.getByRole('button',{name:'Track',exact:true}).click();
-  await click(page,32,27,4);await click(page,34,27,4);await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  await click(page,32,27,4);await click(page,34,27,4,'preview');await expect(page.getByTestId('rail-status')).toContainText('route is legal');
   await expect(page.getByTestId('rail-route')).toContainText('32, 27, 4 → 34, 27, 4');await expect(page.getByTestId('rail-cost')).toContainText('New piers: 4');await confirm(page);
   // Confirmation precedes asynchronous art preparation. Wait for the completed
   // visible scene before asking its geometric picker to target the new rail.
   await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect.poll(async()=>{await click(page,34,27,4);const label=page.getByTestId('selected-object');return await label.count()?label.textContent():'';}).toContain('34, 27, 4');
   await closePanel(page);await page.getByRole('button',{name:'Track',exact:true}).click();
   // The next A sits on elevated rail above ground 2, so its rail level wins.
-  await click(page,34,27,4);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await click(page,36,27,4);await expect(page.getByTestId('rail-status')).toContainText('route is legal');
+  await click(page,34,27,4);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await click(page,36,27,4,'preview');await expect(page.getByTestId('rail-status')).toContainText('route is legal');
 
  }finally{await replace(page,original);}
 });
@@ -181,7 +332,7 @@ test('automatic coordinate levels, cut-aware picking and explicit manual overrid
   await empty(page);const authored=JSON.parse((await save(page)).toString());authored.packedTerrain.cells=Buffer.alloc(30*42,0x44).toString('base64');authored.packedTerrain.geometryRevision='1';authored.revision='1';
   await replace(page,Buffer.from(JSON.stringify(authored)));await ready(page);await page.getByRole('button',{name:'Track',exact:true}).click();
   for(const [name,value] of [['Start X',30],['Start Y',27]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
-  await page.getByRole('button',{name:'Pick end on map',exact:true}).click();await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await click(page,32,27,4);
+  await page.getByRole('button',{name:'Pick end on map',exact:true}).click();await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');await click(page,32,27,4,'preview');
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-route')).toContainText('30, 27, 4 → 32, 27, 4');
   // Changing the start coordinates re-detects its level on the next preview.
   for(const [name,value] of [['Start X',30],['Start Y',28],['End X',32],['End Y',28]] as const)await page.getByLabel(name,{exact:true}).fill(String(value));
@@ -190,7 +341,7 @@ test('automatic coordinate levels, cut-aware picking and explicit manual overrid
   await expect(page.getByTestId('rail-route')).toContainText('30, 28, 1 → 32, 28, 1');await expect(page.getByTestId('rail-level-state')).toContainText('Manual level: 1');
   await page.getByLabel('Auto-detect start level',{exact:true}).check();await page.getByRole('button',{name:'Preview route',exact:true}).click();await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('4');
   await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('2');await closePanel(page);await expect(page.locator('canvas')).toHaveAttribute('data-terrain-cut','2');
-  await click(page,30,27,2);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('2');await click(page,32,27,2);
+  await click(page,30,27,2);await expect(page.getByLabel('Track level',{exact:true})).toHaveValue('2');await click(page,32,27,2,'preview');
   await expect(page.getByTestId('rail-status')).toContainText('route is legal');await expect(page.getByTestId('rail-route')).toContainText('30, 27, 2 → 32, 27, 2');
  }finally{await replace(page,original);}
 });

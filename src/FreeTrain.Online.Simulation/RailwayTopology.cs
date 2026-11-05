@@ -123,6 +123,7 @@ public sealed class NormalRailwayPlan
     public MixedWorld Source { get; }
     public Location From { get; }
     public Location To { get; }
+    public ImmutableArray<Location> Via { get; }
     public bool Removal { get; }
     public bool ReverseBend { get; }
     public string? Reason { get; }
@@ -133,22 +134,40 @@ public sealed class NormalRailwayPlan
     // at EVERY visited column, including empty, wrong-edge and protected-car cells.
     public IEnumerable<Location> SupportColumns => Cells.Where(c => Removal || c.Before == null).Select(c => c.Position);
     internal NormalRailwayPlan(MixedWorld source, Location from, Location to, bool removal,
-        string? reason, ImmutableArray<NormalRailwayCell> cells, bool reverseBend = false)
-    { Source=source; From=from; To=to; Removal=removal; Reason=reason; Cells=cells; ReverseBend=reverseBend; }
+        string? reason, ImmutableArray<NormalRailwayCell> cells, bool reverseBend = false, IReadOnlyList<Location>? via = null)
+    { Source=source; From=from; To=to; Via=via?.ToImmutableArray() ?? []; Removal=removal; Reason=reason; Cells=cells; ReverseBend=reverseBend; }
 }
 
 public static class NormalRailway
 {
     // Initial bounded domain work; P4-23 owns measured legal-network capacity.
     public const int MaximumRouteCells = 8192;
-    public static NormalRailwayPlan PlanBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Plan(world,from,to,false,reverseBend);
+    public static NormalRailwayPlan PlanBuild(MixedWorld world, Location from, Location to, bool reverseBend = false, IReadOnlyList<Location>? via = null) => Plan(world,from,to,false,reverseBend,via);
     public static NormalRailwayPlan PlanRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Plan(world,from,to,true,reverseBend);
-    private static NormalRailwayPlan Plan(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
+    private static NormalRailwayPlan Plan(MixedWorld world, Location from, Location to, bool removal, bool reverseBend, IReadOnlyList<Location>? via = null)
     {
         ArgumentNullException.ThrowIfNull(world);
-        NormalRailwayPlan Reject(string reason) => new(world,from,to,removal,reason,[],reverseBend);
+        NormalRailwayPlan Reject(string reason) => new(world,from,to,removal,reason,[],reverseBend,via);
+        var closed=!removal&&from==to&&via is {Count: > 0};
         ImmutableArray<Location> route;
-        try { route = reverseBend ? RailwayTopology.Route(to,from).Reverse().ToImmutableArray() : RailwayTopology.Route(from,to); }
+        try {
+            if (via is {Count: > 8}) return Reject("invalidInput");
+            var nodes = new[] { from }.Concat(via ?? []).Append(to).ToArray();
+            var path = new List<Location>();
+            for (var i = 1; i < nodes.Length; i++)
+            {
+                var segment = reverseBend ? RailwayTopology.Route(nodes[i],nodes[i-1]).Reverse().ToImmutableArray() : RailwayTopology.Route(nodes[i-1],nodes[i]);
+                if (segment.IsEmpty) return Reject("samePoint");
+                path.AddRange(i == 1 ? segment : segment.Skip(1));
+                if (path.Count > MaximumRouteCells) return Reject("routeWorkLimit");
+            }
+            // The start tile is constructed and charged once. Its two ports
+            // come from the last and first legs of the closed path.
+            if (closed) path.RemoveAt(path.Count-1);
+            if (closed && path.Count < 3) return Reject("invalidRailPattern");
+            if (path.Distinct().Count() != path.Count) return Reject("invalidRailPattern");
+            route = path.ToImmutableArray();
+        }
         catch (ArgumentException e) { return Reject(e.Message); }
         if (route.IsEmpty) return Reject("samePoint");
         var cells = ImmutableArray.CreateBuilder<NormalRailwayCell>(route.Length);
@@ -157,8 +176,8 @@ public static class NormalRailway
             var p = route[n];
             try { if (!world.Terrain.Space.ContainsVoxel(p)) return Reject("outside"); }
             catch (OverflowException) { return Reject("outside"); }
-            var incoming = n == 0 ? p.DirectionTo(route[1]).Opposite : route[n-1].DirectionTo(p).Opposite;
-            var outgoing = n == route.Length-1 ? incoming.Opposite : p.DirectionTo(route[n+1]);
+            var incoming = n == 0 ? closed ? p.DirectionTo(route[^1]) : p.DirectionTo(route[1]).Opposite : route[n-1].DirectionTo(p).Opposite;
+            var outgoing = n == route.Length-1 ? closed ? p.DirectionTo(route[0]) : incoming.Opposite : p.DirectionTo(route[n+1]);
             var traffic = world.At(p)?.Traffic;
             var before = traffic?.Rail; var after = before;
             var car = traffic?.Car != null;
@@ -175,7 +194,7 @@ public static class NormalRailway
                     if (car) return Reject("carOccupied");
                     if (before != null)
                     {
-                        if (n != 0 && n != route.Length-1) return Reject("existingMiddleRail");
+                        if (closed || n != 0 && n != route.Length-1) return Reject("existingMiddleRail");
                         var pattern = RailwayTopology.Attach(world.Profile.Resolve(before.Definition).Handler,before.Pattern,
                             n == 0 ? outgoing : incoming,RailwayTopology.IsWellConnected(world,p));
                         if (pattern == null) return Reject("cannotAttach");
@@ -186,9 +205,10 @@ public static class NormalRailway
             }
             catch (InvalidOperationException e) when (e.Message is "invalidRailPattern" or "unavailableRailBinding")
             { return Reject(e.Message); }
+            catch (ArgumentException) { return Reject("invalidRailPattern"); }
             cells.Add(new(p,incoming,outgoing,before,after,car));
         }
-        return new(world,from,to,removal,null,cells.MoveToImmutable(),reverseBend);
+        return new(world,from,to,removal,null,cells.MoveToImmutable(),reverseBend,via);
     }
 
     private static RailComponent? Replace(RailwayProfile profile, RailComponent before, int? pattern) =>

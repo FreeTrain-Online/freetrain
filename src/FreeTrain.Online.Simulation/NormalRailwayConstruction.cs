@@ -56,11 +56,11 @@ public static class NormalRailwayConstruction
         catch (OverflowException) { return false; }
     }
 
-    public static RailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,false,reverseBend);
+    public static RailwayConstructionPlan PreviewBuild(MixedWorld world, Location from, Location to, bool reverseBend = false, IReadOnlyList<Location>? via = null) => Preview(world,from,to,false,reverseBend,via);
     public static RailwayConstructionPlan PreviewRemoval(MixedWorld world, Location from, Location to, bool reverseBend = false) => Preview(world,from,to,true,reverseBend);
-    private static RailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal, bool reverseBend)
+    private static RailwayConstructionPlan Preview(MixedWorld world, Location from, Location to, bool removal, bool reverseBend, IReadOnlyList<Location>? via = null)
     {
-        var topology=removal ? NormalRailway.PlanRemoval(world,from,to,reverseBend) : NormalRailway.PlanBuild(world,from,to,reverseBend);
+        var topology=removal ? NormalRailway.PlanRemoval(world,from,to,reverseBend) : NormalRailway.PlanBuild(world,from,to,reverseBend,via);
         RailwayConstructionPlan Reject(string reason) => new(topology,reason);
         if (!topology.TopologyValid) return Reject(topology.Reason!);
         if (!IsUsableStart(world,from)) return Reject("unusableStart");
@@ -173,7 +173,8 @@ public static class NormalRailwayConstruction
     {
         if (!ReferenceEquals(state.World,plan.Source)) throw new InvalidOperationException("staleRevision");
         if (!plan.Legal) throw new InvalidOperationException(plan.Reason);
-        var actual=Preview(state.World,plan.Topology.From,plan.Topology.To,plan.Topology.Removal,plan.Topology.ReverseBend);
+        // Revalidation must retain the quoted intermediate nodes as well as the endpoints.
+        var actual=Preview(state.World,plan.Topology.From,plan.Topology.To,plan.Topology.Removal,plan.Topology.ReverseBend,plan.Topology.Via);
         if (!actual.Legal) throw new InvalidOperationException(actual.Reason);
         if (state.Accounts.Transactions.Length >= MaximumAccountTransactions) throw new InvalidOperationException("accountCapacityLimit");
         var candidate=actual.Candidate!;

@@ -10,7 +10,9 @@ public sealed partial class SessionHost
     // changes the terrain profile, initial cash, IDs, random streams or clock.
     private MixedSessionState RailwayState(RailwayQuery query)
     {
-        if (query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
+        if (query.Via is {Length: > 8} || query.Via?.Any(p => p == null) == true ||
+            query.Via is {Length: > 0} && (query.Infrastructure != "normal" || query.Action != "lay") ||
+            query.From == null || query.To == null || query.Action is not ("lay" or "remove") ||
             query.Routing is not ("closest" or "source" or "alternate") || query.Infrastructure is not ("normal" or "bridge" or "girder" or "tunnel" or "garage" or "signal" or "pole" or "stationary" or "speed") ||
             query.Speed is not ("low" or "medium" or "fast") || query.SpeedClimb is not (0 or 2 or 4 or 6) ||
             query.Infrastructure=="speed" && query.SpeedSlope && query.From!=query.To ||
@@ -55,7 +57,7 @@ public sealed partial class SessionHost
         if (query.Infrastructure == "bridge") return BridgeRailwayConstruction.Preview(state.World,from,to,query.Action == "remove");
         RailwayConstructionPlan Plan(bool alternate) => query.Action == "remove"
             ? NormalRailwayConstruction.PreviewRemoval(state.World,from,to,alternate)
-            : NormalRailwayConstruction.PreviewBuild(state.World,from,to,alternate);
+            : NormalRailwayConstruction.PreviewBuild(state.World,from,to,alternate,query.Via?.Select(p => new Location(p.X,p.Y,p.Z)).ToArray());
         if (query.Routing == "alternate") return Plan(true);
         var source = Plan(false);
         // Owner extension: compare both shortest sign-vector walks. Never adjust

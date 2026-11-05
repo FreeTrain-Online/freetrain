@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { pickRailwayLocation } from './lib/railway-renderer.ts';
   import { createTerrainPainter, type PaintState, type PaintTarget } from './lib/terrain-painter.ts';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { pickTerrainStrategy, pickTerrainIntersection } from './lib/terrain-edit.ts';
@@ -44,7 +45,7 @@
   let drawSpeedLimits=$state(true);
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
-  let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean;isRemoving?:()=>boolean;usesSlopePick?:()=>boolean}>();
+  let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean;isRemoving?:()=>boolean;usesSlopePick?:()=>boolean;pickPosition?:(p:Position,append?:boolean)=>void;hoverPosition?:(p?:Position)=>void}>();
   let removeControls=$state<{cancelDraft:()=>boolean;pickMode:()=> 'object'|'auto'|'level'}>(),removePicked=$state<Selection|Position>();
   let removeLevel=$state(1),removalPath=$state<Position[]>([]);
   let railPicked=$state<Position>(),railPreview=$state<RailwayPreview>(),slopePreview=$state<SlopePreview>();
@@ -207,6 +208,7 @@
         preview = undefined; dirty = true; return;
       }
     }
+    if(railway&&tool==='build'&&!drag&&!panel&&!blocked)railControls?.hoverPosition?.(tileAt(p,railLevel,camera,width,height,space));
     if (!railway && tool !== 'inspect' && tool !== 'terrain' && !panel && !view.pending && !uncertain) {
       const raw=tileAt(p,level,camera,width,height,space);
       preview=selectedPosition??(anchor?snap(raw,anchor,snapMode):raw);dirty=true;
@@ -255,7 +257,9 @@
       if(!removePicked)removeControls?.cancelDraft();
     }
     else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='speed'||tool==='stationary'||tool==='pole'||tool==='signal'||tool==='garage')&&!blocked&&!panel){
-      railPicked=railControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:tool==='slope'||tool==='speed'&&railControls?.usesSlopePick?.()?'slopeOrGround':tool==='speed'?'trafficOrGround':tool==='stationary'?(railControls?.isRemoving?.()?'stationaryOrGround':'ground'):'railOrGround'}):tileAt(p,railLevel,camera,width,height,space);
+      const normalStart=tool==='build'&&railControls?.usesAutomaticPick()&&view.read?.terrain;
+      const picked=normalStart?pickRailwayLocation(view.read!,{x:(p.x-width/2)/camera.zoom+camera.x,y:(p.y-height/2)/camera.zoom+camera.y},heightCut,{kind:'railOrGround'}):railControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:tool==='slope'||tool==='speed'&&railControls?.usesSlopePick?.()?'slopeOrGround':tool==='speed'?'trafficOrGround':tool==='stationary'?(railControls?.isRemoving?.()?'stationaryOrGround':'ground'):'railOrGround'}):tileAt(p,railLevel,camera,width,height,space);
+      if(tool==='build'&&picked)railControls?.pickPosition?.(picked,event.shiftKey);else railPicked=picked;
     }
     else if (!blocked && !panel && !uncertain) { void chooseTarget(tileAt(p,level,camera,width,height,space)); }
     dirty = true;
@@ -387,7 +391,7 @@
 </script>
 
 <div class="map-viewport" class:demo={!live} inert={!live} aria-hidden={!live}>
-  <canvas bind:this={canvas} class="world-canvas" style:cursor={tool==='remove'||tool==='terrain'&&paintingMode()?'crosshair':undefined} tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={cancelGesture} onpointerleave={() => { if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={()=>{clearInput();cancelGesture();}}></canvas>
+  <canvas bind:this={canvas} class="world-canvas" style:cursor={tool==='remove'||tool==='terrain'&&paintingMode()?'crosshair':undefined} tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={cancelGesture} onpointerleave={() => { railControls?.hoverPosition?.(); if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={()=>{clearInput();cancelGesture();}}></canvas>
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>

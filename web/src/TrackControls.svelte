@@ -29,17 +29,21 @@
   let action=$state<'lay'|'remove'>('lay');
   let routing=$state<'closest'|'source'|'alternate'>('closest');
   let ax=$state(0),ay=$state(0),bx=$state(0),by=$state(0);
+  let via=$state<Position[]>([]),hovering=$state(false);
+  let hoverTimer:ReturnType<typeof setTimeout>|undefined;
+  let hoverKey='';
   let hasA=$state(false),hasB=$state(false),point=$state<'from'|'to'>('from');
   let autoLevel=$state(true),autoCoordinates=$state(true);
   let result=$state<RailwayPreview>(),status=$state<'idle'|'checking'|'ready'|'failed'|'stale'>('idle');
+  const routeEnd=$derived(result&&infrastructure==='normal'&&result.query.from.x===result.query.to.x&&result.query.from.y===result.query.to.y&&result.query.from.z===result.query.to.z?result.query.to:result?.cells.at(-1)?.position??result?.query.to);
   const stationaryTarget=$derived(action==='remove'&&result?.legal?stationaryTypes.find(t=>t.id===view.read?.mixed?.voxels.find(v=>v.position.x===result?.cells[0]?.position.x&&v.position.y===result?.cells[0]?.position.y&&v.position.z===result?.cells[0]?.position.z)?.definition?.contributionId):undefined);
   const shownStationary=$derived(action==='remove'?stationaryTarget:stationary);
   let requestRejected=$state(false);
   let fence=$state<string>(),submitting=$state(false);
   let version=0,request:AbortController|undefined;
   const blocked=$derived(view.pending||view.connection!=='ready'||view.role==='observer'||view.feedback==='unresolved');
-  function reset(){requestRejected=false;version++;request?.abort();fence=undefined;result=undefined;status='idle';onpreview();}
-  function points(){if(pointTool){onpoints(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]);return;}onpoints([...(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]),...(hasB?[{position:{x:bx,y:by,z:level},label:'B'}]:[])]);}
+  function reset(){clearTimeout(hoverTimer);hoverKey='';requestRejected=false;version++;request?.abort();fence=undefined;result=undefined;status='idle';onpreview();}
+  function points(){if(pointTool){onpoints(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]);return;}onpoints([...(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]),...via.map((p,i)=>({position:{...p,z:level},label:String.fromCharCode(66+i)})),...((hasB||hovering)&&!(hasA&&bx===ax&&by===ay)?[{position:{x:bx,y:by,z:level},label:String.fromCharCode(66+via.length)}]:[])]);}
   function edit(){reset();points();}
   export function usesSlopePick(){return infrastructure==='speed'&&speedSlope&&action==='remove';}
   export function isRemoving(){return action==='remove';}
@@ -55,38 +59,86 @@
   function editStart(){hasA=true;autoCoordinates=true;edit();}
   function changeLevelMode(enabled:boolean){const refresh=result!==undefined||status==='checking';autoLevel=enabled;reset();autoCoordinates=true;if(hasA)detectCoordinateLevel();points();if((infrastructure==='girder'||infrastructure==='tunnel')&&hasA&&hasB&&refresh)void check();}
   function choosePoint(next:'from'|'to'){reset();if(next==='to'&&hasA)detectCoordinateLevel();point=next;points();}
-  export function cancelDraft(){const had=hasA||hasB||status!=='idle';reset();hasA=false;hasB=false;point='from';autoCoordinates=true;onpoints([]);return had;}
-  async function check(){
-    if(blocked)return;reset();const read=view.read,revision=railwayRevision(read);if(!read||revision===undefined)return;
+  export function cancelDraft(){const had=hasA||hasB||status!=='idle';reset();via=[];hovering=false;hasA=false;hasB=false;point='from';autoCoordinates=true;onpoints([]);return had;}
+  async function check(live=false,place=false){
+    if(blocked)return;const currentHoverKey=hoverKey;reset();if(live)hoverKey=currentHoverKey;const read=view.read,revision=railwayRevision(read);if(!read||revision===undefined)return;
     detectCoordinateLevel();
     // Each automatic tunnel quote starts from the selected column again. The
     // last resolved display level must not accumulate one-level adjustments.
     if(infrastructure==='tunnel'&&action==='lay'&&autoLevel)level=startLevel({x:ax,y:ay,z:level})??level;
     if(![ax,ay,bx,by,level].every(Number.isSafeInteger)){status='failed';return;}
     if(pointTool){bx=ax;by=ay;}
-    hasA=true;hasB=true;points();
-    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='speed'?{speed,speedSlope,speedClimb}:{}),...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='stationary'?{stationaryType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
+    hasA=true;if(!live){hasB=true;hovering=false;}points();
+    const routeVia=via.at(-1)?.x===bx&&via.at(-1)?.y===by?via.slice(0,-1):via;
+    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='normal'&&routeVia.length?{via:routeVia.map(p=>({...p,z:level})) as RailwayQuery['via']}:{}),...(infrastructure==='speed'?{speed,speedSlope,speedClimb}:{}),...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='stationary'?{stationaryType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
     const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewRailway(query,request.signal);
       if(id!==version||fence!==railwayFence(view.read)||blocked)return;
       result=preview;status='ready';if(infrastructure==='tunnel'&&action==='lay'&&autoLevel&&preview.legal&&preview.cells.length)level=preview.cells[0].position.z;onpreview(preview);
       if(infrastructure!=='normal'&&!pointTool&&preview.cells.length)onpoints([{position:preview.cells[0].position,label:'A'},{position:preview.cells.at(-1)!.position,label:'B'}]);
+      if(place&&preview.legal)await commit();
     }catch(error){if(id===version){requestRejected=error instanceof RailwayPreviewRequestError;status='failed';onpreview();}}
   }
   async function commit(){
-    if(blocked||status!=='ready'||!result?.legal||fence!==railwayFence(view.read))return;
+    if(blocked||hovering||!hasB||status!=='ready'||!result?.legal||fence!==railwayFence(view.read))return;
     const id=version,query=result.query;submitting=true;
     const accepted=await model.send({kind:'editRailway',query});submitting=false;
     if(id!==version)return;
     if(accepted)cancelDraft();
     else {reset();status='stale';}
   }
-  $effect(()=>{const p=picked;if(p)untrack(()=>{
+  export function hoverPosition(p?:Position){
+    if(infrastructure!=='normal'||blocked||!hasA||hasB||point!=='to')return;
+    if(!p){if(hovering){reset();hovering=false;points();}return;}
+    const key=`${p.x},${p.y}`;
+    if(key===hoverKey)return;
+    reset();hoverKey=key;bx=p.x;by=p.y;hovering=true;points();
+    hoverTimer=setTimeout(()=>{void check(true);},40);
+  }
+  export function pickPosition(p:Position,append=false){
     if(blocked)return;
-    reset();if(point==='from'||pointTool){if(autoLevel)level=infrastructure==='girder'&&action==='lay'?(startLevel(p)??p.z):p.z;ax=p.x;ay=p.y;hasA=true;autoCoordinates=false;point=pointTool?'from':'to';if(pointTool){hasB=true;bx=ax;by=ay;}}else{bx=p.x;by=p.y;hasB=true;}
-    points();if(hasA&&hasB)void check();
-  });});
+    reset();hovering=false;
+    // The start is the loop-closing target, never a removable waypoint.
+    if(infrastructure==='normal'&&hasA&&p.x===ax&&p.y===ay){
+      if(hasB&&(bx!==ax||by!==ay)&&!(via.at(-1)?.x===bx&&via.at(-1)?.y===by)){
+        if(via.length>=8){points();return;}
+        via=[...via,{x:bx,y:by,z:level}];
+      }
+      bx=ax;by=ay;hasB=via.length>0||!append;point='to';points();
+      if(hasB)void check(false,true);
+      return;
+    }
+    if(append&&infrastructure==='normal'&&hasA){
+      const nodes=[{x:ax,y:ay,z:level},...via,...(hasB?[{x:bx,y:by,z:level}]:[])];
+      const index=nodes.findIndex(node=>node.x===p.x&&node.y===p.y);
+      if(index!==-1){
+        const keepEndpoint=hasB&&index!==nodes.length-1;
+        nodes.splice(index,1);
+        if(!nodes.length){cancelDraft();return;}
+        ax=nodes[0].x;ay=nodes[0].y;point='to';autoCoordinates=false;
+        hasB=keepEndpoint&&nodes.length>1;
+        via=nodes.slice(1,hasB?-1:undefined);
+        const end=nodes.at(-1)!;bx=end.x;by=end.y;
+        points();
+        if(nodes.length>1)void check(!hasB);
+        return;
+      }
+    }
+    if(point==='from'||pointTool){
+      via=[];hasB=false;
+      if(autoLevel)level=infrastructure==='girder'&&action==='lay'?(startLevel(p)??p.z):p.z;
+      ax=p.x;ay=p.y;hasA=true;autoCoordinates=false;point=pointTool?'from':'to';
+      if(pointTool){hasB=true;bx=ax;by=ay;}
+    }else if(append&&infrastructure==='normal'&&via.length<8){
+      const last=via.at(-1)??{x:ax,y:ay};
+      if(p.x===last.x&&p.y===last.y){points();return;}
+      bx=p.x;by=p.y;via=[...via,{...p,z:level}];hasB=false;
+      points();void check(true);return;
+    }else{bx=p.x;by=p.y;hasB=true;}
+    points();if(hasA&&hasB)void check(false,infrastructure==='normal'&&!append);
+  }
+  $effect(()=>{const p=picked;if(p)untrack(()=>pickPosition(p));});
   $effect(()=>{
     const current=railwayFence(view.read);
     if(fence&&fence!==current&&!submitting){reset();autoCoordinates=true;status='stale';}
@@ -95,12 +147,13 @@
   // Changing the catalog variant or direction invalidates an outstanding quote,
   // while keeping the chosen map point ready for the next preview.
   $effect(()=>{void stationaryType;void signalType;void signalDirection;untrack(edit);});
-  $effect(()=>()=>{version++;request?.abort();onpreview();onpoints([]);});
+  $effect(()=>()=>{clearTimeout(hoverTimer);version++;request?.abort();onpreview();onpoints([]);});
 </script>
 <section class="tool-card track-task" use:primaryAction aria-label={text[wording.task]}>
   <h2>{text[wording.task]}</h2>
   {#if infrastructure!=='normal'}<p>{text[wording.description]}</p>{/if}
   <p class="hint">{text[wording.help]}</p>
+  {#if infrastructure==='normal'}<p class="hint" data-testid="rail-nodes">{text.railNodeHelp} {hasA?1+via.length+(hasB?1:0):0}/10</p>{/if}
   <form onsubmit={event=>{event.preventDefault();void check();}}>
     {#if infrastructure==='stationary'}
       {#if action==='lay'}<p data-testid="catalog-selection">{text.stationaryType}: {view.locale==='ja'?stationary.groupJa:stationary.groupEn} · {stationary.variant}</p><div class="form-actions"><button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button></div>{/if}
@@ -143,7 +196,7 @@
   </form>
   <p role="status" data-testid="rail-status">{status==='checking'?text.checkingGeometry:status==='failed'?text[requestRejected?'railPreviewRequestRejected':'geometryFailed']:status==='stale'?text.railStale:result?result.legal?text.railLegal:text[railwayReasons[result.reason as keyof typeof railwayReasons]??'geometryFailed']:text[point==='from'?'railPickFrom':'railPickTo']}</p>
   {#if result}
-    <p data-testid="rail-route">{result.cells[0]?.position.x??result.query.from.x}, {result.cells[0]?.position.y??result.query.from.y}, {result.cells[0]?.position.z??level} → {result.cells.at(-1)?.position.x??result.query.to.x}, {result.cells.at(-1)?.position.y??result.query.to.y}, {result.cells.at(-1)?.position.z??level}{#if infrastructure==='normal'} · {result.reverseBend?text.railAlternate:text.railSource}{/if}</p>
+    <p data-testid="rail-route">{result.cells[0]?.position.x??result.query.from.x}, {result.cells[0]?.position.y??result.query.from.y}, {result.cells[0]?.position.z??level} → {routeEnd?.x??result.query.to.x}, {routeEnd?.y??result.query.to.y}, {routeEnd?.z??level}{#if infrastructure==='normal'} · {result.reverseBend?text.railAlternate:text.railSource}{/if}</p>
     {#if result.cells.some(c=>c.protectedByCar)}<p>{text.railProtected}</p>{/if}
     {#if result.losses.length}<details open><summary>{text.railLossDetails}</summary><ul class="rail-losses">{#each result.losses as loss}<li>{text[loss.kind==='pier'?'railPierLoss':loss.kind==='reclamation'?'railReclamationLoss':'railAccessoryLoss']}: {loss.position.x}, {loss.position.y}, {loss.position.z} · {text.owner}: {loss.ownerId}{#if loss.supportedOwnerId} · {text.railwaySupportedOwner}: {loss.supportedOwnerId}{/if}</li>{/each}</ul></details>{/if}
   {/if}
@@ -152,6 +205,6 @@
   {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="status">{text[view.feedback]}</p>{/if}
   <div class="track-confirm">
     {#if result}<p data-testid="rail-cost">{text.cornerCost}: {BigInt(result.cost).toLocaleString(view.locale)} · {text.railCells}: {result.cells.length} · {text.railPiers}: {result.addedPiers.length} · {text.railLosses}: {result.losses.length}</p>{/if}
-  <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text[wording.confirm]}</button><button disabled={view.pending||(!hasA&&!hasB&&!result)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+  <div class="form-actions"><button class="primary" disabled={blocked||hovering||!hasB||status!=='ready'||!result?.legal} onclick={commit}>{text[wording.confirm]}</button><button disabled={view.pending||(!hasA&&!hasB&&!result)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
   </div>
 </section>

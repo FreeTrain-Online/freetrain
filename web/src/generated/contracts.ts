@@ -627,6 +627,19 @@ export interface RectangleTerrainSelection {
   soft: boolean;
 }
 export interface RailwayQuery {
+  /**
+   * @maxItems 8
+   */
+  via?:
+    | []
+    | [Position]
+    | [Position, Position]
+    | [Position, Position, Position]
+    | [Position, Position, Position, Position]
+    | [Position, Position, Position, Position, Position]
+    | [Position, Position, Position, Position, Position, Position]
+    | [Position, Position, Position, Position, Position, Position, Position]
+    | [Position, Position, Position, Position, Position, Position, Position, Position];
   expectedWorldEpoch: Counter;
   expectedGeometryRevision: Counter;
   expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
