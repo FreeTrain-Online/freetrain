@@ -94,10 +94,12 @@ public class SignalConstructionTests
         foreach(var v in w.Voxels.Where(v=>v.Traffic?.Rail!=null))Assert.Equal("signalTarget",SignalRailwayConstruction.Preview(w,v.Position,SignalRailwayConstruction.ThreeAspect,0).Reason);
     }
     [Fact]
-    public void Shared_controller_reference_survives_exact_save_and_zero_booking_needs_no_journal_slot()
+    public void Signal_identity_survives_exact_save_reserved_controller_rejects_and_zero_booking_needs_no_journal_slot()
     {
-        var w=Add(World(),RailwayHandler.Signal,4,controller:42);
+        var invalid=Add(World(),RailwayHandler.Signal,4,controller:42);
+        var w=Add(World(),RailwayHandler.Signal,4);
         var provenance=TerrainProvenance.From(new EmptyWorldRequest(WorldCreationProfile.Id,w.Terrain.Name,new(40,32,8),0));
+        Assert.Throws<ArgumentException>(()=>SaveCodec.Write(new MixedSessionState(new(invalid),provenance)));
         var state=new MixedSessionState(new(w),provenance);var bytes=SaveCodec.Write(state);
         var restored=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         Assert.Equal(bytes,SaveCodec.Write(restored));Assert.Equal(SignalRailwayConstruction.ControllerReference(w,P),SignalRailwayConstruction.ControllerReference(restored.World,P));

@@ -3,8 +3,9 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-// A harbor is addressed by its durable spatial owner, independently of the future
-// shared P5 controller. Null ControllerId means no controller has been assigned.
+// Legacy inspection shape. ControllerId is reserved and must remain null at the
+// save/wire boundary (TRAIN-D010); the passing train supplies the controller.
+// FleetHarborReference.Signal carries the runtime harbor identity.
 public sealed record SignalControllerReference(long OwnerId, long? ControllerId);
 public static class SignalRailwayConstruction
 {

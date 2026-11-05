@@ -95,7 +95,7 @@ public class FleetDeploymentTests
             var previous=i.TryGetProperty("previous",out var p)&&p.ValueKind!=JsonValueKind.Null?(Location?)Point(p):null;
             var location=i.TryGetProperty("location",out var l)?(Location?)Point(l):null;
             var d=FleetRailGuidance.Guide(pattern<12?RailwayHandler.Normal:RailwayHandler.Junction,pattern,new(i.GetProperty("incoming").GetInt32()),
-                i.TryGetProperty("controller",out var c)&&c.GetString()=="curve",previous,location);
+                i.TryGetProperty("controller",out var c)&&c.GetString()=="curve"?FleetJunctionRoute.Curve:FleetJunctionRoute.Straight,previous,location);
             Assert.Equal(row.GetProperty("expected").GetProperty("outgoing").GetInt32(),d.Index);
         }
     }

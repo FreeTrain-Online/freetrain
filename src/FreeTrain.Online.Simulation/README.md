@@ -97,3 +97,12 @@ the consist shift, preserves forwarding, and books source-distance fare revenue
 before that move's operating expense. Mixed reversal and Inside-to-Outside
 retry use the same dispatcher. Save9/protocol7 and packs remain unchanged.
 See [Outside source bindings, traces and verification](../../doc/web-parity-fleet-outside.md).
+
+P5-16 adds typed stop actions and junction routes, shared controller call
+contexts and distinct Signal/Station harbor references. Positive waits preserve
+handler effects before returning; subsequent actions retain source forwarding,
+reversal, counter reset and captured-head timing. Simple chooses straight,
+ignores non-Station harbors and waits30 minutes on the first Station call before
+departing. Station adapters are test-only until P6 supplies real yards/platforms;
+manual/TAT dispatch retains its later owners. Save9/protocol7 are unchanged.
+See [controller contract and verification](../../doc/web-parity-fleet-controllers.md).

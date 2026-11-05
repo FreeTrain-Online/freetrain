@@ -46,7 +46,7 @@ public static class FleetDeployment
             cars[n]=cars[n] with {Revision=checked(cars[n].Revision+1),State=new FleetCarState.Inside(p,heading.Value)};
             // Source temporarily installs cars[0], so every junction sees a HEAD,
             // including the iterations which will ultimately belong to followers.
-            var outgoing=GuideHead(w,f,train,rail,heading.Value);
+            var outgoing=FleetRailGuidance.GuideHead(w,f,train,p,rail,heading.Value);
             p=p.Move(outgoing); heading=outgoing; // deliberately no zdiff, even on the last cell
         }
         var after=train with {Revision=checked(train.Revision+1),Cars=cars.ToImmutable(),
@@ -78,9 +78,6 @@ public static class FleetDeployment
             with {Revision=checked(before.Revision+1)};
         return Plan(session,after,session.Clock.Capture()); // retain the exact existing callback and history
     }
-
-    private static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,RailComponent rail,Heading heading)
-        => FleetRailGuidance.GuideHead(w,fleet,train,rail,heading);
 
     private static FleetDeploymentPlan Plan(MixedSessionState session,FleetTrain train,ClockState clock)
         => new(session,new(FleetOccupancy.ReplaceTrain(session.World,train),session.Construction.Accounts),clock,train.Id);
@@ -122,14 +119,15 @@ internal static class FleetOccupancy
 
 public static class FleetRailGuidance
 {
-    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,RailComponent rail,Heading heading)
+    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,Location location,RailComponent rail,Heading heading)
     {
         var handler=w.Profile.Resolve(rail.Definition).Handler;
+        var route=FleetJunctionRoute.Straight;
         if (handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading) &&
-            (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)) &&
-            fleet.EffectiveController(train.Id).Kind!=FleetControllerKind.Simple)
-            throw new InvalidOperationException("unboundJunctionController");
-        return Guide(handler,rail.Pattern,heading);
+            (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)))
+            route=FleetControllers.OnJunction(train,new(fleet.EffectiveController(train.Id),
+                location,rail.Pattern,heading));
+        return Guide(handler,rail.Pattern,heading,route);
     }
 
     // A deployment heading can already name an outgoing curve port (rr.dir1).
@@ -138,16 +136,17 @@ public static class FleetRailGuidance
         RailwayTopology.HasPort(pattern,heading) || (handler is RailwayHandler.Normal or RailwayHandler.Junction) &&
         (RailwayTopology.HasPort(pattern,heading.Left) || RailwayTopology.HasPort(pattern,heading.Right));
 
-    public static Heading Guide(RailwayHandler handler,int pattern,Heading heading,bool curve=false,
+    public static Heading Guide(RailwayHandler handler,int pattern,Heading heading,FleetJunctionRoute route=FleetJunctionRoute.Straight,
         Location? predecessor=null,Location? location=null)
     {
+        if (!Enum.IsDefined(route)) throw new ArgumentException("Invalid junction route.");
         if (!CanGuide(handler,pattern,heading)) throw new InvalidOperationException("invalidPlacementHeading");
         bool Has(Heading d)=>RailwayTopology.HasPort(pattern,d);
         if (handler is not (RailwayHandler.Normal or RailwayHandler.Junction)) return heading;
         if (Has(heading))
         {
             if(handler!=RailwayHandler.Junction || !Has(heading.Left)&&!Has(heading.Right)) return heading;
-            if(predecessor is {} previous ? previous==location!.Value.Move(heading) : !curve) return heading;
+            if(predecessor is {} previous ? previous==location!.Value.Move(heading) : route==FleetJunctionRoute.Straight) return heading;
         }
         return Has(heading.Left)?heading.Left:heading.Right;
     }

@@ -18,6 +18,8 @@ public enum FleetControllerKind { Simple, Delegation, Manual, Timetable }
 public sealed record FleetControllerProvider(ContentBinding Binding, FleetControllerKind Kind);
 public enum FleetHarborKind { Pass, Fixed, Daily }
 public sealed record FleetHarborSetting(Location Location, FleetHarborKind Kind, int Minutes, bool Reverse);
+// Id is shared assignment identity; Revision is the instance/configuration
+// revision. Location-keyed settings belong to this instance, never to a signal.
 public sealed record FleetController(long Id, long Revision, string Name, FleetControllerKind Kind, ContentBinding? Provider = null,
     ImmutableArray<FleetHarborSetting> Harbors = default);
 public sealed record FleetGroup(long Id, long Revision, string Name, long? ParentId, long? ControllerId,

@@ -4,17 +4,12 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-// Trusted rail/harbor handlers can mutate the detached train before returning a
-// source stop duration/sentinel. Controller selection remains with its own slice.
-public sealed record FleetStopResult(FleetTrain Train, int Minutes);
-public delegate FleetStopResult FleetStopHandler(MixedWorld world, FleetTrain train);
-
 public static class FleetMovement
 {
     // Called on the detached minute successor. Never mutates the caller's world,
     // queue or random bank. MixedSessionState installs the result and one timer.
     public static TrainCallbackResult Tick(MixedSessionState session,long trainId)
-        => Tick(session,trainId,StopTime);
+        => Tick(session,trainId,(world,train)=>FleetControllers.StopTime(world,train));
 
     public static TrainCallbackResult Tick(MixedSessionState session,long trainId,FleetStopHandler stopHandler)
     {
@@ -27,17 +22,17 @@ public static class FleetMovement
         var stop=stopHandler(w,before);
         var train=stop.Train;
         if (train.Id!=before.Id) throw new ArgumentException("Stop handler changed train identity.");
-        if (stop.Minutes>0)
+        if (stop.Decision.Action==FleetStopAction.Wait)
         {
             train=train with {StopCallCount=checked(train.StopCallCount+1),State=TrainOperationalState.StoppingAtStation};
-            return new(Publish(session,before,train,false),stop.Minutes);
+            return new(Publish(session,before,train,false),stop.Decision.WaitMinutes);
         }
         train=train with {Forwarding=false};
-        if (stop.Minutes==-999) train=train with {Forwarding=true};
-        else if (stop.Minutes<0)
+        if (stop.Decision.Action==FleetStopAction.Forwarding) train=train with {Forwarding=true};
+        else if (stop.Decision.Action is FleetStopAction.Reverse or FleetStopAction.ReverseForwarding)
         {
             train=FleetReversal.Reverse(w,train);
-            if (stop.Minutes==-1000) train=train with {Forwarding=true};
+            if (stop.Decision.Action==FleetStopAction.ReverseForwarding) train=train with {Forwarding=true};
         }
         train=train with {StopCallCount=0};
         var next=Next(w,fleet,train);
@@ -47,18 +42,6 @@ public static class FleetMovement
             next=Next(w,fleet,train); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
         return CompleteMove(session,train,next);
-    }
-
-    private static FleetStopResult StopTime(MixedWorld w,FleetTrain train)
-    {
-        var prior=(FleetCarState.Inside)train.Head.State;
-        var rail=w.At(prior.Location)!.Traffic!.Rail!;
-        if (w.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Signal &&
-            SignalRailwayConstruction.DelegatesStopTime(rail.Direction,prior.Heading) &&
-            w.Fleet!.EffectiveController(train.Id).Kind!=FleetControllerKind.Simple)
-            throw new InvalidOperationException("unboundHarborController");
-        // Ordinary rail returns zero; simple ignores every non-Station harbor.
-        return new(train,0);
     }
 
     // Shared continuation after route/stop effects. Exchange uses the current
@@ -133,7 +116,7 @@ public static class FleetMovement
                 (FleetCarState?)FleetReversal.ReturnReference(w,outside) ?? outside with {Countdown=10};
         var state=(FleetCarState.Inside)train.Head.State;
         var rail=w.At(state.Location)!.Traffic!.Rail!;
-        var go=FleetRailGuidance.GuideHead(w,fleet,train,rail,state.Heading);
+        var go=FleetRailGuidance.GuideHead(w,fleet,train,state.Location,rail,state.Heading);
         var location=state.Location.Move(go);
         // zdiff is a property of the CURRENT pattern and INCOMING heading.
         if (w.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Slope)

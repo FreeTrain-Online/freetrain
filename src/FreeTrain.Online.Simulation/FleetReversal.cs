@@ -19,7 +19,7 @@ public static class FleetReversal
             if(state is FleetCarState.Inside inside)
             {
                 var rail=world.At(inside.Location)!.Traffic!.Rail!;
-                var go=n==0 ? FleetRailGuidance.GuideHead(world,fleet,train,rail,inside.Heading) :
+                var go=n==0 ? FleetRailGuidance.GuideHead(world,fleet,train,inside.Location,rail,inside.Heading) :
                     FleetRailGuidance.Guide(world.Profile.Resolve(rail.Definition).Handler,rail.Pattern,inside.Heading,
                         predecessor:((FleetCarState.Placed)cars[n-1].State).Location,location:inside.Location);
                 state=inside with {Heading=go.Opposite};
