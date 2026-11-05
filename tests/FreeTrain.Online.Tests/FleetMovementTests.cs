@@ -80,7 +80,7 @@ public partial class FleetMovementTests
         foreach(var row in Cases(f,"callbacks"))
         {
             var i=row.GetProperty("input");var e=row.GetProperty("expected");
-            if(Int(i,"stop")!=0||i.GetProperty("junction").GetString()!="straight"||i.GetProperty("occupied").GetArrayLength()!=0)continue;
+            if(i.GetProperty("junction").GetString()!="straight"||i.GetProperty("occupied").GetArrayLength()!=0)continue;
             var w=Empty();foreach(var r in i.GetProperty("rails").EnumerateArray())w=Rail(w,Point(r.GetProperty("location")),Int(r,"pattern"));
             // A real second train represents the literal queued neighbor.
             w=Rail(w,new(35,30,2),4);var s=Purchase(w,i.GetProperty("cars").GetArrayLength(),2);w=s.World;
@@ -95,17 +95,18 @@ public partial class FleetMovementTests
                 State=n==0?new FleetCarState.Inside(new(35,30,2),new(2)):new FleetCarState.Outside(new(0,0,2),new(0),100)}).ToImmutableArray()};
             w=Install(w,neighbor);var head=(FleetCarState.Inside)train.Head.State;
             var limits=new SpeedLimits([head.Location],[],[]);w=w.Replace(w.Revision,w.Terrain,w.Spatial.Capture(),w.Voxels,w.Slopes,limits,w.Fleet);
-            s=Session(w,new(199,10,[new(8,8,200,MixedSessionState.TrainHandler(train.Id),0),new(9,9,204,MixedSessionState.TrainHandler(neighbor.Id),0)]),new(1_000_000));
+            s=Session(w,new(199,10,[new(8,8,200,MixedSessionState.TrainHandler(train.Id),0),new(9,9,204,MixedSessionState.TrainHandler(neighbor.Id),0)]),new(1_000_000),
+                callback:Int(i,"stop")==0?null:(minute,id)=>FleetMovement.Tick(minute,id,(_,t)=>new(t,Int(i,"stop"))));
             s.AdvanceOneMinute();var after=s.Fleet!.Train(train.Id);AssertPose(after,e.GetProperty("cars"));AssertOccupancy(s);
             Assert.Equal(e.GetProperty("isReversed").GetBoolean(),after.IsReversed);Assert.Equal(e.GetProperty("forwarding").GetBoolean(),after.Forwarding);
             Assert.Equal(e.GetProperty("state").GetString(),after.State.ToString());Assert.Equal(Int(e,"moveCount"),after.MoveCount);
-            Assert.Equal(Int(e,"cash"),s.Construction.Accounts.Cash);Assert.Equal(0,after.StopCallCount);
+            Assert.Equal(Int(e,"cash"),s.Construction.Accounts.Cash);Assert.Equal(Int(e,"stopCallCount"),after.StopCallCount);
             Assert.Equal(11,s.Clock.NextOrder);var queue=s.Clock.Capture().Pending;Assert.Equal(2,queue.Length);
             Assert.Equal(MixedSessionState.TrainHandler(neighbor.Id),queue[0].HandlerId);Assert.Equal(9,queue[0].Order);
-            Assert.Equal(204,queue[1].DueMinute);Assert.Equal(10,queue[1].Order);
+            Assert.Equal(e.GetProperty("queue")[1].GetProperty("due").GetInt64(),queue[1].DueMinute);Assert.Equal(10,queue[1].Order);
             Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(Restore(SaveCodec.Write(s))));count++;
         }
-        Assert.Equal(13,count);
+        Assert.Equal(18,count);
     }
 
     [Fact]

@@ -3,6 +3,58 @@ import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {ready,closePanel} from './browser-helpers.ts';
 const boot='/api/bootstrap?protocolVersion=7&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
+
+test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers through reopen',async({page,browser,baseURL})=>{
+ const input=process.env.FREETRAIN_TIMING_FLEET_OUTPUT;
+ test.skip(!input,'Set FREETRAIN_TIMING_FLEET_OUTPUT to the gameplay-built FleetTimingTests save.');
+ const save=JSON.parse(readFileSync(input!,'utf8')),initial=await snapshot(page);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
+ const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
+ const messages:any[][]=[[],[]],errors:string[]=[];
+ for(const [i,p] of [page,peer].entries()){
+  p.on('pageerror',error=>errors.push(String(error)));
+  await p.routeWebSocket('**/api/session?*',route=>{
+   const server=route.connectToServer();server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});
+   route.onMessage(message=>server.send(message));
+  });
+ }
+ const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
+ try{
+  await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
+  for(const p of [page,peer])await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','timing-preserved'));
+  const ids=save.mixed.fleet.trains[0].cars.map((c:any)=>c.id),times=[102,106,109,111,113,115,117,119,121,123,125,127,129,131,133,135,137];
+  let now=100;const charges:number[]=[];
+  for(const [index,due] of times.entries()){
+   while(now<due){
+    await page.getByRole('button',{name:'Step',exact:false}).first().click();now++;
+    for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(now));
+   }
+   const current=await snapshot(page),fleet=current.mixed.fleet,move=index+1;
+   expect(fleet.trains[0].moveCount).toBe(move);expect(fleet.trains[0].passengers).toBe(39);
+   expect(fleet.trains[0].cars.map((c:any)=>c.id)).toEqual(ids);
+   if(move%4===1)charges.push(due);
+   expect(current.cash).toBe(String(10000000-charges.length*122000));
+   expect(current.mixed.accounts.transactions.map((a:any)=>a.absoluteMinute)).toEqual(charges.map(String));
+   for(const a of current.mixed.accounts.transactions)expect(a).toMatchObject({operation:'trainMove',expenditure:'122000',genre:'{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}'});
+   expect(current.mixed.queue.pending).toHaveLength(1);
+   expect(current.mixed.queue.pending[0].dueMinute).toBe(String(times[index+1]??139));
+   expect(latest(0).mixed).toEqual(current.mixed);expect(latest(1).mixed).toEqual(current.mixed);
+   for(const c of fleet.trains[0].cars)expect(current.mixed.voxels.find((v:any)=>JSON.stringify(v.position)===JSON.stringify(c.state.location)).traffic.car.carId).toBe(c.id);
+   if(move===4){
+    const saved=await(await page.request.get('/api/saves/download')).json();
+    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
+    for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
+    expect(latest(1).mixed).toEqual(saved.mixed);
+   }
+  }
+  expect(charges).toEqual([102,113,121,129,137]);
+  const saved=await(await page.request.get('/api/saves/download')).json();
+  await peer.reload();await ready(peer,'ja');await expect.poll(()=>messages[1].filter(m=>m.type==='join').length).toBe(2);
+  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+  await expect(page.locator('canvas')).toHaveAttribute('data-instance','timing-preserved');expect(errors).toEqual([]);
+ }finally{await context.close();}
+});
+
 // Inventory regression is self-contained; the moving case below consumes a
 // gameplay-built save emitted by the focused backend movement test.
 function inventory(){

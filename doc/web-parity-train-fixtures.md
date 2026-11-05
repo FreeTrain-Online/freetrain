@@ -87,6 +87,13 @@ ramp traces (48 shifts), all eight visible exits and both predecessor route
 cases. [Runtime evidence and later-handler limits](web-parity-fleet-movement.md)
 keep the remaining fixture families with their numbered implementing slices.
 
+[P5-13 timing/accounting](web-parity-fleet-timing.md) extends that consumer to18
+callback literals, including positive stops and central sentinels. All32 numeric
+handoff rows plus overlap and all seven timing rows now have runtime consumers;
+Outside timing uses controlled candidates entering the shared continuation,
+without granting P5-14 route/exchange/return acceptance. SCN-014's17 actual ring
+moves and controlled receipt verify the exact9,890,000 companion balance.
+
 The new independent crops exposed a P2 preparation defect in reverse-tail slope
 selectors. `ReverseTrainCarImpl.drawSlope` flips direction by four **and** flips
 climbing. The asymmetric frame index is `direction + !climbing`; reversing its

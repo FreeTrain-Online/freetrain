@@ -4,31 +4,70 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
+// Trusted rail/harbor handlers can mutate the detached train before returning a
+// source stop duration/sentinel. Controller selection remains with its own slice.
+public sealed record FleetStopResult(FleetTrain Train, int Minutes);
+public delegate FleetStopResult FleetStopHandler(MixedWorld world, FleetTrain train);
+
 public static class FleetMovement
 {
     // Called on the detached minute successor. Never mutates the caller's world,
     // queue or random bank. MixedSessionState installs the result and one timer.
     public static TrainCallbackResult Tick(MixedSessionState session,long trainId)
+        => Tick(session,trainId,StopTime);
+
+    public static TrainCallbackResult Tick(MixedSessionState session,long trainId,FleetStopHandler stopHandler)
     {
         var w=session.World;var fleet=w.Fleet ?? throw new InvalidOperationException("Fleet is not initialized.");
         var before=fleet.Train(trainId);
-        if (before.Head.State is not FleetCarState.Inside prior)
+        if (before.Head.State is not FleetCarState.Inside)
             throw new InvalidOperationException("unboundOutsideMovement"); // P5-14 supplies countdown/exchange/return together
-        var rail=w.At(prior.Location)!.Traffic!.Rail!;
-        if (w.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Signal &&
-            SignalRailwayConstruction.DelegatesStopTime(rail.Direction,prior.Heading) &&
-            fleet.EffectiveController(trainId).Kind!=FleetControllerKind.Simple)
-            throw new InvalidOperationException("unboundHarborController"); // simple ignores this non-Station harbor
-
-        // Ordinary rail's stop result is zero, including junctions/ramps and
-        // special straight rails. Source clears forwarding even for zero.
-        var train=before with {Forwarding=false,StopCallCount=0};
+        // Capture before any handler mutation/reversal. CompleteMove reads this
+        // original train from the unchanged session, never the new head location.
+        var stop=stopHandler(w,before);
+        var train=stop.Train;
+        if (train.Id!=before.Id) throw new ArgumentException("Stop handler changed train identity.");
+        if (stop.Minutes>0)
+        {
+            train=train with {StopCallCount=checked(train.StopCallCount+1),State=TrainOperationalState.StoppingAtStation};
+            return new(Publish(session,before,train,false),stop.Minutes);
+        }
+        train=train with {Forwarding=false};
+        if (stop.Minutes==-999) train=train with {Forwarding=true};
+        else if (stop.Minutes<0)
+        {
+            train=FleetReversal.Reverse(w,train);
+            if (stop.Minutes==-1000) train=train with {Forwarding=true};
+        }
+        train=train with {StopCallCount=0};
         var next=NextInside(w,fleet,train);
         if (next==null)
         {
             train=FleetReversal.Reverse(w,train);
             next=NextInside(w,fleet,train); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
+        return CompleteMove(session,train,next);
+    }
+
+    private static FleetStopResult StopTime(MixedWorld w,FleetTrain train)
+    {
+        var prior=(FleetCarState.Inside)train.Head.State;
+        var rail=w.At(prior.Location)!.Traffic!.Rail!;
+        if (w.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Signal &&
+            SignalRailwayConstruction.DelegatesStopTime(rail.Direction,prior.Heading) &&
+            w.Fleet!.EffectiveController(train.Id).Kind!=FleetControllerKind.Simple)
+            throw new InvalidOperationException("unboundHarborController");
+        // Ordinary rail returns zero; simple ignores every non-Station harbor.
+        return new(train,0);
+    }
+
+    // Shared continuation after route/stop/exchange effects. P5-14 can supply an
+    // Outside countdown or return candidate without duplicating shifts/charges/
+    // timing. The caller is trusted domain code, like TrainCallback itself.
+    public static TrainCallbackResult CompleteMove(MixedSessionState session,FleetTrain train,FleetCarState? next)
+    {
+        var w=session.World;var fleet=w.Fleet!;var before=fleet.Train(train.Id);
+        train=train with {StopCallCount=0};
         var moved=next!=null && (next is not FleetCarState.Inside target || w.At(target.Location)!.Traffic!.Car==null);
         if (moved)
         {
@@ -40,6 +79,14 @@ public static class FleetMovement
             train=train with {Cars=cars.ToImmutable(),MoveCount=checked(train.MoveCount+1)};
         }
         train=train with {State=moved?TrainOperationalState.Moving:TrainOperationalState.EmergencyStopping};
+        var native=fleet.Profile.Resolve(train.Definition).MinutesPerVoxel;
+        var delay=next is FleetCarState.Outside || before.Head.State is not FleetCarState.Inside prior
+            ? native : LimitedDelay(w.SpeedLimits,prior.Location,native);
+        return new(Publish(session,before,train,moved),delay);
+    }
+
+    private static MixedConstructionState Publish(MixedSessionState session,FleetTrain before,FleetTrain train,bool moved)
+    {
         // Reversal plus a shift still changes each stable car revision only once.
         train=FleetReversal.NormalizeCars(before,train);
         var changed=train with {Cars=before.Cars}!=before || !train.Cars.SequenceEqual(before.Cars);
@@ -47,12 +94,12 @@ public static class FleetMovement
         if (changed)
         {
             train=train with {Revision=checked(before.Revision+1)};
-            var world=FleetOccupancy.ReplaceTrain(w,train);
+            var world=FleetOccupancy.ReplaceTrain(session.World,train);
             var accounts=candidate.Accounts;
             if (moved && (before.MoveCount&3)==0)
             {
-                // Keep the source Int32 intermediate width; admission/overflow
-                // rejects the whole detached minute, including earlier callbacks.
+                // Preserve source Int32 arithmetic and post-handler passengers.
+                // An overflow rejects the whole detached minute.
                 var expense=checked((train.Cars.Length*20+train.Passengers/20)*2000);
                 accounts=accounts.Book(ConstructionBooking.Spend(expense),world.Revision,session.Clock.Time,"trainMove");
                 if (accounts.Transactions.Length>NormalRailwayConstruction.MaximumAccountTransactions)
@@ -60,9 +107,7 @@ public static class FleetMovement
             }
             candidate=new(world,accounts);
         }
-        var native=fleet.Profile.Resolve(train.Definition).MinutesPerVoxel;
-        var delay=next is FleetCarState.Outside ? native : Delay(w.SpeedLimits,prior.Location,native);
-        return new(candidate,delay);
+        return candidate;
     }
 
     private static FleetCarState? NextInside(MixedWorld w,FleetGraph fleet,FleetTrain train)
@@ -81,7 +126,9 @@ public static class FleetMovement
             ? new FleetCarState.Inside(location,go) : null;
     }
 
-    private static int Delay(SpeedLimits limits,Location prior,int native) => limits.Low.Contains(prior)?4:
+    // Pure source arithmetic, including diagnostic nonpositive native values.
+    // StockTrain admission separately requires a positive Int32 native speed.
+    public static int LimitedDelay(SpeedLimits limits,Location prior,int native) => limits.Low.Contains(prior)?4:
         limits.Medium.Contains(prior)?native==4?native:3:
         limits.Fast.Contains(prior)?native is 4 or 3?native:2:native;
 }
