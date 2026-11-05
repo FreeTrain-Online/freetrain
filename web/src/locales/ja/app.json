@@ -725,5 +725,14 @@
   "gameSpeedSlower": "もっとゆっくり",
   "gameSpeedSlow": "ゆっくり",
   "gameSpeedNormal": "普通",
-  "gameSpeedFast": "高速"
+  "gameSpeedFast": "高速",
+  "fleetWaiting": "発車待ち",
+  "fleetEmergency": "緊急停止中",
+  "fleetMissingTrack": "反転後の再試行でも前方につながる線路がありません。",
+  "fleetOccupiedTrack": "前方の接続先に車両があるため、向きを変えずに待っています。",
+  "fleetRetry": "次の移動時刻に移動できるか再確認します。",
+  "fleetRecoveryHelp": "運転または1ステップで自動的に再試行します。障害を取り除くか、線路を接続するか、列車を反転・撤去してください。移動できない間の運行費はかかりません。",
+  "fleetReverse": "列車を反転",
+  "fleetReverseConfirm": "反転を確定",
+  "fleetReverseHelp": "現在の位置で車両の順序と向きを反転します。車両IDと次の移動時刻は保持され、移動や運行費の支出はありません。確定前に時間を一時停止してください。"
 }

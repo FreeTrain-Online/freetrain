@@ -55,6 +55,7 @@ public sealed partial class SessionHost
         => query.Action switch {
             "place" when query.Tail is {} p => FleetDeployment.PreviewPlacement(state,query.TrainId,new(p.X,p.Y,p.Z),query.Reverse),
             "withdraw" when query.Tail==null&&!query.Reverse => FleetDeployment.PreviewWithdrawal(state,query.TrainId),
+            "reverse" when query.Tail==null&&!query.Reverse => FleetDeployment.PreviewReversal(state,query.TrainId),
             _ => throw new ArgumentException("invalidInput")
         };
     private static bool DeploymentReason(string reason) => reason is "missingRail" or "carOccupied" or "duplicateCell" or

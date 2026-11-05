@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatGameTime } from './lib/game-time.ts';
+  import {fleetRecoveryReason,fleetStateLabel} from './lib/fleet-recovery.ts';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
@@ -283,6 +284,9 @@
           {:else if fleetTrain && fleetCar}
             <h3>{fleetTrain.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{fleetTrain.cars.length}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{fleetCar.state.location ? `${fleetCar.state.location.x}, ${fleetCar.state.location.y}, ${fleetCar.state.location.z}` : text.unavailableObject}</dd></div></dl>
             <dl class="details"><div><dt>{text.trainCar}</dt><dd data-testid="train-car-id">{fleetCar.id}</dd></div></dl>
+            <p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[fleetTrain.state]]}</p>
+            {@const recoveryReason=fleetRecoveryReason(view.read!,fleetTrain)}
+            {#if recoveryReason}<p role="status" data-testid="fleet-recovery-reason">{text[recoveryReason]} {text.fleetRecoveryHelp}</p>{/if}
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>

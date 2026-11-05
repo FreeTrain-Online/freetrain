@@ -124,6 +124,27 @@ public class FleetSessionTests
         Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(Deployment(h,reverse:!reverse))));
     }
     [Fact]
+    public async Task Reversal_preview_commits_once_keeps_timer_and_accounts_and_rejects_observer_stale_and_unplaced()
+    {
+        using var h=Host();await BuyAndBuild(h);var q=Deployment(h,"reverse");
+        Assert.Equal("trainNotPlaced",h.PreviewFleetDeployment(q).Reason);
+        Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(Deployment(h))));
+        q=Deployment(h,"reverse");var before=h.Snapshot();var bytes=await Save(h);var preview=h.PreviewFleetDeployment(q);
+        Assert.True(preview.Legal);Assert.True(preview.IsReversed);Assert.Equal(bytes,await Save(h));
+        var observer=new ParticipantContext("viewer",ParticipantRole.Observer);h.RegisterParticipant(observer);
+        Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q),observer)).Code);
+        Assert.IsType<AcceptedMessage>(await Send(h,new DeployFleetCommand(q)));var after=h.Snapshot();
+        Assert.Equal(before.Tick,after.Tick);Assert.Equal(before.Mixed!.Queue!.Pending,after.Mixed!.Queue!.Pending);
+        Assert.Equal(before.Mixed.Accounts.Transactions,after.Mixed.Accounts.Transactions);
+        var train=after.Mixed.Fleet!.Trains[0];Assert.Equal(before.Mixed.Fleet!.Trains[0].Cars.Reverse().Select(c=>c.Id),train.Cars.Select(c=>c.Id));
+        Assert.Equal(preview.Cars.Select(c=>(c.CarId,c.Location,c.Heading)),train.Cars.Select(c=>(c.Id,c.State.Location!,c.State.Heading!.Value)));
+        bytes=await Save(h);Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new DeployFleetCommand(q))).Code);Assert.Equal(bytes,await Save(h));
+        using var restored=new SessionHost(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        for(var n=0;n<4;n++){Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));Assert.IsType<AcceptedMessage>(await Send(restored,new StepCommand()));}
+        Assert.Equal(await Save(h),await Save(restored));
+    }
+
+    [Fact]
     public async Task Deployment_fences_peer_edits_clock_replacement_and_observer_without_partial_occupancy()
     {
         using var h=Host();await BuyAndBuild(h);var q=Deployment(h);var original=await Save(h);

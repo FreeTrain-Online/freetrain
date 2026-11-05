@@ -725,5 +725,14 @@
   "gameSpeedSlower": "Slower",
   "gameSpeedSlow": "Slow",
   "gameSpeedNormal": "Normal",
-  "gameSpeedFast": "Fast"
+  "gameSpeedFast": "Fast",
+  "fleetWaiting": "Waiting for departure",
+  "fleetEmergency": "Emergency stopping",
+  "fleetMissingTrack": "No connected track ahead after the reversal retry.",
+  "fleetOccupiedTrack": "The connected track ahead is occupied. The train keeps its direction.",
+  "fleetRetry": "Movement will be checked at the next scheduled callback.",
+  "fleetRecoveryHelp": "Run or Step retries automatically. Clear the obstruction, connect the track, reverse the train or withdraw it. Blocked attempts do not incur running costs.",
+  "fleetReverse": "Reverse train",
+  "fleetReverseConfirm": "Confirm reversal",
+  "fleetReverseHelp": "Reverse changes car order and facing on the current footprint, keeping car identities and the scheduled movement time. It does not move the train or charge running costs. Pause time before confirming."
 }

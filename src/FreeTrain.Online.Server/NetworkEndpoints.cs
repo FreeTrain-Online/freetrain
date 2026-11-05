@@ -506,7 +506,7 @@ public static class NetworkEndpoints
     private static bool Valid(CommandMessage command) => !string.IsNullOrWhiteSpace(command.RequestId) && command.RequestId.Length <= 128 && command.ExpectedWorldEpoch >= 0 && command.Payload switch
     {
         DeployFleetCommand deploy => deploy.Query is {} q && q.TrainId>0 && q.ExpectedWorldEpoch>=0 && q.ExpectedRevision>=0 && q.ExpectedMinute>=0 &&
-            q.ExpectedContentVersion==ProtocolIdentity.MixedContent && (q.Action=="place"&&q.Tail!=null||q.Action=="withdraw"&&q.Tail==null&&!q.Reverse),
+            q.ExpectedContentVersion==ProtocolIdentity.MixedContent && (q.Action=="place"&&q.Tail!=null||(q.Action is "withdraw" or "reverse")&&q.Tail==null&&!q.Reverse),
         TradeFleetCommand trade => trade.Query != null && trade.ExpectedPrice >= 0,
         RenameFleetCommand rename => rename.TrainId > 0 && rename.ExpectedRevision >= 0 && rename.Name is {Length: <= 256},
         AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),

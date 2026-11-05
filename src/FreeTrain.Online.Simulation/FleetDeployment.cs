@@ -49,23 +49,9 @@ public static class FleetDeployment
             var outgoing=GuideHead(w,f,train,rail,heading.Value);
             p=p.Move(outgoing); heading=outgoing; // deliberately no zdiff, even on the last cell
         }
-        if (reverse)
-        {
-            // Source visits current head-to-tail before swapping. Followers use
-            // their predecessor's location, not a second controller decision.
-            for (var n=0;n<cars.Count;n++)
-            {
-                var state=(FleetCarState.Inside)cars[n].State;
-                var rail=w.At(state.Location)!.Traffic!.Rail!;
-                var outgoing=n==0 ? GuideHead(w,f,train,rail,state.Heading) :
-                    FleetRailGuidance.Guide(w.Profile.Resolve(rail.Definition).Handler,rail.Pattern,state.Heading,
-                        predecessor:((FleetCarState.Inside)cars[n-1].State).Location,location:state.Location);
-                cars[n]=cars[n] with {State=state with {Heading=outgoing.Opposite}};
-            }
-            cars.Reverse();
-        }
         var after=train with {Revision=checked(train.Revision+1),Cars=cars.ToImmutable(),
-            IsReversed=train.IsReversed ^ reverse,State=TrainOperationalState.Moving,StopCallCount=0};
+            State=TrainOperationalState.Moving,StopCallCount=0};
+        if(reverse)after=FleetReversal.Reverse(w,after);
         var clock=session.Clock.Capture(); var order=clock.NextOrder;
         var due=checked(clock.AbsoluteMinute+f.Profile.Resolve(train.Definition).MinutesPerVoxel);
         clock=clock with {NextOrder=checked(order+1),Pending=clock.Pending.Add(new(order,order,due,MixedSessionState.TrainHandler(trainId),0))
@@ -82,6 +68,15 @@ public static class FleetDeployment
         var after=train with {Revision=checked(train.Revision+1),State=TrainOperationalState.Unplaced,
             Cars=train.Cars.Select(c=>c with {Revision=checked(c.Revision+1),State=new FleetCarState.Unplaced()}).ToImmutableArray()};
         return Plan(session,after,session.Clock.Capture()); // Successor cancels exactly this train's callback
+    }
+
+    public static FleetDeploymentPlan PreviewReversal(MixedSessionState session,long trainId)
+    {
+        var before=(session.Fleet ?? throw new ArgumentException("Fleet is not initialized.")).Train(trainId);
+        if(before.State==TrainOperationalState.Unplaced)throw new InvalidOperationException("trainNotPlaced");
+        var after=FleetReversal.NormalizeCars(before,FleetReversal.Reverse(session.World,before))
+            with {Revision=checked(before.Revision+1)};
+        return Plan(session,after,session.Clock.Capture()); // retain the exact existing callback and history
     }
 
     private static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,RailComponent rail,Heading heading)

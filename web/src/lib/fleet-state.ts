@@ -11,7 +11,7 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 const binding=(a:ContentBinding,b:ContentBinding)=>a.packId===b.packId&&a.version===b.version&&a.catalogHash===b.catalogHash&&a.contributionId===b.contributionId;
 const name=(s:string)=>s.trim().length>0&&!/[\u0000-\u001f\u007f-\u009f]/u.test(s);
 const junctionPorts=[[1,5,4],[1,5,6],[2,6,5],[2,6,7],[3,7,6],[3,7,0],[4,0,7],[4,0,1],[5,1,0],[5,1,2],[6,2,1],[6,2,3],[7,3,2],[7,3,4],[0,4,3],[0,4,5]];
-function ports(pattern:number):number[]{return pattern<12?railPorts.normalRailPorts[pattern]:pattern<28?junctionPorts[pattern-12]:[Math.floor((pattern-28)%16/4)*2,(Math.floor((pattern-28)%16/4)*2+4)%8];}
+export function fleetRailPorts(pattern:number):number[]{return pattern<12?railPorts.normalRailPorts[pattern]:pattern<28?junctionPorts[pattern-12]:[Math.floor((pattern-28)%16/4)*2,(Math.floor((pattern-28)%16/4)*2+4)%8];}
 function pose(s:FleetPose):boolean {
  return s.kind==='unplaced'?s.location===null&&s.heading===null&&s.countdown===null:
   s.location!==null&&s.heading!==null&&(s.kind==='inside'?s.countdown===null:s.countdown!==null);
@@ -59,7 +59,7 @@ export function validFleet(read:Snapshot):boolean {
     if(!v||!r||!car||key(v.position)!==key(s.location!)||car.trainId!==t.id||!equal(car.definition,c.definition))return false;
     // Source placement starts at rr.dir1, even on a curve with no opposite port.
     // Normal/junction guides can turn one eighth; special-purpose/slope guides keep heading.
-    const edges=ports(r.pattern),handler=railwayProfile.bindings.find(b=>b.reference.packId===r.definition.packId&&
+    const edges=fleetRailPorts(r.pattern),handler=railwayProfile.bindings.find(b=>b.reference.packId===r.definition.packId&&
       b.reference.contributionId===r.definition.contributionId&&b.reference.recipeId===r.definition.recipeId)?.handler;
     if(!edges.includes(s.heading!)&&!((handler==='normal'||handler==='junction')&&
       [((s.heading!+7)%8),((s.heading!+1)%8)].some(d=>edges.includes(d))))return false;

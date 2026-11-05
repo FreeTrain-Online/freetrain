@@ -26,7 +26,7 @@ public static class FleetMovement
         var next=NextInside(w,fleet,train);
         if (next==null)
         {
-            train=ReverseInside(w,fleet,train);
+            train=FleetReversal.Reverse(w,train);
             next=NextInside(w,fleet,train); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
         var moved=next!=null && (next is not FleetCarState.Inside target || w.At(target.Location)!.Traffic!.Car==null);
@@ -41,9 +41,7 @@ public static class FleetMovement
         }
         train=train with {State=moved?TrainOperationalState.Moving:TrainOperationalState.EmergencyStopping};
         // Reversal plus a shift still changes each stable car revision only once.
-        var original=before.Cars.ToDictionary(c=>c.Id);
-        train=train with {Cars=train.Cars.Select(c=>c.State==original[c.Id].State ? original[c.Id] :
-            c with {Revision=checked(original[c.Id].Revision+1)}).ToImmutableArray()};
+        train=FleetReversal.NormalizeCars(before,train);
         var changed=train with {Cars=before.Cars}!=before || !train.Cars.SequenceEqual(before.Cars);
         var candidate=session.Construction;
         if (changed)
@@ -69,6 +67,8 @@ public static class FleetMovement
 
     private static FleetCarState? NextInside(MixedWorld w,FleetGraph fleet,FleetTrain train)
     {
+        if(train.Head.State is not FleetCarState.Inside)
+            throw new InvalidOperationException("unboundOutsideMovement"); // Outside callbacks/return remain P5-14
         var state=(FleetCarState.Inside)train.Head.State;
         var rail=w.At(state.Location)!.Traffic!.Rail!;
         var go=FleetRailGuidance.GuideHead(w,fleet,train,rail,state.Heading);
@@ -79,22 +79,6 @@ public static class FleetMovement
         if (w.Terrain.IsTrainBorder(location)) return new FleetCarState.Outside(location,go,100);
         return w.At(location)?.Traffic?.Rail is {} destination && RailwayTopology.HasPort(destination.Pattern,go.Opposite)
             ? new FleetCarState.Inside(location,go) : null;
-    }
-
-    private static FleetTrain ReverseInside(MixedWorld w,FleetGraph fleet,FleetTrain train)
-    {
-        var cars=train.Cars.ToBuilder();
-        for (var n=0;n<cars.Count;n++)
-        {
-            if (cars[n].State is not FleetCarState.Inside state)
-                throw new InvalidOperationException("unboundOutsideReversal"); // complete mixed-state reversal remains P5-12/14
-            var rail=w.At(state.Location)!.Traffic!.Rail!;
-            var go=n==0 ? FleetRailGuidance.GuideHead(w,fleet,train,rail,state.Heading) :
-                FleetRailGuidance.Guide(w.Profile.Resolve(rail.Definition).Handler,rail.Pattern,state.Heading,
-                    predecessor:((FleetCarState.Inside)cars[n-1].State).Location,location:state.Location);
-            cars[n]=cars[n] with {State=state with {Heading=go.Opposite}};
-        }
-        cars.Reverse();return train with {Cars=cars.ToImmutable(),IsReversed=!train.IsReversed};
     }
 
     private static int Delay(SpeedLimits limits,Location prior,int native) => limits.Low.Contains(prior)?4:

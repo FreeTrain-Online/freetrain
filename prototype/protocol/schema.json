@@ -3994,7 +3994,8 @@
         "action": {
           "enum": [
             "place",
-            "withdraw"
+            "withdraw",
+            "reverse"
           ]
         },
         "tail": {

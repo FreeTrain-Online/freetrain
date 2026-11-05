@@ -10,7 +10,7 @@ using Xunit;
 
 namespace FreeTrain.Online.Tests;
 
-public class FleetMovementTests
+public partial class FleetMovementTests
 {
     static StockTrain Stock => RollingStockCatalog.Bundled.Trains.First(t=>t.MinutesPerVoxel==2&&t.PricePerCar==30_000_000);
     static JsonDocument Fixtures()=>JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/train-fixtures.json")));
@@ -129,6 +129,15 @@ public class FleetMovementTests
             var s=Purchase(w,2);var train=s.Fleet!.Trains[0];train=train with{Revision=1,State=TrainOperationalState.Moving,
                 Cars=train.Cars.Select((c,n)=>c with{Revision=1,State=Pose(i.GetProperty("cars")[n],offset)}).ToImmutableArray()};
             w=Install(s.World,train);s=Session(w,new(199,10,[new(8,8,200,MixedSessionState.TrainHandler(train.Id),0)]),new(1_000_000));
+            var reversed=FleetDeployment.Commit(s,FleetDeployment.PreviewReversal(s,train.Id));
+            Assert.Equal(train.Cars.Reverse().Select(c=>c.Id),reversed.Fleet!.Train(train.Id).Cars.Select(c=>c.Id));
+            foreach(var car in reversed.Fleet.Train(train.Id).Cars)
+            {
+                var old=(FleetCarState.Inside)train.Cars.Single(c=>c.Id==car.Id).State;
+                Assert.Equal(old with {Heading=old.Heading.Opposite},car.State);
+            }
+            AssertClock(s.Clock.Capture(),reversed.Clock.Capture());AssertOccupancy(reversed);
+            Assert.Equal(SaveCodec.Write(reversed),SaveCodec.Write(Restore(SaveCodec.Write(reversed))));
             foreach(var step in e.GetProperty("steps").EnumerateArray())
             {
                 var restored=Restore(SaveCodec.Write(s));var due=Assert.Single(s.Clock.Capture().Pending).DueMinute;
@@ -342,12 +351,22 @@ public class FleetMovementTests
         var s=Purchase(w,2,2);var first=s.Fleet!.Trains[0].Id;var second=s.Fleet.Trains[1].Id;
         s=FleetDeployment.Commit(s,FleetDeployment.PreviewPlacement(s,first,new(18,20,2)));
         s=FleetDeployment.Commit(s,FleetDeployment.PreviewPlacement(s,second,new(20,20,2)));
+        var clock=s.Clock.Capture();clock=clock with {Pending=clock.Pending.Select(a=>a.HandlerId==MixedSessionState.TrainHandler(second)
+            ?a with {DueMinute=1000}:a).ToImmutableArray()};
+        s=Session(s.World,clock,s.Construction.Accounts);var restored=Restore(SaveCodec.Write(s));
         var t=s.Fleet!.Train(first);var accounts=s.Construction.Accounts.Transactions.Length;
-        AdvanceTo(s,102);var blocked=s.Fleet!.Train(first);
+        for(var n=1;n<=3;n++)
+        {
+            AdvanceTo(s,100+2*n);AdvanceTo(restored,100+2*n);Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(restored));
+            Assert.Equal(t.Cars.ToArray(),s.Fleet!.Train(first).Cars.ToArray());Assert.False(s.Fleet.Train(first).IsReversed);
+            Assert.Equal(2,s.Clock.Capture().Pending.Length);AssertOccupancy(s);
+        }
+        var blocked=s.Fleet!.Train(first);
         Assert.Equal(t.Cars.ToArray(),blocked.Cars.ToArray());Assert.Equal(0,blocked.MoveCount);
         Assert.Equal(TrainOperationalState.EmergencyStopping,blocked.State);Assert.False(blocked.IsReversed);
-        Assert.Equal(accounts+1,s.Construction.Accounts.Transactions.Length); // only the neighbor moves
-        s=FleetDeployment.Commit(s,FleetDeployment.PreviewWithdrawal(s,second));AdvanceTo(s,104);
+        Assert.Equal(accounts,s.Construction.Accounts.Transactions.Length);
+        s=FleetDeployment.Commit(s,FleetDeployment.PreviewWithdrawal(s,second));restored=Restore(SaveCodec.Write(s));
+        AdvanceTo(s,108);AdvanceTo(restored,108);Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(restored));
         Assert.Equal(1,s.Fleet!.Train(first).MoveCount);Assert.Equal(TrainOperationalState.Moving,s.Fleet.Train(first).State);
         AssertOccupancy(s);Assert.Single(s.Clock.Capture().Pending);
     }
@@ -365,7 +384,11 @@ public class FleetMovementTests
         t=t with{Revision=1,State=TrainOperationalState.Moving,Cars=[
             t.Cars[0] with{Revision=1,State=new FleetCarState.Inside(predecessor,outgoing)},
             t.Cars[1] with{Revision=1,State=new FleetCarState.Inside(junction,new(Int(i,"incoming")))}]};
-        s=Session(Install(s.World,t),new(100,1,[new(0,0,101,MixedSessionState.TrainHandler(t.Id),0)]));s.AdvanceOneMinute();
+        s=Session(Install(s.World,t),new(100,1,[new(0,0,101,MixedSessionState.TrainHandler(t.Id),0)]));
+        var reversed=FleetDeployment.Commit(s,FleetDeployment.PreviewReversal(s,t.Id));
+        Assert.Equal(new FleetCarState.Inside(junction,outgoing.Opposite),reversed.Fleet!.Train(t.Id).Head.State);
+        AssertClock(s.Clock.Capture(),reversed.Clock.Capture());AssertOccupancy(reversed);
+        Assert.Equal(SaveCodec.Write(reversed),SaveCodec.Write(Restore(SaveCodec.Write(reversed))));s.AdvanceOneMinute();
         var after=s.Fleet!.Train(t.Id);Assert.Equal(new FleetCarState.Inside(target,outgoing),after.Head.State);
         Assert.Equal(t.Head.State,after.Cars[1].State);Assert.Equal(t.Cars.Select(c=>c.Id),after.Cars.Select(c=>c.Id));AssertOccupancy(s);
     }

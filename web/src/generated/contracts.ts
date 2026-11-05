@@ -682,7 +682,7 @@ export interface FleetDeploymentQuery {
   expectedMinute: Counter;
   expectedContentVersion: string;
   trainId: Counter;
-  action: "place" | "withdraw";
+  action: "place" | "withdraw" | "reverse";
   tail: Position | null;
   reverse: boolean;
 }

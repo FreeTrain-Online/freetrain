@@ -1,12 +1,36 @@
 import assert from 'node:assert/strict';
 import Ajv from 'ajv';
-import {applyDelta,immutable,parseMessage,parseMessageValue} from '../src/lib/protocol.ts';
+import {applyDelta,immutable,parseMessage,parseMessageValue,parseFleetDeploymentPreview} from '../src/lib/protocol.ts';
 import {StateAssembler,stateChunkBytes} from '../src/lib/state-transfer.ts';
 import {validSnapshot} from '../src/lib/world-identity.ts';
 import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
+import {fleetRecoveryReason} from '../src/lib/fleet-recovery.ts';
 const root=new URL('../../prototype/protocol/',import.meta.url);
 const json=async(path:string)=>JSON.parse(await Deno.readTextFile(new URL(path,root)));
 const scene=async()=>parseMessageValue(await json('fixtures/snapshot-fleet.json')) as Snapshot;
+Deno.test('reversal preview accepts Inside and fully Outside consists while preserving placement and withdrawal guards',()=>{
+ const p={query:{expectedWorldEpoch:'1',expectedRevision:'1',expectedMinute:'1',expectedContentVersion:'mixed-railway-content-1',trainId:'1',action:'reverse',tail:null,reverse:false},legal:true,reason:null,isReversed:true,
+  cars:[{carId:'2',location:{x:24,y:20,z:2},heading:4}]};
+ assert.deepEqual(parseFleetDeploymentPreview(p),p);p.cars=[];assert.deepEqual(parseFleetDeploymentPreview(p),p);
+ p.query.action='place';assert.throws(()=>parseFleetDeploymentPreview(p));p.query.action='withdraw';assert.deepEqual(parseFleetDeploymentPreview(p),p);
+ p.cars=[{carId:'2',location:{x:24,y:20,z:2},heading:4}];assert.throws(()=>parseFleetDeploymentPreview(p));
+ p.query.action='reverse';p.cars.push(structuredClone(p.cars[0]));assert.throws(()=>parseFleetDeploymentPreview(p));
+});
+Deno.test('recovery feedback distinguishes missing reciprocal rail, foreign and own occupancy without changing a snapshot',async()=>{
+ const read=await scene();read.map={...read.map,width:64,height:64,levels:8};
+ const t=read.mixed!.fleet!.trains[0];t.state='emergencystopping';
+ t.cars[0].state={kind:'inside',location:{x:24,y:20,z:2},heading:0,countdown:null};
+ const v=read.mixed!.voxels[0];v.position={x:24,y:20,z:2};
+ v.traffic!.rail={...v.traffic!.rail!,pattern:10,definition:{packId:'exav-stable-bundled',contributionId:'system:pattern/10',recipeId:'system:pattern/10'}};
+ read.mixed!.voxels=[v];assert.equal(fleetRecoveryReason(read,t),'fleetMissingTrack');
+ const next=structuredClone(v);next.position={x:24,y:19,z:2};read.mixed!.voxels.push(next);
+ assert.equal(fleetRecoveryReason(read,t),'fleetOccupiedTrack'); // own car also blocks
+ next.traffic!.car!.trainId='999';assert.equal(fleetRecoveryReason(read,t),'fleetOccupiedTrack');
+ next.traffic!.rail!.pattern=4;assert.equal(fleetRecoveryReason(read,t),'fleetMissingTrack');
+ next.traffic!.rail!.pattern=10;next.traffic!.car=null;
+ const before=JSON.stringify(read);assert.equal(fleetRecoveryReason(read,t),'fleetRetry');assert.equal(JSON.stringify(read),before);
+ t.state='moving';assert.equal(fleetRecoveryReason(read,t),undefined);
+});
 Deno.test('source deployment and withdrawal deltas publish exact occupancy, native initial delay and retained inventory to two peers',async()=>{
  let one=immutable(await scene()),two=immutable(await scene());const source=one;
  for(const action of ['placement','withdrawal']){

@@ -39,7 +39,7 @@ const validateFleetDeployment=ajv.compile({...schema,$id:undefined,$ref:'#/$defs
 export function parseFleetDeploymentPreview(value:unknown):import('../generated/contracts.ts').FleetDeploymentPreview {
   if(!validateFleetDeployment(value))throw new Error('Invalid deployment preview');
   const p=value as import('../generated/contracts.ts').FleetDeploymentPreview;
-  if(p.legal ? p.reason!==null|| (p.query.action==='place' ? !p.cars.length : !!p.cars.length) : p.reason===null||!!p.cars.length)throw new Error('Inconsistent deployment preview');
+  if(p.legal ? p.reason!==null||p.query.action==='place'&&!p.cars.length||p.query.action==='withdraw'&&!!p.cars.length : p.reason===null||!!p.cars.length)throw new Error('Inconsistent deployment preview');
   if(new Set(p.cars.map(c=>c.carId)).size!==p.cars.length||new Set(p.cars.map(c=>JSON.stringify(c.location))).size!==p.cars.length)throw new Error('Duplicate deployment pose');
   return p;
 }

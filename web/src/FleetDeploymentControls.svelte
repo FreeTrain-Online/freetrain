@@ -1,5 +1,6 @@
 <script lang="ts">
   import {effectiveFleetController} from './lib/fleet-state.ts';
+  import {fleetRecoveryReason,fleetStateLabel} from './lib/fleet-recovery.ts';
   import {primaryAction} from './lib/primary-action.ts';
   import {onDestroy,tick,untrack} from 'svelte';
   import type {ShellModel,ShellState} from './lib/shell-model.ts';
@@ -26,11 +27,11 @@
     if([x,y,z].every(Number.isInteger)&&z>=0&&z<read.map.levels)void preview(event?.currentTarget instanceof HTMLElement?event.currentTarget:undefined);
   }
   function coordinateKey(e:KeyboardEvent){if(e.key==='Enter'&&!quote&&!e.isComposing&&e.keyCode!==229&&!e.repeat&&!e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();e.stopPropagation();updatePreview(e);}}
-  async function preview(source?:HTMLElement){
+  async function preview(source?:HTMLElement,action?:'reverse'){
     if(disabled||submitting||!train)return;
     launcher=source??(document.activeElement instanceof HTMLElement?document.activeElement:undefined);
     cancel(false,true);const controller=request=new AbortController();loading=true;
-    const query:FleetDeploymentQuery={expectedWorldEpoch:read.worldEpoch,expectedRevision:read.revision,expectedMinute:read.tick,expectedContentVersion:read.contentVersion!,trainId,action:train.state==='unplaced'?'place':'withdraw',tail:train.state==='unplaced'?{x,y,z}:null,reverse:train.state==='unplaced'&&reverse};
+    const query:FleetDeploymentQuery={expectedWorldEpoch:read.worldEpoch,expectedRevision:read.revision,expectedMinute:read.tick,expectedContentVersion:read.contentVersion!,trainId,action:action??(train.state==='unplaced'?'place':'withdraw'),tail:train.state==='unplaced'?{x,y,z}:null,reverse:train.state==='unplaced'&&reverse};
     try{const result=await model.previewFleetDeployment(query,controller.signal);if(request===controller){quote=result;onpreview(result);}}
     catch{if(request===controller&&!controller.signal.aborted)failed=true;}
     finally{if(request===controller){request=undefined;loading=false;}}
@@ -40,6 +41,10 @@
 </script>
 <section class="deployment-controls" aria-label={text.deployTrain} use:primaryAction>
   <h3>{train?.state==='unplaced'?text.deployTrain:text.withdrawTrain}</h3>
+  {#if train}<p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[train.state]]}</p>
+    {@const reason=fleetRecoveryReason(read,train)}
+    {#if reason}<p role="status" data-testid="fleet-recovery-reason">{text[reason]} {text.fleetRecoveryHelp}</p>{/if}
+  {/if}
   {#if train?.state==='unplaced'}
     <button type="button" aria-pressed={picking} disabled={disabled||loading||submitting} onclick={()=>{cancel();picking=true;onmap(true);}}>{text.deploymentPick}</button>
     {#if picking}<p role="status">{text.deploymentPicking}</p>{/if}
@@ -51,11 +56,11 @@
         <label class="deployment-reverse"><input type="checkbox" bind:checked={reverse} onchange={event=>{reverse=event.currentTarget.checked;updatePreview(event);}}/><span>{text.deploymentReverse}</span></label>
       </fieldset>
     </form>
-  {:else}<p>{text.deploymentWithdrawHelp}</p><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget);}}>{text.withdrawTrain}</button>{/if}
+  {:else}<p>{text.deploymentWithdrawHelp}</p><div class="form-actions"><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget);}}>{text.withdrawTrain}</button><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget,'reverse');}}>{text.fleetReverse}</button></div>{/if}
   {#if effective}<p>{text.controller}: {effective.name} · {text[effective.kind==='simple'?'deploymentSimple':effective.kind==='manual'?'manual':'deploymentTimetable']}</p>
     {#if effective.kind!=='simple'}<p role="status">{text.deploymentControllerUnavailable}</p>{/if}
   {/if}
-  <details class="deployment-help"><summary>{text.help}</summary>{#if train?.state==='unplaced'}<p class="hint">{text.deploymentHelp}</p>{/if}<p class="hint">{text.deploymentController}</p></details>
+  <details class="deployment-help"><summary>{text.help}</summary>{#if train?.state==='unplaced'}<p class="hint">{text.deploymentHelp}</p>{:else}<p class="hint">{text.fleetReverseHelp}</p>{/if}<p class="hint">{text.deploymentController}</p></details>
   {#if loading}<p role="status">{text.waiting}</p>{/if}
   {#if failed}<p role="alert">{text.deploymentFailed}</p>{/if}
   {#if quote}
@@ -63,7 +68,7 @@
       {#if !quote.legal}<p role="alert">{text[reasons[quote.reason as keyof typeof reasons]??'deploymentFailed']}</p>{/if}
       {#if stale}<p role="alert">{text.stockStale}</p>{/if}
       {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="alert">{text[view.feedback]}</p>{/if}
-      <div class="form-actions"><button class="primary" disabled={disabled||submitting||stale||!quote.legal} onclick={confirm}>{text[quote.query.action==='place'?'deploymentConfirm':'withdrawConfirm']}</button><button disabled={submitting||view.pending} onclick={()=>cancel(true)}>{text.cancel}</button></div>
+      <div class="form-actions"><button class="primary" disabled={disabled||submitting||stale||!quote.legal} onclick={confirm}>{text[quote.query.action==='place'?'deploymentConfirm':quote.query.action==='reverse'?'fleetReverseConfirm':'withdrawConfirm']}</button><button disabled={submitting||view.pending} onclick={()=>cancel(true)}>{text.cancel}</button></div>
       <ol>{#each quote.cars as car}<li data-testid="deployment-car">#{car.carId} · {car.location.x}, {car.location.y}, {car.location.z} · {text[headings[car.heading]]}</li>{/each}</ol>
     </div>
   {/if}
