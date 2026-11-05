@@ -735,5 +735,10 @@
   "fleetRecoveryHelp": "運転または1ステップで自動的に再試行します。障害を取り除くか、線路を接続するか、列車を反転・撤去してください。移動できない間の運行費はかかりません。",
   "fleetReverse": "列車を反転",
   "fleetReverseConfirm": "反転を確定",
-  "fleetReverseHelp": "現在の位置で車両の順序と向きを反転します。車両IDと次の移動時刻は保持され、移動や運行費の支出はありません。確定前に時間を一時停止してください。"
+  "fleetReverseHelp": "現在の位置で車両の順序と向きを反転します。車両IDと次の移動時刻は保持され、移動や運行費の支出はありません。確定前に時間を一時停止してください。",
+  "fleetOperations": "列車の操作",
+  "fleetForwarding": "回送",
+  "fleetSignalWaiting": "信号で停止中",
+  "fleetOccupiedReturn": "最初の接続先の復帰線路に車両がいます。その線路が空くまで待機します。",
+  "fleetMissingReturn": "接続された復帰線路がありません。"
 }

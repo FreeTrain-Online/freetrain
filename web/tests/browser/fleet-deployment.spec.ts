@@ -82,9 +82,8 @@ async function pickRecoveryCar(page:Page,s:any){
  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-render-revision',s.revision);
  const car=s.mixed.fleet.trains[0].cars[0],p=car.state.location,center=Math.trunc((s.map.height-1)/2);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
- // SCN-004's straight reversed S-facing symmetric car uses source frame 0,
- // voxel origin +(0,-9). Pick an actual roof-mask pixel instead of the rail.
- const frame=catalog.renderRecipes.find((r:any)=>r.id===car.definition.recipeId).frames.find((f:any)=>f.selector.angle===0);
+ // Straight symmetric stock: pick an actual roof-mask pixel at origin +(0,-9).
+ const frame=catalog.renderRecipes.find((r:any)=>r.id===car.definition.recipeId).frames.find((f:any)=>f.selector.angle===((car.state.heading*2)&7));
  const mask=catalog.masks[frame.masks['spring/day']];let sample:{a:number;b:number}|undefined;
  for(let b=1;b<12&&!sample;b++)for(let a=5;a<27&&!sample;a++)if(mask[b][a]==='1')sample={a,b};
  expect(sample).toBeDefined();
@@ -192,4 +191,76 @@ test('Japanese narrow deployment keeps drafts and focus, discards late previews 
   await expect(observer.getByRole('button',{name:en.withdrawTrain,exact:true})).toBeDisabled();await expect(observer.getByRole('button',{name:en.fleetReverse,exact:true})).toBeDisabled();await observer.locator('.catalog-item-main').last().click();await expect(observer.locator('.deployment-controls').getByLabel('X',{exact:true})).toBeDisabled();
   await expect(observer.getByRole('button',{name:en.deploymentPick,exact:true})).toBeDisabled();expect(await save(page)).toEqual(before);
  }finally{await context.close();release();}
+});
+
+for(const locale of ['en','ja'] as const)test(`P5-15 ${locale} equal-minute traffic and inspector operations stay coherent with a peer`,async({page,browser,baseURL,worldServer})=>{
+ test.setTimeout(90000);const input=process.env.FREETRAIN_OPERATIONS_FLEET_OUTPUT;
+ test.skip(!input,'Set FREETRAIN_OPERATIONS_FLEET_OUTPUT to the gameplay-built FleetOperationsTests save.');
+ const text=locale==='ja'?ja:en,initial=await state(page),data=readFileSync(input!);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data})).ok()).toBe(true);
+ const context=await browser.newContext({baseURL,locale:locale==='en'?'ja-JP':'en-US'}),peer=await context.newPage();
+ const errors:string[]=[],messages:any[][]=[[],[]];
+ for(const [i,p] of [page,peer].entries()){
+  p.on('pageerror',e=>errors.push(String(e)));
+  await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();server.onMessage(m=>{messages[i].push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
+ }
+ const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
+ try{
+  await page.goto('/');await ready(page);await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption(locale);await closePanel(page);
+  await peer.goto('/');await ready(peer,locale==='en'?'ja':'en');await owned(page,text);
+  const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='operations-preserved');
+  async function step(){const tick=BigInt((await state(page)).tick)+1n;await peer.getByRole('button',{name:locale==='en'?/1ステップ/:/Single step/}).first().click();for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(tick));}
+  await step();await step();let s=await state(page);
+  expect(s.mixed.fleet.trains.map((t:any)=>t.moveCount)).toEqual([0,1]);
+  expect(s.mixed.fleet.trains.map((t:any)=>t.cars[0].state.location.x)).toEqual([20,22]);
+  await expect(page.getByTestId('fleet-state')).toContainText(text.fleetEmergency);
+  // The head cell has just been vacated; feedback describes the current snapshot.
+  await expect(page.getByTestId('fleet-recovery-reason')).toContainText(text.fleetRetry);
+  for(const i of [0,1])expect(latest(i).mixed).toEqual(s.mixed);
+  await step();await step();s=await state(page);
+  expect(s.mixed.fleet.trains.map((t:any)=>t.moveCount)).toEqual([1,2]);
+  expect(s.mixed.fleet.trains.map((t:any)=>t.cars[0].state.location.x)).toEqual([21,23]);
+  expect(s.mixed.queue.pending.map((a:any)=>a.order)).toEqual(['4','5']);
+  await expect(page.getByTestId('fleet-state')).toContainText(text.moving);
+  await closePanel(page);await pickRecoveryCar(page,s);
+  await expect(page.getByTestId('train-car-id')).toHaveText(s.mixed.fleet.trains[0].cars[0].id);
+  const reverse=page.getByRole('button',{name:text.fleetReverse,exact:true});await reverse.click();
+  await step();await expect(page.getByText(text.stockStale,{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:text.fleetReverseConfirm,exact:true})).toBeDisabled();
+  await page.getByRole('button',{name:text.cancel,exact:true}).click();await expect(reverse).toBeFocused();
+  s=await state(page);await reverse.click();await page.getByRole('button',{name:text.fleetReverseConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(page)).mixed.fleet.trains[0].isReversed).toBe(true);
+  let current=await state(page);expect(current.mixed.queue).toEqual(s.mixed.queue);expect(current.mixed.accounts).toEqual(s.mixed.accounts);
+  await step();current=await state(page);
+  expect(current.mixed.fleet.trains.map((t:any)=>t.cars[0].state.location.x)).toEqual([20,24]);
+  expect(current.mixed.fleet.trains.map((t:any)=>t.moveCount)).toEqual([2,3]);
+  for(const i of [0,1])expect(latest(i).mixed).toEqual(current.mixed);
+  if(locale==='ja'){
+   await page.setViewportSize({width:390,height:844});await page.locator('.primary-panel .sheet-toggle').click();
+   await page.locator('html').evaluate(el=>el.style.fontSize='200%');
+   await page.getByRole('button',{name:text.withdrawTrain,exact:true}).scrollIntoViewIfNeeded();
+   expect(await page.locator('.primary-panel').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+  }
+  const neighbor=current.mixed.queue.pending.find((a:any)=>a.handlerId.endsWith('/'+current.mixed.fleet.trains[1].id));
+  await page.getByRole('button',{name:text.withdrawTrain,exact:true}).click();await page.getByRole('button',{name:text.withdrawConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(page)).mixed.fleet.trains[0].state).toBe('unplaced');current=await state(page);
+  expect(current.mixed.queue.pending).toEqual([neighbor]);expect(current.mixed.accounts).toEqual(s.mixed.accounts);
+  expect(current.mixed.voxels.filter((v:any)=>v.traffic?.car)).toHaveLength(1);
+  const saved=await save(page);await peer.reload();await ready(peer,locale==='en'?'ja':'en');
+  expect((await state(peer)).mixed).toEqual(current.mixed);await expect(canvas).toHaveAttribute('data-instance','operations-preserved');
+  await worldServer.restart!();for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
+  await page.reload();await ready(page,locale);expect(await save(page)).toEqual(saved);
+  // Independent source return input: the first connected return is occupied,
+  // with a free alternate. Feedback must retain that source precedence.
+  current=await state(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:readFileSync(input!+'.return')})).ok()).toBe(true);
+  await owned(page,text);await expect(page.getByTestId('fleet-state')).toContainText(text.fleetForwarding);
+  await expect(page.getByTestId('fleet-recovery-reason')).toContainText(text.fleetOccupiedReturn);
+  expect((await peer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
+  await peer.reload();await ready(peer,locale==='en'?'ja':'en');const peerText=locale==='en'?ja:en;
+  current=await state(peer);const selected=structuredClone(current);selected.mixed.fleet.trains=[current.mixed.fleet.trains[1]];
+  await pickRecoveryCar(peer,selected);
+  await expect(peer.getByRole('button',{name:peerText.fleetReverse,exact:true})).toBeDisabled();
+  await expect(peer.getByRole('button',{name:peerText.withdrawTrain,exact:true})).toBeDisabled();expect(errors).toEqual([]);
+ }finally{await context.close();}
 });

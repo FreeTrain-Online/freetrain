@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatGameTime } from './lib/game-time.ts';
-  import {fleetRecoveryReason,fleetStateLabel} from './lib/fleet-recovery.ts';
+  import FleetDeploymentControls from './FleetDeploymentControls.svelte';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
   import { onMount, tick } from 'svelte';
@@ -50,6 +50,7 @@
   let launcher: HTMLElement | undefined;
   let deploymentPicking=$state(false),deploymentPicked=$state<import('./generated/contracts.ts').Position>(),deploymentPreview=$state<import('./generated/contracts.ts').FleetDeploymentPreview>();
   let fleetControls=$state<FleetControls>();
+  let inspectorFleetControls=$state<FleetDeploymentControls>();
   let fleetDirty=$state(false),fleetCanApply=$state(false),fleetDraft=$state('');
   let gameLauncher = $state<HTMLButtonElement>();
   let menuLeft = $state(0);
@@ -194,6 +195,7 @@
     if (event.target instanceof HTMLElement && event.target.matches('input,select,textarea,[contenteditable="true"]')) return;
     event.preventDefault();
     if(panel==='fleet'&&fleetControls?.cancelDeployment())return;
+    if(panel==='inspector'&&inspectorFleetControls?.cancelDraft())return;
     if (panel) closePanel(); else map?.escape();
   }
   function uiFocus(event: FocusEvent) { if (!(event.target instanceof HTMLCanvasElement)) map?.suspendInput(); }
@@ -284,9 +286,7 @@
           {:else if fleetTrain && fleetCar}
             <h3>{fleetTrain.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{fleetTrain.cars.length}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{fleetCar.state.location ? `${fleetCar.state.location.x}, ${fleetCar.state.location.y}, ${fleetCar.state.location.z}` : text.unavailableObject}</dd></div></dl>
             <dl class="details"><div><dt>{text.trainCar}</dt><dd data-testid="train-car-id">{fleetCar.id}</dd></div></dl>
-            <p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[fleetTrain.state]]}</p>
-            {@const recoveryReason=fleetRecoveryReason(view.read!,fleetTrain)}
-            {#if recoveryReason}<p role="status" data-testid="fleet-recovery-reason">{text[recoveryReason]} {text.fleetRecoveryHelp}</p>{/if}
+            {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetDeploymentControls bind:this={inspectorFleetControls} {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing} allowPlacement={false} onmap={()=>{}} onpreview={p=>{deploymentPreview=p;}}/>{/key}
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>

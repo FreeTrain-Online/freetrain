@@ -7,7 +7,7 @@
   import type {Position,FleetDeploymentPreview,FleetDeploymentQuery} from './generated/contracts.ts';
   import {messages} from './lib/localization.ts';
   import {currentQuote} from './lib/stock-catalog.ts';
-  let {model,view,trainId,disabled,picked,onmap,onpreview}:{model:ShellModel;view:ShellState;trainId:string;disabled:boolean;picked?:Position;onmap:(active:boolean)=>void;onpreview:(p:FleetDeploymentPreview|undefined)=>void}=$props();
+  let {model,view,trainId,disabled,picked,onmap,onpreview,allowPlacement=true}:{model:ShellModel;view:ShellState;trainId:string;disabled:boolean;allowPlacement?:boolean;picked?:Position;onmap:(active:boolean)=>void;onpreview:(p:FleetDeploymentPreview|undefined)=>void}=$props();
   const text=$derived(messages[view.locale]),read=$derived(view.read!),train=$derived(read.mixed?.fleet?.trains.find(t=>t.id===trainId));
   const effective=$derived(read.mixed?.fleet?effectiveFleetController(read.mixed.fleet,trainId):undefined);
   let x=$state(0),y=$state(0),z=$state(1),reverse=$state(false),picking=$state(false),quote=$state<FleetDeploymentPreview>(),loading=$state(false),failed=$state(false),submitting=$state(false);
@@ -39,13 +39,13 @@
   async function confirm(){if(disabled||stale||!quote?.legal||submitting)return;submitting=true;
     try{if(await model.send({kind:'deployFleet',query:quote.query}))cancel(true);}finally{submitting=false;}}
 </script>
-<section class="deployment-controls" aria-label={text.deployTrain} use:primaryAction>
-  <h3>{train?.state==='unplaced'?text.deployTrain:text.withdrawTrain}</h3>
-  {#if train}<p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[train.state]]}</p>
+<section class="deployment-controls" aria-label={train?.state==='unplaced'&&allowPlacement?text.deployTrain:text.fleetOperations} use:primaryAction>
+  <h3>{train?.state==='unplaced'?(allowPlacement?text.deployTrain:text.stockUnplaced):text.fleetOperations}</h3>
+  {#if train}<p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[train.state]]}{train.forwarding?` · ${text.fleetForwarding}`:''}</p>
     {@const reason=fleetRecoveryReason(read,train)}
     {#if reason}<p role="status" data-testid="fleet-recovery-reason">{text[reason]} {text.fleetRecoveryHelp}</p>{/if}
   {/if}
-  {#if train?.state==='unplaced'}
+  {#if train?.state==='unplaced'&&allowPlacement}
     <button type="button" aria-pressed={picking} disabled={disabled||loading||submitting} onclick={()=>{cancel();picking=true;onmap(true);}}>{text.deploymentPick}</button>
     {#if picking}<p role="status">{text.deploymentPicking}</p>{/if}
     <form onsubmit={e=>{e.preventDefault();updatePreview();}}>
@@ -56,11 +56,11 @@
         <label class="deployment-reverse"><input type="checkbox" bind:checked={reverse} onchange={event=>{reverse=event.currentTarget.checked;updatePreview(event);}}/><span>{text.deploymentReverse}</span></label>
       </fieldset>
     </form>
-  {:else}<p>{text.deploymentWithdrawHelp}</p><div class="form-actions"><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget);}}>{text.withdrawTrain}</button><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget,'reverse');}}>{text.fleetReverse}</button></div>{/if}
+  {:else if train&&train.state!=='unplaced'}<p>{text.deploymentWithdrawHelp}</p><div class="form-actions"><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget);}}>{text.withdrawTrain}</button><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget,'reverse');}}>{text.fleetReverse}</button></div>{/if}
   {#if effective}<p>{text.controller}: {effective.name} · {text[effective.kind==='simple'?'deploymentSimple':effective.kind==='manual'?'manual':'deploymentTimetable']}</p>
     {#if effective.kind!=='simple'}<p role="status">{text.deploymentControllerUnavailable}</p>{/if}
   {/if}
-  <details class="deployment-help"><summary>{text.help}</summary>{#if train?.state==='unplaced'}<p class="hint">{text.deploymentHelp}</p>{:else}<p class="hint">{text.fleetReverseHelp}</p>{/if}<p class="hint">{text.deploymentController}</p></details>
+  {#if allowPlacement||train?.state!=='unplaced'}<details class="deployment-help"><summary>{text.help}</summary>{#if train?.state==='unplaced'}<p class="hint">{text.deploymentHelp}</p>{:else}<p class="hint">{text.fleetReverseHelp}</p>{/if}<p class="hint">{text.deploymentController}</p></details>{/if}
   {#if loading}<p role="status">{text.waiting}</p>{/if}
   {#if failed}<p role="alert">{text.deploymentFailed}</p>{/if}
   {#if quote}

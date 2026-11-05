@@ -226,3 +226,29 @@ Deno.test('live fleet updates reuse certified static terrain and retain the same
   const bad=structuredClone(d);mutate(bad);assert.equal(applyDelta(before,bad),undefined);
  }
 });
+Deno.test('Outside recovery feedback uses first connected return in source order even with a free alternate',async()=>{
+ const read=await scene();const train=read.mixed!.fleet!.trains[0];train.state='emergencystopping';
+ train.cars[0].state={kind:'outside',location:{x:40,y:20,z:2},heading:2,countdown:0};
+ const sample=structuredClone(read.mixed!.voxels[0]);sample.traffic!.rail!.pattern=4;
+ sample.position={x:40,y:19,z:2};read.mixed!.voxels=[sample];
+ const alternate=structuredClone(sample);alternate.position.y=21;alternate.traffic!.car=null;read.mixed!.voxels.push(alternate);
+ const original=JSON.stringify(read);assert.equal(fleetRecoveryReason(read,train),'fleetOccupiedReturn');assert.equal(JSON.stringify(read),original);
+ sample.traffic!.car=null;assert.equal(fleetRecoveryReason(read,train),'fleetRetry');
+ sample.traffic!.rail!.pattern=10;alternate.traffic!.rail!.pattern=10;assert.equal(fleetRecoveryReason(read,train),'fleetMissingReturn');
+ train.cars[0].state.countdown=10;assert.equal(fleetRecoveryReason(read,train),'fleetRetry');
+ train.state='moving';assert.equal(fleetRecoveryReason(read,train),undefined);
+});
+Deno.test('Outside diagonal feedback retains truncating source matrix order for every heading',async()=>{
+ const fixture=JSON.parse(await Deno.readTextFile(new URL('../../doc/parity/train-fixtures.json',import.meta.url)));
+ let count=0;
+ for(const row of fixture.groups.outside.cases.filter((row:any)=>row.id.startsWith('return-'))){
+  const read=await scene(),train=read.mixed!.fleet!.trains[0],input=row.input;
+  // The same independent source literals used by the portable return tests.
+  train.state='emergencystopping';train.cars[0].state={kind:'outside',location:{x:input.car.location[0],y:input.car.location[1],z:input.car.location[2]},heading:input.car.heading,countdown:0};
+  const template=read.mixed!.voxels[0];
+  read.mixed!.voxels=input.connected.map((index:number)=>{const v=structuredClone(template),p=row.expected.candidates[index];v.position={x:p[0],y:p[1],z:p[2]};
+   v.traffic!.rail!.pattern=[10,1,4,7][input.car.heading%4];if(!input.occupied.includes(index))v.traffic!.car=null;return v;});
+  assert.equal(fleetRecoveryReason(read,train),input.occupied.includes(row.expected.selected)?'fleetOccupiedReturn':row.expected.selected===null?'fleetMissingReturn':'fleetRetry',row.id);count++;
+ }
+ assert.equal(count,56);
+});
