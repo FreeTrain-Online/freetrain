@@ -75,9 +75,10 @@ export class MapRenderer {
     ].sort((a,b) => (a.position.y-a.position.x)-(b.position.y-b.position.x) || a.position.z-b.position.z || this.layer(a)-this.layer(b));
   }
   trainCenter(id:string):Point|undefined {
-    const train=this.read?.trains.find(t=>t.id===id);if(!train||!this.space)return;
+    const train=this.read?.trains.find(t=>t.id===id);if(!this.space)return;
     const head=this.read?.mixed?.fleet?.trains.find(t=>t.id===id)?.cars[0];
-    const p=head&&this.motionPainted?this.compositor.position(head.id)??train.position:train.position;
+    const location=head?.state.location??train?.position;if(!location)return;
+    const p=head&&this.motionPainted?this.compositor.position(head.id)??location:location;
     if(this.read!.map.coordinateSystem!=='hv')return this.space.center(p);
     const centerX=Math.trunc((this.read!.map.height-1)/2);
     return {x:16*(p.x-centerX+p.y)+16,y:8*(p.y-p.x+centerX)-16*p.z+8};

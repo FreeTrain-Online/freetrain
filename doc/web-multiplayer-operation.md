@@ -6,6 +6,18 @@ Run several browser clients against one authoritative world to test Owner,
 Operator and Observer permissions. Roles come from server configuration and the
 access key used to sign in.
 
+**5 November 2026:** canonical purchased/deployed trains now support Manual
+control with the same Owner/Operator/Observer authority model. In Trains → Owned
+stock, choose a placed train and Manual; Take/Release control and hold buttons
+also appear in the picked-car inspector. Each train has its own lease even when
+sharing a Manual instance. Input expires after500ms by default, leases after5s;
+focused driving controls/map renew idle ownership without held keys. Changing
+the controller refreshes the lease duration; blur/hidden state stops renewal.
+Held keys and leases are never saved or replayed after reconnect. Five-minute
+harbor polling follows source game time. See the [P5-17 contract and verified
+journeys](web-parity-fleet-manual.md). Station renaming and other prototype-only
+walkthroughs below retain their historical scope.
+
 ## Default local mode
 
 Without `FreeTrainOnline__OperatorSecret`, loopback access automatically assigns an

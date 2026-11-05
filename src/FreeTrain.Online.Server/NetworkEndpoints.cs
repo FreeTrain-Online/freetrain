@@ -424,7 +424,7 @@ public static class NetworkEndpoints
                 using var socket = await context.WebSockets.AcceptWebSocketAsync();
                 using var linked = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted, peer.Stop.Token);
                 var sender = Send(socket, peer, linked.Token);
-                var receiver = Receive(socket, peer, session, linked.Token);
+                var receiver = Receive(socket, peer, session, linked.Token, app.Logger);
                 await Task.WhenAny(sender, receiver);
                 linked.Cancel(); socket.Abort();
                 try { await Task.WhenAll(sender, receiver); }
@@ -474,7 +474,7 @@ public static class NetworkEndpoints
             await socket.SendAsync(JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json), WebSocketMessageType.Text, true, timeout.Token);
         }
     }
-    private static async Task Receive(WebSocket socket, NetworkSession.Peer peer, NetworkSession session, CancellationToken cancellationToken)
+    private static async Task Receive(WebSocket socket, NetworkSession.Peer peer, NetworkSession session, CancellationToken cancellationToken, ILogger logger)
     {
         var buffer = new byte[MaximumMessageBytes + 1];
         while (!cancellationToken.IsCancellationRequested)
@@ -486,7 +486,13 @@ public static class NetworkEndpoints
             do
             {
                 frame = await socket.ReceiveAsync(new ArraySegment<byte>(buffer, length, buffer.Length - length), timeout.Token);
-                if (frame.MessageType == WebSocketMessageType.Close) return;
+                if (frame.MessageType == WebSocketMessageType.Close)
+                {
+                    if((int?)frame.CloseStatus is 4001 or 4002)
+                        logger.LogWarning("Client requested session recovery ({Code}): {Reason}",(int?)frame.CloseStatus,
+                            frame.CloseStatusDescription?.Replace('\r',' ').Replace('\n',' ').Replace('\t',' '));
+                    return;
+                }
                 if (frame.MessageType != WebSocketMessageType.Text || (length += frame.Count) > MaximumMessageBytes) throw new InvalidDataException("Message limit/type.");
             } while (!frame.EndOfMessage);
             if (!session.Touch(peer, DateTimeOffset.UtcNow)) return;

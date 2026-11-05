@@ -4,6 +4,8 @@ namespace FreeTrain.Online.Simulation;
 
 public enum FleetJunctionRoute { Straight, Curve }
 public enum FleetStopAction { Proceed, Wait, Reverse, Forwarding, ReverseForwarding }
+// One train's transient intent at an authoritative callback boundary. Never saved.
+public readonly record struct FleetManualInput(bool Pass, bool Depart, bool Reverse, bool Left, bool Right);
 
 // A duration is positive; source negative values are actions, never timers.
 // The default value is Proceed. Arbitrary source negatives mean Reverse except
@@ -62,9 +64,18 @@ public delegate FleetStopResult FleetHarborHandler(MixedWorld world, FleetTrain 
 
 public static class FleetControllers
 {
-    public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call)
-        => call.Controller.Kind==FleetControllerKind.Simple ? FleetJunctionRoute.Straight :
-            throw new InvalidOperationException("unboundJunctionController");
+    public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call, FleetManualInput input = default)
+    {
+        if(call.Controller.Kind==FleetControllerKind.Simple) return FleetJunctionRoute.Straight;
+        if(call.Controller.Kind!=FleetControllerKind.Manual) throw new InvalidOperationException("unboundJunctionController");
+        if(input.Left && RailwayTopology.HasPort(call.Pattern,call.Incoming.Left)) return FleetJunctionRoute.Curve;
+        if(input.Right && RailwayTopology.HasPort(call.Pattern,call.Incoming.Right)) return FleetJunctionRoute.Curve;
+        return FleetJunctionRoute.Straight;
+    }
+
+    public static FleetStopResult ManualStop(FleetTrain train, int callCount, FleetManualInput input = default)
+        => new(train,callCount==0 ? input.Pass ? FleetStopDecision.Proceed : FleetStopDecision.Wait(5) :
+            input.Depart ? FleetStopDecision.Proceed : input.Reverse ? FleetStopDecision.Reverse : FleetStopDecision.Wait(5));
 
     public static FleetStopResult SimpleStop(MixedWorld world, FleetTrain train, FleetHarborCall call)
     {
@@ -78,17 +89,19 @@ public static class FleetControllers
     // The passing train resolves its shared instance on every call. Delegates
     // remain runtime bindings; only the existing graph/configuration is saved.
     public static FleetStopResult AtHarbor(MixedWorld world, FleetTrain train, FleetHarborReference harbor,
-        FleetHarborHandler? handler = null)
+        FleetHarborHandler? handler = null, FleetManualInput input = default)
     {
         if(train.Head.State is not FleetCarState.Inside head || train.StopCallCount<0 ||
             harbor is not (FleetHarborReference.Signal {OwnerId: > 0, Revision: >= 0} or
                 FleetHarborReference.Station {StationId: > 0, Revision: >= 0}))
             throw new ArgumentException("Invalid harbor call.");
         var controller=world.Fleet!.EffectiveController(train.Id);
-        return (handler ?? SimpleStop)(world,train,new(controller,harbor,head.Location,train.StopCallCount));
+        var call=new FleetHarborCall(controller,harbor,head.Location,train.StopCallCount);
+        return handler!=null ? handler(world,train,call) : controller.Kind==FleetControllerKind.Manual
+            ? ManualStop(train,call.CallCount,input) : SimpleStop(world,train,call);
     }
 
-    public static FleetStopResult StopTime(MixedWorld world, FleetTrain train, FleetHarborHandler? handler = null)
+    public static FleetStopResult StopTime(MixedWorld world, FleetTrain train, FleetHarborHandler? handler = null, FleetManualInput input = default)
     {
         var head=(FleetCarState.Inside)train.Head.State;
         var voxel=world.At(head.Location)!;var rail=voxel.Traffic!.Rail!;
@@ -96,7 +109,7 @@ public static class FleetControllers
             SignalRailwayConstruction.DelegatesStopTime(rail.Direction,head.Heading))
         {
             var owner=world.Spatial.Entities.Single(e=>e.Id==voxel.OwnerId);
-            return AtHarbor(world,train,new FleetHarborReference.Signal(head.Location,owner.Id,owner.Revision),handler);
+            return AtHarbor(world,train,new FleetHarborReference.Signal(head.Location,owner.Id,owner.Revision),handler,input);
         }
         return new(train,FleetStopDecision.Proceed);
     }

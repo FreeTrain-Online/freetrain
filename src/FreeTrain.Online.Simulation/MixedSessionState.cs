@@ -24,6 +24,8 @@ public sealed class MixedSessionState
     public void ReviseSession() => Revision = checked(Revision + 1);
     private readonly TrainCallback trainCallback;
     public TrainCallback TrainDispatcher => trainCallback;
+    private IReadOnlyDictionary<long,FleetManualInput>? manualInputs;
+    internal FleetManualInput ManualInput(long trainId) => manualInputs?.GetValueOrDefault(trainId) ?? default;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public static string TrainHandler(long trainId) => "train/" + trainId.ToString(CultureInfo.InvariantCulture);
     private IReadOnlyDictionary<string, Action> Bindings(MixedWorld world, bool dispatch = true)
@@ -90,11 +92,11 @@ public sealed class MixedSessionState
     public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback);
     public void SetPaused(bool paused)
     { if (Paused==paused) return; var next=checked(Revision+1); Paused=paused; Revision=next; }
-    public void AdvanceOneMinute()
+    public void AdvanceOneMinute(IReadOnlyDictionary<long,FleetManualInput>? inputs = null)
     {
         // Validate and rebind the entire detached successor BEFORE publication.
         // Any bad callback, booking, RNG use or queue overflow discards the batch.
-        var next=Freeze(); next.Clock.Advance(); next.Revision=checked(next.Revision+1);
+        var next=Freeze(); next.manualInputs=inputs; next.Clock.Advance(); next.Revision=checked(next.Revision+1);
         next=next.Freeze();
         var clock=Clock.Restore(next.Clock.Capture(),Bindings(next.World));
         Construction=next.Construction; Random=next.Random; Revision=next.Revision; Clock=clock;

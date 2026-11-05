@@ -307,6 +307,7 @@ public sealed partial class SessionHost : IDisposable
         referenceWorld = replacement.Reference;
         terrainState = replacement.Terrain; mixedState = replacement.Mixed;
         WorldEpoch = epoch;
+        fleetLeases.Clear();
         ResetPlayback();
         resetInput = safetyPause = false;
         return Snapshot();
@@ -315,7 +316,12 @@ public sealed partial class SessionHost : IDisposable
     // Bounded, coalesced lifecycle intent; only Pump mutates the world.
     public void RequestInputReset(bool pause)
     {
-        lock (gate) { resetInput = true; safetyPause |= pause; }
+        lock (gate)
+        {
+            resetInput = true; safetyPause |= pause;
+            foreach(var queued in commands.OfType<Queued>())
+                if(queued.Command.Payload is ControllerInputCommand)queued.InputInvalidated=true;
+        }
     }
 
     // Completion means committed/rejected by Pump, never merely queued.
@@ -388,7 +394,7 @@ public sealed partial class SessionHost : IDisposable
             if (mixedState != null)
             {
                 var before = mixedState.World;
-                mixedState.AdvanceOneMinute();
+                mixedState.AdvanceOneMinute(fleetLeases.ToDictionary(p=>p.Key,p=>p.Value.Input));
                 RecordTrainMotion(before, mixedState);
             }
             else if (terrainState != null) terrainState.AdvanceOneMinute();
@@ -405,6 +411,7 @@ public sealed partial class SessionHost : IDisposable
     }
     private PumpResult PumpReference(int tickBudget)
     {
+        MaintainFleetControl();
         var advanced = 0;
         var applied = 0;
         do
@@ -419,10 +426,15 @@ public sealed partial class SessionHost : IDisposable
                     var queued = (Queued)work;
                     string? code = !Current(queued.Participant) || queued.Participant.Role == ParticipantRole.Observer
                         ? "notAuthorized" : queued.Command.ExpectedWorldEpoch != WorldEpoch ? "staleEpoch" : null;
+                    if (code == null && queued.InputInvalidated) code="invalidInput";
                     if (code == null)
                     {
                         switch (queued.Command.Payload)
                         {
+                            case AcquireControlCommand acquire: code=AcquireFleet(queued.Participant,acquire.TrainId); break;
+                            case ReleaseControlCommand release: code=ReleaseFleet(queued.Participant,release); break;
+                            case SetControllerCommand controller: code=SetFleetController(queued.Participant,controller); break;
+                            case ControllerInputCommand input: code=InputFleet(queued.Participant,input); break;
                             case DeployFleetCommand deploy when deploy.Query != null: code = CommitFleetDeployment(deploy); break;
                             case TradeFleetCommand trade when trade.Query != null: code = CommitFleetTrade(trade); break;
                             case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
@@ -449,7 +461,7 @@ public sealed partial class SessionHost : IDisposable
                 }
                 applied++;
             }
-            resetInput = false;
+            MaintainFleetControl();
             if (safetyPause) { CanonicalPause(true); safetyPause = false; }
             if (!CanonicalCanAdvance) CanonicalPause(true);
             if (advanced >= tickBudget || CanonicalPaused) break;
@@ -524,7 +536,7 @@ public sealed partial class SessionHost : IDisposable
     {
         lock (gate)
         {
-            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion() };
+            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion(), FleetControl = ReadFleetControl() };
             if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,

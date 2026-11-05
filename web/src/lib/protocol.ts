@@ -1,3 +1,4 @@
+import {validFleetControl} from './manual-driving.ts';
 import {validTrainMotion} from './train-motion-contract.ts';
 import {validFleetSuccessor} from './fleet-state.ts';
 import Ajv from 'ajv';
@@ -14,6 +15,20 @@ for (const [name, unsigned] of [['int64', false], ['uint63', true]] as const) {
     BigInt(value) >= (unsigned ? 0n : -9223372036854775808n) && BigInt(value) <= 9223372036854775807n);
 }
 const validate = ajv.compile(schema.$defs.WireMessage ? { ...schema, $ref: '#/$defs/WireMessage' } : schema);
+// Compile a focused diagnostic only on rejection. Report schema paths/reasons,
+// never message contents, credentials or the saved world.
+const diagnosticValidators=new Map<string,ReturnType<typeof ajv.compile>>();
+const diagnosticDefinitions=new Map([['snapshot','Snapshot'],['delta','Delta'],['join','Join'],['stateChunk','StateChunk'],['accepted','Accepted'],['rejected','Rejected']]);
+function invalidMessage(value:unknown):string {
+  const type=value&&typeof value==='object'&&'type' in value?value.type:undefined;
+  const definition=typeof type==='string'?diagnosticDefinitions.get(type):undefined;
+  if(!definition)return 'Invalid protocol message';
+  let check=diagnosticValidators.get(definition);
+  if(!check){check=ajv.compile({...schema,$id:undefined,$ref:`#/$defs/${definition}`});diagnosticValidators.set(definition,check);}
+  check(value);
+  const details=check.errors?.slice(0,3).map(e=>`${e.instancePath||'/'} ${e.message}`).join('; ');
+  return `Invalid protocol message (${type})${details?': '+details:''}`;
+}
 const validatePreview=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SpatialPreview'});
 const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTerrainPreview'});
 const validateSlope=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SlopePreview'});
@@ -73,13 +88,13 @@ export function parseMessage(text: string): WireMessage {
 }
 export function validWireShape(value:unknown):value is WireMessage { return !!validate(value); }
 export function parseMessageValue(value:unknown):WireMessage {
-  if (!validate(value)) throw new Error('Invalid protocol message');
+  if (!validate(value)) throw new Error(invalidMessage(value));
   const message=value as WireMessage;
   const motionRead=message.type==='join'?message.snapshot:message;
-  if((motionRead.type==='snapshot'||motionRead.type==='delta')&&!validTrainMotion(motionRead.trainMotion,motionRead.tick))throw new Error('Invalid train motion history');
+  if((motionRead.type==='snapshot'||motionRead.type==='delta')&&!validTrainMotion(motionRead.trainMotion,motionRead.tick))throw new Error(`Invalid train motion history (${motionRead.type})`);
   if(message.type==='sessionOffer'&&!supportedIdentity(message))throw new IncompatibleWorldError('Incompatible world');
-  if(message.type==='snapshot'&&!validSnapshot(message))throw new IncompatibleWorldError('Incompatible world');
-  if(message.type==='join'&&(!sameIdentity(message,message.snapshot)||message.worldEpoch!==message.snapshot.worldEpoch||!validSnapshot(message.snapshot)))throw new IncompatibleWorldError('Incompatible world');
+  if(message.type==='snapshot'&&(!validSnapshot(message)||!validFleetControl(message)))throw new IncompatibleWorldError('Incompatible world');
+  if(message.type==='join'&&(!sameIdentity(message,message.snapshot)||message.worldEpoch!==message.snapshot.worldEpoch||!validSnapshot(message.snapshot)||!validFleetControl(message.snapshot)))throw new IncompatibleWorldError('Incompatible world');
   if(message.type==='snapshot')validatedReads.add(message);
   if(message.type==='join')validatedReads.add(message.snapshot);
   return value as WireMessage;
@@ -91,7 +106,7 @@ export function immutable<T extends object>(value: T): T {
 }
 export function applyDelta(state: ReadState, delta: Delta): ReadState | undefined {
   if (delta.worldEpoch !== state.worldEpoch || !sameIdentity(state,delta) || delta.baseRevision !== state.revision || BigInt(delta.revision) <= BigInt(delta.baseRevision)) return;
-  if(!validTrainMotion(delta.trainMotion,delta.tick))return;
+  if(!validTrainMotion(delta.trainMotion,delta.tick)||!validFleetControl({mixed:delta.mixed,fleetControl:delta.fleetControl}))return;
   const mixed=isMixedWorld(state);
   const terrain=isTerrainWorld(state)||mixed;
   if(mixed!==!!delta.mixed||mixed&&BigInt(delta.tick)<BigInt(state.tick))return;
@@ -136,7 +151,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
     if(mixed&&(JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed)||
       state.mixed?.queue?.pending.some(a=>BigInt(a.dueMinute)<=BigInt(delta.tick))))return;
-    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,trainMotion:delta.trainMotion,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
+    const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,trainMotion:delta.trainMotion,fleetControl:delta.fleetControl,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
     shareTerrainValidation(state,next);shareSnapshotValidation(state,next);validatedReads.add(next);return next;
   }
   function merge<T>(before: readonly T[], changed: readonly T[], removed: readonly string[], key: (item: T) => string): T[] {
@@ -163,7 +178,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   const terrainState=terrain?{...state.terrain!,...delta.terrain!,
     cells:delta.terrain!.cells.length?terrainCells!:state.terrain!.cells,
     occupants:terrainMerge(state.terrain!.occupants,delta.terrain!.occupants,delta.removed.entityIds!,o=>o.entityId)}:undefined;
-  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash, trainMotion:delta.trainMotion, ...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {}),
+  const next={ ...state, ...(mixed?{mixed:delta.mixed}:{}), ...(terrainState?{terrain:terrainState}:{}), revision: delta.revision, tick: delta.tick, paused: delta.paused, cash: delta.cash, trainMotion:delta.trainMotion,fleetControl:delta.fleetControl, ...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {}),
     ...(state.entities?{entities:(terrain?terrainMerge:merge)(state.entities,delta.entities??[],delta.removed.entityIds??[],e=>e.id)}:{}),
     trains: merge(state.trains, delta.trains, delta.removed.trainIds, x => x.id),
     stations: merge(state.stations, delta.stations, delta.removed.stationIds, x => x.id),

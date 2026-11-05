@@ -9,6 +9,7 @@ Tests are grouped by the behavior they protect.
 | `ui-preferences.spec.ts` | Color scheme persistence, fallback, contrast and canvas preservation |
 | `responsive-layout.spec.ts` | Viewport sizes, Japanese panels, scrolling, touch targets, enlarged text and viewport emulation |
 | `keyboard-controls.spec.ts` | Toolbar/menu navigation, native editing, focus, Escape layers and command feedback |
+| `canonical-manual-driving.spec.ts` | EN/JA actual signals/junctions, held Left/Right with smooth/discrete rendering, idle focus/expiry, per-train leases, touch/keyboard/reset, peers and save/process restart |
 | `manual-driving.spec.ts` | Driving input suspension and key release on focus, visibility, tool and lease changes |
 | `map.spec.ts`, `map-panning.spec.ts` | Map shortcuts, panning, picking, camera, DPR and world replacement |
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |

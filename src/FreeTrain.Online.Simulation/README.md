@@ -106,3 +106,11 @@ ignores non-Station harbors and waits30 minutes on the first Station call before
 departing. Station adapters are test-only until P6 supplies real yards/platforms;
 manual/TAT dispatch retains its later owners. Save9/protocol7 are unchanged.
 See [controller contract and verification](../../doc/web-parity-fleet-controllers.md).
+
+
+P5-17 binds the registered Manual provider to typed harbor and junction decisions.
+Explicit per-train callback input retains initial Shift/pass, five-minute polling,
+Up-before-Down and valid-left-before-right. Input is supplied only to the detached
+minute being executed and is absent from frozen/durable state. Neutral manual
+trains take straight choices and continue waiting at harbors without a driver.
+[Multiplayer adaptation, source audit and evidence](../../doc/web-parity-fleet-manual.md).

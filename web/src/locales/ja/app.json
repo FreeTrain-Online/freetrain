@@ -709,7 +709,7 @@
   "deploymentHelp": "選択した最後尾から同じ高さの線路に沿って配置します。方向反転は同じ配置位置で向きと車両順を反転します。確定前に時間を一時停止してください。",
   "deploymentWithdrawHelp": "撤去は保有車両を残し、線路上の車両と移動タイマーを解除します。売却収入は発生しません。",
   "deploymentFailed": "配置プレビューに失敗しました。位置を確認して再試行してください。",
-  "deploymentController": "手動・時刻表の分岐・信号制御と場外移動は現在利用できません。列車が未対応の動作に到達すると共有時間が一時停止します。",
+  "deploymentController": "手動運転は列車ごとに操作権を取得します。時刻表の分岐・信号制御はまだ利用できません。未対応の動作に到達すると共有時間が一時停止します。",
   "deploymentMissingRail": "編成全体を配置できる同じ高さの線路が必要です。",
   "deploymentOccupied": "配置位置に別の車両があります。",
   "deploymentDuplicate": "編成の配置位置が同じマスで重複します。",
@@ -740,5 +740,12 @@
   "fleetForwarding": "回送",
   "fleetSignalWaiting": "信号で停止中",
   "fleetOccupiedReturn": "最初の接続先の復帰線路に車両がいます。その線路が空くまで待機します。",
-  "fleetMissingReturn": "接続された復帰線路がありません。"
+  "fleetMissingReturn": "接続された復帰線路がありません。",
+  "manualLeft": "左",
+  "manualRight": "右",
+  "manualPass": "通過（Shift）",
+  "manualDepart": "発車（↑）",
+  "manualReverse": "反転（↓）",
+  "manualOtherController": "ダイヤ",
+  "manualFleetHelp": "操作権を取得して手動を選択。ボタンを押し続けるか、マップにフォーカスしてキーを押し続けます。到着時のShiftで通過、それ以外はゲーム内で5分停車。停車後は上で発車、下で反転（上を優先）。入力がなければさらに5分待機。フォーカスや接続を失うと入力を解除します。共有時間は進み続けます。 運転操作部またはマップにフォーカスがある間は操作権を更新します。更新が止まると実時間で5秒後に失効します。運転するには再取得してください。"
 }

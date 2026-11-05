@@ -6,6 +6,7 @@ import { removalQueryKey } from './object-removal.ts';
 import { isRailwayPromotion, railwayQueryKey, slopeQueryKey, RailwayPreviewRequestError } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
+import {sessionCloseReason} from './session-close.ts';
 
 const compatibility = 'protocolVersion=7&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 export async function authorize(secret: string): Promise<boolean> {
@@ -48,9 +49,10 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     for (const item of pending.values()) { clearTimeout(item.timer); item.reject(new Error('unresolved')); }
     pending.clear();
   };
-  const fail = () => {
+  const fail = (reason = 'transportLost') => {
+    if (!disposed) console.warn('[FreeTrain] Session reconnecting', { reason });
     clearInterval(heartbeat); clearTimeout(connectionTimer); clearPending();
-    if (socket) { socket.onclose = null; socket.close(); socket = undefined; }
+    if (socket) { socket.onclose = null; socket.close(4001,sessionCloseReason(reason)); socket = undefined; }
     join = undefined;
     if (disposed) return;
     const delay = Math.min(5000, 250 * 2 ** Math.min(attempts++, 5));
@@ -98,20 +100,22 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const url = new URL(`/api/session?${selectedCompatibility}`, location.href);
       url.protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
       const current = socket = new WebSocket(url);
-      connectionTimer = setTimeout(fail, 30000);
+      connectionTimer = setTimeout(()=>fail('joinTimeout'), 30000);
       const assembly = new StateAssembler();
       let receiving=Promise.resolve(),queued=0;
       current.onmessage = event => {
-        if(++queued>32){current.close(1002);return;}
+        if(++queued>32){console.warn('[FreeTrain] Session receive queue exceeded',{queued});current.close(4002,'receive-queue-limit');return;}
         receiving=receiving.then(async()=>{
         queued--;
         if (disposed || socket !== current) return;
+        let packetType='unparsed';
         try {
           let message = parseMessage(event.data);
+          packetType=message.type;
           if(message.type==='stateChunk') {
             if(!assembly.pending) {
               connectionStage='synchronizing';setStatus('loading');clearTimeout(connectionTimer);
-              connectionTimer=setTimeout(fail,30000);
+              connectionTimer=setTimeout(()=>fail('stateTransferTimeout'),30000);
             }
             const complete=await assembly.accept(message);
             if(!complete||disposed||socket!==current)return;
@@ -131,7 +135,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               // profile. Re-bootstrap its exact pack identity before revealing it.
               if(!sameIdentity(join,message)){
                 if(read&&isRailwayPromotion(read,message))join={...join,ruleset:message.ruleset,contentVersion:message.contentVersion,requiredPacks:message.requiredPacks,snapshot:message};
-                else {fail();break;}
+                else {fail('worldProfileChanged');break;}
               }
               clearTimeout(connectionTimer); resyncing = false;
               if (read && read.worldEpoch !== message.worldEpoch) clearPending();
@@ -141,8 +145,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               const next = read && applyDelta(read, message);
               if (next) publish(next);
               else {
+                console.warn('[FreeTrain] Session delta requires resync',{worldEpoch:message.worldEpoch,baseRevision:message.baseRevision,revision:message.revision});
                 resyncing = true; connectionStage = 'synchronizing'; setStatus('loading'); current.send(JSON.stringify({ type: 'resync' }));
-                connectionTimer = setTimeout(fail, 5000);
+                connectionTimer = setTimeout(()=>fail('resyncTimeout'), 5000);
               }
               break;
             }
@@ -157,13 +162,18 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
             }
             default: throw new Error('Unexpected server message');
           }
-        } catch (error) { if(error instanceof IncompatibleWorldError)incompatible();else current.close(1002); }
+        } catch (error) {
+          console.warn('[FreeTrain] Session packet rejected',{type:packetType,reason:error instanceof Error?error.message:String(error)});
+          // Browser callers may use 1000 or application codes 3000–4999.
+          // 1002 throws InvalidAccessError here and poisons the receive chain.
+          if(error instanceof IncompatibleWorldError)incompatible();else current.close(4002,sessionCloseReason(error instanceof Error?error.message:'invalid-session-packet'));
+        }
         });
       };
       current.onopen = () => { heartbeat = setInterval(() => { if (current.readyState === WebSocket.OPEN) current.send('{"type":"heartbeat"}'); }, 5000); };
-      current.onclose = fail;
+      current.onclose = event => fail(`socketClosed/${event.code}${event.reason?'/'+event.reason:''}`);
       current.onerror = () => { /* onclose handles reconnect and ambiguous results. */ };
-    } catch (error) { if (!disposed) {if(error instanceof IncompatibleWorldError)incompatible();else fail();} }
+    } catch (error) { if (!disposed) {if(error instanceof IncompatibleWorldError)incompatible();else fail(error instanceof Error?error.message:'bootstrapFailed');} }
   };
   void connect();
   return {
@@ -249,7 +259,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           const item = pending.get(command.requestId);
           if (!item) return;
           if (++item.attempts >= 3) {
-            fail(); return;
+            fail(`commandAcknowledgementTimeout/${item.command.payload.kind}`); return;
           }
           if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify(command));
           item.timer = setTimeout(retry, 2000);

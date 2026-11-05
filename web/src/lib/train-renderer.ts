@@ -37,9 +37,10 @@ export function trainCarLayer(recipe:Recipe,carId:string,position:[number,number
 }
 
 type Train=NonNullable<NonNullable<ReadState['mixed']>['fleet']>['trains'][number];
-/** Drawing queries the same current rail as movement, including the previous
- * car's chosen junction route. It never advances a controller or a random stream. */
-export function carOutgoing(read:ReadState,train:Train,index:number,rail:RailComponent,handler:string):number {
+/** Followers use their predecessor's committed route. At a head's selectable
+ * junction the next exit is not known yet: draw neutral until movement commits.
+ * Never evaluate a controller or infer another participant's held input. */
+export function carOutgoing(_read:ReadState,train:Train,index:number,rail:RailComponent,handler:string):number {
   const car=train.cars[index],h=car.state.heading!;
   if(handler!=='normal'&&handler!=='junction')return h;
   const edges=rail.pattern<12?normalPorts(`normal${rail.pattern}`)!:[
@@ -49,17 +50,7 @@ export function carOutgoing(read:ReadState,train:Train,index:number,rail:RailCom
   const left=(h+7)%8,right=(h+1)%8;
   if(edges.includes(h)) {
     if(handler!=='junction'||!edges.includes(left)&&!edges.includes(right))return h;
-    if(index===0) {
-      const f=read.mixed!.fleet!,groups=new Map(f.groups.map(g=>[g.id,g]));
-      let id=train.controllerId,group=groups.get(train.groupId);
-      const controllers=new Map(f.controllers.map(c=>[c.id,c]));
-      if(id&&controllers.get(id)?.kind==='delegation')id=null;
-      while(!id&&group){if(group.controllerId&&controllers.get(group.controllerId)?.kind!=='delegation')id=group.controllerId;group=group.parentId?groups.get(group.parentId):undefined;}
-      // P5-08 binds only simple's selectable junction route. Later controller
-      // slices must supply their pure drawing decision alongside movement.
-      if(id&&controllers.get(id)?.kind!=='simple')throw new Error('Car junction controller unavailable');
-      return h;
-    }
+    if(index===0)return h;
     const previous=train.cars[index-1].state.location,next=move(car.state.location!,h);
     if(previous&&previous.x===next.x&&previous.y===next.y&&previous.z===next.z)return h;
   }

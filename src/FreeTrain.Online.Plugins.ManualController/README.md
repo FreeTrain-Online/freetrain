@@ -1,4 +1,10 @@
-# Manual controller
+# Prototype manual controller
+
+This assembly is retained only for the explicit historical regression harness.
+Canonical P5-17 manual control lives in `Simulation/FleetControllers.cs` and
+`Session/FleetManualSession.cs`; see [the source audit and multiplayer contract](../../doc/web-parity-fleet-manual.md).
+The reusable transport/input lifecycle was audited against stable ExAV; this
+prototype plugin is not registered as a canonical behavior provider.
 
 `ManualTrainController` ports the defaults from
 `plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs` at `1f755ca`

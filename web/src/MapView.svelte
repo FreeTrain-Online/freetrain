@@ -27,6 +27,7 @@
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
   import TrainToolIcon from './TrainToolIcon.svelte';
+  import {drivingTrain} from './lib/manual-driving.ts';
   import PanelFrame from './PanelFrame.svelte';
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog, onfleet }:
     { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onfleet: (source: HTMLButtonElement) => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
@@ -84,7 +85,7 @@
   // Keep interaction resets tied to role changes, rather than every new view snapshot.
   const observer = $derived(view.role === 'observer');
   const blocked = $derived(view.pending || !live || observer);
-  const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(item => item.id === selection?.id) : undefined);
+  const selectedTrain = $derived(selection?.kind === 'train' ? drivingTrain(view.read,selection?.id) : undefined);
   const shapes: Exclude<Track['shape'], `normal${number}`>[] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
   async function flushInput() {
     inputDirty = true;
@@ -298,8 +299,9 @@
   }
   export function focusTrain(id = selectedTrain?.id) {
     const train = view.read?.trains.find(t => t.id === id);
-    if (train && live) {
-      const position = renderer?.trainCenter(train.id)??space.center(train.position), center = visibleCenter();
+    const location=train?.position??view.read?.mixed?.fleet?.trains.find(t=>t.id===id)?.cars[0].state.location;
+    if (location && id && live) {
+      const position = renderer?.trainCenter(id)??space.center(location), center = visibleCenter();
       camera = { x: position.x - (center.x - width / 2) / camera.zoom, y: position.y - (center.y - height / 2) / camera.zoom, zoom: camera.zoom };
       dirty = true; focusMap();
     }
@@ -316,6 +318,9 @@
   });
   $effect(() => { if (!live || tool !== 'inspect' || selectedTrain?.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) clearInput(); });
   $effect(() => { if (inputSuspended) suspendInput(); });
+  let drivingContext: string | undefined;
+  $effect(() => { const next=`${view.read?.worldEpoch}/${selectedTrain?.id}/${selectedTrain?.controller}/${selectedTrain?.controlLease?.leaseId}/${view.connection}`;
+    if(next!==drivingContext){clearInput();drivingContext=next;} });
   $effect(() => { if (observer || !live) resetInteraction(); });
   $effect(() => {
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
@@ -366,13 +371,18 @@
       }
       frame = requestAnimationFrame(paint);
     }; frame = requestAnimationFrame(paint);
+    let focused=document.hasFocus();
     const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
-    const blur = () => { clearInput(); cancelGesture(); };
-    const focus = () => { resumeMotion=true;dirty=true; };
+    const idle = setInterval(() => {
+      if(live&&!inputSuspended&&tool==='inspect'&&selectedTrain&&focused&&!document.hidden&&document.activeElement===canvas&&!keys.size)
+        void model.input(new Set(),selectedTrain.id);
+    },1000);
+    const blur = () => { focused=false;clearInput(); cancelGesture(); };
+    const focus = () => { focused=true;resumeMotion=true;dirty=true; };
     const visibility = () => {
       lastDemoTick=undefined;blur();
       if(document.hidden){renderer?.resetTrainMotion();lastMotionResume=-Infinity;}
-      resumeMotion=!document.hidden;lastFrame=undefined;dirty=true;
+      focused=!document.hidden&&document.hasFocus();resumeMotion=!document.hidden;lastFrame=undefined;dirty=true;
     };
     const classifyWheel = createWheelClassifier();
     const wheel = (event: WheelEvent) => {
@@ -386,7 +396,7 @@
       dirty = true;
     };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); window.addEventListener('focus', focus); document.addEventListener('visibilitychange', visibility);
-    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
+    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew);clearInterval(idle); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
@@ -451,5 +461,5 @@
     </section>
   {/if}
   <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
-  <span id="manual-help" class="sr-only">{reference ? worldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
+  <span id="manual-help" class="sr-only">{selectedTrain?.controller==='manual'?text.manualFleetHelp:reference ? worldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
 {/if}

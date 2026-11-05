@@ -434,3 +434,13 @@ through reconnect and are never replayed. Source removal's lower-pier loss list
 includes foreign owners. Long routing/picking help is folded, both locales ship
 with the task, and narrow controls scroll with sticky confirmation. The exact
 terrain-to-mixed profile handoff preserves the same epoch, camera and canvas.
+
+
+P5-17 canonical manual driving uses the same `controller`, `take-control`,
+`release-control` and `manual-input` operations in placed owned stock and the
+picked-car inspector. Five EN/JA hold buttons supplement focused-map keys, with
+pointer capture and keyboard equivalents. Shared controller identity does not
+share held input between trains. Null assignments and explicit Delegation use
+the existing effective-controller resolver. Reacquisition is explicit after
+expiry/disconnect; no local control change pauses shared time.
+See [the full lifecycle, source audit and acceptance evidence](web-parity-fleet-manual.md).

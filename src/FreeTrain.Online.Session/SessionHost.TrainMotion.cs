@@ -36,11 +36,19 @@ public sealed partial class SessionHost
                 prior.Cars.Select(c => c.Id).SequenceEqual(train.Cars.Select(c => c.Id));
             for (var i = 0; continuous && i < train.Cars.Length; i++)
             {
-                var from = MotionPose(before, prior, i); var to = MotionPose(after.World, train, i);
-                if (from == null || to == null || from.Position.Z != to.Position.Z ||
-                    Math.Abs(from.Position.X-to.Position.X) > 1 || Math.Abs(from.Position.Y-to.Position.Y) > 1 ||
-                    from.Position == to.Position) { cars.Clear(); break; }
-                cars.Add(new(train.Cars[i].Id, from, to));
+                var origin = MotionPose(before, prior, i); var to = MotionPose(after.World, train, i);
+                if (origin == null || to == null || origin.Position.Z != to.Position.Z ||
+                    Math.Abs(origin.Position.X-to.Position.X) > 1 || Math.Abs(origin.Position.Y-to.Position.Y) > 1 ||
+                    origin.Position == to.Position) { cars.Clear(); break; }
+                // The head's default guide cannot predict a leased junction
+                // decision. The committed destination heading records the exit
+                // actually taken, for the head and every follower alike.
+                var (dx,dy)=new Heading(to.Heading).Offset;
+                var turn=(to.Heading-origin.Heading+8)%8;
+                if(to.Position.X-origin.Position.X!=dx || to.Position.Y-origin.Position.Y!=dy || turn is not (0 or 1 or 7))
+                { cars.Clear(); break; }
+                origin=origin with {Outgoing=to.Heading};
+                cars.Add(new(train.Cars[i].Id, origin, to));
             }
             // An empty Cars array is an explicit discontinuity marker. Retain
             // it in sequence even if another move follows in this publication.

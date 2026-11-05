@@ -34,6 +34,13 @@ export type Money = string;
 export type Heading = number;
 export type EntityId = string;
 export type PlaybackRate = 0.125 | 0.25 | 0.5 | 1 | 2;
+/**
+ * @maxItems 128
+ */
+export type FleetControl = {
+  trainId: Counter;
+  lease: ControlLease;
+}[];
 export type CommandPayload =
   | {
       kind: "run";
@@ -191,6 +198,7 @@ export interface Snapshot {
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
   trainMotion?: TrainMotion;
+  fleetControl?: FleetControl;
 }
 export interface Map {
   width: number;
@@ -754,6 +762,7 @@ export interface Delta {
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
   trainMotion?: TrainMotion;
+  fleetControl?: FleetControl;
 }
 export interface Removed {
   trainIds: string[];

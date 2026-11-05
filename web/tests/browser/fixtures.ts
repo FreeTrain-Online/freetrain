@@ -85,7 +85,7 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
         [`FreeTrainOnline__Participants__${viewer}__Secret`]: 'observer-test',
       }, `${apiURL}/health`, resolve('../src/FreeTrain.Online.Server'));
       children.push(await startBackend());
-      children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', 'preview', '--host', '127.0.0.1',
+      children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', ...(process.env.FREETRAIN_ONLINE_TEST_DEV_CLIENT==='1'?[]:['preview']), '--host', '127.0.0.1',
         '--port', String(webPort), '--strictPort'], { ...process.env, FREETRAIN_ONLINE_API_TARGET: apiURL }, baseURL));
       let first = true;
       await use({ baseURL, restart: async () => {

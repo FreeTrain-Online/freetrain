@@ -58,7 +58,7 @@
     </form>
   {:else if train&&train.state!=='unplaced'}<p>{text.deploymentWithdrawHelp}</p><div class="form-actions"><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget);}}>{text.withdrawTrain}</button><button disabled={disabled||loading||submitting} onclick={event=>{void preview(event.currentTarget,'reverse');}}>{text.fleetReverse}</button></div>{/if}
   {#if effective}<p>{text.controller}: {effective.name} · {text[effective.kind==='simple'?'deploymentSimple':effective.kind==='manual'?'manual':'deploymentTimetable']}</p>
-    {#if effective.kind!=='simple'}<p role="status">{text.deploymentControllerUnavailable}</p>{/if}
+    {#if effective.kind==='timetable'}<p role="status">{text.deploymentControllerUnavailable}</p>{/if}
   {/if}
   {#if allowPlacement||train?.state!=='unplaced'}<details class="deployment-help"><summary>{text.help}</summary>{#if train?.state==='unplaced'}<p class="hint">{text.deploymentHelp}</p>{:else}<p class="hint">{text.fleetReverseHelp}</p>{/if}<p class="hint">{text.deploymentController}</p></details>{/if}
   {#if loading}<p role="status">{text.waiting}</p>{/if}

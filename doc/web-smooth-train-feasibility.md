@@ -389,6 +389,21 @@ continuous interior occlusion is implemented and verified. Reversal animation an
 Outside presentation remain later geometry/lifecycle work; their existing P5
 scope is unchanged.
 
+**5 November manual-junction follow-up:** committed route history now takes each
+car's actual outgoing heading from its committed destination, including leased
+Left/Right junction choices. Static heads use a neutral choice-junction pose
+until the exit commits; followers retain predecessor routing. Four live driver/
+Observer cases pass with smoothing enabled/disabled, without reconnect or invalid
+motion packets. A newly committed choice may re-anchor the existing buffer when
+its tangent changes; seamless interpolation across that decision remains open.
+[Reproduction, fix and evidence](web-parity-fleet-manual.md#junction-disconnect-fix--5-november-owner-playtest).
+
+**6 November owner deferral:** intermittent packet/disconnect/reload behavior
+while manually steering remains open as
+[P5-MANUAL-001](web-parity-fleet-manual.md#p5-manual-001--known-issue-owner-deferred-6-november).
+Troubleshooting is deferred at the owner's request while the plan proceeds to
+P5-18. The successful focused animation/junction tests do not close this issue.
+
 ### Verification and remaining acceptance
 
 Initial verification passed the production frontend build, generated-contract

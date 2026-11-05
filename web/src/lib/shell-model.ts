@@ -1,3 +1,4 @@
+import {drivingTrain} from './manual-driving.ts';
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
@@ -128,7 +129,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
   };
   let acquiring: Promise<boolean | undefined> | undefined;
   const ensureControl = async (trainId?: string) => {
-    const train = trainId ? state.read?.trains.find(item => item.id === trainId) : state.read?.trains[0];
+    const train = drivingTrain(state.read,trainId ?? state.read?.trains[0]?.id);
     if (!train || !client || state.role === 'observer') return false;
     if (train.controlLease && train.controlLease.participantId === client.participantId) return true;
     if (!acquiring) acquiring = send({ kind: 'acquireControl', trainId: train.id }).finally(() => { acquiring = undefined; });
@@ -206,22 +207,19 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     async controller(controller: 'automatic' | 'manual', trainId = state.read?.trains[0]?.id, isCurrent: () => boolean = () => true) {
       const current = generation, epoch = state.read?.worldEpoch;
       if (!trainId || !await ensureControl(trainId) || current !== generation || epoch !== state.read?.worldEpoch || !isCurrent()) return false;
-      const train = state.read?.trains.find(item => item.id === trainId);
+      const train = drivingTrain(state.read,trainId);
       if (train?.controlLease) return send({ kind: 'setController', trainId: train.id, expectedRevision: train.revision, controller, leaseId: train.controlLease.leaseId });
     },
-    acquireControl(trainId = state.read?.trains[0]?.id) { const train = state.read?.trains.find(item => item.id === trainId); if (train) return send({ kind: 'acquireControl', trainId: train.id }); },
+    acquireControl(trainId = state.read?.trains[0]?.id) { const train = drivingTrain(state.read,trainId); if (train) return send({ kind: 'acquireControl', trainId: train.id }); },
     releaseControl(trainId = state.read?.trains[0]?.id) {
-      const train = state.read?.trains.find(item => item.id === trainId);
+      const train = drivingTrain(state.read,trainId);
       if (train?.controlLease) return send({ kind: 'releaseControl', trainId: train.id, leaseId: train.controlLease.leaseId });
     },
     async input(keys: ReadonlySet<string>, trainId = state.read?.trains[0]?.id) {
-      const selectedTrain = state.read?.trains.find(item => item.id === trainId);
-      if (!client || state.connection !== 'ready' || selectedTrain?.controller !== 'manual') return;
-      if (selectedTrain.controlLease?.participantId !== client.participantId) return;
+      const train = drivingTrain(state.read,trainId);
+      if (!client || state.connection !== 'ready' || state.role==='observer' || train?.controller !== 'manual') return;
+      if (!train.controlLease || train.controlLease.participantId !== client.participantId) return;
       const current = generation;
-      if (!await ensureControl(trainId) || current !== generation || !client || state.connection !== 'ready') return;
-      const train = state.read!.trains.find(item => item.id === trainId);
-      if (!train?.controlLease) return;
       const payload: CommandPayload = { kind: 'controllerInput', trainId: train.id, leaseId: train.controlLease.leaseId,
         inputSequence: String(++inputSequence), pass: keys.has('Shift'), depart: keys.has('ArrowUp'), reverse: keys.has('ArrowDown'),
         left: keys.has('ArrowLeft'), right: keys.has('ArrowRight'), reset: keys.size === 0 };

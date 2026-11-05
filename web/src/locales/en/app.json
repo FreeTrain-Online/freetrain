@@ -709,7 +709,7 @@
   "deploymentHelp": "Placement starts at the selected tail and follows the track at one height. Reverse changes the facing and car order on the same footprint. Pause time before confirming a preview.",
   "deploymentWithdrawHelp": "Withdrawal keeps owned stock and clears its track occupancy and movement timer. It produces no sale revenue.",
   "deploymentFailed": "Deployment preview failed. Check the target and try again.",
-  "deploymentController": "Manual and timetable junction/signal control and travel outside the map are currently unavailable. Shared time pauses if a train reaches an unavailable action.",
+  "deploymentController": "Manual driving uses a separate control lease for each train. Timetable junction and signal actions are not available yet; reaching one pauses shared time.",
   "deploymentMissingRail": "The complete formation needs track at the selected height.",
   "deploymentOccupied": "Another car occupies this footprint.",
   "deploymentDuplicate": "The formation would visit the same track cell twice.",
@@ -740,5 +740,12 @@
   "fleetForwarding": "Forwarding",
   "fleetSignalWaiting": "Stopped at signal",
   "fleetOccupiedReturn": "The first connected return track is occupied. The train waits for that track.",
-  "fleetMissingReturn": "No connected return track is available."
+  "fleetMissingReturn": "No connected return track is available.",
+  "manualLeft": "Left",
+  "manualRight": "Right",
+  "manualPass": "Pass (Shift)",
+  "manualDepart": "Depart (↑)",
+  "manualReverse": "Reverse (↓)",
+  "manualOtherController": "Timetable",
+  "manualFleetHelp": "Take control, then choose Manual. Hold a button or focus the map and hold its key. Shift passes on arrival; otherwise stop for five game minutes. After stopping, Up departs before Down reverses; release waits another five minutes. Input clears on focus or connection loss. Shared time continues. Control stays active while the driving controls or map have focus. After renewals stop, it expires in five seconds; take control again to drive."
 }

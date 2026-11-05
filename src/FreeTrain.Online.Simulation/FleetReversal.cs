@@ -9,7 +9,7 @@ public static class FleetReversal
     // Visit in current head-to-tail order before swapping. A follower's guide
     // uses its predecessor's position, including a predecessor already Outside.
     // Callers normalize revisions once after their complete operation.
-    public static FleetTrain Reverse(MixedWorld world, FleetTrain train)
+    public static FleetTrain Reverse(MixedWorld world, FleetTrain train, FleetManualInput input = default)
     {
         var fleet=world.Fleet ?? throw new ArgumentException("Fleet is not initialized.");
         var cars=train.Cars.ToBuilder();
@@ -19,7 +19,7 @@ public static class FleetReversal
             if(state is FleetCarState.Inside inside)
             {
                 var rail=world.At(inside.Location)!.Traffic!.Rail!;
-                var go=n==0 ? FleetRailGuidance.GuideHead(world,fleet,train,inside.Location,rail,inside.Heading) :
+                var go=n==0 ? FleetRailGuidance.GuideHead(world,fleet,train,inside.Location,rail,inside.Heading,input) :
                     FleetRailGuidance.Guide(world.Profile.Resolve(rail.Definition).Handler,rail.Pattern,inside.Heading,
                         predecessor:((FleetCarState.Placed)cars[n-1].State).Location,location:inside.Location);
                 state=inside with {Heading=go.Opposite};
