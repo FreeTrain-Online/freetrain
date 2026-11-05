@@ -87,6 +87,13 @@ visible exits, complete-consist shifting, occupied-track waits and a single
 Inside dead-end reversal/retry. Native/prior-head timing and operating bookings
 publish with occupancy and the future callback in one detached minute. The
 simple controller chooses straight at junctions and passes non-Station signals.
-Outside callbacks and advanced junction/harbor handlers retain explicit later
-phase boundaries; the host safely rejects Step or pauses Run when encountered.
+Advanced junction/harbor handlers retain explicit later phase boundaries; the
+host safely rejects Step or pauses Run when encountered.
 See [movement scope, literal traces and verification](../../doc/web-parity-fleet-movement.md).
+
+P5-14 adds Outside countdown, ordered return selection, occupied-return waits
+and ten-count missing-track retries. Countdown50 exchanges passengers before
+the consist shift, preserves forwarding, and books source-distance fare revenue
+before that move's operating expense. Mixed reversal and Inside-to-Outside
+retry use the same dispatcher. Save9/protocol7 and packs remain unchanged.
+See [Outside source bindings, traces and verification](../../doc/web-parity-fleet-outside.md).

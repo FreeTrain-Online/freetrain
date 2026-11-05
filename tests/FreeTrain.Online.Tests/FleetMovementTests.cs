@@ -170,11 +170,10 @@ public partial class FleetMovementTests
             Assert.Equal(Pose(e.GetProperty("car")),s.Fleet!.Train(t.Id).Head.State);AssertOccupancy(s);
             Assert.Equal(Int(e,"due"),Assert.Single(s.Clock.Capture().Pending).DueMinute);
             var bytes=SaveCodec.Write(s);Assert.Equal(bytes,SaveCodec.Write(Restore(bytes)));
-            // The next Outside callback has an explicit later-phase boundary,
-            // rather than silently running incomplete exchange/return behavior.
-            AdvanceTo(s,201);bytes=SaveCodec.Write(s);
-            Assert.Equal("unboundOutsideMovement",Assert.Throws<InvalidOperationException>(()=>s.AdvanceOneMinute()).Message);
-            Assert.Equal(bytes,SaveCodec.Write(s));count++;
+            var restored=Restore(bytes);AdvanceTo(s,202);AdvanceTo(restored,202);
+            Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(restored));
+            Assert.Equal(((FleetCarState.Outside)Pose(e.GetProperty("car"))) with {Countdown=99},s.Fleet!.Train(t.Id).Head.State);
+            Assert.Equal(2,s.Fleet.Train(t.Id).MoveCount);AssertOccupancy(s);count++;
         }
         Assert.Equal(8,count);
     }
@@ -442,7 +441,7 @@ public partial class FleetMovementTests
     }
 
     [Fact]
-    public async Task Unavailable_Outside_handler_rejects_step_and_pauses_run_without_faulting_the_host()
+    public async Task Outside_handler_steps_and_runs_through_host_without_unavailable_boundary()
     {
         var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json")),
             TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
@@ -454,12 +453,11 @@ public partial class FleetMovementTests
         AdvanceTo(s,130083);Assert.IsType<FleetCarState.Outside>(s.Fleet!.Train(20).Head.State);
         AdvanceTo(s,130084);var bytes=SaveCodec.Write(s);
         using var h=SessionComposition.CreateSavedHost(bytes);
-        var step=h.Enqueue(new("operator-1"),new("unavailable-step",h.WorldEpoch,new StepCommand()));h.Pump(0);
-        Assert.Equal("operationUnavailable",Assert.IsType<RejectedMessage>(await step).Code);
-        Assert.Equal(130084,h.Snapshot().Tick);Assert.True(h.Snapshot().Paused);
-        var unchanged=h.CaptureSave();h.Pump(0);Assert.Equal(bytes,await unchanged);
-        var run=h.Enqueue(new("operator-1"),new("unavailable-run",h.WorldEpoch,new RunCommand()));h.Pump(1);
-        Assert.IsType<AcceptedMessage>(await run);Assert.True(h.Snapshot().Paused);Assert.Equal(130084,h.Snapshot().Tick);
+        var step=h.Enqueue(new("operator-1"),new("outside-step",h.WorldEpoch,new StepCommand()));h.Pump(0);
+        Assert.IsType<AcceptedMessage>(await step);
+        Assert.Equal(130085,h.Snapshot().Tick);Assert.True(h.Snapshot().Paused);
+        var run=h.Enqueue(new("operator-1"),new("outside-run",h.WorldEpoch,new RunCommand()));h.Pump(1);
+        Assert.IsType<AcceptedMessage>(await run);Assert.False(h.Snapshot().Paused);Assert.Equal(130086,h.Snapshot().Tick);
         var save=h.CaptureSave();h.Pump(0);Assert.NotEmpty(await save);
     }
 }

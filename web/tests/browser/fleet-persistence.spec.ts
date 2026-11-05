@@ -4,6 +4,87 @@ import {ready,closePanel} from './browser-helpers.ts';
 const boot='/api/bootstrap?protocolVersion=7&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
+test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{
+ const input=process.env.FREETRAIN_OUTSIDE_FLEET_OUTPUT;
+ test.skip(!input,'Set FREETRAIN_OUTSIDE_FLEET_OUTPUT to the gameplay-built FleetOutsideTests save.');
+ const initial=await snapshot(page),save=JSON.parse(readFileSync(input!,'utf8'));
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
+ const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
+ const messages:any[][]=[[],[]],errors:string[]=[];
+ for(const [i,p] of [page,peer].entries()){
+  p.on('pageerror',error=>errors.push(String(error)));
+  await p.routeWebSocket('**/api/session?*',route=>{
+   const server=route.connectToServer();server.onMessage(message=>{messages[i].push(JSON.parse(String(message)));route.send(message);});
+   route.onMessage(message=>server.send(message));
+  });
+ }
+ const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
+ try{
+  await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
+  await page.locator('canvas').evaluate(el=>el.setAttribute('data-instance','outside-preserved'));
+  const ids=save.mixed.fleet.trains[0].cars.map((c:any)=>c.id);
+  // Captured inputs come from the continuously verified real trip. Outputs
+  // here are literal source-derived boundaries, independent of those captures.
+  for(const phase of [
+   {suffix:'',now:100,due:102,move:1,countdown:100,passengers:39,cash:'9878000'},
+   {suffix:'.50',now:200,due:202,move:51,countdown:50,passengers:100,cash:'8601200'},
+   {suffix:'.101',now:302,due:304,move:102,countdown:null,passengers:100,cash:'6911200'},
+   {suffix:'.charged',now:199,due:200,move:1,countdown:50,passengers:100,cash:'10057200'},
+  ]){
+   if(phase.suffix){
+    const current=await snapshot(page),data=readFileSync(input!+phase.suffix);
+    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data})).ok()).toBe(true);
+    for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
+   }
+   const before=await snapshot(page);
+   for(let now=phase.now+1;now<=phase.due;now++){
+    await page.getByRole('button',{name:'Step',exact:false}).first().click();
+    for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(now));
+    if(now<phase.due){const waiting=await snapshot(page);expect(waiting.mixed).toEqual(before.mixed);}
+   }
+   const current=await snapshot(page),train=current.mixed.fleet.trains[0];
+   expect(train.moveCount).toBe(phase.move);expect(train.passengers).toBe(phase.passengers);expect(train.forwarding).toBe(false);
+   expect(train.cars.map((c:any)=>c.id)).toEqual(ids);expect(current.cash).toBe(phase.cash);
+   expect(train.cars[0].state).toEqual(phase.countdown===null
+    ?{kind:'inside',location:{x:39,y:20,z:2},heading:6,countdown:null}
+    :{kind:'outside',location:{x:40,y:20,z:2},heading:2,countdown:phase.countdown});
+   expect(current.mixed.queue.pending).toHaveLength(1);expect(current.mixed.queue.pending[0].dueMinute).toBe(String(phase.due+2));
+   const inside=train.cars.filter((c:any)=>c.state.kind==='inside');
+   expect(current.mixed.voxels.filter((v:any)=>v.traffic?.car)).toHaveLength(inside.length);
+   for(const c of inside)expect(current.mixed.voxels.find((v:any)=>v.traffic?.car?.carId===c.id).position).toEqual(c.state.location);
+   if(phase.passengers===100){
+    expect(current.mixed.accounts.transactions.filter((a:any)=>(a.revenue??'0')!=='0')).toHaveLength(1);
+    expect(current.mixed.accounts.transactions.find((a:any)=>(a.revenue??'0')!=='0')).toMatchObject({absoluteMinute:phase.suffix==='.charged'?'200':'202',revenue:'187200'});
+    expect(train.boardingOrigin).toEqual({kind:'outside',location:{x:40,y:20,z:2},heading:2,countdown:51});
+    if(phase.suffix==='.charged'){
+     const [fare,cost]=current.mixed.accounts.transactions;
+     expect(current.mixed.accounts.transactions).toHaveLength(2);expect(cost.expenditure).toBe('130000');
+     expect(cost.worldRevision).toBe(fare.worldRevision);expect(cost.absoluteMinute).toBe(fare.absoluteMinute);
+    }
+   }
+   for(const i of [0,1])expect(latest(i).mixed).toEqual(current.mixed);
+   const saved=await(await page.request.get('/api/saves/download')).json();
+   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
+   for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
+   expect((await snapshot(peer)).mixed).toEqual(saved.mixed);
+  }
+  const saved=await(await page.request.get('/api/saves/download')).json();
+  await peer.reload();await ready(peer,'ja');
+  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+  await expect(page.locator('canvas')).toHaveAttribute('data-instance','outside-preserved');expect(errors).toEqual([]);
+  await worldServer.restart!();
+  for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
+  await page.reload();await ready(page);await peer.reload();await ready(peer,'ja');
+  for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(saved.mixed);
+  await page.getByRole('button',{name:'Step',exact:false}).first().click();
+  for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('201');
+  const current=await snapshot(page);expect(current.mixed.fleet.trains[0].moveCount).toBe(1);expect(current.cash).toBe('10057200');
+  await page.getByRole('button',{name:'Step',exact:false}).first().click();
+  for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('202');
+  expect((await snapshot(peer)).mixed).toEqual((await snapshot(page)).mixed);expect(errors).toEqual([]);
+ }finally{await context.close();}
+});
+
 test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers through reopen',async({page,browser,baseURL})=>{
  const input=process.env.FREETRAIN_TIMING_FLEET_OUTPUT;
  test.skip(!input,'Set FREETRAIN_TIMING_FLEET_OUTPUT to the gameplay-built FleetTimingTests save.');

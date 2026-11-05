@@ -102,9 +102,19 @@ public sealed class ConstructionAccounts
     }
 
     public ConstructionAccounts Book(ConstructionBooking booking, long worldRevision, GameTime time, string operation)
+        => Book(booking,worldRevision,time,operation,false);
+
+    // One atomic operation can earn a fare before spending its operating cost.
+    // Keep the two source calls ordered, including separate bankruptcy effects.
+    public ConstructionAccounts EarnAndBook(long revenue, ConstructionBooking booking, long worldRevision,
+        GameTime time, string operation)
+        => Earn(revenue,worldRevision,time,operation).Book(booking,worldRevision,time,operation,true);
+
+    private ConstructionAccounts Book(ConstructionBooking booking, long worldRevision, GameTime time, string operation,
+        bool allowSameRevision)
     {
         ArgumentNullException.ThrowIfNull(booking);
-        ValidateContext(worldRevision,time,operation,Transactions.IsEmpty ? null : Transactions[^1],allowSameRevision:false);
+        ValidateContext(worldRevision,time,operation,Transactions.IsEmpty ? null : Transactions[^1],allowSameRevision);
         if (booking.Charges.IsEmpty) return this;
         var entries = Transactions.ToBuilder(); var cash = Cash; var topUps = TopUps; var sequence = NextSequence;
         foreach (var charge in booking.Charges)

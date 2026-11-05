@@ -2,7 +2,8 @@
 
 P5-08 is complete at Inside simulation and live transport scope.
 [P5-12 now supplies shared reversal, placed-train controls and recovery evidence](web-parity-fleet-recovery.md);
-the later-step boundaries below describe the original P5-08 delivery.
+[P5-14 completes Outside countdown, exchange and return](web-parity-fleet-outside.md).
+The later-step boundaries below describe the original P5-08 delivery.
 [FleetMovement](../src/FreeTrain.Online.Simulation/FleetMovement.cs) is the default
 trusted dispatcher for new mixed sessions and Save9 restoration. Real registered,
 purchased/deployed stock runs on gameplay-built track; callers can still supply

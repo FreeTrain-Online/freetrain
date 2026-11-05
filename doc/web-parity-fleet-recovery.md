@@ -1,5 +1,9 @@
 # P5-12 reversal and emergency recovery — 5 November 2026
 
+Subsequent [P5-14 delivery](web-parity-fleet-outside.md) completes production
+Outside movement/exchange/return, including an Inside retry reaching an Outside
+head. The unavailable boundaries below describe the original P5-12 scope.
+
 P5-12 is complete at browser/portable reversal and Inside recovery scope.
 Owned, placed trains now offer an English/Japanese **Reverse train** preview and
 confirmation. Missing forward track reverses once and retries; a connected,

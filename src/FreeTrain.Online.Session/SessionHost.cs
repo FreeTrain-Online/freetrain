@@ -395,8 +395,7 @@ public sealed partial class SessionHost : IDisposable
             else referenceWorld!.AdvanceOneMinute();
             return true;
         }
-        catch (InvalidOperationException e) when (e.Message is "unboundOutsideMovement" or "unboundOutsideReversal" or
-            "unboundJunctionController" or "unboundHarborController")
+        catch (InvalidOperationException e) when (e.Message is "unboundJunctionController" or "unboundHarborController")
         {
             // A later-phase handler is unavailable. The detached minute has
             // already rolled back; keep the host responsive for withdrawal/load.

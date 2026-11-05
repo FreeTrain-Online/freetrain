@@ -20,8 +20,8 @@ public static class FleetMovement
     {
         var w=session.World;var fleet=w.Fleet ?? throw new InvalidOperationException("Fleet is not initialized.");
         var before=fleet.Train(trainId);
-        if (before.Head.State is not FleetCarState.Inside)
-            throw new InvalidOperationException("unboundOutsideMovement"); // P5-14 supplies countdown/exchange/return together
+        if (before.Head.State is FleetCarState.Outside)
+            return CompleteMove(session,before,Next(w,fleet,before));
         // Capture before any handler mutation/reversal. CompleteMove reads this
         // original train from the unchanged session, never the new head location.
         var stop=stopHandler(w,before);
@@ -40,11 +40,11 @@ public static class FleetMovement
             if (stop.Minutes==-1000) train=train with {Forwarding=true};
         }
         train=train with {StopCallCount=0};
-        var next=NextInside(w,fleet,train);
+        var next=Next(w,fleet,train);
         if (next==null)
         {
             train=FleetReversal.Reverse(w,train);
-            next=NextInside(w,fleet,train); // one retry; TRAIN-D001 handles both-null without dereferencing it
+            next=Next(w,fleet,train); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
         return CompleteMove(session,train,next);
     }
@@ -61,16 +61,27 @@ public static class FleetMovement
         return new(train,0);
     }
 
-    // Shared continuation after route/stop/exchange effects. P5-14 can supply an
-    // Outside countdown or return candidate without duplicating shifts/charges/
-    // timing. The caller is trusted domain code, like TrainCallback itself.
+    // Shared continuation after route/stop effects. Exchange uses the current
+    // head BEFORE the shift, and operating expense uses post-exchange passengers.
     public static TrainCallbackResult CompleteMove(MixedSessionState session,FleetTrain train,FleetCarState? next)
     {
         var w=session.World;var fleet=w.Fleet!;var before=fleet.Train(train.Id);
         train=train with {StopCallCount=0};
         var moved=next!=null && (next is not FleetCarState.Inside target || w.At(target.Location)!.Traffic!.Car==null);
+        int? revenue=null;
         if (moved)
         {
+            if(next is FleetCarState.Outside {Countdown:50})
+            {
+                var stock=fleet.Profile.Resolve(train.Definition);
+                if(train.BoardingOrigin is {} origin)
+                {
+                    var distance=origin.Location.DistanceTo(((FleetCarState.Placed)train.Head.State).Location);
+                    revenue=checked(train.Passengers*stock.Fare*distance*2);
+                }
+                train=train with {Passengers=train.Forwarding?0:Math.Min(100,stock.Create(train.Cars.Length).NormalCapacity),
+                    BoardingOrigin=train.Forwarding?null:(FleetCarState.Placed)train.Head.State};
+            }
             var cars=train.Cars.ToBuilder();FleetCarState state=next!;
             for (var n=0;n<cars.Count;n++)
             {
@@ -82,10 +93,10 @@ public static class FleetMovement
         var native=fleet.Profile.Resolve(train.Definition).MinutesPerVoxel;
         var delay=next is FleetCarState.Outside || before.Head.State is not FleetCarState.Inside prior
             ? native : LimitedDelay(w.SpeedLimits,prior.Location,native);
-        return new(Publish(session,before,train,moved),delay);
+        return new(Publish(session,before,train,moved,revenue),delay);
     }
 
-    private static MixedConstructionState Publish(MixedSessionState session,FleetTrain before,FleetTrain train,bool moved)
+    private static MixedConstructionState Publish(MixedSessionState session,FleetTrain before,FleetTrain train,bool moved,int? revenue=null)
     {
         // Reversal plus a shift still changes each stable car revision only once.
         train=FleetReversal.NormalizeCars(before,train);
@@ -96,24 +107,30 @@ public static class FleetMovement
             train=train with {Revision=checked(before.Revision+1)};
             var world=FleetOccupancy.ReplaceTrain(session.World,train);
             var accounts=candidate.Accounts;
+            var booking=ConstructionBooking.None;
             if (moved && (before.MoveCount&3)==0)
             {
                 // Preserve source Int32 arithmetic and post-handler passengers.
                 // An overflow rejects the whole detached minute.
                 var expense=checked((train.Cars.Length*20+train.Passengers/20)*2000);
-                accounts=accounts.Book(ConstructionBooking.Spend(expense),world.Revision,session.Clock.Time,"trainMove");
-                if (accounts.Transactions.Length>NormalRailwayConstruction.MaximumAccountTransactions)
-                    throw new ArgumentException("Account transaction capacity exceeded.");
+                booking=ConstructionBooking.Spend(expense);
             }
+            if(revenue is {} receipt)
+                accounts=accounts.EarnAndBook(receipt,booking,world.Revision,session.Clock.Time,"trainMove");
+            else if(!booking.Charges.IsEmpty)
+                accounts=accounts.Book(booking,world.Revision,session.Clock.Time,"trainMove");
+            if (accounts.Transactions.Length>NormalRailwayConstruction.MaximumAccountTransactions)
+                throw new ArgumentException("Account transaction capacity exceeded.");
             candidate=new(world,accounts);
         }
         return candidate;
     }
 
-    private static FleetCarState? NextInside(MixedWorld w,FleetGraph fleet,FleetTrain train)
+    private static FleetCarState? Next(MixedWorld w,FleetGraph fleet,FleetTrain train)
     {
-        if(train.Head.State is not FleetCarState.Inside)
-            throw new InvalidOperationException("unboundOutsideMovement"); // Outside callbacks/return remain P5-14
+        if(train.Head.State is FleetCarState.Outside outside)
+            return outside.Countdown!=0 ? outside with {Countdown=outside.Countdown-1} :
+                (FleetCarState?)FleetReversal.ReturnReference(w,outside) ?? outside with {Countdown=10};
         var state=(FleetCarState.Inside)train.Head.State;
         var rail=w.At(state.Location)!.Traffic!.Rail!;
         var go=FleetRailGuidance.GuideHead(w,fleet,train,rail,state.Heading);

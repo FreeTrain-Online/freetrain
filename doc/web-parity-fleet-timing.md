@@ -1,5 +1,9 @@
 # P5-13 movement timing and running costs — 5 November 2026
 
+Subsequent [P5-14 delivery](web-parity-fleet-outside.md) completes production
+Outside movement/exchange/return. The unavailable boundaries below describe the
+original P5-13 scope and verification.
+
 P5-13 is complete at portable timing/accounting scope. The real Inside dispatcher
 and the shared movement continuation use the original callback-entry head for
 speed restrictions, even after a rail handler or central reversal. Positive
