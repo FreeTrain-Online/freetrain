@@ -154,6 +154,24 @@ export type CommandPayload =
   | {
       kind: "setPlaybackRate";
       rate: PlaybackRate;
+    }
+  | {
+      kind: "manageFleetController";
+      action: "create" | "rename" | "copy" | "configure" | "delete";
+      controllerId: Counter;
+      expectedRevision: Counter;
+      name: string;
+      provider: ContentBinding | null;
+      harbors: [] | [FleetHarbor] | null;
+      location: Position | null;
+    }
+  | {
+      kind: "assignFleetController";
+      targetKind: "train" | "group";
+      targetId: Counter;
+      expectedRevision: Counter;
+      controllerId: Counter;
+      expectedControllerRevision: Counter;
     };
 
 export interface Join {
@@ -730,7 +748,8 @@ export interface Rejected {
     | "retryWindowFull"
     | "leaseRequired"
     | "controlBusy"
-    | "operationUnavailable";
+    | "operationUnavailable"
+    | "controllerReferenced";
   arguments: {
     [k: string]: string;
   };

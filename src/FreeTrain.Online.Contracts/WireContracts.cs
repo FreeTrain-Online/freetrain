@@ -147,6 +147,8 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
 [JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
 [JsonDerivedType(typeof(RenameFleetCommand), "renameFleet")]
+[JsonDerivedType(typeof(ManageFleetControllerCommand), "manageFleetController")]
+[JsonDerivedType(typeof(AssignFleetControllerCommand), "assignFleetController")]
 [JsonDerivedType(typeof(DeployFleetCommand), "deployFleet")]
 public abstract record CommandPayload;
 public sealed record FleetDeploymentQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
@@ -159,6 +161,10 @@ public sealed record FleetTradeQuery(long ExpectedWorldEpoch, long ExpectedRevis
 public sealed record FleetTradePreviewRead(FleetTradeQuery Query, long Price, long NormalCapacity, long SeatedCapacity, long PackedCapacity);
 public sealed record TradeFleetCommand(FleetTradeQuery Query, long ExpectedPrice) : CommandPayload;
 public sealed record RenameFleetCommand(long TrainId, long ExpectedRevision, string Name) : CommandPayload;
+public sealed record ManageFleetControllerCommand(string Action, long ControllerId, long ExpectedRevision,
+    string Name, ContentBindingRead? Provider, FleetHarborRead[]? Harbors, PositionRead? Location = null) : CommandPayload;
+public sealed record AssignFleetControllerCommand(string TargetKind, long TargetId, long ExpectedRevision,
+    long ControllerId, long ExpectedControllerRevision) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
 public sealed record RunCommand : CommandPayload;

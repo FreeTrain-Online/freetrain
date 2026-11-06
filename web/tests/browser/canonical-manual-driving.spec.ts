@@ -120,7 +120,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} canonical manual signal
     await steps(2);let current=await state(page);expect(current.mixed.fleet.trains[0].stopCallCount).toBe(1);
     // Hold a real pointer on the touch-sized control through authoritative callbacks.
     await controls.getByRole('button',{name:text.takeControl,exact:true}).click();
-    const depart=controls.getByRole('button',{name:text.manualDepart,exact:true});await depart.scrollIntoViewIfNeeded();
+    const depart=controls.getByRole('button',{name:text.manualDepart,exact:true});await expect(depart).toBeEnabled();await depart.scrollIntoViewIfNeeded();
     const box=(await depart.boundingBox())!;await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
     await expect(controls.getByTestId('fleet-manual-input')).toHaveText('ArrowUp');await steps(5);await page.mouse.up();
     current=await state(page);expect(current.mixed.fleet.trains[0].cars[0].state.location.x).toBe(23);

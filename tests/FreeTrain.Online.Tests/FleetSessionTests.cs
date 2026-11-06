@@ -24,6 +24,20 @@ public class FleetSessionTests
     {var t=h.Enqueue(who??new("owner"),new(Guid.NewGuid().ToString(),h.WorldEpoch,p));h.Pump(0);return await t;}
     static async Task<byte[]> Save(SessionHost h){var t=h.CaptureSave();h.Pump(0);return await t;}
 
+    [Fact]
+    public async Task Manager_can_create_before_any_purchase_without_stock_or_booking_and_failed_creation_keeps_terrain()
+    {
+        using var h=Host();var before=await Save(h);var snap=h.Snapshot();
+        var b=RollingStockCatalog.Bundled.FleetProfile.Providers.Single(p=>p.Kind==FleetControllerKind.Manual).Binding;
+        var command=new ManageFleetControllerCommand("create",0,0,"",new(b.PackId,b.Version,b.CatalogHash,b.ContributionId),null);
+        Assert.Equal("invalidInput",Assert.IsType<RejectedMessage>(await Send(h,command)).Code);Assert.Equal(before,await Save(h));Assert.Null(h.Snapshot().Mixed);
+        Assert.IsType<AcceptedMessage>(await Send(h,command with {Name="Before trains"}));
+        var after=h.Snapshot();Assert.Empty(after.Mixed!.Fleet!.Trains);Assert.Empty(after.Mixed.Accounts.Transactions);
+        Assert.Equal(snap.Tick,after.Tick);Assert.Equal(snap.Paused,after.Paused);Assert.Equal(3,after.Mixed.Fleet.Controllers.Length);
+        Assert.All(after.Mixed.Fleet.Controllers,c=>Assert.Equal(0,c.Revision));Assert.All(after.Mixed.Fleet.Groups,g=>Assert.Equal(0,g.Revision));
+        var bytes=await Save(h);using var restored=new SessionHost(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        Assert.Equal(bytes,await Save(restored));
+    }
     [Theory]
     [InlineData(false)][InlineData(true)]
     public async Task First_purchase_is_detached_atomic_and_publishes_only_revision_zero_new_members(bool mixed)

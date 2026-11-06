@@ -19,6 +19,8 @@
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import EmptyWorldControls from './EmptyWorldControls.svelte';
   import SaveControls from './SaveControls.svelte';
+  import FleetControllerManager from './FleetControllerManager.svelte';
+  import FleetControllerAssignment from './FleetControllerAssignment.svelte';
   import FleetManualControls from './FleetManualControls.svelte';
   import FleetControls from './FleetControls.svelte';
   import MapView from './MapView.svelte';
@@ -26,6 +28,7 @@
   import BuildingCatalog from './BuildingCatalog.svelte';
   import { speedLimitAt } from './lib/speed-limit-display.ts';
   import ObjectProvenance from './ObjectProvenance.svelte';
+  import {signalTypes} from './lib/building-catalog.ts';
   import type { CatalogCategory, SignalDirection } from './lib/building-catalog.ts';
   import SessionGate from './SessionGate.svelte';
   import type { Selection } from './lib/map-renderer.ts';
@@ -289,6 +292,7 @@
             <dl class="details"><div><dt>{text.trainCar}</dt><dd data-testid="train-car-id">{fleetCar.id}</dd></div></dl>
             {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetDeploymentControls bind:this={inspectorFleetControls} {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing} allowPlacement={false} onmap={()=>{}} onpreview={p=>{deploymentPreview=p;}}/>{/key}
             {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetManualControls {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen}/>{/key}
+            <FleetControllerAssignment {model} {view} targetId={fleetTrain.id} disabled={clockDisabled||synchronizing}/>
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>
@@ -306,6 +310,9 @@
             <ObjectProvenance id={railwayDefinition.contributionId} packId={railwayDefinition.packId} locale={view.locale}/>
             {#if railwayVoxel.traffic?.rail}<p>{text.railwayPattern}: {railwayVoxel.traffic.rail.pattern}</p>{/if}
             {#if railwayVoxel.traffic?.rail?.controllerId}<p>{text.controller}: {railwayVoxel.traffic.rail.controllerId}</p>{/if}
+            {#if railwayVoxel.traffic?.rail&&signalTypes.some(s=>s.id===railwayDefinition.contributionId)}
+              <FleetControllerManager {model} {view} location={railwayVoxel.position} disabled={clockDisabled||synchronizing}/>
+            {/if}
             {#if railwayVoxel.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel.supportedOwnerId}</p>{/if}
           {:else if mapSelection?.kind === 'terrain'}<p data-testid="terrain-surface">{text[({ground:'terrainGround',mountain:'terrainMountain',water:'terrainWater',underground:'terrainUnderground',terrace:'terrainTerrace',forest:'terrainForest',creek:'terrainCreek',cliff:'terrainCliff'} as const)[mapSelection.surface]]}</p><p>{text.terrainWorldHint}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}

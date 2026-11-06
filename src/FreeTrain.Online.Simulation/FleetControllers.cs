@@ -66,7 +66,7 @@ public static class FleetControllers
 {
     public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call, FleetManualInput input = default)
     {
-        if(call.Controller.Kind==FleetControllerKind.Simple) return FleetJunctionRoute.Straight;
+        if(call.Controller.Kind is FleetControllerKind.Simple or FleetControllerKind.Timetable) return FleetJunctionRoute.Straight;
         if(call.Controller.Kind!=FleetControllerKind.Manual) throw new InvalidOperationException("unboundJunctionController");
         if(input.Left && RailwayTopology.HasPort(call.Pattern,call.Incoming.Left)) return FleetJunctionRoute.Curve;
         if(input.Right && RailwayTopology.HasPort(call.Pattern,call.Incoming.Right)) return FleetJunctionRoute.Curve;
@@ -76,6 +76,18 @@ public static class FleetControllers
     public static FleetStopResult ManualStop(FleetTrain train, int callCount, FleetManualInput input = default)
         => new(train,callCount==0 ? input.Pass ? FleetStopDecision.Proceed : FleetStopDecision.Wait(5) :
             input.Depart ? FleetStopDecision.Proceed : input.Reverse ? FleetStopDecision.Reverse : FleetStopDecision.Wait(5));
+
+    // P5-18's named TAT instances can run safely with their existing basic
+    // location data. Junction settings/ordered rules remain P5-19/P5-20.
+    public static FleetStopResult TimetableStop(FleetTrain train, FleetHarborCall call, GameTime time)
+    {
+        var setting=(call.Controller.Harbors.IsDefault?[]:call.Controller.Harbors).SingleOrDefault(h=>h.Location==call.Harbor.Location);
+        if(setting?.Kind==FleetHarborKind.Pass)return new(train,FleetStopDecision.Proceed);
+        if(call.CallCount!=0)return new(train,setting?.Reverse==true?FleetStopDecision.Reverse:FleetStopDecision.Proceed);
+        var minutes=setting==null?10:setting.Kind==FleetHarborKind.Fixed?setting.Minutes:
+            (setting.Minutes-(int)(time.AbsoluteMinute%1440)+1439)%1440+1;
+        return new(train,FleetStopDecision.FromSourceMinutes(minutes));
+    }
 
     public static FleetStopResult SimpleStop(MixedWorld world, FleetTrain train, FleetHarborCall call)
     {
@@ -89,7 +101,7 @@ public static class FleetControllers
     // The passing train resolves its shared instance on every call. Delegates
     // remain runtime bindings; only the existing graph/configuration is saved.
     public static FleetStopResult AtHarbor(MixedWorld world, FleetTrain train, FleetHarborReference harbor,
-        FleetHarborHandler? handler = null, FleetManualInput input = default)
+        FleetHarborHandler? handler = null, FleetManualInput input = default, GameTime? time = null)
     {
         if(train.Head.State is not FleetCarState.Inside head || train.StopCallCount<0 ||
             harbor is not (FleetHarborReference.Signal {OwnerId: > 0, Revision: >= 0} or
@@ -98,10 +110,11 @@ public static class FleetControllers
         var controller=world.Fleet!.EffectiveController(train.Id);
         var call=new FleetHarborCall(controller,harbor,head.Location,train.StopCallCount);
         return handler!=null ? handler(world,train,call) : controller.Kind==FleetControllerKind.Manual
-            ? ManualStop(train,call.CallCount,input) : SimpleStop(world,train,call);
+            ? ManualStop(train,call.CallCount,input) : controller.Kind==FleetControllerKind.Timetable
+                ? TimetableStop(train,call,time ?? throw new ArgumentException("A timetable call requires the game time.")) : SimpleStop(world,train,call);
     }
 
-    public static FleetStopResult StopTime(MixedWorld world, FleetTrain train, FleetHarborHandler? handler = null, FleetManualInput input = default)
+    public static FleetStopResult StopTime(MixedWorld world, FleetTrain train, FleetHarborHandler? handler = null, FleetManualInput input = default, GameTime? time = null)
     {
         var head=(FleetCarState.Inside)train.Head.State;
         var voxel=world.At(head.Location)!;var rail=voxel.Traffic!.Rail!;
@@ -109,7 +122,7 @@ public static class FleetControllers
             SignalRailwayConstruction.DelegatesStopTime(rail.Direction,head.Heading))
         {
             var owner=world.Spatial.Entities.Single(e=>e.Id==voxel.OwnerId);
-            return AtHarbor(world,train,new FleetHarborReference.Signal(head.Location,owner.Id,owner.Revision),handler,input);
+            return AtHarbor(world,train,new FleetHarborReference.Signal(head.Location,owner.Id,owner.Revision),handler,input,time);
         }
         return new(train,FleetStopDecision.Proceed);
     }

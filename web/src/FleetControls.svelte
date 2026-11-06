@@ -1,4 +1,6 @@
 <script lang="ts">
+  import FleetControllerManager from './FleetControllerManager.svelte';
+  import FleetControllerAssignment from './FleetControllerAssignment.svelte';
   import FleetManualControls from './FleetManualControls.svelte';
   import FleetDeploymentControls from './FleetDeploymentControls.svelte';
   import {onDestroy,tick} from 'svelte';
@@ -13,7 +15,7 @@
     picked?:import('./generated/contracts.ts').Position;onmap:(active:boolean)=>void;onpreview:(p:import('./generated/contracts.ts').FleetDeploymentPreview|undefined)=>void;
     ondraft:(dirty:boolean,canApply:boolean,draft:string)=>void;requestNavigation:(action:()=>void)=>void}=$props();
   const text=$derived(messages[view.locale]), read=$derived(view.read!);
-  let tab=$state<'purchase'|'owned'>('purchase'),company=$state(''),type=$state(''),search=$state(''),stockId=$state(stocks[0].id);
+  let tab=$state<'purchase'|'owned'|'controllers'>('purchase'),company=$state(''),type=$state(''),search=$state(''),stockId=$state(stocks[0].id);
   let length=$state(1),quantity=$state(1),trainId=$state(''),draft=$state(''),draftRevision=$state(''),dirty=$state(false),composing=$state(false);
   let quote=$state<FleetTradePreview>(),loading=$state(false),failed=$state(false),submitting=$state(false);
   let deploymentControls=$state<FleetDeploymentControls>();
@@ -76,8 +78,11 @@
   <div class="form-actions fleet-tabs" role="group" aria-label={text.fleet}>
     <button aria-pressed={tab==='purchase'} disabled={loading||submitting} onclick={()=>requestNavigation(()=>{cancel();tab='purchase';})}>{text.stockPurchase}</button>
     <button aria-pressed={tab==='owned'} disabled={loading||submitting} onclick={()=>{if(tab!=='owned')requestNavigation(()=>{cancel();trainId=trains[0]?.id??'';dirty=false;failed=false;tab='owned';});}}>{text.ownedStock} ({fmt(trains.length)})</button>
+    <button aria-pressed={tab==='controllers'} disabled={loading||submitting} onclick={()=>requestNavigation(()=>{cancel();tab='controllers';})}>{text.controllerManager}</button>
   </div>
-  {#if tab==='purchase'}
+  {#if tab==='controllers'}
+    <FleetControllerManager {model} {view} {disabled}/>
+  {:else if tab==='purchase'}
     <div class="fleet-layout">
       <div class="fleet-sidebar">
         <div class="fleet-filters">
@@ -135,6 +140,7 @@
             {#if conflict}<p role="status">{text.stockRenameConflict}</p>{:else if dirty&&!validName}<p role="status">{text.stockRenameInvalid}</p>{/if}
             <div class="form-actions"><button class:primary={dirty} type="submit" disabled={disabled||!dirty||conflict||!validName||composing}>{text.stockRename}</button><button type="button" disabled={submitting} onclick={()=>{dirty=false;composing=false;}}>{text.resetDraft}</button></div>
           </form>
+          <FleetControllerAssignment {model} {view} targetId={train.id} disabled={disabled||dirty||loading||!!quote}/>
           {#if train.state!=='unplaced'}{#key `${read.worldEpoch}/${train.id}`}<FleetManualControls {model} {view} trainId={train.id} disabled={disabled||dirty||loading||!!quote}/>{/key}{/if}
           <p>{text.stockModel}: {ownedStock?stockText(ownedStock,'name',view.locale):text.stockUnavailable}</p>
           {#key `${read.worldEpoch}/${train.id}`}<FleetDeploymentControls bind:this={deploymentControls} {model} {view} trainId={train.id} disabled={disabled||dirty||loading} {picked} {onmap} {onpreview}/>{/key}

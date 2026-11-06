@@ -919,6 +919,113 @@
             "kind",
             "rate"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "manageFleetController"
+            },
+            "action": {
+              "enum": [
+                "create",
+                "rename",
+                "copy",
+                "configure",
+                "delete"
+              ]
+            },
+            "controllerId": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "provider": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ContentBinding"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "harbors": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "maxItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/FleetHarbor"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "location": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Position"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "action",
+            "controllerId",
+            "expectedRevision",
+            "name",
+            "provider",
+            "harbors",
+            "location"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "assignFleetController"
+            },
+            "targetKind": {
+              "enum": [
+                "train",
+                "group"
+              ]
+            },
+            "targetId": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "controllerId": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedControllerRevision": {
+              "$ref": "#/$defs/Counter"
+            }
+          },
+          "required": [
+            "kind",
+            "targetKind",
+            "targetId",
+            "expectedRevision",
+            "controllerId",
+            "expectedControllerRevision"
+          ]
         }
       ]
     },
@@ -1005,7 +1112,8 @@
             "retryWindowFull",
             "leaseRequired",
             "controlBusy",
-            "operationUnavailable"
+            "operationUnavailable",
+            "controllerReferenced"
           ]
         },
         "arguments": {

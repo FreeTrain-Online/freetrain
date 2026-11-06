@@ -9,7 +9,7 @@ public static class FleetMovement
     // Called on the detached minute successor. Never mutates the caller's world,
     // queue or random bank. MixedSessionState installs the result and one timer.
     public static TrainCallbackResult Tick(MixedSessionState session,long trainId)
-        => Tick(session,trainId,(world,train)=>FleetControllers.StopTime(world,train,input:session.ManualInput(trainId)),session.ManualInput(trainId));
+        => Tick(session,trainId,(world,train)=>FleetControllers.StopTime(world,train,input:session.ManualInput(trainId),time:session.Clock.Time),session.ManualInput(trainId));
 
     public static TrainCallbackResult Tick(MixedSessionState session,long trainId,FleetStopHandler stopHandler,FleetManualInput input = default)
     {
