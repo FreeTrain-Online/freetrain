@@ -4,7 +4,7 @@ P5-20 delivers ordered Location-keyed stop and junction rules through the shared
 controller manager, including masks, add/edit/copy/reorder/remove, confirmed
 clear-all, shared updates and saved continuation. MAN-T08/W09/A12, DEV-P20 and
 the rule/mask portions of SCN-009 are covered at browser/portable scope. TURNING
-geometry remains P5-21, rule-file import/export P5-23 and Station/passenger
+geometry is delivered by [P5-21](web-parity-fleet-turning.md); rule-file import/export remains P5-23 and Station/passenger
 gameplay P6. No advanced-rule enable flag is introduced.
 
 ## Source/forms and translation contract
@@ -50,8 +50,8 @@ Arrival considers only matching Pass/Stop rules, in order; otherwise it waits10.
 Later calls ignore Pass and consider the departure actions or Stop, in order.
 No applicable rule, or Stop, waits `10 - currentMinute % 10`; an exact boundary
 waits10, never0. No `TimeMask.nextMatch` implementation or approximation is used.
-TURNING actions are explicitly unavailable in the browser and rejected as inert
-rule tags until P5-21; they are never aliased to ordinary reversal. Portable
+P5-21 now exposes TURNING actions with their handler-side geometry; they are
+never aliased to ordinary reversal. Portable
 `reverseforwarding` is the explicit saved/wire tag for source `rforwarding`.
 
 EN/JA labels retain the pinned forms' month/day/weekday/hour/minute, Pass/Stop/

@@ -114,3 +114,9 @@ Up-before-Down and valid-left-before-right. Input is supplied only to the detach
 minute being executed and is absent from frozen/durable state. Neutral manual
 trains take straight choices and continue waiting at harbors without a driver.
 [Multiplayer adaptation, source audit and evidence](../../doc/web-parity-fleet-manual.md).
+
+P5-21 adds `FleetTurning.CheckTurn` and advanced TAT `reverse2`/`rforwarding2`.
+Source-ordered handler reversal/re-placement precedes central sentinel handling,
+with stable car IDs, captured-old-head timing and no train timer re-registration.
+Invalid re-placement rejects the complete detached callback.
+[Source, verification and P6 passenger/bell companions](../../doc/web-parity-fleet-turning.md).

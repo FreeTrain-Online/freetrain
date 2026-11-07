@@ -54,8 +54,11 @@ Deno.test('advanced rule masks enforce source editor bounds and preserve day ind
  assert.equal(validFleetRule(rule,false),true);assert.equal(rule.day,23);
  assert.equal(sameRuleMask(rule,{...rule,action:'stop'}),true);
  assert.equal(sameRuleMask(rule,{...rule,day:4}),false);
- for(const change of [{month:0},{day:0},{day:32},{hour:24},{dayOfWeek:7},{minutes:1},{minutes:60},{action:'reverse2'},{action:'straight'}])
+ for(const change of [{month:0},{day:0},{day:32},{hour:24},{dayOfWeek:7},{minutes:1},{minutes:60},{action:'unknown'},{action:'straight'}])
   assert.equal(validFleetRule({...rule,...change} as any,false),false);
+ for(const action of ['reverse2','rforwarding2'] as const){
+  assert.equal(validFleetRule({...rule,action},false),true);assert.equal(validFleetRule({...blankFleetRule(true),action},true),false);
+ }
  assert.equal(validFleetRule(blankFleetRule(true),true),true);
  assert.equal(validFleetRule({...blankFleetRule(true),minutes:0},true),false);
 });
@@ -63,8 +66,9 @@ Deno.test('advanced edits carry one bounded rule with exact revisions and cannot
  const payload={kind:'editFleetRule',controllerId:'9007199254740997',expectedRevision:'5',location:{x:22,y:20,z:2},settingKind:'harbor',
   operation:'add',index:-1,offset:0,rule:blankFleetRule(false),expectedGeometryRevision:null};
  const command={type:'command',requestId:'rule',expectedWorldEpoch:'1',payload};
+ for(const action of ['reverse2','rforwarding2'])assert.equal(validWireShape({...command,payload:{...payload,rule:{...payload.rule,action}}}),true);
  assert.equal(validWireShape(command),true);assert.ok(JSON.stringify(command).length<1024);
- for(const change of [{operation:'enable'},{index:1024},{offset:2},{controllerId:9007199254740996},{rule:{...payload.rule,enabled:true}},{rule:{...payload.rule,action:'reverse2'}}])
+ for(const change of [{operation:'enable'},{index:1024},{offset:2},{controllerId:9007199254740996},{rule:{...payload.rule,enabled:true}},{rule:{...payload.rule,action:'unknown'}}])
   assert.equal(validWireShape({...command,payload:{...payload,...change}}),false);
  const basic={kind:'manageFleetController',action:'configure',controllerId:'9',expectedRevision:'2',name:'',provider:null,location:payload.location,
   harbors:[{location:payload.location,kind:'advanced',minutes:0,reverse:false}],junctions:null,expectedGeometryRevision:null};

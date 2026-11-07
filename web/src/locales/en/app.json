@@ -819,7 +819,9 @@
   "ruleReverseForwarding": "Reverse and forward",
   "ruleHarborHelp": "Rules run from top to bottom. Arrival checks Pass and Stop, otherwise waits 10 minutes. Later calls check departure actions or Stop, otherwise wait for the next ten-minute boundary. All specified mask fields must match.",
   "ruleJunctionHelp": "The first matching rule chooses the route. If none matches, use the default route. Minutes are always Any (*).",
-  "ruleTurningLater": "Turning reverse and turning forwarding are not yet available.",
+  "ruleTurningReverse": "Turning reverse",
+  "ruleTurningForwarding": "Turning forwarding",
+  "ruleTurningHelp": "Turning reorders cars on supported straight track before departure. Other poses keep the source reversal behavior; a single diagonal car also enables forwarding.",
   "ruleSaveSettingFirst": "Apply the location setting before editing its rules.",
   "ruleHarborColumns": "Month / Day / Weekday / Hour / Minute",
   "ruleJunctionColumns": "Month / Day / Weekday / Hour"

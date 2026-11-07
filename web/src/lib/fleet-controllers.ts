@@ -23,5 +23,5 @@ export function validFleetRule(r:FleetRule,junction:boolean):boolean {
  return [r.month,r.day,r.dayOfWeek,r.hour,r.minutes].every(Number.isInteger)&&
   (r.month===-1||r.month>=1&&r.month<=12)&&(r.day===-1||r.day>=1&&r.day<=31)&&r.dayOfWeek>=-1&&r.dayOfWeek<=6&&r.hour>=-1&&r.hour<=23&&
   (junction?r.minutes===-1&&['straight','curve'].includes(r.action):
-   (r.minutes===-1||r.minutes>=0&&r.minutes<=50&&r.minutes%10===0)&&['pass','stop','go','reverse','forwarding','reverseforwarding'].includes(r.action));
+   (r.minutes===-1||r.minutes>=0&&r.minutes<=50&&r.minutes%10===0)&&['pass','stop','go','reverse','forwarding','reverseforwarding','reverse2','rforwarding2'].includes(r.action));
 }

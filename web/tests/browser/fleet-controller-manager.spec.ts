@@ -275,3 +275,50 @@ for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules 
  await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
  expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id).harbors).toEqual(reopened.harbors);expect(errors).toEqual([]);
 });
+
+for(const locale of ['en','ja'] as const)test(`${locale} TURNING actions edit, depart with exact car identities and survive checkpoint restart`,async({page,worldServer})=>{
+ test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ const initial=await state(page),input=readFileSync('../tmp/p5-21-turning-fleet.json');
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
+ await page.goto('/');await ready(page);
+ if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
+ const baseline=await state(page),source=baseline.mixed.fleet.controllers.find((c:any)=>c.name==='Shared TAT'),train=baseline.mixed.fleet.trains[0];
+ const controls=await manager(page,text,locale);await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(source.id);
+ async function openRules(){
+  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();
+  await page.getByRole('dialog',{name:text.controllerConfigure,exact:true}).getByRole('button',{name:text.controllerRules,exact:true}).click();
+  return page.getByRole('dialog',{name:text.controllerRules,exact:true});
+ }
+ let dialog=await openRules();await dialog.getByLabel(text.controllerRules,{exact:true}).selectOption('0');
+ await dialog.getByRole('button',{name:text.ruleEdit,exact:true}).click();
+ const action=dialog.getByLabel(text.ruleAction,{exact:true});await expect(action).toHaveValue('reverse2');
+ await expect(action.locator('option[value="reverse2"]')).toHaveText(text.ruleTurningReverse);
+ await expect(action.locator('option[value="rforwarding2"]')).toHaveText(text.ruleTurningForwarding);
+ await action.selectOption('rforwarding2');
+ await action.scrollIntoViewIfNeeded();
+ mkdirSync(evidence+'/turning',{recursive:true});await page.screenshot({path:evidence+`/turning/${locale}-editor.png`});
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
+ expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===source.id).harbors[0].rules[0].action).toBe('reverse2');
+ await dialog.getByRole('button',{name:text.ruleEdit,exact:true}).click();await action.selectOption(locale==='en'?'reverse2':'rforwarding2');
+ await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog.getByRole('button',{name:text.controllerApply,exact:true})).toHaveCount(0);
+ await dialog.getByRole('button',{name:text.close,exact:true}).click();await closePanel(page);
+ const bytes=await(await page.request.get('/api/saves/download')).body();
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+(await state(page)).worldEpoch,{data:bytes})).ok()).toBe(true);
+ await page.goto('/');await ready(page,locale);
+ const canvas=page.locator('canvas.world-canvas');
+ for(let n=0;n<10;n++){
+  await expect(page.locator('button.step')).toBeEnabled();
+  const before=await state(page);await canvas.focus();await canvas.press('n');
+  await expect.poll(async()=>Number((await state(page)).tick)).toBe(Number(before.tick)+1);
+ }
+ const current=await state(page),after=current.mixed.fleet.trains.find((t:any)=>t.id===train.id);
+ expect(after.cars.map((c:any)=>c.id)).toEqual(train.cars.map((c:any)=>c.id));
+ expect(after.cars.map((c:any)=>c.state.location.x)).toEqual([17,18,19]);
+ expect(after.cars.map((c:any)=>c.state.heading)).toEqual([6,6,6]);
+ expect(after.isReversed).toBe(false);expect(after.forwarding).toBe(locale==='ja');expect(after.moveCount).toBe(1);expect(after.stopCallCount).toBe(0);
+ expect(current.mixed.queue.pending.filter((a:any)=>a.handlerId==='train/'+train.id)).toHaveLength(1);
+ expect(current.mixed.queue.pending.find((a:any)=>a.handlerId==='train/'+train.id).dueMinute).toBe('214');
+ await page.screenshot({path:evidence+`/turning/${locale}-departed.png`});
+ await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ expect((await state(page)).mixed.fleet.trains.find((t:any)=>t.id===train.id)).toEqual(after);expect(errors).toEqual([]);
+});

@@ -229,7 +229,7 @@ public partial class FleetMovementTests
             case "minute":rules[0]!["minutes"]=1;break;
             case "month":rules[0]!["month"]=0;break;
             case "day":rules[0]!["day"]=32;break;
-            case "action":rules[0]!["action"]="reverse2";break;
+            case "action":rules[0]!["action"]="unknown";break;
             case "null":rules[0]=null;break;
             case "capacity":while(rules.Count<=1024)rules.Add(rules[0]!.DeepClone());break;
             case "basic":setting["kind"]="fixed";break;

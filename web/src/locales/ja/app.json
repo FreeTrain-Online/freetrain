@@ -819,7 +819,9 @@
   "ruleReverseForwarding": "折返回送",
   "ruleHarborHelp": "ルールは上から順に実行します。初回は通過・停車を判定し、該当しなければ10分停車します。以後は発車動作・停車を判定し、該当しなければ次の10分刻みまで待ちます。指定した項目はすべて一致する必要があります。",
   "ruleJunctionHelp": "最初に一致したルールで進路を選びます。一致しなければ通常の進路を使います。分は常に指定なし (*) です。",
-  "ruleTurningLater": "反転折返・反転回送は今後対応予定です。",
+  "ruleTurningReverse": "反転折返",
+  "ruleTurningForwarding": "反転回送",
+  "ruleTurningHelp": "対応する直線上では、発車前に車両を再配置します。その他の配置では原作の折返動作を保持します。斜めの線路上の1両編成は回送にもなります。",
   "ruleSaveSettingFirst": "場所の設定を適用してからルールを編集してください。",
   "ruleHarborColumns": "月 / 日 / 曜日 / 時 / 分",
   "ruleJunctionColumns": "月 / 日 / 曜日 / 時"

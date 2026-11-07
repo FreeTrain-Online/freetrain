@@ -50,7 +50,11 @@ public static class FleetMovement
     {
         var w=session.World;var fleet=w.Fleet!;var before=fleet.Train(train.Id);
         train=train with {StopCallCount=0};
-        var moved=next!=null && (next is not FleetCarState.Inside target || w.At(target.Location)!.Traffic!.Car==null);
+        // A handler may have re-placed cars. Check its current slots, plus other
+        // trains in the source world, rather than the old slots it vacated.
+        var moved=next!=null && (next is not FleetCarState.Inside target ||
+            !train.Cars.Any(c=>c.State is FleetCarState.Inside i && i.Location==target.Location) &&
+            (w.At(target.Location)!.Traffic!.Car is not {} occupant || occupant.TrainId==train.Id));
         int? revenue=null;
         if (moved)
         {

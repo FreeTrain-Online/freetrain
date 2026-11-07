@@ -86,10 +86,11 @@ public static class FleetControllers
             input.Depart ? FleetStopDecision.Proceed : input.Reverse ? FleetStopDecision.Reverse : FleetStopDecision.Wait(5));
 
     // Source StationHandler: an absent setting uses Fixed10 without reversal.
-    public static FleetStopResult TimetableStop(FleetTrain train, FleetHarborCall call, GameTime time)
+    public static FleetStopResult TimetableStop(FleetTrain train, FleetHarborCall call, GameTime time, MixedWorld? world=null, FleetManualInput input=default)
     {
         var setting=(call.Controller.Harbors.IsDefault?[]:call.Controller.Harbors).SingleOrDefault(h=>h.Location==call.Harbor.Location);
-        if(setting?.Kind==FleetHarborKind.Advanced)return new(train,FleetTimetable.Stop(setting.Rules,call.CallCount,time));
+        if(setting?.Kind==FleetHarborKind.Advanced)return world==null ? new(train,FleetTimetable.Stop(setting.Rules,call.CallCount,time)) :
+            FleetTimetable.Stop(world,train,setting.Rules,call.CallCount,time,input);
         if(setting?.Kind==FleetHarborKind.Pass)return new(train,FleetStopDecision.Proceed);
         if(call.CallCount!=0)return new(train,setting?.Reverse==true?FleetStopDecision.Reverse:FleetStopDecision.Proceed);
         var minutes=setting==null?10:setting.Kind==FleetHarborKind.Fixed?setting.Minutes:
@@ -119,7 +120,7 @@ public static class FleetControllers
         var call=new FleetHarborCall(controller,harbor,head.Location,train.StopCallCount);
         return handler!=null ? handler(world,train,call) : controller.Kind==FleetControllerKind.Manual
             ? ManualStop(train,call.CallCount,input) : controller.Kind==FleetControllerKind.Timetable
-                ? TimetableStop(train,call,time ?? throw new ArgumentException("A timetable call requires the game time.")) : SimpleStop(world,train,call);
+                ? TimetableStop(train,call,time ?? throw new ArgumentException("A timetable call requires the game time."),world,input) : SimpleStop(world,train,call);
     }
 
     public static FleetStopResult StopTime(MixedWorld world, FleetTrain train, FleetHarborHandler? handler = null, FleetManualInput input = default, GameTime? time = null)

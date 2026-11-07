@@ -20,8 +20,8 @@
  const valid=$derived(!!draft&&!duplicate&&(!draft.rule||validFleetRule(draft.rule,junction)));
  const fields=['month','day','dayOfWeek','hour','minutes'] as const;
  const fieldKeys={month:'ruleMonth',day:'ruleDay',dayOfWeek:'ruleWeekday',hour:'ruleHour',minutes:'ruleMinute'} as const;
- const ruleActions=$derived(junction?['straight','curve'] as const:['pass','stop','go','reverse','forwarding','reverseforwarding'] as const);
- const actionKeys={straight:'controllerStraight',curve:'controllerCurve',pass:'controllerPass',stop:'ruleStop',go:'ruleGo',reverse:'ruleReverse',forwarding:'ruleForwarding',reverseforwarding:'ruleReverseForwarding'} as const;
+ const ruleActions=$derived(junction?['straight','curve'] as const:['pass','stop','go','reverse','forwarding','reverseforwarding','reverse2','rforwarding2'] as const);
+ const actionKeys={straight:'controllerStraight',curve:'controllerCurve',pass:'controllerPass',stop:'ruleStop',go:'ruleGo',reverse:'ruleReverse',forwarding:'ruleForwarding',reverseforwarding:'ruleReverseForwarding',reverse2:'ruleTurningReverse',rforwarding2:'ruleTurningForwarding'} as const;
  const numbers=(field:typeof fields[number])=>field==='month'?Array.from({length:12},(_,n)=>n+1):field==='day'?Array.from({length:31},(_,n)=>n+1):field==='dayOfWeek'?Array.from({length:7},(_,n)=>n):field==='hour'?Array.from({length:24},(_,n)=>n):[0,10,20,30,40,50];
  const weekdays=$derived(locales[view.locale].formats.weekdays);
  const show=(r:FleetRule)=>fields.filter(f=>!junction||f!=='minutes').map(f=>r[f]===-1?'*':f==='dayOfWeek'?weekdays[r[f]]:String(r[f]).padStart(2,'0')).join(' / ')+' · '+text[actionKeys[r.action]];
@@ -73,7 +73,7 @@
    <label class="field">{text.ruleAction}<select aria-label={text.ruleAction} bind:value={draft.rule.action} disabled={blocked}>
     {#each ruleActions as action}<option value={action}>{text[actionKeys[action]]}</option>{/each}
    </select></label>
-   {#if !junction}<p class="hint">{text.ruleTurningLater}</p>{/if}
+   {#if !junction}<p class="hint">{text.ruleTurningHelp}</p>{/if}
   {:else if draft.operation==='clear'}<p role="alert">{text.ruleClearHelp}</p>
   {:else}<p>{draft.index+1}. {rules[draft.index]?show(rules[draft.index]):''}{draft.operation==='move'?' → '+(draft.index+draft.offset+1):''}</p>{/if}
   {#if duplicate}<p role="alert">{text.ruleDuplicate}</p>{/if}

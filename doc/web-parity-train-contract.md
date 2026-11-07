@@ -217,8 +217,8 @@ source-review shorthand about sorted display. Do not restore a sorter or invent
 an enabled-rule flag from that shorthand.
 
 [P5-20 runtime/editor evidence](web-parity-advanced-tat.md) delivers these ordered
-rules with bounded per-operation commands. TURNING actions remain P5-21 and
-validated file append remains P5-23.
+rules with bounded per-operation commands. [P5-21 TURNING](web-parity-fleet-turning.md)
+now supplies handler-side compositions; validated file append remains P5-23.
 
 **TRAIN-D005:** both station and junction editors mistakenly put `rule.month`
 into the nonwildcard day control. Restore `rule.day`; an unchanged edit must

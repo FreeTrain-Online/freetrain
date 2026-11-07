@@ -4,9 +4,7 @@ using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
 
-// TURNING actions reverse2/rforwarding2 require P5-21's handler-side geometry.
-// They are deliberately not admitted as aliases for ordinary reversal.
-public enum FleetRuleAction { Pass, Stop, Go, Reverse, Forwarding, ReverseForwarding, Straight, Curve }
+public enum FleetRuleAction { Pass, Stop, Go, Reverse, Forwarding, ReverseForwarding, Straight, Curve, Reverse2, RForwarding2 }
 public sealed record FleetTimetableRule(int Month, int Day, int DayOfWeek, int Hour, int Minutes, FleetRuleAction Action)
 {
     public bool Matches(GameTime time) => (Month==-1 || Month==time.Month) && (Day==-1 || Day==time.DayOfMonth) &&
@@ -31,7 +29,7 @@ public static class FleetTimetable
         r.DayOfWeek is >=-1 and <=6 && r.Hour is >=-1 and <=23 &&
         (junction ? r.Minutes==-1 && r.Action is FleetRuleAction.Straight or FleetRuleAction.Curve :
             (r.Minutes==-1 || r.Minutes is >=0 and <=50 && r.Minutes%10==0) &&
-            r.Action is FleetRuleAction.Pass or FleetRuleAction.Stop or FleetRuleAction.Go or FleetRuleAction.Reverse or FleetRuleAction.Forwarding or FleetRuleAction.ReverseForwarding);
+            r.Action is FleetRuleAction.Pass or FleetRuleAction.Stop or FleetRuleAction.Go or FleetRuleAction.Reverse or FleetRuleAction.Forwarding or FleetRuleAction.ReverseForwarding or FleetRuleAction.Reverse2 or FleetRuleAction.RForwarding2);
     public static bool ValidRules(ImmutableArray<FleetTimetableRule> rules,bool junction) =>
         rules.IsDefault || rules.Length<=MaximumLocationRules && rules.All(r=>ValidRule(r,junction));
 
@@ -56,22 +54,34 @@ public static class FleetTimetable
         return result;
     }
 
-    public static FleetStopDecision Stop(ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
+    private static FleetRuleAction Select(ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
     {
         foreach(var rule in rules.IsDefault?[]:rules)
         {
             if(!rule.Matches(time))continue;
             if(callCount==0) {
-                if(rule.Action==FleetRuleAction.Pass)return FleetStopDecision.Proceed;
-                if(rule.Action==FleetRuleAction.Stop)return FleetStopDecision.Wait(10);
-            } else switch(rule.Action) {
-                case FleetRuleAction.Go:return FleetStopDecision.Proceed;
-                case FleetRuleAction.Reverse:return FleetStopDecision.Reverse;
-                case FleetRuleAction.Forwarding:return FleetStopDecision.Forwarding;
-                case FleetRuleAction.ReverseForwarding:return FleetStopDecision.ReverseForwarding;
-                case FleetRuleAction.Stop:return FleetStopDecision.Wait(10-time.Minute%10);
-            }
+                if(rule.Action is FleetRuleAction.Pass or FleetRuleAction.Stop)return rule.Action;
+            } else if(rule.Action!=FleetRuleAction.Pass)return rule.Action;
         }
-        return FleetStopDecision.Wait(callCount==0?10:10-time.Minute%10);
+        return FleetRuleAction.Stop;
+    }
+
+    private static FleetStopDecision Decision(FleetRuleAction action,int callCount,GameTime time) => action switch {
+        FleetRuleAction.Pass or FleetRuleAction.Go => FleetStopDecision.Proceed,
+        FleetRuleAction.Reverse => FleetStopDecision.Reverse,
+        FleetRuleAction.Forwarding => FleetStopDecision.Forwarding,
+        FleetRuleAction.ReverseForwarding => FleetStopDecision.ReverseForwarding,
+        FleetRuleAction.Stop => FleetStopDecision.Wait(callCount==0?10:10-time.Minute%10),
+        _ => throw new ArgumentException("Turning requires the train and world.")
+    };
+    public static FleetStopDecision Stop(ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
+        => Decision(Select(rules,callCount,time),callCount,time);
+
+    public static FleetStopResult Stop(MixedWorld world,FleetTrain train,ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time,FleetManualInput input=default)
+    {
+        var action=Select(rules,callCount,time);
+        return action is FleetRuleAction.Reverse2 or FleetRuleAction.RForwarding2
+            ? FleetTurning.CheckTurn(world,train,action==FleetRuleAction.Reverse2?-1:-1000,input,time)
+            : new(train,Decision(action,callCount,time));
     }
 }

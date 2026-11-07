@@ -648,7 +648,17 @@ export interface FleetRule {
   dayOfWeek: number;
   hour: number;
   minutes: -1 | 0 | 10 | 20 | 30 | 40 | 50;
-  action: "pass" | "stop" | "go" | "reverse" | "forwarding" | "reverseforwarding" | "straight" | "curve";
+  action:
+    | "pass"
+    | "stop"
+    | "go"
+    | "reverse"
+    | "forwarding"
+    | "reverseforwarding"
+    | "reverse2"
+    | "rforwarding2"
+    | "straight"
+    | "curve";
 }
 export interface FleetJunction {
   location: Position;
