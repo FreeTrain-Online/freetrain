@@ -95,6 +95,17 @@ export const registry = {
   'zoom-out': action('zoomOut', 'map', 'live'),
   'reset-camera': action('homeMap', 'map', 'live'),
   'find-train': action('findTrain', 'inspector', 'live'),
+  'train-selection': field('trainSelect', 'view', 'local'),
+  'train-move': action('trainMove', 'view', 'local'),
+  'train-follow': action('trainFollow', 'view', 'local'),
+  'train-labels': {kind:'switch',labelKey:'trainNamesVisible',icon:'switch',destination:'view',availability:'local'},
+  'train-label-font': field('trainNameFont','view','local'),
+  'train-label-size': field('trainNameSize','view','local'),
+  'train-label-color': field('trainNameColor','view','local'),
+  'train-color-template': field('trainColorTemplate','settings','local'),
+  'train-color-copy': action('trainColorCopy','settings','local'),
+  'train-color-export': action('trainColorExport','settings','local'),
+  'train-color-apply': action('trainColorApply','settings','mutation'),
   sound: { kind: 'switch', labelKey: 'enableSound', icon: 'switch', destination: 'settings', availability: 'local' },
   language: field('language', 'settings', 'local'), // Same control also belongs in every session gate.
   'color-scheme': field('colorScheme', 'settings', 'local'), // Also available before joining.

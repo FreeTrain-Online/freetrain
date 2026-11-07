@@ -303,3 +303,7 @@ export async function trainSlopePixels(catalog:RenderCatalog,variant:Variant) {
  }
  return {png:gallery.toDataURL(),frames,carPixels};
 }
+
+// P5-25: browser-only exports for independent palette/crop/mask verification.
+export {TrainColorCatalog,defaultTrainColors,colorTestCarId} from '../../src/lib/train-colors.ts';
+export {RecipeImageCache,instantiate} from '../../src/lib/content-recipes.ts';

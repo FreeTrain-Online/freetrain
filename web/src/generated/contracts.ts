@@ -208,6 +208,11 @@ export type CommandPayload =
       name: string;
       parentId: Counter | null;
       expectedParentRevision: Counter | null;
+    }
+  | {
+      kind: "configureFleetColor";
+      expectedRevision: Counter;
+      configuration: FleetColorTest;
     };
 
 export interface Join {
@@ -534,6 +539,7 @@ export interface Fleet {
    * @maxItems 256
    */
   controllers: [FleetController, FleetController, ...FleetController[]];
+  colorTest?: FleetColorTest;
 }
 export interface FleetTrain {
   id: EntityId;
@@ -670,6 +676,14 @@ export interface FleetJunction {
    * @maxItems 1024
    */
   rules?: FleetRule[];
+}
+export interface FleetColorTest {
+  revision: Counter;
+  template: Definition;
+  body: string;
+  line1: string;
+  line2: string;
+  line3: string;
 }
 export interface MixedQueue {
   nextOrder: Counter;

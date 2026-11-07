@@ -19,6 +19,7 @@ function pose(s:FleetPose):boolean {
 }
 export function validFleet(read:Snapshot):boolean {
  const m=read.mixed!,f=m.fleet,q=m.queue;if(!f)return q===undefined;
+ if(f.colorTest && (BigInt(f.colorTest.revision)<1n || !profile.colorTemplates.some(t=>equal(t,f.colorTest!.template)) || ![f.colorTest.body,f.colorTest.line1,f.colorTest.line2,f.colorTest.line3].every(c=>c.length===7&&/^#[0-9a-f]{6}$/.test(c))))return false;
  if(!q||f.trains.reduce((n,t)=>n+t.cars.length,0)>1024)return false;
  const spatial=new Set(read.entities!.map(e=>e.id)),ids=new Set<string>();
  for(const row of [...f.trains,...f.trains.flatMap(t=>t.cars),...f.groups,...f.controllers]){
@@ -92,6 +93,7 @@ export function validFleet(read:Snapshot):boolean {
 export function validFleetSuccessor(before:ReadFleet|undefined,after:Fleet|undefined,firstNewId:string):boolean {
  if(!before)return !after||[...after.trains,...after.trains.flatMap(t=>t.cars),...after.groups,...after.controllers].every(r=>BigInt(r.id)>=BigInt(firstNewId)&&r.revision==='0');
  if(!after||before.rootGroupId!==after.rootGroupId)return false;
+ if(before.colorTest && (!after.colorTest || BigInt(after.colorTest.revision)<BigInt(before.colorTest.revision) || after.colorTest.revision===before.colorTest.revision&&!equal(after.colorTest,before.colorTest)))return false;
  const members=(f:ReadFleet)=>[...f.trains.map(t=>({...t,memberType:'train'})),...f.trains.flatMap(t=>t.cars.map(c=>({...c,owner:t.id,memberType:'car'}))),...f.groups.map(g=>({...g,memberType:'group'})),...f.controllers.map(c=>({...c,memberType:'controller'}))];
  const old=new Map(members(before).map(r=>[r.id,r])),now=new Map(members(after).map(r=>[r.id,r]));
  for(const g of before.groups)if(!now.has(g.id))return false;

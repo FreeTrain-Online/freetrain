@@ -46,17 +46,23 @@ public sealed record FleetTrain(long Id, long Revision, string Name, ContentBind
 
 // Content supplies explicitly registered stock/providers. No reflection, XML
 // activation, P4 fixture-car promotion or process-global mutable definitions.
+public sealed record FleetColorTest(long Revision, DefinitionReference Template, string Body, string Line1, string Line2, string Line3);
+
 public sealed class FleetProfile
 {
+    public ImmutableArray<DefinitionReference> ColorTemplates { get; }
     public ImmutableArray<TerrainPack> Packs { get; }
     public ImmutableArray<StockTrain> Trains { get; }
     public ImmutableArray<FleetControllerProvider> Providers { get; }
     private readonly FrozenDictionary<ContentBinding, StockTrain> trains;
     public FleetProfile(IEnumerable<TerrainPack> packs, IEnumerable<StockTrain> trains,
-        IEnumerable<FleetControllerProvider>? providers = null)
+        IEnumerable<FleetControllerProvider>? providers = null, IEnumerable<DefinitionReference>? colorTemplates = null)
     {
+        ColorTemplates=(colorTemplates??[]).Take(129).ToImmutableArray();
+        if(ColorTemplates.Length>128 || ColorTemplates.Distinct().Count()!=ColorTemplates.Length)throw new ArgumentException("Invalid color templates.");
         Packs = packs.Take(257).ToImmutableArray(); Trains = trains.Take(4097).ToImmutableArray();
         Providers = (providers ?? []).Take(129).ToImmutableArray();
+        if(ColorTemplates.Any(t=>t==null || !Packs.Any(p=>p.Id==t.PackId) || string.IsNullOrWhiteSpace(t.ContributionId) || string.IsNullOrWhiteSpace(t.RecipeId)))throw new ArgumentException("Unavailable color template pack/reference.");
         if (Packs.Length is < 1 or > 256 || Packs.Any(p => p == null) || Packs.Select(p => p.Id).Distinct().Count() != Packs.Length ||
             Trains.Length > 4096 || Trains.Any(t => t == null || !Matches(t.Binding)) ||
             Trains.Select(t => t.Binding).Distinct().Count() != Trains.Length || Providers.Length > 128 ||
@@ -77,6 +83,7 @@ public sealed class FleetGraph
 {
     public const int MaximumGroups = 256;
     public const int MaximumControllers = 256;
+    public FleetColorTest? ColorTest { get; }
     public FleetProfile Profile { get; }
     public long RootGroupId { get; }
     public ImmutableArray<FleetTrain> Trains { get; }
@@ -91,8 +98,13 @@ public sealed class FleetGraph
         .Concat(Trains.SelectMany(t => t.Cars).Select(c => (c.Id, c.Revision)))
         .Concat(Groups.Select(g => (g.Id, g.Revision))).Concat(Controllers.Select(c => (c.Id, c.Revision)));
     public FleetGraph(FleetProfile profile, long rootGroupId, IEnumerable<FleetTrain> trains,
-        IEnumerable<FleetGroup> groups, IEnumerable<FleetController> controllers)
+        IEnumerable<FleetGroup> groups, IEnumerable<FleetController> controllers, FleetColorTest? colorTest = null)
     {
+        ArgumentNullException.ThrowIfNull(profile);
+        ColorTest=colorTest;
+        if(colorTest!=null && (colorTest.Revision<1 || !profile.ColorTemplates.Contains(colorTest.Template) ||
+            new[]{colorTest.Body,colorTest.Line1,colorTest.Line2,colorTest.Line3}.Any(c=>c is not {Length:7} || !System.Text.RegularExpressions.Regex.IsMatch(c,"^#[0-9a-f]{6}$"))))
+            throw new ArgumentException("Invalid world-local color-test override.");
         Profile = profile ?? throw new ArgumentNullException(nameof(profile)); RootGroupId = rootGroupId;
         Trains = trains.Take(StockAdmission.MaximumFleetTrains + 1).ToImmutableArray();
         Groups = groups.Take(MaximumGroups + 1).ToImmutableArray();
@@ -218,6 +230,9 @@ public sealed class FleetGraph
     internal void ValidateSuccessor(FleetGraph previous, long firstNewId)
     {
         if (Profile != previous.Profile || RootGroupId != previous.RootGroupId) throw new ArgumentException("Changed fleet profile/root.");
+        if(previous.ColorTest is {} oldColor && (ColorTest==null || ColorTest.Revision<oldColor.Revision ||
+            (ColorTest.Revision==oldColor.Revision ? ColorTest!=oldColor : ColorTest.Revision!=checked(oldColor.Revision+1))) ||
+            previous.ColorTest==null && ColorTest is {Revision: not 1})throw new ArgumentException("Invalid color override revision.");
         var old = previous.Members().ToDictionary(m => m.Id);
         foreach (var m in Members())
         {

@@ -33,6 +33,8 @@ public static class FleetWire
         { Kind: "outside", Location: {} p, Heading: >= 0 and < 8, Countdown: >= 0 and <= 100 } => new FleetCarState.Outside(Position(p),new(s.Heading.Value),s.Countdown.Value),
         _ => throw new ArgumentException("Malformed fleet pose.")
     };
+    public static FleetColorTestRead Color(FleetColorTest c)=>new(c.Revision,new(c.Template.PackId,c.Template.ContributionId,c.Template.RecipeId),c.Body,c.Line1,c.Line2,c.Line3);
+    public static FleetColorTest Color(FleetColorTestRead c)=>new(c.Revision,new(c.Template.PackId,c.Template.ContributionId,c.Template.RecipeId),c.Body,c.Line1,c.Line2,c.Line3);
     public static FleetRead? Read(FleetGraph? f) => f == null ? null : new(f.RootGroupId,
         f.Trains.Select(t => new FleetTrainRead(t.Id,t.Revision,t.Name,Binding(t.Definition),t.GroupId,t.ControllerId,
             t.Cars.Select(c => new FleetCarRead(c.Id,c.Revision,c.OriginalIndex,
@@ -42,7 +44,7 @@ public static class FleetWire
         f.Groups.Select(g => new FleetGroupRead(g.Id,g.Revision,g.Name,g.ParentId,g.ControllerId,g.Members.ToArray())).ToArray(),
         f.Controllers.Select(c => new FleetControllerRead(c.Id,c.Revision,c.Name,Tag(c.Kind),c.Provider == null ? null : Binding(c.Provider),
             (c.Harbors.IsDefault ? [] : c.Harbors).Select(h => new FleetHarborRead(Position(h.Location),Tag(h.Kind),h.Minutes,h.Reverse,Rules(h.Rules))).ToArray(),
-            c.Junctions.IsDefaultOrEmpty ? null : c.Junctions.Select(j => new FleetJunctionRead(Position(j.Location),Tag(j.DefaultRoute),Rules(j.Rules))).ToArray())).ToArray());
+            c.Junctions.IsDefaultOrEmpty ? null : c.Junctions.Select(j => new FleetJunctionRead(Position(j.Location),Tag(j.DefaultRoute),Rules(j.Rules))).ToArray())).ToArray(),f.ColorTest==null?null:Color(f.ColorTest));
 
     public static FleetGraph? Restore(FleetRead? f, FleetProfile? profile)
     {
@@ -68,7 +70,7 @@ public static class FleetWire
             f.Controllers.Select(c => new FleetController(c.Id,c.Revision,c.Name,EnumValue<FleetControllerKind>(c.Kind),
                 c.Provider == null ? null : Binding(c.Provider),c.Harbors.Select(h => new FleetHarborSetting(Position(h.Location),
                     EnumValue<FleetHarborKind>(h.Kind),h.Minutes,h.Reverse,Rules(h.Rules))).ToImmutableArray(),
-                (c.Junctions ?? []).Select(j => new FleetJunctionSetting(Position(j.Location),EnumValue<FleetJunctionRoute>(j.DefaultRoute),Rules(j.Rules))).ToImmutableArray())));
+                (c.Junctions ?? []).Select(j => new FleetJunctionSetting(Position(j.Location),EnumValue<FleetJunctionRoute>(j.DefaultRoute),Rules(j.Rules))).ToImmutableArray())),f.ColorTest==null?null:Color(f.ColorTest));
     }
     public static MixedQueueRead Queue(ClockState clock) => new(clock.NextOrder,
         clock.Pending.Select(a => new MixedActionRead(a.Registration,a.Order,a.DueMinute,a.HandlerId,a.Interval)).ToArray());

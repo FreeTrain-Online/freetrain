@@ -72,7 +72,7 @@ public sealed partial class SessionHost
                 }
             }
             else return "invalidInput"; // Source groups have no deletion action.
-            return PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),nextId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers,f.ColorTest),nextId);
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
     }

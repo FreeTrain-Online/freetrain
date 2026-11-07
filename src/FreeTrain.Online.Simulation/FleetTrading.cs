@@ -82,7 +82,7 @@ public static class FleetTrading
         var trainIds=ids.MoveToImmutable();
         var groups=f.Groups.Select(g=>g.Id==f.RootGroupId
             ? g with {Revision=checked(g.Revision+1),Members=g.Members.AddRange(trainIds)} : g);
-        var graph=new FleetGraph(f.Profile,f.RootGroupId,trains,groups,f.Controllers);
+        var graph=new FleetGraph(f.Profile,f.RootGroupId,trains,groups,f.Controllers,f.ColorTest);
         var world=w.Replace(w.Revision,w.Terrain,new(next,w.Spatial.Entities),w.Voxels,w.Slopes,w.SpeedLimits,graph);
         var accounts=session.Construction.Accounts.Book(ConstructionBooking.Spend(quote.Price),world.Revision,session.Clock.Time,"trainPurchase");
         return Plan(session,world,accounts,trainIds,quote.Price,quote);
@@ -98,7 +98,7 @@ public static class FleetTrading
         var price=f.Profile.Resolve(train.Definition).ResaleValue(train.Cars.Length,train.PurchaseMinute,session.Clock.Time.AbsoluteMinute);
         var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Where(t=>t.Id!=trainId),
             f.Groups.Select(g=>g.Id==train.GroupId
-                ? g with {Revision=checked(g.Revision+1),Members=g.Members.Remove(trainId)} : g),f.Controllers);
+                ? g with {Revision=checked(g.Revision+1),Members=g.Members.Remove(trainId)} : g),f.Controllers,f.ColorTest);
         var voxels=w.Voxels.Select(v=>v.Traffic?.Car?.TrainId==trainId
             ? v with {Traffic=v.Traffic with {Car=null}} : v).ToImmutableArray();
         var changed=voxels.Where(v=>v!=w.At(v.Position)).Select(v=>v.OwnerId).ToHashSet();

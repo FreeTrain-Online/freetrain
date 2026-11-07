@@ -149,6 +149,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditFleetRuleCommand), "editFleetRule")]
 [JsonDerivedType(typeof(AssignFleetControllerCommand), "assignFleetController")]
 [JsonDerivedType(typeof(ManageFleetGroupCommand), "manageFleetGroup")]
+[JsonDerivedType(typeof(ConfigureFleetColorCommand), "configureFleetColor")]
 [JsonDerivedType(typeof(DeployFleetCommand), "deployFleet")]
 public abstract record CommandPayload;
 public sealed record FleetDeploymentQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
@@ -294,7 +295,10 @@ public sealed record FleetHarborRead(PositionRead Location, string Kind, int Min
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRuleRead[]? Rules = null);
 public sealed record FleetControllerRead(long Id, long Revision, string Name, string Kind, ContentBindingRead? Provider, FleetHarborRead[] Harbors,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetJunctionRead[]? Junctions = null);
-public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers);
+public sealed record ConfigureFleetColorCommand(long ExpectedRevision, FleetColorTestRead Configuration) : CommandPayload;
+public sealed record FleetColorTestRead(long Revision, DefinitionRead Template, string Body, string Line1, string Line2, string Line3);
+public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetColorTestRead? ColorTest = null);
 public sealed record MixedActionRead(long Registration, long Order, long DueMinute, string HandlerId, long Interval);
 public sealed record MixedQueueRead(long NextOrder, MixedActionRead[] Pending);
 

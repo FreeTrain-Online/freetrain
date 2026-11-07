@@ -12,7 +12,10 @@ export interface Recipe {
   fields: Record<string,unknown>; frames: Frame[]; status: string;
 }
 export interface Binding { image: Media; width: number; height: number; sourcePath: string }
+export const runtimeSurfaces=Symbol('runtimeSurfaces');
 export interface RenderCatalog {
+  [runtimeSurfaces]?:Map<string,SpriteImage>;
+  pictures?:{id:string;variants:{season:string;day:{image:Media;path:string};night:{image:Media;path:string}}[]}[];
   schemaVersion: number; packId: string; version: string;
   source: { revision: string };
   renderRecipes: Recipe[];
@@ -101,9 +104,9 @@ export class RecipeImageCache {
     await Promise.all(layers.map(async layer=>{
       const f=layer.frame; if(f.status==='invisible' || !f.masks?.[key]) return;
       await Promise.all([...new Set([f.surfaceSet!,f.baseSurfaceSet??f.surfaceSet!])].map(async id=>{
-        const binding=catalog.surfaceSets[id][key], loaded=await this.get(binding.image);
+        const binding=catalog.surfaceSets[id][key], loaded=catalog[runtimeSurfaces]?.get(`${id}/${key}`)??await this.get(binding.image);
         if(loaded.width!==binding.width || loaded.height!==binding.height) throw new Error('Bundled image extent mismatch');
-        images.set(binding.image.url,loaded);
+        images.set(id,loaded);
       }));
     }));
     return new ReadyScene(catalog,layers,variant,images);
@@ -168,7 +171,7 @@ export class ReadyScene {
   paintNormal(ctx:CanvasRenderingContext2D,view:View,l:Layer,pixelStable=false) {
     const f=l.frame,id=f.surfaceSet!;
     let image=this.normalImages.get(id);
-    if(!image){const binding=this.catalog.surfaceSets[id][variantKey(this.variant)];image=this.images.get(binding.image.url)?.image;if(!image)throw new Error('Scene assets not ready');this.normalImages.set(id,image);}
+    if(!image){const binding=this.catalog.surfaceSets[id][variantKey(this.variant)];image=this.images.get(id)?.image;if(!image)throw new Error('Scene assets not ready');this.normalImages.set(id,image);}
     const [x,y,z]=l.position,[ax,ay]=f.anchor!,[sx,sy,w,h]=f.rectangle!;
     const left=view.x+(16*(x+y)-ax)*view.zoom,top=view.y+(8*(y-x)-16*z-ay)*view.zoom;
     if(pixelStable&&typeof OffscreenCanvas!=='undefined') {
@@ -199,7 +202,7 @@ export class ReadyScene {
     for(const l of ordered) {
       const f=l.frame; if(!f.masks?.[key]) continue;
       const [sx,sy,w,h]=f.rectangle!,p=placement(l,view), binding=this.catalog.surfaceSets[effect.kind==='normal'?f.surfaceSet!:(f.baseSurfaceSet??f.surfaceSet!)][key];
-      const image=this.images.get(binding.image.url); if(!image) throw new Error('Scene assets not ready');
+      const image=this.images.get(effect.kind==='normal'?f.surfaceSet!:(f.baseSurfaceSet??f.surfaceSet!)); if(!image) throw new Error('Scene assets not ready');
       if(effect.kind==='normal') {
         ctx.drawImage(image.image,sx,sy,w,h,p.x,p.y,w*view.zoom,h*view.zoom);
       } else {

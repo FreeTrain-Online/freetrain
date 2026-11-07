@@ -1241,6 +1241,26 @@
             "parentId",
             "expectedParentRevision"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "configureFleetColor"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "configuration": {
+              "$ref": "#/$defs/FleetColorTest"
+            }
+          },
+          "required": [
+            "kind",
+            "expectedRevision",
+            "configuration"
+          ]
         }
       ]
     },
@@ -4177,6 +4197,9 @@
           },
           "minItems": 2,
           "maxItems": 256
+        },
+        "colorTest": {
+          "$ref": "#/$defs/FleetColorTest"
         }
       },
       "required": [
@@ -4689,6 +4712,50 @@
         "hour",
         "minutes",
         "action"
+      ]
+    },
+    "FleetColorTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "template": {
+          "$ref": "#/$defs/Definition"
+        },
+        "body": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line1": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line2": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line3": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        }
+      },
+      "required": [
+        "revision",
+        "template",
+        "body",
+        "line1",
+        "line2",
+        "line3"
       ]
     }
   }

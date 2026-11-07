@@ -13,6 +13,7 @@ Tests are grouped by the behavior they protect.
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
 | `multiplayer.spec.ts` | Shared state, authority, sign-out and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
+| `train-information.spec.ts` | Nested train information, local labels/framing/follow, Outside/reversal/withdrawal/sale lifecycle, seven color templates/pixel oracles, XML, retained drafts, shared apply, Observer peers and checkpoint reopen |
 | `fleet-controller-manager.spec.ts`, `fleet-groups.spec.ts` | Shared timetable controller/group editing, assignment, peer conflicts, durable reopen and absence of manual driving controls/packets |
 | `fleet-deployment.spec.ts` | Real EN/JA ramp purchase/deploy/run/inspect/withdraw/redeploy, map/keyboard footprint review, stale/cancel/replay, two peers, exact reopen and backend checkpoint restart; JA 390×844/200% text, late previews and Observer/draft guards |
 | `fleet-trading.spec.ts` | Real EN/JA purchase/rename/resale, exact quotes, stale/cancel/replay, two peers, Observer/unavailable states, draft/focus safety and 390×844/200% text |

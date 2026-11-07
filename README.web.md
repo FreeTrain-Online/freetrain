@@ -1,3 +1,12 @@
+**P5-25 train information and colors:** [Information, local tracking and color settings](doc/web-parity-train-information.md)
+add a nested train selector under **View**, actual state/capacity/passengers and
+shared controller details. **Move to train** frames once; **Follow train** follows
+the current head through movement, reversal and Outside return. Panning stops
+following; zoom preserves it. View also offers local train-name visibility, font,
+size and color. **Settings → Color-test train settings** previews seven templates
+by day/night and copies/exports `colorMap` XML. Confirmed Apply saves a shared
+world-local palette for all color-test trains; preview/export stays local.
+
 **P5-10 purchase and owned stock:** [Bilingual trading workflows](doc/web-parity-fleet-browser.md)
 now provide Game → Trains, source previews/search, authoritative purchase/sale
 quotes, owned inventory and revision-fenced names. Deployment controls remain P5-11.

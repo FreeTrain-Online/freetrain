@@ -528,6 +528,8 @@ public static class NetworkEndpoints
         ManageFleetGroupCommand group => group.Action is "create" or "rename" or "move" && group.TargetKind is "train" or "group" &&
             group.TargetId>=0 && group.ExpectedRevision>=0 && group.Name is {Length: <=256} &&
             (group.ParentId==null || group.ParentId>=0) && (group.ExpectedParentRevision==null || group.ExpectedParentRevision>=0),
+        ConfigureFleetColorCommand color => color.ExpectedRevision>=0 && color.Configuration is {} c && c.Template!=null &&
+            new[]{c.Body,c.Line1,c.Line2,c.Line3}.All(v=>v is {Length:7}),
         RenameFleetCommand rename => rename.TrainId > 0 && rename.ExpectedRevision >= 0 && rename.Name is {Length: <= 256},
         AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),
         ReleaseControlCommand release => !string.IsNullOrWhiteSpace(release.TrainId) && !string.IsNullOrWhiteSpace(release.LeaseId),

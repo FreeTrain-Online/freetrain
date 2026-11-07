@@ -100,7 +100,7 @@ internal static class FleetOccupancy
     internal static MixedWorld ReplaceTrain(MixedWorld w,FleetTrain train)
     {
         var f=w.Fleet!;
-        var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Select(t=>t.Id==train.Id?train:t),f.Groups,f.Controllers);
+        var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Select(t=>t.Id==train.Id?train:t),f.Groups,f.Controllers,f.ColorTest);
         var slots=train.Cars.Where(c=>c.State is FleetCarState.Inside).ToDictionary(c=>((FleetCarState.Inside)c.State).Location);
         var changed=new HashSet<long>();
         var voxels=w.Voxels.Select(v=>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import TrainInformation from './TrainInformation.svelte';
+  import {trainLocation,initialTrainLabels,persistTrainLabels} from './lib/train-information.ts';
   import { pickRailwayLocation } from './lib/railway-renderer.ts';
   import { createTerrainPainter, type PaintState, type PaintTarget } from './lib/terrain-painter.ts';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
@@ -28,8 +30,8 @@
   import RailToolIcon from './RailToolIcon.svelte';
   import TrainToolIcon from './TrainToolIcon.svelte';
   import PanelFrame from './PanelFrame.svelte';
-  let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog, onfleet }:
-    { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onfleet: (source: HTMLButtonElement) => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
+  let { followingTrainId=$bindable(),informationTrainId,oninformationselect, model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog, onfleet }:
+    {followingTrainId?:string;informationTrainId?:string;oninformationselect:(id:string)=>void; model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onfleet: (source: HTMLButtonElement) => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
   const text = $derived(messages[view.locale]);
   const liveScene = $derived((view.connection === 'ready' || view.connection === 'loading' && view.connectionStage === 'synchronizing') && !!view.read && !view.leaving && !view.signedOut);
   let canvas: HTMLCanvasElement;
@@ -41,6 +43,8 @@
   let width = 0, height = 0, dirty = true, lastDpr = 0;
   let level = $state(1), heightCut = $state(15);
   let shape = $state<Track['shape']>('buffer');
+  let trainLabels=$state(initialTrainLabels());
+  $effect(()=>persistTrainLabels(trainLabels));
   let drawPoles=$state(true);
   let drawSpeedLimits=$state(true);
   let night = $state(false), winter = $state(false), recolor = $state(false);
@@ -185,7 +189,7 @@
     if (drag) {
       if (Math.hypot(p.x - drag.x, p.y - drag.y) > 3) drag.moved = true;
       if (drag.moved) {
-        if (drag.pan) camera = { ...drag.camera, x: drag.camera.x - (p.x - drag.x) / camera.zoom, y: drag.camera.y - (p.y - drag.y) / camera.zoom };
+        if (drag.pan) {followingTrainId=undefined;camera = { ...drag.camera, x: drag.camera.x - (p.x - drag.x) / camera.zoom, y: drag.camera.y - (p.y - drag.y) / camera.zoom };}
         preview = undefined; dirty = true; return;
       }
     }
@@ -278,8 +282,7 @@
     camera = { ...space.center(location), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true;
   }
   export function focusTrain(id = selectedTrain?.id) {
-    const train = view.read?.trains.find(t => t.id === id);
-    const location=train?.position??view.read?.mixed?.fleet?.trains.find(t=>t.id===id)?.cars[0].state.location;
+    const location=trainLocation(view.read,id);
     if (location && id && live) {
       const position = renderer?.trainCenter(id)??space.center(location), center = visibleCenter();
       camera = { x: position.x - (center.x - width / 2) / camera.zoom, y: position.y - (center.y - height / 2) / camera.zoom, zoom: camera.zoom };
@@ -289,13 +292,14 @@
   $effect(() => {
     const read = view.read;
     if (liveScene && read) {
-      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; renderState='loading'; heightCut=read.map.levels-1;railLevel=Math.min(railLevel,read.map.levels-1);removeLevel=Math.min(removeLevel,read.map.levels-1);resetInteraction(); tool = 'inspect'; frameWorld(); }
+      if (epoch !== read.worldEpoch) { epoch = read.worldEpoch; followingTrainId=undefined; renderState='loading'; heightCut=read.map.levels-1;railLevel=Math.min(railLevel,read.map.levels-1);removeLevel=Math.min(removeLevel,read.map.levels-1);resetInteraction(); tool = 'inspect'; frameWorld(); }
       renderer?.setRead(read); dirty = true;
     } else {
-      renderer?.setRead(demoScene); resetInteraction(); tool = 'inspect';
+      followingTrainId=undefined;renderer?.setRead(demoScene); resetInteraction(); tool = 'inspect';
       renderState = renderState === 'failed' ? 'failed' : 'loading'; dirty = true;
     }
   });
+  $effect(()=>{if(followingTrainId&&!trainLocation(view.read,followingTrainId))followingTrainId=undefined;});
   $effect(() => { if (inputSuspended) suspendInput(); });
   $effect(() => { if (observer || !live) resetInteraction(); });
   $effect(() => {
@@ -303,7 +307,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); });
   $effect(() => { void heightCut;cancelGesture(); });
-  $effect(() => { void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+  $effect(() => { void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
@@ -333,12 +337,18 @@
       }
       lastDemoTick=animate?now:undefined;
       if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; dirty = true; }
+      if(followingTrainId&&live&&renderer&&trainLocation(view.read,followingTrainId)) {
+        const position=renderer.trainCenter(followingTrainId)??space.center(trainLocation(view.read,followingTrainId)!);
+        const center=visibleCenter(),x=position.x-(center.x-width/2)/camera.zoom,y=position.y-(center.y-height/2)/camera.zoom;
+        if(camera.x!==x||camera.y!==y){camera={...camera,x,y};dirty=true;}
+      }
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { trainLabels,smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
+          canvas.dataset.followingTrain=followingTrainId??'';canvas.dataset.cameraState=JSON.stringify(camera);
           // Terrain revisions keep the completed scene visible while preparing
           // its replacement. Initial reveal still waits for a complete image.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }
@@ -359,6 +369,7 @@
       if (!live || inputSuspended || (!event.deltaX && !event.deltaY)) return;
       event.preventDefault(); cancelGesture();
       if (classifyWheel(event, performance.now()) === 'pan') {
+        followingTrainId=undefined;
         camera = { ...camera, x: camera.x + event.deltaX / camera.zoom, y: camera.y + event.deltaY / camera.zoom };
       } else if (event.deltaY) {
         camera = zoomAt(camera, event.ctrlKey ? Math.exp(-event.deltaY * .01) : event.deltaY < 0 ? 1.15 : 1 / 1.15, point(event), width, height);
@@ -394,7 +405,12 @@
         <label><input type="checkbox" bind:checked={drawPoles}/>{text.showPoles}</label>
         <label><input type="checkbox" bind:checked={drawSpeedLimits}/>{text.showSpeedLimits}</label>
         <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
-        <button disabled={!selectedTrain} onclick={() => focusTrain()}>{text.findTrain}</button><button onclick={home}>{text.homeMap}</button>
+        <label><input type="checkbox" bind:checked={trainLabels.visible}/>{text.trainNamesVisible}</label>
+        <label class="field">{text.trainNameFont}<select aria-label={text.trainNameFont} bind:value={trainLabels.font}><option value="sans-serif">{text.fontSans}</option><option value="serif">{text.fontSerif}</option><option value="monospace">{text.fontMono}</option></select></label>
+        <label class="field">{text.trainNameSize}<input aria-label={text.trainNameSize} type="number" min="8" max="32" value={trainLabels.size} onchange={e=>{const n=Number(e.currentTarget.value);if(Number.isInteger(n)&&n>=8&&n<=32)trainLabels.size=n;else e.currentTarget.value=String(trainLabels.size);}}/></label>
+        <label class="field">{text.trainNameColor}<input aria-label={text.trainNameColor} type="color" bind:value={trainLabels.color}/></label>
+        <TrainInformation fleet={view.read?.mixed?.fleet} locale={view.locale} trainId={informationTrainId} onselect={oninformationselect} onmove={id=>{followingTrainId=undefined;focusTrain(id);}} following={followingTrainId} onfollow={id=>{followingTrainId=id;if(id)focusTrain(id);}}/>
+        <button onclick={()=>{followingTrainId=undefined;home();}}>{text.homeMap}</button>
       </div>
     </PanelFrame>
   {/if}

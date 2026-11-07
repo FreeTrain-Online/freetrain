@@ -1,4 +1,41 @@
 {
+  "colorTemplates": [
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-2"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-3"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-4"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-5"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-6"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7",
+      "recipeId": "{243D9F53-67FB-432E-B985-3B9B696D8CE0}-7"
+    }
+  ],
   "requiredPacks": [
     {
       "id": "exav-stable-bundled",

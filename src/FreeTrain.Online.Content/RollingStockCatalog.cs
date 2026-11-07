@@ -252,7 +252,7 @@ public sealed class RollingStockCatalog
         Trains = trainList.ToImmutableArray(); Cars = carMap.Values.ToImmutableArray(); Templates = templateList.ToImmutableArray();
         Diagnostics = diagnostics.Values.ToImmutableArray();
         trains = Trains.ToFrozenDictionary(t => t.Binding); cars = Cars.ToFrozenDictionary(c => c.Reference);
-        FleetProfile = new(Packs,Trains,controllerProviders);
+        FleetProfile = new(Packs,Trains,controllerProviders,Templates.Select(t=>t.Reference));
     }
 
     private static bool Invalid(Exception e) => e is ArgumentException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException;

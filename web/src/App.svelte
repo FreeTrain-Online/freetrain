@@ -1,5 +1,7 @@
 <script lang="ts">
   import { formatGameTime } from './lib/game-time.ts';
+  import TrainColorControls from './TrainColorControls.svelte';
+  import TrainInformation from './TrainInformation.svelte';
   import FleetDeploymentControls from './FleetDeploymentControls.svelte';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
@@ -44,6 +46,9 @@
   let view = $state.raw(model.state);
   let mapSelection = $state<Selection>();
   let map: MapView;
+  let colorDraft=$state<{configuration:import('./generated/contracts.ts').FleetColorTest;expectedRevision:string;epoch:string}>();
+  let informationTrainId=$state<string>(),followingTrainId=$state<string>();
+  function chooseInformationTrain(id:string){informationTrainId=id;}
   let panel = $state<Panel>(), menu = $state(false), tool = $state<Tool>('inspect');
   let catalogOpen = $state(false), catalogCategory = $state<CatalogCategory>('signal');
   let catalogLauncher: HTMLElement | undefined;
@@ -98,10 +103,11 @@
   $effect(() => { if (!live) { catalogOpen = false; panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
   $effect(() => {
     if (read) {
-      if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; }
+      if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; informationTrainId=undefined; followingTrainId=undefined; colorDraft=undefined; navigation = undefined; }
       previousEpoch = read.worldEpoch;
     }
   });
+  $effect(()=>{if(informationTrainId&&!read?.mixed?.fleet?.trains.some(t=>t.id===informationTrainId)&&!read?.trains.some(t=>t.id===informationTrainId))informationTrainId=undefined;});
   function syncMenuPosition() {
     const stage = document.querySelector<HTMLElement>('.map-stage');
     const stageRect = stage?.getBoundingClientRect();
@@ -138,6 +144,7 @@
       (selection?.kind!=='train'||!('carId' in selection)||mapSelection?.kind==='train'&&'carId' in mapSelection&&selection.carId===mapSelection.carId)) { if (selection) { panel = 'inspector'; menu = false; } return; }
     request(() => {
       mapSelection = selection;
+      if(selection?.kind==='train')informationTrainId=selection.id;
       if (selection?.kind === 'station') model.selectStation(selection.id);
       launcher = document.querySelector('canvas') ?? undefined;
       if (selection) { panel = 'inspector'; void tick().then(() => document.querySelector<HTMLElement>('.primary-panel h2')?.focus({ preventScroll: true })); }
@@ -252,7 +259,7 @@
     </div>
   {/if}
   <main class="map-stage" class:fleet-open={panel==='fleet'} class:fleet-picking={panel==='fleet'&&deploymentPicking} class:with-catalog={live && catalogOpen && !panel}>
-    <MapView deploymentPicking={deploymentPicking&&panel==='fleet'} {deploymentPreview} ondeploymentpick={p=>{deploymentPicked={...p};}} bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog} onfleet={source => openPanel('fleet', source)}/>
+    <MapView bind:followingTrainId deploymentPicking={deploymentPicking&&panel==='fleet'} {deploymentPreview} ondeploymentpick={p=>{deploymentPicked={...p};}} bind:this={map} {model} view={{ ...view, pending: view.pending || saveBusy || synchronizing }} {live} {panel} informationTrainId={informationTrainId} oninformationselect={chooseInformationTrain} inputSuspended={synchronizing || menu || !!navigation || creditsOpen || !!optionalCredits || licenseOpen} selection={mapSelection} ontool={requestTool} bind:tool bind:renderState onselect={select} onclose={closePanel} onclock={clock} oncatalog={showCatalog} onfleet={source => openPanel('fleet', source)}/>
     {#if live && menu}
       <button class="menu-dismiss" tabindex="-1" aria-label={text.closeMenu} onpointerdown={event => { event.preventDefault(); map.resetInteraction(); }} onclick={closeMenu}></button>
       <nav id="game-menu" class="game-menu" aria-label={text.game} use:toolbar={'vertical'} style:left={`${menuLeft}px`} style:top={`${menuTop}px`}>
@@ -278,6 +285,7 @@
         {#if panel === 'fleet'}
           <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
         {:else if panel === 'inspector'}
+          {#if fleetTrain}<TrainInformation selectable={false} fleet={read?.mixed?.fleet} locale={view.locale} trainId={fleetTrain.id} onselect={chooseInformationTrain} onmove={id=>{followingTrainId=undefined;map.focusTrain(id);}} following={followingTrainId} onfollow={id=>{followingTrainId=id;if(id)map.focusTrain(id);}}/>{/if}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}
             <h3>{train.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{train.cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{train.position.x}, {train.position.y}, {train.position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[train.state]}</dd></div></dl>
@@ -323,6 +331,7 @@
         {:else if panel === 'settings'}
           <SchemeSelect locale={view.locale} {scheme} onchange={value => { scheme = value; }}/>
           <LanguageSelect locale={view.locale} onchange={model.setLocale}/>
+          <TrainColorControls {model} {view} bind:draft={colorDraft}/>
           <BellControls locale={view.locale}/>
           <button onclick={async () => { if (soundEnabled) { audio.disable(); soundEnabled = false; } else { soundEnabled = await audio.enable(); soundFailed = !soundEnabled; } }}>{soundEnabled ? text.disableSound : text.enableSound}</button><p data-testid="sound-feedback">{soundFailed ? text.soundFailed : soundEnabled ? text.soundOn : text.soundOff}</p>
         {:else if panel === 'session'}

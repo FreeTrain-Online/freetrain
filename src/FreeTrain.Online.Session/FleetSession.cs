@@ -94,7 +94,7 @@ public sealed partial class SessionHost
             var name=command.Name.Trim();
             if(string.IsNullOrWhiteSpace(name)||name.Length>256||name.Any(char.IsControl))return "invalidInput";
             var graph=new FleetGraph(fleet.Profile,fleet.RootGroupId,fleet.Trains.Select(t=>t.Id==train.Id
-                ? t with {Name=name,Revision=checked(t.Revision+1)}:t),fleet.Groups,fleet.Controllers);
+                ? t with {Name=name,Revision=checked(t.Revision+1)}:t),fleet.Groups,fleet.Controllers,fleet.ColorTest);
             var w=state.World;var world=w.Replace(w.Revision,w.Terrain,w.Spatial.Capture(),w.Voxels,w.Slopes,w.SpeedLimits,graph);
             var after=state.Successor(state.Revision,new(world,state.Construction.Accounts),state.ConstructionMode);
             MixedWire.ValidateTransition(state,after);mixedState=after;return null;

@@ -94,7 +94,7 @@ const capacity=(id,seen=new Set())=>{
   return c.implementation.name==='freetrain.world.rail.cttrain.ColorTestTrainCar'?[0,0]:[Number(child(e,'capacity').text),Number(child(e,'seatedcapacity').text)];
 };
 const stockBinding=id=>({packId,version:catalog.version,catalogHash:terrain.requiredPacks[0].catalogHash,contributionId:id});
-const fleet={requiredPacks:terrain.requiredPacks,cars:carDefinitions.map(c=>({reference:definition(c.id),normal:capacity(c.id)[0],seated:capacity(c.id)[1]})),
+const fleet={colorTemplates:catalog.contributions.filter(c=>c.type==='colorMapTrainPicture').map(c=>definition(c.id)),requiredPacks:terrain.requiredPacks,cars:carDefinitions.map(c=>({reference:definition(c.id),normal:capacity(c.id)[0],seated:capacity(c.id)[1]})),
  trains:catalog.contributions.filter(c=>c.type==='train').map(c=>{
   const e=c.declaration,comp=child(e,'composition'),config=child(e,'config');
   let head=null,body=null,tail=null,patterns=[];

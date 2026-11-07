@@ -98,7 +98,7 @@ export class TerrainScene {
     if(read.mixed?.speedLimits)catalog=speedLimitCatalog(catalog);
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
-    const cacheIdentity=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,variant,heightCut]);
+    const cacheIdentity=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,variant,heightCut,read.mixed?.fleet?.colorTest]);
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{

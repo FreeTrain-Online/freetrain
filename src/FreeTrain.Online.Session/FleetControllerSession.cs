@@ -35,7 +35,7 @@ public sealed partial class SessionHost
                     Rules=append?FleetTimetable.Append(setting.Rules,command.RulesBase64!):FleetTimetable.Edit(setting.Rules,false,command.Operation,command.Index,command.Offset,rule)})};
             } else return "invalidInput";
             changed=changed with {Revision=checked(selected.Revision+1)};
-            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed)),state.World.Spatial.NextEntityId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed),f.ColorTest),state.World.Spatial.NextEntityId);
         } catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException or FormatException){return "invalidInput";}
     }
     // All controller edits enter the same FIFO/receipt/epoch boundary as train
@@ -139,7 +139,7 @@ public sealed partial class SessionHost
                     default:return "invalidInput";
                 }
             }
-            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,rows),nextId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,rows,f.ColorTest),nextId);
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
     }
@@ -164,7 +164,7 @@ public sealed partial class SessionHost
                 groups=groups.Replace(group,group with {ControllerId=controller.Id,Revision=checked(group.Revision+1)});
             }
             else return "invalidInput";
-            var error=PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),state.World.Spatial.NextEntityId);
+            var error=PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers,f.ColorTest),state.World.Spatial.NextEntityId);
             return error;
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
