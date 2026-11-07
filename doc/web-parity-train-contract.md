@@ -216,6 +216,10 @@ source's ListView sorter and comparer are commented out**, qualifying older
 source-review shorthand about sorted display. Do not restore a sorter or invent
 an enabled-rule flag from that shorthand.
 
+[P5-20 runtime/editor evidence](web-parity-advanced-tat.md) delivers these ordered
+rules with bounded per-operation commands. TURNING actions remain P5-21 and
+validated file append remains P5-23.
+
 **TRAIN-D005:** both station and junction editors mistakenly put `rule.month`
 into the nonwildcard day control. Restore `rule.day`; an unchanged edit must
 retain its mask. This corrects UI data integrity without changing mask matching.

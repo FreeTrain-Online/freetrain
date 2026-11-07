@@ -16,9 +16,9 @@ public abstract record FleetCarState
 public enum TrainOperationalState { Unplaced, Moving, StoppingAtStation, StoppingAtSignal, EmergencyStopping }
 public enum FleetControllerKind { Simple, Delegation, Manual, Timetable }
 public sealed record FleetControllerProvider(ContentBinding Binding, FleetControllerKind Kind);
-public enum FleetHarborKind { Pass, Fixed, Daily }
-public sealed record FleetJunctionSetting(Location Location, FleetJunctionRoute DefaultRoute);
-public sealed record FleetHarborSetting(Location Location, FleetHarborKind Kind, int Minutes, bool Reverse);
+public enum FleetHarborKind { Pass, Fixed, Daily, Advanced }
+public sealed record FleetJunctionSetting(Location Location, FleetJunctionRoute DefaultRoute, ImmutableArray<FleetTimetableRule> Rules = default);
+public sealed record FleetHarborSetting(Location Location, FleetHarborKind Kind, int Minutes, bool Reverse, ImmutableArray<FleetTimetableRule> Rules = default);
 // Id is shared assignment identity; Revision is the instance/configuration
 // revision. Location-keyed settings belong to this instance, never to a signal.
 public sealed record FleetController(long Id, long Revision, string Name, FleetControllerKind Kind, ContentBinding? Provider = null,
@@ -122,16 +122,20 @@ public sealed class FleetGraph
         {
             var junctions = c.Junctions.IsDefault ? [] : c.Junctions;
             if (junctions.Length > 8192 || c.Kind != FleetControllerKind.Timetable && junctions.Length != 0 ||
-                junctions.Any(j => j == null || !Enum.IsDefined(j.DefaultRoute)) ||
+                junctions.Any(j => j == null || !Enum.IsDefined(j.DefaultRoute) || !FleetTimetable.ValidRules(j.Rules,true)) ||
                 junctions.Select(j => j.Location).Distinct().Count() != junctions.Length)
                 throw new ArgumentException("Invalid location-keyed junction settings.");
             var harbors = c.Harbors.IsDefault ? [] : c.Harbors;
             if (harbors.Length > 8192 || c.Kind != FleetControllerKind.Timetable && harbors.Length != 0 ||
                 harbors.Any(h => h == null || !Enum.IsDefined(h.Kind) || h.Minutes < 0 ||
                     h.Kind == FleetHarborKind.Pass && (h.Minutes != 0 || h.Reverse) ||
+                    h.Kind == FleetHarborKind.Advanced && (h.Minutes != 0 || h.Reverse) ||
+                    !FleetTimetable.ValidRules(h.Rules,false) || h.Kind != FleetHarborKind.Advanced && !h.Rules.IsDefaultOrEmpty ||
                     h.Kind == FleetHarborKind.Daily && h.Minutes >= 1440) ||
                 harbors.Select(h => h.Location).Distinct().Count() != harbors.Length)
                 throw new ArgumentException("Invalid location-keyed harbor settings.");
+            if (junctions.Sum(j=>j.Rules.IsDefault?0:j.Rules.Length)+harbors.Sum(h=>h.Rules.IsDefault?0:h.Rules.Length)>FleetTimetable.MaximumControllerRules)
+                throw new ArgumentException("Timetable rule capacity exceeded.");
         }
         foreach (var g in Groups)
         {
@@ -230,7 +234,7 @@ public sealed class FleetGraph
                 ? train with { Cars = bt.Cars } == bt && train.Cars.SequenceEqual(bt.Cars) :
                 m.Value is FleetController fc && before.Value is FleetController bc
                 ? fc with { Harbors = bc.Harbors, Junctions = bc.Junctions } == bc &&
-                    (fc.Junctions.IsDefault ? [] : fc.Junctions).SequenceEqual(bc.Junctions.IsDefault ? [] : bc.Junctions) && (fc.Harbors.IsDefault ? [] : fc.Harbors).SequenceEqual(bc.Harbors.IsDefault ? [] : bc.Harbors) :
+                    FleetTimetable.EqualSettings(fc,bc) :
                 m.Value is FleetGroup group && before.Value is FleetGroup bg
                 ? group with { Members = bg.Members } == bg && group.Members.SequenceEqual(bg.Members) : Equals(m.Value, before.Value);
             if (m.Revision == before.Revision ? !equal : m.Revision != checked(before.Revision + 1))

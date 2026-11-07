@@ -1,4 +1,5 @@
 <script lang="ts">
+ import FleetRuleEditor from './FleetRuleEditor.svelte';
  import DecisionModal from './DecisionModal.svelte';
  import FleetControllerAssignment from './FleetControllerAssignment.svelte';
  import {messages} from './lib/localization.ts';
@@ -11,6 +12,11 @@
  const blocked=$derived(disabled||view.pending||view.connection!=='ready'||view.role==='observer');
  const instances=$derived(fleet?.controllers.filter(c=>c.provider!==null)??[]);
  let selectedId=$state(''),groupId=$state('');
+ let ruleTarget=$state<{controllerId:string;location:Position;settingKind:'harbor'|'junction';epoch:string}>();
+ function openRules(){
+  const target=setting??junction;if(!draft?.source||!target||changed)return;
+  ruleTarget={controllerId:draft.source.id,location:{...target.location},settingKind:configurationKind,epoch:draft.epoch};draft=undefined;
+ }
  const selected=$derived(instances.find(c=>c.id===selectedId));
  const usages=$derived(fleet&&selected?controllerUsages(fleet,selected.id):undefined);
  const group=$derived(fleet?.groups.find(g=>g.id===groupId)??fleet?.groups[0]);
@@ -33,8 +39,8 @@
   if(action!=='create'&&!selected)return;
   draft={action,source:action==='create'?undefined:selected,epoch:view.read!.worldEpoch,
    name:action==='copy'&&fleet&&selected?controllerCopyName(fleet,selected.id):action==='create'?'':selected!.name,
-   geometry:view.read!.mixed?.geometryRevision??'0',junctions:(selected?.junctions??[]).map(j=>({...j,location:{...j.location}})),
-   provider:profile.providers[0]?.binding.contributionId??'',harbors:(selected?.harbors??[]).map(h=>({...h,location:{...h.location}}))};
+   geometry:view.read!.mixed?.geometryRevision??'0',junctions:(selected?.junctions??[]).map(j=>({...j,location:{...j.location},rules:j.rules?.map(r=>({...r}))})),
+   provider:profile.providers[0]?.binding.contributionId??'',harbors:(selected?.harbors??[]).map(h=>({...h,location:{...h.location},rules:h.rules?.map(r=>({...r}))}))};
   configurationKind='harbor';composing=false;changed=false;index=0;x=location?.x??0;y=location?.y??0;z=location?.z??0;
   if(location&&draft){const found=draft.harbors.findIndex(h=>h.location.x===x&&h.location.y===y&&h.location.z===z);index=found;}
  }
@@ -61,9 +67,9 @@
    expectedRevision:current.source?.revision??'0',name:['create','rename'].includes(current.action)?current.name:'',
    provider:current.action==='create'?provider??null:null,
    location:current.action==='configure'?current.removedLocation??setting?.location??junction?.location??null:null,
-   junctions:current.action==='configure'&&configurationKind==='junction'?current.removedLocation?[]:junction?[junction]:[]:null,
+   junctions:current.action==='configure'&&configurationKind==='junction'?current.removedLocation?[]:junction?[{location:junction.location,defaultRoute:junction.defaultRoute}]:[]:null,
    expectedGeometryRevision:current.action==='cleanJunctions'||current.action==='configure'&&configurationKind==='junction'?current.geometry:null,
-   harbors:current.action==='configure'&&configurationKind==='harbor'?current.removedLocation?[]:setting?[setting]:[]:null});
+   harbors:current.action==='configure'&&configurationKind==='harbor'?current.removedLocation?[]:setting?[{location:setting.location,kind:setting.kind,minutes:setting.minutes,reverse:setting.reverse}]:[]:null});
   if(ok&&draft===current){draft=undefined;}
  }
 </script>
@@ -133,13 +139,18 @@
     <label class="field">{text.controllerDefaultRoute}<select aria-label={text.controllerDefaultRoute} bind:value={junction.defaultRoute} disabled={blocked} onchange={()=>{changed=true;}}>
      <option value="straight">{text.controllerStraight}</option><option value="curve">{text.controllerCurve}</option>
     </select></label>
+    <button disabled={changed} onclick={openRules}>{text.controllerRules}</button>
+    {#if changed}<p class="hint">{text.ruleSaveSettingFirst}</p>{/if}
     <button disabled={blocked} onclick={()=>{draft!.removedLocation={...junction.location};changed=true;index=-1;}}>{text.controllerRemoveLocation}</button>
    {/if}
    {#if setting}
-    <label class="field">{text.controllerStop}<select aria-label={text.controllerStop} value={setting.kind} disabled={blocked} onchange={event=>{changed=true;setting.kind=event.currentTarget.value as FleetHarbor['kind'];if(setting.kind==='pass'){setting.minutes=0;setting.reverse=false;}else {setting.minutes=setting.kind==='daily'?0:10;setting.reverse=false;}}}>
-     <option value="pass">{text.controllerPass}</option><option value="fixed">{text.controllerFixed}</option><option value="daily">{text.controllerDaily}</option>
+    <label class="field">{text.controllerStop}<select aria-label={text.controllerStop} value={setting.kind} disabled={blocked} onchange={event=>{changed=true;setting.kind=event.currentTarget.value as FleetHarbor['kind'];if(setting.kind==='pass'||setting.kind==='advanced'){setting.minutes=0;setting.reverse=false;}else {setting.minutes=setting.kind==='daily'?0:10;setting.reverse=false;}}}>
+     <option value="pass">{text.controllerPass}</option><option value="fixed">{text.controllerFixed}</option><option value="daily">{text.controllerDaily}</option><option value="advanced">{text.controllerAdvanced}</option>
     </select></label>
-    {#if setting.kind!=='pass'}
+    {#if setting.kind==='advanced'}
+     <button disabled={changed} onclick={openRules}>{text.controllerRules}</button>
+     {#if changed}<p class="hint">{text.ruleSaveSettingFirst}</p>{/if}
+    {:else if setting.kind!=='pass'}
      {#if setting.kind==='daily'}
       <div class="form-actions">
        <label class="field">{text.controllerDepartureHour}<input aria-label={text.controllerDepartureHour} type="number" min="0" max="23" step="1" value={Math.floor(setting.minutes/60)} disabled={blocked} oninput={event=>{changed=true;setting.minutes=Number(event.currentTarget.value)*60+setting.minutes%60;}}/></label>
@@ -163,6 +174,7 @@
   {/snippet}
  </DecisionModal>
 {/if}
+{#if ruleTarget}<FleetRuleEditor {model} {view} {disabled} {...ruleTarget} onclose={()=>{ruleTarget=undefined;}}/>{/if}
 <style>
  .fleet-controller-manager{min-width:0;}
  .form-actions input[type="number"]{width:5.5rem;}

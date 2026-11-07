@@ -64,11 +64,16 @@ public delegate FleetStopResult FleetHarborHandler(MixedWorld world, FleetTrain 
 
 public static class FleetControllers
 {
-    public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call, FleetManualInput input = default)
+    public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call, FleetManualInput input = default, GameTime? time = null)
     {
-        if(call.Controller.Kind==FleetControllerKind.Timetable)
-            return (call.Controller.Junctions.IsDefault?[]:call.Controller.Junctions)
-                .SingleOrDefault(j=>j.Location==call.Location)?.DefaultRoute ?? FleetJunctionRoute.Straight;
+        if(call.Controller.Kind==FleetControllerKind.Timetable) {
+            var setting=(call.Controller.Junctions.IsDefault?[]:call.Controller.Junctions).SingleOrDefault(j=>j.Location==call.Location);
+            if(setting is {Rules.IsDefaultOrEmpty:false})
+                foreach(var rule in setting.Rules)
+                    if(rule.Matches(time ?? throw new ArgumentException("A timetable junction requires the game time.")))
+                        return rule.Action==FleetRuleAction.Curve?FleetJunctionRoute.Curve:FleetJunctionRoute.Straight;
+            return setting?.DefaultRoute ?? FleetJunctionRoute.Straight;
+        }
         if(call.Controller.Kind==FleetControllerKind.Simple) return FleetJunctionRoute.Straight;
         if(call.Controller.Kind!=FleetControllerKind.Manual) throw new InvalidOperationException("unboundJunctionController");
         if(input.Left && RailwayTopology.HasPort(call.Pattern,call.Incoming.Left)) return FleetJunctionRoute.Curve;
@@ -80,11 +85,11 @@ public static class FleetControllers
         => new(train,callCount==0 ? input.Pass ? FleetStopDecision.Proceed : FleetStopDecision.Wait(5) :
             input.Depart ? FleetStopDecision.Proceed : input.Reverse ? FleetStopDecision.Reverse : FleetStopDecision.Wait(5));
 
-    // Source StationHandler: location-keyed basic stop settings. Ordered rules
-    // remain P5-20; an absent setting uses Fixed10 without reversal.
+    // Source StationHandler: an absent setting uses Fixed10 without reversal.
     public static FleetStopResult TimetableStop(FleetTrain train, FleetHarborCall call, GameTime time)
     {
         var setting=(call.Controller.Harbors.IsDefault?[]:call.Controller.Harbors).SingleOrDefault(h=>h.Location==call.Harbor.Location);
+        if(setting?.Kind==FleetHarborKind.Advanced)return new(train,FleetTimetable.Stop(setting.Rules,call.CallCount,time));
         if(setting?.Kind==FleetHarborKind.Pass)return new(train,FleetStopDecision.Proceed);
         if(call.CallCount!=0)return new(train,setting?.Reverse==true?FleetStopDecision.Reverse:FleetStopDecision.Proceed);
         var minutes=setting==null?10:setting.Kind==FleetHarborKind.Fixed?setting.Minutes:

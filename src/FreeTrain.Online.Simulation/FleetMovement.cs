@@ -16,7 +16,7 @@ public static class FleetMovement
         var w=session.World;var fleet=w.Fleet ?? throw new InvalidOperationException("Fleet is not initialized.");
         var before=fleet.Train(trainId);
         if (before.Head.State is FleetCarState.Outside)
-            return CompleteMove(session,before,Next(w,fleet,before,input));
+            return CompleteMove(session,before,Next(w,fleet,before,input,session.Clock.Time));
         // Capture before any handler mutation/reversal. CompleteMove reads this
         // original train from the unchanged session, never the new head location.
         var stop=stopHandler(w,before);
@@ -31,15 +31,15 @@ public static class FleetMovement
         if (stop.Decision.Action==FleetStopAction.Forwarding) train=train with {Forwarding=true};
         else if (stop.Decision.Action is FleetStopAction.Reverse or FleetStopAction.ReverseForwarding)
         {
-            train=FleetReversal.Reverse(w,train,input);
+            train=FleetReversal.Reverse(w,train,input,session.Clock.Time);
             if (stop.Decision.Action==FleetStopAction.ReverseForwarding) train=train with {Forwarding=true};
         }
         train=train with {StopCallCount=0};
-        var next=Next(w,fleet,train,input);
+        var next=Next(w,fleet,train,input,session.Clock.Time);
         if (next==null)
         {
-            train=FleetReversal.Reverse(w,train,input);
-            next=Next(w,fleet,train,input); // one retry; TRAIN-D001 handles both-null without dereferencing it
+            train=FleetReversal.Reverse(w,train,input,session.Clock.Time);
+            next=Next(w,fleet,train,input,session.Clock.Time); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
         return CompleteMove(session,train,next);
     }
@@ -109,14 +109,14 @@ public static class FleetMovement
         return candidate;
     }
 
-    private static FleetCarState? Next(MixedWorld w,FleetGraph fleet,FleetTrain train,FleetManualInput input)
+    private static FleetCarState? Next(MixedWorld w,FleetGraph fleet,FleetTrain train,FleetManualInput input,GameTime time)
     {
         if(train.Head.State is FleetCarState.Outside outside)
             return outside.Countdown!=0 ? outside with {Countdown=outside.Countdown-1} :
                 (FleetCarState?)FleetReversal.ReturnReference(w,outside) ?? outside with {Countdown=10};
         var state=(FleetCarState.Inside)train.Head.State;
         var rail=w.At(state.Location)!.Traffic!.Rail!;
-        var go=FleetRailGuidance.GuideHead(w,fleet,train,state.Location,rail,state.Heading,input);
+        var go=FleetRailGuidance.GuideHead(w,fleet,train,state.Location,rail,state.Heading,input,time);
         var location=state.Location.Move(go);
         // zdiff is a property of the CURRENT pattern and INCOMING heading.
         if (w.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Slope)

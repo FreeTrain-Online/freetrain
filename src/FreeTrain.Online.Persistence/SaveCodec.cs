@@ -193,6 +193,12 @@ public static class SaveCodec
                 {
                     ArrayBound(controller,"harbors",8192);
                     if(controller.TryGetProperty("junctions",out _))ArrayBound(controller,"junctions",8192);
+                    var rules=0;
+                    foreach(var field in new[]{"harbors","junctions"})
+                        if(controller.TryGetProperty(field,out var settings))
+                            foreach(var setting in settings.EnumerateArray())
+                                if(setting.TryGetProperty("rules",out _))rules+=ArrayBound(setting,"rules",FleetTimetable.MaximumLocationRules).GetArrayLength();
+                    if(rules>FleetTimetable.MaximumControllerRules)throw new JsonException("Timetable rule limit.");
                 }
                 ArrayBound(ObjectProperty(state,"queue"),"pending",Clock.MaximumPending);
             }

@@ -46,12 +46,12 @@ public static class FleetDeployment
             cars[n]=cars[n] with {Revision=checked(cars[n].Revision+1),State=new FleetCarState.Inside(p,heading.Value)};
             // Source temporarily installs cars[0], so every junction sees a HEAD,
             // including the iterations which will ultimately belong to followers.
-            var outgoing=FleetRailGuidance.GuideHead(w,f,train,p,rail,heading.Value);
+            var outgoing=FleetRailGuidance.GuideHead(w,f,train,p,rail,heading.Value,time:session.Clock.Time);
             p=p.Move(outgoing); heading=outgoing; // deliberately no zdiff, even on the last cell
         }
         var after=train with {Revision=checked(train.Revision+1),Cars=cars.ToImmutable(),
             State=TrainOperationalState.Moving,StopCallCount=0};
-        if(reverse)after=FleetReversal.Reverse(w,after);
+        if(reverse)after=FleetReversal.Reverse(w,after,time:session.Clock.Time);
         var clock=session.Clock.Capture(); var order=clock.NextOrder;
         var due=checked(clock.AbsoluteMinute+f.Profile.Resolve(train.Definition).MinutesPerVoxel);
         clock=clock with {NextOrder=checked(order+1),Pending=clock.Pending.Add(new(order,order,due,MixedSessionState.TrainHandler(trainId),0))
@@ -74,7 +74,7 @@ public static class FleetDeployment
     {
         var before=(session.Fleet ?? throw new ArgumentException("Fleet is not initialized.")).Train(trainId);
         if(before.State==TrainOperationalState.Unplaced)throw new InvalidOperationException("trainNotPlaced");
-        var after=FleetReversal.NormalizeCars(before,FleetReversal.Reverse(session.World,before))
+        var after=FleetReversal.NormalizeCars(before,FleetReversal.Reverse(session.World,before,time:session.Clock.Time))
             with {Revision=checked(before.Revision+1)};
         return Plan(session,after,session.Clock.Capture()); // retain the exact existing callback and history
     }
@@ -119,14 +119,14 @@ internal static class FleetOccupancy
 
 public static class FleetRailGuidance
 {
-    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,Location location,RailComponent rail,Heading heading, FleetManualInput input = default)
+    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,Location location,RailComponent rail,Heading heading, FleetManualInput input = default, GameTime? time = null)
     {
         var handler=w.Profile.Resolve(rail.Definition).Handler;
         var route=FleetJunctionRoute.Straight;
         if (handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading) &&
             (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)))
             route=FleetControllers.OnJunction(train,new(fleet.EffectiveController(train.Id),
-                location,rail.Pattern,heading),input);
+                location,rail.Pattern,heading),input,time);
         return Guide(handler,rail.Pattern,heading,route);
     }
 

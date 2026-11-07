@@ -5,6 +5,7 @@ import type {Snapshot,FleetPose,Fleet,ContentBinding} from '../generated/contrac
 import type {ReadState} from './session-client.ts';
 import {WorldSpace,int32} from './map-geometry.ts';
 import {maximumGameMinute} from './game-time.ts';
+import {validFleetRule,maximumLocationRules,maximumControllerRules} from './fleet-controllers.ts';
 type ReadFleet=NonNullable<NonNullable<ReadState['mixed']>['fleet']>;
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
@@ -30,7 +31,10 @@ export function validFleet(read:Snapshot):boolean {
   if(!name(c.name)||(['simple','delegation'].includes(c.kind)?c.provider!==null:!c.provider||!profile.providers.some(p=>p.kind===c.kind&&binding(c.provider!,p.binding)))||
    c.kind!=='timetable'&&(c.harbors.length||(c.junctions?.length??0))||
    new Set((c.junctions??[]).map(j=>key(j.location))).size!==(c.junctions?.length??0)||new Set(c.harbors.map(h=>key(h.location))).size!==c.harbors.length||
-   c.harbors.some(h=>h.kind==='pass'&&(h.minutes!==0||h.reverse)||h.kind==='daily'&&h.minutes>=1440))return false;
+   c.harbors.some(h=>(h.kind==='pass'||h.kind==='advanced')&&(h.minutes!==0||h.reverse)||h.kind==='daily'&&h.minutes>=1440||h.kind!=='advanced'&&!!h.rules?.length||
+    (h.rules?.length??0)>maximumLocationRules||h.rules?.some(r=>!validFleetRule(r,false)))||
+   c.junctions?.some(j=>(j.rules?.length??0)>maximumLocationRules||j.rules?.some(r=>!validFleetRule(r,true)))||
+   [...c.harbors,...c.junctions??[]].reduce((n,s)=>n+(s.rules?.length??0),0)>maximumControllerRules)return false;
  }
  for(const g of f.groups){
   if(!name(g.name)||!reference(g.controllerId)||g.id!==root.id&&(!g.parentId||!groups.has(g.parentId)))return false;

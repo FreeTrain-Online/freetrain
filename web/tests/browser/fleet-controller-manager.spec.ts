@@ -198,3 +198,80 @@ for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and 
   expect((await state(page)).mixed.fleet.controllers.find((row:any)=>row.id===source.id).harbors[0].minutes).toBe(480);
  }finally{await context.close();}
 });
+for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules edit masks, copies, order, peer conflicts and confirmed clear`,async({page,browser,baseURL,worldServer})=>{
+ test.setTimeout(120000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ const initial=await state(page),input=readFileSync('../tmp/p5-20-tat-fleet.json');
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
+ await page.goto('/');await ready(page);
+ if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
+ const baseline=await state(page),source=baseline.mixed.fleet.controllers.find((c:any)=>c.name==='Shared TAT');
+ const controls=await manager(page,text,locale);await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(source.id);
+ await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();let dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
+ await dialog.getByLabel(text.controllerStop,{exact:true}).selectOption('advanced');await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
+ async function openRules(kind='harbor'){
+  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();const config=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
+  if(kind==='junction'){await config.getByLabel(text.controllerSettingType,{exact:true}).selectOption('junction');await config.getByLabel(text.position,{exact:true}).selectOption('0');}
+  await config.getByRole('button',{name:text.controllerRules,exact:true}).click();return page.getByRole('dialog',{name:text.controllerRules,exact:true});
+ }
+ async function apply(rules=dialog){await rules.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(rules.getByRole('button',{name:text.controllerApply,exact:true})).toHaveCount(0);}
+ const data=async()=>((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===source.id));
+ dialog=await openRules();const before=await(await page.request.get('/api/saves/download')).body();
+ await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
+ await expect(dialog.getByLabel(text.ruleAction,{exact:true})).toHaveValue('pass');
+ for(const [label,value] of [[text.ruleMonth,'4'],[text.ruleDay,'23'],[text.ruleWeekday,'5'],[text.ruleHour,'8'],[text.ruleMinute,'0']])await dialog.getByLabel(label,{exact:true}).selectOption(value);
+ await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('pass');
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+ await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
+ for(const [label,value] of [[text.ruleMonth,'4'],[text.ruleDay,'23'],[text.ruleWeekday,'5'],[text.ruleHour,'8'],[text.ruleMinute,'0']])await dialog.getByLabel(label,{exact:true}).selectOption(value);
+ await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('pass');await apply();
+ await expect.poll(async()=>(await data()).harbors[0].rules.length).toBe(1);
+ await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
+ await expect(dialog.getByLabel(text.ruleMonth,{exact:true})).toHaveValue('4');await expect(dialog.getByLabel(text.ruleDay,{exact:true})).toHaveValue('23');
+ for(const [label,value] of [[text.ruleMonth,'4'],[text.ruleDay,'23'],[text.ruleWeekday,'5'],[text.ruleHour,'8'],[text.ruleMinute,'0']])await dialog.getByLabel(label,{exact:true}).selectOption(value);
+ await expect(dialog).toContainText(text.ruleDuplicate);await expect(dialog.getByRole('button',{name:text.controllerApply,exact:true})).toBeDisabled();
+ await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
+ await dialog.getByLabel(text.controllerRules,{exact:true}).selectOption('0');await dialog.getByRole('button',{name:text.ruleEdit,exact:true}).click();
+ await expect(dialog.getByLabel(text.ruleDay,{exact:true})).toHaveValue('23');await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('go');await apply();
+ await dialog.getByRole('button',{name:text.ruleCopy,exact:true}).click();await apply();
+ await dialog.getByLabel(text.controllerRules,{exact:true}).selectOption('1');await dialog.getByRole('button',{name:text.ruleEdit,exact:true}).click();
+ await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('stop');await apply();
+ await dialog.getByRole('button',{name:text.ruleUp,exact:true}).click();await apply();
+ expect((await data()).harbors[0].rules.map((r:any)=>r.action)).toEqual(['stop','go']);
+ mkdirSync(evidence+'/advanced-tat',{recursive:true});await page.screenshot({path:evidence+`/advanced-tat/${locale}-ordered.png`});
+ await dialog.getByRole('button',{name:text.close,exact:true}).click();
+ dialog=await openRules('junction');await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
+ await expect(dialog.getByLabel(text.ruleMinute,{exact:true})).toHaveCount(0);
+ await dialog.getByLabel(text.ruleMonth,{exact:true}).selectOption('12');await dialog.getByLabel(text.ruleDay,{exact:true}).selectOption('31');
+ await dialog.getByLabel(text.ruleAction,{exact:true}).selectOption('curve');await apply();
+ await dialog.getByLabel(text.controllerRules,{exact:true}).selectOption('0');await dialog.getByRole('button',{name:text.ruleEdit,exact:true}).click();
+ await expect(dialog.getByLabel(text.ruleDay,{exact:true})).toHaveValue('31');
+ await page.screenshot({path:evidence+`/advanced-tat/${locale}-junction.png`});await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
+ await dialog.getByRole('button',{name:text.close,exact:true}).click();
+ const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ try{
+  await peer.goto('/');await ready(peer);const remote=await manager(peer);await remote.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(source.id);
+  dialog=await openRules();await dialog.getByRole('button',{name:text.ruleAdd,exact:true}).click();
+  await remote.getByRole('button',{name:en.controllerRename,exact:true}).click();let peerDialog=peer.getByRole('dialog');await peerDialog.getByLabel(en.controllerName,{exact:true}).fill('Peer ordered TAT');
+  await peerDialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toContainText(text.controllerConflict);await expect(dialog.getByRole('button',{name:text.controllerApply,exact:true})).toBeDisabled();
+  await dialog.getByRole('button',{name:text.cancel,exact:true}).click();await dialog.getByRole('button',{name:text.close,exact:true}).click();
+  expect((await peer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
+  const observer=await manager(peer);await observer.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(source.id);
+  await observer.getByRole('button',{name:en.controllerConfigure,exact:true}).click();await peer.getByRole('dialog').getByRole('button',{name:en.controllerRules,exact:true}).click();
+  const inspected=peer.getByRole('dialog',{name:en.controllerRules,exact:true});await expect(inspected.getByLabel(en.controllerRules,{exact:true}).locator('option')).toHaveCount(2);
+  await expect(inspected.getByRole('button',{name:en.ruleAdd,exact:true})).toBeDisabled();await expect(inspected.getByRole('button',{name:en.ruleClear,exact:true})).toBeDisabled();
+ }finally{await context.close();}
+ dialog=await openRules();await dialog.getByRole('button',{name:text.ruleClear,exact:true}).click();await expect(dialog).toContainText(text.ruleClearHelp);
+ const prior=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(prior);
+ await dialog.getByRole('button',{name:text.close,exact:true}).click();
+ await controls.getByRole('button',{name:text.controllerCopy,exact:true}).click();let copyDialog=page.getByRole('dialog',{name:text.controllerCopy,exact:true});await copyDialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(copyDialog).toHaveCount(0);
+ const copy=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.name==='Peer ordered TAT 1');expect(copy.harbors).toEqual((await data()).harbors);expect(copy.junctions).toEqual((await data()).junctions);
+ dialog=await openRules();await dialog.getByRole('button',{name:text.ruleClear,exact:true}).click();await apply();expect((await data()).harbors[0].rules).toBeUndefined();
+ await dialog.getByRole('button',{name:text.close,exact:true}).click();
+ const after=await state(page);expect(after.tick).toBe(baseline.tick);expect(after.cash).toBe(baseline.cash);expect(after.mixed.queue).toEqual(baseline.mixed.queue);expect(after.mixed.fleet.trains).toEqual(baseline.mixed.fleet.trains);
+ const bytes=await(await page.request.get('/api/saves/download')).body();dialog=await openRules();
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+after.worldEpoch,{data:bytes})).ok()).toBe(true);
+ await expect(dialog).toHaveCount(0);await page.goto('/');await ready(page,locale);
+ const reopened=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id);expect(reopened.harbors[0].rules.map((r:any)=>r.action)).toEqual(['stop','go']);expect(reopened.junctions[0].rules[0].minutes).toBe(-1);
+ await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+ expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===copy.id).harbors).toEqual(reopened.harbors);expect(errors).toEqual([]);
+});

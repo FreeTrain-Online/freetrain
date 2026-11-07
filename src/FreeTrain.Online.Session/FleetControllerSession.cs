@@ -7,6 +7,34 @@ namespace FreeTrain.Online.Session;
 
 public sealed partial class SessionHost
 {
+    private string? EditFleetRule(ParticipantContext participant,EditFleetRuleCommand command)
+    {
+        try {
+            var state=mixedState;if(state?.Fleet is not {} f)return "operationUnavailable";
+            var selected=f.Controllers.SingleOrDefault(c=>c.Id==command.ControllerId);
+            if(selected==null || selected.Revision!=command.ExpectedRevision)return "staleRevision";
+            if(selected.Kind!=FleetControllerKind.Timetable || command.Location==null)return "invalidInput";
+            var key=new Location(command.Location.X,command.Location.Y,command.Location.Z);
+            var rule=command.Rule==null?null:FleetWire.Rule(command.Rule);
+            FleetController changed;
+            if(command.SettingKind=="junction") {
+                if(command.ExpectedGeometryRevision!=state.World.Revision)return "staleRevision";
+                if(state.World.At(key)?.Traffic?.Rail is not {} rail || state.World.Profile.Resolve(rail.Definition).Handler!=RailwayHandler.Junction)return "invalidInput";
+                var rows=selected.Junctions.IsDefault?[]:selected.Junctions;
+                var setting=rows.SingleOrDefault(j=>j.Location==key);if(setting==null)return "invalidInput";
+                changed=selected with {Junctions=rows.Replace(setting,setting with {
+                    Rules=FleetTimetable.Edit(setting.Rules,true,command.Operation,command.Index,command.Offset,rule)})};
+            } else if(command.SettingKind=="harbor" && command.ExpectedGeometryRevision==null) {
+                var rows=selected.Harbors.IsDefault?[]:selected.Harbors;
+                var setting=rows.SingleOrDefault(h=>h.Location==key);
+                if(setting?.Kind!=FleetHarborKind.Advanced)return "invalidInput";
+                changed=selected with {Harbors=rows.Replace(setting,setting with {
+                    Rules=FleetTimetable.Edit(setting.Rules,false,command.Operation,command.Index,command.Offset,rule)})};
+            } else return "invalidInput";
+            changed=changed with {Revision=checked(selected.Revision+1)};
+            return PublishControllers(participant,state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed)),state.World.Spatial.NextEntityId);
+        } catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
+    }
     // All controller edits enter the same FIFO/receipt/epoch boundary as train
     // commands. Drafts carry member revisions, independent of the moving clock.
     private string? PublishControllers(ParticipantContext participant, MixedSessionState state, FleetGraph graph, long nextId)
@@ -74,36 +102,37 @@ public sealed partial class SessionHost
                         do {var end=" "+suffix++;name=selected.Name[..Math.Min(selected.Name.Length,256-end.Length)]+end;}
                         while(rows.Any(c=>c.Name==name));
                         rows=rows.Add(selected with {Id=nextId,Revision=0,Name=name,
-                            Junctions=(selected.Junctions.IsDefault?[]:selected.Junctions).Select(j=>j with {}).ToImmutableArray(),
-                            Harbors=(selected.Harbors.IsDefault?[]:selected.Harbors).Select(h=>h with {}).ToImmutableArray()});
+                            Junctions=(selected.Junctions.IsDefault?[]:selected.Junctions).Select(j=>j with {Rules=j.Rules.IsDefault?default:j.Rules.Select(r=>r with {}).ToImmutableArray()}).ToImmutableArray(),
+                            Harbors=(selected.Harbors.IsDefault?[]:selected.Harbors).Select(h=>h with {Rules=h.Rules.IsDefault?default:h.Rules.Select(r=>r with {}).ToImmutableArray()}).ToImmutableArray()});
                         nextId=checked(nextId+1);break;
                     case "cleanJunctions" when command.Name=="" && command.Harbors==null && command.Junctions==null && command.Location==null && selected.Kind==FleetControllerKind.Timetable:
                         rows=rows.Replace(selected,selected with {
                             Junctions=(selected.Junctions.IsDefault?[]:selected.Junctions).Where(j=>IsJunction(j.Location)).ToImmutableArray(),
                             Revision=checked(selected.Revision+1)});break;
                     case "configure" when command.Name=="" && command.Harbors==null && command.Junctions is {} junctionSettings && command.Location is {} junctionLocation && selected.Kind==FleetControllerKind.Timetable:
-                        if(junctionSettings.Length>1 || junctionSettings.Any(j=>j==null || j.Location!=junctionLocation || j.DefaultRoute is not ("straight" or "curve")))return "invalidInput";
+                        if(junctionSettings.Length>1 || junctionSettings.Any(j=>j==null || j.Location!=junctionLocation || j.Rules!=null || j.DefaultRoute is not ("straight" or "curve")))return "invalidInput";
                         var junctionKey=new Location(junctionLocation.X,junctionLocation.Y,junctionLocation.Z);
                         var junctions=selected.Junctions.IsDefault?ImmutableArray<FleetJunctionSetting>.Empty:selected.Junctions;
                         var oldJunction=junctions.SingleOrDefault(j=>j.Location==junctionKey);
                         if(junctionSettings.Length==0) {if(oldJunction!=null)junctions=junctions.Remove(oldJunction);}
                         else {
                             if(!IsJunction(junctionKey))return "invalidInput";
-                            var replacement=new FleetJunctionSetting(junctionKey,junctionSettings[0].DefaultRoute=="curve"?FleetJunctionRoute.Curve:FleetJunctionRoute.Straight);
+                            var replacement=new FleetJunctionSetting(junctionKey,junctionSettings[0].DefaultRoute=="curve"?FleetJunctionRoute.Curve:FleetJunctionRoute.Straight,oldJunction?.Rules??default);
                             junctions=oldJunction==null?junctions.Add(replacement):junctions.Replace(oldJunction,replacement);
                         }
                         rows=rows.Replace(selected,selected with {Junctions=junctions,Revision=checked(selected.Revision+1)});break;
                     case "configure" when command.Name=="" && command.Junctions==null && command.Harbors is {} settings && command.Location is {} location && selected.Kind==FleetControllerKind.Timetable:
                         // One location per command keeps edits below the existing
                         // 16 KiB network boundary even at 8192 stored settings.
-                        if(settings.Length>1 || settings.Any(h=>h==null || h.Location!=location || h.Kind is not ("pass" or "fixed" or "daily")))return "invalidInput";
+                        if(settings.Length>1 || settings.Any(h=>h==null || h.Location!=location || h.Rules!=null || h.Kind is not ("pass" or "fixed" or "daily" or "advanced")))return "invalidInput";
                         var key=new Location(location.X,location.Y,location.Z);
                         var harbors=selected.Harbors.IsDefault?ImmutableArray<FleetHarborSetting>.Empty:selected.Harbors;
                         var prior=harbors.SingleOrDefault(h=>h.Location==key);
                         if(settings.Length==0){if(prior!=null)harbors=harbors.Remove(prior);}
                         else {
                             var h=settings[0];var replacement=new FleetHarborSetting(key,
-                                h.Kind switch {"pass"=>FleetHarborKind.Pass,"fixed"=>FleetHarborKind.Fixed,_=>FleetHarborKind.Daily},h.Minutes,h.Reverse);
+                                h.Kind switch {"pass"=>FleetHarborKind.Pass,"fixed"=>FleetHarborKind.Fixed,"daily"=>FleetHarborKind.Daily,_=>FleetHarborKind.Advanced},h.Minutes,h.Reverse,
+                                h.Kind=="advanced"?prior?.Rules??default:default);
                             harbors=prior==null?harbors.Add(replacement):harbors.Replace(prior,replacement);
                         }
                         rows=rows.Replace(selected,selected with {Harbors=harbors,Revision=checked(selected.Revision+1)});break;

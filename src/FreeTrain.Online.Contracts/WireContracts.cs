@@ -148,6 +148,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
 [JsonDerivedType(typeof(RenameFleetCommand), "renameFleet")]
 [JsonDerivedType(typeof(ManageFleetControllerCommand), "manageFleetController")]
+[JsonDerivedType(typeof(EditFleetRuleCommand), "editFleetRule")]
 [JsonDerivedType(typeof(AssignFleetControllerCommand), "assignFleetController")]
 [JsonDerivedType(typeof(DeployFleetCommand), "deployFleet")]
 public abstract record CommandPayload;
@@ -166,6 +167,8 @@ public sealed record ManageFleetControllerCommand(string Action, long Controller
     FleetJunctionRead[]? Junctions = null, long? ExpectedGeometryRevision = null) : CommandPayload;
 public sealed record AssignFleetControllerCommand(string TargetKind, long TargetId, long ExpectedRevision,
     long ControllerId, long ExpectedControllerRevision) : CommandPayload;
+public sealed record EditFleetRuleCommand(long ControllerId, long ExpectedRevision, PositionRead Location,
+    string SettingKind, string Operation, int Index, int Offset, FleetRuleRead? Rule, long? ExpectedGeometryRevision = null) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
 public sealed record RunCommand : CommandPayload;
@@ -282,8 +285,11 @@ public sealed record FleetTrainRead(long Id, long Revision, string Name, Content
     long? ControllerId, FleetCarRead[] Cars, bool IsReversed, string State, int Passengers,
     FleetPoseRead? BoardingOrigin, bool Forwarding, int MoveCount, int StopCallCount, long? PurchaseMinute);
 public sealed record FleetGroupRead(long Id, long Revision, string Name, long? ParentId, long? ControllerId, long[] Members);
-public sealed record FleetJunctionRead(PositionRead Location, string DefaultRoute);
-public sealed record FleetHarborRead(PositionRead Location, string Kind, int Minutes, bool Reverse);
+public sealed record FleetRuleRead(int Month, int Day, int DayOfWeek, int Hour, int Minutes, string Action);
+public sealed record FleetJunctionRead(PositionRead Location, string DefaultRoute,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRuleRead[]? Rules = null);
+public sealed record FleetHarborRead(PositionRead Location, string Kind, int Minutes, bool Reverse,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRuleRead[]? Rules = null);
 public sealed record FleetControllerRead(long Id, long Revision, string Name, string Kind, ContentBindingRead? Provider, FleetHarborRead[] Harbors,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetJunctionRead[]? Junctions = null);
 public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers);

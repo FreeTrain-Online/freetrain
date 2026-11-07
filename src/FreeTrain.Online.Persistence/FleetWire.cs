@@ -8,6 +8,10 @@ namespace FreeTrain.Online.Persistence;
 // definitions, then validate the whole detached graph and its reciprocal occupancy.
 public static class FleetWire
 {
+    public static FleetRuleRead Rule(FleetTimetableRule r) => new(r.Month,r.Day,r.DayOfWeek,r.Hour,r.Minutes,Tag(r.Action));
+    public static FleetTimetableRule Rule(FleetRuleRead r) => new(r.Month,r.Day,r.DayOfWeek,r.Hour,r.Minutes,EnumValue<FleetRuleAction>(r.Action));
+    private static FleetRuleRead[]? Rules(ImmutableArray<FleetTimetableRule> rules) => rules.IsDefaultOrEmpty?null:rules.Select(Rule).ToArray();
+    private static ImmutableArray<FleetTimetableRule> Rules(FleetRuleRead[]? rules) => (rules??[]).Select(Rule).ToImmutableArray();
     private static string Tag<T>(T value) where T : struct, Enum => value.ToString().ToLowerInvariant();
     private static T EnumValue<T>(string value) where T : struct, Enum =>
         Enum.GetValues<T>().Single(v => Tag(v) == value);
@@ -37,8 +41,8 @@ public static class FleetWire
             t.Forwarding,t.MoveCount,t.StopCallCount,t.PurchaseMinute)).ToArray(),
         f.Groups.Select(g => new FleetGroupRead(g.Id,g.Revision,g.Name,g.ParentId,g.ControllerId,g.Members.ToArray())).ToArray(),
         f.Controllers.Select(c => new FleetControllerRead(c.Id,c.Revision,c.Name,Tag(c.Kind),c.Provider == null ? null : Binding(c.Provider),
-            (c.Harbors.IsDefault ? [] : c.Harbors).Select(h => new FleetHarborRead(Position(h.Location),Tag(h.Kind),h.Minutes,h.Reverse)).ToArray(),
-            c.Junctions.IsDefaultOrEmpty ? null : c.Junctions.Select(j => new FleetJunctionRead(Position(j.Location),Tag(j.DefaultRoute))).ToArray())).ToArray());
+            (c.Harbors.IsDefault ? [] : c.Harbors).Select(h => new FleetHarborRead(Position(h.Location),Tag(h.Kind),h.Minutes,h.Reverse,Rules(h.Rules))).ToArray(),
+            c.Junctions.IsDefaultOrEmpty ? null : c.Junctions.Select(j => new FleetJunctionRead(Position(j.Location),Tag(j.DefaultRoute),Rules(j.Rules))).ToArray())).ToArray());
 
     public static FleetGraph? Restore(FleetRead? f, FleetProfile? profile)
     {
@@ -48,6 +52,11 @@ public static class FleetWire
             f.Controllers.Length > FleetGraph.MaximumControllers || f.Trains.Any(t => t.Cars.Length > StockAdmission.MaximumFormationCars) ||
             f.Trains.Sum(t => t.Cars.Length) > StockAdmission.MaximumFleetCars || f.Controllers.Any(c => c.Harbors.Length > 8192 || c.Junctions?.Length > 8192 || c.Junctions?.Any(j => j == null || j.Location == null) == true))
             throw new ArgumentException("Fleet wire limit.");
+        foreach(var c in f.Controllers) {
+            var rules=c.Harbors.Select(h=>h.Rules).Concat((c.Junctions??[]).Select(j=>j.Rules)).ToArray();
+            if(rules.Any(r=>r is {Length: > FleetTimetable.MaximumLocationRules} || r?.Any(v=>v==null)==true) ||
+                rules.Sum(r=>r?.Length??0)>FleetTimetable.MaximumControllerRules)throw new ArgumentException("Timetable wire limit.");
+        }
         return new(profile,f.RootGroupId,
             f.Trains.Select(t => new FleetTrain(t.Id,t.Revision,t.Name,Binding(t.Definition),t.GroupId,t.ControllerId,
                 t.Cars.Select(c => new FleetCar(c.Id,c.Revision,c.OriginalIndex,
@@ -58,8 +67,8 @@ public static class FleetWire
             f.Groups.Select(g => new FleetGroup(g.Id,g.Revision,g.Name,g.ParentId,g.ControllerId,g.Members.ToImmutableArray())),
             f.Controllers.Select(c => new FleetController(c.Id,c.Revision,c.Name,EnumValue<FleetControllerKind>(c.Kind),
                 c.Provider == null ? null : Binding(c.Provider),c.Harbors.Select(h => new FleetHarborSetting(Position(h.Location),
-                    EnumValue<FleetHarborKind>(h.Kind),h.Minutes,h.Reverse)).ToImmutableArray(),
-                (c.Junctions ?? []).Select(j => new FleetJunctionSetting(Position(j.Location),EnumValue<FleetJunctionRoute>(j.DefaultRoute))).ToImmutableArray())));
+                    EnumValue<FleetHarborKind>(h.Kind),h.Minutes,h.Reverse,Rules(h.Rules))).ToImmutableArray(),
+                (c.Junctions ?? []).Select(j => new FleetJunctionSetting(Position(j.Location),EnumValue<FleetJunctionRoute>(j.DefaultRoute),Rules(j.Rules))).ToImmutableArray())));
     }
     public static MixedQueueRead Queue(ClockState clock) => new(clock.NextOrder,
         clock.Pending.Select(a => new MixedActionRead(a.Registration,a.Order,a.DueMinute,a.HandlerId,a.Interval)).ToArray());

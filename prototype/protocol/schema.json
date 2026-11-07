@@ -963,7 +963,35 @@
                   "type": "array",
                   "maxItems": 1,
                   "items": {
-                    "$ref": "#/$defs/FleetHarbor"
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "location": {
+                        "$ref": "#/$defs/Position"
+                      },
+                      "kind": {
+                        "enum": [
+                          "pass",
+                          "fixed",
+                          "daily",
+                          "advanced"
+                        ]
+                      },
+                      "minutes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      },
+                      "reverse": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "location",
+                      "kind",
+                      "minutes",
+                      "reverse"
+                    ]
                   }
                 },
                 {
@@ -987,7 +1015,23 @@
                   "type": "array",
                   "maxItems": 1,
                   "items": {
-                    "$ref": "#/$defs/FleetJunction"
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "location": {
+                        "$ref": "#/$defs/Position"
+                      },
+                      "defaultRoute": {
+                        "enum": [
+                          "straight",
+                          "curve"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "location",
+                      "defaultRoute"
+                    ]
                   }
                 },
                 {
@@ -1050,6 +1094,82 @@
             "expectedRevision",
             "controllerId",
             "expectedControllerRevision"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editFleetRule"
+            },
+            "controllerId": {
+              "$ref": "#/$defs/EntityId"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "location": {
+              "$ref": "#/$defs/Position"
+            },
+            "settingKind": {
+              "enum": [
+                "harbor",
+                "junction"
+              ]
+            },
+            "operation": {
+              "enum": [
+                "add",
+                "replace",
+                "copy",
+                "move",
+                "remove",
+                "clear"
+              ]
+            },
+            "index": {
+              "type": "integer",
+              "minimum": -1,
+              "maximum": 1023
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": -1,
+              "maximum": 1
+            },
+            "rule": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/FleetRule"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expectedGeometryRevision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counter"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "controllerId",
+            "expectedRevision",
+            "location",
+            "settingKind",
+            "operation",
+            "index",
+            "offset",
+            "rule",
+            "expectedGeometryRevision"
           ]
         }
       ]
@@ -3873,7 +3993,8 @@
           "enum": [
             "pass",
             "fixed",
-            "daily"
+            "daily",
+            "advanced"
           ]
         },
         "minutes": {
@@ -3883,6 +4004,13 @@
         },
         "reverse": {
           "type": "boolean"
+        },
+        "rules": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "#/$defs/FleetRule"
+          }
         }
       },
       "required": [
@@ -4388,11 +4516,118 @@
             "straight",
             "curve"
           ]
+        },
+        "rules": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "#/$defs/FleetRule"
+          }
         }
       },
       "required": [
         "location",
         "defaultRoute"
+      ]
+    },
+    "FleetRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "month": {
+          "enum": [
+            -1,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        "day": {
+          "enum": [
+            -1,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ]
+        },
+        "dayOfWeek": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 6
+        },
+        "hour": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 23
+        },
+        "minutes": {
+          "enum": [
+            -1,
+            0,
+            10,
+            20,
+            30,
+            40,
+            50
+          ]
+        },
+        "action": {
+          "enum": [
+            "pass",
+            "stop",
+            "go",
+            "reverse",
+            "forwarding",
+            "reverseforwarding",
+            "straight",
+            "curve"
+          ]
+        }
+      },
+      "required": [
+        "month",
+        "day",
+        "dayOfWeek",
+        "hour",
+        "minutes",
+        "action"
       ]
     }
   }

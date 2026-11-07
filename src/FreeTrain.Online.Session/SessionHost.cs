@@ -438,6 +438,7 @@ public sealed partial class SessionHost : IDisposable
                             case DeployFleetCommand deploy when deploy.Query != null: code = CommitFleetDeployment(deploy); break;
                             case TradeFleetCommand trade when trade.Query != null: code = CommitFleetTrade(trade); break;
                             case ManageFleetControllerCommand manage: code=ManageFleetController(queued.Participant,manage); break;
+                            case EditFleetRuleCommand rule: code=EditFleetRule(queued.Participant,rule); break;
                             case AssignFleetControllerCommand assign: code=AssignFleetController(queued.Participant,assign); break;
                             case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;

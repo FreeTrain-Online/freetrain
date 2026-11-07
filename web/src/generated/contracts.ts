@@ -162,9 +162,27 @@ export type CommandPayload =
       expectedRevision: Counter;
       name: string;
       provider: ContentBinding | null;
-      harbors: [] | [FleetHarbor] | null;
+      harbors:
+        | []
+        | [
+            {
+              location: Position;
+              kind: "pass" | "fixed" | "daily" | "advanced";
+              minutes: number;
+              reverse: boolean;
+            }
+          ]
+        | null;
       location: Position | null;
-      junctions?: [] | [FleetJunction] | null;
+      junctions?:
+        | []
+        | [
+            {
+              location: Position;
+              defaultRoute: "straight" | "curve";
+            }
+          ]
+        | null;
       expectedGeometryRevision?: Counter | null;
     }
   | {
@@ -174,6 +192,18 @@ export type CommandPayload =
       expectedRevision: Counter;
       controllerId: Counter;
       expectedControllerRevision: Counter;
+    }
+  | {
+      kind: "editFleetRule";
+      controllerId: EntityId;
+      expectedRevision: Counter;
+      location: Position;
+      settingKind: "harbor" | "junction";
+      operation: "add" | "replace" | "copy" | "move" | "remove" | "clear";
+      index: number;
+      offset: number;
+      rule: FleetRule | null;
+      expectedGeometryRevision: Counter | null;
     };
 
 export interface Join {
@@ -572,13 +602,61 @@ export interface FleetController {
 }
 export interface FleetHarbor {
   location: Position;
-  kind: "pass" | "fixed" | "daily";
+  kind: "pass" | "fixed" | "daily" | "advanced";
   minutes: number;
   reverse: boolean;
+  /**
+   * @maxItems 1024
+   */
+  rules?: FleetRule[];
+}
+export interface FleetRule {
+  month: -1 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+  day:
+    | -1
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | 17
+    | 18
+    | 19
+    | 20
+    | 21
+    | 22
+    | 23
+    | 24
+    | 25
+    | 26
+    | 27
+    | 28
+    | 29
+    | 30
+    | 31;
+  dayOfWeek: number;
+  hour: number;
+  minutes: -1 | 0 | 10 | 20 | 30 | 40 | 50;
+  action: "pass" | "stop" | "go" | "reverse" | "forwarding" | "reverseforwarding" | "straight" | "curve";
 }
 export interface FleetJunction {
   location: Position;
   defaultRoute: "straight" | "curve";
+  /**
+   * @maxItems 1024
+   */
+  rules?: FleetRule[];
 }
 export interface MixedQueue {
   nextOrder: Counter;
