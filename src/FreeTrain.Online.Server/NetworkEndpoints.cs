@@ -515,7 +515,9 @@ public static class NetworkEndpoints
             q.ExpectedContentVersion==ProtocolIdentity.MixedContent && (q.Action=="place"&&q.Tail!=null||(q.Action is "withdraw" or "reverse")&&q.Tail==null&&!q.Reverse),
         TradeFleetCommand trade => trade.Query != null && trade.ExpectedPrice >= 0,
         ManageFleetControllerCommand manage => manage.ControllerId>=0 && manage.ExpectedRevision>=0 &&
-            manage.Action is "create" or "rename" or "copy" or "configure" or "delete" && manage.Name is {Length: <= 256} &&
+            manage.Action is "create" or "rename" or "copy" or "configure" or "delete" or "cleanJunctions" && manage.Name is {Length: <= 256} &&
+            (manage.ExpectedGeometryRevision==null || manage.ExpectedGeometryRevision>=0) &&
+            (manage.Junctions==null || manage.Junctions.Length<=1 && manage.Junctions.All(j=>j!=null && j.Location!=null && j.DefaultRoute is "straight" or "curve")) &&
             (manage.Harbors==null || manage.Harbors.Length<=1 && manage.Harbors.All(h=>h!=null && h.Location!=null && h.Kind is "pass" or "fixed" or "daily")),
         AssignFleetControllerCommand assign => assign.TargetKind is "train" or "group" && assign.TargetId>0 &&
             assign.ControllerId>0 && assign.ExpectedRevision>=0 && assign.ExpectedControllerRevision>=0,

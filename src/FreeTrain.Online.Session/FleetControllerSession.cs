@@ -41,6 +41,12 @@ public sealed partial class SessionHost
             }
             var rows=f.Controllers;
             if(command.Name==null)return "invalidInput";
+            var junctionEdit=command.Action=="cleanJunctions" || command.Action=="configure" && command.Junctions!=null;
+            if(junctionEdit) {
+                if(command.ExpectedGeometryRevision!=state.World.Revision)return "staleRevision";
+            } else if(command.Junctions!=null || command.ExpectedGeometryRevision!=null)return "invalidInput";
+            bool IsJunction(Location p)=>state.World.At(p)?.Traffic?.Rail is {} r &&
+                state.World.Profile.Resolve(r.Definition).Handler==RailwayHandler.Junction;
             if(command.Action=="create")
             {
                 if(command.ControllerId!=0 || command.ExpectedRevision!=0 || command.Harbors!=null || command.Location!=null || command.Provider is not {} p)
@@ -68,9 +74,26 @@ public sealed partial class SessionHost
                         do {var end=" "+suffix++;name=selected.Name[..Math.Min(selected.Name.Length,256-end.Length)]+end;}
                         while(rows.Any(c=>c.Name==name));
                         rows=rows.Add(selected with {Id=nextId,Revision=0,Name=name,
+                            Junctions=(selected.Junctions.IsDefault?[]:selected.Junctions).Select(j=>j with {}).ToImmutableArray(),
                             Harbors=(selected.Harbors.IsDefault?[]:selected.Harbors).Select(h=>h with {}).ToImmutableArray()});
                         nextId=checked(nextId+1);break;
-                    case "configure" when command.Name=="" && command.Harbors is {} settings && command.Location is {} location && selected.Kind==FleetControllerKind.Timetable:
+                    case "cleanJunctions" when command.Name=="" && command.Harbors==null && command.Junctions==null && command.Location==null && selected.Kind==FleetControllerKind.Timetable:
+                        rows=rows.Replace(selected,selected with {
+                            Junctions=(selected.Junctions.IsDefault?[]:selected.Junctions).Where(j=>IsJunction(j.Location)).ToImmutableArray(),
+                            Revision=checked(selected.Revision+1)});break;
+                    case "configure" when command.Name=="" && command.Harbors==null && command.Junctions is {} junctionSettings && command.Location is {} junctionLocation && selected.Kind==FleetControllerKind.Timetable:
+                        if(junctionSettings.Length>1 || junctionSettings.Any(j=>j==null || j.Location!=junctionLocation || j.DefaultRoute is not ("straight" or "curve")))return "invalidInput";
+                        var junctionKey=new Location(junctionLocation.X,junctionLocation.Y,junctionLocation.Z);
+                        var junctions=selected.Junctions.IsDefault?ImmutableArray<FleetJunctionSetting>.Empty:selected.Junctions;
+                        var oldJunction=junctions.SingleOrDefault(j=>j.Location==junctionKey);
+                        if(junctionSettings.Length==0) {if(oldJunction!=null)junctions=junctions.Remove(oldJunction);}
+                        else {
+                            if(!IsJunction(junctionKey))return "invalidInput";
+                            var replacement=new FleetJunctionSetting(junctionKey,junctionSettings[0].DefaultRoute=="curve"?FleetJunctionRoute.Curve:FleetJunctionRoute.Straight);
+                            junctions=oldJunction==null?junctions.Add(replacement):junctions.Replace(oldJunction,replacement);
+                        }
+                        rows=rows.Replace(selected,selected with {Junctions=junctions,Revision=checked(selected.Revision+1)});break;
+                    case "configure" when command.Name=="" && command.Junctions==null && command.Harbors is {} settings && command.Location is {} location && selected.Kind==FleetControllerKind.Timetable:
                         // One location per command keeps edits below the existing
                         // 16 KiB network boundary even at 8192 stored settings.
                         if(settings.Length>1 || settings.Any(h=>h==null || h.Location!=location || h.Kind is not ("pass" or "fixed" or "daily")))return "invalidInput";

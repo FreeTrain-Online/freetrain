@@ -66,7 +66,10 @@ public static class FleetControllers
 {
     public static FleetJunctionRoute OnJunction(FleetTrain train, FleetJunctionCall call, FleetManualInput input = default)
     {
-        if(call.Controller.Kind is FleetControllerKind.Simple or FleetControllerKind.Timetable) return FleetJunctionRoute.Straight;
+        if(call.Controller.Kind==FleetControllerKind.Timetable)
+            return (call.Controller.Junctions.IsDefault?[]:call.Controller.Junctions)
+                .SingleOrDefault(j=>j.Location==call.Location)?.DefaultRoute ?? FleetJunctionRoute.Straight;
+        if(call.Controller.Kind==FleetControllerKind.Simple) return FleetJunctionRoute.Straight;
         if(call.Controller.Kind!=FleetControllerKind.Manual) throw new InvalidOperationException("unboundJunctionController");
         if(input.Left && RailwayTopology.HasPort(call.Pattern,call.Incoming.Left)) return FleetJunctionRoute.Curve;
         if(input.Right && RailwayTopology.HasPort(call.Pattern,call.Incoming.Right)) return FleetJunctionRoute.Curve;
@@ -77,8 +80,8 @@ public static class FleetControllers
         => new(train,callCount==0 ? input.Pass ? FleetStopDecision.Proceed : FleetStopDecision.Wait(5) :
             input.Depart ? FleetStopDecision.Proceed : input.Reverse ? FleetStopDecision.Reverse : FleetStopDecision.Wait(5));
 
-    // P5-18's named TAT instances can run safely with their existing basic
-    // location data. Junction settings/ordered rules remain P5-19/P5-20.
+    // Source StationHandler: location-keyed basic stop settings. Ordered rules
+    // remain P5-20; an absent setting uses Fixed10 without reversal.
     public static FleetStopResult TimetableStop(FleetTrain train, FleetHarborCall call, GameTime time)
     {
         var setting=(call.Controller.Harbors.IsDefault?[]:call.Controller.Harbors).SingleOrDefault(h=>h.Location==call.Harbor.Location);

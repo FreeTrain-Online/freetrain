@@ -28,7 +28,8 @@ export function validFleet(read:Snapshot):boolean {
  if(!root||root.parentId!==null||f.controllers.filter(c=>c.kind==='simple').length!==1||f.controllers.filter(c=>c.kind==='delegation').length!==1)return false;
  for(const c of f.controllers){
   if(!name(c.name)||(['simple','delegation'].includes(c.kind)?c.provider!==null:!c.provider||!profile.providers.some(p=>p.kind===c.kind&&binding(c.provider!,p.binding)))||
-   c.kind!=='timetable'&&c.harbors.length||new Set(c.harbors.map(h=>key(h.location))).size!==c.harbors.length||
+   c.kind!=='timetable'&&(c.harbors.length||(c.junctions?.length??0))||
+   new Set((c.junctions??[]).map(j=>key(j.location))).size!==(c.junctions?.length??0)||new Set(c.harbors.map(h=>key(h.location))).size!==c.harbors.length||
    c.harbors.some(h=>h.kind==='pass'&&(h.minutes!==0||h.reverse)||h.kind==='daily'&&h.minutes>=1440))return false;
  }
  for(const g of f.groups){

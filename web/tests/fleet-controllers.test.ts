@@ -31,3 +31,19 @@ Deno.test('manager and assignment commands retain exact Int64 strings, bounded f
  assert.equal(validWireShape(assign),true);assert.equal(validWireShape({...assign,payload:{...assign.payload,targetKind:'signal'}}),false);
  assert.equal(validWireShape({type:'rejected',requestId:'delete',code:'controllerReferenced',arguments:{}}),true);
 });
+Deno.test('TAT junction patches bound routes and geometry and support explicit cleanup',()=>{
+ const payload={kind:'manageFleetController',action:'configure',controllerId:'9',expectedRevision:'2',name:'',provider:null,harbors:null,location:{x:22,y:20,z:2},junctions:[{location:{x:22,y:20,z:2},defaultRoute:'curve'}],expectedGeometryRevision:'7'};
+ const command={type:'command',requestId:'tat',expectedWorldEpoch:'1',payload};
+ assert.equal(validWireShape(command),true);
+ assert.equal(validWireShape({...command,payload:{...payload,junctions:[...payload.junctions,...payload.junctions]}}),false);
+ assert.equal(validWireShape({...command,payload:{...payload,junctions:[{...payload.junctions[0],defaultRoute:'left'}]}}),false);
+ assert.equal(validWireShape({...command,payload:{...payload,expectedGeometryRevision:7}}),false);
+ assert.equal(validWireShape({...command,payload:{...payload,action:'cleanJunctions',location:null,junctions:null}}),true);
+});
+Deno.test('TAT missing-junction diagnostics preserve saved location keys',async()=>{
+ const {missingControllerJunctions}=await import('../src/lib/fleet-controllers.ts');
+ const read=await scene(),c=read.mixed!.fleet!.controllers[0],p=read.mixed!.voxels.find(v=>v.traffic?.rail)!;
+ p.traffic!.rail!.pattern=23;c.junctions=[{location:{...p.position},defaultRoute:'curve'},{location:{x:-1,y:0,z:0},defaultRoute:'straight'}];
+ const before=JSON.stringify(read);
+ assert.deepEqual(missingControllerJunctions(read,c.id),[c.junctions[1]]);assert.equal(JSON.stringify(read),before);
+});

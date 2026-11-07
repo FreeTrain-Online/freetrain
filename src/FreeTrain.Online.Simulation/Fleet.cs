@@ -17,11 +17,13 @@ public enum TrainOperationalState { Unplaced, Moving, StoppingAtStation, Stoppin
 public enum FleetControllerKind { Simple, Delegation, Manual, Timetable }
 public sealed record FleetControllerProvider(ContentBinding Binding, FleetControllerKind Kind);
 public enum FleetHarborKind { Pass, Fixed, Daily }
+public sealed record FleetJunctionSetting(Location Location, FleetJunctionRoute DefaultRoute);
 public sealed record FleetHarborSetting(Location Location, FleetHarborKind Kind, int Minutes, bool Reverse);
 // Id is shared assignment identity; Revision is the instance/configuration
 // revision. Location-keyed settings belong to this instance, never to a signal.
 public sealed record FleetController(long Id, long Revision, string Name, FleetControllerKind Kind, ContentBinding? Provider = null,
-    ImmutableArray<FleetHarborSetting> Harbors = default);
+    ImmutableArray<FleetHarborSetting> Harbors = default,
+    ImmutableArray<FleetJunctionSetting> Junctions = default);
 public sealed record FleetGroup(long Id, long Revision, string Name, long? ParentId, long? ControllerId,
     ImmutableArray<long> Members);
 public sealed record FleetCar(long Id, long Revision, int OriginalIndex, DefinitionReference Definition, FleetCarState State);
@@ -118,6 +120,11 @@ public sealed class FleetGraph
                 throw new ArgumentException("Invalid fleet controller/provider.");
         foreach (var c in Controllers)
         {
+            var junctions = c.Junctions.IsDefault ? [] : c.Junctions;
+            if (junctions.Length > 8192 || c.Kind != FleetControllerKind.Timetable && junctions.Length != 0 ||
+                junctions.Any(j => j == null || !Enum.IsDefined(j.DefaultRoute)) ||
+                junctions.Select(j => j.Location).Distinct().Count() != junctions.Length)
+                throw new ArgumentException("Invalid location-keyed junction settings.");
             var harbors = c.Harbors.IsDefault ? [] : c.Harbors;
             if (harbors.Length > 8192 || c.Kind != FleetControllerKind.Timetable && harbors.Length != 0 ||
                 harbors.Any(h => h == null || !Enum.IsDefined(h.Kind) || h.Minutes < 0 ||
@@ -222,7 +229,8 @@ public sealed class FleetGraph
             var equal = m.Value is FleetTrain train && before.Value is FleetTrain bt
                 ? train with { Cars = bt.Cars } == bt && train.Cars.SequenceEqual(bt.Cars) :
                 m.Value is FleetController fc && before.Value is FleetController bc
-                ? fc with { Harbors = bc.Harbors } == bc && (fc.Harbors.IsDefault ? [] : fc.Harbors).SequenceEqual(bc.Harbors.IsDefault ? [] : bc.Harbors) :
+                ? fc with { Harbors = bc.Harbors, Junctions = bc.Junctions } == bc &&
+                    (fc.Junctions.IsDefault ? [] : fc.Junctions).SequenceEqual(bc.Junctions.IsDefault ? [] : bc.Junctions) && (fc.Harbors.IsDefault ? [] : fc.Harbors).SequenceEqual(bc.Harbors.IsDefault ? [] : bc.Harbors) :
                 m.Value is FleetGroup group && before.Value is FleetGroup bg
                 ? group with { Members = bg.Members } == bg && group.Members.SequenceEqual(bg.Members) : Equals(m.Value, before.Value);
             if (m.Revision == before.Revision ? !equal : m.Revision != checked(before.Revision + 1))

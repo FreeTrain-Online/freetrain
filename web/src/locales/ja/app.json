@@ -780,5 +780,17 @@
   "controllerConflict": "ダイヤグラムが変更または削除されました。キャンセルして開き直してください。",
   "controllerReferenceHelp": "割り当てた列車は同じダイヤグラムを共有します。設定を独立させるにはコピーしてください。",
   "controllerRename": "ダイヤグラム名を変更",
-  "controllerType": "ダイヤグラムの種類"
+  "controllerType": "ダイヤグラムの種類",
+  "controllerSettingType": "設定対象",
+  "controllerHarbor": "停車・発車",
+  "controllerJunction": "ポイント",
+  "controllerDefaultRoute": "通常の進行方向",
+  "controllerStraight": "直進",
+  "controllerCurve": "分岐",
+  "controllerCleanJunctions": "消滅したポイントの設定を削除",
+  "controllerCleanJunctionsHelp": "適用すると、ポイントが存在しない以下の位置の設定を削除します。停車設定は保持されます。",
+  "controllerJunctionHelp": "存在するポイントの通常の進行方向を選択します。未設定の場合は直進します。",
+  "controllerHarborHelp": "設定は信号機自身、または車庫が所属する駅の位置に適用します。未設定ではゲーム内の10分間停車します。毎日の発車時刻と到着時刻が同じ場合は翌日まで停車します。",
+  "controllerDepartureHour": "発車時（0～23）",
+  "controllerDepartureMinute": "発車分（0～59）"
 }

@@ -933,7 +933,8 @@
                 "rename",
                 "copy",
                 "configure",
-                "delete"
+                "delete",
+                "cleanJunctions"
               ]
             },
             "controllerId": {
@@ -974,6 +975,30 @@
               "anyOf": [
                 {
                   "$ref": "#/$defs/Position"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "junctions": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "maxItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/FleetJunction"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expectedGeometryRevision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counter"
                 },
                 {
                   "type": "null"
@@ -3907,6 +3932,13 @@
           },
           "minItems": 0,
           "maxItems": 8192
+        },
+        "junctions": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/FleetJunction"
+          }
         }
       },
       "required": [
@@ -4343,6 +4375,25 @@
           "lease"
         ]
       }
+    },
+    "FleetJunction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "defaultRoute": {
+          "enum": [
+            "straight",
+            "curve"
+          ]
+        }
+      },
+      "required": [
+        "location",
+        "defaultRoute"
+      ]
     }
   }
 }

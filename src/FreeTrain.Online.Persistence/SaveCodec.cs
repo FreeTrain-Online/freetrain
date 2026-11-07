@@ -190,7 +190,10 @@ public static class SaveCodec
                 foreach (var group in ArrayBound(fleet,"groups",FleetGraph.MaximumGroups).EnumerateArray())
                     ArrayBound(group,"members",FleetGraph.MaximumGroups + StockAdmission.MaximumFleetTrains);
                 foreach (var controller in ArrayBound(fleet,"controllers",FleetGraph.MaximumControllers).EnumerateArray())
+                {
                     ArrayBound(controller,"harbors",8192);
+                    if(controller.TryGetProperty("junctions",out _))ArrayBound(controller,"junctions",8192);
+                }
                 ArrayBound(ObjectProperty(state,"queue"),"pending",Clock.MaximumPending);
             }
             ArrayBound(ObjectProperty(state,"accounts"),"transactions",ProtocolIdentity.MaximumAccountTransactions);

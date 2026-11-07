@@ -1635,6 +1635,13 @@
           },
           "minItems": 0,
           "maxItems": 8192
+        },
+        "junctions": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/FleetJunction"
+          }
         }
       },
       "required": [
@@ -1734,6 +1741,25 @@
       "required": [
         "nextOrder",
         "pending"
+      ]
+    },
+    "FleetJunction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "defaultRoute": {
+          "enum": [
+            "straight",
+            "curve"
+          ]
+        }
+      },
+      "required": [
+        "location",
+        "defaultRoute"
       ]
     }
   },

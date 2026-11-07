@@ -162,7 +162,8 @@ public sealed record FleetTradePreviewRead(FleetTradeQuery Query, long Price, lo
 public sealed record TradeFleetCommand(FleetTradeQuery Query, long ExpectedPrice) : CommandPayload;
 public sealed record RenameFleetCommand(long TrainId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record ManageFleetControllerCommand(string Action, long ControllerId, long ExpectedRevision,
-    string Name, ContentBindingRead? Provider, FleetHarborRead[]? Harbors, PositionRead? Location = null) : CommandPayload;
+    string Name, ContentBindingRead? Provider, FleetHarborRead[]? Harbors, PositionRead? Location = null,
+    FleetJunctionRead[]? Junctions = null, long? ExpectedGeometryRevision = null) : CommandPayload;
 public sealed record AssignFleetControllerCommand(string TargetKind, long TargetId, long ExpectedRevision,
     long ControllerId, long ExpectedControllerRevision) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
@@ -281,8 +282,10 @@ public sealed record FleetTrainRead(long Id, long Revision, string Name, Content
     long? ControllerId, FleetCarRead[] Cars, bool IsReversed, string State, int Passengers,
     FleetPoseRead? BoardingOrigin, bool Forwarding, int MoveCount, int StopCallCount, long? PurchaseMinute);
 public sealed record FleetGroupRead(long Id, long Revision, string Name, long? ParentId, long? ControllerId, long[] Members);
+public sealed record FleetJunctionRead(PositionRead Location, string DefaultRoute);
 public sealed record FleetHarborRead(PositionRead Location, string Kind, int Minutes, bool Reverse);
-public sealed record FleetControllerRead(long Id, long Revision, string Name, string Kind, ContentBindingRead? Provider, FleetHarborRead[] Harbors);
+public sealed record FleetControllerRead(long Id, long Revision, string Name, string Kind, ContentBindingRead? Provider, FleetHarborRead[] Harbors,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetJunctionRead[]? Junctions = null);
 public sealed record FleetRead(long RootGroupId, FleetTrainRead[] Trains, FleetGroupRead[] Groups, FleetControllerRead[] Controllers);
 public sealed record MixedActionRead(long Registration, long Order, long DueMinute, string HandlerId, long Interval);
 public sealed record MixedQueueRead(long NextOrder, MixedActionRead[] Pending);

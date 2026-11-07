@@ -157,13 +157,15 @@ export type CommandPayload =
     }
   | {
       kind: "manageFleetController";
-      action: "create" | "rename" | "copy" | "configure" | "delete";
+      action: "create" | "rename" | "copy" | "configure" | "delete" | "cleanJunctions";
       controllerId: Counter;
       expectedRevision: Counter;
       name: string;
       provider: ContentBinding | null;
       harbors: [] | [FleetHarbor] | null;
       location: Position | null;
+      junctions?: [] | [FleetJunction] | null;
+      expectedGeometryRevision?: Counter | null;
     }
   | {
       kind: "assignFleetController";
@@ -563,12 +565,20 @@ export interface FleetController {
    * @maxItems 8192
    */
   harbors: FleetHarbor[];
+  /**
+   * @maxItems 8192
+   */
+  junctions?: FleetJunction[];
 }
 export interface FleetHarbor {
   location: Position;
   kind: "pass" | "fixed" | "daily";
   minutes: number;
   reverse: boolean;
+}
+export interface FleetJunction {
+  location: Position;
+  defaultRoute: "straight" | "curve";
 }
 export interface MixedQueue {
   nextOrder: Counter;

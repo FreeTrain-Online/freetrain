@@ -21,6 +21,10 @@ persisted authoring mode/provenance.
 revenue to both current schemas and decoders; existing expenditure-only entries
 and format/protocol numbers remain unchanged.
 
+[P5-19 basic TAT](web-parity-basic-tat.md) adds optional location-keyed junction
+settings to Save9/protocol7. An absent array means empty; writers omit empty
+arrays, preserving existing no-junction payloads. Format/protocol numbers remain unchanged.
+
 ## Current behavior
 
 - Prototype, unknown-version and incompatible identity inputs return `incompatibleSave`.

@@ -37,7 +37,8 @@ public static class FleetWire
             t.Forwarding,t.MoveCount,t.StopCallCount,t.PurchaseMinute)).ToArray(),
         f.Groups.Select(g => new FleetGroupRead(g.Id,g.Revision,g.Name,g.ParentId,g.ControllerId,g.Members.ToArray())).ToArray(),
         f.Controllers.Select(c => new FleetControllerRead(c.Id,c.Revision,c.Name,Tag(c.Kind),c.Provider == null ? null : Binding(c.Provider),
-            (c.Harbors.IsDefault ? [] : c.Harbors).Select(h => new FleetHarborRead(Position(h.Location),Tag(h.Kind),h.Minutes,h.Reverse)).ToArray())).ToArray());
+            (c.Harbors.IsDefault ? [] : c.Harbors).Select(h => new FleetHarborRead(Position(h.Location),Tag(h.Kind),h.Minutes,h.Reverse)).ToArray(),
+            c.Junctions.IsDefaultOrEmpty ? null : c.Junctions.Select(j => new FleetJunctionRead(Position(j.Location),Tag(j.DefaultRoute))).ToArray())).ToArray());
 
     public static FleetGraph? Restore(FleetRead? f, FleetProfile? profile)
     {
@@ -45,7 +46,7 @@ public static class FleetWire
         if (profile == null) throw new InvalidDataException("incompatibleSave");
         if (f.Trains.Length > StockAdmission.MaximumFleetTrains || f.Groups.Length > FleetGraph.MaximumGroups ||
             f.Controllers.Length > FleetGraph.MaximumControllers || f.Trains.Any(t => t.Cars.Length > StockAdmission.MaximumFormationCars) ||
-            f.Trains.Sum(t => t.Cars.Length) > StockAdmission.MaximumFleetCars || f.Controllers.Any(c => c.Harbors.Length > 8192))
+            f.Trains.Sum(t => t.Cars.Length) > StockAdmission.MaximumFleetCars || f.Controllers.Any(c => c.Harbors.Length > 8192 || c.Junctions?.Length > 8192 || c.Junctions?.Any(j => j == null || j.Location == null) == true))
             throw new ArgumentException("Fleet wire limit.");
         return new(profile,f.RootGroupId,
             f.Trains.Select(t => new FleetTrain(t.Id,t.Revision,t.Name,Binding(t.Definition),t.GroupId,t.ControllerId,
@@ -57,7 +58,8 @@ public static class FleetWire
             f.Groups.Select(g => new FleetGroup(g.Id,g.Revision,g.Name,g.ParentId,g.ControllerId,g.Members.ToImmutableArray())),
             f.Controllers.Select(c => new FleetController(c.Id,c.Revision,c.Name,EnumValue<FleetControllerKind>(c.Kind),
                 c.Provider == null ? null : Binding(c.Provider),c.Harbors.Select(h => new FleetHarborSetting(Position(h.Location),
-                    EnumValue<FleetHarborKind>(h.Kind),h.Minutes,h.Reverse)).ToImmutableArray())));
+                    EnumValue<FleetHarborKind>(h.Kind),h.Minutes,h.Reverse)).ToImmutableArray(),
+                (c.Junctions ?? []).Select(j => new FleetJunctionSetting(Position(j.Location),EnumValue<FleetJunctionRoute>(j.DefaultRoute))).ToImmutableArray())));
     }
     public static MixedQueueRead Queue(ClockState clock) => new(clock.NextOrder,
         clock.Pending.Select(a => new MixedActionRead(a.Registration,a.Order,a.DueMinute,a.HandlerId,a.Interval)).ToArray());

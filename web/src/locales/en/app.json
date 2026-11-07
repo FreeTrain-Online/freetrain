@@ -780,5 +780,17 @@
   "controllerConflict": "This controller changed or was deleted. Cancel and reopen the draft.",
   "controllerReferenceHelp": "Assignments share one controller. Copy it to make independent settings.",
   "controllerRename": "Rename controller",
-  "controllerType": "Controller type"
+  "controllerType": "Controller type",
+  "controllerSettingType": "Settings for",
+  "controllerHarbor": "Stop / departure",
+  "controllerJunction": "Junction",
+  "controllerDefaultRoute": "Default route",
+  "controllerStraight": "Straight",
+  "controllerCurve": "Curve",
+  "controllerCleanJunctions": "Remove missing junction settings",
+  "controllerCleanJunctionsHelp": "Apply removes the listed settings for locations where no junction remains. Stop settings are retained.",
+  "controllerJunctionHelp": "Choose the default route at an existing junction. Unconfigured junctions go straight.",
+  "controllerHarborHelp": "Settings use the harbor location: the signal itself, or the host station for a yard. Unconfigured stops wait 10 game minutes. Daily departures at the arrival time wait until the next day.",
+  "controllerDepartureHour": "Departure hour (0–23)",
+  "controllerDepartureMinute": "Departure minute (0–59)"
 }

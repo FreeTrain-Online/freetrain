@@ -150,3 +150,51 @@ test('named controllers can be created and configured before buying a train',asy
  await expect(dialog).toContainText(en.manualFleetHelp);await expect(dialog.getByRole('button',{name:en.controllerApply,exact:true})).toHaveCount(0);
  await dialog.getByRole('button',{name:en.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
 });
+for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and daily drafts synchronize, cancel and reopen`,async({page,browser,baseURL,worldServer})=>{
+ test.setTimeout(90000);const text=locale==='ja'?ja:en;
+ const initial=await state(page),input=readFileSync('../tmp/p5-19-tat-fleet.json');
+ const upload=await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input});expect(upload.ok(),await upload.text()).toBe(true);
+ await page.goto('/');await ready(page);
+ if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
+ const source=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.name==='Shared TAT');
+ const controls=await manager(page,text,locale);await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(source.id);
+ const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ try{
+  await peer.goto('/');await ready(peer);
+  const peers=await manager(peer);await peers.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(source.id);
+  await peers.getByRole('button',{name:en.controllerConfigure,exact:true}).click();
+  async function editJunction(){
+   await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();
+   const dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
+   await dialog.getByLabel(text.controllerSettingType,{exact:true}).selectOption('junction');
+   await dialog.getByLabel(text.position,{exact:true}).selectOption('0');return dialog;
+  }
+  let dialog=await editJunction();await dialog.getByLabel(text.controllerDefaultRoute,{exact:true}).selectOption('straight');
+  const before=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
+  dialog=await editJunction();await expect(dialog.getByLabel(text.controllerDefaultRoute,{exact:true})).toHaveValue('curve');
+  await dialog.getByLabel(text.controllerDefaultRoute,{exact:true}).selectOption('straight');
+  mkdirSync(evidence+'/tat',{recursive:true});await page.screenshot({path:evidence+`/tat/${locale}-junction.png`});
+  await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
+  await expect(peer.getByRole('dialog',{name:en.controllerConfigure,exact:true})).toContainText(en.controllerConflict);await peer.getByRole('dialog',{name:en.controllerConfigure,exact:true}).getByRole('button',{name:en.cancel,exact:true}).click();
+  await expect.poll(async()=>((await state(peer)).mixed.fleet.controllers.find((c:any)=>c.id===source.id).junctions[0].defaultRoute)).toBe('straight');
+  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
+  await dialog.getByLabel(text.controllerStop,{exact:true}).selectOption('daily');await dialog.getByLabel(text.controllerDepartureHour,{exact:true}).fill('8');await dialog.getByLabel(text.controllerDepartureMinute,{exact:true}).fill('0');await dialog.getByLabel(text.controllerReverse,{exact:true}).check();
+  await page.screenshot({path:evidence+`/tat/${locale}-daily.png`});await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
+  const bytes=await(await page.request.get('/api/saves/download')).body(),epoch=(await state(page)).worldEpoch;
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+epoch,{data:bytes})).ok()).toBe(true);await page.goto('/');await ready(page,locale);
+  const c=(await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===source.id);
+  expect(c.junctions).toEqual([{location:{x:22,y:20,z:2},defaultRoute:'straight'}]);expect(c.harbors).toEqual([{location:{x:100,y:100,z:2},kind:'daily',minutes:480,reverse:true}]);
+  const reopenedControls=await manager(page,text,locale),copy=(await state(page)).mixed.fleet.controllers.find((row:any)=>row.name==='Shared TAT 1');
+  await reopenedControls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(copy.id);
+  await reopenedControls.getByRole('button',{name:new RegExp('^'+text.controllerCleanJunctions)}).click();
+  dialog=page.getByRole('dialog',{name:text.controllerCleanJunctions,exact:true});await expect(dialog).toContainText('100, 100, 2');
+  const beforeCleanup=await(await page.request.get('/api/saves/download')).body();await dialog.getByRole('button',{name:text.cancel,exact:true}).click();
+  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(beforeCleanup);
+  await reopenedControls.getByRole('button',{name:new RegExp('^'+text.controllerCleanJunctions)}).click();dialog=page.getByRole('dialog',{name:text.controllerCleanJunctions,exact:true});
+  await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
+  const cleaned=(await state(page)).mixed.fleet.controllers.find((row:any)=>row.id===copy.id);expect(cleaned.junctions).toHaveLength(1);expect(cleaned.harbors).toHaveLength(1);
+  await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
+  expect((await state(page)).mixed.fleet.controllers.find((row:any)=>row.id===source.id).harbors[0].minutes).toBe(480);
+ }finally{await context.close();}
+});
