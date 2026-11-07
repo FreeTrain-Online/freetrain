@@ -54,6 +54,28 @@ public static class FleetTimetable
         return result;
     }
 
+    // Validated file append bypasses only Add's duplicate-mask guard. Rule
+    // domain/capacity and controller graph validation still apply atomically.
+    public static ImmutableArray<FleetTimetableRule> Append(ImmutableArray<FleetTimetableRule> rules, string encoded)
+    {
+        if(encoded==null || encoded.Length is <8 or >8192 || encoded.Length%8!=0 ||
+            encoded.Any(c=>!char.IsAsciiLetterOrDigit(c) && c is not ('+' or '/')))
+            throw new ArgumentException("Invalid append encoding.");
+        var bytes=Convert.FromBase64String(encoded);
+        FleetRuleAction[] actions=[FleetRuleAction.Pass,FleetRuleAction.Stop,FleetRuleAction.Go,FleetRuleAction.Reverse,
+            FleetRuleAction.Forwarding,FleetRuleAction.ReverseForwarding,FleetRuleAction.Reverse2,FleetRuleAction.RForwarding2];
+        if(rules.IsDefault)rules=[];
+        if(bytes.Length%6!=0 || rules.Length+bytes.Length/6>MaximumLocationRules)throw new ArgumentException("Timetable rule capacity exceeded.");
+        var result=rules.ToBuilder();
+        for(var i=0;i<bytes.Length;i+=6) {
+            if(bytes[i+5]>=actions.Length)throw new ArgumentException("Invalid append action.");
+            var r=new FleetTimetableRule((sbyte)bytes[i],(sbyte)bytes[i+1],(sbyte)bytes[i+2],(sbyte)bytes[i+3],(sbyte)bytes[i+4],actions[bytes[i+5]]);
+            if(!ValidRule(r,false))throw new ArgumentException("Invalid append rule.");
+            result.Add(r);
+        }
+        return result.ToImmutable();
+    }
+
     private static FleetRuleAction Select(ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
     {
         foreach(var rule in rules.IsDefault?[]:rules)

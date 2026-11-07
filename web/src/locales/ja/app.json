@@ -822,5 +822,17 @@
   "groupRoot": "ルート",
   "groupMoveHelp": "列車への直接の割り当ては維持されます。親の設定に従う列車は、移動先のグループのダイヤグラムを使います。",
   "groupConflict": "グループまたは所属が変更されました。キャンセルして編集を開き直してください。",
-  "groupDelegation": "親グループの設定に従う"
+  "groupDelegation": "親グループの設定に従う",
+  "ruleFileRead": "ダイヤファイルを読み込む",
+  "ruleFileSave": "ポータブル形式で保存（.ftdd.json）",
+  "ruleFileHelp": "ExAVのバイナリ.ftdd、またはFreeTrain OnlineのJSONを読み込めます（512 KiB・1,024件まで）。保存したJSONはここで再読込できます。デスクトップ版のバイナリ形式での保存には対応していません。",
+  "ruleFileReading": "ダイヤファイルを読み込み中…",
+  "ruleFileError": "未対応・破損・容量超過のダイヤファイルです。現在の設定は変更されていません。",
+  "ruleFilePreview": "読み込みプレビュー",
+  "ruleFileLegacy": "ExAVバイナリ形式",
+  "ruleFilePortable": "FreeTrain Online JSON v1",
+  "ruleFileCount": "現在 ＋ 読み込み → 合計",
+  "ruleFileAppend": "このダイヤを追加",
+  "ruleFileAppendHelp": "表示順に現在の設定の末尾へ追加します。コピーと同様に、同じ日時条件も追加できます。日時条件と動作はすべて検証されます。キャンセルすると現在の設定を維持します。",
+  "ruleFileCapacity": "追加には1件以上のダイヤが必要です。上限はこの場所で1,024件、制御器全体で8,192件です。"
 }

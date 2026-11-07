@@ -192,11 +192,12 @@ export type CommandPayload =
       expectedRevision: Counter;
       location: Position;
       settingKind: "harbor" | "junction";
-      operation: "add" | "replace" | "copy" | "move" | "remove" | "clear";
+      operation: "add" | "replace" | "copy" | "move" | "remove" | "clear" | "append";
       index: number;
       offset: number;
       rule: FleetRule | null;
       expectedGeometryRevision: Counter | null;
+      rulesBase64?: string | null;
     }
   | {
       kind: "manageFleetGroup";

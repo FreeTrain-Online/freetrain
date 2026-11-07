@@ -822,5 +822,17 @@
   "groupRoot": "Root",
   "groupMoveHelp": "The train’s own controller assignment is retained. Delegated trains use the destination group’s controller.",
   "groupConflict": "This group or its membership changed. Cancel and reopen the draft.",
-  "groupDelegation": "Use parent group controller"
+  "groupDelegation": "Use parent group controller",
+  "ruleFileRead": "Read rule file",
+  "ruleFileSave": "Save portable rules (.ftdd.json)",
+  "ruleFileHelp": "Read ExAV binary .ftdd or FreeTrain Online JSON files (up to 512 KiB and 1,024 rules). Portable JSON exports can be read here; desktop binary writing is not supported.",
+  "ruleFileReading": "Reading rule file…",
+  "ruleFileError": "The rule file is unsupported, malformed or too large. Current rules have not changed.",
+  "ruleFilePreview": "Import preview",
+  "ruleFileLegacy": "ExAV binary rules",
+  "ruleFilePortable": "FreeTrain Online JSON v1",
+  "ruleFileCount": "Existing + imported → total",
+  "ruleFileAppend": "Append these rules",
+  "ruleFileAppendHelp": "Append in the displayed order after the current rules. Duplicate time masks are allowed, as with rule copying. All imported masks and actions are validated. Cancel keeps the current rules.",
+  "ruleFileCapacity": "Append needs at least one rule, at most 1,024 rules at this location and at most 8,192 across this controller."
 }

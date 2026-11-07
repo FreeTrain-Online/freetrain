@@ -520,7 +520,8 @@ public static class NetworkEndpoints
             (manage.Junctions==null || manage.Junctions.Length<=1 && manage.Junctions.All(j=>j!=null && j.Location!=null && j.DefaultRoute is "straight" or "curve")) &&
             (manage.Harbors==null || manage.Harbors.Length<=1 && manage.Harbors.All(h=>h!=null && h.Location!=null && h.Kind is "pass" or "fixed" or "daily" or "advanced")),
         EditFleetRuleCommand edit => edit.ControllerId>0 && edit.ExpectedRevision>=0 && edit.Location!=null &&
-            edit.SettingKind is "harbor" or "junction" && edit.Operation is "add" or "replace" or "copy" or "move" or "remove" or "clear" &&
+            edit.SettingKind is "harbor" or "junction" && edit.Operation is "add" or "replace" or "copy" or "move" or "remove" or "clear" or "append" &&
+            (edit.RulesBase64==null || edit.RulesBase64.Length<=8192) &&
             edit.Index is >=-1 and <1024 && edit.Offset is >=-1 and <=1 && (edit.ExpectedGeometryRevision==null || edit.ExpectedGeometryRevision>=0),
         AssignFleetControllerCommand assign => assign.TargetKind is "train" or "group" && assign.TargetId>0 &&
             assign.ControllerId>0 && assign.ExpectedRevision>=0 && assign.ExpectedControllerRevision>=0,

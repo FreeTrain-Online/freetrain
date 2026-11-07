@@ -1,0 +1,74 @@
+[
+  {
+    "month": 4,
+    "day": 23,
+    "dayOfWeek": 5,
+    "hour": 8,
+    "minutes": 0,
+    "action": "pass"
+  },
+  {
+    "month": 4,
+    "day": 23,
+    "dayOfWeek": 5,
+    "hour": 8,
+    "minutes": 0,
+    "action": "stop"
+  },
+  {
+    "month": -1,
+    "day": -1,
+    "dayOfWeek": -1,
+    "hour": -1,
+    "minutes": -1,
+    "action": "go"
+  },
+  {
+    "month": -1,
+    "day": -1,
+    "dayOfWeek": -1,
+    "hour": -1,
+    "minutes": -1,
+    "action": "reverse"
+  },
+  {
+    "month": -1,
+    "day": -1,
+    "dayOfWeek": -1,
+    "hour": -1,
+    "minutes": -1,
+    "action": "forwarding"
+  },
+  {
+    "month": -1,
+    "day": -1,
+    "dayOfWeek": -1,
+    "hour": -1,
+    "minutes": -1,
+    "action": "reverseforwarding"
+  },
+  {
+    "month": -1,
+    "day": -1,
+    "dayOfWeek": -1,
+    "hour": -1,
+    "minutes": -1,
+    "action": "reverse2"
+  },
+  {
+    "month": 12,
+    "day": 31,
+    "dayOfWeek": -1,
+    "hour": 23,
+    "minutes": 50,
+    "action": "rforwarding2"
+  },
+  {
+    "month": 4,
+    "day": 23,
+    "dayOfWeek": 5,
+    "hour": 8,
+    "minutes": 0,
+    "action": "pass"
+  }
+]

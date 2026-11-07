@@ -1119,7 +1119,8 @@
                 "copy",
                 "move",
                 "remove",
-                "clear"
+                "clear",
+                "append"
               ]
             },
             "index": {
@@ -1146,6 +1147,19 @@
               "anyOf": [
                 {
                   "$ref": "#/$defs/Counter"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "rulesBase64": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 8192,
+                  "pattern": "^(?:[A-Za-z0-9+/]{8})+$"
                 },
                 {
                   "type": "null"

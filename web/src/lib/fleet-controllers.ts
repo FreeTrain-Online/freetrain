@@ -25,3 +25,5 @@ export function validFleetRule(r:FleetRule,junction:boolean):boolean {
   (junction?r.minutes===-1&&['straight','curve'].includes(r.action):
    (r.minutes===-1||r.minutes>=0&&r.minutes<=50&&r.minutes%10===0)&&['pass','stop','go','reverse','forwarding','reverseforwarding','reverse2','rforwarding2'].includes(r.action));
 }
+
+export const stationActions=['pass','stop','go','reverse','forwarding','reverseforwarding','reverse2','rforwarding2'] as const;

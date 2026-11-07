@@ -169,7 +169,8 @@ public sealed record AssignFleetControllerCommand(string TargetKind, long Target
 public sealed record ManageFleetGroupCommand(string Action, string TargetKind, long TargetId, long ExpectedRevision,
     string Name, long? ParentId, long? ExpectedParentRevision) : CommandPayload;
 public sealed record EditFleetRuleCommand(long ControllerId, long ExpectedRevision, PositionRead Location,
-    string SettingKind, string Operation, int Index, int Offset, FleetRuleRead? Rule, long? ExpectedGeometryRevision = null) : CommandPayload;
+    string SettingKind, string Operation, int Index, int Offset, FleetRuleRead? Rule, long? ExpectedGeometryRevision = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? RulesBase64 = null) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;
 public sealed record ReleaseControlCommand(string TrainId, string LeaseId) : CommandPayload;
 public sealed record RunCommand : CommandPayload;

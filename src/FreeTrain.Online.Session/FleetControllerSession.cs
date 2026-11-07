@@ -15,6 +15,9 @@ public sealed partial class SessionHost
             if(selected==null || selected.Revision!=command.ExpectedRevision)return "staleRevision";
             if(selected.Kind!=FleetControllerKind.Timetable || command.Location==null)return "invalidInput";
             var key=new Location(command.Location.X,command.Location.Y,command.Location.Z);
+            var append=command.Operation=="append";
+            if(append ? command.SettingKind!="harbor" || command.Rule!=null || command.Index!=-1 || command.Offset!=0 || command.RulesBase64==null : command.RulesBase64!=null)
+                return "invalidInput";
             var rule=command.Rule==null?null:FleetWire.Rule(command.Rule);
             FleetController changed;
             if(command.SettingKind=="junction") {
@@ -29,11 +32,11 @@ public sealed partial class SessionHost
                 var setting=rows.SingleOrDefault(h=>h.Location==key);
                 if(setting?.Kind!=FleetHarborKind.Advanced)return "invalidInput";
                 changed=selected with {Harbors=rows.Replace(setting,setting with {
-                    Rules=FleetTimetable.Edit(setting.Rules,false,command.Operation,command.Index,command.Offset,rule)})};
+                    Rules=append?FleetTimetable.Append(setting.Rules,command.RulesBase64!):FleetTimetable.Edit(setting.Rules,false,command.Operation,command.Index,command.Offset,rule)})};
             } else return "invalidInput";
             changed=changed with {Revision=checked(selected.Revision+1)};
             return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed)),state.World.Spatial.NextEntityId);
-        } catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
+        } catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException or FormatException){return "invalidInput";}
     }
     // All controller edits enter the same FIFO/receipt/epoch boundary as train
     // commands. Drafts carry member revisions, independent of the moving clock.
