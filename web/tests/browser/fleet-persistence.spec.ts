@@ -225,6 +225,8 @@ test('production fleet transport moves one coherent consist for two browser peer
    const q={x:16*(p.x-center+p.y)+pose.expected.offset[0]+sample!.a+.5,y:8*(p.y-p.x+center)-16*p.z+pose.expected.offset[1]+sample!.b+.5};
    const pan=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return Math.abs(q.x-x)*z>r.width/3||Math.abs(q.y-y)*z>r.height/3?{deltaX:(q.x-x)*z,deltaY:(q.y-y)*z,deltaMode:0}:undefined;},q);
    if(pan){const before=await canvas.getAttribute('data-camera');await canvas.dispatchEvent('wheel',pan);await expect(canvas).not.toHaveAttribute('data-camera',before!);await expect(canvas).toHaveAttribute('data-presentation','ready');}
+   await target.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   await expect(canvas).toHaveAttribute('data-refinement','ready');
    const point=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return {x:r.x+r.width/2+(q.x-x)*z,y:r.y+r.height/2+(q.y-y)*z};},q);
    await target.mouse.click(point.x,point.y);await expect(target.getByTestId('train-car-id')).toHaveText(c.id);
    await expect(target.getByText(target===peer?'車両':'Car',{exact:true})).toBeVisible();

@@ -1,3 +1,8 @@
+**P5-26 moving-fleet integration:** [Cross-tool and lifecycle regression](doc/web-parity-fleet-cross-tool.md)
+uses purchased three-car trains to verify construction protection, source-specific
+skips and charges, peer movement, stale previews, receipts and replacement. It
+also fixes missing car pixels/picks after offscreen movement and panning.
+
 **P5-25 train information and colors:** [Information, local tracking and color settings](doc/web-parity-train-information.md)
 add a nested train selector under **View**, actual state/capacity/passengers and
 shared controller details. **Move to train** frames once; **Follow train** follows

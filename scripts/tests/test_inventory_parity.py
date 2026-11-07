@@ -88,8 +88,16 @@ class PinnedInventory(unittest.TestCase):
     def test_reviewed_operation_ids_exist_in_delivered_registry(self):
         source = (inventory.ROOT / 'web/src/lib/game-ui.ts').read_text()
         registry = source.split('export const registry = {', 1)[1].split('} as const satisfies', 1)[0]
+        # Preserve the historical ledger's operation IDs. The former controller
+        # panel was removed with Manual driving; shared controller management is
+        # delivered through Trains -> Controller manager instead.
+        relocated = {'controller': 'fleet'}
+        fleet = (inventory.ROOT / 'web/src/FleetControls.svelte').read_text()
+        self.assertIn('<FleetControllerManager', fleet)
+        self.assertIn('{text.controllerManager}</button>', fleet)
         for row in self.base['uiBindings']:
             for operation in row['modernOperations']:
+                operation = relocated.get(operation, operation)
                 self.assertRegex(registry, r"(?m)^  ['\"]?" + operation + r"['\"]?:")
 
     def test_baseline_sources_and_resources_are_pinned(self):

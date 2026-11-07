@@ -65,6 +65,11 @@ export class TerrainScene {
     private region?:{build:(h0:number,h1:number,v0:number,v1:number)=>Operation[];width:number;height:number;levels:number;marginX:number;marginY:number},
     private background='#d8e5d9') {}
   get supportsViewport():boolean {return !!this.columnBuilder;}
+  retainViewportOperations(operations:readonly TerrainOperation[]) {
+    // Small maps retain their complete scene for future viewport rebuilds.
+    // A locally patched raster can omit changed columns outside its bounds.
+    if(this.region)this.operations=operations;
+  }
   get backgroundColor():string {return this.background;}
   private viewBounds(view:View,width:number,height:number) {
     const r=this.region!;

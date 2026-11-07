@@ -73,6 +73,20 @@ Deno.test('small gameplay maps retain terrain pixels between animation frames',a
     equal(repaints,0);
   });
 });
+
+Deno.test('offscreen edits on small maps retain complete source operations for a later pan',async()=>{
+ await withViewport(async(_scene,_viewport,ctx)=>{
+  const before=flat(64,64),scene=await TerrainScene.prepare(before,catalog,cache(),day,5),viewport=new TerrainViewport(scene);
+  const settle=(v:{x:number;y:number;zoom:number})=>{for(let n=0;n<10000;n++)if(!viewport.draw(ctx,v,128,96,1).pending)return;throw new Error('Viewport never settled');};
+  const first={x:0,y:32,zoom:1};settle(first);
+  const after=structuredClone(before);after.revision='2';after.terrain!.geometryRevision='2';after.terrain!.cells[60*64+40].ground=2;
+  const next=await TerrainScene.prepare(after,catalog,cache(),day,5,scene),complete=next.operations;
+  viewport.setScene(next);settle(first);
+  assert(next.operations===complete,'A clipped local patch must not replace the complete small-map scene');
+  const far={x:-1280,y:-432,zoom:1};settle(far);
+  equal(viewport.pick({x:16,y:24},far)?.position,{x:41,y:70,z:2});
+ });
+});
 Deno.test('local spatial updates retain source order, replace both moving-car entries, and remove obsolete hits',async()=>{
   await withViewport((scene)=>{
     const recipe=catalog.renderRecipes.find(r=>r.handler==='train-car')!;
@@ -522,6 +536,7 @@ Deno.test('map sprite changes retain the front buffer through preparation and pr
   await withViewport(async(scene,_viewport,ctx,canvases)=>{
     const prepare=TerrainScene.prepare;
     let complete!:(scene:TerrainScene)=>void,invalidated!:()=>void;
+    let preparationStarted=Promise.withResolvers<void>();
     const images:unknown[]=[];
     ctx.drawImage=((image:unknown)=>{images.push(image);}) as typeof ctx.drawImage;
     const canvas={width:128,height:96,dataset:{},getContext:()=>ctx} as unknown as HTMLCanvasElement;
@@ -529,14 +544,17 @@ Deno.test('map sprite changes retain the front buffer through preparation and pr
     const read=flat(200,100);
     // Use the real scene/raster pipeline with controlled asynchronous preparation.
     Object.assign(renderer,{catalog:Promise.resolve(catalog),catalogHash:read.requiredPacks[0].catalogHash});
-    TerrainScene.prepare=()=>new Promise(resolve=>{complete=resolve;});
+    TerrainScene.prepare=()=>new Promise(resolve=>{complete=resolve;preparationStarted.resolve();});
     const camera={x:0,y:0,zoom:1};
     let options:MapOptions={heightCut:5,level:1,night:false,winter:false,recolor:false,shape:'eastWest',remove:false};
     const draw=()=>{images.length=0;return renderer.draw(camera,128,96,1,options);};
     const settle=()=>{for(let n=0;n<1000;n++){draw();if(!renderer.needsFrame)return;}throw new Error('Map never settled');};
     const prepared=async(next:TerrainScene)=>{
       const ready=new Promise<void>(resolve=>{invalidated=resolve;});
-      await Promise.resolve();complete(next);await ready;
+      // Catalog/color preparation can cross several promise boundaries. Observe
+      // the actual scene request instead of assuming one microtask starts it.
+      await preparationStarted.promise;preparationStarted=Promise.withResolvers<void>();
+      complete(next);await ready;
     };
     try {
       renderer.setRead(read);assert(!draw());await prepared(scene);settle();

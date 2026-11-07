@@ -24,6 +24,7 @@ test('real terrain save replacement renders sea/cut/forest, picks independently,
   const q=await point(page,16,-40);await page.mouse.click(q.x,q.y);await expect(page.getByTestId('selected-object')).toHaveText('Terrain · cell:0,0 · 1, 0, 3');
   await openPanel(page,'view');await page.getByLabel('Height cut',{exact:true}).fill('4');await expect(canvas).toHaveAttribute('data-terrain-cut','4');await expect(canvas).toHaveAttribute('data-assets','ready');
   await expect.poll(()=>sheets).toBeGreaterThan(0);
+  await expect(canvas).toHaveAttribute('data-presentation','ready');
   const terrainHash=await canvas.evaluate(el=>el.toDataURL());
   await page.getByLabel('Night',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant','spring/night');await expect.poll(async()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(terrainHash);
   await page.getByLabel('Winter ground',{exact:true}).check();await expect(canvas).toHaveAttribute('data-terrain-variant','winter/night');
@@ -386,6 +387,8 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await page.getByLabel('World name',{exact:true}).fill('Lake railway');await page.getByLabel('Lake count (0–8)',{exact:true}).fill('1');await page.getByLabel('River direction',{exact:true}).selectOption('none');
   async function preview(){const waiting=page.waitForResponse(r=>r.url().includes('/worlds/generated/preview'));await page.getByRole('button',{name:'Preview world',exact:true}).click();const response=await waiting;expect(response.ok(),await response.text()).toBe(true);await expect(page.getByTestId('empty-world-preview')).toBeVisible();return response.json();}
   const basin=await preview();expect(basin.geography.metrics).toMatchObject({lakeComponents:1,riverCount:0});
+  // Exercise a river-only geometry explicitly; a river may coexist with a lake.
+  await page.getByLabel('Lake count (0–8)',{exact:true}).fill('0');
   await page.getByLabel('River direction',{exact:true}).selectOption('northSouth');
   const first=await preview();expect(first.geography.metrics).toMatchObject({lakeComponents:0,riverCount:1,seaComponents:1,seaSides:5});
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
@@ -406,7 +409,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','water-preserved');
   expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(9);
-  const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(1);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
+  const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(0);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
   await closePanel(page);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
@@ -424,7 +427,7 @@ test('Japanese narrow directional rivers work without lakes, show impossible rim
   await page.getByLabel('川の方向',{exact:true}).selectOption('none');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('8');
   await page.getByLabel('格納幅（H）',{exact:true}).fill('16');await page.getByLabel('格納奥行（V）',{exact:true}).fill('16');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('creation-feedback')).toContainText(ja.lakeImpossible);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
-  await page.getByLabel('格納幅（H）',{exact:true}).fill('64');await page.getByLabel('格納奥行（V）',{exact:true}).fill('64');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('1');
+  await page.getByLabel('格納幅（H）',{exact:true}).fill('64');await page.getByLabel('格納奥行（V）',{exact:true}).fill('64');await page.getByLabel('湖の数（0〜8）',{exact:true}).fill('0');
   await page.getByLabel('川の方向',{exact:true}).selectOption('northSouth');
   await page.getByRole('button',{name:'世界をプレビュー',exact:true}).click();await expect(page.getByTestId('water-metrics')).toContainText('湖：0');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -465,7 +468,7 @@ test('forest controls reserve connected level land, show realized cover and conf
   const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);
   await closePanel(page);await ready(page);
   const pixels=await page.locator('canvas').evaluate(c=>c.toDataURL());await openPanel(page,'view');await page.getByLabel('Winter ground',{exact:true}).check();await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','winter/day');await closePanel(page);
-  expect(await page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
+  await expect.poll(()=>page.locator('canvas').evaluate(c=>c.toDataURL())).not.toBe(pixels);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
   await replace(page,original);await replace(page,saved);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);
  }finally{await replace(page,original);await context.close();}

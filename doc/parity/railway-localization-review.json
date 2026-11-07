@@ -2664,14 +2664,14 @@
         "wording": {
           "en": {
             "railCar": "A car occupies the route.",
-            "signalRules": "Signals cost nothing. Junctions, special tracks and obstacles reject placement. Cars protect both placement and removal. Train waits and controller editing are planned for the train phase."
+            "signalRules": "Signals cost nothing. Junctions, special tracks and obstacles reject placement. Cars protect both placement and removal. Select a signal on the map to edit a shared controller, or use the controller manager."
           },
           "ja": {
             "railCar": "経路上に車両があります。",
-            "signalRules": "設置・撤去は無料です。分岐・特殊線路・障害物には設置できません。車両がある場合は設置も撤去もできません。停車待ちと制御の編集は列車の実装段階で対応します。"
+            "signalRules": "設置・撤去は無料です。分岐・特殊線路・障害物には設置できません。車両がある場合は設置も撤去もできません。地図上の信号を選択するか、ダイヤグラム管理を開くと共有ダイヤグラムを編集できます。"
           }
         },
-        "review": "Car-protected rejection is translated now; real train movement and controller workflows remain P5."
+        "review": "P5-24 delivered real signal waits and shared controller editing; P5-26 rechecks moving-consist placement/removal protection. Current EN/JA help describes those delivered behaviors. Source and donor bytes remain the P4-22 provenance."
       }
     }
   ],
@@ -2693,7 +2693,7 @@
     "internal persistence keys",
     "numeric formats/defaults"
   ],
-  "reviewSha256": "3ec395d3fb82b9e50f14c730bca8e1a984d8b29c667f0b33e27c9b423c21c613",
+  "reviewSha256": "404b0feb9a0f7ff5f679a8916e01fd323a46b6b04faf5fdc7e23cece200694ee",
   "delivery": {
     "slice": "P4-22",
     "status": "all-78-dispositions-reviewed",

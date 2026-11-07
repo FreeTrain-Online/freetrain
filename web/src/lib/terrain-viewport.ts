@@ -55,7 +55,7 @@ export class TerrainViewport {
   private patch(scene:TerrainScene):boolean {
     const old=this.raster;if(!old)return false;
     const columns=scene.changedColumns(old.scene);if(!columns||columns.length>2048)return false;
-    if(!columns.length){old.index.replace(scene,new Map());this.raster={...old,scene};scene.operations=old.operations;return true;}
+    if(!columns.length){old.index.replace(scene,new Map());this.raster={...old,scene};scene.retainViewportOperations(old.operations);return true;}
     const changed=new Map<number,readonly TerrainOperation[]>();let drawn=old.drawn;
     let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
     const damage=(op:TerrainOperation,owner:TerrainScene)=>{
@@ -72,7 +72,7 @@ export class TerrainViewport {
     }
     const publish=()=>{
       old.index.replace(scene,changed);const operations=old.index.operations;
-      this.raster={...old,scene,operations,drawn};scene.operations=operations;
+      this.raster={...old,scene,operations,drawn};scene.retainViewportOperations(operations);
     };
     if(left===Infinity){publish();return true;}
     // Repaint all overlapping layers, including unchanged forests/cliffs, in
@@ -139,7 +139,7 @@ export class TerrainViewport {
           this.spare=this.raster?.image;this.raster=step.value;
           this.completedKey=this.work.key;this.work=undefined;
           if(this.raster.scene!==this.scene&&!this.patch(this.scene))this.completedKey='';
-          this.raster.scene.operations=this.raster.operations;
+          this.raster.scene.retainViewportOperations(this.raster.operations);
           break;
         }
       }while(performance.now()<deadline);

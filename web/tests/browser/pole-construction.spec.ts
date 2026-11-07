@@ -45,11 +45,27 @@ for(const ja of [false,true])test(`pole types, inferred axes, replacement, remov
     await expect.poll(async()=>JSON.stringify((await state(peer)).mixed)).toBe(JSON.stringify(built.mixed));
     expect((await pixels(page,[v]))[0]).toBeGreaterThan(3);
     if(type===types[0]){
-     const shown=await page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL()),saved=await save(page);
-     await openPanel(page,'view',ja?'ja':'en');await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).uncheck();
+     const saved=await save(page);
+     // Keep the same panel/camera for both visibility states. Entering/leaving
+     // a narrow tool sheet can reframe the map independently of pole rendering.
+     await openPanel(page,'view',ja?'ja':'en');
+     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
+     await expect(page.locator('canvas')).toHaveAttribute('data-refinement','ready');
+     // Both snapshots should start from a full presentation at this camera.
+     await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).uncheck();
+     await expect(page.locator('canvas')).toHaveAttribute('data-terrain-variant','spring/day');
+     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
+     await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).check();
+     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
+     const shown=await page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL());
+     await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).uncheck();
      await expect.poll(()=>page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL())).not.toBe(shown);await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');expect(await save(page)).toEqual(saved);
-     await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).check();await closePanel(page);
+     await page.getByLabel(ja?'架線柱を表示':'Show electric poles',{exact:true}).check();
      await expect.poll(()=>page.locator('canvas').evaluate(c=>(c as HTMLCanvasElement).toDataURL())).toBe(shown);
+     await closePanel(page);
     }
 
    }
