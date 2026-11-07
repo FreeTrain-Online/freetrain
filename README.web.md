@@ -52,7 +52,7 @@ its authoritative preview and confirmation.
 [P4-15 Train garage](doc/web-parity-garage-tool.md) adds the EN/JA **Train garage** task (**H**):
 ground-level cardinal garage tracks, compatible-track replacement, exact background/foreground
 art, and protected conversion back to ordinary rail. Preview explains the source's half-open
-removal and repeated-subtotal billing. Garages are decorative; train mechanics remain P5.
+removal and repeated-subtotal billing. Trains traverse garage rails without simulated maintenance.
 
 [P4-17 Electric poles](doc/web-parity-pole-tool.md) adds the EN/JA **Electric poles** task (**E**):
 all four bundled types, track-derived cardinal orientation, exact before/after art,
@@ -62,8 +62,11 @@ hide poles locally. Poles are visual accessories without simulated electrificati
 [P4-16 Signals](doc/web-parity-signal-tool.md) adds the EN/JA **Signals** task (**F**):
 three-aspect and shunting signals in four directions, point placement on empty or
 ordinary track, protected removal restoring normal rail, exact bundled art and
-zero booking. Save/reopen retains signal and controller-reference state. Train
-waits and controller editing remain P5.
+zero booking. [P5-24 signal integration](doc/web-parity-fleet-signals.md) uses each
+passing train's effective shared controller. Select a signal on the map or use
+the controller manager to configure its location in a chosen timetable. Simple
+passes without waiting; signals exchange no passengers. Save/reopen retains the
+settings and pending waits, with no controller assigned to the signal itself.
 
 [P4-14 Tunnel](doc/web-parity-tunnel-tool.md) adds the EN/JA **Tunnel** task (**U**):
 cardinal routes through actual Mountains, mixed tunnel/ordinary rail, saved

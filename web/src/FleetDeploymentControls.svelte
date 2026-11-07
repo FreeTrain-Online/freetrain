@@ -1,6 +1,6 @@
 <script lang="ts">
   import {effectiveFleetController} from './lib/fleet-state.ts';
-  import {fleetRecoveryReason,fleetStateLabel} from './lib/fleet-recovery.ts';
+  import {fleetRecoveryReason,fleetStateLabel,fleetWaitingAtSignal} from './lib/fleet-recovery.ts';
   import {primaryAction} from './lib/primary-action.ts';
   import {onDestroy,tick,untrack} from 'svelte';
   import type {ShellModel,ShellState} from './lib/shell-model.ts';
@@ -42,6 +42,7 @@
 <section class="deployment-controls" aria-label={train?.state==='unplaced'&&allowPlacement?text.deployTrain:text.fleetOperations} use:primaryAction>
   <h3>{train?.state==='unplaced'?(allowPlacement?text.deployTrain:text.stockUnplaced):text.fleetOperations}</h3>
   {#if train}<p data-testid="fleet-state">{text.trainState}: {text[fleetStateLabel[train.state]]}{train.forwarding?` · ${text.fleetForwarding}`:''}</p>
+    {#if fleetWaitingAtSignal(read,train)}<p data-testid="fleet-wait-harbor">{text.fleetSignalWaiting}</p>{/if}
     {@const reason=fleetRecoveryReason(read,train)}
     {#if reason}<p role="status" data-testid="fleet-recovery-reason">{text[reason]} {text.fleetRecoveryHelp}</p>{/if}
   {/if}

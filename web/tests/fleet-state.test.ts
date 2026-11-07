@@ -252,3 +252,19 @@ Deno.test('Outside diagonal feedback retains truncating source matrix order for 
  }
  assert.equal(count,56);
 });
+
+Deno.test('positive signal waits have contextual labels without inventing a saved signal state',async()=>{
+ const {fleetWaitingAtSignal}=await import('../src/lib/fleet-recovery.ts');
+ const read=await scene(),train=read.mixed!.fleet!.trains[0],voxel=read.mixed!.voxels[0];
+ train.state='stoppingatstation';train.cars[0].state={kind:'inside',location:{...voxel.position},heading:2,countdown:null};
+ const before=JSON.stringify(read);
+ assert.equal(fleetWaitingAtSignal(read,train),false);
+ for(const id of ['{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}','{6FA55842-E693-414f-A120-0A3D0C613B21}']){
+  const profile=(await import('../src/generated/railway-profile.json',{with:{type:'json'}})).default;
+  voxel.traffic!.rail!.definition=profile.bindings.find(b=>b.reference.contributionId===id)!.reference;
+  const saved=JSON.stringify(read);assert.equal(fleetWaitingAtSignal(read,train),true);assert.equal(JSON.stringify(read),saved);
+  train.state='moving';assert.equal(fleetWaitingAtSignal(read,train),false);train.state='stoppingatstation';
+  train.cars[0].state.kind='outside';assert.equal(fleetWaitingAtSignal(read,train),false);train.cars[0].state.kind='inside';
+ }
+ assert.equal(train.state,'stoppingatstation');assert.notEqual(JSON.stringify(read),before);
+});

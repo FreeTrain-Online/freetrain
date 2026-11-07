@@ -8,6 +8,16 @@ type Train=NonNullable<NonNullable<ReadState['mixed']>['fleet']>['trains'][numbe
 export const fleetStateLabel={unplaced:'stockUnplaced',moving:'moving',stoppingatstation:'fleetWaiting',
  stoppingatsignal:'fleetSignalWaiting',emergencystopping:'fleetEmergency'} as const;
 
+// Positive signal waits retain ExAV's StoppingAtStation state (GEO-005).
+// This describes the harbor in the snapshot without invoking its controller.
+export function fleetWaitingAtSignal(read:ReadState,train:Train):boolean {
+ if(train.state!=='stoppingatstation'||train.cars[0].state.kind!=='inside')return false;
+ const p=train.cars[0].state.location!;
+ const rail=read.mixed?.voxels.find(v=>v.position.x===p.x&&v.position.y===p.y&&v.position.z===p.z)?.traffic?.rail;
+ return !!rail&&profile.bindings.some(b=>b.handler==='signal'&&b.reference.packId===rail.definition.packId&&
+  b.reference.contributionId===rail.definition.contributionId&&b.reference.recipeId===rail.definition.recipeId);
+}
+
 // Describe the current saved snapshot without advancing time or controllers.
 // After TRAIN-D001 the current head faces the retried direction.
 export function fleetRecoveryReason(read:ReadState,train:Train):'fleetMissingTrack'|'fleetOccupiedTrack'|'fleetRetry'|'fleetOccupiedReturn'|'fleetMissingReturn'|undefined {

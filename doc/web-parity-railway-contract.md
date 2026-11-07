@@ -194,9 +194,12 @@ SingleRailRoad; it does not require an already straight compatible track. It
 replaces the pattern with the selected cardinal straight signal. Reject other
 subtypes, non-Traffic obstacles and protected cars. Removal rejects a car and
 restores SingleRailRoad with the signal pattern. Neither path books money.
-Persist type, direction and future shared controller identity; heading within one
-eighth-turn of the signal direction delegates stop time, other headings return
-zero. It is a TrainHarbor, not a passenger platform.
+Persist type and direction; the reserved controller field stays null under
+TRAIN-D010. A heading within one eighth-turn of the signal direction delegates
+stop time to the passing train's effective controller; other headings return
+zero. It is a TrainHarbor without passenger exchange.
+[P5-24 signal integration](web-parity-fleet-signals.md) verifies shared-controller
+editing, real waits, removal/reuse and continuation.
 
 GEO-007 is retained: `drawBefore` draws the signal when
 `needsToDrawAfter(direction)` is **true**, then draws track; `drawAfter` draws it

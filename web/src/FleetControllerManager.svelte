@@ -119,11 +119,11 @@
    </select></label>
    <p class="hint">{configurationKind==='junction'?text.controllerJunctionHelp:text.controllerHarborHelp}</p>
    <div class="form-actions">
-    {#each ['x','y','z'] as axis}<label>{axis.toUpperCase()}<input aria-label={axis.toUpperCase()} type="number" step="1" value={axis==='x'?x:axis==='y'?y:z} disabled={blocked||changed} oninput={event=>{const n=Number(event.currentTarget.value);if(axis==='x')x=n;else if(axis==='y')y=n;else z=n;}}/></label>{/each}
+    {#each ['x','y','z'] as axis}<label>{axis.toUpperCase()}<input aria-label={axis.toUpperCase()} type="number" step="1" value={axis==='x'?x:axis==='y'?y:z} disabled={blocked||changed||!!location} oninput={event=>{const n=Number(event.currentTarget.value);if(axis==='x')x=n;else if(axis==='y')y=n;else z=n;}}/></label>{/each}
     <button disabled={blocked||changed||(configurationKind==='harbor'?draft.harbors:draft.junctions).length>=8192&&!(configurationKind==='harbor'?draft.harbors:draft.junctions).some(h=>h.location.x===x&&h.location.y===y&&h.location.z===z)} onclick={add}>{text.controllerLocation}</button>
    </div>
    {#if (configurationKind==='harbor'?draft.harbors:draft.junctions).length}
-    <label class="field">{text.position}<select aria-label={text.position} bind:value={index} disabled={changed}>{#each (configurationKind==='harbor'?draft.harbors:draft.junctions) as h,i}<option value={i}>{h.location.x}, {h.location.y}, {h.location.z}</option>{/each}</select></label>
+    <label class="field">{text.position}<select aria-label={text.position} bind:value={index} disabled={changed||!!location}>{#each (configurationKind==='harbor'?draft.harbors:draft.junctions) as h,i}<option value={i}>{h.location.x}, {h.location.y}, {h.location.z}</option>{/each}</select></label>
    {/if}
    {#if draft.removedLocation}<p>{text.controllerRemoveLocation}: {draft.removedLocation.x}, {draft.removedLocation.y}, {draft.removedLocation.z}</p>{/if}
    {#if junction}
