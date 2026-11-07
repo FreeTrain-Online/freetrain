@@ -150,6 +150,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(ManageFleetControllerCommand), "manageFleetController")]
 [JsonDerivedType(typeof(EditFleetRuleCommand), "editFleetRule")]
 [JsonDerivedType(typeof(AssignFleetControllerCommand), "assignFleetController")]
+[JsonDerivedType(typeof(ManageFleetGroupCommand), "manageFleetGroup")]
 [JsonDerivedType(typeof(DeployFleetCommand), "deployFleet")]
 public abstract record CommandPayload;
 public sealed record FleetDeploymentQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
@@ -167,6 +168,8 @@ public sealed record ManageFleetControllerCommand(string Action, long Controller
     FleetJunctionRead[]? Junctions = null, long? ExpectedGeometryRevision = null) : CommandPayload;
 public sealed record AssignFleetControllerCommand(string TargetKind, long TargetId, long ExpectedRevision,
     long ControllerId, long ExpectedControllerRevision) : CommandPayload;
+public sealed record ManageFleetGroupCommand(string Action, string TargetKind, long TargetId, long ExpectedRevision,
+    string Name, long? ParentId, long? ExpectedParentRevision) : CommandPayload;
 public sealed record EditFleetRuleCommand(long ControllerId, long ExpectedRevision, PositionRead Location,
     string SettingKind, string Operation, int Index, int Offset, FleetRuleRead? Rule, long? ExpectedGeometryRevision = null) : CommandPayload;
 public sealed record AcquireControlCommand(string TrainId) : CommandPayload;

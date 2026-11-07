@@ -204,6 +204,16 @@ export type CommandPayload =
       offset: number;
       rule: FleetRule | null;
       expectedGeometryRevision: Counter | null;
+    }
+  | {
+      kind: "manageFleetGroup";
+      action: "create" | "rename" | "move";
+      targetKind: "group" | "train";
+      targetId: Counter;
+      expectedRevision: Counter;
+      name: string;
+      parentId: Counter | null;
+      expectedParentRevision: Counter | null;
     };
 
 export interface Join {

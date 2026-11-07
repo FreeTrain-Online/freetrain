@@ -524,6 +524,9 @@ public static class NetworkEndpoints
             edit.Index is >=-1 and <1024 && edit.Offset is >=-1 and <=1 && (edit.ExpectedGeometryRevision==null || edit.ExpectedGeometryRevision>=0),
         AssignFleetControllerCommand assign => assign.TargetKind is "train" or "group" && assign.TargetId>0 &&
             assign.ControllerId>0 && assign.ExpectedRevision>=0 && assign.ExpectedControllerRevision>=0,
+        ManageFleetGroupCommand group => group.Action is "create" or "rename" or "move" && group.TargetKind is "train" or "group" &&
+            group.TargetId>=0 && group.ExpectedRevision>=0 && group.Name is {Length: <=256} &&
+            (group.ParentId==null || group.ParentId>=0) && (group.ExpectedParentRevision==null || group.ExpectedParentRevision>=0),
         RenameFleetCommand rename => rename.TrainId > 0 && rename.ExpectedRevision >= 0 && rename.Name is {Length: <= 256},
         AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),
         ReleaseControlCommand release => !string.IsNullOrWhiteSpace(release.TrainId) && !string.IsNullOrWhiteSpace(release.LeaseId),

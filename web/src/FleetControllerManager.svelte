@@ -1,7 +1,7 @@
 <script lang="ts">
  import FleetRuleEditor from './FleetRuleEditor.svelte';
  import DecisionModal from './DecisionModal.svelte';
- import FleetControllerAssignment from './FleetControllerAssignment.svelte';
+ import FleetGroupManager from './FleetGroupManager.svelte';
  import {messages} from './lib/localization.ts';
  import {controllerUsages,controllerCopyName,validControllerName,missingControllerJunctions} from './lib/fleet-controllers.ts';
  import profile from './generated/fleet-profile.json' with {type:'json'};
@@ -11,7 +11,7 @@
  const text=$derived(messages[view.locale]),fleet=$derived(view.read?.mixed?.fleet);
  const blocked=$derived(disabled||view.pending||view.connection!=='ready'||view.role==='observer');
  const instances=$derived(fleet?.controllers.filter(c=>c.provider!==null)??[]);
- let selectedId=$state(''),groupId=$state('');
+ let selectedId=$state('');
  let ruleTarget=$state<{controllerId:string;location:Position;settingKind:'harbor'|'junction';epoch:string}>();
  function openRules(){
   const target=setting??junction;if(!draft?.source||!target||changed)return;
@@ -19,7 +19,6 @@
  }
  const selected=$derived(instances.find(c=>c.id===selectedId));
  const usages=$derived(fleet&&selected?controllerUsages(fleet,selected.id):undefined);
- const group=$derived(fleet?.groups.find(g=>g.id===groupId)??fleet?.groups[0]);
  let draft=$state<{action:'create'|'rename'|'copy'|'delete'|'configure'|'cleanJunctions';source?:Pick<FleetController,'id'|'revision'|'name'|'kind'>;epoch:string;name:string;provider:string;harbors:FleetHarbor[];junctions:FleetJunction[];geometry:string;removedLocation?:Position}>();
  let configurationKind=$state<'harbor'|'junction'>('harbor');
  let x=$state(0),y=$state(0),z=$state(0),index=$state(0),composing=$state(false),changed=$state(false);
@@ -96,13 +95,7 @@
    {#each usages.groups as g}<li>{text.controllerGroup}: {g.name} · #{g.id}</li>{/each}
   </ul>
  {/if}
- {#if !location&&group}
-  <label class="field">{text.controllerGroup}<select aria-label={text.controllerGroup} value={group.id} onchange={event=>{groupId=event.currentTarget.value;}}>
-   {#each fleet?.groups??[] as g}<option value={g.id}>{g.name} · #{g.id}</option>{/each}
-  </select></label>
-  <FleetControllerAssignment {model} {view} targetKind="group" targetId={group.id} disabled={blocked}/>
-  <p class="hint">{text.controllerDelegationHelp}</p>
- {/if}
+ {#if !location}<FleetGroupManager {model} {view} disabled={blocked}/>{/if}
 </section>
 {#if draft}
  <DecisionModal leftAligned title={text[({create:'controllerCreate',rename:'controllerRename',copy:'controllerCopy',delete:'controllerDelete',configure:'controllerConfigure',cleanJunctions:'controllerCleanJunctions'} as const)[draft.action]]} oncancel={()=>{if(!view.pending)draft=undefined;}}>

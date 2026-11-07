@@ -824,5 +824,17 @@
   "ruleTurningHelp": "対応する直線上では、発車前に車両を再配置します。その他の配置では原作の折返動作を保持します。斜めの線路上の1両編成は回送にもなります。",
   "ruleSaveSettingFirst": "場所の設定を適用してからルールを編集してください。",
   "ruleHarborColumns": "月 / 日 / 曜日 / 時 / 分",
-  "ruleJunctionColumns": "月 / 日 / 曜日 / 時"
+  "ruleJunctionColumns": "月 / 日 / 曜日 / 時",
+  "groupCreate": "グループを作成",
+  "groupRename": "グループ名を変更",
+  "groupMove": "グループへ移動",
+  "groupName": "グループ名",
+  "groupParent": "親グループ",
+  "groupCurrent": "現在のグループ",
+  "groupTrain": "移動する列車",
+  "groupHelp": "入れ子のグループを作成し、列車やグループを移動できます。グループは削除できません。「グループの設定に従う」を選ぶと親の設定を使い、直接の割り当ては維持されます。",
+  "groupRoot": "ルート",
+  "groupMoveHelp": "列車への直接の割り当ては維持されます。親の設定に従う列車は、移動先のグループのダイヤグラムを使います。",
+  "groupConflict": "グループまたは所属が変更されました。キャンセルして編集を開き直してください。",
+  "groupDelegation": "親グループの設定に従う"
 }

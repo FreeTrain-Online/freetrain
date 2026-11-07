@@ -122,3 +122,17 @@ export function effectiveFleetController(fleet:ReadFleet,trainId:string) {
  const controller=fleet.controllers.find(c=>c.id===id);
  return !controller||controller.kind==='delegation'?fleet.controllers.find(c=>c.kind==='simple'):controller;
 }
+
+export function effectiveFleetGroupController(fleet:ReadFleet,groupId:string) {
+ const groups=new Map(fleet.groups.map(g=>[g.id,g])),controllers=new Map(fleet.controllers.map(c=>[c.id,c]));
+ const seen=new Set<string>();let group=groups.get(groupId);
+ while(group){
+  if(seen.has(group.id))return undefined;seen.add(group.id);
+  if(group.controllerId===null)return fleet.controllers.find(c=>c.kind==='simple');
+  const controller=controllers.get(group.controllerId);if(!controller)return undefined;
+  if(controller.kind!=='delegation')return controller;
+  if(group.parentId===null)return fleet.controllers.find(c=>c.kind==='simple');
+  group=groups.get(group.parentId);
+ }
+ return undefined;
+}

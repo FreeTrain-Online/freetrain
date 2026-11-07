@@ -440,6 +440,7 @@ public sealed partial class SessionHost : IDisposable
                             case ManageFleetControllerCommand manage: code=ManageFleetController(queued.Participant,manage); break;
                             case EditFleetRuleCommand rule: code=EditFleetRule(queued.Participant,rule); break;
                             case AssignFleetControllerCommand assign: code=AssignFleetController(queued.Participant,assign); break;
+                            case ManageFleetGroupCommand group: code=ManageFleetGroup(queued.Participant,group); break;
                             case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;

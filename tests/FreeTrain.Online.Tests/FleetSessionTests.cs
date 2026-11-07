@@ -25,6 +25,23 @@ public class FleetSessionTests
     static async Task<byte[]> Save(SessionHost h){var t=h.CaptureSave();h.Pump(0);return await t;}
 
     [Fact]
+    public async Task Groups_first_creation_initializes_all_fresh_members_at_revision_zero_without_booking()
+    {
+        using var h=Host();var initial=h.Snapshot();var before=await Save(h);
+        var command=new ManageFleetGroupCommand("create","group",0,0,"",0,0);
+        Assert.Equal("invalidInput",Assert.IsType<RejectedMessage>(await Send(h,command)).Code);
+        Assert.Equal(before,await Save(h));Assert.Null(h.Snapshot().Mixed);
+        Assert.IsType<AcceptedMessage>(await Send(h,command with {Name="Before trains"}));
+        var after=h.Snapshot();Assert.Empty(after.Mixed!.Fleet!.Trains);Assert.Empty(after.Mixed.Accounts.Transactions);
+        Assert.Equal(initial.Tick,after.Tick);Assert.Equal(2,after.Mixed.Fleet.Groups.Length);
+        Assert.All(after.Mixed.Fleet.Groups,g=>Assert.Equal(0,g.Revision));
+        var root=after.Mixed.Fleet.Groups.Single(g=>g.Id==after.Mixed.Fleet.RootGroupId);
+        var child=after.Mixed.Fleet.Groups.Single(g=>g.Id!=root.Id);Assert.Equal(new[]{child.Id},root.Members);
+        Assert.Equal(root.Id,child.ParentId);Assert.Equal(after.Mixed.Fleet.Controllers.Single(c=>c.Kind=="delegation").Id,child.ControllerId);
+        var bytes=await Save(h);Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+    }
+
+    [Fact]
     public async Task Manager_can_create_before_any_purchase_without_stock_or_booking_and_failed_creation_keeps_terrain()
     {
         using var h=Host();var before=await Save(h);var snap=h.Snapshot();

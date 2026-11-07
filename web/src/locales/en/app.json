@@ -824,5 +824,17 @@
   "ruleTurningHelp": "Turning reorders cars on supported straight track before departure. Other poses keep the source reversal behavior; a single diagonal car also enables forwarding.",
   "ruleSaveSettingFirst": "Apply the location setting before editing its rules.",
   "ruleHarborColumns": "Month / Day / Weekday / Hour / Minute",
-  "ruleJunctionColumns": "Month / Day / Weekday / Hour"
+  "ruleJunctionColumns": "Month / Day / Weekday / Hour",
+  "groupCreate": "Create group",
+  "groupRename": "Rename group",
+  "groupMove": "Move to group",
+  "groupName": "Group name",
+  "groupParent": "Parent group",
+  "groupCurrent": "Current group",
+  "groupTrain": "Train to move",
+  "groupHelp": "Create nested groups and move trains or groups using these controls. Groups cannot be deleted. Choose “Use group controller” to inherit; an explicit assignment stays in effect.",
+  "groupRoot": "Root",
+  "groupMoveHelp": "The train’s own controller assignment is retained. Delegated trains use the destination group’s controller.",
+  "groupConflict": "This group or its membership changed. Cancel and reopen the draft.",
+  "groupDelegation": "Use parent group controller"
 }

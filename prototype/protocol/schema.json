@@ -1171,6 +1171,68 @@
             "rule",
             "expectedGeometryRevision"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "manageFleetGroup"
+            },
+            "action": {
+              "enum": [
+                "create",
+                "rename",
+                "move"
+              ]
+            },
+            "targetKind": {
+              "enum": [
+                "group",
+                "train"
+              ]
+            },
+            "targetId": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "parentId": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counter"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expectedParentRevision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counter"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "action",
+            "targetKind",
+            "targetId",
+            "expectedRevision",
+            "name",
+            "parentId",
+            "expectedParentRevision"
+          ]
         }
       ]
     },
