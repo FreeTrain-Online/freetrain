@@ -1,5 +1,6 @@
 {
   "license": "License",
+  "licensePreamble": "FreeTrain itself is licensed under the LGPL. All use and redistribution are\nsubject to this license. Individual plugins may have different licensing\nagreements, but unless specifically noted, please assume LGPL.",
   "sourceCode": "FreeTrain Online source code on GitHub",
   "credits": "Credits",
   "closeDialog": "Close",
