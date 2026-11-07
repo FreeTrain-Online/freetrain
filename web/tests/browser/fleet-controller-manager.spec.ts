@@ -92,11 +92,11 @@ test('controller drafts detect peer revision changes and identical command recei
  await page.routeWebSocket('**/api/session?*',route=>{transport=route.connectToServer();route.onMessage(m=>{const d=JSON.parse(String(m));if(d.payload?.kind==='manageFleetController')commands.push(d);transport!.send(m);});transport.onMessage(m=>{const d=JSON.parse(String(m));if(d.type==='accepted'||d.type==='rejected')replies.push(d);route.send(m);});});
  await page.reload();await ready(page);const controls=await manager(page);
  await controls.getByRole('button',{name:en.controllerCreate,exact:true}).click();let dialog=page.getByRole('dialog',{name:en.controllerCreate,exact:true});
- await dialog.getByLabel(en.controllerName,{exact:true}).fill('Shared manual');await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
+ await dialog.getByLabel(en.controllerName,{exact:true}).fill('Shared timetable');await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
  const request=commands.at(-1),before=await(await page.request.get('/api/saves/download')).body();transport!.send(JSON.stringify(request));
  await expect.poll(()=>replies.filter(r=>r.requestId===request.requestId).length).toBe(2);
  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
- const f=(await state(page)).mixed.fleet,c=f.controllers.find((c:any)=>c.name==='Shared manual');
+ const f=(await state(page)).mixed.fleet,c=f.controllers.find((c:any)=>c.name==='Shared timetable');
  await controls.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(c.id);
  await controls.getByRole('button',{name:en.controllerRename,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerRename,exact:true});await dialog.getByLabel(en.controllerName,{exact:true}).fill('Local draft');
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
@@ -143,11 +143,11 @@ test('named controllers can be created and configured before buying a train',asy
  let dialog=page.getByRole('dialog',{name:en.controllerCreate,exact:true});await dialog.getByLabel(en.controllerName,{exact:true}).fill('Before trains');
  await dialog.getByRole('button',{name:en.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
  const after=await state(page);expect(after.mixed.fleet.trains).toEqual([]);expect(after.mixed.accounts.transactions).toEqual([]);expect(after.tick).toBe(initial.tick);
- const controller=after.mixed.fleet.controllers.find((c:any)=>c.name==='Before trains');expect(controller.kind).toBe('manual');
+ const controller=after.mixed.fleet.controllers.find((c:any)=>c.name==='Before trains');expect(controller.kind).toBe('timetable');
  await controls.getByRole('combobox',{name:en.controllerManager,exact:true}).selectOption(controller.id);
  const before=await(await page.request.get('/api/saves/download')).body();
  await controls.getByRole('button',{name:en.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:en.controllerConfigure,exact:true});
- await expect(dialog).toContainText(en.manualFleetHelp);await expect(dialog.getByRole('button',{name:en.controllerApply,exact:true})).toHaveCount(0);
+ await expect(dialog.getByRole('button',{name:en.controllerLocation,exact:true})).toBeEnabled();
  await dialog.getByRole('button',{name:en.cancel,exact:true}).click();expect(await(await page.request.get('/api/saves/download')).body()).toEqual(before);
 });
 for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and daily drafts synchronize, cancel and reopen`,async({page,browser,baseURL,worldServer})=>{
@@ -321,4 +321,24 @@ for(const locale of ['en','ja'] as const)test(`${locale} TURNING actions edit, d
  await page.screenshot({path:evidence+`/turning/${locale}-departed.png`});
  await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
  expect((await state(page)).mixed.fleet.trains.find((t:any)=>t.id===train.id)).toEqual(after);expect(errors).toEqual([]);
+});
+
+test('canonical train panels expose automatic controllers without driving controls or key input',async({page})=>{
+ await setup(page);const commands:string[]=[];
+ await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{
+  const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);
+ });});
+ await page.reload();await ready(page);const controls=await manager(page);
+ await controls.getByRole('button',{name:en.controllerCreate,exact:true}).click();
+ const dialog=page.getByRole('dialog',{name:en.controllerCreate,exact:true});
+ expect(await dialog.getByLabel(en.controllerType,{exact:true}).locator('option').allTextContents()).toEqual([en.controllerTimetable]);
+ await dialog.getByRole('button',{name:en.cancel,exact:true}).click();
+ const details=await owned(page);await page.locator('.fleet-owned .catalog-item-main').first().click();
+ await expect(details.getByRole('combobox',{name:en.sharedController,exact:true})).toBeVisible();
+ await expect(page.locator('.fleet-manual')).toHaveCount(0);
+ for(const name of ['Take control','Release control'])await expect(page.getByRole('button',{name,exact:true})).toHaveCount(0);
+ await closePanel(page);const canvas=page.locator('canvas.world-canvas');await canvas.focus();
+ for(const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Shift'])await canvas.press(key);
+ await page.waitForTimeout(1200);
+ expect(commands.filter(kind=>['acquireControl','releaseControl','setController','controllerInput'].includes(kind))).toEqual([]);
 });

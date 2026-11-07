@@ -119,14 +119,14 @@ internal static class FleetOccupancy
 
 public static class FleetRailGuidance
 {
-    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,Location location,RailComponent rail,Heading heading, FleetManualInput input = default, GameTime? time = null)
+    internal static Heading GuideHead(MixedWorld w,FleetGraph fleet,FleetTrain train,Location location,RailComponent rail,Heading heading, GameTime? time = null)
     {
         var handler=w.Profile.Resolve(rail.Definition).Handler;
         var route=FleetJunctionRoute.Straight;
         if (handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading) &&
             (RailwayTopology.HasPort(rail.Pattern,heading.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Right)))
             route=FleetControllers.OnJunction(train,new(fleet.EffectiveController(train.Id),
-                location,rail.Pattern,heading),input,time);
+                location,rail.Pattern,heading),time);
         return Guide(handler,rail.Pattern,heading,route);
     }
 

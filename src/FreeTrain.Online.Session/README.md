@@ -71,13 +71,8 @@ mutable headers are copied and the exact registered profile is required.
 See [P3 acceptance and P4 handoff](../../doc/web-parity-p3-acceptance.md).
 
 
-P5-17 enables canonical train leases and Manual input. `FleetManualSession` keeps
-participant/connection identity, a fresh lease generation, monotonic input sequence
-and wall-time expiry outside durable state. Maintenance runs while paused and at
-all playback rates. The FIFO applies the same acquire/release/controller/input
-commands to actual numeric fleet IDs, and `fleetControl` snapshots/deltas publish
-current ownership. Controller assignment persists; held input and leases do not.
-Withdrawal/reversal/replacement, disconnect and effective-controller changes
-clear the affected input/lease. Canonical expiry uses `NetworkOptions.InputExpiry`
-for generated and checkpoint-restored hosts. No agent-specific authority path
-is added. See [P5-17](../../doc/web-parity-fleet-manual.md).
+Manual driving was removed on 7 November 2026. Canonical sessions reject the
+prototype acquire/release/setController/controllerInput commands. They do not
+store fleet leases or publish `fleetControl`. Controller/group edits use the
+existing role, epoch, revision and receipt boundaries without driver contention.
+See [the removal decision](../../doc/web-parity-fleet-manual.md).

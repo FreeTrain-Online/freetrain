@@ -67,10 +67,10 @@ Deno.test('junction drawing follows the actual predecessor route while a simple 
  t.cars[0].state.location!.x--;assert.equal(carOutgoing(s,t,1,r,'junction'),5);
  t.cars[0].state.heading=4;assert.equal(carOutgoing(s,t,0,r,'junction'),4);
 });
-Deno.test('choice-junction heads render without evaluating shared manual or timetable controllers',()=>{
+Deno.test('choice-junction heads render without evaluating shared controllers',()=>{
  const s=sceneFixture(),t=s.mixed!.fleet!.trains[0],r=s.mixed!.voxels[0].traffic!.rail!;
  r.pattern=27;r.definition=definition('system:pattern/27');t.cars[0].state.heading=4;
- for(const kind of ['manual','timetable','delegation','simple']) {
+ for(const kind of ['timetable','delegation','simple']) {
   t.controllerId=s.mixed!.fleet!.controllers.find(c=>c.kind===kind)!.id;
   const before=JSON.stringify(s);assert.equal(carOutgoing(s,t,0,r,'junction'),4);assert.equal(JSON.stringify(s),before);
  }

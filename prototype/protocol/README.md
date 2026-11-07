@@ -202,11 +202,9 @@ and previews and commits it as one atomic construction edit. Other railway
 infrastructure and removal queries do not accept nonempty `via`.
 
 
-P5-17 adds optional `fleetControl` to live Snapshot/Delta (protocol7). Each entry
-contains a numeric-string canonical train ID and its existing `ControlLease`.
-This is a complete transient ownership list, including an empty list after release;
-it is never part of Save9. Existing acquire/release/setController/controllerInput
-commands accept canonical train IDs. Epoch, participant/connection, lease token
-and monotonic input sequence fence input; assignments remain durable fleet graph
-references. Only `automatic` (Simple) and `manual` assignment are exposed here;
-shared named controller management remains P5-18.
+Canonical manual driving was removed on 7 November 2026. Snapshot/Delta no longer
+include `fleetControl`, and the canonical fleet controller kinds are Simple,
+Delegation and Timetable. Save9 and wire schemas reject Manual fleet records.
+The older acquire/release/setController/controllerInput contracts above remain
+for the explicit prototype regression harness only; canonical sessions return
+`operationUnavailable`. See [the removal decision](../../doc/web-parity-fleet-manual.md).

@@ -90,7 +90,7 @@ public partial class FleetMovementTests
     [InlineData(FleetRuleAction.ReverseForwarding,true,true,21)]
     public void Advanced_actual_signal_actions_and_queue_continue_identically_after_save(FleetRuleAction action,bool reversed,bool forwarding,int x)
     {
-        var s=Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule(action)]),
+        var s=Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule(action)]),
             new(new(26,20,2),FleetHarborKind.Advanced,0,false,[Rule(action)])]);
         AdvanceTo(s,102);Assert.All(s.Fleet!.Trains,t=>{Assert.Equal(1,t.StopCallCount);Assert.Equal(0,t.MoveCount);});
         Assert.All(s.Clock.Capture().Pending,a=>Assert.Equal(112,a.DueMinute));
@@ -105,7 +105,7 @@ public partial class FleetMovementTests
     [Fact]
     public void Advanced_signal_pass_and_polling_do_not_use_next_match()
     {
-        var s=Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule(FleetRuleAction.Pass)]),
+        var s=Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule(FleetRuleAction.Pass)]),
             new(new(26,20,2),FleetHarborKind.Advanced,0,false,[Rule(minute:0)])]);
         AdvanceTo(s,102);Assert.Equal(1,s.Fleet!.Trains[0].MoveCount);Assert.Equal(1,s.Fleet.Trains[1].StopCallCount);
         AdvanceTo(s,112);Assert.Equal(2,s.Fleet.Trains[1].StopCallCount);
@@ -131,29 +131,29 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Advanced_rule_commands_preserve_duplicate_path_order_copies_and_atomic_fences()
     {
-        using var h=new SessionHost(Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        using var h=new SessionHost(Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var id=ManagerController(h).Id;var p=new PositionRead(22,20,2);
         EditFleetRuleCommand Edit(string op,int index=-1,FleetRuleRead? rule=null,int offset=0)=>new(id,ManagerController(h).Revision,p,"harbor",op,index,offset,rule);
         var r=new FleetRuleRead(4,23,-1,8,0,"go");
         var add=Edit("add",rule:r);Assert.True(JsonSerializer.SerializeToUtf8Bytes(add).Length<1024);
         var observer=new ParticipantContext("observer",ParticipantRole.Observer);h.RegisterParticipant(observer);
-        var before=await ManualSave(h);ManagerRejected(await ManualSend(h,add,observer),"notAuthorized");
-        ManagerRejected(await ManualSend(h,add,epoch:h.WorldEpoch+1),"staleEpoch");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,add));
-        before=await ManualSave(h);ManagerRejected(await ManualSend(h,add),"staleRevision");
-        ManagerRejected(await ManualSend(h,Edit("add",rule:r with {Action="stop"})),"invalidInput");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("copy",0)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("replace",0,r with {Action="pass"})));
+        var before=await FleetSave(h);ManagerRejected(await FleetSend(h,add,observer),"notAuthorized");
+        ManagerRejected(await FleetSend(h,add,epoch:h.WorldEpoch+1),"staleEpoch");Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,add));
+        before=await FleetSave(h);ManagerRejected(await FleetSend(h,add),"staleRevision");
+        ManagerRejected(await FleetSend(h,Edit("add",rule:r with {Action="stop"})),"invalidInput");Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("copy",0)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("replace",0,r with {Action="pass"})));
         Assert.Equal(new[]{"pass","go"},ManagerController(h).Harbors[0].Rules!.Select(a=>a.Action));
         Assert.Equal(23,ManagerController(h).Harbors[0].Rules![0].Day);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("move",1,offset:-1)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("move",1,offset:-1)));
         Assert.Equal(new[]{"go","pass"},ManagerController(h).Harbors[0].Rules!.Select(a=>a.Action));
-        var original=ManagerController(h);Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(original,"copy")));
+        var original=ManagerController(h);Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(original,"copy")));
         var copy=ManagerController(h);var originalRules=original.Harbors[0].Rules!;
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new EditFleetRuleCommand(copy.Id,copy.Revision,p,"harbor","clear",-1,0,null)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,new EditFleetRuleCommand(copy.Id,copy.Revision,p,"harbor","clear",-1,0,null)));
         Assert.Null(ManagerController(h).Harbors[0].Rules);
         Assert.Equal(originalRules,h.Snapshot().Mixed!.Fleet!.Controllers.Single(c=>c.Id==id).Harbors[0].Rules);
-        var bytes=await ManualSave(h);Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+        var bytes=await FleetSave(h);Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
         Assert.All(h.Snapshot().Mixed!.Fleet!.Trains,t=>Assert.Equal(0,t.MoveCount));
     }
 
@@ -168,35 +168,33 @@ public partial class FleetMovementTests
         var pos=new PositionRead(p.X,p.Y,p.Z);var geometry=h.Snapshot().Mixed!.GeometryRevision;
         EditFleetRuleCommand Edit(string op,int index=-1,FleetRuleRead? rule=null,int offset=0)=>new(ManagerController(h).Id,ManagerController(h).Revision,pos,"junction",op,index,offset,rule,h.Snapshot().Mixed!.GeometryRevision);
         var r=new FleetRuleRead(-1,-1,-1,1,-1,"straight");
-        var before=await ManualSave(h);ManagerRejected(await ManualSend(h,Edit("add",rule:r) with {ExpectedGeometryRevision=geometry+1}),"staleRevision");
-        ManagerRejected(await ManualSend(h,Edit("add",rule:r with {Minutes=0})),"invalidInput");
-        ManagerRejected(await ManualSend(h,Edit("add",rule:r with {Action="go"})),"invalidInput");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("add",rule:r)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("add",rule:r with {Action="curve"})));
+        var before=await FleetSave(h);ManagerRejected(await FleetSend(h,Edit("add",rule:r) with {ExpectedGeometryRevision=geometry+1}),"staleRevision");
+        ManagerRejected(await FleetSend(h,Edit("add",rule:r with {Minutes=0})),"invalidInput");
+        ManagerRejected(await FleetSend(h,Edit("add",rule:r with {Action="go"})),"invalidInput");Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("add",rule:r)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("add",rule:r with {Action="curve"})));
         var c=ManagerController(h);Assert.Equal(new[]{"straight","curve"},c.Junctions![0].Rules!.Select(r=>r.Action));
         // Changing a default route must not replace/drop the ordered rule list.
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new ManageFleetControllerCommand("configure",c.Id,c.Revision,"",null,null,pos,[new(pos,"straight")],h.Snapshot().Mixed!.GeometryRevision)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,new ManageFleetControllerCommand("configure",c.Id,c.Revision,"",null,null,pos,[new(pos,"straight")],h.Snapshot().Mixed!.GeometryRevision)));
         Assert.Equal(c.Junctions[0].Rules,ManagerController(h).Junctions![0].Rules);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("move",1,offset:-1)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("move",1,offset:-1)));
         Assert.Equal("curve",ManagerController(h).Junctions![0].Rules![0].Action);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("remove",1)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit("clear")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("remove",1)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit("clear")));
         Assert.Null(ManagerController(h).Junctions![0].Rules);Assert.Equal("straight",ManagerController(h).Junctions![0].DefaultRoute);
     }
 
     [Fact]
-    public async Task Advanced_duplicate_receipts_and_foreign_driver_do_not_replay_or_partially_apply_rules()
+    public async Task Advanced_operator_rule_edits_do_not_replay_or_partially_apply_rules()
     {
-        using var h=new SessionHost(Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
-        h.RegisterParticipant(ManualOperator);var train=h.Snapshot().Mixed!.Fleet!.Trains[0];
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new AcquireControlCommand(train.Id.ToString()),ManualOperator));
+        using var h=new SessionHost(Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        h.RegisterParticipant(FleetOperator);var train=h.Snapshot().Mixed!.Fleet!.Trains[0];
         var c=ManagerController(h);var edit=new EditFleetRuleCommand(c.Id,c.Revision,new(22,20,2),"harbor","add",-1,0,new(-1,-1,-1,-1,-1,"go"));
-        var before=await ManualSave(h);ManagerRejected(await ManualSend(h,edit),"controlBusy");Assert.Equal(before,await ManualSave(h));
-        var network=new NetworkSession(new(),hostFactory:(_,_)=>h);var peer=network.Connect(ManualNow,ManualOperator)!;
-        var message=new CommandMessage("rule-retry",h.WorldEpoch,edit);var pending=network.Submit(peer,message,ManualNow);
-        Assert.Same(pending,network.Submit(peer,message,ManualNow));network.Tick(ManualNow);Assert.IsType<AcceptedMessage>(await pending);
-        Assert.Empty(h.Snapshot().FleetControl!);Assert.Single(ManagerController(h).Harbors[0].Rules!);
-        before=await ManualSave(h);var replay=network.Submit(peer,message,ManualNow);network.Tick(ManualNow);Assert.Equal(await pending,await replay);Assert.Equal(before,await ManualSave(h));
+        var network=new NetworkSession(new(),hostFactory:(_,_)=>h);var peer=network.Connect(FleetNow,FleetOperator)!;
+        var message=new CommandMessage("rule-retry",h.WorldEpoch,edit);var pending=network.Submit(peer,message,FleetNow);
+        Assert.Same(pending,network.Submit(peer,message,FleetNow));network.Tick(FleetNow);Assert.IsType<AcceptedMessage>(await pending);
+        Assert.Single(ManagerController(h).Harbors[0].Rules!);
+        var before=await FleetSave(h);var replay=network.Submit(peer,message,FleetNow);network.Tick(FleetNow);Assert.Equal(await pending,await replay);Assert.Equal(before,await FleetSave(h));
     }
 
     [Fact]
@@ -205,7 +203,7 @@ public partial class FleetMovementTests
         var rules=Enumerable.Range(0,1024).Select(_=>Rule()).ToImmutableArray();
         Assert.Throws<ArgumentException>(()=>FleetTimetable.Edit(rules,false,"copy",0,0,null));
         var settings=Enumerable.Range(0,8).Select(x=>new FleetHarborSetting(new(x,20,2),FleetHarborKind.Advanced,0,false,rules)).ToImmutableArray();
-        var s=Timetableize(ManualLine(),settings);var f=s.Fleet!;var c=f.Controllers.Last();
+        var s=Timetableize(FleetLine(),settings);var f=s.Fleet!;var c=f.Controllers.Last();
         FleetGraph Graph(FleetController replacement)=>new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(c,replacement));
         Assert.Throws<ArgumentException>(()=>Graph(c with {Harbors=settings.Add(new(new(8,20,2),FleetHarborKind.Advanced,0,false,[Rule()]))}));
         Assert.Throws<ArgumentException>(()=>s.World.Replace(s.World.Revision,s.World.Terrain,s.World.Spatial.Capture(),s.World.Voxels,s.World.Slopes,s.World.SpeedLimits,
@@ -214,7 +212,7 @@ public partial class FleetMovementTests
         using var h=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var edit=new EditFleetRuleCommand(c.Id,c.Revision,new(0,20,2),"harbor","remove",0,0,null);
         Assert.True(JsonSerializer.SerializeToUtf8Bytes(edit).Length<1024);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,edit));Assert.Equal(1023,ManagerController(h).Harbors[0].Rules!.Length);
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,edit));Assert.Equal(1023,ManagerController(h).Harbors[0].Rules!.Length);
         Assert.Equal(1024,c.Harbors[0].Rules.Length);
     }
 
@@ -222,7 +220,7 @@ public partial class FleetMovementTests
     [InlineData("minute")][InlineData("month")][InlineData("day")][InlineData("action")][InlineData("null")][InlineData("capacity")][InlineData("basic")]
     public void Advanced_malformed_rule_saves_fail_before_reveal(string defect)
     {
-        var s=Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule()])]);
+        var s=Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false,[Rule()])]);
         var doc=JsonNode.Parse(SaveCodec.Write(s))!;var setting=doc["mixed"]!["fleet"]!["controllers"]!.AsArray().Last()!["harbors"]![0]!;
         var rules=setting["rules"]!.AsArray();
         switch(defect) {

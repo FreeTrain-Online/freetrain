@@ -104,8 +104,7 @@ const fleet={requiredPacks:terrain.requiredPacks,cars:carDefinitions.map(c=>({re
    patterns=config.children.filter(c=>c.tag==='composition').map(c=>[...c.text.replace(/\s/gu,'')].map(c=>chars[c]));
   }
   return {binding:stockBinding(c.id),pricePerCar:Number(child(e,'price').text),head,body,tail,patterns};
- }),providers:catalog.contributions.filter(c=>c.type==='trainController').map(c=>({binding:stockBinding(c.id),
-  kind:c.implementation.name==='freetrain.world.rail.manualtc.TrainConrollerContributionImpl'?'manual':'timetable'}))};
+ }),providers:catalog.contributions.filter(c=>c.type==='trainController'&&c.implementation.name==='freetrain.world.rail.tattc.TATTrainControllerPlugIn').map(c=>({binding:stockBinding(c.id),kind:'timetable'}))};
 const fleetOutput=new URL('../src/generated/fleet-profile.json',import.meta.url),fleetJson=JSON.stringify(fleet,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(fleetOutput,'utf8')!==fleetJson)throw new Error('Generated fleet profile is stale.');}else await writeFile(fleetOutput,fleetJson);
 

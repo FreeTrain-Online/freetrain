@@ -17,8 +17,6 @@ test('real game runs, steps, renames Japanese station and recovers on refresh', 
   await expect(page.getByTestId('train-position')).not.toHaveText(initialPosition!);
   await page.getByRole('button', { name: 'Pause', exact: false }).click();
   await expect(page.getByTestId('clock-state')).toHaveText('Paused');
-  await page.getByRole('combobox', { name: 'Controller', exact: true }).selectOption('manual');
-  await expect(page.getByRole('combobox', { name: 'Controller', exact: true })).toHaveValue('manual');
   await selectStation(page);
   await page.getByLabel('Station name', { exact: true }).fill('新宿駅');
   await page.getByRole('button', { name: 'Apply name', exact: true }).click();
@@ -217,7 +215,7 @@ test('selected inspectors, clock and explicit rail confirm/cancel remain playabl
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/'); await ready(page);
   if (await page.getByTestId('clock-state').textContent() === 'Running') await page.getByRole('button', { name: 'Ⅱ Pause', exact: true }).click();
-  await selectTrain(page); await expect(page.getByRole('combobox', { name: 'Controller', exact: true })).toBeVisible();
+  await selectTrain(page); await expect(page.getByTestId('train-position')).toBeVisible();
 
   await selectStation(page); const old = (await bootstrap(page)).stations[0].name;
   await page.getByLabel('Station name', { exact: true }).fill('UX1 検証駅'); await page.getByRole('button', { name: 'Apply name', exact: true }).click();

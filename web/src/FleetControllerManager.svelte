@@ -29,10 +29,9 @@
  const junction=$derived(configurationKind==='junction'?draft?.junctions[index]:undefined);
  const missing=$derived(view.read&&selected?missingControllerJunctions(view.read,selected.id):[]);
  const valid=$derived(!!draft&&(!['create','rename'].includes(draft.action)||validControllerName(draft.name))&&
-  (draft.action!=='configure'||draft.source?.kind==='manual'||!!setting||!!junction||!!draft.removedLocation)&&
+  (draft.action!=='configure'||!!setting||!!junction||!!draft.removedLocation)&&
   (draft.action!=='configure'||!setting||setting.kind!=='fixed'||setting.minutes>=10)&&
   draft.harbors.every(h=>Number.isInteger(h.minutes)&&h.minutes>=0&&h.minutes<=2147483647&&(h.kind!=='daily'||h.minutes<1440)));
- const typeName=(kind:string)=>kind==='manual'?text.manual:text.controllerTimetable;
  function open(action:NonNullable<typeof draft>['action']){
   if(blocked&&action!=='configure')return;
   if(action!=='create'&&!selected)return;
@@ -76,7 +75,7 @@
  {#if location}<p class="hint">{text.signalSharedController}</p>{/if}
  <label class="field">{text.controllerManager}<select aria-label={text.controllerManager} bind:value={selectedId} disabled={view.pending}>
   <option value="">{text.controllerChoose}</option>
-  {#each instances as c}<option value={c.id}>{c.name} · {typeName(c.kind)} · #{c.id}</option>{/each}
+  {#each instances as c}<option value={c.id}>{c.name} · {text.controllerTimetable} · #{c.id}</option>{/each}
  </select></label>
  <div class="form-actions">
   {#if !location}<button disabled={blocked||!view.read||!!fleet&&fleet.controllers.length>=256} onclick={()=>open('create')}>{text.controllerCreate}</button>{/if}
@@ -99,10 +98,10 @@
 </section>
 {#if draft}
  <DecisionModal leftAligned title={text[({create:'controllerCreate',rename:'controllerRename',copy:'controllerCopy',delete:'controllerDelete',configure:'controllerConfigure',cleanJunctions:'controllerCleanJunctions'} as const)[draft.action]]} oncancel={()=>{if(!view.pending)draft=undefined;}}>
-  {#if draft.source}<p>{draft.source.name} · #{draft.source.id} · {typeName(draft.source.kind)}</p>{/if}
+  {#if draft.source}<p>{draft.source.name} · #{draft.source.id} · {text.controllerTimetable}</p>{/if}
   {#if draft.action==='create'}
    <label class="field">{text.controllerType}<select aria-label={text.controllerType} bind:value={draft.provider} disabled={blocked}>
-    {#each profile.providers as p}<option value={p.binding.contributionId}>{typeName(p.kind)}</option>{/each}
+    {#each profile.providers as p}<option value={p.binding.contributionId}>{text.controllerTimetable}</option>{/each}
    </select></label>
   {/if}
   {#if draft.action==='create'||draft.action==='rename'}
@@ -113,7 +112,6 @@
    <ul>{#each draftUsages?.trains??[] as t}<li>{text.ownedStock}: {t.name} · #{t.id}</li>{/each}{#each draftUsages?.groups??[] as g}<li>{text.controllerGroup}: {g.name} · #{g.id}</li>{/each}</ul>
   {:else if draft.action==='cleanJunctions'}
    <p>{text.controllerCleanJunctionsHelp}</p><ul>{#each missing as j}<li>{j.location.x}, {j.location.y}, {j.location.z}</li>{/each}</ul>
-  {:else if draft.source?.kind==='manual'}<p>{text.manualFleetHelp}</p>
   {:else if draft.action==='configure'}
    <p class="hint">{text.controllerSharedHelp}</p>
    <label class="field">{text.controllerSettingType}<select aria-label={text.controllerSettingType} bind:value={configurationKind} disabled={changed||!!location} onchange={changeKind}>
@@ -160,9 +158,7 @@
   {#if stale}<p role="alert">{text.controllerConflict}</p>{/if}
   {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="alert">{text[view.feedback]}</p>{/if}
   {#snippet actions()}
-   {#if !(draft!.action==='configure'&&draft!.source?.kind==='manual')}
-    <button class="primary" disabled={blocked||stale||!valid||composing||draft!.action==='delete'&&referenced} onclick={apply}>{text[draft!.action==='delete'?'controllerDelete':'controllerApply']}</button>
-   {/if}
+   <button class="primary" disabled={blocked||stale||!valid||composing||draft!.action==='delete'&&referenced} onclick={apply}>{text[draft!.action==='delete'?'controllerDelete':'controllerApply']}</button>
    <button disabled={view.pending} onclick={()=>{draft=undefined;}}>{text.cancel}</button>
   {/snippet}
  </DecisionModal>

@@ -78,7 +78,7 @@ public sealed partial class SessionHost
     {
         try {
             var state=DeploymentState(command.Query);var plan=PlanDeployment(state,command.Query);
-            var after=FleetDeployment.Commit(state,plan);MixedWire.ValidateTransition(state,after);mixedState=after;fleetLeases.Remove(command.Query.TrainId);return null;
+            var after=FleetDeployment.Commit(state,plan);MixedWire.ValidateTransition(state,after);mixedState=after;return null;
         }
         catch(InvalidOperationException e) when(e.Message is "staleEpoch" or "staleRevision" or "operationUnavailable"){return e.Message;}
         catch(InvalidOperationException e) when(DeploymentReason(e.Message)){return "invalidPlacement";}

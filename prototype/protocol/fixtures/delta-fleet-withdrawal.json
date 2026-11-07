@@ -381,13 +381,13 @@
         {
           "id": "14",
           "revision": "0",
-          "name": "Manual",
-          "kind": "manual",
+          "name": "Spare TAT",
+          "kind": "timetable",
           "provider": {
             "packId": "exav-stable-bundled",
             "version": "2",
             "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
-            "contributionId": "{5567FE11-FC2C-4a1d-836F-722EF9DC957C}"
+            "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
           },
           "harbors": []
         },

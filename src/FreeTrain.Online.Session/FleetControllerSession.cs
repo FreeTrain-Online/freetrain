@@ -7,7 +7,7 @@ namespace FreeTrain.Online.Session;
 
 public sealed partial class SessionHost
 {
-    private string? EditFleetRule(ParticipantContext participant,EditFleetRuleCommand command)
+    private string? EditFleetRule(EditFleetRuleCommand command)
     {
         try {
             var state=mixedState;if(state?.Fleet is not {} f)return "operationUnavailable";
@@ -32,27 +32,21 @@ public sealed partial class SessionHost
                     Rules=FleetTimetable.Edit(setting.Rules,false,command.Operation,command.Index,command.Offset,rule)})};
             } else return "invalidInput";
             changed=changed with {Revision=checked(selected.Revision+1)};
-            return PublishControllers(participant,state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed)),state.World.Spatial.NextEntityId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Replace(selected,changed)),state.World.Spatial.NextEntityId);
         } catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
     }
     // All controller edits enter the same FIFO/receipt/epoch boundary as train
     // commands. Drafts carry member revisions, independent of the moving clock.
-    private string? PublishControllers(ParticipantContext participant, MixedSessionState state, FleetGraph graph, long nextId)
+    private string? PublishControllers(MixedSessionState state, FleetGraph graph, long nextId)
     {
-        var affected=(state.Fleet?.Trains ?? []).Where(t=> {
-            var before=state.Fleet!.EffectiveController(t.Id);var after=graph.EffectiveController(t.Id);
-            return before.Id!=after.Id || before.Revision!=after.Revision;
-        }).Select(t=>t.Id).ToArray();
-        if(affected.Any(id=>fleetLeases.TryGetValue(id,out var lease) && lease.Participant!=participant))return "controlBusy";
         var w=state.World;
         var world=w.Replace(w.Revision,w.Terrain,new(nextId,w.Spatial.Entities),w.Voxels,w.Slopes,w.SpeedLimits,graph);
         var successor=state.Successor(state.Revision,new(world,state.Construction.Accounts),state.ConstructionMode);
         MixedWire.ValidateTransition(state,successor);
         mixedState=successor;terrainState=null;
-        foreach(var id in affected)fleetLeases.Remove(id); // No held intent survives reassignment/configuration.
         return null;
     }
-    private string? ManageFleetController(ParticipantContext participant, ManageFleetControllerCommand command)
+    private string? ManageFleetController(ManageFleetControllerCommand command)
     {
         try
         {
@@ -142,11 +136,11 @@ public sealed partial class SessionHost
                     default:return "invalidInput";
                 }
             }
-            return PublishControllers(participant,state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,rows),nextId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,f.Trains,f.Groups,rows),nextId);
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
     }
-    private string? AssignFleetController(ParticipantContext participant, AssignFleetControllerCommand command)
+    private string? AssignFleetController(AssignFleetControllerCommand command)
     {
         try
         {
@@ -158,8 +152,6 @@ public sealed partial class SessionHost
             {
                 var train=f.Trains.SingleOrDefault(t=>t.Id==command.TargetId);
                 if(train==null||train.Revision!=command.ExpectedRevision)return "staleRevision";
-                // Even an identical assignment cannot bypass another driver's lease.
-                if(fleetLeases.TryGetValue(train.Id,out var lease)&&lease.Participant!=participant)return "controlBusy";
                 trains=trains.Replace(train,train with {ControllerId=controller.Id,Revision=checked(train.Revision+1)});
             }
             else if(command.TargetKind=="group")
@@ -169,8 +161,7 @@ public sealed partial class SessionHost
                 groups=groups.Replace(group,group with {ControllerId=controller.Id,Revision=checked(group.Revision+1)});
             }
             else return "invalidInput";
-            var error=PublishControllers(participant,state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),state.World.Spatial.NextEntityId);
-            if(error==null && command.TargetKind=="train")fleetLeases.Remove(command.TargetId);
+            var error=PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),state.World.Spatial.NextEntityId);
             return error;
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}

@@ -9,7 +9,7 @@ async function manager(page:Page,text=en,locale='en'){
  return page.locator('.fleet-group-manager');
 }
 async function setup(page:Page,locale='en'){
- const initial=await state(page),input=readFileSync('../tmp/p5-22-manager-fleet.json');
+ const initial=await state(page),input=readFileSync(process.env.FREETRAIN_CONTROLLER_FLEET_OUTPUT??'../tmp/p5-18-manager-fleet.json');
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}
@@ -29,16 +29,16 @@ for(const locale of ['en','ja'] as const)test.describe(locale,()=>{
  }
  const a=await create('本線・Main');await selectGroup.selectOption(a.id);const b=await create('支線・Branch');
  await selectGroup.selectOption(f.rootGroupId);const c=await create('Other');
- const manual=f.controllers.find((c:any)=>c.kind==='manual'),simple=f.controllers.find((c:any)=>c.kind==='simple'),delegation=f.controllers.find((c:any)=>c.kind==='delegation');
+ const timetable=f.controllers.find((c:any)=>c.kind==='timetable'),simple=f.controllers.find((c:any)=>c.kind==='simple'),delegation=f.controllers.find((c:any)=>c.kind==='delegation');
  await selectGroup.selectOption(a.id);
- await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(manual.id);
- await expect(groups.getByTestId('effective-controller').first()).toContainText('#'+manual.id);
+ await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(timetable.id);
+ await expect(groups.getByTestId('effective-controller').first()).toContainText('#'+timetable.id);
  await trainControls.getByRole('combobox',{name:text.groupTrain,exact:true}).selectOption(f.trains[0].id);
  await trainControls.getByRole('button',{name:text.groupMove,exact:true}).click();let dialog=page.getByRole('dialog',{name:text.groupMove,exact:true});
  await dialog.getByLabel(text.groupParent,{exact:true}).selectOption(b.id);await apply();
- await expect(trainControls.getByRole('combobox',{name:text.sharedController,exact:true})).toHaveValue(manual.id);
+ await expect(trainControls.getByRole('combobox',{name:text.sharedController,exact:true})).toHaveValue(timetable.id);
  await trainControls.getByRole('combobox',{name:text.sharedController,exact:true}).selectOption(delegation.id);
- await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+manual.id);
+ await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+timetable.id);
  await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(simple.id);
  await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+simple.id);
  // Move an entire subtree. A descendant and the current parent cannot be chosen.
@@ -48,8 +48,8 @@ for(const locale of ['en','ja'] as const)test.describe(locale,()=>{
  await expect(destinations.locator(`option[value="${a.id}"]`)).toHaveCount(0);await expect(destinations.locator(`option[value="${f.rootGroupId}"]`)).toHaveCount(0);
  await destinations.selectOption(c.id);mkdirSync(evidence+'/groups',{recursive:true});await page.screenshot({path:evidence+`/groups/${locale}-move.png`});await apply();
  await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(delegation.id);
- await selectGroup.selectOption(c.id);await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(manual.id);
- await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+manual.id);
+ await selectGroup.selectOption(c.id);await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(timetable.id);
+ await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+timetable.id);
  await trainControls.getByRole('combobox',{name:text.sharedController,exact:true}).selectOption(simple.id);
  await groups.getByRole('combobox',{name:text.sharedController,exact:true}).first().selectOption(simple.id);
  await expect(trainControls.getByTestId('effective-controller')).toContainText('#'+simple.id);

@@ -9,12 +9,11 @@ Tests are grouped by the behavior they protect.
 | `ui-preferences.spec.ts` | Color scheme persistence, fallback, contrast and canvas preservation |
 | `responsive-layout.spec.ts` | Viewport sizes, Japanese panels, scrolling, touch targets, enlarged text and viewport emulation |
 | `keyboard-controls.spec.ts` | Toolbar/menu navigation, native editing, focus, Escape layers and command feedback |
-| `canonical-manual-driving.spec.ts` | EN/JA actual signals/junctions, held Left/Right with smooth/discrete rendering, idle focus/expiry, per-train leases, touch/keyboard/reset, peers and save/process restart |
-| `manual-driving.spec.ts` | Driving input suspension and key release on focus, visibility, tool and lease changes |
-| `map.spec.ts`, `map-panning.spec.ts` | Map shortcuts, panning, picking, camera, DPR and world replacement |
+| `map.spec.ts`, `map-panning.spec.ts` | Map shortcuts, panning, picking, camera, DPR, world replacement and absence of driving input |
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
-| `multiplayer.spec.ts` | Shared state, authority, leases and independent participant UI state |
+| `multiplayer.spec.ts` | Shared state, authority, sign-out and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
+| `fleet-controller-manager.spec.ts`, `fleet-groups.spec.ts` | Shared timetable controller/group editing, assignment, peer conflicts, durable reopen and absence of manual driving controls/packets |
 | `fleet-deployment.spec.ts` | Real EN/JA ramp purchase/deploy/run/inspect/withdraw/redeploy, map/keyboard footprint review, stale/cancel/replay, two peers, exact reopen and backend checkpoint restart; JA 390×844/200% text, late previews and Observer/draft guards |
 | `fleet-trading.spec.ts` | Real EN/JA purchase/rename/resale, exact quotes, stale/cancel/replay, two peers, Observer/unavailable states, draft/focus safety and 390×844/200% text |
 | `fleet-persistence.spec.ts` | Save9 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the moving case uses `FREETRAIN_MOVING_FLEET_OUTPUT` emitted by focused `FleetMovementTests` |

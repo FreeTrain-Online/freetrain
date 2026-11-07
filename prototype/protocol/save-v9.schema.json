@@ -1614,7 +1614,6 @@
           "enum": [
             "simple",
             "delegation",
-            "manual",
             "timetable"
           ]
         },

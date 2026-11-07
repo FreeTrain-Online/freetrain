@@ -27,7 +27,6 @@
   import CornerTerrainControls from './CornerTerrainControls.svelte';
   import RailToolIcon from './RailToolIcon.svelte';
   import TrainToolIcon from './TrainToolIcon.svelte';
-  import {drivingTrain} from './lib/manual-driving.ts';
   import PanelFrame from './PanelFrame.svelte';
   let { model, view, live, panel, inputSuspended, tool = $bindable('inspect'), renderState = $bindable('loading'), selection, deploymentPicking=false,deploymentPreview,ondeploymentpick, ontool, onselect, onclose, onclock, oncatalog, onfleet }:
     { model: ShellModel; view: ShellState; live: boolean; panel?: Panel; inputSuspended: boolean; tool?: Tool; renderState?: 'loading' | 'ready' | 'failed'; selection?: Selection;deploymentPicking?:boolean;deploymentPreview?:import('./generated/contracts.ts').FleetDeploymentPreview;ondeploymentpick:(p:Position)=>void; ontool: (tool: Tool) => void; onselect: (selection: Selection | undefined) => void; onclose: () => void; oncatalog: () => void; onfleet: (source: HTMLButtonElement) => void; onclock: (kind: 'run' | 'pause' | 'step') => void } = $props();
@@ -71,11 +70,7 @@
   let draftVersion = 0;
   let targetRevision = $state<string>();
   let uncertain = $state(false);
-  let held = $state('');
-  const keys = new Set<string>();
   let narrow = $state(false);
-  let sendingInput = false, inputDirty = false;
-  let inputTrainId: string | undefined;
   let epoch: string | undefined;
   let drag: { x: number; y: number; camera: Camera; moved: boolean; pan: boolean; panOnly: boolean; paint: boolean; pointerId: number } | undefined;
   const terrain = $derived(!!view.read && (isTerrainWorld(view.read) || isMixedWorld(view.read)));
@@ -85,16 +80,8 @@
   // Keep interaction resets tied to role changes, rather than every new view snapshot.
   const observer = $derived(view.role === 'observer');
   const blocked = $derived(view.pending || !live || observer);
-  const selectedTrain = $derived(selection?.kind === 'train' ? drivingTrain(view.read,selection?.id) : undefined);
+  const selectedTrain = $derived(selection?.kind === 'train' ? view.read?.trains.find(t=>t.id===selection.id)??view.read?.mixed?.fleet?.trains.find(t=>t.id===selection.id) : undefined);
   const shapes: Exclude<Track['shape'], `normal${number}`>[] = ['buffer', 'eastWest', 'northSouth', 'curveSE', 'curveSW', 'curveNE', 'curveNW', 'junctionE'];
-  async function flushInput() {
-    inputDirty = true;
-    if (sendingInput) return;
-    sendingInput = true;
-    try { while (inputDirty) { inputDirty = false; await model.input(new Set(keys), inputTrainId); } }
-    finally { sendingInput = false; }
-  }
-  function clearInput() { const had = keys.size > 0; keys.clear(); held = ''; if (had) void flushInput(); }
   let paintDelay:ReturnType<typeof setTimeout>|undefined;
   function cancelGesture() {
     clearTimeout(paintDelay);paintDelay=undefined;
@@ -122,8 +109,8 @@
   }
   function useAnchor() { if(selectedPosition&&geometry?.inside){const point={...selectedPosition};clearTarget();anchor=point;} }
   function changeSnap(value:string) { snapMode=Number(value) as 0|4|8; if(rawPosition)void chooseTarget({...rawPosition}); }
-  export function suspendInput() { clearInput(); cancelGesture(); }
-  export function resetInteraction() { clearInput(); cancelGesture(); cancelDraft(); }
+  export function suspendInput() { cancelGesture(); }
+  export function resetInteraction() { cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
   export function escape() {
     if(railway&&tool==='remove'&&removeControls?.cancelDraft()) { /* First Escape clears the object. */ }
@@ -132,7 +119,7 @@
     else if(tool==='terrain'&&cornerControls?.cancelDraft()) { /* First Escape clears the review. */ }
     else if (selectedPosition) cancelDraft();
     else if (tool !== 'inspect') activateTool('inspect');
-    cancelGesture();clearInput();
+    cancelGesture();
   }
   function key(event: KeyboardEvent, down: boolean) {
     if (!live || inputSuspended || (down && (event.altKey || event.ctrlKey || event.metaKey)) || event.isComposing || event.keyCode === 229 || event.target !== canvas) return;
@@ -157,13 +144,6 @@
       if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !((shortcut === 'slope'||shortcut === 'bridge'||shortcut === 'girder'||shortcut === 'tunnel'||shortcut === 'speed'||shortcut === 'stationary'||shortcut === 'pole'||shortcut === 'signal'||shortcut === 'garage') && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
       return;
     }
-    if (tool !== 'inspect' || !selectedTrain || selectedTrain.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) return;
-    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(event.key)) return;
-    event.preventDefault();
-    if (event.repeat) return;
-    inputTrainId = selectedTrain.id;
-    if (down) keys.add(event.key); else keys.delete(event.key);
-    held = [...keys].join(' + '); void flushInput();
   }
   export function activateTool(next: Tool) {
     if (!live || (next !== 'inspect' && blocked)) return;
@@ -250,7 +230,7 @@
     if (!live || inputSuspended || !was || was.pointerId !== event.pointerId || was.paint || was.moved || was.panOnly || event.button !== 0) return;
     const p = point(event);
     if(deploymentPicking&&!blocked){const location=renderer?.pickLocation(p,{kind:'railOrGround'});if(location)ondeploymentpick(location);}
-    else if (tool === 'inspect') { clearInput(); onselect(renderer?.pick(p, camera.zoom)); }
+    else if (tool === 'inspect') { onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
     else if(railway&&tool==='remove'&&!blocked&&!panel){
       const pick=removeControls?.pickMode();
@@ -316,18 +296,14 @@
       renderState = renderState === 'failed' ? 'failed' : 'loading'; dirty = true;
     }
   });
-  $effect(() => { if (!live || tool !== 'inspect' || selectedTrain?.controller !== 'manual' || selectedTrain.controlLease?.participantId !== view.participantId) clearInput(); });
   $effect(() => { if (inputSuspended) suspendInput(); });
-  let drivingContext: string | undefined;
-  $effect(() => { const next=`${view.read?.worldEpoch}/${selectedTrain?.id}/${selectedTrain?.controller}/${selectedTrain?.controlLease?.leaseId}/${view.connection}`;
-    if(next!==drivingContext){clearInput();drivingContext=next;} });
   $effect(() => { if (observer || !live) resetInteraction(); });
   $effect(() => {
     if (selectedPosition && view.read?.tracks.find(t => same(t.position, selectedPosition!))?.revision !== targetRevision) cancelDraft();
   });
-  $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); clearInput(); });
-    $effect(() => { void heightCut;cancelGesture(); });
-    $effect(() => { void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+  $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); });
+  $effect(() => { void heightCut;cancelGesture(); });
+  $effect(() => { void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
@@ -371,18 +347,12 @@
       }
       frame = requestAnimationFrame(paint);
     }; frame = requestAnimationFrame(paint);
-    let focused=document.hasFocus();
-    const renew = setInterval(() => { if (keys.size) void flushInput(); }, 150);
-    const idle = setInterval(() => {
-      if(live&&!inputSuspended&&tool==='inspect'&&selectedTrain&&focused&&!document.hidden&&document.activeElement===canvas&&!keys.size)
-        void model.input(new Set(),selectedTrain.id);
-    },1000);
-    const blur = () => { focused=false;clearInput(); cancelGesture(); };
-    const focus = () => { focused=true;resumeMotion=true;dirty=true; };
+    const blur = () => { cancelGesture(); };
+    const focus = () => { resumeMotion=true;dirty=true; };
     const visibility = () => {
       lastDemoTick=undefined;blur();
       if(document.hidden){renderer?.resetTrainMotion();lastMotionResume=-Infinity;}
-      focused=!document.hidden&&document.hasFocus();resumeMotion=!document.hidden;lastFrame=undefined;dirty=true;
+      resumeMotion=!document.hidden;lastFrame=undefined;dirty=true;
     };
     const classifyWheel = createWheelClassifier();
     const wheel = (event: WheelEvent) => {
@@ -396,12 +366,12 @@
       dirty = true;
     };
     canvas.addEventListener('wheel', wheel, { passive: false }); window.addEventListener('blur', blur); window.addEventListener('focus', focus); document.addEventListener('visibilitychange', visibility);
-    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); clearInterval(renew);clearInterval(idle); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
+    return () => { compact.removeEventListener('change', density);reduced.removeEventListener('change',motion); active = false; resetInteraction(); cancelAnimationFrame(frame); resize.disconnect(); canvas.removeEventListener('wheel', wheel); window.removeEventListener('blur', blur); window.removeEventListener('focus', focus); document.removeEventListener('visibilitychange', visibility); };
   });
 </script>
 
 <div class="map-viewport" class:demo={!live} inert={!live} aria-hidden={!live}>
-  <canvas bind:this={canvas} class="world-canvas" style:cursor={tool==='remove'||tool==='terrain'&&paintingMode()?'crosshair':undefined} tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="manual-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={cancelGesture} onpointerleave={() => { railControls?.hoverPosition?.(); if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={()=>{clearInput();cancelGesture();}}></canvas>
+  <canvas bind:this={canvas} class="world-canvas" style:cursor={tool==='remove'||tool==='terrain'&&paintingMode()?'crosshair':undefined} tabindex={live ? 0 : -1} aria-label={text.mapCanvas} aria-describedby="map-help" onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={cancelGesture} onlostpointercapture={cancelGesture} onpointerleave={() => { railControls?.hoverPosition?.(); if (!drag) { preview = selectedPosition; dirty = true; } }} onkeydown={event => key(event, true)} onkeyup={event => key(event, false)} onblur={()=>{cancelGesture();}}></canvas>
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
@@ -460,6 +430,6 @@
       <div class="form-actions"><button class="primary" disabled={reference || blocked || !!panel || uncertain || !selectedPosition || geometryStatus!=='ready'||!geometry?.inside || (tool === 'remove' && !view.read?.tracks.some(t => same(t.position, selectedPosition!)))} onclick={commit}>{text.confirmTrack}</button><button disabled={view.pending||(!selectedPosition&&!anchor)} onclick={cancelDraft}>{text.cancelPreview}</button></div>
     </section>
   {/if}
-  <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool === 'inspect' && selectedTrain?.controller === 'manual' && selectedTrain.controlLease?.participantId === view.participantId ? `${text.driving} ${selectedTrain.name} · ` : ''}{tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
-  <span id="manual-help" class="sr-only">{selectedTrain?.controller==='manual'?text.manualFleetHelp:reference ? worldHint : text.manualHelp}</span><span class="sr-only" data-testid="manual-input">{held || text.keysReleased}</span>
+  <div class="sr-only" data-testid="map-selection" aria-live="polite" aria-atomic="true">{text[tool === 'build' ? 'buildTool' : tool === 'remove' ? 'removeTool' : 'inspectTool']} · {tool !== 'inspect' && panel ? text.closePanelToTarget : selection ? `${text[selection.kind]} · ${selection.id}` : text.pickObject}</div>
+  <span id="map-help" class="sr-only">{worldHint}</span>
 {/if}

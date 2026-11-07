@@ -73,7 +73,7 @@ test('disconnect clears targeting, blocks shortcuts and restores same-world came
 
   offline = false; await ready(page);
   await expect(page.locator('canvas')).toHaveAttribute('data-camera', camera!); await expect(page.locator('canvas')).toHaveAttribute('data-zoom', zoom!);
-  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true'); expect(commandCount).toBe(0);
+  await expect(page.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true'); expect(commandCount).toBe(0);
 });
 
 test('failed leave latches until revocation, then requires explicit empty-key rejoin', async ({ page }) => {

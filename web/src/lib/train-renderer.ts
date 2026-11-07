@@ -39,7 +39,7 @@ export function trainCarLayer(recipe:Recipe,carId:string,position:[number,number
 type Train=NonNullable<NonNullable<ReadState['mixed']>['fleet']>['trains'][number];
 /** Followers use their predecessor's committed route. At a head's selectable
  * junction the next exit is not known yet: draw neutral until movement commits.
- * Never evaluate a controller or infer another participant's held input. */
+ * Drawing never evaluates or advances a controller. */
 export function carOutgoing(_read:ReadState,train:Train,index:number,rail:RailComponent,handler:string):number {
   const car=train.cars[index],h=car.state.heading!;
   if(handler!=='normal'&&handler!=='junction')return h;

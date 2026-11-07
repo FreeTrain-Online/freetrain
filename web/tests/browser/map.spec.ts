@@ -135,31 +135,21 @@ test('preview and cancel never charge; buffer extension confirms once, removal a
     const removed=await bootstrap(page);expect(removed.tracks).toHaveLength(before.tracks.length);expect(removed.cash).toBe(built.cash);
     // Protected station rail is rejected atomically.
     await clickTile(page,{x:20,y:8,z:1});await page.getByRole('button',{name:'Confirm track change',exact:true}).click();await expect(page.getByRole('status')).toHaveText('Track cannot be placed here.');
-    await page.getByRole('button',{name:'Inspect / drive',exact:true}).click();await expect(page.getByTestId('clock-state')).toHaveText('Paused');
+    await page.getByRole('button',{name:'Inspect',exact:true}).click();await expect(page.getByTestId('clock-state')).toHaveText('Paused');
     await page.reload();await ready(page);expect((await bootstrap(page)).cash).toBe(built.cash);
   }finally{timers.forEach(clearTimeout);}
 });
 
-test('manual map keys depart at station, release on focus loss, and never capture text or IME',async({page})=>{
-  const inputs:any[]=[];
-  await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{const data=JSON.parse(String(message));if(data.type==='command'&&data.payload.kind==='controllerInput')inputs.push(data.payload);server.send(message);});});
-  await page.goto('/');await ready(page);
-  await selectStation(page);
-  const draft=page.getByLabel('Station name',{exact:true});await draft.focus();const count=inputs.length;await page.keyboard.press('ArrowUp');await page.keyboard.press('Shift');expect(inputs).toHaveLength(count);
-  await draft.dispatchEvent('compositionstart');await page.keyboard.press('ArrowDown');await draft.dispatchEvent('compositionend');expect(inputs).toHaveLength(count);
-  await selectTrain(page);
-  await page.getByRole('combobox',{name:'Controller',exact:true}).selectOption('manual');
-  await page.getByRole('button',{name:'Run',exact:false}).click();
-  await expect(page.getByTestId('train-state')).toHaveText('Station',{timeout:12000});
-  await page.getByRole('button',{name:'Pause',exact:false}).click();
-  const canvas=page.locator('canvas');await canvas.focus();await page.keyboard.down('ArrowUp');await expect.poll(()=>inputs.some(input=>input.depart)).toBe(true);
-  await page.getByRole('button',{name:'Run',exact:false}).click(); // Moving focus releases Up; refocus to hold through a tick.
-  await canvas.focus();await page.keyboard.up('ArrowUp');await page.keyboard.down('ArrowUp');
-  await expect(page.getByTestId('train-state')).toHaveText('Moving',{timeout:5000});
-  await page.getByRole('combobox',{name:'Controller',exact:true}).focus();await expect.poll(()=>inputs.at(-1)?.reset).toBe(true);await page.keyboard.up('ArrowUp');
-  await page.getByRole('button',{name:'Pause',exact:false}).click();await canvas.focus();await page.keyboard.down('ArrowRight');await expect(page.getByTestId('manual-input')).toContainText('ArrowRight');
-  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await expect.poll(()=>inputs.at(-1)?.reset).toBe(true);await expect(page.getByTestId('manual-input')).toHaveText('Keys released');await page.keyboard.up('ArrowRight');
-  await page.getByRole('combobox',{name:'Controller',exact:true}).selectOption('automatic');
+test('train selection exposes no driving controls and map keys send no train input',async({page})=>{
+  const commands:string[]=[];
+  await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);});});
+  await page.goto('/');await ready(page);await selectTrain(page);
+  await expect(page.getByRole('combobox',{name:'Controller',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Take control',exact:true})).toHaveCount(0);
+  const canvas=page.locator('canvas');await canvas.focus();
+  for(const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Shift'])await canvas.press(key);
+  await page.waitForTimeout(1200);
+  expect(commands.filter(k=>['acquireControl','releaseControl','setController','controllerInput'].includes(k))).toEqual([]);
 });
 
 test('Japanese playable map fits narrow doubled-density displays with scaled picking',async({browser})=>{
@@ -182,7 +172,6 @@ test('real automatic reference loop reaches station, dwells, departs and returns
   }));
   await page.goto('/');await ready(page);
   await selectTrain(page);
-  await page.getByRole('combobox',{name:'Controller',exact:true}).selectOption('automatic');
   sampling=true;await page.getByRole('button',{name:'Run',exact:false}).click();
   await expect.poll(()=>arrivals.length,{timeout:15000}).toBeGreaterThanOrEqual(2);
   await page.getByRole('button',{name:'Pause',exact:false}).click();sampling=false;
@@ -203,7 +192,7 @@ test('epoch snapshot fixture discards old geometry and restores initial framing'
   await expect(page.getByTestId('preview-position')).toHaveText('37, 16, 1');
   const next=await replaceWorld();
   await expect(page.locator('canvas')).toHaveAttribute('data-world-epoch',next.worldEpoch);
-  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.tool-card')).toHaveCount(0); await expect(page.locator('canvas')).toHaveAttribute('data-zoom', homeZoom!);
   await expect(page.locator('canvas')).toHaveAttribute('data-camera', homeCamera!);
 });

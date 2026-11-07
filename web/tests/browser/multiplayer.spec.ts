@@ -1,7 +1,7 @@
 import { bootstrap,openPanel,ready,selectStation,selectTrain } from './browser-helpers.ts';
 import { expect,test,type Page } from './fixtures.ts';
 
-test('independent browsers share edits and leases; reconnect and hidden tabs preserve the shared world', async ({ browser }) => {
+test('independent browsers share edits; reconnect and hidden tabs preserve the shared world', async ({ browser }) => {
   const first = await browser.newContext({ locale: 'en-US' });
   const second = await browser.newContext({ locale: 'en-US' });
   const a = await first.newPage(), b = await second.newPage();
@@ -17,16 +17,8 @@ test('independent browsers share edits and leases; reconnect and hidden tabs pre
     if (!alice.snapshot.paused) await a.getByRole('button', { name: 'Pause', exact: false }).click();
     await expect(b.getByTestId('clock-state')).toHaveText('Paused');
     await selectTrain(a); await selectTrain(b);
-    await a.getByRole('button', { name: 'Take control', exact: true }).click();
-    await expect(b.getByTestId('control-holder')).toContainText(alice.participantId);
-    await b.getByRole('button', { name: 'Take control', exact: true }).click();
-    await expect(b.getByRole('status')).toHaveText('Another participant controls this train.');
-    await expect(b.getByRole('button', { name: 'Release control', exact: true })).toBeDisabled();
-    await a.getByRole('button', { name: 'Release control', exact: true }).click();
-    await expect(b.getByTestId('control-holder')).toContainText('Available');
-    await b.getByRole('button', { name: 'Take control', exact: true }).click();
-    await expect(a.getByTestId('control-holder')).toContainText(bob.participantId);
-    await b.getByRole('button', { name: 'Release control', exact: true }).click();
+    await expect(a.getByRole('button', { name: 'Take control', exact: true })).toHaveCount(0);
+    await expect(b.getByRole('button', { name: 'Take control', exact: true })).toHaveCount(0);
     await selectStation(a); await selectStation(b);
     await b.getByLabel('Station name', { exact: true }).fill('Unsubmitted draft');
     await a.getByLabel('Station name', { exact: true }).fill('共有する駅');
@@ -48,7 +40,7 @@ test('independent browsers share edits and leases; reconnect and hidden tabs pre
   } finally { await first.close(); await second.close(); }
 });
 
-test('Leave game signs out, releases control and allows changing roles or rejoining locally', async ({ browser }) => {
+test('Leave game signs out and allows changing roles or rejoining locally', async ({ browser }) => {
   const first = await browser.newContext({ locale: 'en-US' });
   const second = await browser.newContext({ locale: 'en-US' });
   const a = await first.newPage(), b = await second.newPage();
@@ -64,15 +56,12 @@ test('Leave game signs out, releases control and allows changing roles or rejoin
     const snapshot = (await (await a.request.get('/api/bootstrap?protocolVersion=7&contentVersion=prototype-content-1')).json()).snapshot;
     if (!snapshot.paused) await a.getByRole('button', { name: 'Pause', exact: false }).click();
     await selectTrain(a); await selectTrain(b);
-    await a.getByRole('button', { name: 'Take control', exact: true }).click();
-    await expect(a.getByRole('status')).toHaveText('Confirmed by server');
     await b.getByRole('button', { name: 'Run', exact: false }).click();
     await expect(a.getByTestId('clock-state')).toHaveText('Running');
     await openPanel(a, 'session');
     await a.getByRole('button', { name: 'Leave game', exact: true }).click();
     await expect(a.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
     await expect(a.getByTestId('participant-role')).toHaveCount(0); await expect(a.locator('canvas')).toHaveAttribute('data-scene', 'demo');
-    await expect(b.getByTestId('control-holder')).toContainText('Available');
     await expect(b.getByTestId('clock-state')).toHaveText('Running');
     const tick = await b.getByTestId('tick').textContent(); await expect(b.getByTestId('tick')).not.toHaveText(tick!);
     await a.reload(); await expect(a.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
@@ -129,7 +118,7 @@ test('independent UI state and observer explanations retain shared clock and aut
     await a.getByLabel('Enter access key to join game',{exact:true}).fill('observer-test'); await a.getByRole('button',{name:'Connect',exact:true}).click(); await ready(a);
     await expect(a.getByTestId('participant-role')).toHaveText('Observer');
     await expect(a.getByRole('button',{name:'Build track',exact:true})).toBeDisabled();
-    await a.getByRole('button',{name:'Inspect / drive',exact:true}).focus();
+    await a.getByRole('button',{name:'Inspect',exact:true}).focus();
     await expect(a.locator('#mutation-help')).toContainText('Observers can inspect');
     await openPanel(a,'saves'); await expect(a.locator('#saves-help')).toContainText('Owner'); await expect(a.getByRole('button',{name:'Save slot',exact:true})).toBeDisabled();
     await openPanel(a,'view'); await a.getByLabel('Night',{exact:true}).check();

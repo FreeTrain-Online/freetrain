@@ -55,7 +55,7 @@ public partial class FleetMovementTests
     [InlineData(null,0,false,10,0)][InlineData("pass",0,false,0,0)]
     [InlineData("fixed",7,false,7,0)][InlineData("fixed",7,true,7,-1)]
     [InlineData("fixed",0,true,0,-1)][InlineData("daily",480,false,280,0)]
-    public void TAT_basic_handlers_use_harbor_key_and_keep_station_signal_and_manual_defaults_distinct(string? kind,int minutes,bool reverse,int first,int later)
+    public void TAT_basic_handlers_use_harbor_key_and_keep_station_signal_defaults_distinct(string? kind,int minutes,bool reverse,int first,int later)
     {
         // Labeled future yard adapter: a platform rail uses its host Station's
         // location, not the rail position. No passenger or P6 yard credit.
@@ -67,7 +67,6 @@ public partial class FleetMovementTests
             var call=new FleetHarborCall(c,station,TimingHead,count);
             Assert.Equal(count==0?first:later,FleetControllers.TimetableStop(t,call,new(200)).Decision.SourceMinutes);
             Assert.Equal(count==0?30:0,FleetControllers.SimpleStop(s.World,t,call with {Controller=s.Fleet.Simple}).Decision.SourceMinutes);
-            Assert.Equal(5,FleetControllers.ManualStop(t,count).Decision.SourceMinutes);
             Assert.Equal(count==0?10:0,FleetControllers.TimetableStop(t,call with {Harbor=new FleetHarborReference.Signal(TimingHead,100,0)},new(200)).Decision.SourceMinutes);
             Assert.Equal(0,FleetControllers.SimpleStop(s.World,t,call with {Controller=s.Fleet.Simple,Harbor=new FleetHarborReference.Signal(host,100,0)}).Decision.SourceMinutes);
         }
@@ -100,23 +99,23 @@ public partial class FleetMovementTests
         using var h=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var c=ManagerController(h);var geometry=h.Snapshot().Mixed!.GeometryRevision;
         ManageFleetControllerCommand Edit(FleetControllerRead row,string route="curve")=>new("configure",row.Id,row.Revision,"",null,null,new(p.X,p.Y,p.Z),[new(new(p.X,p.Y,p.Z),route)],geometry);
-        var before=await ManualSave(h);
-        ManagerRejected(await ManualSend(h,Edit(c) with {ExpectedGeometryRevision=geometry+1}),"staleRevision");
-        ManagerRejected(await ManualSend(h,Edit(c,"left")),"invalidInput");
-        ManagerRejected(await ManualSend(h,Edit(c) with {Harbors=[]}),"invalidInput");
-        Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,Edit(c)));c=ManagerController(h);
+        var before=await FleetSave(h);
+        ManagerRejected(await FleetSend(h,Edit(c) with {ExpectedGeometryRevision=geometry+1}),"staleRevision");
+        ManagerRejected(await FleetSend(h,Edit(c,"left")),"invalidInput");
+        ManagerRejected(await FleetSend(h,Edit(c) with {Harbors=[]}),"invalidInput");
+        Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,Edit(c)));c=ManagerController(h);
         Assert.Equal("curve",c.Junctions![0].DefaultRoute);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"copy")));var copy=ManagerController(h);
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"copy")));var copy=ManagerController(h);
         Assert.Equal(c.Junctions,copy.Junctions);
         var clean=new ManageFleetControllerCommand("cleanJunctions",c.Id,c.Revision,"",null,null,ExpectedGeometryRevision:h.Snapshot().Mixed!.GeometryRevision);
-        var cleanResult=await ManualSend(h,clean);Assert.True(cleanResult is AcceptedMessage,System.Text.Json.JsonSerializer.Serialize(cleanResult));
+        var cleanResult=await FleetSend(h,clean);Assert.True(cleanResult is AcceptedMessage,System.Text.Json.JsonSerializer.Serialize(cleanResult));
         var updated=h.Snapshot().Mixed!.Fleet!.Controllers.Single(a=>a.Id==c.Id);
         Assert.Equal(p.X,Assert.Single(updated.Junctions!).Location.X);Assert.Single(updated.Harbors);
         Assert.Equal(2,ManagerController(h).Junctions!.Length);
-        before=await ManualSave(h);ManagerRejected(await ManualSend(h,clean),"staleRevision");Assert.Equal(before,await ManualSave(h));
+        before=await FleetSave(h);ManagerRejected(await FleetSend(h,clean),"staleRevision");Assert.Equal(before,await FleetSave(h));
         using var reopened=new SessionHost(SaveCodec.ReadWorld(before,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
-        Assert.Equal(before,await ManualSave(reopened));
+        Assert.Equal(before,await FleetSave(reopened));
         if(Environment.GetEnvironmentVariable("FREETRAIN_TAT_FLEET_OUTPUT") is {} output)File.WriteAllBytes(output,before);
     }
     [Fact]
@@ -153,11 +152,11 @@ public partial class FleetMovementTests
         using var h=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var command=new ManageFleetControllerCommand("configure",c.Id,c.Revision,"",null,null,new(8191,0,0),[],s.World.Revision);
         Assert.True(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(command).Length<1024);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,command));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,command));
         var actual=ManagerController(h);Assert.Equal(8191,actual.Junctions!.Length);
         Assert.Equal(settings.Take(8191).Select(j=>j.Location.X),actual.Junctions.Select(j=>j.Location.X));
         Assert.Equal(8192,c.Junctions.Length);
-        var bytes=await ManualSave(h);Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+        var bytes=await FleetSave(h);Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
     }
 
     [Theory]

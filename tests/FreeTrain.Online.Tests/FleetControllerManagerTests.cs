@@ -14,11 +14,11 @@ public partial class FleetMovementTests
     [Fact]
     public void Manager_browser_input_is_source_built_deployed_stock()
     {
-        var state=Manualize(ManualLine());OperationsBoundary(state);
+        var state=WithFixtureController(FleetLine());OperationsBoundary(state);
         if(Environment.GetEnvironmentVariable("FREETRAIN_CONTROLLER_FLEET_OUTPUT") is {} output)
             File.WriteAllBytes(output,SaveCodec.Write(state));
     }
-    static ManageFleetControllerCommand ManagerCreate(string name="Named",FleetControllerKind kind=FleetControllerKind.Manual)
+    static ManageFleetControllerCommand ManagerCreate(string name="Named",FleetControllerKind kind=FleetControllerKind.Timetable)
     {
         var b=RollingStockCatalog.Bundled.FleetProfile.Providers.Single(p=>p.Kind==kind).Binding;
         return new("create",0,0,name,new(b.PackId,b.Version,b.CatalogHash,b.ContributionId),null);
@@ -37,31 +37,31 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Manager_named_instances_share_assignments_but_copy_isolates_location_data_and_reopens_exactly()
     {
-        using var h=ManualHost();var before=h.Snapshot();
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate("  Shared timetable  ",FleetControllerKind.Timetable)));
+        using var h=FleetHost();var before=h.Snapshot();
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate("  Shared timetable  ",FleetControllerKind.Timetable)));
         var source=ManagerController(h);Assert.Equal("Shared timetable",source.Name);
         FleetHarborRead[] settings=[new(new(22,20,2),"fixed",17,false),new(new(26,20,2),"daily",480,true)];
-        foreach(var setting in settings){Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(source,"configure",harbors:[setting])));source=ManagerController(h);}
+        foreach(var setting in settings){Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(source,"configure",harbors:[setting])));source=ManagerController(h);}
         foreach(var t in before.Mixed!.Fleet!.Trains)
-            Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,t.Id,"train",source)));
-        var save=await ManualSave(h);var f=h.Snapshot().Mixed!.Fleet!;
+            Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,t.Id,"train",source)));
+        var save=await FleetSave(h);var f=h.Snapshot().Mixed!.Fleet!;
         Assert.All(f.Trains,t=>Assert.Equal(source.Id,t.ControllerId));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(source,"copy")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(source,"copy")));
         var copy=ManagerController(h);Assert.NotEqual(source.Id,copy.Id);Assert.Equal(0,copy.Revision);Assert.Equal("Shared timetable 1",copy.Name);
         Assert.Equal(source.Harbors,copy.Harbors);
         settings[0]=settings[0] with {Minutes=31};
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(source,"configure",harbors:[settings[0]])));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(source,"configure",harbors:[settings[0]])));
         f=h.Snapshot().Mixed!.Fleet!;Assert.Equal(31,f.Controllers.Single(c=>c.Id==source.Id).Harbors[0].Minutes);
         Assert.Equal(17,f.Controllers.Single(c=>c.Id==copy.Id).Harbors[0].Minutes);
         Assert.All(f.Trains,t=>Assert.Equal(source.Id,t.ControllerId));
         source=f.Controllers.Single(c=>c.Id==source.Id);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(source,"rename","Renamed")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(source,"rename","Renamed")));
         Assert.All(h.Snapshot().Mixed!.Fleet!.Trains,t=>Assert.Equal(source.Id,t.ControllerId));
         var after=h.Snapshot();Assert.Equal(before.Tick,after.Tick);Assert.Equal(before.Cash,after.Cash);
         Assert.Equal(before.Mixed.Queue!.Pending,after.Mixed!.Queue!.Pending);Assert.Equal(before.Mixed.Queue.NextOrder,after.Mixed.Queue.NextOrder);
-        var bytes=await ManualSave(h);using var reopened=new SessionHost(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
-        Assert.Equal(bytes,await ManualSave(reopened));
-        await ManualStep(h,20);await ManualStep(reopened,20);Assert.Equal(await ManualSave(h),await ManualSave(reopened));
+        var bytes=await FleetSave(h);using var reopened=new SessionHost(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        Assert.Equal(bytes,await FleetSave(reopened));
+        await FleetStep(h,20);await FleetStep(reopened,20);Assert.Equal(await FleetSave(h),await FleetSave(reopened));
         var running=h.Snapshot();Assert.All(running.Mixed!.Fleet!.Trains,t=>Assert.Equal(1,t.StopCallCount));
         Assert.Equal(new long[]{133,480},running.Mixed.Queue!.Pending.Select(a=>a.DueMinute).ToArray());
         Assert.All(running.Mixed.Fleet.Trains,t=>Assert.Equal(0,t.MoveCount));
@@ -71,39 +71,39 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Manager_referenced_delete_lists_direct_train_and_group_dependencies_and_preserves_builtins()
     {
-        using var h=ManualHost();Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate()));var c=ManagerController(h);
+        using var h=FleetHost();Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate()));var c=ManagerController(h);
         var f=h.Snapshot().Mixed!.Fleet!;var t=f.Trains[0];var group=f.Groups[0];var simple=f.Controllers.Single(c=>c.Kind=="simple");
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,t.Id,"train",c)));
-        var before=await ManualSave(h);ManagerRejected(await ManualSend(h,ManagerEdit(c,"delete")),"controllerReferenced");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,t.Id,"train",simple)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,group.Id,"group",c)));
-        ManagerRejected(await ManualSend(h,ManagerEdit(c,"delete")),"controllerReferenced");
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,group.Id,"group",simple)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"delete")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,t.Id,"train",c)));
+        var before=await FleetSave(h);ManagerRejected(await FleetSend(h,ManagerEdit(c,"delete")),"controllerReferenced");Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,t.Id,"train",simple)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,group.Id,"group",c)));
+        ManagerRejected(await FleetSend(h,ManagerEdit(c,"delete")),"controllerReferenced");
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,group.Id,"group",simple)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"delete")));
         Assert.DoesNotContain(h.Snapshot().Mixed!.Fleet!.Controllers,x=>x.Id==c.Id);
         foreach(var builtin in f.Controllers.Where(c=>c.Kind is "simple" or "delegation"))
             foreach(var action in new[]{"delete","copy","rename","configure"})
-                ManagerRejected(await ManualSend(h,ManagerEdit(builtin,action)),"invalidInput");
+                ManagerRejected(await FleetSend(h,ManagerEdit(builtin,action)),"invalidInput");
     }
 
     [Theory]
     [InlineData("create")][InlineData("rename")][InlineData("copy")][InlineData("configure")][InlineData("delete")][InlineData("train")][InlineData("group")]
     public async Task Manager_every_mutation_fences_role_epoch_stale_and_duplicate_receipts(string action)
     {
-        using var h=ManualHost();Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate(kind:FleetControllerKind.Timetable)));
+        using var h=FleetHost();Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate(kind:FleetControllerKind.Timetable)));
         var c=ManagerController(h);var f=h.Snapshot().Mixed!.Fleet!;
         CommandPayload payload=action switch {
             "create"=>ManagerCreate(),"rename"=>ManagerEdit(c,action,"New name"),"configure"=>ManagerEdit(c,action,harbors:[]),
             "train"=>ManagerAssign(h,f.Trains[0].Id,action,c),"group"=>ManagerAssign(h,f.RootGroupId,action,c),_=>ManagerEdit(c,action)};
         var observer=new ParticipantContext("observer",ParticipantRole.Observer);h.RegisterParticipant(observer);
-        var before=await ManualSave(h);ManagerRejected(await ManualSend(h,payload,observer),"notAuthorized");
-        ManagerRejected(await ManualSend(h,payload,epoch:h.WorldEpoch+1),"staleEpoch");Assert.Equal(before,await ManualSave(h));
-        var network=new NetworkSession(new(),hostFactory:(_,_)=>h);var peer=network.Connect(ManualNow,ManualOwner)!;
-        async Task<WireMessage> send(CommandPayload p){var task=network.Submit(peer,new(Guid.NewGuid().ToString(),h.WorldEpoch,p),ManualNow);network.Tick(ManualNow);return await task;}
+        var before=await FleetSave(h);ManagerRejected(await FleetSend(h,payload,observer),"notAuthorized");
+        ManagerRejected(await FleetSend(h,payload,epoch:h.WorldEpoch+1),"staleEpoch");Assert.Equal(before,await FleetSave(h));
+        var network=new NetworkSession(new(),hostFactory:(_,_)=>h);var peer=network.Connect(FleetNow,FleetOwner)!;
+        async Task<WireMessage> send(CommandPayload p){var task=network.Submit(peer,new(Guid.NewGuid().ToString(),h.WorldEpoch,p),FleetNow);network.Tick(FleetNow);return await task;}
         var command=new CommandMessage("manager-retry",h.WorldEpoch,payload);
-        var task=network.Submit(peer,command,ManualNow);Assert.Same(task,network.Submit(peer,command,ManualNow));network.Tick(ManualNow);Assert.IsType<AcceptedMessage>(await task);
-        var accepted=await ManualSave(h);var retry=network.Submit(peer,command,ManualNow);network.Tick(ManualNow);
-        Assert.Equal(await task,await retry);Assert.Equal(accepted,await ManualSave(h));
+        var task=network.Submit(peer,command,FleetNow);Assert.Same(task,network.Submit(peer,command,FleetNow));network.Tick(FleetNow);Assert.IsType<AcceptedMessage>(await task);
+        var accepted=await FleetSave(h);var retry=network.Submit(peer,command,FleetNow);network.Tick(FleetNow);
+        Assert.Equal(await task,await retry);Assert.Equal(accepted,await FleetSave(h));
         if(action!="create"){
             var stale=action=="copy"?ManagerEdit(c,"rename","Changed first"):null;
             if(stale!=null)Assert.IsType<AcceptedMessage>(await send(stale));
@@ -116,22 +116,15 @@ public partial class FleetMovementTests
     }
 
     [Fact]
-    public async Task Manager_group_delegation_respects_driver_contention_and_clears_owned_held_input_atomically()
+    public async Task Manager_group_delegation_allows_operator_edits_without_driver_ownership()
     {
-        using var h=ManualHost();h.RegisterParticipant(ManualOperator);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate()));var c=ManagerController(h);
+        using var h=FleetHost();h.RegisterParticipant(FleetOperator);
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate()));var c=ManagerController(h);
         var f=h.Snapshot().Mixed!.Fleet!;var train=f.Trains[0];var delegation=f.Controllers.Single(c=>c.Kind=="delegation");
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,train.Id,"train",delegation)));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new AcquireControlCommand(train.Id.ToString()),ManualOperator));
-        var before=await ManualSave(h);
-        ManagerRejected(await ManualSend(h,ManagerAssign(h,f.RootGroupId,"group",c)),"controlBusy");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerAssign(h,f.RootGroupId,"group",c),ManualOperator));
-        Assert.Empty(h.Snapshot().FleetControl!);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new AcquireControlCommand(train.Id.ToString()),ManualOperator));
-        var lease=ManualLease(h,train.Id);Assert.IsType<AcceptedMessage>(await ManualSend(h,ManualKeys(lease,left:true),ManualOperator));
-        ManagerRejected(await ManualSend(h,ManagerEdit(c,"rename","Busy")),"controlBusy");
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"rename","Fresh"),ManualOperator));
-        Assert.Empty(h.Snapshot().FleetControl!);ManagerRejected(await ManualSend(h,ManualKeys(lease,1,left:true),ManualOperator),"leaseRequired");
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,train.Id,"train",delegation)));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerAssign(h,f.RootGroupId,"group",c),FleetOperator));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"rename","Fresh")));
+        Assert.Equal(c.Id,GroupEffective(await FleetSave(h),train.Id));
         Assert.Equal(f.Trains[1].ControllerId,h.Snapshot().Mixed!.Fleet!.Trains[1].ControllerId);
     }
 
@@ -150,43 +143,43 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Manager_invalid_provider_names_and_location_data_fail_without_mutation()
     {
-        using var h=ManualHost();var before=await ManualSave(h);
-        foreach(var name in new[]{" ","bad\nname",new string('x',257)})ManagerRejected(await ManualSend(h,ManagerCreate(name)),"invalidInput");
-        var create=ManagerCreate();ManagerRejected(await ManualSend(h,create with {Provider=create.Provider! with {CatalogHash=new string('0',64)}}),"operationUnavailable");
-        Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate(kind:FleetControllerKind.Timetable)));var c=ManagerController(h);before=await ManualSave(h);
+        using var h=FleetHost();var before=await FleetSave(h);
+        foreach(var name in new[]{" ","bad\nname",new string('x',257)})ManagerRejected(await FleetSend(h,ManagerCreate(name)),"invalidInput");
+        var create=ManagerCreate();ManagerRejected(await FleetSend(h,create with {Provider=create.Provider! with {CatalogHash=new string('0',64)}}),"operationUnavailable");
+        Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate(kind:FleetControllerKind.Timetable)));var c=ManagerController(h);before=await FleetSave(h);
         foreach(var settings in new FleetHarborRead[][]{
             [new(new(1,2,3),"daily",1440,false)],[new(new(1,2,3),"fixed",-1,false)],
             [new(new(1,2,3),"pass",0,true)],[new(new(1,2,3),"pass",1,false)],
             [new(new(1,2,3),"pass",0,false),new(new(1,2,3),"fixed",10,false)]})
-            ManagerRejected(await ManualSend(h,ManagerEdit(c,"configure",harbors:settings)),"invalidInput");
-        Assert.Equal(before,await ManualSave(h));
+            ManagerRejected(await FleetSend(h,ManagerEdit(c,"configure",harbors:settings)),"invalidInput");
+        Assert.Equal(before,await FleetSave(h));
     }
     [Fact]
     public async Task Manager_controller_revision_fences_assignment_and_capacity_rejection_does_not_consume_ids()
     {
-        var state=Manualize(ManualLine());var w=state.World;var f=w.Fleet!;var manual=f.Controllers.Last();var next=w.Spatial.NextEntityId;
+        var state=WithFixtureController(FleetLine());var w=state.World;var f=w.Fleet!;var controller=f.Controllers.Last();var next=w.Spatial.NextEntityId;
         var rows=f.Controllers.AddRange(Enumerable.Range(0,FleetGraph.MaximumControllers-f.Controllers.Length)
-            .Select(i=>manual with {Id=next+i,Revision=0,Name="Controller "+i}));
+            .Select(i=>controller with {Id=next+i,Revision=0,Name="Controller "+i}));
         var world=w.Replace(w.Revision,w.Terrain,new(next+FleetGraph.MaximumControllers-f.Controllers.Length,w.Spatial.Entities),w.Voxels,w.Slopes,w.SpeedLimits,
             new(f.Profile,f.RootGroupId,f.Trains,f.Groups,rows));
         using var h=new SessionHost(state.Successor(state.Revision,new(world,state.Construction.Accounts),false),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
-        var c=ManagerController(h);var before=await ManualSave(h);
-        ManagerRejected(await ManualSend(h,ManagerCreate()),"invalidInput");ManagerRejected(await ManualSend(h,ManagerEdit(c,"copy")),"invalidInput");
-        Assert.Equal(before,await ManualSave(h));
+        var c=ManagerController(h);var before=await FleetSave(h);
+        ManagerRejected(await FleetSend(h,ManagerCreate()),"invalidInput");ManagerRejected(await FleetSend(h,ManagerEdit(c,"copy")),"invalidInput");
+        Assert.Equal(before,await FleetSave(h));
         var assignment=ManagerAssign(h,f.Trains[0].Id,"train",c);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"rename","Changed")));
-        ManagerRejected(await ManualSend(h,assignment),"staleRevision");
-        c=ManagerController(h);Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"delete")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"rename","Changed")));
+        ManagerRejected(await FleetSend(h,assignment),"staleRevision");
+        c=ManagerController(h);Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"delete")));
         var allocator=h.Snapshot().Mixed!.NextEntityId;
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerCreate()));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerCreate()));
         Assert.Equal(allocator,ManagerController(h).Id);
     }
 
     [Fact]
     public async Task Manager_one_location_patch_stays_below_network_limit_with_8192_saved_settings_and_preserves_other_entries()
     {
-        var state=Manualize(ManualLine());var w=state.World;var f=w.Fleet!;var id=w.Spatial.NextEntityId;
+        var state=WithFixtureController(FleetLine());var w=state.World;var f=w.Fleet!;var id=w.Spatial.NextEntityId;
         var provider=f.Profile.Providers.Single(p=>p.Kind==FleetControllerKind.Timetable);
         var harbors=Enumerable.Range(0,8192).Select(i=>new FleetHarborSetting(new(i,20,2),FleetHarborKind.Fixed,10,false)).ToImmutableArray();
         var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Add(new(id,0,"Large",provider.Kind,provider.Binding,harbors)));
@@ -194,12 +187,12 @@ public partial class FleetMovementTests
         using var h=new SessionHost(state.Successor(state.Revision,new(world,state.Construction.Accounts),false),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var c=ManagerController(h);var command=ManagerEdit(c,"configure",harbors:[new(new(8191,20,2),"fixed",19,true)]);
         Assert.True(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes<WireMessage>(new CommandMessage("large",h.WorldEpoch,command),WireJson.CreateOptions()).Length<NetworkEndpoints.MaximumMessageBytes);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,command));c=ManagerController(h);
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,command));c=ManagerController(h);
         Assert.Equal(8192,c.Harbors.Length);Assert.Equal(19,c.Harbors[^1].Minutes);Assert.True(c.Harbors[^1].Reverse);
         Assert.All(c.Harbors[..^1],s=>Assert.Equal(10,s.Minutes));
-        var before=await ManualSave(h);
-        ManagerRejected(await ManualSend(h,ManagerEdit(c,"configure",harbors:[new(new(8192,20,2),"pass",0,false)])),"invalidInput");Assert.Equal(before,await ManualSave(h));
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"configure",harbors:[]) with {Location=new(8191,20,2)}));
+        var before=await FleetSave(h);
+        ManagerRejected(await FleetSend(h,ManagerEdit(c,"configure",harbors:[new(new(8192,20,2),"pass",0,false)])),"invalidInput");Assert.Equal(before,await FleetSave(h));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"configure",harbors:[]) with {Location=new(8191,20,2)}));
         Assert.Equal(8191,ManagerController(h).Harbors.Length);
     }
 

@@ -108,15 +108,8 @@ manual/TAT dispatch retains its later owners. Save9/protocol7 are unchanged.
 See [controller contract and verification](../../doc/web-parity-fleet-controllers.md).
 
 
-P5-17 binds the registered Manual provider to typed harbor and junction decisions.
-Explicit per-train callback input retains initial Shift/pass, five-minute polling,
-Up-before-Down and valid-left-before-right. Input is supplied only to the detached
-minute being executed and is absent from frozen/durable state. Neutral manual
-trains take straight choices and continue waiting at harbors without a driver.
-[Multiplayer adaptation, source audit and evidence](../../doc/web-parity-fleet-manual.md).
-
-P5-21 adds `FleetTurning.CheckTurn` and advanced TAT `reverse2`/`rforwarding2`.
-Source-ordered handler reversal/re-placement precedes central sentinel handling,
-with stable car IDs, captured-old-head timing and no train timer re-registration.
-Invalid re-placement rejects the complete detached callback.
-[Source, verification and P6 passenger/bell companions](../../doc/web-parity-fleet-turning.md).
+Manual driving was removed on 7 November 2026. Fleet callbacks have no held-input
+argument; movement, reversal, turning and timetable dispatch run from authoritative
+world state and game time. Manual is no longer a fleet controller kind/provider;
+saves containing it reject without conversion. Automatic Simple, Delegation and
+timetable behavior remains. See [the removal decision](../../doc/web-parity-fleet-manual.md).

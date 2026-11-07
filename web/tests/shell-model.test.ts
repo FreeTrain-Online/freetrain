@@ -31,14 +31,13 @@ Deno.test('delayed confirmation leaves confirmed state unchanged and blocks dupl
   } finally { model.dispose(); }
 });
 
-Deno.test('rejection retains Japanese draft, confirmed name, and train controller', async () => {
+Deno.test('rejection retains Japanese draft and confirmed name', async () => {
   const { service, model } = setup();
   try {
     await until(() => model.state.connection === 'ready');
     service.setBehavior('rejected');
     model.setDraft('新宿駅');
     await model.rename();
-    await model.controller('manual');
     assert(model.state.draft === '新宿駅' && model.state.read?.stations[0].name === '中央駅');
     assert(model.state.read?.trains[0].controller === 'automatic' && model.state.feedback === 'invalidInput');
   } finally { model.dispose(); }
@@ -127,18 +126,6 @@ Deno.test('fixture snapshots are immutable; stale revisions reject without publi
   } finally { client.dispose(); }
 });
 
-Deno.test('controller changes acquire a lease and use the newly confirmed revision and token', async () => {
-  const { model } = setup();
-  try {
-    await until(() => model.state.connection === 'ready');
-    await model.controller('manual');
-    assert(model.state.read?.trains[0].controller === 'manual');
-    assert(model.state.read.trains[0].controlLease?.participantId === model.state.participantId);
-    assert(model.state.read.trains[0].controlLease?.leaseId === 'fixture-lease');
-    await model.releaseControl();
-    assert(model.state.read.trains[0].controlLease === null);
-  } finally { model.dispose(); }
-});
 
 Deno.test('leave cancels pending work and clears client state before returning to sign-in', async () => {
   const service = createFixtureService({ normal: 2, delayed: 100 });
@@ -202,27 +189,6 @@ Deno.test('selected station retains its original revision and never renames anot
   } finally { model.dispose(); }
 });
 
-Deno.test('controller lease acquisition remains bound to the selected train across async completion', async () => {
-  const { service, model } = setup();
-  try {
-    await until(() => model.state.connection === 'ready');
-    const snapshot = structuredClone(model.state.read) as Snapshot;
-    snapshot.trains.push({ ...snapshot.trains[0], id: 'train-2', name: 'Second train' }); service.publish(snapshot);
-    await model.controller('manual', 'train-2');
-    assert(model.state.read!.trains[0].controller === 'automatic');
-    assert(model.state.read!.trains[1].controller === 'manual');
-    service.setBehavior('delayed');
-    let selected = true;
-    const switched = model.controller('manual', 'train-1', () => selected);
-    selected = false; await switched;
-    assert(model.state.read!.trains[0].controller === 'automatic');
-    await model.releaseControl('train-1');
-    const pending = model.controller('manual', 'train-1');
-    model.reconnect(); await pending;
-    await until(() => model.state.connection === 'ready');
-    assert(model.state.read!.trains[0].controller === 'automatic');
-  } finally { model.dispose(); }
-});
 
 Deno.test('late reads and statuses cannot reopen a leaving or deliberately signed-out world', async () => {
   const service = createFixtureService();

@@ -8,18 +8,17 @@ namespace FreeTrain.Online.Server;
 
 public static class SessionComposition
 {
-    public static SessionHost CreateGeneratedHost(StartupWorldOptions options, long epoch = 1, TimeSpan? inputExpiry = null)
-        => new(options.Create(), "operator-1", TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve, worldEpoch: epoch)
-            { InputExpiry=inputExpiry??TimeSpan.FromMilliseconds(500) };
+    public static SessionHost CreateGeneratedHost(StartupWorldOptions options, long epoch = 1)
+        => new(options.Create(), "operator-1", TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve, worldEpoch: epoch);
 
-    public static SessionHost CreateSavedHost(ReadOnlySpan<byte> bytes, long epoch = 1, TimeSpan? inputExpiry = null)
+    public static SessionHost CreateSavedHost(ReadOnlySpan<byte> bytes, long epoch = 1)
     {
         var saved = SaveCodec.ReadWorld(bytes, TerrainProfiles.Resolve, RailwayProfiles.Resolve);
         // Match the epoch advance of loading a save through SessionHost.
-        return saved.Mixed is {} mixed ? new(mixed,"operator-1",TerrainProfiles.Resolve,RailwayProfiles.Resolve,worldEpoch:epoch + 1) {InputExpiry=inputExpiry??TimeSpan.FromMilliseconds(500)}
+        return saved.Mixed is {} mixed ? new(mixed,"operator-1",TerrainProfiles.Resolve,RailwayProfiles.Resolve,worldEpoch:epoch + 1)
             : saved.Terrain is { } terrain
-            ? new(terrain, "operator-1", TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve, worldEpoch: epoch + 1) {InputExpiry=inputExpiry??TimeSpan.FromMilliseconds(500)}
-            : new(saved.Reference!, "operator-1", worldEpoch: epoch + 1, terrainResolver: TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve) {InputExpiry=inputExpiry??TimeSpan.FromMilliseconds(500)};
+            ? new(terrain, "operator-1", TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve, worldEpoch: epoch + 1)
+            : new(saved.Reference!, "operator-1", worldEpoch: epoch + 1, terrainResolver: TerrainProfiles.Resolve, railwayResolver: RailwayProfiles.Resolve);
     }
 
     // Explicit canonical rail fixture for regression tests and headless tools.

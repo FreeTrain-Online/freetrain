@@ -77,7 +77,6 @@ public sealed class RollingStockCatalog
         {
             var kind = i.Definition.Implementation switch
             {
-                "freetrain.world.rail.manualtc.TrainConrollerContributionImpl" => FleetControllerKind.Manual,
                 "freetrain.world.rail.tattc.TATTrainControllerPlugIn" => FleetControllerKind.Timetable,
                 _ => (FleetControllerKind?)null
             };

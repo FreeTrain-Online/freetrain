@@ -7,12 +7,12 @@ import {blankFleetRule,sameRuleMask,validFleetRule} from '../src/lib/fleet-contr
 const scene=async()=>parseMessageValue(JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-fleet.json',import.meta.url)))) as Snapshot;
 Deno.test('manager diagnostics distinguish direct references and effective delegation without changing the graph',async()=>{
  const read=await scene(),f=read.mixed!.fleet!,simple=f.controllers.find(c=>c.kind==='simple')!,delegation=f.controllers.find(c=>c.kind==='delegation')!;
- const manual={...simple,id:'9007199254740997',name:'Shared',kind:'manual' as const};f.controllers.push(manual);
- f.trains[0].controllerId=delegation.id;f.groups.find(g=>g.id===f.trains[0].groupId)!.controllerId=manual.id;
- const before=JSON.stringify(f),usages=controllerUsages(f,manual.id);
+ const timetable={...simple,id:'9007199254740997',name:'Shared',kind:'timetable' as const};f.controllers.push(timetable);
+ f.trains[0].controllerId=delegation.id;f.groups.find(g=>g.id===f.trains[0].groupId)!.controllerId=timetable.id;
+ const before=JSON.stringify(f),usages=controllerUsages(f,timetable.id);
  assert.equal(usages.groups.length,1);assert.equal(usages.trains.length,0);
- assert.equal(effectiveFleetController(f,f.trains[0].id)!.id,manual.id);
- f.trains[0].controllerId=manual.id;assert.equal(controllerUsages(f,manual.id).trains.length,1);
+ assert.equal(effectiveFleetController(f,f.trains[0].id)!.id,timetable.id);
+ f.trains[0].controllerId=timetable.id;assert.equal(controllerUsages(f,timetable.id).trains.length,1);
  f.trains[0].controllerId=delegation.id;assert.equal(JSON.stringify(f),before);
 });
 Deno.test('copy names use the first unused source numeric suffix and preserve bounded Unicode names',async()=>{
@@ -86,4 +86,15 @@ Deno.test('advanced snapshots reject invalid rule context and unchanged-revision
  assert.equal(validFleetSuccessor(before,f,'1001'),false);controller.revision='1';assert.equal(validFleetSuccessor(before,f,'1001'),true);
  controller.harbors[0].rules[0].action='curve';assert.equal(validFleet(read),false);
  controller.harbors[0].rules[0].action='go';controller.harbors[0].minutes=10;assert.equal(validFleet(read),false);
+});
+Deno.test('retired Manual fleet controller records fail wire and save validation',async()=>{
+ const read=await scene(),controller=read.mixed!.fleet!.controllers[2];
+ (controller as {kind:string}).kind='manual';
+ assert.equal(validWireShape(read),false);assert.throws(()=>parseMessageValue(read));
+ const {default:Ajv}=await import('ajv');
+ const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v9.schema.json',import.meta.url)));
+ const ajv=new Ajv({strict:true});
+ for(const name of ['int64','uint63'])ajv.addFormat(name,{type:'string',validate:()=>true});
+ const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/fleet-v9.json',import.meta.url)));
+ save.mixed.fleet.controllers[2].kind='manual';assert.equal(ajv.compile(schema)(save),false);
 });

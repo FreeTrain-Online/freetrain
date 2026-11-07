@@ -1,4 +1,3 @@
-import {drivingTrain} from './manual-driving.ts';
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
@@ -37,7 +36,6 @@ export interface ShellState {
   signalDirection: SignalDirection;
 }
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
-  let inputSequence = BigInt(Date.now()) * 1000n;
   let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id, catalogSelections: { ...initialCatalogSelection }, signalDirection: 0 };
   let client: SessionClient | undefined;
   let unsubscribe: (() => void) | undefined;
@@ -127,14 +125,6 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       return false;
     }
   };
-  let acquiring: Promise<boolean | undefined> | undefined;
-  const ensureControl = async (trainId?: string) => {
-    const train = drivingTrain(state.read,trainId ?? state.read?.trains[0]?.id);
-    if (!train || !client || state.role === 'observer') return false;
-    if (train.controlLease && train.controlLease.participantId === client.participantId) return true;
-    if (!acquiring) acquiring = send({ kind: 'acquireControl', trainId: train.id }).finally(() => { acquiring = undefined; });
-    return await acquiring;
-  };
   reconnect();
   return {
     get state() { return state; },
@@ -203,31 +193,6 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if (state.composing || !state.draft.trim() || !state.read) return;
       const station = state.read.stations.find(item => item.id === stationId) ?? (!stationId ? state.read.stations[0] : undefined);
       if (station) return send({ kind: 'renameStation', stationId: station.id, expectedRevision: draftRevision ?? station.revision, name: state.draft });
-    },
-    async controller(controller: 'automatic' | 'manual', trainId = state.read?.trains[0]?.id, isCurrent: () => boolean = () => true) {
-      const current = generation, epoch = state.read?.worldEpoch;
-      if (!trainId || !await ensureControl(trainId) || current !== generation || epoch !== state.read?.worldEpoch || !isCurrent()) return false;
-      const train = drivingTrain(state.read,trainId);
-      if (train?.controlLease) return send({ kind: 'setController', trainId: train.id, expectedRevision: train.revision, controller, leaseId: train.controlLease.leaseId });
-    },
-    acquireControl(trainId = state.read?.trains[0]?.id) { const train = drivingTrain(state.read,trainId); if (train) return send({ kind: 'acquireControl', trainId: train.id }); },
-    releaseControl(trainId = state.read?.trains[0]?.id) {
-      const train = drivingTrain(state.read,trainId);
-      if (train?.controlLease) return send({ kind: 'releaseControl', trainId: train.id, leaseId: train.controlLease.leaseId });
-    },
-    async input(keys: ReadonlySet<string>, trainId = state.read?.trains[0]?.id) {
-      const train = drivingTrain(state.read,trainId);
-      if (!client || state.connection !== 'ready' || state.role==='observer' || train?.controller !== 'manual') return;
-      if (!train.controlLease || train.controlLease.participantId !== client.participantId) return;
-      const current = generation;
-      const payload: CommandPayload = { kind: 'controllerInput', trainId: train.id, leaseId: train.controlLease.leaseId,
-        inputSequence: String(++inputSequence), pass: keys.has('Shift'), depart: keys.has('ArrowUp'), reverse: keys.has('ArrowDown'),
-        left: keys.has('ArrowLeft'), right: keys.has('ArrowRight'), reset: keys.size === 0 };
-      try {
-        const result = await client.send({ type: 'command', requestId: crypto.randomUUID(), expectedWorldEpoch: state.read!.worldEpoch, payload });
-        if (current === generation && result.type === 'rejected') update({ feedback: result.code });
-      }
-      catch { /* Transport reports loss; the server also expires held input. */ }
     },
     async leave(revoke: () => Promise<void>) {
       if (disposed || state.leaving) return;

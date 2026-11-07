@@ -205,8 +205,8 @@ public class FleetTradingTests
                 return c with{Revision=1,State=state};
             }).ToImmutableArray()}).ToArray();
         // Place the sold train in a subgroup and share its controller with a neighbor.
-        var groupId=next++;var provider=f.Profile.Providers.First(p=>p.Kind==FleetControllerKind.Manual);var controllerId=next++;
-        var controller=new FleetController(controllerId,0,"Shared",FleetControllerKind.Manual,provider.Binding);
+        var groupId=next++;var provider=f.Profile.Providers.First(p=>p.Kind==FleetControllerKind.Timetable);var controllerId=next++;
+        var controller=new FleetController(controllerId,0,"Shared",FleetControllerKind.Timetable,provider.Binding);
         changed=changed.Select(t=>t with{ControllerId=controllerId,GroupId=t.Id==first.Id?groupId:f.RootGroupId}).ToArray();
         var graph=new FleetGraph(f.Profile,f.RootGroupId,changed,
             [f.Groups[0] with{Revision=f.Groups[0].Revision+1,Members=[groupId,neighbor.Id]},new(groupId,0,"Subgroup",f.RootGroupId,f.Simple.Id,[first.Id])],f.Controllers.Add(controller));

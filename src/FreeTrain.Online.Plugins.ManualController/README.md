@@ -1,10 +1,9 @@
 # Prototype manual controller
 
 This assembly is retained only for the explicit historical regression harness.
-Canonical P5-17 manual control lives in `Simulation/FleetControllers.cs` and
-`Session/FleetManualSession.cs`; see [the source audit and multiplayer contract](../../doc/web-parity-fleet-manual.md).
-The reusable transport/input lifecycle was audited against stable ExAV; this
-prototype plugin is not registered as a canonical behavior provider.
+Canonical manual driving was removed on 7 November 2026, including controller
+records and live input. No browser driving controls remain. See
+[the removal decision](../../doc/web-parity-fleet-manual.md).
 
 `ManualTrainController` ports the defaults from
 `plugins/org.kohsuke.freetrain.tc.manual/src/ManualTrainController.cs` at `1f755ca`
@@ -20,5 +19,4 @@ Shift passes on the initial station call. Otherwise it waits five scenario ticks
 later calls prefer Up/depart over Down/reverse, otherwise wait again. Junction
 choice checks valid left before valid right, then straight/mandatory turn. The
 negative legacy stop-time sentinel becomes `StopAction.Reverse`; the world
-reverses the car list and moves away at that scheduled decision tick. Browser key
-capture/help and wall-time disconnect expiry arrive in later stages.
+reverses the car list and moves away at that scheduled decision tick. This behavior remains isolated to historical prototype regression tests.

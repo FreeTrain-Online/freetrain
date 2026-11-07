@@ -21,7 +21,6 @@
   import SaveControls from './SaveControls.svelte';
   import FleetControllerManager from './FleetControllerManager.svelte';
   import FleetControllerAssignment from './FleetControllerAssignment.svelte';
-  import FleetManualControls from './FleetManualControls.svelte';
   import FleetControls from './FleetControls.svelte';
   import MapView from './MapView.svelte';
   import PanelFrame from './PanelFrame.svelte';
@@ -282,16 +281,11 @@
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
           {#if train}
             <h3>{train.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{train.cars}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{train.position.x}, {train.position.y}, {train.position.z}</dd></div><div><dt>{text.trainState}</dt><dd data-testid="train-state">{text[train.state]}</dd></div></dl>
-            <p class="hint" id="lease-help">{text.leaseHint}</p>
-            <p class="control-holder" data-testid="control-holder">{text.control}: {train.controlLease?.participantId ?? text.unclaimed}</p>
-            <div class="form-actions" aria-describedby="mutation-help lease-help"><button disabled={disabled} onclick={() => model.acquireControl(train!.id)}>{text.takeControl}</button><button disabled={disabled || train.controlLease?.participantId !== view.participantId} onclick={() => model.releaseControl(train!.id)}>{text.releaseControl}</button></div>
-            <label class="field">{text.controller}<select disabled={disabled} value={train.controller} onchange={event => { const value = event.currentTarget.value as 'automatic' | 'manual'; const id = train!.id; event.currentTarget.value = train!.controller; void model.controller(value, id, () => mapSelection?.kind === 'train' && mapSelection.id === id); }}><option value="automatic">{text.automatic}</option><option value="manual">{text.manual}</option></select></label>
-            <button onclick={() => map.focusTrain(train!.id)}>{text.findTrain}</button><p class="hint">{text.manualHelp}</p>
+            <button onclick={() => map.focusTrain(train!.id)}>{text.findTrain}</button>
           {:else if fleetTrain && fleetCar}
             <h3>{fleetTrain.name}</h3><dl class="details"><div><dt>{text.cars}</dt><dd>{fleetTrain.cars.length}</dd></div><div><dt>{text.position}</dt><dd data-testid="train-position">{fleetCar.state.location ? `${fleetCar.state.location.x}, ${fleetCar.state.location.y}, ${fleetCar.state.location.z}` : text.unavailableObject}</dd></div></dl>
             <dl class="details"><div><dt>{text.trainCar}</dt><dd data-testid="train-car-id">{fleetCar.id}</dd></div></dl>
             {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetDeploymentControls bind:this={inspectorFleetControls} {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing} allowPlacement={false} onmap={()=>{}} onpreview={p=>{deploymentPreview=p;}}/>{/key}
-            {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetManualControls {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen}/>{/key}
             <FleetControllerAssignment {model} {view} targetId={fleetTrain.id} disabled={clockDisabled||synchronizing}/>
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
           {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
@@ -338,7 +332,7 @@
         {:else if panel === 'help'}
           <p>{text.mapHelp}</p><p>{text.toolShortcuts}</p><p>{text.toolbarHelp}</p>
           {#if reference}<p>{worldHint}</p>{#if terrain||mixed}<h3>{text.trackTask}</h3><p>{text.railHelp}</p><p>{text.railHeuristicHelp}</p><p>{text.railRemovalHelp}</p><p>{text.railCutHelp}</p><h3>{text.stationaryTask}</h3><p>{text.stationaryHelp}</p><p>{text.stationaryRules}</p><p>{text.stationaryRemovalHelp}</p><h3>{text.speedTask}</h3><p>{text.speedHelp}</p><p>{text.speedRules}</p><p>{text.speedRemovalHelp}</p><h3>{text.poleTask}</h3><p>{text.poleHelp}</p><p>{text.poleRules}</p><p>{text.poleRemovalHelp}</p><h3>{text.signalTask}</h3><p>{text.signalHelp}</p><p>{text.signalRules}</p><p>{text.signalRemovalHelp}</p><h3>{text.garageTask}</h3><p>{text.garageDescription}</p><p>{text.garageHelp}</p><p>{text.garageRules}</p><p>{text.garageRemovalHelp}</p><h3>{text.tunnelTask}</h3><p>{text.tunnelDescription}</p><p>{text.tunnelHelp}</p><p>{text.tunnelRules}</p><p>{text.tunnelRemovalHelp}</p><h3>{text.girderTask}</h3><p>{text.girderDescription}</p><p>{text.girderHelp}</p><p>{text.girderRules}</p><p>{text.girderRemovalHelp}</p><h3>{text.bridgeTask}</h3><p>{text.bridgeDescription}</p><p>{text.bridgeHelp}</p><p>{text.bridgeRules}</p><p>{text.bridgeRemovalHelp}</p><h3>{text.slopeTask}</h3><p>{text.slopeHelp}</p><p>{text.slopeRemovalHelp}</p><p>{text.slopeGhostHelp}</p>{/if}
-          {:else}<p>{text.observerHint}</p><p>{text.constructionHelp}</p><p>{text.manualHelp}</p>{/if}
+          {:else}<p>{text.observerHint}</p><p>{text.constructionHelp}</p>{/if}
           {#if terrain}<h3>{text.terrainTool}</h3><p>{text.terrainPaintHelp}</p><p>{text.rectangleHelp}</p>{/if}
         {/if}
       </PanelFrame>

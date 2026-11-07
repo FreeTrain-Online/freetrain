@@ -7,12 +7,12 @@ namespace FreeTrain.Online.Simulation;
 
 public static class FleetTurning
 {
-    public static FleetStopResult CheckTurn(MixedWorld world,FleetTrain train,int forwarding,FleetManualInput input=default,GameTime? time=null)
+    public static FleetStopResult CheckTurn(MixedWorld world,FleetTrain train,int forwarding,GameTime? time=null)
     {
         if(forwarding is not (-1 or -1000))return new(train,-1);
         if(train.Head.State is not FleetCarState.Inside head)return new(train,forwarding);
 
-        train=FleetReversal.Reverse(world,train,input,time);
+        train=FleetReversal.Reverse(world,train,time);
         FleetCarState.Inside? tail=null;
         // Source traverses from the captured old head via its new predecessors.
         foreach(var car in train.Cars.Reverse())
@@ -39,7 +39,7 @@ public static class FleetTurning
         var position=toLower?head.Location:tail!.Location;
         // Remove cars only: no train unregister/register and no timer changes.
         train=train with {Cars=train.Cars.Select(c=>c with {State=new FleetCarState.Unplaced()}).ToImmutableArray()};
-        if(toLower)train=FleetReversal.Reverse(world,train,input,time);
+        if(toLower)train=FleetReversal.Reverse(world,train,time);
         var cars=train.Cars.ToBuilder();var visited=new HashSet<Location>();Heading? heading=null;
         for(var n=cars.Count-1;n>=0;n--)
         {
@@ -53,12 +53,12 @@ public static class FleetTurning
             if(n>0 && handler==RailwayHandler.Junction && RailwayTopology.HasPort(rail.Pattern,heading.Value) &&
                 (RailwayTopology.HasPort(rail.Pattern,heading.Value.Left) || RailwayTopology.HasPort(rail.Pattern,heading.Value.Right)))
                 throw new ArgumentException("Turning follower has an unplaced predecessor.");
-            var direction=n==0 ? FleetRailGuidance.GuideHead(world,world.Fleet!,train,position,rail,heading.Value,input,time) :
+            var direction=n==0 ? FleetRailGuidance.GuideHead(world,world.Fleet!,train,position,rail,heading.Value,time) :
                 FleetRailGuidance.Guide(handler,rail.Pattern,heading.Value);
             position=position.Move(direction);heading=direction; // source deliberately omits zdiff
         }
         train=train with {Cars=cars.ToImmutable()};
-        if(toLower)train=FleetReversal.Reverse(world,train,input,time);
+        if(toLower)train=FleetReversal.Reverse(world,train,time);
         return new(train,forwarding);
     }
 }

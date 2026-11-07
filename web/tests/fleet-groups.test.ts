@@ -22,13 +22,13 @@ Deno.test('MAN-A17 group selectors preserve stored sibling order and exclude roo
 });
 Deno.test('group and train effective identities distinguish null fallback, inheritance, ancestor changes and retained overrides',async()=>{
  const f=await scene(),root=f.groups.find(g=>g.id===f.rootGroupId)!,train=f.trains[0],simple=f.controllers.find(c=>c.kind==='simple')!,delegation=f.controllers.find(c=>c.kind==='delegation')!;
- const manual=f.controllers.find(c=>c.kind==='manual')!;
- root.controllerId=manual.id;
+ const timetable=f.controllers.find(c=>c.kind==='timetable')!;
+ root.controllerId=timetable.id;
  const group:FleetGroup={id:'999',revision:'0',name:'Branch',parentId:root.id,controllerId:delegation.id,members:[train.id]};f.groups.push(group);train.groupId=group.id;train.controllerId=delegation.id;
- assert.equal(effectiveFleetGroupController(f,group.id)?.id,manual.id);assert.equal(effectiveFleetController(f,train.id)?.id,manual.id);
+ assert.equal(effectiveFleetGroupController(f,group.id)?.id,timetable.id);assert.equal(effectiveFleetController(f,train.id)?.id,timetable.id);
  train.controllerId=simple.id;root.controllerId=delegation.id;assert.equal(effectiveFleetController(f,train.id)?.id,simple.id);
  train.controllerId=delegation.id;assert.equal(effectiveFleetController(f,train.id)?.id,simple.id);
- group.controllerId=null;root.controllerId=manual.id;
+ group.controllerId=null;root.controllerId=timetable.id;
  assert.equal(effectiveFleetController(f,train.id)?.id,simple.id);assert.equal(effectiveFleetGroupController(f,group.id)?.id,simple.id);
 });
 Deno.test('bounded iterative selectors and group lookup terminate on the deepest admitted tree and malformed cycles',async()=>{

@@ -77,11 +77,11 @@ public static class FleetTimetable
     public static FleetStopDecision Stop(ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
         => Decision(Select(rules,callCount,time),callCount,time);
 
-    public static FleetStopResult Stop(MixedWorld world,FleetTrain train,ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time,FleetManualInput input=default)
+    public static FleetStopResult Stop(MixedWorld world,FleetTrain train,ImmutableArray<FleetTimetableRule> rules,int callCount,GameTime time)
     {
         var action=Select(rules,callCount,time);
         return action is FleetRuleAction.Reverse2 or FleetRuleAction.RForwarding2
-            ? FleetTurning.CheckTurn(world,train,action==FleetRuleAction.Reverse2?-1:-1000,input,time)
+            ? FleetTurning.CheckTurn(world,train,action==FleetRuleAction.Reverse2?-1:-1000,time)
             : new(train,Decision(action,callCount,time));
     }
 }

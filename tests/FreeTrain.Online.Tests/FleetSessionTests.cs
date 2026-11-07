@@ -45,7 +45,7 @@ public class FleetSessionTests
     public async Task Manager_can_create_before_any_purchase_without_stock_or_booking_and_failed_creation_keeps_terrain()
     {
         using var h=Host();var before=await Save(h);var snap=h.Snapshot();
-        var b=RollingStockCatalog.Bundled.FleetProfile.Providers.Single(p=>p.Kind==FleetControllerKind.Manual).Binding;
+        var b=RollingStockCatalog.Bundled.FleetProfile.Providers.Single(p=>p.Kind==FleetControllerKind.Timetable).Binding;
         var command=new ManageFleetControllerCommand("create",0,0,"",new(b.PackId,b.Version,b.CatalogHash,b.ContributionId),null);
         Assert.Equal("invalidInput",Assert.IsType<RejectedMessage>(await Send(h,command)).Code);Assert.Equal(before,await Save(h));Assert.Null(h.Snapshot().Mixed);
         Assert.IsType<AcceptedMessage>(await Send(h,command with {Name="Before trains"}));

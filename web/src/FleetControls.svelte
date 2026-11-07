@@ -1,7 +1,6 @@
 <script lang="ts">
   import FleetControllerManager from './FleetControllerManager.svelte';
   import FleetControllerAssignment from './FleetControllerAssignment.svelte';
-  import FleetManualControls from './FleetManualControls.svelte';
   import FleetDeploymentControls from './FleetDeploymentControls.svelte';
   import {onDestroy,tick} from 'svelte';
   import {messages} from './lib/localization.ts';
@@ -141,7 +140,6 @@
             <div class="form-actions"><button class:primary={dirty} type="submit" disabled={disabled||!dirty||conflict||!validName||composing}>{text.stockRename}</button><button type="button" disabled={submitting} onclick={()=>{dirty=false;composing=false;}}>{text.resetDraft}</button></div>
           </form>
           <FleetControllerAssignment {model} {view} targetId={train.id} disabled={disabled||dirty||loading||!!quote}/>
-          {#if train.state!=='unplaced'}{#key `${read.worldEpoch}/${train.id}`}<FleetManualControls {model} {view} trainId={train.id} disabled={disabled||dirty||loading||!!quote}/>{/key}{/if}
           <p>{text.stockModel}: {ownedStock?stockText(ownedStock,'name',view.locale):text.stockUnavailable}</p>
           {#key `${read.worldEpoch}/${train.id}`}<FleetDeploymentControls bind:this={deploymentControls} {model} {view} trainId={train.id} disabled={disabled||dirty||loading} {picked} {onmap} {onpreview}/>{/key}
           <button disabled={disabled||loading||dirty||train.state!=='unplaced'} onclick={sale}>{text.stockSaleQuote}</button>

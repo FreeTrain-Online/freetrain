@@ -5,7 +5,7 @@ namespace FreeTrain.Online.Session;
 
 public sealed partial class SessionHost
 {
-    private string? ManageFleetGroup(ParticipantContext participant, ManageFleetGroupCommand command)
+    private string? ManageFleetGroup(ManageFleetGroupCommand command)
     {
         try
         {
@@ -62,7 +62,6 @@ public sealed partial class SessionHost
                     {
                         var train=trains.SingleOrDefault(t=>t.Id==command.TargetId);
                         if(train==null || train.Revision!=command.ExpectedRevision)return "staleRevision";
-                        if(fleetLeases.TryGetValue(train.Id,out var lease) && lease.Participant!=participant)return "controlBusy";
                         previousId=train.GroupId;
                         trains=trains.Replace(train,train with {GroupId=parent.Id,Revision=checked(train.Revision+1)});
                     }
@@ -73,7 +72,7 @@ public sealed partial class SessionHost
                 }
             }
             else return "invalidInput"; // Source groups have no deletion action.
-            return PublishControllers(participant,state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),nextId);
+            return PublishControllers(state,new(f.Profile,f.RootGroupId,trains,groups,f.Controllers),nextId);
         }
         catch(Exception e) when(e is ArgumentException or InvalidOperationException or OverflowException or InvalidDataException){return "invalidInput";}
     }

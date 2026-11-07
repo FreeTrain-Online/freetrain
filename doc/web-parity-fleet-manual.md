@@ -1,3 +1,39 @@
+# Manual driving removed — 7 November 2026
+
+Manual train driving was removed on 7 November 2026. Rendering trails the
+server, making immediate intervention cause position jumps and invalid-packet
+recovery/disconnects. The fleet UI no longer takes control, captures driving
+keys or offers hold buttons; canonical sessions no longer lease trains or consume
+manual input. Shared Simple, Delegation and timetable controllers, controller/group
+management, deployment/reversal and automatic timetable actions remain.
+
+Manual is no longer a canonical controller kind or registered fleet provider.
+The current save and wire schemas reject Manual controller records; there is no
+conversion or compatibility fallback. Worlds without Manual records retain their
+existing behavior. Historical prototype regression code is separate from the
+canonical game and has no driving UI.
+
+Independent improvements from commit `2625613690cb357c60fc24a713ff9d68964fa34c`
+are retained: browser-valid WebSocket close codes and bounded UTF-8 reasons,
+recovery/schema diagnostics that omit payload values, pure junction drawing and
+motion history derived from committed destinations, and canonical train camera
+centering. These also apply to automatic/timetable operations.
+
+## Removal verification
+
+The release build and all 1,595 .NET tests pass. Client tests pass 293/293 plus
+one rendering-retention check; generated contracts/content/locales and Svelte
+checks pass, and the production web build succeeds. Chromium passes 16 canonical
+controller/group/timetable/turning cases and 38 affected prototype inspector,
+map, keyboard, multiplayer, connection and station-editing cases. New regressions
+verify rejection of Manual saves and canonical input commands without state
+mutation, and the absence of driving UI/keyboard packets. Project boundaries and
+whitespace checks pass.
+
+## Historical implementation and evidence
+
+The remainder records the removed P5-17 implementation, not current functionality.
+
 # P5-17 manual driving — 5 November 2026
 
 P5-17 delivers canonical manual driving through exclusive participant/train

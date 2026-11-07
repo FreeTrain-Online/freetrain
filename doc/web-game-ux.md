@@ -436,11 +436,6 @@ with the task, and narrow controls scroll with sticky confirmation. The exact
 terrain-to-mixed profile handoff preserves the same epoch, camera and canvas.
 
 
-P5-17 canonical manual driving uses the same `controller`, `take-control`,
-`release-control` and `manual-input` operations in placed owned stock and the
-picked-car inspector. Five EN/JA hold buttons supplement focused-map keys, with
-pointer capture and keyboard equivalents. Shared controller identity does not
-share held input between trains. Null assignments and explicit Delegation use
-the existing effective-controller resolver. Reacquisition is explicit after
-expiry/disconnect; no local control change pauses shared time.
-See [the full lifecycle, source audit and acceptance evidence](web-parity-fleet-manual.md).
+Manual driving was removed on 7 November 2026. Train inspection and shared
+controller assignment remain; there are no driving keys, hold buttons or control
+leases. See [the removal decision and retained improvements](web-parity-fleet-manual.md).

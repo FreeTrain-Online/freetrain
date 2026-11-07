@@ -36,12 +36,12 @@ public sealed partial class NetworkSession
         options.Validate();
         this.options = options; this.storage = storage;
         startupWorld ??= new();
-        this.hostFactory = hostFactory ?? ((epoch, expiry) => SessionComposition.CreateGeneratedHost(startupWorld, epoch, expiry));
+        this.hostFactory = hostFactory ?? ((epoch, _) => SessionComposition.CreateGeneratedHost(startupWorld, epoch));
         // Restore before generating: a saved world must not pay generation cost,
         // consume a fresh seed, or depend on new-world parameter validity.
         if (hostFactory == null && storage?.Exists("checkpoint") == true)
         {
-            try { host = SessionComposition.CreateSavedHost(storage.Read("checkpoint"),inputExpiry:options.InputExpiry); return; }
+            try { host = SessionComposition.CreateSavedHost(storage.Read("checkpoint")); return; }
             catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
             {
                 StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";

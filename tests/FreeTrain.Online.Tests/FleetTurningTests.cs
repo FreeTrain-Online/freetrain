@@ -191,12 +191,12 @@ public partial class FleetMovementTests
     [InlineData("reverse2")][InlineData("rforwarding2")]
     public async Task Turning_rules_use_existing_atomic_commands_copy_and_save_roundtrip(string action)
     {
-        using var h=new SessionHost(Timetableize(ManualLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        using var h=new SessionHost(Timetableize(FleetLine(),[new(new(22,20,2),FleetHarborKind.Advanced,0,false)]),"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var c=ManagerController(h);var p=new PositionRead(22,20,2);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,new EditFleetRuleCommand(c.Id,c.Revision,p,"harbor","add",-1,0,new(-1,-1,-1,-1,-1,action))));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,new EditFleetRuleCommand(c.Id,c.Revision,p,"harbor","add",-1,0,new(-1,-1,-1,-1,-1,action))));
         c=ManagerController(h);Assert.Equal(action,c.Harbors[0].Rules![0].Action);
-        Assert.IsType<AcceptedMessage>(await ManualSend(h,ManagerEdit(c,"copy")));
+        Assert.IsType<AcceptedMessage>(await FleetSend(h,ManagerEdit(c,"copy")));
         Assert.Equal(action,ManagerController(h).Harbors[0].Rules![0].Action);
-        var saved=await ManualSave(h);Assert.Equal(saved,SaveCodec.Write(Restore(saved)));
+        var saved=await FleetSave(h);Assert.Equal(saved,SaveCodec.Write(Restore(saved)));
     }
 }

@@ -26,7 +26,7 @@ test('owner and observer inspect drags survive running world updates', async ({ 
           await target.mouse.move(box.x + box.width / 2 + 90, box.y + box.height / 2 + 30);
           await target.mouse.up({ button });
           await expect.poll(() => canvas.getAttribute('data-camera')).not.toBe(before);
-          await expect(target.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+          await expect(target.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
         });
       }
     }
@@ -63,12 +63,12 @@ test('trackpad pans, wheel and keyboard zoom, and tool shortcuts select without 
   await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(4);
   for (let i = 0; i < 20; i++) await page.keyboard.press('-');
   await expect.poll(async () => Number(await canvas.getAttribute('data-zoom'))).toBe(.5);
-  for (const [key, label] of [['t', 'Build track'], ['t', 'Build track'], ['r', 'Remove'], ['i', 'Inspect / drive']]) {
+  for (const [key, label] of [['t', 'Build track'], ['t', 'Build track'], ['r', 'Remove'], ['i', 'Inspect']]) {
     await page.keyboard.press(key);
     await expect(page.getByRole('button', { name: label, exact: true })).toHaveAttribute('aria-pressed', 'true');
   }
   await canvas.dispatchEvent('keydown', { key: 't', ctrlKey: true });
-  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Game ▾', exact: true }).click();
   await page.getByRole('button', { name: 'Help', exact: true }).click();
   const help = page.locator('.primary-panel');
@@ -96,5 +96,5 @@ test('middle and Space pan never pick or target, including Space released before
   await clickTile(page, { x: 37, y: 16, z: 1 }); await canvas.focus(); await page.keyboard.press('Escape');
   await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
   await expect(page.getByRole('button', { name: 'Build track', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Escape'); await expect(page.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
 });

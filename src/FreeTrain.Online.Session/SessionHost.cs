@@ -307,7 +307,6 @@ public sealed partial class SessionHost : IDisposable
         referenceWorld = replacement.Reference;
         terrainState = replacement.Terrain; mixedState = replacement.Mixed;
         WorldEpoch = epoch;
-        fleetLeases.Clear();
         ResetPlayback();
         resetInput = safetyPause = false;
         return Snapshot();
@@ -394,7 +393,7 @@ public sealed partial class SessionHost : IDisposable
             if (mixedState != null)
             {
                 var before = mixedState.World;
-                mixedState.AdvanceOneMinute(fleetLeases.ToDictionary(p=>p.Key,p=>p.Value.Input));
+                mixedState.AdvanceOneMinute();
                 RecordTrainMotion(before, mixedState);
             }
             else if (terrainState != null) terrainState.AdvanceOneMinute();
@@ -411,7 +410,6 @@ public sealed partial class SessionHost : IDisposable
     }
     private PumpResult PumpReference(int tickBudget)
     {
-        MaintainFleetControl();
         var advanced = 0;
         var applied = 0;
         do
@@ -431,16 +429,12 @@ public sealed partial class SessionHost : IDisposable
                     {
                         switch (queued.Command.Payload)
                         {
-                            case AcquireControlCommand acquire: code=AcquireFleet(queued.Participant,acquire.TrainId); break;
-                            case ReleaseControlCommand release: code=ReleaseFleet(queued.Participant,release); break;
-                            case SetControllerCommand controller: code=SetFleetController(queued.Participant,controller); break;
-                            case ControllerInputCommand input: code=InputFleet(queued.Participant,input); break;
                             case DeployFleetCommand deploy when deploy.Query != null: code = CommitFleetDeployment(deploy); break;
                             case TradeFleetCommand trade when trade.Query != null: code = CommitFleetTrade(trade); break;
-                            case ManageFleetControllerCommand manage: code=ManageFleetController(queued.Participant,manage); break;
-                            case EditFleetRuleCommand rule: code=EditFleetRule(queued.Participant,rule); break;
-                            case AssignFleetControllerCommand assign: code=AssignFleetController(queued.Participant,assign); break;
-                            case ManageFleetGroupCommand group: code=ManageFleetGroup(queued.Participant,group); break;
+                            case ManageFleetControllerCommand manage: code=ManageFleetController(manage); break;
+                            case EditFleetRuleCommand rule: code=EditFleetRule(rule); break;
+                            case AssignFleetControllerCommand assign: code=AssignFleetController(assign); break;
+                            case ManageFleetGroupCommand group: code=ManageFleetGroup(group); break;
                             case RenameFleetCommand rename when rename.Name != null: code = RenameFleet(rename); break;
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
@@ -465,7 +459,7 @@ public sealed partial class SessionHost : IDisposable
                 }
                 applied++;
             }
-            MaintainFleetControl();
+            resetInput = false;
             if (safetyPause) { CanonicalPause(true); safetyPause = false; }
             if (!CanonicalCanAdvance) CanonicalPause(true);
             if (advanced >= tickBudget || CanonicalPaused) break;
@@ -540,7 +534,7 @@ public sealed partial class SessionHost : IDisposable
     {
         lock (gate)
         {
-            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion(), FleetControl = ReadFleetControl() };
+            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion() };
             if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
             if (referenceWorld is {} reference)
                 return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,

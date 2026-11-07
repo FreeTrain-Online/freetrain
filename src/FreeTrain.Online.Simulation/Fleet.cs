@@ -14,7 +14,7 @@ public abstract record FleetCarState
     public sealed record Outside(Location Location, Heading Heading, int Countdown) : Placed(Location, Heading);
 }
 public enum TrainOperationalState { Unplaced, Moving, StoppingAtStation, StoppingAtSignal, EmergencyStopping }
-public enum FleetControllerKind { Simple, Delegation, Manual, Timetable }
+public enum FleetControllerKind { Simple, Delegation, Timetable }
 public sealed record FleetControllerProvider(ContentBinding Binding, FleetControllerKind Kind);
 public enum FleetHarborKind { Pass, Fixed, Daily, Advanced }
 public sealed record FleetJunctionSetting(Location Location, FleetJunctionRoute DefaultRoute, ImmutableArray<FleetTimetableRule> Rules = default);
@@ -60,7 +60,7 @@ public sealed class FleetProfile
         if (Packs.Length is < 1 or > 256 || Packs.Any(p => p == null) || Packs.Select(p => p.Id).Distinct().Count() != Packs.Length ||
             Trains.Length > 4096 || Trains.Any(t => t == null || !Matches(t.Binding)) ||
             Trains.Select(t => t.Binding).Distinct().Count() != Trains.Length || Providers.Length > 128 ||
-            Providers.Any(p => p == null || p.Kind is not (FleetControllerKind.Manual or FleetControllerKind.Timetable) || !Matches(p.Binding)) ||
+            Providers.Any(p => p == null || p.Kind != FleetControllerKind.Timetable || !Matches(p.Binding)) ||
             Providers.Select(p => p.Binding).Distinct().Count() != Providers.Length)
             throw new ArgumentException("Invalid fleet profile.");
         this.trains = Trains.ToFrozenDictionary(t => t.Binding);

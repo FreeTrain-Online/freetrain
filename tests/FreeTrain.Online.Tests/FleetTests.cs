@@ -125,7 +125,7 @@ public class FleetTests
     public void Shared_controller_and_ordered_group_graph_resolves_null_delegation_and_root_fallbacks()
     {
         var w=Add(Add(Empty(),new FleetCarState.Unplaced()),new FleetCarState.Unplaced());var f=w.Fleet!;
-        Assert.Equal(2,f.Profile.Providers.Length);
+        Assert.Single(f.Profile.Providers);
         var provider=f.Profile.Providers.Single(p=>p.Kind==FleetControllerKind.Timetable);
         var custom=new FleetController(20,0,"Shared",provider.Kind,provider.Binding);
         var delegation=f.Controllers.Single(c=>c.Kind==FleetControllerKind.Delegation);

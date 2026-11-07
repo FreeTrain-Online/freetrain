@@ -20,7 +20,7 @@ test('panel/menu gestures isolate the world, return focus and invalidate geometr
   await expect(page.getByTestId('preview-position')).toHaveText('Select a tile on the map');
   await expect(page.getByRole('button', { name: 'Game ▾', exact: true })).toBeFocused();
   await openPanel(page, 'catalog'); await expect(page.getByTestId('building-name')).toHaveText('Condominium 1');
-  await closePanel(page); await page.getByRole('button', { name: 'Inspect / drive', exact: true }).click();
+  await closePanel(page); await page.getByRole('button', { name: 'Inspect', exact: true }).click();
   await clickSprite(page, { x: 16, y: 16, z: 0 }, 'pier');
   await openPanel(page, 'catalog'); await expect(page.getByTestId('building-name')).toHaveText('Condominium 1');
 });
@@ -33,7 +33,7 @@ test('keyboard toolbars, native editing, Escape layers and deliberate map focus'
   await page.keyboard.press('Enter'); await page.keyboard.press('End');
   await expect(page.locator('#game-menu button').last()).toBeFocused();
   await page.keyboard.press('Escape'); await expect(game).toBeFocused();
-  const inspect = page.getByRole('button',{name:'Inspect / drive',exact:true}); await inspect.focus();
+  const inspect = page.getByRole('button',{name:'Inspect',exact:true}); await inspect.focus();
   await page.keyboard.press('ArrowDown'); await expect(page.getByRole('button',{name:'Trains',exact:true})).toBeFocused();
   await page.keyboard.press('ArrowDown'); await expect(page.getByRole('button',{name:'Build track',exact:true})).toBeFocused();
   await page.keyboard.press('Enter'); await expect(page.locator('canvas')).toBeFocused();
@@ -64,5 +64,5 @@ test('success expires, actionable rejection remains and tool Escape cancels befo
   await page.clock.fastForward(4200); await expect(page.getByRole('status')).toHaveText('Track cannot be placed here.');
   await expect(page.locator('.tool-card')).toContainText('Track cannot be placed here.');
   await page.locator('canvas').focus(); await page.keyboard.press('Escape'); await expect(page.getByRole('button',{name:'Build track',exact:true})).toHaveAttribute('aria-pressed','true');
-  await page.keyboard.press('Escape'); await expect(page.getByRole('button',{name:'Inspect / drive',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.keyboard.press('Escape'); await expect(page.getByRole('button',{name:'Inspect',exact:true})).toHaveAttribute('aria-pressed','true');
 });

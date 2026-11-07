@@ -32,7 +32,7 @@ test('dirty close traps focus, consumes Escape once, and supports Keep, Discard 
   await selectStation(page); await expect(input).toHaveValue(confirmed!);
   await input.fill('UX2 適用駅');
   await page.getByRole('button', { name: 'Build track', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Inspect / drive', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await dialog.getByRole('button', { name: 'Apply name', exact: true }).click();
   await expect(dialog).toHaveCount(0); await expect(page.getByRole('button', { name: 'Build track', exact: true })).toHaveAttribute('aria-pressed', 'true');
   expect((await bootstrap(page)).stations[0].name).toBe('UX2 適用駅'); await expect(page.locator('canvas')).toBeFocused();

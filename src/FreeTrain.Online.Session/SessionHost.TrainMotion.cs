@@ -40,8 +40,8 @@ public sealed partial class SessionHost
                 if (origin == null || to == null || origin.Position.Z != to.Position.Z ||
                     Math.Abs(origin.Position.X-to.Position.X) > 1 || Math.Abs(origin.Position.Y-to.Position.Y) > 1 ||
                     origin.Position == to.Position) { cars.Clear(); break; }
-                // The head's default guide cannot predict a leased junction
-                // decision. The committed destination heading records the exit
+                // Record the committed controller-selected junction route.
+                // The committed destination heading records the exit
                 // actually taken, for the head and every follower alike.
                 var (dx,dy)=new Heading(to.Heading).Offset;
                 var turn=(to.Heading-origin.Heading+8)%8;

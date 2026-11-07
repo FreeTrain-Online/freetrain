@@ -381,9 +381,6 @@
         },
         "trainMotion": {
           "$ref": "#/$defs/TrainMotion"
-        },
-        "fleetControl": {
-          "$ref": "#/$defs/FleetControl"
         }
       },
       "required": [
@@ -488,9 +485,6 @@
         },
         "trainMotion": {
           "$ref": "#/$defs/TrainMotion"
-        },
-        "fleetControl": {
-          "$ref": "#/$defs/FleetControl"
         }
       },
       "required": [
@@ -4101,7 +4095,6 @@
           "enum": [
             "simple",
             "delegation",
-            "manual",
             "timetable"
           ]
         },
@@ -4545,26 +4538,6 @@
         "reset",
         "steps"
       ]
-    },
-    "FleetControl": {
-      "type": "array",
-      "maxItems": 128,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "trainId": {
-            "$ref": "#/$defs/Counter"
-          },
-          "lease": {
-            "$ref": "#/$defs/ControlLease"
-          }
-        },
-        "required": [
-          "trainId",
-          "lease"
-        ]
-      }
     },
     "FleetJunction": {
       "type": "object",
