@@ -381,8 +381,9 @@ the existing one-time Find action use the painted pose and stable identities;
 commands still resolve against authoritative state.
 
 Flat normal track, curves, simple junction routes and flat bridge composition are
-covered by the focused checks. **Slopes and tunnel transitions explicitly use
-committed discrete poses for the entire affected consist.** An intermediate tunnel
+covered by the initial focused checks. **This initial slice used committed discrete
+poses for slopes and tunnel transitions across the entire affected consist.**
+Slope support was added on 7 November 2026; see Continuous slope traversal below. An intermediate tunnel
 probe exposed 25 pickable car pixels at the half-voxel boundary even though both
 voxel endpoints were hidden. Tunnel smoothing therefore remains disabled until
 continuous interior occlusion is implemented and verified. Reversal animation and
@@ -695,3 +696,29 @@ backlog caused by measuring stale packets in the middle of a delivery burst.
 Validation passes: frontend build, 274 web unit tests plus the render-memory
 check, and ten clock/motion/manual-driving browser cases. The delayed multiplayer
 fixture serializes delivery so injected jitter retains WebSocket message order.
+
+### Continuous slope traversal — 7 November 2026
+
+Confirmed movement history now includes each car's slope climb direction and
+quarter-ramp level. Surface and underground ramps use the same recorded route.
+Tunnel, Outside and lifecycle discontinuities retain their existing reset markers.
+The client validates the ramp's storage-Z transition, direction and level order,
+including directly adjoining ramps, before buffering it on the existing timeline.
+
+The four authored car offsets correspond to effective elevations of base Z,
+base Z + ¼, base Z + ½ and base Z + ¾. Interpolating that elevation removes the
+voxel-height jump between ramp levels 1 and 2. Existing pitch frames switch at
+halfway points on ramp/flat joins; translation stays continuous, including for
+reversed formations and reverse-tail recipes. Native callback timing, speed
+controls, Pause/Step, reduced motion and persistence retain their existing rules.
+
+Damage replay and alpha picking use the car's current route elevation rather
+than its newer authoritative voxel. Both ramp roadbed levels and the ramp's own
+surface supports remain under whole car sprites. Underground walls and other
+structural foregrounds keep their source traversal order.
+
+Coverage includes backend committed histories for all four directions, both
+travel directions, surface/underground ramps and reversed formations; every
+bundled recipe's authored endpoints and fractional height continuity; malformed
+ramp routes; and 1,568 Chromium pixel/picking frames covering surface ramps,
+flat joins, multiple cars and coalesced authority in day and night variants.

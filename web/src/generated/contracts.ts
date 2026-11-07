@@ -715,6 +715,11 @@ export interface TrainMotionPose {
   heading: number;
   outgoing: number;
   reversed: boolean;
+  slope?: TrainMotionSlope;
+}
+export interface TrainMotionSlope {
+  climb: 0 | 2 | 4 | 6;
+  level: number;
 }
 export interface Command {
   type: "command";

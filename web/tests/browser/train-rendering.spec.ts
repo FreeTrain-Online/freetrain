@@ -74,3 +74,17 @@ test('neighboring car sprites keep continuous depth through tight ninety-degree 
   await testInfo.attach(`train-turn-blending-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
  }
 });
+
+test('slope trains cross elevations and flat joins with whole sprites and matching alpha picks',async({page},testInfo)=>{
+ test.setTimeout(120_000);
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ for(const night of [false,true]) {
+  const report=await page.evaluate(async({catalog,night})=>{const {trainSlopePixels}=await import('/__tests/train-rendering.js');return trainSlopePixels(catalog,{season:'spring',night});},{catalog,night});
+  expect(report.frames).toBe(784);expect(report.carPixels).toBeGreaterThan(10000);
+  const png=Buffer.from(report.png.split(',')[1],'base64');writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/train-slopes-${night?'night':'day'}.png`,png);
+  await testInfo.attach(`train-slopes-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
+ }
+});

@@ -1,9 +1,11 @@
 import {trainTurnScene} from './helpers/train-turn-scene.ts';
+import {trainSlopeScene} from './helpers/train-slope-scene.ts';
 import assert from 'node:assert/strict';
 import {TrainMotionPlayer,movingCarLayer,trainMotionBufferMs,compareTrainLayers} from '../src/lib/train-motion.ts';
 import {validTrainMotion} from '../src/lib/train-motion-contract.ts';
 import {trainCarLayer} from '../src/lib/train-renderer.ts';
 import {trainSceneFixture} from './helpers/train-scene.ts';
+import {validSnapshot} from '../src/lib/world-identity.ts';
 import type {Snapshot,TrainMotionPose,TrainMotionStep} from '../src/generated/contracts.ts';
 import type {RenderCatalog} from '../src/lib/content-recipes.ts';
 const catalog=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url))) as RenderCatalog;
@@ -182,6 +184,69 @@ Deno.test('motion contract rejects duplicate identities, route shortcuts, future
   if(kind==='direction')m.steps[0].cars[0].to.heading=4;
   if(kind==='count')m.steps=Array.from({length:129},()=>m.steps[0]);
   assert(!validTrainMotion(m,b.tick),kind);
+ }
+});
+
+Deno.test('ramp translation joins every authored pitch/height endpoint continuously in both directions and orientations',()=>{
+ for(const recipe of catalog.renderRecipes.filter(r=>['train-car','reverse-train-car'].includes(r.handler)))
+ for(const climb of [0,2,4,6] as const)for(const downhill of [false,true])for(const reversed of [false,true]) {
+  const route=trainSlopeScene(source,catalog,stock,climb,downhill,reversed);
+  const origin=(l:ReturnType<typeof trainCarLayer>)=>({x:16*(l.position[0]+l.position[1])-l.frame.anchor![0],y:8*(l.position[1]-l.position[0])-16*l.position[2]-l.frame.anchor![1]});
+  let previous:ReturnType<typeof origin>|undefined;
+  for(let step=0;step<6;step++) {
+   const from=route.pose(step),to=route.pose(step+1),car={trainId:'1',carId:'2',from,to,progress:0};
+   for(const [progress,pose] of [[0,from],[1,to]] as const) {
+    const actual=movingCarLayer(recipe,{...car,progress},route.space.centerX),p=pose.position;
+    const expected=trainCarLayer(recipe,'2',[p.x-route.space.centerX,p.y,p.z],pose.heading,reversed,pose.outgoing,pose.slope);
+    const a=origin(actual),b=origin(expected);
+    assert(Math.abs(a.x-b.x)<1e-8,recipe.id);assert(Math.abs(a.y-b.y)<1e-8,recipe.id);
+    assert.deepEqual(actual.frame.rectangle,expected.frame.rectangle);
+   }
+   for(let n=0;n<=100;n++) {
+    const progress=n/100,layer=movingCarLayer(recipe,{...car,progress},route.space.centerX),p=origin(layer);
+    assert(layer.position.every(Number.isFinite));
+    // Sprite pitches can change at entry/exit; their common centre translates
+    // uniformly across the discrete storage-Z transition and every join.
+    const expectedZ=(pose:TrainMotionPose)=>pose.position.z+(pose.slope?[0,.25,-.5,-.25][pose.slope.level]:0);
+    assert(Math.abs(layer.position[2]-(expectedZ(from)+(expectedZ(to)-expectedZ(from))*progress))<1e-8);
+    if(previous)assert(Math.hypot(p.x-previous.x,p.y-previous.y)<.3,'ramp anchor jumped');
+    previous=p;
+   }
+  }
+ }
+});
+
+Deno.test('coalesced slope history stays buffered across elevation changes and rejects malformed ramp routes',()=>{
+ for(const climb of [0,2,4,6] as const)for(const downhill of [false,true])for(const reversed of [false,true])for(const underground of [false,true]) {
+  const route=trainSlopeScene(source,catalog,stock,climb,downhill,reversed,underground),a=route.snapshot(0),b=route.snapshot(7);
+  assert(validSnapshot(a));assert(validSnapshot(b));
+  a.paused=b.paused=false;a.playbackRate=b.playbackRate=.125;a.tick='0';b.tick='14';a.trainMotion={sequence:'0',reset:false,steps:[]};
+  b.trainMotion={sequence:'7',reset:false,steps:Array.from({length:7},(_,n)=>({sequence:String(n+1),minute:String((n+1)*2),trainId:b.mixed!.fleet!.trains[0].id,duration:2,
+   cars:b.mixed!.fleet!.trains[0].cars.map((c,i)=>({carId:c.id,from:route.pose(n-i),to:route.pose(n+1-i)}))}))};
+  assert(validTrainMotion(b.trainMotion,b.tick));
+  const player=new TrainMotionPlayer();player.update(a,0);player.update(b,10);
+  for(let n=0;n<7;n++)assert.equal(player.sample(210+n*800+400).length,3,'lost buffered ramp route');
+  for(const kind of ['height','level','climb','entry','turn']) {
+   const motion=structuredClone(b.trainMotion),car=motion.steps[2].cars[0];
+   if(kind==='height')car.to.position.z+=1;
+   if(kind==='level')car.to.slope!.level=car.from.slope!.level;
+   if(kind==='climb')car.to.slope!.climb=((climb+2)%8) as typeof climb;
+   if(kind==='entry')motion.steps[0].cars[0].to.slope!.level=2;
+   if(kind==='turn')car.to.outgoing=(car.to.heading+1)%8;
+   assert(!validTrainMotion(motion,b.tick),kind);
+  }
+ }
+});
+
+Deno.test('adjoining ramps retain continuous uphill, downhill, crest and valley routes',()=>{
+ for(const heading of [0,2,4,6] as const)for(const downhill of [false,true])for(const crest of [false,true]) {
+  const climb=(downhill?(heading+4)%8:heading) as 0|2|4|6,level=downhill?0:3;
+  const from:TrainMotionPose={position:{x:30,y:20,z:3},heading,outgoing:heading,reversed:false,slope:{climb,level}};
+  const [dx,dy]=[[0,-1],[1,0],[0,1],[-1,0]][heading/2];
+  const to:TrainMotionPose={...from,position:{x:30+dx,y:20+dy,z:3},slope:{climb:crest?((climb+4)%8) as typeof climb:climb,level:crest?level:downhill?3:0}};
+  const car={trainId:'1',carId:'2',from,to,progress:.5};
+  assert(validTrainMotion({sequence:'1',reset:false,steps:[{sequence:'1',minute:'1',trainId:'1',duration:2,cars:[car]}]},'1'));
+  assert(movingCarLayer(catalog.renderRecipes.find(r=>r.handler==='train-car')!,car,15).position.every(Number.isFinite));
  }
 });
 

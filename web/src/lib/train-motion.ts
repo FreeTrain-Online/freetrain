@@ -15,7 +15,8 @@ export const trainMotionBufferMs=200;
 const startupMinimumMs=600,startupMaximumMs=1500;
 export type MovingCar={trainId:string;carId:string;from:Pose;to:Pose;progress:number};
 const same=(a:Position,b:Position)=>a.x===b.x&&a.y===b.y&&a.z===b.z;
-const samePose=(a:Pose,b:Pose)=>same(a.position,b.position)&&a.heading===b.heading&&a.outgoing===b.outgoing&&a.reversed===b.reversed;
+const samePose=(a:Pose,b:Pose)=>same(a.position,b.position)&&a.heading===b.heading&&a.outgoing===b.outgoing&&a.reversed===b.reversed&&
+  a.slope?.climb===b.slope?.climb&&a.slope?.level===b.slope?.level;
 
 /** Plays only complete confirmed steps on a buffered, contiguous timeline.
  * No extrapolation, controller calls, occupancy writes, or simulation clock. */
@@ -177,6 +178,9 @@ export function compareTrainLayers(a:Layer,b:Layer):number {
 
 function poseAngle(p:Pose) {let diff=(p.outgoing-p.heading+8)%8;if(diff===7)diff=-1;return (p.heading*2+diff+16)%16;}
 function visualCenter(recipe:Recipe,p:Pose,centerX:number) {
+  // Four authored ramp anchors rise by a quarter voxel. Levels 2/3 are
+  // stored in the upper voxel, so their positive screen offsets lower them.
+  if(p.slope)return {x:p.position.x-centerX,y:p.position.y,z:p.position.z+[0,.25,-.5,-.25][p.slope.level]};
   const l=trainCarLayer(recipe,'sample',[p.position.x-centerX,p.position.y,p.position.z],p.heading,p.reversed,p.outgoing);
   const base=instantiate(recipe,'sample',[0,0,0],{angle:recipe.fields.asymmetric===true?((poseAngle(p)+(p.reversed?8:0))%16):poseAngle(p)&7})[0];
   const dx=base.frame.anchor![0]-l.frame.anchor![0],dy=base.frame.anchor![1]-l.frame.anchor![1]-(-9);
@@ -200,6 +204,12 @@ export function movingCarLayer(recipe:Recipe,car:MovingCar,centerX:number):Layer
   const dy=(6*t*t-6*t)*a.y+(3*t*t-4*t+1)*u.y+(-6*t*t+6*t)*b.y+(3*t*t-2*t)*v.y;
   let angle=(Math.round(Math.atan2(dx,-dy)*8/Math.PI)+16+(car.from.reversed?8:0))%16;
   if(recipe.fields.asymmetric!==true)angle&=7;
-  const layer=instantiate(recipe,car.carId,[p.x,p.y,a.z],{angle})[0];
+  const z=a.z+(b.z-a.z)*car.progress,pose=car.progress<.5?car.from:car.to;
+  if(pose.slope) {
+    // Pitch artwork is quantized; translation and elevation remain continuous.
+    // Its authored height offset is already included in the centre-line Z.
+    return trainCarLayer(recipe,car.carId,[p.x,p.y,z],pose.heading,pose.reversed,pose.outgoing,{...pose.slope,level:0});
+  }
+  const layer=instantiate(recipe,car.carId,[p.x,p.y,z],{angle})[0];
   return {...layer,frame:{...layer.frame,anchor:[layer.frame.anchor![0],layer.frame.anchor![1]+9]}};
 }

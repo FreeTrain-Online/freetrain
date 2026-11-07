@@ -298,8 +298,10 @@ public sealed record MixedActionRead(long Registration, long Order, long DueMinu
 public sealed record MixedQueueRead(long NextOrder, MixedActionRead[] Pending);
 
 // Ephemeral presentation history; never part of a durable world/save.
-public sealed record TrainMotionPoseRead(PositionRead Position, int Heading, int Outgoing, bool Reversed);
+public sealed record TrainMotionSlopeRead(int Climb, int Level);
+public sealed record TrainMotionPoseRead(PositionRead Position, int Heading, int Outgoing, bool Reversed,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionSlopeRead? Slope = null);
 public sealed record TrainMotionCarRead(long CarId, TrainMotionPoseRead From, TrainMotionPoseRead To);
-// Empty Cars marks a train discontinuity (slope/tunnel/reversal/Outside).
+// Empty Cars marks a train discontinuity (tunnel/reversal/Outside).
 public sealed record TrainMotionStepRead(long Sequence, long Minute, long TrainId, int Duration, TrainMotionCarRead[] Cars);
 public sealed record TrainMotionRead(long Sequence, bool Reset, TrainMotionStepRead[] Steps);

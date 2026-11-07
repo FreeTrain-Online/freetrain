@@ -37,7 +37,7 @@ public sealed partial class SessionHost
             for (var i = 0; continuous && i < train.Cars.Length; i++)
             {
                 var origin = MotionPose(before, prior, i); var to = MotionPose(after.World, train, i);
-                if (origin == null || to == null || origin.Position.Z != to.Position.Z ||
+                if (origin == null || to == null ||
                     Math.Abs(origin.Position.X-to.Position.X) > 1 || Math.Abs(origin.Position.Y-to.Position.Y) > 1 ||
                     origin.Position == to.Position) { cars.Clear(); break; }
                 // Record the committed controller-selected junction route.
@@ -45,7 +45,10 @@ public sealed partial class SessionHost
                 // actually taken, for the head and every follower alike.
                 var (dx,dy)=new Heading(to.Heading).Offset;
                 var turn=(to.Heading-origin.Heading+8)%8;
-                if(to.Position.X-origin.Position.X!=dx || to.Position.Y-origin.Position.Y!=dy || turn is not (0 or 1 or 7))
+                var dz = origin.Slope is {} slope
+                    ? SlopeRailwayConstruction.ZDiff(28+slope.Climb*2+slope.Level,new(origin.Heading)) : 0;
+                if(to.Position.X-origin.Position.X!=dx || to.Position.Y-origin.Position.Y!=dy ||
+                    to.Position.Z-origin.Position.Z!=dz || turn is not (0 or 1 or 7))
                 { cars.Clear(); break; }
                 origin=origin with {Outgoing=to.Heading};
                 cars.Add(new(train.Cars[i].Id, origin, to));
@@ -66,9 +69,11 @@ public sealed partial class SessionHost
         var handler = world.Profile.Resolve(rail.Definition).Handler;
         // Tunnel foregrounds are authored for voxel anchors. Until their
         // continuous interior masks are proven, preserve exact discrete hiding.
-        if (handler is RailwayHandler.Slope or RailwayHandler.Tunnel) return null;
+        if (handler is RailwayHandler.Tunnel) return null;
         var predecessor = index == 0 ? (Location?)null : (train.Cars[index-1].State as FleetCarState.Inside)?.Location;
         var outgoing = FleetRailGuidance.Guide(handler,rail.Pattern,pose.Heading,predecessor:predecessor,location:pose.Location);
-        return new(new(pose.Location.X,pose.Location.Y,pose.Location.Z),pose.Heading.Index,outgoing.Index,train.IsReversed);
+        var slope = handler == RailwayHandler.Slope ? SlopeRailwayConstruction.Pattern(rail.Pattern) : default;
+        return new(new(pose.Location.X,pose.Location.Y,pose.Location.Z),pose.Heading.Index,outgoing.Index,train.IsReversed,
+            handler == RailwayHandler.Slope ? new(slope.Climb.Index,slope.Level) : null);
     }
 }

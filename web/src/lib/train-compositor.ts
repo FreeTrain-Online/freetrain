@@ -27,6 +27,7 @@ export class TrainCompositor {
   private catalog?:RenderCatalog;
   private recipes=new Map<string,Recipe>();
   private positions=new Map<string,Position>();
+  private routes=new Map<string,MovingCar>();
   private keys(b:Bounds) {const keys:string[]=[];for(let y=Math.floor(b.top/64);y<=Math.floor(b.bottom/64);y++)for(let x=Math.floor(b.left/64);x<=Math.floor(b.right/64);x++)keys.push(`${x},${y}`);return keys;}
   private query(b:Bounds) {if(this.spatial)return this.spatial.query(b);const result=new Set<TerrainOperation>();for(const key of this.keys(b))for(const op of this.buckets.get(key)??[])if(overlaps(this.scene!.boundsFor(op),b))result.add(op);return [...result];}
   private setSource(scene:TerrainScene,source:readonly TerrainOperation[],width:number,centerX:number,spatial?:TerrainOperationIndex) {
@@ -53,7 +54,11 @@ export class TrainCompositor {
   }
   private rank(op:TerrainOperation):number {
     let p=op.target.position;
-    if(this.dynamic.includes(op)&&'layer' in op)p={x:Math.round(op.layer.position[0]+this.centerX),y:Math.round(op.layer.position[1]),z:p.z};
+    if(this.dynamic.includes(op)&&'layer' in op) {
+      const car=op.target.kind==='train'?this.routes.get(op.target.carId):undefined;
+      p={x:Math.round(op.layer.position[0]+this.centerX),y:Math.round(op.layer.position[1]),
+        z:car?(car.progress<.5?car.from:car.to).position.z:p.z};
+    }
     const x=p.x-this.centerX,column=(p.y-x)*this.width+Math.floor((x+p.y)/2);
     let pass=0;
     if(op.target.kind==='train')pass=30;
@@ -71,8 +76,21 @@ export class TrainCompositor {
   }
   private isMoving(op:TerrainOperation) {return op.target.kind==='train'&&this.hidden.has(op.target.carId);}
   private maskedBy(op:TerrainOperation,car:TerrainOperation) {
-    if(!this.isMoving(car)||car.target.position.z!==op.target.position.z)return false;
-    return this.isBed(op)||this.isMoving(op)&&'layer' in op&&'layer' in car&&compareTrainLayers(op.layer,car.layer)<0;
+    if(!this.isMoving(car)||car.target.kind!=='train')return false;
+    if(this.isMoving(op)&&'layer' in op&&'layer' in car)return compareTrainLayers(op.layer,car.layer)<0;
+    const route=this.routes.get(car.target.carId)!;
+    const pose=route.from.slope?route.from:route.to,slope=pose.slope;
+    const base=slope?pose.position.z-Math.floor(slope.level/2):route.from.position.z;
+    if(slope&&op.target.kind==='railway'&&op.target.component==='support'&&'layer' in op&&
+      op.layer.recipeId.startsWith('system:pattern/slope-support-')&&op.target.position.z===base) {
+      // The supporting half of this ramp is below its train, including the
+      // overhang beyond a rounded column. Underground walls stay foregrounds.
+      const [dx,dy]=[[0,-1],[1,0],[0,1],[-1,0]][slope.climb/2];
+      for(const level of [2,3])if(op.target.position.x===pose.position.x+(level-slope.level)*dx&&
+        op.target.position.y===pose.position.y+(level-slope.level)*dy)return true;
+    }
+    // Both storage levels of a ramp form one bed under the whole car.
+    return this.isBed(op)&&op.target.position.z>=base&&op.target.position.z<=base+(slope?1:0);
   }
   /** Keep source terrain/structure order, while roadbeds stay below whole cars
    * and overlapping cars use continuous depth instead of rounded voxel slots.
@@ -83,7 +101,7 @@ export class TrainCompositor {
     // Structural foregrounds and mixed elevations keep the general mask path.
     const moving=ops.filter(op=>this.isMoving(op));
     const level=moving[0]?.target.position.z;
-    if(moving.length&&moving.every(car=>car.target.position.z===level)&&ops.every(op=>this.isMoving(op)||this.isBed(op)&&op.target.position.z===level)) {
+    if(moving.length&&moving.every(car=>'layer' in car&&car.layer.position[2]===level)&&ops.every(op=>this.isMoving(op)||this.isBed(op)&&op.target.position.z===level)) {
       this.scene!.paintOperations(ctx,view,width,height,ops.filter(op=>!this.isMoving(op)));
       this.scene!.paintOperations(ctx,view,width,height,moving.sort((a,b)=>'layer' in a&&'layer' in b?compareTrainLayers(a.layer,b.layer):0));
       return;
@@ -108,14 +126,14 @@ export class TrainCompositor {
     }
   }
   draw(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,scene:TerrainScene,source:readonly TerrainOperation[],catalog:RenderCatalog,cars:MovingCar[],mapWidth:number,centerX:number,raster?:{view:View;width:number;height:number;index?:TerrainOperationIndex}) {
-    this.setSource(scene,source,mapWidth,centerX,raster?.index);this.dynamic=[];this.hidden.clear();this.positions.clear();
+    this.setSource(scene,source,mapWidth,centerX,raster?.index);this.dynamic=[];this.hidden.clear();this.positions.clear();this.routes.clear();
     if(this.catalog!==catalog){this.catalog=catalog;this.recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));}
     const damage:Bounds[]=[];
     for(const car of cars) {
       const original=this.cars.get(car.carId);if(!original||!('layer' in original))continue;
       const recipe=this.recipes.get(original.layer.recipeId);if(!recipe)continue;
       const layer=movingCarLayer(recipe,car,centerX),op={target:original.target,layer};
-      this.dynamic.push(op);this.hidden.add(car.carId);
+      this.dynamic.push(op);this.hidden.add(car.carId);this.routes.set(car.carId,car);
       this.positions.set(car.carId,{x:layer.position[0]+centerX,y:layer.position[1],z:layer.position[2]});
       const b=union(scene.boundsFor(original),scene.boundsFor(op));
       // A two-pixel margin covers nearest-neighbor rasterization at all scales.

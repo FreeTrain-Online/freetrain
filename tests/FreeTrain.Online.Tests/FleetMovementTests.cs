@@ -240,6 +240,41 @@ public partial class FleetMovementTests
     }
 
     [Fact]
+    public async Task Slope_motion_records_every_car_through_flat_joins_in_both_directions_and_orientations()
+    {
+        foreach(var climbIndex in new[]{0,2,4,6})foreach(var underground in new[]{false,true})
+        foreach(var downhill in new[]{false,true})foreach(var reversed in new[]{false,true})
+        {
+            var w=Empty(underground?4:2);var climb=new Heading(climbIndex);var anchor=new Location(24,24,2);
+            var plan=SlopeRailwayConstruction.PreviewBuild(w,anchor,climb);
+            Assert.True(plan.Legal,plan.Reason);w=SlopeRailwayConstruction.Apply(new(w),plan,new(100)).World;
+            var (dx,dy)=climb.Offset;
+            Location At(int k)=>new(anchor.X+k*dx,anchor.Y+k*dy,k<2?2:3);
+            var pattern=NormalRailPatterns.Find(climbIndex,climb.Opposite.Index);
+            foreach(var k in new[]{-2,-1,4,5,6})w=Rail(w,At(k),pattern);
+            var s=Purchase(w,2);var train=s.Fleet!.Trains[0];var heading=downhill?climb.Opposite:climb;
+            train=train with{Revision=1,State=TrainOperationalState.Moving,IsReversed=reversed,
+                Cars=(reversed?train.Cars.Reverse():train.Cars).Select((c,n)=>c with{Revision=1,State=new FleetCarState.Inside(At(downhill?4+n:-1-n),heading)}).ToImmutableArray()};
+            s=Session(Install(s.World,train),new(199,10,[new(8,8,200,MixedSessionState.TrainHandler(train.Id),0)]),new(1_000_000));
+            using var host=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+            var run=host.Enqueue(new("owner"),new("slope-motion",host.WorldEpoch,new RunCommand()));
+            host.Pump();Assert.IsType<AcceptedMessage>(await run);host.Pump(12);
+            var motion=host.Snapshot().TrainMotion!;Assert.Equal(6,motion.Steps.Length);
+            Assert.All(motion.Steps,step=>{Assert.Equal(2,step.Duration);Assert.Equal(2,step.Cars.Length);});
+            foreach(var car in train.Cars)
+            {
+                var poses=motion.Steps.Select(step=>step.Cars.Single(c=>c.CarId==car.Id)).ToArray();
+                Assert.Null(poses[0].From.Slope);Assert.Null(poses[^1].To.Slope);
+                Assert.Equal(new[]{0,1,2,3},poses.Where(c=>c.To.Slope!=null).Select(c=>c.To.Slope!.Level).Order());
+                Assert.All(poses.Where(c=>c.To.Slope!=null),c=>Assert.Equal(climbIndex,c.To.Slope!.Climb));
+                Assert.Single(poses,c=>c.From.Position.Z!=c.To.Position.Z);
+                Assert.All(poses,c=>{Assert.Equal(reversed,c.From.Reversed);Assert.Equal(heading.Index,c.From.Outgoing);});
+                for(var n=1;n<poses.Length;n++)Assert.Equal(poses[n-1].To,poses[n].From);
+            }
+        }
+    }
+
+    [Fact]
     public async Task Failed_detached_minute_emits_no_motion_even_after_an_earlier_train_moved()
     {
         var s=BuildRing(quantity:2);var second=s.Fleet!.Trains[1].Id;

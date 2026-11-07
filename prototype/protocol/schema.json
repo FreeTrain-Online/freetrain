@@ -4427,6 +4427,15 @@
         2
       ]
     },
+    "TrainMotionSlope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "climb": { "type": "integer", "enum": [0, 2, 4, 6] },
+        "level": { "type": "integer", "minimum": 0, "maximum": 3 }
+      },
+      "required": ["climb", "level"]
+    },
     "TrainMotionPose": {
       "type": "object",
       "additionalProperties": false,
@@ -4446,7 +4455,8 @@
         },
         "reversed": {
           "type": "boolean"
-        }
+        },
+        "slope": { "$ref": "#/$defs/TrainMotionSlope" }
       },
       "required": [
         "position",

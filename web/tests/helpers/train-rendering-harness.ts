@@ -1,7 +1,8 @@
 import {trainTurnScene} from './train-turn-scene.ts';
+import {trainSlopeScene} from './train-slope-scene.ts';
 import {normalPorts} from '../../src/lib/world-identity.ts';
 import {TrainCompositor} from '../../src/lib/train-compositor.ts';
-import {movingCarLayer} from '../../src/lib/train-motion.ts';
+import {movingCarLayer,compareTrainLayers} from '../../src/lib/train-motion.ts';
 // Bundled only by the focused browser test and served through a test route.
 // Uses the production pose/painter/picker with actual decoded prepared PNGs.
 import {trainCarLayer} from '../../src/lib/train-renderer.ts';
@@ -262,4 +263,43 @@ export async function trainTurnBlendPixels(catalog:RenderCatalog,variant:Variant
   }
  }
  return {png:gallery.toDataURL(),frames,overlapPicks};
+}
+
+/** Surface-ramp oracle: terrain and rail beds under whole, depth-sorted cars. */
+export async function trainSlopePixels(catalog:RenderCatalog,variant:Variant) {
+ const stock=catalog.renderRecipes.find(r=>r.handler==='train-composition')!,cache=new RecipeImageCache();
+ const gallery=document.createElement('canvas');gallery.width=7*260;gallery.height=16*200;const contact=gallery.getContext('2d')!;
+ const phases=[0,.25,.49,.5,.51,.75,1];let frames=0,carPixels=0,row=0;
+ for(const climb of [0,2,4,6] as const)for(const downhill of [false,true])for(const reversed of [false,true]) {
+  const route=trainSlopeScene(source as Snapshot,catalog,stock,climb,downhill,reversed),p=route.space.project(route.pose(3).position),view={x:130-p.x,y:100-p.y,zoom:1};
+  const compositor=new TrainCompositor(),canvas=document.createElement('canvas'),reference=document.createElement('canvas');canvas.width=reference.width=260;canvas.height=reference.height=200;
+  const paint=canvas.getContext('2d')!,ref=reference.getContext('2d')!;let previous:TerrainScene|undefined;
+  for(let step=0;step<7;step++) {
+   // Authority is several voxels ahead of presentation, as with coalesced moves.
+   const s=route.snapshot(Math.min(7,step+3)),train=s.mixed!.fleet!.trains[0],scene=await TerrainScene.prepare(s,catalog,cache,variant,5,previous);previous=scene;
+   const original=new Map(scene.operations.filter(o=>o.target.kind==='train').map(o=>[o.target.kind==='train'?o.target.carId:'',o]));
+   const beds=scene.operations.filter(o=>o.target.kind!=='train');
+   for(const [column,progress] of phases.entries()) {
+    const cars=train.cars.map((c,i)=>({trainId:train.id,carId:c.id,from:route.pose(step-i),to:route.pose(step+1-i),progress}));
+    paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,260,200);scene.draw(paint,view,260,200);
+    compositor.draw(paint,view,260,200,scene,scene.operations,catalog,cars,32,route.space.centerX);
+    const dynamic=cars.map(car=>({target:original.get(car.carId)!.target,layer:movingCarLayer(catalog.renderRecipes.find(r=>r.id===train.cars.find(c=>c.id===car.carId)!.definition.recipeId)!,car,route.space.centerX)}));
+    dynamic.sort((a,b)=>compareTrainLayers(a.layer,b.layer));
+    ref.fillStyle=scene.backgroundColor;ref.fillRect(0,0,260,200);scene.paintOperations(ref,view,260,200,[...beds,...dynamic]);
+    const a=paint.getImageData(0,0,260,200).data,b=ref.getImageData(0,0,260,200).data;
+    for(let i=0;i<a.length;i++)if(a[i]!==b[i]){
+     const point={x:(i/4|0)%260+.5,y:Math.floor((i/4|0)/260)+.5};
+     const hits=[...beds,...dynamic].filter(o=>scene.pickOperations(point,view,[o])).map(o=>({target:o.target,...('layer' in o?{recipe:o.layer.recipeId,position:o.layer.position}: {})}));
+     throw new Error(`Slope pixels: ${climb}/${downhill}/${reversed}/${step}/${progress} at ${i/4|0}, actual=${JSON.stringify(compositor.pick(point,view))}, hits=${JSON.stringify(hits)}`);
+    }
+    for(let y=30;y<170;y+=2)for(let x=30;x<230;x+=2) {
+     const point={x:x+.5,y:y+.5},expected=scene.pickOperations(point,view,dynamic);if(!expected)continue;
+     if(JSON.stringify(compositor.pick(point,view))!==JSON.stringify(expected))throw new Error(`Slope pick: ${climb}/${downhill}/${reversed}/${step}/${progress} at ${x},${y}`);carPixels++;
+    }
+    if(step===3)contact.drawImage(canvas,column*260,row*200);frames++;
+   }
+  }
+  row++;
+ }
+ return {png:gallery.toDataURL(),frames,carPixels};
 }
