@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check actual packed Save9 lakes/channels with independent XYZ wet-edge floods."""
+"""Check actual packed Save10 lakes/channels with independent XYZ wet-edge floods."""
 import argparse
 import base64
 from collections import deque
@@ -11,7 +11,7 @@ import struct
 
 def check(path):
     raw = path.read_bytes(); saved = json.loads(raw)
-    assert saved['saveVersion'] == 9 and saved['map']['coordinateSystem'] == 'hv'
+    assert saved['saveVersion'] == 10 and saved['map']['coordinateSystem'] == 'hv'
     h, v = saved['map']['width'], saved['map']['height']
     assert 16 <= h <= 2048 and 16 <= v <= 2048 and h*v <= 1700000
     packed = saved['packedTerrain']; request = json.loads(packed['provenance']['requestJson'])

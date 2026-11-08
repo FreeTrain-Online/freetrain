@@ -4,7 +4,7 @@ import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts'
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const state=canonicalState;
 const savedGround=(s:any)=>[...Buffer.from(s.packedTerrain.cells,'base64')].map(n=>n&63);
-const save=readFileSync('../prototype/protocol/saves/terrain-v9.json');
+const save=readFileSync('../prototype/protocol/saves/terrain-v10.json');
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function point(page:Page,x:number,y:number){return page.locator('canvas').evaluate((canvas,args)=>{
  const r=canvas.getBoundingClientRect(),[cx,cy]=(canvas as HTMLCanvasElement).dataset.camera!.split(',').map(Number),z=Number((canvas as HTMLCanvasElement).dataset.zoom);
@@ -408,7 +408,7 @@ test('lakes and rivers preview exact geometry, preserve drafts and publish to bo
   await ready(page);await ready(watcher);await expect.poll(async()=>(await state(watcher)).worldEpoch).not.toBe(before);
   await expect(page.locator('canvas')).toHaveAttribute('data-instance','water-preserved');
   expect((await state(page)).terrain.cells.map((c:any)=>c.ground)).toEqual(final.ground);
-  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(9);
+  const saved=await(await page.request.get('/api/saves/download')).body();expect(saved.length).toBe(final.saveBytes);const document=JSON.parse(saved.toString());expect(document.saveVersion).toBe(10);
   const provenance=JSON.parse(document.packedTerrain.provenance.requestJson);expect(provenance.Options.Lakes.Count).toBe(0);expect(provenance.Options.Rivers.Width).toBe(8);expect(provenance.Options.Rivers.Direction).toBe(1);expect(provenance.Options.Rivers).not.toHaveProperty('Count');expect(provenance.Options.Rivers).not.toHaveProperty('Outlet');
   await closePanel(page);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(saved);

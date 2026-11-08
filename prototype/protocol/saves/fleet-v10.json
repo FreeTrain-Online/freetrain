@@ -1,0 +1,1200 @@
+{
+  "saveVersion": 10,
+  "ruleset": "mixed-railway-1",
+  "contentVersion": "mixed-railway-content-1",
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9"
+    }
+  ],
+  "map": {
+    "width": 3,
+    "height": 3,
+    "levels": 6,
+    "coordinateSystem": "hv"
+  },
+  "rails": [],
+  "clock": {
+    "absoluteMinute": "130081",
+    "nextOrder": "9007199254740994",
+    "pending": [
+      {
+        "registration": "9007199254740993",
+        "order": "9007199254740993",
+        "dueMinute": "130082",
+        "handlerId": "train/17",
+        "interval": "0"
+      }
+    ]
+  },
+  "paused": true,
+  "random": {
+    "version": 1,
+    "algorithm": "subtractive-55-v1",
+    "seed": 0,
+    "streams": [
+      {
+        "id": "construction",
+        "state": {
+          "index": 0,
+          "values": [
+            1516752203,
+            1295025252,
+            502809178,
+            66251854,
+            125902546,
+            1567670562,
+            489157552,
+            1908663211,
+            1377864264,
+            1750718756,
+            1306718284,
+            219541210,
+            2066990465,
+            851614243,
+            552478506,
+            339825434,
+            960764254,
+            1659433753,
+            1674863331,
+            903401795,
+            341898370,
+            1593061763,
+            378015568,
+            593619497,
+            1388084676,
+            367628491,
+            1655972074,
+            465927108,
+            931491891,
+            611301327,
+            1746872118,
+            221231078,
+            1595395042,
+            1926815596,
+            87026961,
+            539874293,
+            200273126,
+            917618402,
+            1301736405,
+            724799385,
+            993077508,
+            25116990,
+            1176129266,
+            1336714327,
+            1091451835,
+            559994302,
+            1931738574,
+            165963824,
+            2101753911,
+            291514560,
+            669577679,
+            1999659219,
+            1188960182,
+            1629340456,
+            2108712251
+          ]
+        }
+      },
+      {
+        "id": "development",
+        "state": {
+          "index": 0,
+          "values": [
+            1988669346,
+            1407956115,
+            21241775,
+            1558822277,
+            1068299308,
+            310420633,
+            342038696,
+            1118823443,
+            1116419617,
+            2050978279,
+            1879701668,
+            927880083,
+            1597370908,
+            1547186856,
+            1773163487,
+            1327208377,
+            1119777212,
+            807859597,
+            1021909188,
+            313080508,
+            1009261919,
+            441254664,
+            260261550,
+            1955661559,
+            929063616,
+            1578910624,
+            1591916411,
+            352436759,
+            1277796598,
+            622078168,
+            729731357,
+            1483627276,
+            61310652,
+            1455561851,
+            682969165,
+            720214537,
+            1042459711,
+            2122482782,
+            747996254,
+            1549493500,
+            727653487,
+            1534234589,
+            2058356667,
+            856941063,
+            99054507,
+            1087119411,
+            988174660,
+            102229294,
+            460642080,
+            103850692,
+            1646129662,
+            911296749,
+            1198008987,
+            1988704717,
+            618168688
+          ]
+        }
+      },
+      {
+        "id": "forest",
+        "state": {
+          "index": 1,
+          "values": [
+            366532703,
+            1029065237,
+            44498295,
+            566873748,
+            194227022,
+            1064602255,
+            1888996280,
+            37032014,
+            1256656923,
+            459486175,
+            1181258043,
+            640718791,
+            927461957,
+            924228923,
+            13045151,
+            1682605743,
+            207172444,
+            2129813480,
+            1331732743,
+            1852037517,
+            1393671529,
+            636183674,
+            1385891658,
+            710478676,
+            430500628,
+            746888735,
+            2062878115,
+            1808531770,
+            1473616162,
+            436685210,
+            1915565124,
+            984760245,
+            1416117974,
+            1081006493,
+            689855627,
+            147676108,
+            1568953005,
+            1590949578,
+            1817149501,
+            1522745356,
+            832934600,
+            15352900,
+            671248887,
+            753594124,
+            936175668,
+            923944673,
+            934862987,
+            1054353601,
+            1704122663,
+            54926008,
+            697019392,
+            743117453,
+            1555730150,
+            2058902202,
+            1083662219
+          ]
+        }
+      },
+      {
+        "id": "land-selection",
+        "state": {
+          "index": 0,
+          "values": [
+            287380026,
+            134881327,
+            328776745,
+            1819500815,
+            1604272586,
+            595404614,
+            1318672114,
+            1893959690,
+            1433483688,
+            1164917051,
+            1856470739,
+            2104115474,
+            746030774,
+            1833027798,
+            1369156208,
+            325917380,
+            92555649,
+            38074930,
+            304012433,
+            2037425168,
+            1982492742,
+            2132562969,
+            499338426,
+            265640782,
+            1285221,
+            634670012,
+            1041894006,
+            1001493478,
+            1360915160,
+            41766562,
+            1684869600,
+            1410469504,
+            1278815566,
+            351155591,
+            549694480,
+            599840373,
+            200177658,
+            536420384,
+            779755896,
+            454003816,
+            1892714574,
+            688380192,
+            1245969925,
+            20087049,
+            610360397,
+            1429361183,
+            291497792,
+            1272341829,
+            606558535,
+            983948711,
+            1077749849,
+            72742240,
+            91308800,
+            1521328310,
+            6380733
+          ]
+        }
+      },
+      {
+        "id": "stadium",
+        "state": {
+          "index": 0,
+          "values": [
+            761118184,
+            494661686,
+            849068683,
+            1952121051,
+            795126432,
+            988254450,
+            1537608613,
+            1997691947,
+            1984354554,
+            172938101,
+            1907026091,
+            1884214568,
+            629043608,
+            1090218023,
+            1106301517,
+            817598490,
+            796116677,
+            1782940153,
+            1150718868,
+            1337559257,
+            103687181,
+            831312533,
+            667757364,
+            1260736572,
+            1226674795,
+            1057663387,
+            1834526079,
+            1698633057,
+            1095309346,
+            924823716,
+            1889278701,
+            561258468,
+            1121515372,
+            102855118,
+            119260355,
+            1594629543,
+            687959976,
+            317449046,
+            682117979,
+            318026204,
+            707358865,
+            675739418,
+            13395390,
+            587373455,
+            896104377,
+            468535186,
+            1030407948,
+            1596292514,
+            1418165620,
+            1263587101,
+            2116017982,
+            107810344,
+            875014135,
+            1744917370,
+            1854404111
+          ]
+        }
+      },
+      {
+        "id": "stock-economy",
+        "state": {
+          "index": 0,
+          "values": [
+            1256693661,
+            428144337,
+            2088563946,
+            285145459,
+            1215481501,
+            1623923279,
+            60219802,
+            2014900453,
+            1951356645,
+            609293895,
+            104995133,
+            727947546,
+            481700838,
+            31422590,
+            996050832,
+            32564665,
+            470456523,
+            692760431,
+            533544117,
+            1740844929,
+            952470734,
+            93486501,
+            1174654982,
+            2024022650,
+            894676166,
+            293247175,
+            724163943,
+            1057082706,
+            1213045564,
+            6571901,
+            635079638,
+            542116560,
+            124625547,
+            386378735,
+            761083295,
+            2124678563,
+            238717148,
+            892920743,
+            1117038291,
+            2042497090,
+            1370221927,
+            1717525023,
+            410019418,
+            1674496598,
+            2097021186,
+            141540193,
+            1701995890,
+            2013057455,
+            170919609,
+            2070633502,
+            1463120444,
+            63602840,
+            1667938759,
+            1004761138,
+            736504292
+          ]
+        }
+      },
+      {
+        "id": "stock-effects",
+        "state": {
+          "index": 0,
+          "values": [
+            279733350,
+            457426874,
+            2141934207,
+            913498461,
+            471973918,
+            444526704,
+            795342999,
+            1298121722,
+            720518632,
+            740893857,
+            801040582,
+            1260209698,
+            470749858,
+            1611266734,
+            1397003916,
+            322487744,
+            1520853509,
+            33430864,
+            896530383,
+            1773243486,
+            477426478,
+            937465739,
+            1386119813,
+            129204159,
+            2075315533,
+            1558426916,
+            1402434450,
+            542547306,
+            1535146601,
+            1936474583,
+            107135326,
+            1806815147,
+            1758786049,
+            1847016683,
+            1002813093,
+            400253442,
+            33431100,
+            1394050223,
+            1886380078,
+            823844874,
+            1571045992,
+            979059171,
+            1330295687,
+            1716084872,
+            1764689140,
+            310285251,
+            274046786,
+            749094278,
+            1348899144,
+            402903326,
+            324434542,
+            511651068,
+            397895529,
+            455726502,
+            502785081
+          ]
+        }
+      },
+      {
+        "id": "stock-tables",
+        "state": {
+          "index": 0,
+          "values": [
+            1121877634,
+            1484546720,
+            1554740827,
+            1905112192,
+            722660304,
+            1899926451,
+            578513324,
+            1014259221,
+            1407595514,
+            1392413225,
+            603577424,
+            1720651320,
+            1871653211,
+            1928423214,
+            200449062,
+            110728922,
+            1999921017,
+            2082153886,
+            650179906,
+            2111491714,
+            1632052417,
+            900994057,
+            1650602445,
+            1522014700,
+            118433422,
+            891200683,
+            882074048,
+            1907527791,
+            517038659,
+            1555468024,
+            1567217931,
+            1355803145,
+            584102111,
+            2047261645,
+            954655763,
+            1477966792,
+            558706541,
+            1215720744,
+            154820405,
+            1262479442,
+            1860745478,
+            1564094259,
+            410306907,
+            1056802211,
+            2143549685,
+            339774903,
+            1015367438,
+            1986079257,
+            1054676385,
+            1558395374,
+            2025179228,
+            1008782768,
+            1284147223,
+            465809299,
+            1658967348
+          ]
+        }
+      },
+      {
+        "id": "subsidiaries",
+        "state": {
+          "index": 0,
+          "values": [
+            1960864337,
+            295318458,
+            2119323730,
+            1595680848,
+            1518428394,
+            2023831233,
+            51375012,
+            162526468,
+            801275390,
+            1370329907,
+            35582601,
+            320654670,
+            192989313,
+            883950164,
+            1410849987,
+            129498684,
+            601570909,
+            1688476959,
+            1511977552,
+            2059025419,
+            1489765109,
+            963275134,
+            1645047786,
+            1016218053,
+            1324619527,
+            1664294146,
+            1857684714,
+            1361179323,
+            1635550536,
+            223721442,
+            1076360137,
+            1921066897,
+            12424653,
+            1938501092,
+            450381874,
+            225122066,
+            255063665,
+            1114140697,
+            179508210,
+            810635454,
+            1570257317,
+            1094033168,
+            1279695037,
+            1162572821,
+            1271958861,
+            1763879893,
+            526190079,
+            972022135,
+            332647136,
+            1899984782,
+            517682707,
+            1123976843,
+            1700749550,
+            496660207,
+            1546336767
+          ]
+        }
+      },
+      {
+        "id": "time-length",
+        "state": {
+          "index": 0,
+          "values": [
+            2060394533,
+            1447189555,
+            1156052082,
+            2138769406,
+            2096102973,
+            1533748548,
+            942371765,
+            811918085,
+            481832315,
+            1614054177,
+            3100953,
+            1696630243,
+            822632107,
+            957223179,
+            1834859427,
+            431757267,
+            571577027,
+            1726982266,
+            1794819824,
+            482746444,
+            1197304812,
+            864070671,
+            1903784756,
+            838155423,
+            348079988,
+            659533347,
+            297663813,
+            2116598488,
+            251981351,
+            1113133213,
+            366928962,
+            1220791339,
+            1577926978,
+            1310238746,
+            231701899,
+            1743854494,
+            292575484,
+            1625603775,
+            1585741184,
+            816807065,
+            734244983,
+            1241050321,
+            321623324,
+            153176138,
+            526767338,
+            99314986,
+            2030047276,
+            303705808,
+            1084781059,
+            1106485632,
+            1187232627,
+            1447739906,
+            228520082,
+            2045183624,
+            1748663540
+          ]
+        }
+      }
+    ]
+  },
+  "spatial": {
+    "nextEntityId": "9007199254741003",
+    "entities": [
+      {
+        "id": "7",
+        "revision": "0",
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:traffic",
+          "recipeId": "geometry:traffic-components-1"
+        },
+        "anchor": {
+          "x": 1,
+          "y": 0,
+          "z": 4
+        },
+        "footprint": [
+          {
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "transparent": true
+          }
+        ],
+        "owned": true,
+        "silentlyReclaimable": false,
+        "value": "0"
+      },
+      {
+        "id": "8",
+        "revision": "0",
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        "anchor": {
+          "x": 1,
+          "y": 0,
+          "z": 3
+        },
+        "footprint": [
+          {
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "transparent": true
+          }
+        ],
+        "owned": true,
+        "silentlyReclaimable": false,
+        "value": "0"
+      },
+      {
+        "id": "9",
+        "revision": "0",
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:traffic",
+          "recipeId": "geometry:traffic-components-1"
+        },
+        "anchor": {
+          "x": 3,
+          "y": 2,
+          "z": 2
+        },
+        "footprint": [
+          {
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "transparent": true
+          }
+        ],
+        "owned": true,
+        "silentlyReclaimable": false,
+        "value": "0"
+      },
+      {
+        "id": "10",
+        "revision": "0",
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:traffic",
+          "recipeId": "geometry:traffic-components-1"
+        },
+        "anchor": {
+          "x": 1,
+          "y": 2,
+          "z": 4
+        },
+        "footprint": [
+          {
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "transparent": true
+          }
+        ],
+        "owned": true,
+        "silentlyReclaimable": false,
+        "value": "0"
+      }
+    ]
+  },
+  "revision": "6",
+  "packedTerrain": {
+    "encoding": "terrain-packed-1",
+    "name": "保存 / Terrain",
+    "waterLevel": 3,
+    "constructionMode": true,
+    "geometryRevision": "4",
+    "nextEntityId": "7",
+    "provenance": {
+      "profile": "terrain-generation-1",
+      "source": "empty",
+      "requestHash": "e71fc178593fc924af8bc5f83a3978f1a17d4e01b315024210a770f46af6e7cf",
+      "requestJson": "{\"source\":\"empty\",\"Profile\":\"terrain-generation-1\",\"Name\":\"\\u4FDD\\u5B58 / Terrain\",\"Dimensions\":{\"H\":3,\"V\":3,\"Z\":6},\"WaterLevel\":1}"
+    },
+    "definitions": [
+      {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}",
+        "recipeId": "{28AF2E4F-AAF2-4007-84B8-5CCBD1DB10B0}"
+      },
+      {
+        "packId": "exav-stable-bundled",
+        "contributionId": "system:terrain/mountain",
+        "recipeId": "geometry:quarter-mountain-1"
+      },
+      {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+      },
+      {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+        "recipeId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+      }
+    ],
+    "cells": "gkJCQkJCQkJC",
+    "occupantCount": 3,
+    "occupants": "AQAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAATQSAP//AAIAAAAAAAAAAAAAAAAAAAABAAEAAAAAAAAAAgBkAAAAAAAAAAA0EgACAAIAAAAeDwgDAAAAAAAAAAAAAAAAAAAAAwACAAAAAQAAAAIGAAAAAAAAAAACAAAN//8A"
+  },
+  "mixed": {
+    "geometryRevision": "5",
+    "nextEntityId": "9007199254741003",
+    "voxels": [
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 4
+        },
+        "ownerId": "7",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "system:pattern/1",
+              "recipeId": "system:pattern/1"
+            },
+            "pattern": 1,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+              "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+            },
+            "trainId": "17",
+            "carId": "19"
+          },
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 0,
+          "z": 3
+        },
+        "ownerId": "8",
+        "kind": "pier",
+        "traffic": null,
+        "definition": {
+          "packId": "exav-stable-bundled",
+          "contributionId": "system:pier",
+          "recipeId": "system:pier"
+        },
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": "7"
+      },
+      {
+        "position": {
+          "x": 3,
+          "y": 2,
+          "z": 2
+        },
+        "ownerId": "9",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}",
+              "recipeId": "{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": {
+              "ne": 1,
+              "se": 2,
+              "sw": 3,
+              "nw": 4
+            },
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      },
+      {
+        "position": {
+          "x": 1,
+          "y": 2,
+          "z": 4
+        },
+        "ownerId": "10",
+        "kind": "traffic",
+        "traffic": {
+          "rail": {
+            "definition": {
+              "packId": "exav-stable-bundled",
+              "contributionId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}",
+              "recipeId": "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}"
+            },
+            "pattern": 10,
+            "variant": 0,
+            "terrainBackup": null,
+            "direction": 0,
+            "controllerId": null
+          },
+          "road": null,
+          "accessory": null,
+          "car": null,
+          "platform": null
+        },
+        "definition": null,
+        "sprite": 0,
+        "drawGroundBelow": true,
+        "drawGroundAbove": true,
+        "supportedOwnerId": null
+      }
+    ],
+    "slopes": [],
+    "accounts": {
+      "initialCash": "15000000000",
+      "bankruptcyIncrement": "10000000000",
+      "transactions": [
+        {
+          "sequence": "1",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "18000000000",
+          "topUps": "1",
+          "cashAfter": "7000000000"
+        },
+        {
+          "sequence": "2",
+          "worldRevision": "5",
+          "absoluteMinute": "130081",
+          "operation": "fixture.normal",
+          "genre": "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+          "expenditure": "0",
+          "topUps": "0",
+          "cashAfter": "7000000000"
+        }
+      ]
+    },
+    "fleet": {
+      "rootGroupId": "11",
+      "trains": [
+        {
+          "id": "17",
+          "revision": "0",
+          "name": "共有列車",
+          "definition": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}"
+          },
+          "groupId": "16",
+          "controllerId": "13",
+          "cars": [
+            {
+              "id": "19",
+              "revision": "0",
+              "originalIndex": 1,
+              "definition": {
+                "packId": "exav-stable-bundled",
+                "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t",
+                "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-t"
+              },
+              "state": {
+                "kind": "inside",
+                "location": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 4
+                },
+                "heading": 1,
+                "countdown": null
+              }
+            },
+            {
+              "id": "18",
+              "revision": "0",
+              "originalIndex": 0,
+              "definition": {
+                "packId": "exav-stable-bundled",
+                "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h",
+                "recipeId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}-h"
+              },
+              "state": {
+                "kind": "outside",
+                "location": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 2
+                },
+                "heading": 0,
+                "countdown": 50
+              }
+            }
+          ],
+          "isReversed": true,
+          "state": "stoppingatstation",
+          "passengers": 100,
+          "boardingOrigin": {
+            "kind": "outside",
+            "location": {
+              "x": 0,
+              "y": 0,
+              "z": 2
+            },
+            "heading": 0,
+            "countdown": 51
+          },
+          "forwarding": true,
+          "moveCount": 2147483647,
+          "stopCallCount": 2,
+          "purchaseMinute": "100"
+        },
+        {
+          "id": "20",
+          "revision": "0",
+          "name": "Inventory",
+          "definition": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+          },
+          "groupId": "11",
+          "controllerId": "15",
+          "cars": [
+            {
+              "id": "21",
+              "revision": "0",
+              "originalIndex": 0,
+              "definition": {
+                "packId": "exav-stable-bundled",
+                "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+                "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+              },
+              "state": {
+                "kind": "unplaced",
+                "location": null,
+                "heading": null,
+                "countdown": null
+              }
+            }
+          ],
+          "isReversed": false,
+          "state": "unplaced",
+          "passengers": 0,
+          "boardingOrigin": null,
+          "forwarding": false,
+          "moveCount": 0,
+          "stopCallCount": 0,
+          "purchaseMinute": null
+        }
+      ],
+      "groups": [
+        {
+          "id": "11",
+          "revision": "0",
+          "name": "Root",
+          "parentId": null,
+          "controllerId": "12",
+          "members": [
+            "20",
+            "16"
+          ]
+        },
+        {
+          "id": "16",
+          "revision": "0",
+          "name": "Group",
+          "parentId": "11",
+          "controllerId": "15",
+          "members": [
+            "17"
+          ]
+        }
+      ],
+      "controllers": [
+        {
+          "id": "12",
+          "revision": "0",
+          "name": "Simple",
+          "kind": "simple",
+          "provider": null,
+          "harbors": []
+        },
+        {
+          "id": "13",
+          "revision": "0",
+          "name": "Delegation",
+          "kind": "delegation",
+          "provider": null,
+          "harbors": []
+        },
+        {
+          "id": "14",
+          "revision": "0",
+          "name": "Spare TAT",
+          "kind": "timetable",
+          "provider": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
+          },
+          "harbors": []
+        },
+        {
+          "id": "15",
+          "revision": "0",
+          "name": "Shared TAT",
+          "kind": "timetable",
+          "provider": {
+            "packId": "exav-stable-bundled",
+            "version": "2",
+            "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+            "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
+          },
+          "harbors": [
+            {
+              "location": {
+                "x": -123,
+                "y": 456,
+                "z": 2
+              },
+              "kind": "daily",
+              "minutes": 480,
+              "reverse": true
+            },
+            {
+              "location": {
+                "x": 1,
+                "y": 2,
+                "z": 4
+              },
+              "kind": "fixed",
+              "minutes": 10,
+              "reverse": false
+            }
+          ]
+        }
+      ]
+    },
+    "queue": {
+      "nextOrder": "9007199254740994",
+      "pending": [
+        {
+          "registration": "9007199254740993",
+          "order": "9007199254740993",
+          "dueMinute": "130082",
+          "handlerId": "train/17",
+          "interval": "0"
+        }
+      ]
+    }
+  }
+}

@@ -118,7 +118,7 @@ public class FleetStorageRecoveryTests
     public async Task Interrupted_temporary_write_and_failed_rename_preserve_prior_slot_and_checkpoint()
     {
         var directory=Path.Combine(Path.GetTempPath(),"fleet-recovery-"+Guid.NewGuid());
-        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json"));
+        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json"));
         try
         {
             using(var storage=new SaveStorage(directory))

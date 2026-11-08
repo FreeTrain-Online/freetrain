@@ -1,3 +1,5 @@
+**P6-05 station boundary:** [Save10/protocol8 station persistence and transport](doc/web-parity-station-transport.md) preserve exact station/platform identities, host and listener order, logs and repeat timers. Construction, presentation and passenger gameplay remain with later P6 steps.
+
 **P5-26 moving-fleet integration:** [Cross-tool and lifecycle regression](doc/web-parity-fleet-cross-tool.md)
 uses purchased three-car trains to verify construction protection, source-specific
 skips and charges, peer movement, stale previews, receipts and replacement. It
@@ -25,11 +27,11 @@ Deployment browser controls remain P5-11.
 now quote exact formations/quantities, create timestamped stock and book purchases
 or resale revenue with durable fleet/callback cleanup. Browser trading controls are delivered by P5-10; deployment controls remain P5-11.
 
-**P5-05 fleet foundation:** [Save9/protocol7 fleet persistence and transport](doc/web-parity-fleet-transport.md)
+**P5-05 fleet foundation:** [Save10/protocol8 fleet persistence and transport](doc/web-parity-fleet-transport.md)
 add complete fleet/controller/group graphs, location-keyed harbor data and explicit
 callback queues. Save8 is retired; train commands and movement retain their P5 owners.
 
-**P4-05 mixed infrastructure:** [Save9/protocol7 mixed persistence and dispatch](doc/web-parity-railway-persistence.md)
+**P4-05 mixed infrastructure:** [Save10/protocol8 mixed persistence and dispatch](doc/web-parity-railway-persistence.md)
 now preserve railway components, booking and shared allocator alongside terrain.
 Save1–7 are unsupported and preserved under the current-format-only policy.
 [P4-07 construction](doc/web-parity-railway-construction.md) now validates actual terrain, reclamation and automatic piers,
@@ -152,7 +154,7 @@ coast. Lakes occupy roughly 3% of the map and use seeded random locations with
 room for a dry shoreline. Existing saved worlds restore exactly.
 You can inspect terrain, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
-with **Save 9**. Economy, construction, trains and stations remain future slices.
+with **Save 10**. Economy, construction, trains and stations remain future slices.
 Settings offers six departure-bell previews alongside the existing sound effects.
 BGM is deferred to a [future improvement project](doc/web-audio-policy.md); the
 TinySynth feasibility experiment was removed after audible pops and crackles.
@@ -164,7 +166,7 @@ See [P1-02 clock and scheduler](doc/web-parity-clock.md) and
 [P1-03 random streams](doc/web-parity-random.md) and
 [P1-04 spatial contracts](doc/web-parity-spatial-contracts.md).
 
-[P3-16a capacity](doc/web-parity-map-capacity.md) adds packed terrain/trees and interned definitions, coherent bounded snapshot chunks and viewport caches. The concrete parity target is 1500 × 1090 × 45 stored cells. Larger requests remain subject to measured work/memory/byte/deadline admission. Save 9 is the only supported save format; Saves 1–8 are retired without conversion under the current-format policy. Terrain content identities and source algorithms are unchanged.
+[P3-16a capacity](doc/web-parity-map-capacity.md) adds packed terrain/trees and interned definitions, coherent bounded snapshot chunks and viewport caches. The concrete parity target is 1500 × 1090 × 45 stored cells. Larger requests remain subject to measured work/memory/byte/deadline admission. Save 10 is the only supported save format; Saves 1–9 are retired without conversion under the current-format policy. Terrain content identities and source algorithms are unchanged.
 
 [P3 integrated acceptance and P4 handoff](doc/web-parity-p3-acceptance.md) covers
 source terrain workflows and the separate seeded-world topology matrix. For
@@ -204,7 +206,7 @@ and exact confirmation. Generated admission is H/V16–2048 (at most 1,700,000 s
 actual terrain and provenance reopen without regeneration. [P3-09 coasts](doc/web-parity-coasts.md) adds islands,
 independent world-compass coast directions, sea coverage targets (±5 percentage points),
 actual surface-water metrics and bounded topology diagnostics, including full-size fixtures.
-[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river direction/width/meander controls (None, North → South, East → West; matching coastal seas connect at the map boundary), EN/JA feedback and exact Save9 confirmation. Forests and starting areas are delivered in [P3-11](doc/web-parity-forests.md): six species/18 ground treatments, source scatter, coverage/clustering/palette controls, connected level reservation and actual preview metrics. [P3-12 generation UX](doc/web-parity-generation-ux.md) adds retained north-up/isometric previews, compass, measured presets and generation lifecycle feedback.
+[P3-10 lakes and rivers](doc/web-parity-water.md) adds gently irregular lake shores and smooth fractal river bends at the global water level, lake count/area and river direction/width/meander controls (None, North → South, East → West; matching coastal seas connect at the map boundary), EN/JA feedback and exact Save10 confirmation. Forests and starting areas are delivered in [P3-11](doc/web-parity-forests.md): six species/18 ground treatments, source scatter, coverage/clustering/palette controls, connected level reservation and actual preview metrics. [P3-12 generation UX](doc/web-parity-generation-ux.md) adds retained north-up/isometric previews, compass, measured presets and generation lifecycle feedback.
 [P3-13 corner tools](doc/web-parity-corner-terrain.md) add **Game → Modify terrain**:
 Raise/Lower, source ground/corner picking, Ctrl reversal, Shift-drag or explicit
 coordinate strokes, read-only legality/loss preview and one revalidated Confirm.
@@ -215,7 +217,7 @@ or coordinate rectangles, source Raise/Excavate profiles, explicit Repair,
 Ctrl repair/Shift upper profile, per-site skips and one atomic confirmation.
 Selections admit at most 64 inclusive cells; Repair includes the far edges while
 Raise/Excavate operate on shared corners before those edges.
-[P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save9 continuation. Full-size editing has [P3-17 acceptance](doc/web-parity-p3-acceptance.md);
+[P3-15 terraces and cliffs](doc/web-parity-terraces.md) add separate Place/Remove terrace and Make/Restore cut actions, source voxel targeting, exact corner backups and explicit forest/ownership-loss previews. Changes preserve actual Save10 continuation. Full-size editing has [P3-17 acceptance](doc/web-parity-p3-acceptance.md);
 resource-heavy authoritative edits retain the documented 250 ms target miss.
 
 ## Current limits
@@ -291,7 +293,7 @@ When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
 or set `FREETRAIN_ONLINE_SAVE_VOLUME` to the existing Docker volume. Prototype
-saves are rejected and preserved; the default world now writes canonical Save 9. Browser login and preference keys use `freetrain-online`;
+saves are rejected and preserved; the default world now writes canonical Save 10. Browser login and preference keys use `freetrain-online`;
 sign in again and reselect language/color preferences after upgrading.
 
 From the repository root:
@@ -317,7 +319,7 @@ These tests build the Svelte shell into `web/dist/` and run Chromium against tho
 release static files. Two workers run by default; every worker owns its backend,
 preview server, and temporary save directory. Each case starts a fresh backend,
 also resetting credentials, access throttles, receipts and save slots. Canonical
-cases restore a small real Save 9 fixture. The separate `startup` project exercises fresh
+cases restore a small real Save 10 fixture. The separate `startup` project exercises fresh
 production world generation, while `prototype-regression` explicitly starts a
 loopback-only `--prototype-regression-harness`. Routine screenshot captures have
 been removed; functional canvas/pixel, focus, layout and EN/JA assertions remain.
@@ -392,7 +394,7 @@ Fresh-world defaults can be configured with `FreeTrainOnline__StartupWorld__…`
 0–90), and `Water` (`Random`, `Dry`, `Lake`, `River`, or `Coast`). Set `Seed` to an
 integer for reproducible terrain; omit it for a fresh random seed. These settings
 only apply when there is no usable checkpoint. The chosen seed and generation
-parameters are retained in Save 9 along with the actual map. The old rail-loop
+parameters are retained in Save 10 along with the actual map. The old rail-loop
 map remains an explicit regression fixture; it is no longer a startup world.
 
 For a remote binding, configure `FreeTrainOnline__OperatorSecret` on the server. The
@@ -409,7 +411,7 @@ origins use `FreeTrainOnline__AllowedOrigins__0`; lifecycle and queue settings u
 `FreeTrainOnline__Network__<Property>`. See
 [NetworkOptions](src/FreeTrain.Online.Server/NetworkSession.cs) for defaults and limits.
 
-Save 9 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
+Save 10 checkpoints run every 30 seconds and at clean shutdown. A valid checkpoint
 restores the spatial world after restart; the server incarnation changes. Rejected
 startup checkpoints are reported and preserved, including through later automatic
 and shutdown attempts. Named slots and downloads remain available for the fresh
@@ -468,7 +470,7 @@ python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav
 python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav-archive --check
 ```
 
-The regression-only synthetic rail world retains its distinct pack and Save 9 identity.
+The regression-only synthetic rail world retains its distinct pack and Save 10 identity.
 Historical demo/regression PNGs, variants, masks and notices in `web/public/assets/`
 remain frozen artifacts checked by `prototype/content-artifacts.json`; they no
 longer trigger historical source import during normal builds. Browser decode
@@ -483,7 +485,7 @@ original author and contributors, and the English version.
 **License**, beside Credits in both places, displays the full LGPL 2.1 text and
 links to the source code on GitHub.
 
-**Only canonical Save 9 is supported.** Protocol 7 also carries actual terrain,
+**Only canonical Save 10 is supported.** Protocol 8 also carries actual terrain,
 realized vegetation, authoring mode and creation provenance under the exact bundled
 terrain profile. Terrain save/load/restart, transport and browser rendering/picking
 are implemented, including [empty-world creation](doc/web-parity-empty-world.md). The application starts with generated terrain. Save/upload and outgoing terrain data have a 256 MiB limit.
@@ -493,13 +495,13 @@ unique occupied cells, source patterns and exact ruleset/content/pack identity.
 The synthetic reference profile additionally requires reciprocal loop connectivity
 and all eight headings; mixed railway state allows open and disconnected networks.
 All profile checks complete before replacing the world and advancing
-the epoch. Earlier formats, including Saves 1–8, return `incompatibleSave` without
+the epoch. Earlier formats, including Saves 1–9, return `incompatibleSave` without
 conversion; the current world and rejected files are preserved.
 
 `FreeTrainOnline__Saves__Directory` selects the save directory. An incompatible
 startup checkpoint produces a visible error and a fresh world; the rejected file
 is never overwritten. `/api/saves/status` reports availability and startup errors.
-See [the save contract](prototype/protocol/save-v9.schema.json) and
+See [the save contract](prototype/protocol/save-v10.schema.json) and
 [current policy](doc/web-parity-runtime-policy.md).
 
 Click **Enable sound** to preview the bundled station WAV and enable sound for
@@ -551,7 +553,7 @@ The spatial integration now uses **protocol 7**, with explicit ruleset/content/p
 identity, coordinate-system tags and per-car eight-direction heading indices.
 Restart/deploy matching artifacts together; protocol 2/3 peers receive HTTP 426.
 The default profile is `reference-spatial-4` / `reference-spatial-content-2`,
-with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 9. Unknown
+with H/V bounds, `normal0`..`normal11` track patterns and canonical Save 10. Unknown
 profiles/packs block reveal. See [P1-01c](doc/web-parity-reference-world.md) and [terrain save/transport scope](doc/web-parity-terrain-transport.md).
 
 Edit `prototype/protocol/schema.json`, run

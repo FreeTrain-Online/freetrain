@@ -1,0 +1,53 @@
+import assert from 'node:assert/strict';
+import Ajv from 'ajv';
+import {parseMessageValue,parseMessage,applyDelta,immutable} from '../src/lib/protocol.ts';
+import {StateAssembler,stateChunkBytes} from '../src/lib/state-transfer.ts';
+import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
+const json=async(path:string)=>JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/'+path,import.meta.url)));
+const scene=async()=>parseMessageValue(await json('fixtures/snapshot-stations.json')) as Snapshot;
+const delta=(s:Snapshot):Delta=>({type:'delta',worldEpoch:s.worldEpoch,baseRevision:s.revision,revision:'1',tick:'518',paused:true,cash:s.cash,
+ trains:[],stations:[],buildings:[],tracks:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[]},ruleset:s.ruleset,contentVersion:s.contentVersion,requiredPacks:s.requiredPacks,
+ entities:[],terrain:{waterLevel:0,constructionMode:false,geometryRevision:'0',nextEntityId:'1',cells:[],occupants:[]},mixed:structuredClone(s.mixed)});
+Deno.test('station literal Save10 and protocol8 retain exact graph, source asymmetry and large repeat cookies',async()=>{
+ const s=await scene(),g=s.mixed!.stationGraph!;
+ assert.deepEqual(g.buildings[0].children,['3','2']);assert.equal(g.buildings[0].imports.thisWeek,23.125);
+ assert.equal(g.buildings[0].hourTimer!.registration,'9007199254740993');assert.equal(g.buildings[0].hourTimer!.interval,'60');
+ assert.deepEqual(g.listeners,[{providerId:'40',stations:['1']}]);assert.deepEqual(g.listenerMemberships,[]);
+ const schema=await json('save-v10.schema.json'),validate=new Ajv({strict:true}).compile(schema),save=await json('saves/stations-v10.json');
+ assert(validate(save),JSON.stringify(validate.errors));assert(!validate({...save,saveVersion:9}));
+});
+Deno.test('station decoder rejects malformed hosts, art, ownership, logs, listener references and timer queues before reveal',async()=>{
+ const s=await scene();const mutations:((s:Snapshot)=>void)[]=[
+ s=>s.mixed!.stationGraph!.platforms[0].hostId='2',s=>s.mixed!.stationGraph!.buildings[0].children=[],
+ s=>s.mixed!.stationGraph!.buildings[0].definition.recipeId='missing',s=>s.mixed!.stationGraph!.platforms[0].bell.recipeId='missing',
+ s=>s.mixed!.stationGraph!.platforms[0].yards[0].trafficOwnerId='999',s=>s.mixed!.stationGraph!.platforms[0].yards[0].outlook.upward=true,
+ s=>s.entities![0].footprint[0].transparent=true,s=>s.mixed!.stationGraph!.buildings[0].imports.thisWeek=-1,
+ s=>s.mixed!.stationGraph!.listeners[0].stations=['1','1'],s=>s.mixed!.stationGraph!.listeners[0].providerId='999',
+ s=>s.mixed!.stationGraph!.listenerMemberships=[{stationId:'1',providers:['999']}],
+ s=>s.mixed!.stationGraph!.buildings[0].hourTimer!.order='0',s=>s.mixed!.queue!.pending.pop(),
+ s=>s.mixed!.queue!.pending[0].interval='0',s=>delete s.mixed!.queue,s=>delete s.mixed!.stationGraph,
+ ];for(const mutate of mutations){const candidate=structuredClone(s);mutate(candidate);assert.throws(()=>parseMessage(JSON.stringify(candidate)));}
+ assert.equal(s.mixed!.stationGraph!.buildings[0].name,'Station / 駅');
+});
+Deno.test('station logical edits require revisions and fixed geometry; complete removal preserves name allocators atomically',async()=>{
+ const s=immutable(await scene()),d=delta(s as Snapshot);d.mixed!.geometryRevision='1';d.mixed!.stationGraph!.platforms[0].name='Edited';
+ assert.equal(applyDelta(s,structuredClone(d)),undefined);d.mixed!.stationGraph!.platforms[0].revision='1';const renamed=applyDelta(s,d);assert(renamed);
+ for(const mutate of [(d:Delta)=>d.mixed!.stationGraph!.nextStationName=1,(d:Delta)=>d.mixed!.stationGraph!.platforms[0].length=3]){
+  const bad=structuredClone(d);mutate(bad);assert.equal(applyDelta(s,bad),undefined);
+ }
+ const removal=delta(s as Snapshot);removal.mixed!.geometryRevision='1';removal.mixed!.voxels=[];removal.mixed!.queue!.pending=[];
+ removal.mixed!.stationGraph={nextStationName:17,nextPlatformName:23,buildings:[],platforms:[],passages:[],listeners:[],listenerMemberships:[]};
+ removal.removed.entityIds=s.entities!.map(e=>e.id);const empty=applyDelta(s,removal);assert(empty);assert.equal(empty.entities!.length,0);
+ assert.equal(empty.mixed!.stationGraph!.nextPlatformName,23);assert.equal(s.mixed!.stationGraph!.platforms.length,2);
+ const missing=structuredClone(removal);missing.removed.entityIds!.pop();assert.equal(applyDelta(s,missing),undefined);
+});
+Deno.test('station chunk assembly publishes only a complete coherent terrain, ownership, host and FIFO graph',async()=>{
+ const snapshot=await scene(),save=await json('saves/stations-v10.json'),header={...snapshot,terrain:undefined,entities:save.spatial.entities};
+ const bytes=new TextEncoder().encode(JSON.stringify({message:header,packedTerrain:save.packedTerrain})+' '.repeat(stateChunkBytes));
+ const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
+ const assembler=new StateAssembler();let result;
+ for(let offset=0;offset<bytes.length;offset+=stateChunkBytes){
+  const chunk:StateChunk={type:'stateChunk',transferId:'c'.repeat(32),worldEpoch:'1',revision:'0',index:offset/stateChunkBytes,count:Math.ceil(bytes.length/stateChunkBytes),totalBytes:bytes.length,sha256:hash,data:btoa(String.fromCharCode(...bytes.slice(offset,offset+stateChunkBytes)))};
+  result=await assembler.accept(chunk);if(offset+stateChunkBytes<bytes.length)assert.equal(result,undefined);
+ }assert.deepEqual(result,snapshot);
+});

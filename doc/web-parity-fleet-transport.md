@@ -39,7 +39,7 @@ P5-03 contribution ledger. No new EN/JA player text ships in this slice.
 [`MixedWire`](../src/FreeTrain.Online.Persistence/MixedWire.cs) and
 [`SaveCodec`](../src/FreeTrain.Online.Persistence/SaveCodec.cs) use explicit DTOs
 shared with the [wire schema](../prototype/protocol/schema.json),
-[Save9 schema](../prototype/protocol/save-v9.schema.json) and generated TypeScript.
+[Save9 schema](../prototype/protocol/historical/save-v9/save-v9.schema.json) and generated TypeScript.
 `RailwayProfile.FleetProfile` supplies exact trusted stock and provider bindings.
 No input installs handlers, assemblies, CLR types or serialized delegates.
 

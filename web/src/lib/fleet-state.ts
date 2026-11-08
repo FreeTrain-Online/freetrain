@@ -4,7 +4,6 @@ import railwayProfile from '../generated/railway-profile.json' with {type:'json'
 import type {Snapshot,FleetPose,Fleet,ContentBinding} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import {WorldSpace,int32} from './map-geometry.ts';
-import {maximumGameMinute} from './game-time.ts';
 import {validFleetRule,maximumLocationRules,maximumControllerRules} from './fleet-controllers.ts';
 type ReadFleet=NonNullable<NonNullable<ReadState['mixed']>['fleet']>;
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
@@ -18,9 +17,9 @@ function pose(s:FleetPose):boolean {
   s.location!==null&&s.heading!==null&&(s.kind==='inside'?s.countdown===null:s.countdown!==null);
 }
 export function validFleet(read:Snapshot):boolean {
- const m=read.mixed!,f=m.fleet,q=m.queue;if(!f)return q===undefined;
+ const m=read.mixed!,f=m.fleet;if(!f)return true;
  if(f.colorTest && (BigInt(f.colorTest.revision)<1n || !profile.colorTemplates.some(t=>equal(t,f.colorTest!.template)) || ![f.colorTest.body,f.colorTest.line1,f.colorTest.line2,f.colorTest.line3].every(c=>c.length===7&&/^#[0-9a-f]{6}$/.test(c))))return false;
- if(!q||f.trains.reduce((n,t)=>n+t.cars.length,0)>1024)return false;
+ if(f.trains.reduce((n,t)=>n+t.cars.length,0)>1024)return false;
  const spatial=new Set(read.entities!.map(e=>e.id)),ids=new Set<string>();
  for(const row of [...f.trains,...f.trains.flatMap(t=>t.cars),...f.groups,...f.controllers]){
   if(ids.has(row.id)||spatial.has(row.id)||BigInt(row.id)>=BigInt(m.nextEntityId))return false;ids.add(row.id);
@@ -77,15 +76,7 @@ export function validFleet(read:Snapshot):boolean {
   }
  }
  if(occupied.size)return false;
- const expected=new Map(m.voxels.filter(v=>v.construction&&v.construction.state<4).map(v=>[`construction/${v.ownerId}/${v.position.x}/${v.position.y}/${v.position.z}`,true]));
- for(const t of f.trains)if(t.state!=='unplaced')expected.set(`train/${t.id}`,false);
- const orders=new Set<string>(),registrations=new Set<string>();let priorMinute=-1n,priorOrder=-1n;
- for(const a of q.pending){const due=BigInt(a.dueMinute),order=BigInt(a.order);
-  if(!expected.has(a.handlerId)||a.registration!==a.order||orders.has(a.order)||registrations.has(a.registration)||order>=BigInt(q.nextOrder)||
-   due<=BigInt(read.tick)||due>maximumGameMinute||due<priorMinute||due===priorMinute&&order<=priorOrder||expected.get(a.handlerId)&&due-BigInt(read.tick)>119n)return false;
-  expected.delete(a.handlerId);orders.add(a.order);registrations.add(a.registration);priorMinute=due;priorOrder=order;
- }
- return expected.size===0;
+ return true;
 }
 
 // A complete fleet replacement in a mixed delta carries deletions atomically.

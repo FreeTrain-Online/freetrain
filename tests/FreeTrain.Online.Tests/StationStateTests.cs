@@ -317,19 +317,19 @@ public class StationStateTests
         }
     }
     [Fact]
-    public void Current_wire_and_save_admission_cannot_silently_drop_detached_station_state()
+    public void Versioned_wire_and_save_preserve_detached_station_state_and_empty_name_sequences()
     {
-        var w=World(Graph([Building()]));
-        var request=new EmptyWorldRequest(WorldCreationProfile.Id,w.Terrain.Name,new(64,24,8),0);
-        var session=new MixedSessionState(new(w,new()),TerrainProvenance.From(request));
-        var error=Assert.Throws<InvalidDataException>(()=>SaveCodec.Write(session));
-        Assert.Equal("stationStateRequiresP6Transport",error.Message);
-        Assert.Throws<InvalidDataException>(()=>MixedWire.ValidateAdmission(session));
-        Assert.Throws<InvalidDataException>(()=>MixedWire.Snapshot(session,1));
-        Assert.Throws<InvalidDataException>(()=>MixedWire.Read(session.Construction));
-        Assert.Throws<InvalidDataException>(()=>MixedWire.RailwayEntities(w));
-        var emptyGraph=new StationGraph(Profile,[],[],nextStationName:4,nextPlatformName:5);
-        Assert.Throws<InvalidDataException>(()=>MixedWire.RailwayEntities(World(emptyGraph)));
-        Assert.Same(w,session.World);
+        foreach(var graph in new[]{Graph([Building()]),new StationGraph(Profile,[],[],nextStationName:4,nextPlatformName:5)})
+        {
+            var w=World(graph);
+            var request=new EmptyWorldRequest(WorldCreationProfile.Id,w.Terrain.Name,new(64,24,8),0);
+            var session=new MixedSessionState(new(w,new()),TerrainProvenance.From(request));
+            var bytes=SaveCodec.Write(session);
+            var loaded=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+            Assert.Equal(bytes,SaveCodec.Write(loaded));
+            Assert.NotNull(MixedWire.Snapshot(session,1).Mixed!.StationGraph);
+            Assert.Equal(graph.NextStationName,loaded.World.Stations!.NextStationName);
+            Assert.Same(w,session.World);
+        }
     }
 }

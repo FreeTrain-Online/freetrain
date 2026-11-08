@@ -276,7 +276,7 @@ public sealed partial class SessionHost : IDisposable
         });
         return await Task.Run(capture);
     }
-    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver, railwayResolver, mixedState?.TrainDispatcher);
+    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver, railwayResolver, mixedState?.TrainDispatcher, mixedState?.StationDispatcher);
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();

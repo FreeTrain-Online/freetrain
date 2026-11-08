@@ -35,7 +35,7 @@ try {
   page.on('websocket',socket=>socket.on('framereceived',frame=>{totalBytes+=new TextEncoder().encode(String(frame.payload)).length;const m=JSON.parse(String(frame.payload));if(m.type==='delta'){const now=performance.now();if(last)intervals.push(now-last);last=now;deltas++;}}));
   await page.goto(serviceUrl+'/');
   await page.getByTestId('connection').filter({hasText:'Connected to game'}).waitFor();
-  const state=await (await page.request.get(serviceUrl+'/api/bootstrap?protocolVersion=7&contentVersion=prototype-content-1')).json();
+  const state=await (await page.request.get(serviceUrl+'/api/bootstrap?protocolVersion=8&contentVersion=prototype-content-1')).json();
   const metrics=async()=>Object.fromEntries((await cdp.send('Performance.getMetrics')).metrics.map(m=>[m.name,m.value]));
   const sampleCpu=async(active:boolean)=>{
     if(active)await page.getByRole('button',{name:'Run',exact:false}).click();

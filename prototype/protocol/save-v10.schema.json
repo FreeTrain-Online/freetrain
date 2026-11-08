@@ -1,0 +1,2409 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canonical reference, packed terrain and mixed railway Save 10",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "saveVersion",
+    "ruleset",
+    "contentVersion",
+    "requiredPacks",
+    "map",
+    "rails",
+    "clock",
+    "paused",
+    "random",
+    "spatial",
+    "revision"
+  ],
+  "properties": {
+    "saveVersion": {
+      "const": 10
+    },
+    "ruleset": {
+      "enum": [
+        "reference-spatial-4",
+        "terrain-state-1",
+        "mixed-railway-1"
+      ]
+    },
+    "contentVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requiredPacks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RequiredPack"
+      },
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "levels",
+        "coordinateSystem"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2048
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2048
+        },
+        "levels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "coordinateSystem": {
+          "const": "hv"
+        }
+      }
+    },
+    "rails": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1024,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "z",
+          "pattern",
+          "entityId"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "z": {
+            "const": 0
+          },
+          "pattern": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "entityId": {
+            "$ref": "#/$defs/EntityId"
+          }
+        }
+      }
+    },
+    "paused": {
+      "type": "boolean"
+    },
+    "clock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absoluteMinute",
+        "nextOrder",
+        "pending"
+      ],
+      "properties": {
+        "absoluteMinute": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "description": "Source minutes, 0 through 1128717404863199; checked by the codec."
+        },
+        "nextOrder": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MixedAction"
+          },
+          "minItems": 0,
+          "maxItems": 65536
+        }
+      }
+    },
+    "random": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "algorithm",
+        "seed",
+        "streams"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "subtractive-55-v1"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "streams": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "state"
+            ],
+            "properties": {
+              "id": {
+                "enum": [
+                  "construction",
+                  "development",
+                  "forest",
+                  "land-selection",
+                  "stadium",
+                  "stock-economy",
+                  "stock-effects",
+                  "stock-tables",
+                  "subsidiaries",
+                  "time-length"
+                ]
+              },
+              "state": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "index",
+                  "values"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 54
+                  },
+                  "values": {
+                    "type": "array",
+                    "minItems": 55,
+                    "maxItems": 55,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483646
+                    },
+                    "contains": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "construction"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "development"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "forest"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "land-selection"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stadium"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-economy"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-effects"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "stock-tables"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "subsidiaries"
+                  }
+                }
+              }
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "const": "time-length"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "spatial": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpatialEntity"
+          },
+          "minItems": 0,
+          "maxItems": 3400000
+        }
+      },
+      "required": [
+        "nextEntityId",
+        "entities"
+      ]
+    },
+    "revision": {
+      "$ref": "#/$defs/Counter"
+    },
+    "packedTerrain": {
+      "$ref": "#/$defs/PackedTerrain"
+    },
+    "mixed": {
+      "$ref": "#/$defs/Mixed"
+    }
+  },
+  "description": "Save 9 only. Validate actual terrain, complete mixed graph, booking, allocator, provenance, clock and random bank before replacement. No migration or regeneration.",
+  "$id": "https://freetrain-online.invalid/save-v10.schema.json",
+  "$defs": {
+    "EntityId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "Counter": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    },
+    "Money": {
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]*)$"
+    },
+    "Position": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "y": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "Definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "contributionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        },
+        "recipeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+        }
+      },
+      "required": [
+        "packId",
+        "contributionId",
+        "recipeId"
+      ]
+    },
+    "VoxelMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "$ref": "#/$defs/Position"
+        },
+        "transparent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "offset",
+        "transparent"
+      ]
+    },
+    "SpatialEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "anchor": {
+          "$ref": "#/$defs/Position"
+        },
+        "footprint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VoxelMember"
+          },
+          "minItems": 1,
+          "maxItems": 65536
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "silentlyReclaimable": {
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/$defs/Money"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "anchor",
+        "footprint",
+        "owned",
+        "silentlyReclaimable",
+        "value"
+      ]
+    },
+    "RequiredPack": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "catalogHash"
+      ]
+    },
+    "TerrainCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ground": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "surface": {
+          "enum": [
+            "natural",
+            "cut",
+            "terrace"
+          ]
+        }
+      },
+      "required": [
+        "ground",
+        "surface"
+      ]
+    },
+    "TerrainTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "sprite": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1023
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "sprite"
+      ]
+    },
+    "Forest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "trees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainTree"
+          },
+          "maxItems": 6
+        }
+      },
+      "required": [
+        "definition",
+        "trees"
+      ]
+    },
+    "TerrainOccupant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "kind": {
+          "enum": [
+            "mountain",
+            "terrace",
+            "creek"
+          ]
+        },
+        "ne": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "se": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "sw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "nw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "forest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Forest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "creekConnections": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "entityId",
+        "kind",
+        "ne",
+        "se",
+        "sw",
+        "nw",
+        "forest",
+        "creekConnections"
+      ]
+    },
+    "TerrainProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "terrain-generation-1"
+        },
+        "source": {
+          "enum": [
+            "empty",
+            "heightmap",
+            "generated"
+          ]
+        },
+        "requestHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "requestJson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "profile",
+        "source",
+        "requestHash",
+        "requestJson"
+      ]
+    },
+    "Terrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "waterLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "constructionMode": {
+          "type": "boolean"
+        },
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "provenance": {
+          "$ref": "#/$defs/TerrainProvenance"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainCell"
+          },
+          "maxItems": 1700000
+        },
+        "occupants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerrainOccupant"
+          },
+          "maxItems": 3400000
+        }
+      },
+      "required": [
+        "name",
+        "waterLevel",
+        "constructionMode",
+        "geometryRevision",
+        "nextEntityId",
+        "provenance",
+        "cells",
+        "occupants"
+      ]
+    },
+    "PackedTerrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "waterLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 63
+        },
+        "constructionMode": {
+          "type": "boolean"
+        },
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "provenance": {
+          "$ref": "#/$defs/TerrainProvenance"
+        },
+        "encoding": {
+          "const": "terrain-packed-1"
+        },
+        "definitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Definition"
+          },
+          "maxItems": 64,
+          "uniqueItems": true
+        },
+        "cells": {
+          "type": "string",
+          "maxLength": 357913944,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+        },
+        "occupantCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3400000
+        },
+        "occupants": {
+          "type": "string",
+          "maxLength": 357913944,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+        }
+      },
+      "required": [
+        "name",
+        "waterLevel",
+        "constructionMode",
+        "geometryRevision",
+        "nextEntityId",
+        "provenance",
+        "encoding",
+        "definitions",
+        "cells",
+        "occupantCount",
+        "occupants"
+      ]
+    },
+    "Corners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ne": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "se": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "sw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "nw": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "ne",
+        "se",
+        "sw",
+        "nw"
+      ]
+    },
+    "RailComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "pattern": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 59
+        },
+        "variant": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "terrainBackup": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Corners"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direction": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "controllerId": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "definition",
+        "pattern",
+        "variant",
+        "terrainBackup",
+        "direction",
+        "controllerId"
+      ]
+    },
+    "RoadComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "edges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "definition",
+        "edges"
+      ]
+    },
+    "AccessoryComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "direction": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        }
+      },
+      "required": [
+        "definition",
+        "direction"
+      ]
+    },
+    "CarComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "trainId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "carId": {
+          "$ref": "#/$defs/EntityId"
+        }
+      },
+      "required": [
+        "definition",
+        "trainId",
+        "carId"
+      ]
+    },
+    "Traffic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rail": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RailComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "road": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoadComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accessory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AccessoryComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "car": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CarComponent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "platform": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rail",
+        "road",
+        "accessory",
+        "car",
+        "platform"
+      ]
+    },
+    "RailwayVoxel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "kind": {
+          "enum": [
+            "traffic",
+            "slopefiller",
+            "slopesupport",
+            "slopewall",
+            "pier",
+            "stationary"
+          ]
+        },
+        "traffic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Traffic"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sprite": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "drawGroundBelow": {
+          "type": "boolean"
+        },
+        "drawGroundAbove": {
+          "type": "boolean"
+        },
+        "supportedOwnerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "construction": {
+          "$ref": "#/$defs/ConstructionCell"
+        }
+      },
+      "required": [
+        "position",
+        "ownerId",
+        "kind",
+        "traffic",
+        "definition",
+        "sprite",
+        "drawGroundBelow",
+        "drawGroundAbove",
+        "supportedOwnerId"
+      ]
+    },
+    "SlopeOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "climb": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        }
+      },
+      "required": [
+        "entityId",
+        "climb"
+      ]
+    },
+    "AccountTransaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "worldRevision": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "absoluteMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "genre": {
+          "enum": [
+            "{AC30BB0B-044C-4784-A83D-FCB1F60B3CF2}",
+            "{CC00A6D1-D078-4D3C-AFB2-EDC6CB9F4CB3}",
+            "{2A666F1A-9F40-4F67-98F4-DEAC1E55296D}",
+            "{C0A9ABA5-801F-4AA6-93EA-6FF563C2B407}"
+          ]
+        },
+        "expenditure": {
+          "$ref": "#/$defs/Counter"
+        },
+        "topUps": {
+          "$ref": "#/$defs/Counter"
+        },
+        "cashAfter": {
+          "$ref": "#/$defs/Counter"
+        },
+        "revenue": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "sequence",
+        "worldRevision",
+        "absoluteMinute",
+        "operation",
+        "genre",
+        "expenditure",
+        "topUps",
+        "cashAfter"
+      ]
+    },
+    "ConstructionAccounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "initialCash": {
+          "$ref": "#/$defs/Money"
+        },
+        "bankruptcyIncrement": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AccountTransaction"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "initialCash",
+        "bankruptcyIncrement",
+        "transactions"
+      ]
+    },
+    "Mixed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "geometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "nextEntityId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "voxels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RailwayVoxel"
+          },
+          "maxItems": 8192
+        },
+        "slopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SlopeOwner"
+          },
+          "maxItems": 1024
+        },
+        "accounts": {
+          "$ref": "#/$defs/ConstructionAccounts"
+        },
+        "speedLimits": {
+          "$ref": "#/$defs/SpeedLimits"
+        },
+        "fleet": {
+          "$ref": "#/$defs/Fleet"
+        },
+        "queue": {
+          "$ref": "#/$defs/MixedQueue"
+        },
+        "stationGraph": {
+          "$ref": "#/$defs/StationGraph"
+        }
+      },
+      "required": [
+        "geometryRevision",
+        "nextEntityId",
+        "voxels",
+        "slopes",
+        "accounts"
+      ],
+      "dependencies": {
+        "fleet": [
+          "queue"
+        ],
+        "stationGraph": [
+          "queue"
+        ],
+        "queue": {
+          "anyOf": [
+            {
+              "properties": {
+                "fleet": {}
+              },
+              "required": [
+                "fleet"
+              ]
+            },
+            {
+              "properties": {
+                "stationGraph": {}
+              },
+              "required": [
+                "stationGraph"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "ConstructionCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "ground": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 6
+        },
+        "needsDoor": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "ground",
+        "needsDoor"
+      ]
+    },
+    "SpeedLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "low": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        },
+        "medium": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        },
+        "fast": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "low",
+        "medium",
+        "fast"
+      ]
+    },
+    "ContentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contributionId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "packId",
+        "version",
+        "catalogHash",
+        "contributionId"
+      ]
+    },
+    "FleetPose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "unplaced",
+            "inside",
+            "outside"
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 7
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "countdown": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "location",
+        "heading",
+        "countdown"
+      ]
+    },
+    "FleetCar": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "originalIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "state": {
+          "$ref": "#/$defs/FleetPose"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "originalIndex",
+        "definition",
+        "state"
+      ]
+    },
+    "FleetTrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "definition": {
+          "$ref": "#/$defs/ContentBinding"
+        },
+        "groupId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetCar"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "isReversed": {
+          "type": "boolean"
+        },
+        "state": {
+          "enum": [
+            "unplaced",
+            "moving",
+            "stoppingatstation",
+            "stoppingatsignal",
+            "emergencystopping"
+          ]
+        },
+        "passengers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "boardingOrigin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FleetPose"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forwarding": {
+          "type": "boolean"
+        },
+        "moveCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "stopCallCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "purchaseMinute": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "definition",
+        "groupId",
+        "controllerId",
+        "cars",
+        "isReversed",
+        "state",
+        "passengers",
+        "boardingOrigin",
+        "forwarding",
+        "moveCount",
+        "stopCallCount",
+        "purchaseMinute"
+      ]
+    },
+    "FleetGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "parentId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "minItems": 0,
+          "maxItems": 384,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "parentId",
+        "controllerId",
+        "members"
+      ]
+    },
+    "FleetHarbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "kind": {
+          "enum": [
+            "pass",
+            "fixed",
+            "daily"
+          ]
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "reverse": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "location",
+        "kind",
+        "minutes",
+        "reverse"
+      ]
+    },
+    "FleetController": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "kind": {
+          "enum": [
+            "simple",
+            "delegation",
+            "timetable"
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContentBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "harbors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetHarbor"
+          },
+          "minItems": 0,
+          "maxItems": 8192
+        },
+        "junctions": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/FleetJunction"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "kind",
+        "provider",
+        "harbors"
+      ]
+    },
+    "Fleet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootGroupId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "trains": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetTrain"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetGroup"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "controllers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FleetController"
+          },
+          "minItems": 2,
+          "maxItems": 256
+        },
+        "colorTest": {
+          "$ref": "#/$defs/FleetColorTest"
+        }
+      },
+      "required": [
+        "rootGroupId",
+        "trains",
+        "groups",
+        "controllers"
+      ]
+    },
+    "MixedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "registration": {
+          "$ref": "#/$defs/Counter"
+        },
+        "order": {
+          "$ref": "#/$defs/Counter"
+        },
+        "dueMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "handlerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "interval": {
+          "enum": [
+            "0",
+            "60",
+            "1440"
+          ]
+        }
+      },
+      "required": [
+        "registration",
+        "order",
+        "dueMinute",
+        "handlerId",
+        "interval"
+      ]
+    },
+    "MixedQueue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextOrder": {
+          "$ref": "#/$defs/Counter"
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MixedAction"
+          },
+          "minItems": 0,
+          "maxItems": 65536
+        }
+      },
+      "required": [
+        "nextOrder",
+        "pending"
+      ]
+    },
+    "FleetJunction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "defaultRoute": {
+          "enum": [
+            "straight",
+            "curve"
+          ]
+        }
+      },
+      "required": [
+        "location",
+        "defaultRoute"
+      ]
+    },
+    "FleetColorTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "template": {
+          "$ref": "#/$defs/Definition"
+        },
+        "body": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line1": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line2": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        },
+        "line3": {
+          "type": "string",
+          "pattern": "^#[0-9a-f]{6}$",
+          "minLength": 7,
+          "maxLength": 7
+        }
+      },
+      "required": [
+        "revision",
+        "template",
+        "body",
+        "line1",
+        "line2",
+        "line3"
+      ]
+    },
+    "StationGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextStationName": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "nextPlatformName": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "buildings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationBuilding"
+          },
+          "maxItems": 8192
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationPlatform"
+          },
+          "maxItems": 8192
+        },
+        "passages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationPassage"
+          },
+          "maxItems": 8192
+        },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationListener"
+          },
+          "maxItems": 8192
+        },
+        "listenerMemberships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationListenerMembership"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "nextStationName",
+        "nextPlatformName",
+        "buildings",
+        "platforms",
+        "passages",
+        "listeners",
+        "listenerMemberships"
+      ]
+    },
+    "StationBuilding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        },
+        "passengers": {
+          "$ref": "#/$defs/StationPassengers"
+        },
+        "imports": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "exports": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "trains": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "hourTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dayTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "location",
+        "name",
+        "children",
+        "passengers",
+        "imports",
+        "exports",
+        "trains",
+        "hourTimer",
+        "dayTimer"
+      ]
+    },
+    "StationPlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "kind": {
+          "enum": [
+            "thin",
+            "wide"
+          ]
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "roof": {
+          "type": "boolean"
+        },
+        "lane0": {
+          "type": "boolean"
+        },
+        "lane1": {
+          "type": "boolean"
+        },
+        "bell": {
+          "$ref": "#/$defs/Definition"
+        },
+        "hostId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        },
+        "yards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformYard"
+          },
+          "maxItems": 8192
+        },
+        "dayTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "location",
+        "direction",
+        "length",
+        "name",
+        "roof",
+        "lane0",
+        "lane1",
+        "bell",
+        "hostId",
+        "children",
+        "yards",
+        "dayTimer"
+      ]
+    },
+    "StationPassage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trafficOwnerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "material": {
+          "enum": [
+            "concrete",
+            "brown",
+            "green"
+          ]
+        }
+      },
+      "required": [
+        "trafficOwnerId",
+        "location",
+        "direction",
+        "material"
+      ]
+    },
+    "PlatformOutlook": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "plain",
+            "passage",
+            "stair"
+          ]
+        },
+        "material": {
+          "enum": [
+            "concrete",
+            "brown",
+            "green"
+          ]
+        },
+        "bridge": {
+          "type": "boolean"
+        },
+        "upward": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "material",
+        "bridge",
+        "upward"
+      ]
+    },
+    "PlatformYard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trafficOwnerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "lane": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8191
+        },
+        "roof": {
+          "type": "boolean"
+        },
+        "outlook": {
+          "$ref": "#/$defs/PlatformOutlook"
+        }
+      },
+      "required": [
+        "trafficOwnerId",
+        "location",
+        "lane",
+        "index",
+        "roof",
+        "outlook"
+      ]
+    },
+    "StationLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "today": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "yesterday": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "thisWeek": {
+          "type": "number",
+          "minimum": 0
+        },
+        "lastWeekPerDay": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "today",
+        "yesterday",
+        "thisWeek",
+        "lastWeekPerDay"
+      ]
+    },
+    "StationPassengers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gone": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "accumulatedLoaded": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "accumulatedUnloaded": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "gone",
+        "accumulatedLoaded",
+        "accumulatedUnloaded"
+      ]
+    },
+    "StationListener": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "providerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "providerId",
+        "stations"
+      ]
+    },
+    "StationListenerMembership": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stationId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "stationId",
+        "providers"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "ruleset": {
+            "const": "mixed-railway-1"
+          }
+        },
+        "required": [
+          "ruleset"
+        ]
+      },
+      "then": {
+        "required": [
+          "packedTerrain",
+          "mixed"
+        ],
+        "properties": {
+          "contentVersion": {
+            "const": "mixed-railway-content-1"
+          },
+          "rails": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "spatial": {
+            "type": "object",
+            "properties": {
+              "entities": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/SpatialEntity"
+                },
+                "maxItems": 8192
+              }
+            }
+          },
+          "packedTerrain": {
+            "$ref": "#/$defs/PackedTerrain"
+          },
+          "mixed": {
+            "$ref": "#/$defs/Mixed"
+          },
+          "clock": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/MixedAction"
+                },
+                "minItems": 0,
+                "maxItems": 65536
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "if": {
+          "properties": {
+            "ruleset": {
+              "const": "terrain-state-1"
+            }
+          },
+          "required": [
+            "ruleset"
+          ]
+        },
+        "then": {
+          "required": [
+            "packedTerrain"
+          ],
+          "properties": {
+            "rails": {
+              "maxItems": 0,
+              "type": "array"
+            },
+            "contentVersion": {
+              "const": "terrain-content-1"
+            },
+            "packedTerrain": {
+              "$ref": "#/$defs/PackedTerrain"
+            },
+            "spatial": {
+              "type": "object",
+              "properties": {
+                "entities": {
+                  "type": "array",
+                  "maxItems": 0
+                }
+              }
+            },
+            "mixed": false
+          }
+        },
+        "else": {
+          "properties": {
+            "rails": {
+              "minItems": 8,
+              "type": "array"
+            },
+            "revision": {
+              "const": "0"
+            },
+            "contentVersion": {
+              "const": "reference-spatial-content-2"
+            },
+            "spatial": {
+              "type": "object",
+              "properties": {
+                "entities": {
+                  "type": "array",
+                  "minItems": 8
+                }
+              }
+            },
+            "packedTerrain": false,
+            "mixed": false
+          }
+        },
+        "properties": {
+          "clock": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

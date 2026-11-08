@@ -22,12 +22,18 @@ public sealed record StationPlatform(long Id, long Revision, PlatformKind Kind, 
     long? HostId, ImmutableArray<long> Children, ImmutableArray<PlatformYard> Yards, ScheduledAction? DayTimer = null);
 public sealed record StationPassage(long TrafficOwnerId, Location Location, Heading Direction, PassageMaterial Material);
 
+// Source catchment edges are deliberately asymmetric (STATION-D003).
+public sealed record StationListener(long ProviderId, ImmutableArray<long> Stations);
+public sealed record StationListenerMembership(long StationId, ImmutableArray<long> Providers);
+
 public sealed class StationGraph
 {
     public StationProfile Profile { get; }
     public ImmutableArray<StationBuilding> Buildings { get; }
     public ImmutableArray<StationPlatform> Platforms { get; }
     public ImmutableArray<StationPassage> Passages { get; }
+    public ImmutableArray<StationListener> Listeners { get; }
+    public ImmutableArray<StationListenerMembership> ListenerMemberships { get; }
     public int NextStationName { get; }
     public int NextPlatformName { get; }
     public bool IsEmpty => Buildings.IsEmpty && Platforms.IsEmpty && Passages.IsEmpty;
@@ -35,20 +41,25 @@ public sealed class StationGraph
     private readonly FrozenDictionary<long, StationPlatform> platforms;
     private readonly FrozenDictionary<long, long?> resolved;
     private readonly FrozenDictionary<long, StationPassage> passages;
+    private readonly FrozenDictionary<long, StationListener> listeners;
     public IEnumerable<(long Id, long Revision)> Identities => Buildings.Select(b => (b.Id,b.Revision)).Concat(Platforms.Select(p => (p.Id,p.Revision)));
     public StationBuilding Building(long id) => buildings.TryGetValue(id,out var b) ? b : throw new ArgumentException("Unknown service station.");
     public StationPlatform Platform(long id) => platforms.TryGetValue(id,out var p) ? p : throw new ArgumentException("Unknown platform.");
     public StationBuilding? HostStation(long platformId) => resolved[platformId] is {} id ? buildings[id] : null;
+    internal ImmutableArray<long> ListenerStations(long providerId) => listeners.GetValueOrDefault(providerId)?.Stations ?? [];
     internal StationPassage? Passage(long trafficOwnerId) => passages.GetValueOrDefault(trafficOwnerId);
     internal bool IsSpatialOwner(long id) => buildings.ContainsKey(id) || platforms.TryGetValue(id,out var p) && p.Kind == PlatformKind.Wide;
 
     public StationGraph(StationProfile profile, IEnumerable<StationBuilding> buildings, IEnumerable<StationPlatform> platforms,
-        IEnumerable<StationPassage>? passages = null, int nextStationName = 1, int nextPlatformName = 1)
+        IEnumerable<StationPassage>? passages = null, int nextStationName = 1, int nextPlatformName = 1,
+        IEnumerable<StationListener>? listeners = null, IEnumerable<StationListenerMembership>? listenerMemberships = null)
     {
         ArgumentNullException.ThrowIfNull(profile); Profile = profile;
         Buildings = buildings.Take(SpatialIndex.MaximumOccupiedCells+1).ToImmutableArray();
         Platforms = platforms.Take(SpatialIndex.MaximumOccupiedCells+1).ToImmutableArray();
         Passages = (passages ?? []).Take(SpatialIndex.MaximumOccupiedCells+1).ToImmutableArray();
+        Listeners = (listeners ?? []).Take(SpatialIndex.MaximumOccupiedCells+1).ToImmutableArray();
+        ListenerMemberships = (listenerMemberships ?? []).Take(SpatialIndex.MaximumOccupiedCells+1).ToImmutableArray();
         NextStationName = nextStationName; NextPlatformName = nextPlatformName;
         if (nextStationName < 1 || nextPlatformName < 1 || Buildings.Length + (long)Platforms.Length + Passages.Length > SpatialIndex.MaximumOccupiedCells ||
             Buildings.Any(b => b == null) || Platforms.Any(p => p == null) || Passages.Any(p => p == null))
@@ -124,6 +135,17 @@ public sealed class StationGraph
         if (timers.Select(t => t.Registration).Distinct().Count() != timers.Length || timers.Select(t => t.Order).Distinct().Count() != timers.Length)
             throw new ArgumentException("Duplicate station timer handle/order.");
         this.passages = Passages.ToFrozenDictionary(p => p.TrafficOwnerId);
+        var listenerIds = Listeners.Where(l => l != null).Select(l => l.ProviderId).ToHashSet();
+        if (Listeners.Length > SpatialIndex.MaximumOccupiedCells || ListenerMemberships.Length > Buildings.Length ||
+            Listeners.Any(l => l == null || l.ProviderId < 1 || l.Stations.IsDefault || l.Stations.Length > 4 ||
+                l.Stations.Distinct().Count() != l.Stations.Length || l.Stations.Any(id => !this.buildings.ContainsKey(id))) ||
+            Listeners.Select(l => l.ProviderId).Distinct().Count() != Listeners.Length ||
+            ListenerMemberships.Any(l => l == null || !this.buildings.ContainsKey(l.StationId) || l.Providers.IsDefault ||
+                l.Providers.Distinct().Count() != l.Providers.Length || l.Providers.Any(id => !listenerIds.Contains(id))) ||
+            ListenerMemberships.Select(l => l.StationId).Distinct().Count() != ListenerMemberships.Length)
+            throw new ArgumentException("Invalid ordered station listeners.");
+        this.listeners = Listeners.ToFrozenDictionary(l => l.ProviderId);
+
     }
     private static void Name(string name)
     {
@@ -150,6 +172,8 @@ public sealed class StationGraph
     {
         if (world.Profile.Stations != Profile) throw new ArgumentException("Station profile mismatch.");
         var entities = world.Spatial.Entities.ToDictionary(e => e.Id);
+        if (Listeners.Any(l => !entities.ContainsKey(l.ProviderId) || IsSpatialOwner(l.ProviderId)))
+            throw new ArgumentException("Dangling station listener provider.");
         var fleetIds = world.Fleet?.Identities.Select(i => i.Id).ToHashSet() ?? [];
         if (Identities.Any(i => i.Id >= world.Spatial.NextEntityId || fleetIds.Contains(i.Id))) throw new ArgumentException("Station allocator collision.");
         void Owner(long id, long revision, Location location, DefinitionReference definition, Footprint footprint)
@@ -195,6 +219,14 @@ public sealed class StationGraph
         if (Profile != previous.Profile || NextStationName < previous.NextStationName || NextPlatformName < previous.NextPlatformName)
             throw new ArgumentException("Changed station profile/name allocator.");
         var old = previous.Buildings.Select(b => (b.Id,b.Revision,Value:(object)b)).Concat(previous.Platforms.Select(p => (p.Id,p.Revision,Value:(object)p))).ToDictionary(m => m.Id);
+        foreach (var b in Buildings)
+        {
+            var before = previous.Buildings.FirstOrDefault(a => a.Id == b.Id);
+            if (before != null && b.Revision == before.Revision &&
+                !(ListenerMemberships.FirstOrDefault(l => l.StationId == b.Id)?.Providers ?? []).SequenceEqual(
+                    previous.ListenerMemberships.FirstOrDefault(l => l.StationId == b.Id)?.Providers ?? []))
+                throw new ArgumentException("Station listener changes require revision.");
+        }
         foreach (var m in Buildings.Select(b => (b.Id,b.Revision,Value:(object)b)).Concat(Platforms.Select(p => (p.Id,p.Revision,Value:(object)p))))
         {
             if (!old.TryGetValue(m.Id,out var before))

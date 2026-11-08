@@ -127,7 +127,7 @@ test('Japanese narrow purchase and observer catalog browse preserve controls at 
 });
 
 test('placed inventory requires withdrawal before sale and rename drafts detect a peer edit',async({page,browser,baseURL})=>{
-  const before=await state(page),save=readFileSync('../prototype/protocol/saves/fleet-v9.json');
+  const before=await state(page),save=readFileSync('../prototype/protocol/saves/fleet-v10.json');
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:save})).ok()).toBe(true);
   await page.goto('/');await ready(page);await openPanel(page,'fleet');await page.getByRole('button',{name:'Owned stock',exact:false}).click();
   await page.locator('.catalog-item-main').first().click();await expect(page.getByText('Withdraw this train before selling.')).toBeVisible();
@@ -143,7 +143,7 @@ test('placed inventory requires withdrawal before sale and rename drafts detect 
 
  test('reference worlds expose unavailable purchase diagnostics while retaining local stock browsing',async({page})=>{
   const initial=await state(page);
-  const save=readFileSync('../prototype/protocol/saves/reference-v9.json');
+  const save=readFileSync('../prototype/protocol/saves/reference-v10.json');
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:save})).ok()).toBe(true);
   await page.goto('/');await ready(page);await openPanel(page,'fleet');
   await expect(page.getByText('Rolling stock is unavailable for this world or selected pack.')).toBeVisible();

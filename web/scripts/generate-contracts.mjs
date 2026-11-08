@@ -118,3 +118,11 @@ const stockCatalog=catalog.contributions.filter(c=>c.type==='train').map(c=>{
 });
 const stockOutput=new URL('../src/generated/stock-catalog.json',import.meta.url),stockJson=JSON.stringify(stockCatalog,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(stockOutput,'utf8')!==stockJson)throw new Error('Generated stock catalog is stale.');}else await writeFile(stockOutput,stockJson);
+
+// Station geometry admission data; no tool activation or rendering fallback.
+const stationProfile={definitions:catalog.contributions.filter(c=>c.type==='station').map(c=>{
+ const f=catalog.renderRecipes.find(r=>r.id===c.id).fields;
+ return {reference:definition(c.id),sizeX:f.size[0],sizeY:f.size[1],height:Number(f.height)};
+}),bells:catalog.contributions.filter(c=>c.type==='trainDepartureBell').map(c=>definition(c.id))};
+const stationOutput=new URL('../src/generated/station-profile.json',import.meta.url),stationJson=JSON.stringify(stationProfile,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(stationOutput,'utf8')!==stationJson)throw new Error('Generated station profile is stale.');}else await writeFile(stationOutput,stationJson);

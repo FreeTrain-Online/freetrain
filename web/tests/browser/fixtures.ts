@@ -71,7 +71,7 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
       // a connected peer; checkpoint restoration also avoids generating a large
       // world that these tests immediately replace. Startup has no checkpoint.
       const baseline = project === 'canonical'
-        ? readFileSync('../prototype/protocol/saves/terrain-v9.json') : undefined;
+        ? readFileSync('../prototype/protocol/saves/terrain-v10.json') : undefined;
       if (baseline) writeFileSync(join(directory, 'checkpoint.json'), baseline);
       const backendArgs = [
         resolve(`../src/FreeTrain.Online.Server/bin/${configuration}/net10.0/FreeTrain.Online.Server.dll`),

@@ -25,7 +25,7 @@ public class TerrainPreviewTests
     [Fact]
     public void Retained_save_overview_matches_actual_quarters_water_and_occupied_land()
     {
-        var world = SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves", "terrain-v9.json")), TerrainProfiles.Resolve).Terrain!.World;
+        var world = SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Saves", "terrain-v10.json")), TerrainProfiles.Resolve).Terrain!.World;
         var overview = TerrainPreview.Capture(world);
         var samples = Convert.FromBase64String(overview.Samples);
         int wet = 0, forests = 0, minimum = int.MaxValue, maximum = 0;

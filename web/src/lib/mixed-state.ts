@@ -1,3 +1,4 @@
+import {validStations,validMixedQueue} from './station-state.ts';
 import {validFleet} from './fleet-state.ts';
 import profile from '../generated/railway-profile.json' with {type:'json'};
 import ports from '../../../src/FreeTrain.Online.Content/reference-spatial.json' with {type:'json'};
@@ -31,7 +32,7 @@ export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
  if(!m||!t||!read.entities||read.tracks.length||read.trains.length||read.stations.length||read.buildings.length||
     BigInt(m.geometryRevision)>BigInt(read.revision)||BigInt(m.geometryRevision)<BigInt(t.geometryRevision)||BigInt(m.nextEntityId)<BigInt(t.nextEntityId))return false;
  if(previous&&Object.isFrozen(previous)&&validatedMixed.has(previous)&&sameMovingGeometry(previous,read)) {
-  if(BigInt(read.tick)>maximumGameMinute||!validMixedAccounts(read)||!validFleet(read))return false;
+  if(BigInt(read.tick)>maximumGameMinute||!validMixedAccounts(read)||!validFleet(read)||!validStations(read)||!validMixedQueue(read))return false;
   shareTerrainValidation(previous,read);validatedMixed.add(read);return true;
  }
  const terrainIds=new Set(t.occupants.map(o=>o.entityId)),terrainEntities=read.entities.filter(e=>terrainIds.has(e.id));
@@ -65,6 +66,7 @@ export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
  const slopes=new Map(m.slopes.map(s=>[s.entityId,s]));if(slopes.size!==m.slopes.length)return false;
  for(const e of read.entities){
   if(terrainIds.has(e.id))continue;
+  if(m.stationGraph?.buildings.some(b=>b.id===e.id)||m.stationGraph?.platforms.some(p=>p.kind==='wide'&&p.id===e.id))continue;
   const group=owners.get(e.id),s=slopes.get(e.id);
   if(!group||group.length!==e.footprint.length||e.owned!==(group[0].construction===undefined)||e.silentlyReclaimable||e.value!=='0')return false;
   for(const f of e.footprint){const v=voxels.get(key({x:e.anchor.x+f.offset.x,y:e.anchor.y+f.offset.y,z:e.anchor.z+f.offset.z}));if(v?.ownerId!==e.id||group[0].kind!=='stationary'&&!f.transparent)return false;}
@@ -122,13 +124,13 @@ export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
    }
   }
   if(c.road&&binding(c.road.definition)?.handler!=='road'||c.car&&!m.fleet&&binding(c.car.definition)?.handler!=='car'||
-     c.platform&&(!r||binding(c.platform)?.handler!=='platform'))return false;
+     c.platform&&(!r||!m.stationGraph?.platforms.some(p=>p.yards.some(y=>y.trafficOwnerId===v.ownerId))))return false;
   if(c.car){if(cars.has(c.car.carId))return false;cars.add(c.car.carId);}
   if(c.accessory){const h=binding(c.accessory.definition)?.handler;
    if(h!=='pole'&&h!=='crossing'||h==='pole'&&c.accessory.direction>1||h==='crossing'&&(!r||!c.road||!(r.pattern===10&&(c.road.edges&68)===68||r.pattern===4&&(c.road.edges&17)===17)))return false;
   }
  }
- if(!validMixedAccounts(read)||!validFleet(read))return false;
+ if(!validMixedAccounts(read)||!validFleet(read)||!validStations(read)||!validMixedQueue(read))return false;
  validatedMixed.add(read);return true;
 }
 function validMixedAccounts(read:Snapshot):boolean {

@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 7;
+    public const int Version = 8;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
     public const string MixedRuleset = "mixed-railway-1";
@@ -277,7 +277,8 @@ public sealed record ConstructionAccountsRead(long InitialCash, long BankruptcyI
 public sealed record MixedRead(long GeometryRevision, long NextEntityId, RailwayVoxelRead[] Voxels, SlopeOwnerRead[] Slopes,
     ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRead? Fleet = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedQueueRead? Queue = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedQueueRead? Queue = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StationGraphRead? StationGraph = null);
 public sealed record SpeedLimitsRead(PositionRead[] Low, PositionRead[] Medium, PositionRead[] Fast);
 
 // Explicit data-only fleet contract. IDs/counters use the canonical Int64 converter.
@@ -310,3 +311,20 @@ public sealed record TrainMotionCarRead(long CarId, TrainMotionPoseRead From, Tr
 // Empty Cars marks a train discontinuity (tunnel/reversal/Outside).
 public sealed record TrainMotionStepRead(long Sequence, long Minute, long TrainId, int Duration, TrainMotionCarRead[] Cars);
 public sealed record TrainMotionRead(long Sequence, bool Reset, TrainMotionStepRead[] Steps);
+
+// Canonical P6 state. Array order is durable, including host children and yards.
+public sealed record StationLogRead(int Today, int Yesterday, double ThisWeek, double LastWeekPerDay);
+public sealed record StationPassengersRead(int Gone, int AccumulatedLoaded, int AccumulatedUnloaded);
+public sealed record StationBuildingRead(long Id, long Revision, DefinitionRead Definition, PositionRead Location,
+    string Name, long[] Children, StationPassengersRead Passengers, StationLogRead Imports, StationLogRead Exports,
+    StationLogRead Trains, MixedActionRead? HourTimer, MixedActionRead? DayTimer);
+public sealed record PlatformOutlookRead(string Kind, string Material, bool Bridge, bool Upward);
+public sealed record PlatformYardRead(long TrafficOwnerId, PositionRead Location, int Lane, int Index, bool Roof, PlatformOutlookRead Outlook);
+public sealed record StationPlatformRead(long Id, long Revision, string Kind, PositionRead Location, int Direction,
+    int Length, string Name, bool Roof, bool Lane0, bool Lane1, DefinitionRead Bell, long? HostId,
+    long[] Children, PlatformYardRead[] Yards, MixedActionRead? DayTimer);
+public sealed record StationPassageRead(long TrafficOwnerId, PositionRead Location, int Direction, string Material);
+public sealed record StationGraphRead(int NextStationName, int NextPlatformName, StationBuildingRead[] Buildings,
+    StationPlatformRead[] Platforms, StationPassageRead[] Passages, StationListenerRead[] Listeners, StationListenerMembershipRead[] ListenerMemberships);
+public sealed record StationListenerRead(long ProviderId, long[] Stations);
+public sealed record StationListenerMembershipRead(long StationId, long[] Providers);

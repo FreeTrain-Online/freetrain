@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
-const save=readFileSync('../prototype/protocol/saves/mixed-v9.json');
+const save=readFileSync('../prototype/protocol/saves/mixed-v10.json');
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 async function replace(page:Page,data:Buffer) {const before=await canonicalState(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data})).ok()).toBe(true);}
 async function point(page:Page,x:number,y:number) {return page.locator('canvas').evaluate((el,p)=>{

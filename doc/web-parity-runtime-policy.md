@@ -1,11 +1,11 @@
-# Runtime save policy — updated 3 November 2026
+# Runtime save policy — updated 8 November 2026
 
 **Owner direction:** Online prototype Save 1 is unsupported. Do not import,
 convert, continue or write it, or relabel its payload as a new format. Historical
 P0 compatibility requirements are superseded. Desktop ExAV imports remain P10 work.
 **Owner direction, current-format iteration:** support only the current canonical
 save format while rapidly implementing slices without a save-game corpus.
-Saves 2/3/4/5/6/7/8 are unsupported; do not parse, upgrade or convert them. Preserve version
+Saves 2/3/4/5/6/7/8/9 are unsupported; do not parse, upgrade or convert them. Preserve version
 checks and rejected-file/current-world protection. Add migrations when saves need
 to be retained. The [decision record](parity/runtime-decisions.json) preserves these policies.
 
@@ -16,7 +16,7 @@ and [P1-03](web-parity-random.md) adds versioned random streams.
 [P3-04](web-parity-terrain-transport.md) adds actual terrain, realized vegetation,
 persisted authoring mode/provenance.
 [P3-16a capacity](web-parity-map-capacity.md) packs the actual state and introduces **Save 7**.
-[P5-05 fleet transport](web-parity-fleet-transport.md) advances the current contract to **Save9/protocol7**. Only Save9 is read and written. Full gameplay and complete-world persistence remain with P2–P10.
+[P5-05 fleet transport](web-parity-fleet-transport.md) advances the current contract to **Save9/protocol7**. P6-05 subsequently advances the current contract. Full gameplay and complete-world persistence remain with P2–P10.
 [P5-06 trading](web-parity-fleet-trading.md) adds optional zero-default transaction
 revenue to both current schemas and decoders; existing expenditure-only entries
 and format/protocol numbers remain unchanged.
@@ -24,6 +24,8 @@ and format/protocol numbers remain unchanged.
 [P5-19 basic TAT](web-parity-basic-tat.md) adds optional location-keyed junction
 settings to Save9/protocol7. An absent array means empty; writers omit empty
 arrays, preserving existing no-junction payloads. Format/protocol numbers remain unchanged.
+
+[P6-05 station transport](web-parity-station-transport.md) advances the current contract to **Save10/protocol8**. Only Save10 is read and written. Exact station/platform hosts, listener edges, logs and repeated timers are durable; constructing, presentation and passenger slices remain open.
 
 ## Current behavior
 
@@ -35,7 +37,7 @@ arrays, preserving existing no-junction payloads. Format/protocol numbers remain
   starts a fresh canonical world. Rejected files are never rewritten: automatic
   and shutdown checkpoint attempts are disabled for that process, and explicit
   checkpoint writes fail. Named slots and downloads can save the fresh world.
-- Valid Save9 uploads are checked before the browser offers replacement confirmation.
+- Valid Save10 uploads are checked before the browser offers replacement confirmation.
   Confirmed load joins the authority FIFO and rechecks Owner role and expected
   epoch. Success advances the epoch and publishes a full coherent snapshot (bounded chunks for large state); queued requests
   for the old epoch become stale. Earlier formats return `incompatibleSave`; no upgrade parser is retained.
@@ -43,9 +45,9 @@ arrays, preserving existing no-junction payloads. Format/protocol numbers remain
   the canonical codec. The explicit historical regression harness cannot write
   saves or accept a canonical replacement into a prototype host.
 
-The wire uses protocol7. Default identity and exact pack hash are in
+The wire uses protocol8. Default identity and exact pack hash are in
 [`canonical-profile.json`](../prototype/protocol/canonical-profile.json).
-The [Save9 schema](../prototype/protocol/save-v9.schema.json) is structural;
+The [Save10 schema](../prototype/protocol/save-v10.schema.json) is structural;
 the server additionally verifies the exact selected profile: the reference loop and rail ports,
 or the complete terrain grid/corners/occupancy/forest/terrace/creek graph and provenance,
 plus the complete stock/controller/group/occupancy graph, location-keyed harbor data, allocator, definitions and explicit callback queue. Deployed fleets require an installed trusted dispatcher; saves carry no executable code. Unknown random algorithms/versions are incompatible; malformed, missing,

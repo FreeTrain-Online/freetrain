@@ -76,7 +76,7 @@ public static class FleetWire
         clock.Pending.Select(a => new MixedActionRead(a.Registration,a.Order,a.DueMinute,a.HandlerId,a.Interval)).ToArray());
     public static void ValidateQueue(MixedRead mixed, ClockState clock)
     {
-        if ((mixed.Fleet == null) != (mixed.Queue == null)) throw new ArgumentException("Fleet queue required.");
+        if ((mixed.Fleet == null && mixed.StationGraph == null) != (mixed.Queue == null)) throw new ArgumentException("Fleet queue required.");
         if (mixed.Queue is {} q && (q.NextOrder != clock.NextOrder || !q.Pending.SequenceEqual(Queue(clock).Pending) ||
             !clock.Pending.SequenceEqual(clock.Pending.OrderBy(a => a.DueMinute).ThenBy(a => a.Order))))
             throw new ArgumentException("Mixed queue/clock mismatch.");

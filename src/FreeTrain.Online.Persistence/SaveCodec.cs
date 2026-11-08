@@ -10,7 +10,7 @@ namespace FreeTrain.Online.Persistence;
 public static class SaveCodec
 {
     public const int MaximumBytes = ProtocolIdentity.MaximumStateBytes;
-    public const int Version = 9;
+    public const int Version = 10;
     public sealed record MapData(int Width, int Height, int Levels, string CoordinateSystem);
     public sealed record RailData(int X, int Y, int Z, int Pattern, long EntityId);
     public sealed record SpatialData(long NextEntityId, SpatialEntityRead[] Entities);
@@ -92,7 +92,7 @@ public static class SaveCodec
     public static LoadedWorld ReadWorld(ReadOnlySpan<byte> bytes,
         Func<string, string, IEnumerable<TerrainPack>, TerrainProfile?>? terrainResolver = null,
         Func<string, string, IEnumerable<TerrainPack>, RailwayProfile?>? railwayResolver = null,
-        TrainCallback? trainCallback = null)
+        TrainCallback? trainCallback = null, StationCallback? stationCallback = null)
     {
         if (bytes.Length > MaximumBytes) throw new InvalidDataException("saveTooLarge");
         try
@@ -125,7 +125,7 @@ public static class SaveCodec
                 var t = data.PackedTerrain.Restore(new(data.Map.Width,data.Map.Height,data.Map.Levels,"hv"),mixedProfile.Terrain,
                     data.Clock,data.Paused,data.Random,data.Revision, MixedWire.TunnelBackups(data.Mixed,mixedProfile),MixedWire.ConstructionBindings(data.Mixed));
                 var construction = MixedWire.Restore(data.Mixed,mixedProfile,t.World,data.Spatial.Entities);
-                var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision,trainCallback);
+                var state = new MixedSessionState(construction,t.Provenance,t.ConstructionMode,data.Clock,data.Paused,data.Random,data.Revision,trainCallback,stationCallback);
                 MixedWire.ValidateAdmission(state);
                 return new(null,null,state);
             }
@@ -181,6 +181,29 @@ public static class SaveCodec
             var state = ObjectProperty(root,"mixed");
             ArrayBound(state,"voxels",ProtocolIdentity.MaximumRailwayVoxels);
             ArrayBound(state,"slopes",ProtocolIdentity.MaximumRailwayVoxels / 8);
+            if (state.TryGetProperty("stationGraph", out var stations))
+            {
+                const int max = ProtocolIdentity.MaximumRailwayVoxels;
+                var buildings = ArrayBound(stations,"buildings",max);
+                var platforms = ArrayBound(stations,"platforms",max);
+                var passages = ArrayBound(stations,"passages",max);
+                if (buildings.GetArrayLength() + platforms.GetArrayLength() + passages.GetArrayLength() > max)
+                    throw new JsonException("Station member limit.");
+                long children = 0, yards = 0, memberships = 0;
+                foreach (var platform in platforms.EnumerateArray())
+                {
+                    children += ArrayBound(platform,"children",max).GetArrayLength();
+                    yards += ArrayBound(platform,"yards",max).GetArrayLength();
+                }
+                foreach (var building in buildings.EnumerateArray())
+                    children += ArrayBound(building,"children",max).GetArrayLength();
+                foreach (var listener in ArrayBound(stations,"listeners",max).EnumerateArray())
+                    ArrayBound(listener,"stations",4);
+                foreach (var membership in ArrayBound(stations,"listenerMemberships",buildings.GetArrayLength()).EnumerateArray())
+                    memberships += ArrayBound(membership,"providers",max).GetArrayLength();
+                if (children > max || yards > max || memberships > 4L * max) throw new JsonException("Station edge limit.");
+            }
+            if (state.TryGetProperty("queue",out var queue)) ArrayBound(queue,"pending",Clock.MaximumPending);
             if (state.TryGetProperty("fleet", out var fleet))
             {
                 var cars = 0;

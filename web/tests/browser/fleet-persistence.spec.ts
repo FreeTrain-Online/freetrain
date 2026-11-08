@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {ready,closePanel} from './browser-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=7&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
 test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{
@@ -139,14 +139,14 @@ test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers
 // Inventory regression is self-contained; the moving case below consumes a
 // gameplay-built save emitted by the focused backend movement test.
 function inventory(){
- const save=JSON.parse(readFileSync('../prototype/protocol/saves/fleet-v9.json','utf8'));
+ const save=JSON.parse(readFileSync('../prototype/protocol/saves/fleet-v10.json','utf8'));
  const sold=JSON.parse(readFileSync('../prototype/protocol/fixtures/delta-fleet-sale.json','utf8'));
  save.mixed=sold.mixed;save.revision=sold.revision;
  save.spatial.entities=save.spatial.entities.map((e:any)=>sold.entities.find((changed:any)=>changed.id===e.id)??e);
  save.clock.pending=[];save.clock.absoluteMinute='130089';
  return save;
 }
-test('fleet Save9 two-peer load, scalar delta, rejected upload and reconnect retain one exact graph',async({page,browser,baseURL})=>{
+test('fleet Save10 two-peer load, scalar delta, rejected upload and reconnect retain one exact graph',async({page,browser,baseURL})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const initial=await snapshot(page),save=inventory(),data=Buffer.from(JSON.stringify(save));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data})).ok()).toBe(true);
@@ -166,7 +166,7 @@ test('fleet Save9 two-peer load, scalar delta, rejected upload and reconnect ret
   await expect.poll(async()=>(await snapshot(page)).tick).toBe('130090');
   await expect(peer.getByTestId('game-time')).not.toHaveText(beforeTime!);
   for(const rows of messages)expect(rows.find(m=>m.type==='delta').mixed.fleet).toEqual(save.mixed.fleet);
-  const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.saveVersion).toBe(9);expect(saved.mixed).toEqual(save.mixed);
+  const saved=await(await page.request.get('/api/saves/download')).json();expect(saved.saveVersion).toBe(10);expect(saved.mixed).toEqual(save.mixed);
   const bad=structuredClone(saved);bad.mixed.fleet.trains[0].controllerId='999';
   const current=await snapshot(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(bad))})).status()).toBe(400);

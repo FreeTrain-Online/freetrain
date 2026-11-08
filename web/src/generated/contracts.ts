@@ -217,7 +217,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 7;
+  protocolVersion: 8;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -429,6 +429,7 @@ export interface Mixed {
   speedLimits?: SpeedLimits;
   fleet?: Fleet;
   queue?: MixedQueue;
+  stationGraph?: StationGraph;
 }
 export interface RailwayVoxel {
   position: Position;
@@ -698,7 +699,117 @@ export interface MixedAction {
   order: Counter;
   dueMinute: Counter;
   handlerId: string;
-  interval: "0";
+  interval: "0" | "60" | "1440";
+}
+export interface StationGraph {
+  nextStationName: number;
+  nextPlatformName: number;
+  /**
+   * @maxItems 8192
+   */
+  buildings: StationBuilding[];
+  /**
+   * @maxItems 8192
+   */
+  platforms: StationPlatform[];
+  /**
+   * @maxItems 8192
+   */
+  passages: StationPassage[];
+  /**
+   * @maxItems 8192
+   */
+  listeners: StationListener[];
+  /**
+   * @maxItems 8192
+   */
+  listenerMemberships: StationListenerMembership[];
+}
+export interface StationBuilding {
+  id: EntityId;
+  revision: Counter;
+  definition: Definition;
+  location: Position;
+  name: string;
+  /**
+   * @maxItems 8192
+   */
+  children: EntityId[];
+  passengers: StationPassengers;
+  imports: StationLog;
+  exports: StationLog;
+  trains: StationLog;
+  hourTimer: MixedAction | null;
+  dayTimer: MixedAction | null;
+}
+export interface StationPassengers {
+  gone: number;
+  accumulatedLoaded: number;
+  accumulatedUnloaded: number;
+}
+export interface StationLog {
+  today: number;
+  yesterday: number;
+  thisWeek: number;
+  lastWeekPerDay: number;
+}
+export interface StationPlatform {
+  id: EntityId;
+  revision: Counter;
+  kind: "thin" | "wide";
+  location: Position;
+  direction: 0 | 2 | 4 | 6;
+  length: number;
+  name: string;
+  roof: boolean;
+  lane0: boolean;
+  lane1: boolean;
+  bell: Definition;
+  hostId: EntityId | null;
+  /**
+   * @maxItems 8192
+   */
+  children: EntityId[];
+  /**
+   * @maxItems 8192
+   */
+  yards: PlatformYard[];
+  dayTimer: MixedAction | null;
+}
+export interface PlatformYard {
+  trafficOwnerId: EntityId;
+  location: Position;
+  lane: number;
+  index: number;
+  roof: boolean;
+  outlook: PlatformOutlook;
+}
+export interface PlatformOutlook {
+  kind: "plain" | "passage" | "stair";
+  material: "concrete" | "brown" | "green";
+  bridge: boolean;
+  upward: boolean;
+}
+export interface StationPassage {
+  trafficOwnerId: EntityId;
+  location: Position;
+  direction: 0 | 2 | 4 | 6;
+  material: "concrete" | "brown" | "green";
+}
+export interface StationListener {
+  providerId: EntityId;
+  /**
+   * @maxItems 4
+   */
+  stations:
+    [] | [EntityId] | [EntityId, EntityId] | [EntityId, EntityId, EntityId] | [EntityId, EntityId, EntityId, EntityId];
+}
+export interface StationListenerMembership {
+  stationId: EntityId;
+  /**
+   * @maxItems 8192
+   */
+  providers: EntityId[];
 }
 export interface TrainMotion {
   sequence: string;
@@ -959,7 +1070,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 7;
+  protocolVersion: 8;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;

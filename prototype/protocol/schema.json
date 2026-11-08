@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v7.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v8.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -1373,7 +1373,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 7
+          "const": 8
         },
         "contentVersion": {
           "type": "string",
@@ -2166,7 +2166,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 7
+          "const": 8
         },
         "contentVersion": {
           "type": "string",
@@ -3136,6 +3136,9 @@
         },
         "queue": {
           "$ref": "#/$defs/MixedQueue"
+        },
+        "stationGraph": {
+          "$ref": "#/$defs/StationGraph"
         }
       },
       "required": [
@@ -3149,9 +3152,29 @@
         "fleet": [
           "queue"
         ],
-        "queue": [
-          "fleet"
-        ]
+        "stationGraph": [
+          "queue"
+        ],
+        "queue": {
+          "anyOf": [
+            {
+              "properties": {
+                "fleet": {}
+              },
+              "required": [
+                "fleet"
+              ]
+            },
+            {
+              "properties": {
+                "stationGraph": {}
+              },
+              "required": [
+                "stationGraph"
+              ]
+            }
+          ]
+        }
       }
     },
     "RailwayQuery": {
@@ -4228,7 +4251,11 @@
           "maxLength": 128
         },
         "interval": {
-          "const": "0"
+          "enum": [
+            "0",
+            "60",
+            "1440"
+          ]
         }
       },
       "required": [
@@ -4468,10 +4495,25 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "climb": { "type": "integer", "enum": [0, 2, 4, 6] },
-        "level": { "type": "integer", "minimum": 0, "maximum": 3 }
+        "climb": {
+          "type": "integer",
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        }
       },
-      "required": ["climb", "level"]
+      "required": [
+        "climb",
+        "level"
+      ]
     },
     "TrainMotionPose": {
       "type": "object",
@@ -4493,7 +4535,9 @@
         "reversed": {
           "type": "boolean"
         },
-        "slope": { "$ref": "#/$defs/TrainMotionSlope" }
+        "slope": {
+          "$ref": "#/$defs/TrainMotionSlope"
+        }
       },
       "required": [
         "position",
@@ -4756,6 +4800,441 @@
         "line1",
         "line2",
         "line3"
+      ]
+    },
+    "StationLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "today": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "yesterday": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "thisWeek": {
+          "type": "number",
+          "minimum": 0
+        },
+        "lastWeekPerDay": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "today",
+        "yesterday",
+        "thisWeek",
+        "lastWeekPerDay"
+      ]
+    },
+    "StationPassengers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gone": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "accumulatedLoaded": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "accumulatedUnloaded": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "gone",
+        "accumulatedLoaded",
+        "accumulatedUnloaded"
+      ]
+    },
+    "StationBuilding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        },
+        "passengers": {
+          "$ref": "#/$defs/StationPassengers"
+        },
+        "imports": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "exports": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "trains": {
+          "$ref": "#/$defs/StationLog"
+        },
+        "hourTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dayTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "location",
+        "name",
+        "children",
+        "passengers",
+        "imports",
+        "exports",
+        "trains",
+        "hourTimer",
+        "dayTimer"
+      ]
+    },
+    "PlatformOutlook": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "plain",
+            "passage",
+            "stair"
+          ]
+        },
+        "material": {
+          "enum": [
+            "concrete",
+            "brown",
+            "green"
+          ]
+        },
+        "bridge": {
+          "type": "boolean"
+        },
+        "upward": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "material",
+        "bridge",
+        "upward"
+      ]
+    },
+    "PlatformYard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trafficOwnerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "lane": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8191
+        },
+        "roof": {
+          "type": "boolean"
+        },
+        "outlook": {
+          "$ref": "#/$defs/PlatformOutlook"
+        }
+      },
+      "required": [
+        "trafficOwnerId",
+        "location",
+        "lane",
+        "index",
+        "roof",
+        "outlook"
+      ]
+    },
+    "StationPlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "kind": {
+          "enum": [
+            "thin",
+            "wide"
+          ]
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "roof": {
+          "type": "boolean"
+        },
+        "lane0": {
+          "type": "boolean"
+        },
+        "lane1": {
+          "type": "boolean"
+        },
+        "bell": {
+          "$ref": "#/$defs/Definition"
+        },
+        "hostId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EntityId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        },
+        "yards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformYard"
+          },
+          "maxItems": 8192
+        },
+        "dayTimer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "location",
+        "direction",
+        "length",
+        "name",
+        "roof",
+        "lane0",
+        "lane1",
+        "bell",
+        "hostId",
+        "children",
+        "yards",
+        "dayTimer"
+      ]
+    },
+    "StationPassage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trafficOwnerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "material": {
+          "enum": [
+            "concrete",
+            "brown",
+            "green"
+          ]
+        }
+      },
+      "required": [
+        "trafficOwnerId",
+        "location",
+        "direction",
+        "material"
+      ]
+    },
+    "StationGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nextStationName": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "nextPlatformName": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "buildings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationBuilding"
+          },
+          "maxItems": 8192
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationPlatform"
+          },
+          "maxItems": 8192
+        },
+        "passages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationPassage"
+          },
+          "maxItems": 8192
+        },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationListener"
+          },
+          "maxItems": 8192
+        },
+        "listenerMemberships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StationListenerMembership"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "nextStationName",
+        "nextPlatformName",
+        "buildings",
+        "platforms",
+        "passages",
+        "listeners",
+        "listenerMemberships"
+      ]
+    },
+    "StationListener": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "providerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 4
+        }
+      },
+      "required": [
+        "providerId",
+        "stations"
+      ]
+    },
+    "StationListenerMembership": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stationId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityId"
+          },
+          "maxItems": 8192
+        }
+      },
+      "required": [
+        "stationId",
+        "providers"
       ]
     }
   }

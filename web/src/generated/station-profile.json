@@ -1,0 +1,386 @@
+{
+  "definitions": [
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+        "recipeId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}",
+        "recipeId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}",
+        "recipeId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}",
+        "recipeId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}",
+        "recipeId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{F9508B52-B25C-439e-811C-82B5A259676A}",
+        "recipeId": "{F9508B52-B25C-439e-811C-82B5A259676A}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}",
+        "recipeId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A8392557-3054-4017-8948-F3FC22A71D0E}",
+        "recipeId": "{A8392557-3054-4017-8948-F3FC22A71D0E}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3D64E31D-0579-4d37-920A-5A5201A8C984}",
+        "recipeId": "{3D64E31D-0579-4d37-920A-5A5201A8C984}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 1,
+      "sizeY": 2,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}"
+      },
+      "sizeX": 2,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+        "recipeId": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+        "recipeId": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+        "recipeId": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+        "recipeId": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}"
+      },
+      "sizeX": 1,
+      "sizeY": 1,
+      "height": 1
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}",
+        "recipeId": "{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}"
+      },
+      "sizeX": 9,
+      "sizeY": 2,
+      "height": 2
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{000B7EA8-D97B-4BD0-899F-B3808E7339AF}",
+        "recipeId": "{000B7EA8-D97B-4BD0-899F-B3808E7339AF}"
+      },
+      "sizeX": 2,
+      "sizeY": 9,
+      "height": 2
+    }
+  ],
+  "bells": [
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{9B087AEA-6E9C-48cd-A1F3-1B774500752E}",
+      "recipeId": "{9B087AEA-6E9C-48cd-A1F3-1B774500752E}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{87B1BA1B-C18F-4E39-AD50-245255F34388}",
+      "recipeId": "{87B1BA1B-C18F-4E39-AD50-245255F34388}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{607AA03D-4203-459E-A835-F4067A32E4B6}",
+      "recipeId": "{607AA03D-4203-459E-A835-F4067A32E4B6}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{96B8B6EC-1793-445D-98B3-7F9330438CF9}",
+      "recipeId": "{96B8B6EC-1793-445D-98B3-7F9330438CF9}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{3528F039-4F73-4592-BE7A-624877DB135A}",
+      "recipeId": "{3528F039-4F73-4592-BE7A-624877DB135A}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{FC3471E1-D104-4C31-9055-FC3B5B83B97F}",
+      "recipeId": "{FC3471E1-D104-4C31-9055-FC3B5B83B97F}"
+    }
+  ]
+}

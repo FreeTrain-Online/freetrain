@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
-const compat='protocolVersion=7&contentVersion=terrain-content-1';
+const compat='protocolVersion=8&contentVersion=terrain-content-1';
 const state=canonicalState;
 async function replace(page:Page,bytes:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);}
 async function empty(page:Page,locale='en'){

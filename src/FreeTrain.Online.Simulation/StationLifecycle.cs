@@ -84,7 +84,7 @@ public static class StationLifecycle
     }
     private static long OwnerId(ScheduledAction timer) => long.Parse(timer.HandlerId.Split('/')[1],System.Globalization.CultureInfo.InvariantCulture);
     private static StationGraph Copy(StationGraph graph, IEnumerable<StationBuilding> buildings, IEnumerable<StationPlatform> platforms) =>
-        new(graph.Profile,buildings,platforms,graph.Passages,graph.NextStationName,graph.NextPlatformName);
+        new(graph.Profile,buildings,platforms,graph.Passages,graph.NextStationName,graph.NextPlatformName,graph.Listeners,graph.ListenerMemberships);
 
     public static MixedSessionState Commit(MixedSessionState before, MixedWorld candidate, ConstructionBooking booking, string operation)
     {

@@ -331,7 +331,7 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Outside_steps_emit_ordered_reset_markers()
     {
-        var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json")),
+        var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json")),
             TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         s=FleetTrading.Commit(s,FleetTrading.QuoteSale(s,17));
         s=FleetDeployment.Commit(s,FleetDeployment.PreviewPlacement(s,20,new(3,2,2)));
@@ -512,7 +512,7 @@ public partial class FleetMovementTests
     [Fact]
     public async Task Outside_handler_steps_and_runs_through_host_without_unavailable_boundary()
     {
-        var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json")),
+        var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json")),
             TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         // The literal inventory's deployed train has a source-bound controller
         // and an overflowing historical move counter. Remove it, deploy the

@@ -111,7 +111,7 @@ public class FleetSessionTests
     [Fact]
     public async Task Browser_sale_boundary_rejects_placed_train_without_changing_callbacks_or_accounts()
     {
-        var saved=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json"));
+        var saved=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json"));
         var loaded=SaveCodec.ReadWorld(saved,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         using var h=new SessionHost(loaded,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var s=h.Snapshot();var train=s.Mixed!.Fleet!.Trains.First(t=>t.State!="unplaced");

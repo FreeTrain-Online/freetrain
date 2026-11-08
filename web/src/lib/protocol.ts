@@ -1,3 +1,4 @@
+import {validStationSuccessor} from './station-state.ts';
 import {validTrainMotion} from './train-motion-contract.ts';
 import {validFleetSuccessor} from './fleet-state.ts';
 import Ajv from 'ajv';
@@ -187,7 +188,8 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   if(mixed) {
     if(!validSnapshot(next,state as Snapshot)||!state.mixed||!next.mixed)return;
     const before=state.mixed,after=next.mixed;
-    if(!validFleetSuccessor(before.fleet,after.fleet,before.nextEntityId)||
+    if(!validStationSuccessor(before.stationGraph,after.stationGraph,before.nextEntityId,state as Snapshot,next)||
+      !validFleetSuccessor(before.fleet,after.fleet,before.nextEntityId)||
       before.queue&&after.queue&&BigInt(after.queue.nextOrder)<BigInt(before.queue.nextOrder))return;
     if(BigInt(after.nextEntityId)<BigInt(before.nextEntityId)||BigInt(after.geometryRevision)<BigInt(before.geometryRevision))return;
     if(after.accounts.initialCash!==before.accounts.initialCash||after.accounts.bankruptcyIncrement!==before.accounts.bankruptcyIncrement||
