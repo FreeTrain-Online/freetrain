@@ -661,3 +661,29 @@ interrupted temporary writes preserve the prior checkpoint. No new controls or
 translations ship. [Reciprocal action bindings](web-parity-actions.md#p5-27-fleet-continuation-and-recovery).
 Historical import and full-city recovery retain P10; fleet capacity and clean
 distribution retain P5-28/29, and canonical Manual driving remains retired.
+
+## P6-01 station source reconciliation
+
+[P6-01 station contract](web-parity-station-contract.md) and its
+[hashed source/control/decision inventory](parity/station-review.json) bind the
+following requirements. These are specification handoffs, not executed station
+gameplay or EN/JA delivery. MAN-D01/02/03 and DEV-D01/02/03 use stable ExAV
+range8, exact cut/index arithmetic, configured fares and current upkeep; the
+historical documentation formulas remain references. TRAIN-D008/012 apply;
+Manual remains owner-removed. Full decisions and independently specified
+acceptance are retained in the linked contract.
+
+| Operation | Manual/developer obligations | Implementing owner | Controls and acceptance |
+| --- | --- | --- | --- |
+| `station-building` | MAN-T04, MAN-W03, MAN-A05, DEV-P16, DEV-P24, DEV-A06 | P6-03/P6-06/P6-07/P6-08 | station family; orientation previous/next; preview; Place/Remove; name; cost. All 35 station declarations, flat/reclaimable/bounds, immediate timers/registration, removal genre/footprint, exact name draft and peer revision checks. |
+| `thin-platform` | MAN-T04, MAN-W04, MAN-A05, MAN-D02, MAN-E06, EXAV-10 | P6-09 | N/E/S/W; roofed/unroofed; length >=1 (native default Maximum100); Place/Remove. Each heading/roof/length, both draw passes and car overlap, retained traffic/accessories, occupied/stale rejection, normal rail restoration. |
+| `wide-platform` | MAN-W04, MAN-W05, MAN-A05, MAN-A08, EXAV-10 | P6-10/P6-13 | wide style; length; two lane add/remove controls; Place/Remove. All headings, lane0 mandatory creation, either/both/no lanes after edits, occupied lane rejection, exact saved ownership and independent stop indexes. |
+| `host-graph` | MAN-W05, MAN-A06, MAN-A08, MAN-D01, MAN-E06, EXAV-10 | P6-03/P6-11/P6-12/P6-13 | host selector; disconnect warning; name; bell selector; preview bell; Apply/Cancel. Literal rectangle (10,10,2), east,L4 => x2..22/y2..18/z1..3 plus x10..13 columns; reparent child disconnect, descendant selection, host removal/rebuild, stale host IDs and bounded cycle-safe validation. |
+| `passage-stairs` | MAN-T05, MAN-W06, MAN-A09, MAN-E06 | P6-14/P6-15 | concrete/brown wood/green wood; Passage/Stairs; Place/Remove; line preview. All materials/headings/up/down/roof/width; legal empty path no fabricated floating rails; pure preview, adjacent passage removal, precise invalid index23 handling and no service/booking changes. |
+| `providers` | MAN-W04, MAN-A16, DEV-P16, DEV-P22, DEV-P29, DEV-P30, DEV-P31, DEV-A05, EXAV-06 | P6-16/P7 | provider identity/location; resident versus demand/entering queries; controlled test inputs only. Independent table cells/calendar and nested truncation cases; actual provider bindings, residents distinct from demand, height/footprint scaling; no advertised fixture population editor. |
+| `listeners` | MAN-A06, MAN-A16, MAN-E10, DEV-P29, DEV-P30, DEV-P31, DEV-A05 | P6-16/P6-25/P7 | current demand; waiting value; provider lifecycle. SCN-D01 creation-order corners/z/equal-distance/fifth/removal, preserve separate forward/reverse membership and load continuation; controlled land values labeled until P7. |
+| `timers-logs` | MAN-A13, MAN-A14, DEV-P24, EXAV-05, DEV-P29, DEV-P31, DEV-A05, DEV-A06 | P6-04/P6-17/P6-25 | today/yesterday; averages; clock step/run; upkeep. 08:37=>09:00 station/next00:00 daily versus platform next08:37; FIFO hour/day/train equality, source 600000+720000=1320000, nonlinear weekly logs and exact timer cancel/reopen; P10 old timer conversion excluded. |
+| `passenger-fare` | MAN-A07, MAN-A12, MAN-A16, MAN-E10, EXAV-04, DEV-P19, DEV-P24, DEV-D01, DEV-D02, DEV-A05 | P6-18/P6-19 | packed/normal occupancy; waiting/demand; board/alight logs; cash. EXAV-SCN010..014, 39*3*5*2=1170; above100% occupancy, zero/missing origin, repeated/drop supply, checked overflow rollback and fare before move cost. |
+| `yard-controller` | MAN-W05, MAN-A07, MAN-A12, MAN-D03, MAN-E07 | P6-19/P6-22 | pick Station/platform harbor; existing Simple/TAT manager; shared group settings. Eight L4/N3..6 indices and14 yards witnesses through real hosts, first/later/pass/forward/reverse/TURNING, shared multi-platform key, signals passenger-free and Manual absent. |
+| `departure-events` | MAN-M06, MAN-W05, MAN-O07, MAN-A08, MAN-A12, MAN-A15 | P6-20 | per-platform bell choice; preview; local effects/mute; gesture enable. Epoch+committed publication sequence+effect ordinal dedup; no snapshot/save history replay, join/reconnect subscription baseline, duplicate receipts/delivery/rejected callback silent, two peers hear independently eligible live events. |
+| `information-list` | MAN-M02, MAN-M03, MAN-W10, MAN-A05, MAN-A13, MAN-O16, MAN-A15, MAN-E03, DEV-P16, EXAV-14 | P6-08/P6-23 | name Apply/Cancel; Information; actual waiting/demand; today/yesterday board/alight/train; sorted list; Move; station labels. EN/JA duplicate names/rename/removal/empty list, exact logs/averages, peer stale edits, narrow layout and retained selection/focus/canvas. |
