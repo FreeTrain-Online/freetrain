@@ -70,13 +70,22 @@ The next due minute and FIFO order must match the existing Clock's repeat entry.
 Freeze/successor copies and first-fleet initialization retain the dispatcher.
 Session candidate validation now checks the candidate station graph explicitly.
 
-The default station dispatcher **rejects with
-`stationDispatchRequiresP6PassengerLifecycle`**. This is intentional contract
-staging: no no-op passenger/log handler is presented as gameplay. Tests inject
-an explicitly controlled graph-effects dispatcher. Constructing slices must
-supply the applicable live handler before enabling their commands; P6-17 owns
-the complete passenger/log effects. No delegate is serialized, and P6-05 must
-add explicit saves/transport before admitting this state through live APIs.
+The default station dispatcher runs `StationLifecycle.Tick` for both buildings
+and platforms, retaining timer continuation and upkeep booking. Hourly callbacks
+currently advance their timers without changing passenger counts or transport
+logs; P6-17 still owns those effects. A trusted dispatcher can supply those
+effects without changing timer ownership. No delegate is serialized.
+
+This replaces the earlier contract-stage
+`stationDispatchRequiresP6PassengerLifecycle` rejection: once live construction
+was enabled, an ordinary station's next hourly callback threw through the server
+driver and stopped the host. This could coincide with a train reaching a
+platform, but requires no train to reproduce. Regression tests exercise the
+default dispatcher across two days, daily station/platform charges and save
+restoration, while retaining rejection of malformed callback successors.
+Crash-fix verification: Release backend **1,812/1,812 pass**, zero skipped;
+`tmp/station-timer-crash-full-tests.log`. Station source-contract review, project
+boundaries and whitespace checks also pass.
 
 The existing detached minute batch publishes only after every callback and the
 final boundary validate. Tests run hourly/daily/platform repeats through the

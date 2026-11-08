@@ -35,6 +35,21 @@ public class StationPersistenceTests
             clock:schedule.Clock,stationCallback:Tick);
     }
     [Fact]
+    public void Default_dispatch_after_save_restore_runs_station_timers_without_changing_passengers_or_logs()
+    {
+        var s=Scene();
+        // Omit the fixture's injected dispatcher, as production checkpoint loading does.
+        var restored=SaveCodec.ReadWorld(SaveCodec.Write(s),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        var passengers=restored.World.Stations!.Buildings.Select(b=>(b.Passengers,b.Imports,b.Exports,b.Trains)).ToArray();
+        for(var minute=517;minute<1957;minute++) {s.AdvanceOneMinute();restored.AdvanceOneMinute();}
+        Assert.Equal(1957,restored.Clock.Time.AbsoluteMinute);
+        Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(restored));
+        Assert.Equal(passengers,restored.World.Stations!.Buildings.Select(b=>(b.Passengers,b.Imports,b.Exports,b.Trains)));
+        var reopened=SaveCodec.ReadWorld(SaveCodec.Write(restored),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        s.AdvanceOneMinute();reopened.AdvanceOneMinute();
+        Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));
+    }
+    [Fact]
     public void Exact_detached_roundtrip_preserves_recipes_logs_asymmetric_listeners_names_and_repeated_FIFO()
     {
         var s=Scene();var bytes=SaveCodec.Write(s);var restored=Decode(bytes);var g=restored.World.Stations!;

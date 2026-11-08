@@ -52,9 +52,10 @@ registers the first hour at the next aligned hour and the first day at the next
 midnight, preserving FIFO order when they coincide. Removal cancels only that
 station's registrations. Geometry, accounts, graph, allocator and clock publish
 as one validated successor; late booking/allocator/queue/transport rejection
-preserves the original state. The default due-station dispatcher still rejects
-at the first callback until P6-17 supplies hourly/daily passenger/log behavior.
-Save/reopen preserves that explicit boundary and all pending timers exactly.
+preserves the original state. The default dispatcher continues hourly/daily
+timers and books upkeep, including after save/reopen; P6-17 still owns
+passenger/log effects. See the
+[station callback crash fix](web-parity-station-booking.md#callback-boundary-and-later-consumers).
 
 ## Authoritative API
 

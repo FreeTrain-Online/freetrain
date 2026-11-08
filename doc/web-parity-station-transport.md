@@ -58,9 +58,10 @@ extra, duplicate, misaligned and mismatched actions.
 `SaveCodec.ReadWorld` accepts an optional trusted station dispatcher, and
 `SessionHost.PrepareSave` retains the host's installed dispatcher just as it does
 for trains. No callback delegate/type is serialized or activated by input. The
-production default still rejects due station actions until P6-17 supplies its
-passenger/log handler. Controlled tests exercise repeat continuation and upkeep;
-this step does not claim completed station service.
+production default runs repeat continuation and upkeep for buildings/platforms;
+P6-17 still owns the passenger/log handler. See the
+[station callback crash fix](web-parity-station-booking.md#callback-boundary-and-later-consumers).
+This does not claim completed station service.
 
 The existing authority FIFO, Owner-only replacement, Operator/Observer checks,
 expected epoch/revision fences and duplicate command receipts remain in force.

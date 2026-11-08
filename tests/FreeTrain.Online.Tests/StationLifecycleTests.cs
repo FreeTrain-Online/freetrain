@@ -192,13 +192,26 @@ public class StationLifecycleTests
         Assert.Equal(new long[]{Definition.OperationCost,720_000},s.Construction.Accounts.Transactions.TakeLast(2).Select(t=>t.Expenditure));
     }
     [Fact]
-    public void Unsupported_station_dispatch_and_bad_continuation_reject_without_publishing()
+    public void Default_station_dispatch_advances_hours_and_days_with_upkeep_and_stable_timers()
     {
-        var s=Built(1439);var before=Snapshot(s);
-        Assert.Throws<InvalidOperationException>(()=>s.AdvanceOneMinute());Assert.Equal(before,Snapshot(s));
+        var s=Built(0);
+        var controlled=Built(0,ControlledTick);
+        for(var minute=0;minute<2880;minute++)
+        {
+            s.AdvanceOneMinute();controlled.AdvanceOneMinute();
+        }
+        Assert.Equal(2880,s.Clock.Time.AbsoluteMinute);
+        Assert.Equal(Snapshot(controlled),Snapshot(s));
+        Assert.Equal(new long[]{Definition.OperationCost,720_000,Definition.OperationCost,720_000},
+            s.Construction.Accounts.Transactions.Skip(2).Select(t=>t.Expenditure));
+        Assert.Equal(Snapshot(s),Snapshot(s.Freeze()));
+    }
+    [Fact]
+    public void Bad_station_continuation_rejects_without_publishing()
+    {
         var bad=Built(1439,(session,_)=>new(session.World.Replace(session.World.Revision,session.World.Terrain,
             session.World.Spatial.Capture(),session.World.Voxels,session.World.Slopes),session.Construction.Accounts));
-        before=Snapshot(bad);Assert.Throws<ArgumentException>(()=>bad.AdvanceOneMinute());Assert.Equal(before,Snapshot(bad));
+        var before=Snapshot(bad);Assert.Throws<ArgumentException>(()=>bad.AdvanceOneMinute());Assert.Equal(before,Snapshot(bad));
     }
     [Fact]
     public void Queue_timer_mismatch_alignment_duplicate_unknown_and_rewrite_reject_at_boundaries()

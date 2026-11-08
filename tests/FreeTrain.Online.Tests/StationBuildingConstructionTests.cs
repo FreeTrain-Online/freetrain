@@ -148,13 +148,14 @@ public class StationBuildingConstructionTests
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(Open(SaveCodec.Write(s))));
     }
     [Fact]
-    public void Immediately_saved_timers_continue_to_the_same_due_boundary_and_default_dispatch_stays_explicitly_pending()
+    public void Immediately_saved_timers_continue_through_the_hour_and_cancel_on_removal()
     {
         var s=Build(Empty());var reopened=Open(SaveCodec.Write(s));
-        for(var i=0;i<22;i++){s.AdvanceOneMinute();reopened.AdvanceOneMinute();}
-        Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));var before=SaveCodec.Write(s);
-        Assert.Throws<InvalidOperationException>(()=>s.AdvanceOneMinute());Assert.Equal(before,SaveCodec.Write(s));
+        for(var i=0;i<23;i++){s.AdvanceOneMinute();reopened.AdvanceOneMinute();}
+        Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));
+        Assert.Equal(540,s.Clock.Time.AbsoluteMinute);
+        Assert.Equal(600,s.World.Stations!.Buildings[0].HourTimer!.DueMinute);
         var b=s.World.Stations!.Buildings[0];s=StationBuildingConstruction.Commit(s,StationBuildingConstruction.Preview(s.World,b.Location,null,true,b.Id,b.Revision));
-        s.AdvanceOneMinute();Assert.Equal(540,s.Clock.Time.AbsoluteMinute);Assert.Empty(s.Clock.Capture().Pending);
+        s.AdvanceOneMinute();Assert.Equal(541,s.Clock.Time.AbsoluteMinute);Assert.Empty(s.Clock.Capture().Pending);
     }
 }
