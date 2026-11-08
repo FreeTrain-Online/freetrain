@@ -16,6 +16,7 @@ public sealed class MixedWorld
     public ImmutableArray<SlopeOwnership> Slopes { get; }
     public SpeedLimits SpeedLimits { get; }
     public FleetGraph? Fleet { get; }
+    public StationGraph? Stations { get; }
     private readonly FrozenDictionary<Location, RailwayVoxel> voxels;
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
@@ -24,7 +25,7 @@ public sealed class MixedWorld
 
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null,
-        FleetGraph? fleet = null)
+        FleetGraph? fleet = null, StationGraph? stations = null)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(terrain);
@@ -32,7 +33,7 @@ public sealed class MixedWorld
         if (spatial.Entities.IsDefault || profile.Terrain != terrain.Profile || revision < terrain.Revision ||
             spatial.NextEntityId < terrain.Spatial.NextEntityId)
             throw new ArgumentException("Invalid mixed-world profile/revision/allocator.");
-        Profile = profile; Terrain = terrain; Revision = revision; Fleet = fleet;
+        Profile = profile; Terrain = terrain; Revision = revision; Fleet = fleet; Stations = stations;
         Voxels = voxels.Take(SpatialIndex.MaximumOccupiedCells + 1).ToImmutableArray();
         Slopes = slopes.Take(SpatialIndex.MaximumOccupiedCells / 8 + 1).ToImmutableArray();
         if (Voxels.Length > SpatialIndex.MaximumOccupiedCells || Voxels.Any(v => v is null || !Enum.IsDefined(v.Kind)) ||
@@ -52,6 +53,11 @@ public sealed class MixedWorld
             if (terrainIds.Remove(e.Id, out var te))
             {
                 if (!SameEntity(e, te) || byOwner.ContainsKey(e.Id)) throw new ArgumentException("Terrain identity was overwritten.");
+                continue;
+            }
+            if (Stations?.IsSpatialOwner(e.Id) == true)
+            {
+                if (byOwner.ContainsKey(e.Id)) throw new ArgumentException("Station cannot own railway payloads.");
                 continue;
             }
             if (!byOwner.TryGetValue(e.Id, out var members) || e.Owned != (members[0].Construction == null) || e.SilentlyReclaimable || e.Value != 0 ||
@@ -83,6 +89,7 @@ public sealed class MixedWorld
         if (cars.Select(c => c.CarId).Distinct().Count() != cars.Length)
             throw new ArgumentException("Car occupies multiple voxels.");
         Fleet?.ValidateWorld(this);
+        Stations?.ValidateWorld(this);
     }
 
     public static MixedWorld FromTerrain(RailwayProfile profile, TerrainWorld terrain) =>
@@ -194,7 +201,8 @@ public sealed class MixedWorld
             throw new ArgumentException("Invalid crossing components.");
         if (t.Car is {} car && (Fleet == null && Profile.Resolve(car.Definition).Handler != RailwayHandler.Car || car.TrainId < 1 || car.CarId < 1))
             throw new ArgumentException("Invalid car reference.");
-        if (t.Platform is {} platform && (Profile.Resolve(platform).Handler != RailwayHandler.Platform || t.Rail == null))
+        if (t.Platform is {} platform && (t.Rail == null ||
+            !(Stations != null && Profile.Stations?.IsPlatformArt(platform) == true) && Profile.Resolve(platform).Handler != RailwayHandler.Platform))
             throw new ArgumentException("Invalid platform component.");
     }
 
@@ -203,13 +211,17 @@ public sealed class MixedWorld
 
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
-        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null, FleetGraph? fleet = null)
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null, FleetGraph? fleet = null,
+        StationGraph? stations = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("staleRevision");
         if (spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Allocator rewind.");
         var members=voxels.ToImmutableArray();
         var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
-        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet);
+        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations);
+        if (Stations != null) candidate.Stations!.ValidateSuccessor(Stations,Spatial.NextEntityId);
+        else if (candidate.Stations != null && candidate.Stations.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
+            throw new ArgumentException("Reused initial station identity.");
         if (Fleet != null) candidate.Fleet!.ValidateSuccessor(Fleet,Spatial.NextEntityId);
         else if (candidate.Fleet != null && candidate.Fleet.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
             throw new ArgumentException("Reused initial fleet identity.");
@@ -232,6 +244,7 @@ public sealed class MixedWorld
                 if (e.Id < Spatial.NextEntityId || e.Revision != 0) throw new ArgumentException("Reused entity identity.");
             }
             else if (oldTerrainIds.Contains(e.Id) != newTerrainIds.Contains(e.Id) ||
+                (Stations?.IsSpatialOwner(e.Id) == true) != (candidate.Stations?.IsSpatialOwner(e.Id) == true) ||
                 byOwner.ContainsKey(e.Id) && e.Definition != previous.Definition)
                 throw new ArgumentException("Entity owner kind cannot be repurposed.");
             else if (e.Revision == previous.Revision)
@@ -239,7 +252,8 @@ public sealed class MixedWorld
                 var before = byOwner.GetValueOrDefault(e.Id, []); var after = candidate.byOwner.GetValueOrDefault(e.Id, []);
                 if (!SameEntity(e, previous) || !before.OrderBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z)
                     .SequenceEqual(after.OrderBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z)) ||
-                    slopeOwners.GetValueOrDefault(e.Id) != candidate.slopeOwners.GetValueOrDefault(e.Id))
+                    slopeOwners.GetValueOrDefault(e.Id) != candidate.slopeOwners.GetValueOrDefault(e.Id) ||
+                    Stations?.Passage(e.Id) != candidate.Stations?.Passage(e.Id))
                     throw new ArgumentException("Changed entity requires revision.");
             }
             else if (e.Revision != checked(previous.Revision + 1)) throw new ArgumentException("Invalid entity revision.");

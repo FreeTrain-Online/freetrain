@@ -22,13 +22,16 @@ public sealed class RailwayProfile
     public TerrainProfile Terrain { get; }
     public ImmutableArray<RailwayBinding> Bindings { get; }
     public FleetProfile? FleetProfile { get; }
+    public StationProfile? Stations { get; }
     private readonly FrozenDictionary<DefinitionReference, RailwayBinding> bindings;
     public DefinitionReference TrafficOwner { get; }
     public DefinitionReference SlopeOwner { get; }
-    public RailwayProfile(TerrainProfile terrain, IEnumerable<RailwayBinding> bindings, FleetProfile? fleetProfile = null)
+    public RailwayProfile(TerrainProfile terrain, IEnumerable<RailwayBinding> bindings, FleetProfile? fleetProfile = null, StationProfile? stations = null)
     {
         ArgumentNullException.ThrowIfNull(terrain);
-        Terrain = terrain; FleetProfile = fleetProfile;
+        Terrain = terrain; FleetProfile = fleetProfile; Stations = stations;
+        if (stations != null && !terrain.Packs.OrderBy(p => p.Id).SequenceEqual(stations.Packs.OrderBy(p => p.Id)))
+            throw new ArgumentException("Railway/station pack mismatch.");
         if (fleetProfile != null && !terrain.Packs.OrderBy(p => p.Id).SequenceEqual(fleetProfile.Packs.OrderBy(p => p.Id)))
             throw new ArgumentException("Railway/fleet pack mismatch.");
         var pack = terrain.Packs[0].Id;

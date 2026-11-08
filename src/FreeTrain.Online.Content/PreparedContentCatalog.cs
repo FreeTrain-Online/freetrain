@@ -5,7 +5,8 @@ using System.Text.Json;
 
 namespace FreeTrain.Online.Content;
 
-public sealed record PreparedDefinition(string Id, string PluginId, string Type, JsonElement Declaration, string Implementation = "");
+public sealed record PreparedDefinition(string Id, string PluginId, string Type, JsonElement Declaration, string Implementation = "", string SourcePath = "");
+public sealed record PreparedAudioAsset(string SourcePath, string Sha256, string MediaPath);
 public sealed record RenderRecipe(string Id, string PluginId, string Handler, JsonElement Data);
 public sealed record PreparedPicture(string Id, bool HasPreparedVariants, JsonElement Data);
 
@@ -18,6 +19,7 @@ public sealed class PreparedContentCatalog
     private readonly FrozenDictionary<string, PreparedDefinition> definitions;
     private readonly FrozenDictionary<string, PreparedPicture> pictures;
     private readonly FrozenDictionary<string, RenderRecipe> renderRecipes;
+    private readonly FrozenDictionary<string, PreparedAudioAsset> audio;
     private static readonly Lazy<PreparedContentCatalog> bundled = new(LoadEmbedded);
     public static PreparedContentCatalog Bundled => bundled.Value;
     public string PackId { get; }
@@ -36,6 +38,13 @@ public sealed class PreparedContentCatalog
 
     public RenderRecipe? FindRenderRecipe(string packId, string id) =>
         packId == PackId ? renderRecipes.GetValueOrDefault(id) : null;
+
+    internal PreparedAudioAsset BellResource(string id, string href)
+    {
+        var d = definitions[id];
+        var path = d.SourcePath[..(d.SourcePath.LastIndexOf('/') + 1)] + href;
+        return audio.TryGetValue(path,out var asset) ? asset : throw new ArgumentException("Missing prepared departure bell audio.");
+    }
 
     public static PreparedContentCatalog Read(ReadOnlyMemory<byte> data, string expectedHash)
     {
@@ -75,7 +84,8 @@ public sealed class PreparedContentCatalog
                 throw new ArgumentException("Invalid prepared definition.");
             return new PreparedDefinition(row.GetProperty("id").GetString()!, plugin, row.GetProperty("type").GetString()!,
                 row.TryGetProperty("declaration", out var declaration) ? declaration.Clone() : row.Clone(),
-                row.TryGetProperty("implementation", out var implementation) ? implementation.GetProperty("name").GetString()! : "");
+                row.TryGetProperty("implementation", out var implementation) ? implementation.GetProperty("name").GetString()! : "",
+                row.GetProperty("sourcePath").GetString()!);
         }).ToImmutableArray();
         Pictures = root.GetProperty("pictures").EnumerateArray().Select(row =>
             new PreparedPicture(row.GetProperty("id").GetString()!, row.GetProperty("status").GetString() == "prepared-picture", row.Clone()))
@@ -84,6 +94,9 @@ public sealed class PreparedContentCatalog
             Pictures.Select(p => p.Id).Distinct(StringComparer.Ordinal).Count() != Pictures.Length)
             throw new ArgumentException("Duplicate prepared registry identity.");
         definitions = Definitions.ToFrozenDictionary(d => d.Id, StringComparer.Ordinal);
+        audio = root.GetProperty("assets").EnumerateArray().Where(a => a.GetProperty("mediaType").GetString() == "wav" && a.TryGetProperty("native",out _))
+            .Select(a => new PreparedAudioAsset(a.GetProperty("path").GetString()!,a.GetProperty("native").GetProperty("sha256").GetString()!,
+                a.GetProperty("native").GetProperty("url").GetString()!)).ToFrozenDictionary(a => a.SourcePath,StringComparer.Ordinal);
         pictures = Pictures.ToFrozenDictionary(p => p.Id, StringComparer.Ordinal);
         RenderRecipes = root.GetProperty("renderRecipes").EnumerateArray().Select(row =>
         {

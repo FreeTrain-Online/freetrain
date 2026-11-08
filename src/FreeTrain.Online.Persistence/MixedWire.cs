@@ -21,6 +21,7 @@ public static class MixedWire
     private static DefinitionReference? Restore(DefinitionRead? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
     public static MixedRead Read(MixedConstructionState state)
     {
+        RequireStationTransport(state.World);
         var w = state.World; var a = state.Accounts;
         if (w.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
         if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
@@ -83,6 +84,7 @@ public static class MixedWire
     }
     public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
     {
+        RequireStationTransport(world);
         var terrainIds = world.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
         return world.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).Select(TerrainWire.Entity).ToArray();
     }
@@ -95,6 +97,7 @@ public static class MixedWire
     // Bound complete save/snapshot bytes; successor delta bytes are checked below.
     public static void ValidateAdmission(MixedSessionState state)
     {
+        RequireStationTransport(state.World);
         var mixed = Read(state);
         var mixedBytes = JsonSerializer.SerializeToUtf8Bytes(mixed,WireJson.CreateOptions()).LongLength;
         if (mixedBytes > 8 * 1024 * 1024)
@@ -103,6 +106,12 @@ public static class MixedWire
             JsonSerializer.SerializeToUtf8Bytes(RailwayEntities(state.World),WireJson.CreateOptions()).LongLength +
             mixedBytes + 4096 > ProtocolIdentity.MaximumStateBytes)
             throw new InvalidDataException("saveTooLarge");
+    }
+    private static void RequireStationTransport(MixedWorld world)
+    {
+        // Even an empty graph can retain name sequences after removal. P6-05
+        // must supply explicit DTOs before any station state can be published.
+        if (world.Stations != null) throw new InvalidDataException("stationStateRequiresP6Transport");
     }
     public static void ValidateTransition(MixedSessionState before, MixedSessionState after)
     {
