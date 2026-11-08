@@ -9,6 +9,7 @@ using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 
 var json = new JsonSerializerOptions(WireJson.CreateOptions()) { WriteIndented = true };
+if(args is ["--fleet-capacity",var fleetMode,var fleetDirectory]){FleetCapacity.Run(fleetMode,fleetDirectory);return;}
 if(args is ["--railway-verify",var railVerificationDirectory]){RailwayCapacity.Verify(railVerificationDirectory);return;}
 if(args is ["--railway-capacity",var railMode,var railDirectory]){RailwayCapacity.Run(railMode,railDirectory);return;}
 if(args is ["--acceptance",var acceptanceManifest,var acceptanceDirectory]){await TerrainAcceptance.Run(acceptanceManifest,acceptanceDirectory);return;}

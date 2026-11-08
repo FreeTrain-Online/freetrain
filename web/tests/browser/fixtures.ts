@@ -7,7 +7,7 @@ import { join, resolve } from 'node:path';
 
 export * from '@playwright/test';
 
-type WorldServer = { baseURL?: string; restart?: () => Promise<void>; reset?: () => Promise<void> };
+type WorldServer = { pid?: () => number | undefined; baseURL?: string; restart?: () => Promise<void>; reset?: () => Promise<void> };
 
 async function freePort(): Promise<number> {
   const server = createServer();
@@ -104,7 +104,7 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
       children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', ...(process.env.FREETRAIN_ONLINE_TEST_DEV_CLIENT==='1'?[]:['preview']), '--host', '127.0.0.1',
         '--port', String(webPort), '--strictPort'], { ...process.env, FREETRAIN_ONLINE_API_TARGET: apiURL }, baseURL));
       let first = true;
-      await use({ baseURL, restart: async () => {
+      await use({ baseURL, pid: () => children[0].pid, restart: async () => {
         await stop(children[0]);
         children[0] = await startBackend();
       }, reset: async () => {

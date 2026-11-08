@@ -34,6 +34,6 @@ export default defineConfig({
     { name: 'canonical', testMatch: canonical },
     { name: 'startup', testMatch: 'startup-world.spec.ts' },
     { name: 'prototype-regression', testIgnore: [...canonical, 'startup-world.spec.ts',
-      'mixed-continuation.spec.ts', 'optional-content.spec.ts', 'capacity.spec.ts', 'railway-capacity.spec.ts'] },
+      'mixed-continuation.spec.ts', 'optional-content.spec.ts', 'capacity.spec.ts', 'railway-capacity.spec.ts', 'fleet-capacity.spec.ts'] },
   ],
 });

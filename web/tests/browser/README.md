@@ -40,3 +40,12 @@ deno task test:browser:run station-editing.spec.ts
 Layout, preference and map measurements are written beneath the current
 `FREETRAIN_ONLINE_BROWSER_EVIDENCE` directory in functional subdirectories.
 Historical UX acceptance documents retain their original phase labels.
+
+### Fleet capacity (P5-28)
+
+`playwright.fleet-capacity.config.ts` is an opt-in, sequential measurement suite.
+Generate the five accepted scenes with the focused `FleetCapacityTests` first,
+then build the client and run that configuration. It measures legal purchased /
+deployed stock, local and injected 100ms RTT feedback, running/paused resources,
+peer join, named save and process restart. It does not run in the default browser
+projects. See [method, reproduction and qualifications](../../../doc/web-parity-fleet-capacity.md).

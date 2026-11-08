@@ -16,7 +16,7 @@ static class RailwayCapacity
     {
         Directory.CreateDirectory(directory);
         var (h,v,z,rings)=mode switch {"small"=>(64,64,16,4),"medium"=>(128,128,32,16),
-            "large"=>(256,256,64,64),"empty" or "heavy"=>(1500,1090,45,64),"limit" or "voxel-edge"=>(1500,1090,45,227),"route"=>(2048,830,45,0),"journal"=>(64,64,16,0),
+            "large"=>(256,256,64,64),"network"=>(128,160,10,0),"empty" or "heavy"=>(1500,1090,45,64),"limit" or "voxel-edge"=>(1500,1090,45,227),"route"=>(2048,830,45,0),"journal"=>(64,64,16,0),
             _=>throw new ArgumentException("Expected small, medium, large, empty, heavy, limit, voxel-edge, route or journal.")};
         var watch=Stopwatch.StartNew();
         var request=new EmptyWorldRequest(WorldCreationProfile.Id,"P4 capacity "+mode,new(h,v,z),0);
@@ -31,9 +31,9 @@ static class RailwayCapacity
         if(baseState!=null){var b=cells.ToBuilder();for(int row=0;row<300;row++)for(int col=0;col<144;col++)b[row*h+col]=new(2,TerrainSurface.Cut);cells=b.ToImmutable();}
         var terrain=new TerrainWorld(TerrainProfiles.Bundled,request.Name,request.Dimensions,0,cells,
             new(baseState?.World.Spatial.NextEntityId??1,kept),baseState?.World.Occupants.Where(o=>ids.Contains(o.EntityId))??[]);
-        if(mode is "empty" or "heavy")
+        if(mode is "empty" or "heavy" or "network")
         {
-            var o=space.ToLocation(new(64,260,2));var next=terrain.Spatial.NextEntityId;
+            var o=space.ToLocation(mode=="network"?new(32,100,2):new(64,260,2));var next=terrain.Spatial.NextEntityId;
             var mountain=terrain.Profile.Definitions.Single(d=>d.Kind==TerrainOccupantKind.Mountain&&d.TreeSpriteCount==0).Reference;
             var anchors=new[]{new Location(o.X+11,o.Y+12,2),new Location(o.X+11,o.Y+20,2)};
             var extra=anchors.Select((p,i)=>new SpatialEntity(next+i,0,mountain,p,new([new(new(0,0,0),false)]),true,false,0)).ToImmutableArray();
@@ -76,9 +76,9 @@ static class RailwayCapacity
                     throw new Exception("Nonreciprocal ring port.");
         }
         Location? networkOrigin=null;
-        if(mode is "empty" or "heavy")
+        if(mode is "empty" or "heavy" or "network")
         {
-            var o=space.ToLocation(new(64,260,2));networkOrigin=o;
+            var o=space.ToLocation(mode=="network"?new(32,100,2):new(64,260,2));networkOrigin=o;
             Location P(int x,int y,int level=2)=>new(o.X+x,o.Y+y,level);
             var t=Stopwatch.StartNew();var slope=SlopeRailwayConstruction.PreviewBuild(state.World,P(24,4),Heading.East);
             if(!slope.Legal)throw new Exception(slope.Reason);var previewMs=t.Elapsed.TotalMilliseconds;t.Restart();
@@ -169,7 +169,7 @@ static class RailwayCapacity
         var state=SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         using var report=JsonDocument.Parse(File.ReadAllText(Path.Combine(directory,"measurement.json")));
         var r=report.RootElement;var mode=r.GetProperty("mode").GetString();
-        var graph=ValidateGraph(state.World,r.GetProperty("rings").GetInt32(),mode is "empty" or "heavy",mode is "limit" or "voxel-edge" or "route" or "journal");
+        var graph=ValidateGraph(state.World,r.GetProperty("rings").GetInt32(),mode is "empty" or "heavy" or "network",mode is "limit" or "voxel-edge" or "route" or "journal");
         if(!bytes.SequenceEqual(SaveCodec.Write(state)))throw new Exception("Nonexact capacity save.");
         var hash=Convert.ToHexStringLower(SHA256.HashData(bytes));
         if(hash!=r.GetProperty("saveSha256").GetString())throw new Exception("Fixture drift.");
