@@ -4,8 +4,9 @@ Complete at construction/authority scope. All 35 bundled station contributions
 construct immediately as real Station identities with their exact authored
 orientation, full footprint and manifest price. Placement does not create a
 ConstructionSite, railway-stationary substitute or completion callback.
-[P6-07 rendering and P6-08 building controls](../tmp/web-feature-parity-checklist.md)
-remain open; this API slice grants no playable station UI or passenger service.
+[P6-07 rendering](web-parity-station-rendering.md) is delivered separately;
+P6-08 building controls remain open. This API slice grants no playable station
+construction UI or passenger service.
 
 ## Domain and lifecycle
 

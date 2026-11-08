@@ -17,9 +17,10 @@ import { isTerrainWorld, isMixedWorld } from './world-identity.ts';
 import { DemoRailway } from './demo-railway.ts';
 import { demoCar, demoLoop } from './demo-railway-path.ts';
 import type { RailwayPickPolicy } from './railway-renderer.ts';
+import {stationNamePositions,type StationLabels} from './station-labels.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -154,17 +155,6 @@ export class MapRenderer {
       this.canvas.dataset.trainMotion=this.motionPainted?'smooth':'discrete';
       this.canvas.dataset.trainMotionPhase=this.motionPainted?(this.motion.buffering?'buffering':'playing'):'discrete';
       this.canvas.dataset.trainMotionPose=this.motionPainted&&moving[0]?JSON.stringify(this.compositor.position(moving[0].carId)):'';
-      const labels=options.trainLabels;
-      if(labels?.visible){
-        ctx.save();ctx.font=`${labels.size}px ${labels.font}`;ctx.textAlign='center';ctx.textBaseline='bottom';
-        for(const train of read.mixed?.fleet?.trains??[]){
-          const head=train.cars[0];if(head.state.kind!=='inside'||head.state.location!.z>options.heightCut)continue;
-          const center=this.trainCenter(train.id);if(!center)continue;
-          const x=(center.x-camera.x)*camera.zoom+width/2,y=(center.y-camera.y)*camera.zoom+height/2-14*camera.zoom;
-          if(x< -256||x>width+256||y<0||y>height+labels.size)continue;
-          ctx.lineWidth=3;ctx.strokeStyle='#202020';ctx.strokeText(train.name,x,y);ctx.fillStyle=labels.color;ctx.fillText(train.name,x,y);
-        }ctx.restore();
-      }
       const selected=options.selection;
       const selectedPosition=selected?.kind==='train'&&'carId' in selected
         ?(this.motionPainted?this.compositor.position(selected.carId):undefined)??read.mixed?.fleet?.trains.find(t=>t.id===selected.id)?.cars.find(c=>c.id===selected.carId)?.state.location??undefined:selected?.position;
@@ -266,6 +256,26 @@ export class MapRenderer {
         const vertices=[a,{x:b.x,y:a.y,z:a.z},b,{x:a.x,y:b.y,z:a.z}];
         ctx.beginPath();vertices.forEach((v,i)=>{const p=toScreen(v,camera,width,height,this.space!);if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);});
         ctx.closePath();ctx.strokeStyle='#126e79';ctx.lineWidth=2;ctx.stroke();
+      }
+      const stationLabels=options.stationLabels;
+      if(stationLabels?.visible){
+        ctx.save();ctx.font=`${stationLabels.size}px ${stationLabels.font}`;ctx.textAlign='center';ctx.textBaseline='top';
+        for(const p of stationNamePositions(read)) {
+          const x=(p.x-camera.x)*camera.zoom+width/2,y=(p.y-camera.y)*camera.zoom+height/2;
+          if(x< -256||x>width+256||y< -stationLabels.size||y>height)continue;
+          ctx.fillStyle='#000000';ctx.fillText(p.name,x+1,y+1);ctx.fillStyle=stationLabels.color;ctx.fillText(p.name,x,y);
+        }ctx.restore();
+      }
+      const labels=options.trainLabels;
+      if(labels?.visible){
+        ctx.save();ctx.font=`${labels.size}px ${labels.font}`;ctx.textAlign='center';ctx.textBaseline='bottom';
+        for(const train of read.mixed?.fleet?.trains??[]){
+          const head=train.cars[0];if(head.state.kind!=='inside'||head.state.location!.z>options.heightCut)continue;
+          const center=this.trainCenter(train.id);if(!center)continue;
+          const x=(center.x-camera.x)*camera.zoom+width/2,y=(center.y-camera.y)*camera.zoom+height/2-14*camera.zoom;
+          if(x< -256||x>width+256||y<0||y>height+labels.size)continue;
+          ctx.lineWidth=3;ctx.strokeStyle='#202020';ctx.strokeText(train.name,x,y);ctx.fillStyle=labels.color;ctx.fillText(train.name,x,y);
+        }ctx.restore();
       }
       this.canvas.dataset.drawn=String(count);this.canvas.dataset.culled=String(Math.max(0,this.terrainScene.operations.length-count));
       this.canvas.dataset.paintMs=(performance.now()-start).toFixed(2);

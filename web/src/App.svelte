@@ -82,6 +82,7 @@
   const fleetTrain = $derived(mapSelection?.kind === 'train' ? read?.mixed?.fleet?.trains.find(item=>item.id===mapSelection?.id) : undefined);
   const selectedCarId = $derived(mapSelection?.kind === 'train' && 'carId' in mapSelection ? mapSelection.carId : undefined);
   const fleetCar = $derived(fleetTrain?.cars.find(c=>c.id===selectedCarId));
+  const stationBuilding = $derived(mapSelection?.kind === 'station' ? read?.mixed?.stationGraph?.buildings.find(b=>b.id===mapSelection?.id) : undefined);
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
@@ -141,11 +142,12 @@
   }
   function select(selection: Selection | undefined) {
     if (selection?.kind === mapSelection?.kind && selection?.id === mapSelection?.id &&
+      (selection?.kind!=='station'||selection.position.x===mapSelection!.position.x&&selection.position.y===mapSelection!.position.y&&selection.position.z===mapSelection!.position.z) &&
       (selection?.kind!=='train'||!('carId' in selection)||mapSelection?.kind==='train'&&'carId' in mapSelection&&selection.carId===mapSelection.carId)) { if (selection) { panel = 'inspector'; menu = false; } return; }
     request(() => {
       mapSelection = selection;
       if(selection?.kind==='train')informationTrainId=selection.id;
-      if (selection?.kind === 'station') model.selectStation(selection.id);
+      if (selection?.kind === 'station' && !read?.mixed) model.selectStation(selection.id);
       launcher = document.querySelector('canvas') ?? undefined;
       if (selection) { panel = 'inspector'; void tick().then(() => document.querySelector<HTMLElement>('.primary-panel h2')?.focus({ preventScroll: true })); }
     });
@@ -281,7 +283,7 @@
       {#snippet stationActions()}
           <button class="primary" type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station' && !mixed)} footer={panel === 'inspector' && mapSelection?.kind === 'station' && !mixed ? stationActions : undefined}>
         {#if panel === 'fleet'}
           <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
         {:else if panel === 'inspector'}
@@ -296,7 +298,10 @@
             {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetDeploymentControls bind:this={inspectorFleetControls} {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing} allowPlacement={false} onmap={()=>{}} onpreview={p=>{deploymentPreview=p;}}/>{/key}
             <FleetControllerAssignment {model} {view} targetId={fleetTrain.id} disabled={clockDisabled||synchronizing}/>
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
-          {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
+          {:else if stationBuilding}
+            <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{stationBuilding.name}</dd></div></dl>
+            <ObjectProvenance id={stationBuilding.definition.contributionId} packId={stationBuilding.definition.packId} locale={view.locale}/>
+          {:else if station || (mapSelection?.kind === 'station' && !mixed && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>
             <form id="station-name-form" onsubmit={event => { event.preventDefault(); if (canApply) void model.rename(); }}>
               <label class="field">{text.stationName}<input value={view.draft} oninput={event => model.setDraft(event.currentTarget.value)} oncompositionstart={() => model.setComposing(true)} oncompositionend={() => model.setComposing(false)} onblur={() => model.setComposing(false)} onkeydown={event => { if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229 || view.composing)) event.preventDefault(); }} maxlength="120" aria-describedby="draft-hint" /></label>

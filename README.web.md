@@ -1,4 +1,4 @@
-**P6-06 station construction domain:** [Immediate station building/removal](doc/web-parity-station-construction.md) uses exact bundled footprints, pure previews, authoritative commits, source booking and timer/host/listener lifecycle. Save10/protocol8 remain current; station rendering, controls and passenger service follow in later P6 steps.
+**P6-07 station presentation:** [Station building art, picking and names](doc/web-parity-station-rendering.md) render all 35 bundled definitions through source recipes, including Gray cut footprints and stable station picks. View offers local EN/JA station-name preferences. [Immediate construction/removal APIs](doc/web-parity-station-construction.md) retain source booking and lifecycle. Save10/protocol8 remain current; construction controls and passenger service follow in later P6 steps.
 
 **P5-26 moving-fleet integration:** [Cross-tool and lifecycle regression](doc/web-parity-fleet-cross-tool.md)
 uses purchased three-car trains to verify construction protection, source-specific

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {initialStationLabels,persistStationLabels} from './lib/station-labels.ts';
   import TrainInformation from './TrainInformation.svelte';
   import {trainLocation,initialTrainLabels,persistTrainLabels} from './lib/train-information.ts';
   import { pickRailwayLocation } from './lib/railway-renderer.ts';
@@ -43,6 +44,8 @@
   let width = 0, height = 0, dirty = true, lastDpr = 0;
   let level = $state(1), heightCut = $state(15);
   let shape = $state<Track['shape']>('buffer');
+  let stationLabels=$state(initialStationLabels());
+  $effect(()=>persistStationLabels(stationLabels));
   let trainLabels=$state(initialTrainLabels());
   $effect(()=>persistTrainLabels(trainLabels));
   let drawPoles=$state(true);
@@ -307,7 +310,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); });
   $effect(() => { void heightCut;cancelGesture(); });
-  $effect(() => { void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+  $effect(() => { void stationLabels;void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
@@ -345,7 +348,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { trainLabels,smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { stationLabels,trainLabels,smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           canvas.dataset.followingTrain=followingTrainId??'';canvas.dataset.cameraState=JSON.stringify(camera);
@@ -405,6 +408,10 @@
         <label><input type="checkbox" bind:checked={drawPoles}/>{text.showPoles}</label>
         <label><input type="checkbox" bind:checked={drawSpeedLimits}/>{text.showSpeedLimits}</label>
         <label><input type="checkbox" bind:checked={night}/>{text.night}</label><label><input type="checkbox" bind:checked={winter}/>{text.winter}</label><label><input type="checkbox" bind:checked={recolor}/>{text.recolor}</label>
+        <label><input type="checkbox" bind:checked={stationLabels.visible}/>{text.stationNamesVisible}</label>
+        <label class="field">{text.stationNameFont}<select aria-label={text.stationNameFont} bind:value={stationLabels.font}><option value="sans-serif">{text.fontSans}</option><option value="serif">{text.fontSerif}</option><option value="monospace">{text.fontMono}</option></select></label>
+        <label class="field">{text.stationNameSize}<input aria-label={text.stationNameSize} type="number" min="8" max="32" value={stationLabels.size} onchange={e=>{const n=Number(e.currentTarget.value);if(Number.isInteger(n)&&n>=8&&n<=32)stationLabels.size=n;else e.currentTarget.value=String(stationLabels.size);}}/></label>
+        <label class="field">{text.stationNameColor}<input aria-label={text.stationNameColor} type="color" bind:value={stationLabels.color}/></label>
         <label><input type="checkbox" bind:checked={trainLabels.visible}/>{text.trainNamesVisible}</label>
         <label class="field">{text.trainNameFont}<select aria-label={text.trainNameFont} bind:value={trainLabels.font}><option value="sans-serif">{text.fontSans}</option><option value="serif">{text.fontSerif}</option><option value="monospace">{text.fontMono}</option></select></label>
         <label class="field">{text.trainNameSize}<input aria-label={text.trainNameSize} type="number" min="8" max="32" value={trainLabels.size} onchange={e=>{const n=Number(e.currentTarget.value);if(Number.isInteger(n)&&n>=8&&n<=32)trainLabels.size=n;else e.currentTarget.value=String(trainLabels.size);}}/></label>

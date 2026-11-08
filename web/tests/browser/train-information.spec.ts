@@ -5,7 +5,7 @@ import {canonicalState as state,ready,openPanel,closePanel} from './browser-help
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8')),ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
 async function setup(page:Page,locale='en'){
- const before=await state(page),input=readFileSync('../tmp/p5-25-color-fleet.json');
+ const before=await state(page),input=readFileSync('tests/fixtures/fleet-information-v10.json');
  const response=await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:input});expect(response.ok(),await response.text()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel(en.language,{exact:true}).selectOption('ja');await closePanel(page);}
@@ -107,7 +107,7 @@ test('all seven color templates preserve exact source palette, night shades, cro
 });
 
 test('stable TrainId follow survives Outside return and explicit reversal, then stops on withdrawal and sale',async({page})=>{
- const before=await state(page),input=readFileSync('../tmp/p5-25-outside-fleet.json');
+ const before=await state(page),input=readFileSync('tests/fixtures/fleet-follow-outside-v10.json');
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:input})).ok()).toBe(true);await page.goto('/');await ready(page);
  const initial=await state(page),train=initial.mixed.fleet.trains[0],canvas=page.locator('.world-canvas');
  await openPanel(page,'view');const info=page.locator('.train-information');await info.getByLabel(en.trainSelect,{exact:true}).selectOption(train.id);
