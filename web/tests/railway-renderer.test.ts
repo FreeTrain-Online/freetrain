@@ -348,3 +348,21 @@ Deno.test('speed-limit inspector definition becomes unavailable when its members
  assert.equal(speedLimitAt({low:[p],medium:[],fast:[]},p,d),undefined);
  assert.equal(speedLimitAt(undefined,p,d),undefined);
 });
+
+Deno.test('structure grid masks follow opaque pixels and invalidate neighboring columns on build and removal',async()=>{
+ const empty=flat(3,5),before=await prepare(empty);
+ const built=structuredClone(empty),type=stationaryTypes.find((t:any)=>t.id==='{{98619BD4-46C3-4B90-1703d-kokakyo2}-E')!;
+ const id=stationary(built,type),scene=await prepare(built,5,catalog,before);
+ const affected=scene.operations.filter(o=>'points' in o&&o.gridMasks?.length);
+ assert(affected.length>1,'Sprite overhang must protect neighboring grid strokes');
+ assert(affected.every(o=>o.target.kind==='terrain'&&o.target.surface==='ground'&&'points' in o&&o.color==='transparent'));
+ const changed=scene.changedColumns(before)!;
+ for(const op of affected)assert(changed.includes(scene.columnIndex(op)),'Neighbor masks must participate in retained raster damage');
+ const mask=affected[0];assert('points' in mask);
+ assert(mask.gridMasks!.some(m=>m.rows.some(r=>r.includes('0')&&r.includes('1'))),'Transparent pixels must remain available to the grid');
+ const removed=await prepare(empty,5,catalog,scene);
+ for(const op of affected)assert(removed.changedColumns(scene)!.includes(scene.columnIndex(op)));
+ assert(!removed.operations.some(o=>'points' in o&&o.gridMasks?.length));
+ const hidden=await prepare(built,0);assert(!hidden.operations.some(o=>'points' in o&&o.gridMasks?.length));
+ assert(railwayOps(scene).some(o=>o.target.id===id));
+});

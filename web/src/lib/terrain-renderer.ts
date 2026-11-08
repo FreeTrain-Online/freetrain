@@ -13,7 +13,8 @@ import type { TrainTarget } from './train-renderer.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
 export type SceneTarget=TerrainTarget|RailwayTarget|TrainTarget;
-type Operation = ({ target:SceneTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer}) & {tunnel?:'portal'|'interior'};
+type GridMask={left:number;top:number;rows:readonly string[];key:string};
+type Operation = ({ target:SceneTarget; points:Point[]; color:string; edge?:string; gridMasks?:readonly GridMask[] } | {target:SceneTarget; layer:Layer}) & {tunnel?:'portal'|'interior'};
 export type TerrainOperation = Operation;
 type Bounds={left:number;top:number;right:number;bottom:number};
 const diamond=[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}];
@@ -56,6 +57,7 @@ export class TerrainScene {
   private viewKey='';
   private cellCache=new Map<number,{signature:string;operations:Operation[]}>();
   private cacheIdentity='';
+  private gridKey?:(index:number)=>string;
   private read?:Snapshot;
   private space?:WorldSpace;
   private railway?:RailwayRenderPlan;
@@ -107,7 +109,7 @@ export class TerrainScene {
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
-      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;
+      scene.gridKey=gridKey;scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;
       if(previous?.cacheIdentity===cacheIdentity) {
         scene.bounds=previous.bounds;scene.polygonKeys=previous.polygonKeys;
         scene.polygons=previous.polygons;
@@ -138,6 +140,27 @@ export class TerrainScene {
     const full=heightCut>=read.map.levels-1,cut=Math.min(heightCut,read.map.levels-1);
     const groundEdge=terrainColor(variant.season==='winter'?[192,200,216]:[187,171,115],variant.night);
     const rimEdge=terrainColor(variant.season==='winter'?[96,104,128]:[96,84,32],variant.night);
+    // Grid strokes extend beyond their tile. Keep them behind opaque buildable
+    // pixels in later columns without changing terrain's source depth order.
+    const gridBuckets=new Map<string,{mask:GridMask;z:number;right:number;bottom:number}[]>();
+    if(railway)for(const index of new Set(read.mixed!.voxels.map(v=>{const s=space.storage(v.position);return s.v*read.map.width+s.h;}))) {
+      for(const op of railway.operations(index,cut,t.waterLevel,full,t.cells[index].ground))if('layer' in op&&op.target.kind==='railway'&&['stationary','pier','support'].includes(op.target.component)) {
+        const l=op.layer,f=l.frame,maskId=f.masks![`${variant.season}/${variant.night?'night':'day'}`],rows=catalog.masks[maskId];
+        const [x,y,z]=l.position,[ax,ay]=f.anchor!,[,,w,h]=f.rectangle!;
+        const left=16*(x+y)-ax,top=8*(y-x)-16*z-ay;
+        const mask={left,top,rows,key:maskId},entry={mask,z:op.target.position.z,right:left+w,bottom:top+h};
+        for(let by=Math.floor(top/64);by<=Math.floor((top+h)/64);by++)for(let bx=Math.floor(left/64);bx<=Math.floor((left+w)/64);bx++) {
+          const key=`${bx},${by}`,bucket=gridBuckets.get(key)??[];bucket.push(entry);gridBuckets.set(key,bucket);
+        }
+      }
+    }
+    const gridMasks=(p:Position):GridMask[]=>{
+      const q=space.project(p),left=q.x-2,top=q.y-2,right=q.x+34,bottom=q.y+18,found=new Set<GridMask>();
+      for(let by=Math.floor(top/64);by<=Math.floor(bottom/64);by++)for(let bx=Math.floor(left/64);bx<=Math.floor(right/64);bx++)
+        for(const e of gridBuckets.get(`${bx},${by}`)??[])if(e.z>=p.z&&e.mask.left<=right&&e.right>=left&&e.mask.top<=bottom&&e.bottom>=top)found.add(e.mask);
+      return [...found];
+    };
+    const gridKey=(index:number)=>gridMasks(space.location({h:index%read.map.width,v:Math.floor(index/read.map.width),z:t.cells[index].ground})).map(m=>[m.key,m.left,m.top].join('/')).join('|');
     const addSprite=(id:string,frameKey:string|undefined,p:Position,target:TerrainTarget,offset:Point={x:0,y:0})=>{
       const recipe=recipes.get(id),frame=frameKey===undefined?recipe?.frames[0]:recipe?.frames.find(f=>f.key===frameKey);
       if(!frame||frame.status!=='ready'||!frame.masks?.[`${variant.season}/${variant.night?'night':'day'}`])throw new Error('Terrain recipe unavailable: '+id+'/'+frameKey);
@@ -166,7 +189,7 @@ export class TerrainScene {
         signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,0),move(base,2),move(base,4),move(base,6)].map(p=>{
           const s=space.storage(p),surface=at.get(key(p)),backing=at.get(key({...p,z:p.z-1}));
           return [space.containsHorizontal(p)?t.cells[s.v*read.map.width+s.h]:null,surface,backing,surface&&entities.get(surface.entityId)?.definition,backing&&entities.get(backing.entityId)?.definition];
-        }),railway.signature(index)]);
+        }),railway.signature(index),gridKey(index)]);
         const old=reusable?.get(index);
         if(old?.signature===signature){reused=true;ops.push(...old.operations);for(const op of old.operations)if('layer' in op)layers.push(op.layer);continue;}
       }
@@ -194,7 +217,10 @@ export class TerrainScene {
       if(flat&&(!railway||railway.drawGround(base,read.map.levels))) {
         const ground=target(base,'ground');
         addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,ground);
-        if(base.z>=t.waterLevel)addPolygon(base,ground,diamond,'transparent',groundEdge);
+        if(base.z>=t.waterLevel){
+          addPolygon(base,ground,diamond,'transparent',groundEdge);
+          const masks=gridMasks(base);if(masks.length)(ops[ops.length-1] as Extract<Operation,{points:Point[]}>).gridMasks=masks;
+        }
         // Outline the upper rim even when the lower cell's slope reaches this
         // top: that continuous join is the normal edge of a natural plateau.
         if(visibleTerrace||base.z>=t.waterLevel)for(const [i,d] of ([2,4,6,0] as const).entries()) {
@@ -273,7 +299,9 @@ export class TerrainScene {
     if(!this.railway&&!previous.railway)return terrainChangedColumns(previous.read,this.read);
     const terrain=this.read.terrain!.geometryRevision===previous.read.terrain!.geometryRevision?[]:terrainChangedColumns(previous.read,this.read);
     if(!terrain)return;
-    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway)])];
+    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway),
+      ...previous.operations.filter(op=>'points' in op&&op.target.kind==='terrain'&&op.target.surface==='ground'&&op.color==='transparent')
+        .map(op=>previous.columnIndex(op)).filter(i=>this.gridKey?.(i)!==previous.gridKey?.(i))])];
     if(this.railway||previous.railway)return;
     return terrain;
   }
@@ -329,7 +357,7 @@ export class TerrainScene {
     const px=(view.x+b.left*view.zoom)*dpr,py=(view.y+b.top*view.zoom)*dpr;
     const ix=Math.floor(px+1e-7),iy=Math.floor(py+1e-7),fx=Math.max(0,Math.round((px-ix)*1e7)/1e7),fy=Math.max(0,Math.round((py-iy)*1e7)/1e7);
     let shape=this.polygonKeys.get(op);
-    if(!shape){shape=[op.color,op.edge??'',...op.points.flatMap(p=>[p.x-b.left,p.y-b.top])].join('/');this.polygonKeys.set(op,shape);}
+    if(!shape){shape=[op.color,op.edge??'',...(op.gridMasks??[]).map(m=>[m.key,m.left-b.left,m.top-b.top].join(',')),...op.points.flatMap(p=>[p.x-b.left,p.y-b.top])].join('/');this.polygonKeys.set(op,shape);}
     const width=Math.ceil((b.right-b.left)*scale+fx),height=Math.ceil((b.bottom-b.top)*scale+fy),bytes=width*height*4;
     if(bytes>16*1024*1024)return false;
     const key=shape+'/'+[scale,fx,fy].join(',');let cached=this.polygons.rasters.get(key);
@@ -337,13 +365,25 @@ export class TerrainScene {
       while(this.polygons.bytes+bytes>64*1024*1024&&this.polygons.rasters.size) {
         const first=this.polygons.rasters.keys().next().value!;this.polygons.bytes-=this.polygons.rasters.get(first)!.bytes;this.polygons.rasters.delete(first);
       }
-      const image=new OffscreenCanvas(width,height),paint=image.getContext('2d')!;paint.beginPath();
+      const image=new OffscreenCanvas(width,height),paint=image.getContext('2d')!;
+      this.clipGrid(paint as unknown as CanvasRenderingContext2D,op,(x,y)=>({x:(x-b.left)*scale+fx,y:(y-b.top)*scale+fy}),width,height);paint.beginPath();
       op.points.forEach((p,i)=>{const x=(p.x-b.left)*scale+fx,y=(p.y-b.top)*scale+fy;i?paint.lineTo(x,y):paint.moveTo(x,y);});
       paint.closePath();paint.fillStyle=op.color;paint.fill();
       if(op.edge){paint.strokeStyle=op.edge;paint.lineWidth=scale;paint.stroke();}
       cached={image,bytes};this.polygons.rasters.set(key,cached);this.polygons.bytes+=bytes;
     }
     ctx.drawImage(cached.image,ix/dpr,iy/dpr,width/dpr,height/dpr);return true;
+  }
+  private clipGrid(ctx:CanvasRenderingContext2D,op:Extract<Operation,{points:Point[]}>,project:(x:number,y:number)=>Point,width:number,height:number) {
+    // Separate clips make overlapping sprite masks a union of holes.
+    for(const mask of op.gridMasks??[]) {
+      ctx.beginPath();ctx.rect(0,0,width,height);
+      for(let y=0;y<mask.rows.length;y++)for(const match of mask.rows[y].matchAll(/1+/g)) {
+        const a=project(mask.left+match.index!,mask.top+y),b=project(mask.left+match.index!+match[0].length,mask.top+y+1);
+        ctx.rect(a.x,a.y,b.x-a.x,b.y-a.y);
+      }
+      ctx.clip('evenodd');
+    }
   }
   private paint(ctx:CanvasRenderingContext2D,view:View,width:number,height:number,clips?:Bounds[]):number {
     return this.paintOperations(ctx,view,width,height,this.operations,clips);
@@ -362,8 +402,10 @@ export class TerrainScene {
       if(this.paintPolygon(ctx,view,op))continue;
       const points=op.points.map(p=>({x:view.x+p.x*view.zoom,y:view.y+p.y*view.zoom}));
       if(points.every(p=>p.x<0)||points.every(p=>p.x>width)||points.every(p=>p.y<0)||points.every(p=>p.y>height))continue;
+      if(op.gridMasks){ctx.save();this.clipGrid(ctx,op,(x,y)=>({x:view.x+x*view.zoom,y:view.y+y*view.zoom}),width,height);}
       ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=op.color;ctx.fill();
       if(op.edge){ctx.strokeStyle=op.edge;ctx.lineWidth=view.zoom;ctx.stroke();}
+      if(op.gridMasks)ctx.restore();
     }
     return drawn;
   }
@@ -378,6 +420,7 @@ export class TerrainScene {
     for(let i=operations.length-1;i>=0;i--) {
       const op=operations[i];
       const b=this.operationBounds(op);if(world.x<b.left||world.x>b.right||world.y<b.top||world.y>b.bottom)continue;
+      if('points' in op&&op.gridMasks?.some(m=>m.rows[Math.floor(world.y-m.top)]?.[Math.floor(world.x-m.left)]==='1'))continue;
       if('layer' in op ? this.ready.pick(p.x,p.y,view,[op.layer]) : inPolygon(world,op.points))return {...op.target,position:{...op.target.position}};
     }
   }

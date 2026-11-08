@@ -9,6 +9,7 @@ import {trainCarLayer} from '../../src/lib/train-renderer.ts';
 import {RecipeImageCache,variantKey,type RenderCatalog,type Variant} from '../../src/lib/content-recipes.ts';
 import fixtures from '../../../doc/parity/train-fixtures.json' with {type:'json'};
 import source from '../../../prototype/protocol/fixtures/snapshot-fleet.json' with {type:'json'};
+import mixedSource from '../../../prototype/protocol/fixtures/snapshot-mixed.json' with {type:'json'};
 import type {Snapshot} from '../../src/generated/contracts.ts';
 import {trainSceneFixture} from './train-scene.ts';
 import {TerrainScene} from '../../src/lib/terrain-renderer.ts';
@@ -382,3 +383,35 @@ export async function trainSlopePixels(catalog:RenderCatalog,variant:Variant) {
 // P5-25: browser-only exports for independent palette/crop/mask verification.
 export {TrainColorCatalog,defaultTrainColors,colorTestCarId} from '../../src/lib/train-colors.ts';
 export {RecipeImageCache,instantiate} from '../../src/lib/content-recipes.ts';
+
+export async function structureGridPixels(catalog:RenderCatalog) {
+ const s=structuredClone(mixedSource) as Snapshot;
+ s.map={width:3,height:5,levels:6,coordinateSystem:'hv'};s.entities=[];
+ s.terrain={...s.terrain!,geometryRevision:'0',nextEntityId:'1',waterLevel:0,occupants:[],cells:Array.from({length:15},()=>({ground:1,surface:'cut'}))};
+ const request=JSON.parse(s.terrain.provenance.requestJson);request.Dimensions={H:3,V:5,Z:6};s.terrain.provenance.requestJson=JSON.stringify(request);
+ s.mixed={geometryRevision:'0',nextEntityId:'1',voxels:[],slopes:[],accounts:{initialCash:s.cash,bankruptcyIncrement:'10000000000',transactions:[]}};
+ const space=new WorldSpace(3,5,6),p=space.location({h:0,v:0,z:1}),id='1';
+ const definition={packId:'exav-stable-bundled',contributionId:'{{98619BD4-46C3-4B90-1703d-kokakyo2}-E',recipeId:'{{98619BD4-46C3-4B90-1703d-kokakyo2}-E'};
+ s.entities.push({id,revision:'0',definition,anchor:p,footprint:[{offset:{x:0,y:0,z:0},transparent:true}],owned:true,silentlyReclaimable:false,value:'0'});
+ s.mixed.nextEntityId='2';s.mixed.voxels.push({position:p,ownerId:id,kind:'stationary',traffic:null,definition,sprite:0,drawGroundBelow:true,drawGroundAbove:true,supportedOwnerId:null});
+ let checked=0;
+ for(const night of [false,true]) {
+  const scene=await TerrainScene.prepare(s,catalog,new RecipeImageCache(),{season:'spring',night},5);
+  const structure=scene.operations.filter(o=>o.target.kind==='railway'),grids=scene.operations.filter(o=>'points' in o&&o.target.kind==='terrain'&&o.target.surface==='ground'&&o.color==='transparent');
+  for(const cached of [false,true])for(const dpr of [1,2])for(const zoom of [.75,1,2,4]) {
+   const width=320,height=240,view={x:80.25,y:100.5,zoom};
+   const a=new OffscreenCanvas(width*dpr,height*dpr),b=new OffscreenCanvas(width*dpr,height*dpr),ctx=a.getContext('2d')!,expected=b.getContext('2d')!;
+   for(const c of [ctx,expected]){c.setTransform(dpr,0,0,dpr,0,0);scene.paintOperations(c as unknown as CanvasRenderingContext2D,view,width,height,structure);}
+   const Canvas=globalThis.OffscreenCanvas;
+   try {
+    if(!cached)Reflect.set(globalThis,'OffscreenCanvas',undefined);
+    scene.paintOperations(ctx as unknown as CanvasRenderingContext2D,view,width,height,grids);
+   }finally{Reflect.set(globalThis,'OffscreenCanvas',Canvas);}
+   const actual=ctx.getImageData(0,0,a.width,a.height).data,reference=expected.getImageData(0,0,b.width,b.height).data;
+   for(let i=0;i<actual.length;i+=4)if(reference[i+3]===255) {
+    checked++;if(actual.slice(i,i+4).some((v,j)=>v!==reference[i+j]))throw new Error(`Grid painted structure at zoom ${zoom}, DPR ${dpr}, pixel ${i/4}`);
+   }
+  }
+ }
+ return {checked};
+}

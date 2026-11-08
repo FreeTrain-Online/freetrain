@@ -120,3 +120,12 @@ test('slope trains cross elevations and flat joins with whole sprites and matchi
   await testInfo.attach(`train-slopes-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
  }
 });
+
+test('terrain grids stay behind opaque buildable structure pixels at fractional zoom and DPI',async({page})=>{
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ const result=await page.evaluate(async catalog=>{const {structureGridPixels}=await import('/__tests/train-rendering.js');return structureGridPixels(catalog);},catalog);
+ expect(result.checked).toBeGreaterThan(1000);
+});
