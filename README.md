@@ -11,10 +11,12 @@ FreeTrain Online is in early development. You can explore and edit a shared worl
 - Explore a live map together, with elevation, water and forests.
 - Create flat or generated worlds, or import a heightmap image.
 - Modify terrain with painting and other terrain tools.
-- Lay, attach, branch and remove normal railway with an authoritative preview.
-- Set and remove speed-limit sections on level track and slopes.
+- Lay, attach, branch and remove railway with an authoritative preview.
+- Purchase, manage, and place trains.
+- Create and manage time tables for trains.
 - Save and restore worlds, including automatic checkpoints.
 - English and Japanese localizations.
+- Smoothly animated trains, rather than the original's stepwise movement.
 
 ## Run locally
 
@@ -50,17 +52,8 @@ Use **Game → New world** to create or import a world. The game saves automatic
 checkpoints, and you can also save, load or download a world from the save panel.
 **Game → Settings** lets you change the language and appearance.
 
-Choose **Remove** (R), select a railway, pier, forest, creek or terrace on the
-map, review the highlighted cells, then confirm. Selecting any part of a railway
-slope removes the complete slope. Forest removal preserves the ground shape.
-For a railway route, choose **Two-point line** in Remove and pick two points
-or enter their coordinates at one height. Review the straight stepped line and
-any skipped objects, then confirm. The line removes tracks and bridges across
-gaps while preserving scenery. The Track tool is for construction.
-
-Choose **Speed limits** (L) to add or remove Low, Medium or Fast sections.
-Select a level range or a four-position slope, review the preview, then confirm.
-Limits are saved with the world; train movement and timing remain in development.
+Use the various tools in the left panel to build and remove railway, trains,
+and other infrastructure.
 
 For more setup, multiplayer, deployment and development details, see
 [README.web.md](README.web.md).
@@ -80,7 +73,7 @@ See [COPYING.txt](COPYING.txt) for the license text and
     FreeTrainEx-Aver
     Copyright (C) 2008, FreeTrainEx-Aver Project et al.
     FreeTrain Online
-    Copyright (C) 2026, Daniel Markstedt <daniel@mindani.net>
+    Copyright (C) 2026, Daniel Markstedt et al.
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
