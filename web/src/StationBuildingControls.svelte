@@ -53,8 +53,7 @@
  $effect(()=>()=>{version++;request?.abort();onpreview();});
  const reasons={...railwayReasons,stationGround:'stationGround',stationNotFound:'stationNotFound',unavailableStationBinding:'railBinding'} as const;
 </script>
-<section class="tool-card track-task station-task" use:primaryAction aria-label={text.stationTask}>
- <h2>{text.stationTask}</h2><div role="tablist" aria-label={text.stationTask}><button role="tab" aria-selected="true">{text.stationBuildingTab}</button></div>
+<section class="station-building-task" use:primaryAction aria-label={text.stationTask}>
  <p class="hint">{text.stationServicePending}</p>
  <form onsubmit={e=>{e.preventDefault();void check();}}>
  <fieldset disabled={view.pending}>

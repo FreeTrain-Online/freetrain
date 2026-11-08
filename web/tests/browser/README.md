@@ -4,6 +4,7 @@ Tests are grouped by the behavior they protect.
 
 | Suite | Coverage |
 | --- | --- |
+| `thin-platform.spec.ts` | EN/JA slim roofed/unroofed ground/elevated/underground construction, exact roof-run ghosts and cuts, touch/map rail attachment, removal/restoration, peers, roles, stale/cancel/replacement fences and checkpoint restart |
 | `session-lifecycle.spec.ts` | Connection gate, sign-in, asset readiness, disconnect/rejoin, leave and revoked access |
 | `station-editing.spec.ts` | Unsaved drafts, focus traps, retargeting, stale revisions and interrupted edits |
 | `ui-preferences.spec.ts` | Color scheme persistence, fallback, contrast and canvas preservation |

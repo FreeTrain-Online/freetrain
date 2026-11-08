@@ -6,6 +6,10 @@ const terrain=readFileSync('../prototype/protocol/saves/terrain-v10.json');
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
 async function replace(page:Page,data:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data})).ok()).toBe(true);await ready(page);await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');}
 async function click(page:Page,x:number,y:number){
+ // Cut and narrow tool layout changes settle on the animation frame; pick
+ // against the completed raster and its camera, rather than an earlier frame.
+ await expect(page.locator('canvas')).toHaveAttribute('data-presentation','ready');
+ await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve()))));
  const p=await page.locator('canvas').evaluate((el,p)=>{
   const c=el as HTMLCanvasElement,r=c.getBoundingClientRect(),[cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom);
   return {x:r.x+r.width/2+(p.x-cx)*zoom,y:r.y+r.height/2+(p.y-cy)*zoom};

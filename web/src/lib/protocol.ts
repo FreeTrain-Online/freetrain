@@ -232,3 +232,18 @@ export function parseStationBuildingPreview(value:unknown):import('../generated/
   if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate station positions');
   return p;
 }
+
+const validateThinPlatform=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/ThinPlatformPreview'});
+export function parseThinPlatformPreview(value:unknown):import('../generated/contracts.ts').ThinPlatformPreview {
+  if(!validateThinPlatform(value))throw new Error('Invalid station preview');
+  const p=value as import('../generated/contracts.ts').ThinPlatformPreview;
+  if(BigInt(p.cost)<0n || (p.legal ? p.reason!==null||!p.positions.length : p.reason===null||p.cost!=='0'))throw new Error('Inconsistent station preview');
+  if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate station positions');
+  const q=p.query;
+  if(q.action==='place'?(q.platformId!=='0'||q.expectedPlatformRevision!=='0'):q.platformId==='0')throw new Error('Invalid platform identity');
+  if(p.legal&&q.action==='place'){
+    const dx=q.direction===2?1:q.direction===6?-1:0,dy=q.direction===4?1:q.direction===0?-1:0;
+    if(p.positions.length!==q.length||p.positions.some((v,i)=>v.x!==q.position.x+dx*i||v.y!==q.position.y+dy*i||v.z!==q.position.z))throw new Error('Invalid platform geometry');
+  }
+  return p;
+}

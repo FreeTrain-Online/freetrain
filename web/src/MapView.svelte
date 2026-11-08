@@ -22,7 +22,7 @@
   import { demoScene, demoCamera } from './lib/demo-scene.ts';
   import { demoLoopPeriod } from './lib/demo-railway-path.ts';
   import { tools, type Tool, type Panel } from './lib/game-ui.ts';
-  import StationBuildingControls from './StationBuildingControls.svelte';
+  import StationControls from './StationControls.svelte';
   import SlopeControls from './SlopeControls.svelte';
   import type { SlopePreview } from './generated/contracts.ts';
   import TrackControls from './TrackControls.svelte';
@@ -54,7 +54,7 @@
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean;isRemoving?:()=>boolean;usesSlopePick?:()=>boolean;pickPosition?:(p:Position,append?:boolean)=>void;hoverPosition?:(p?:Position)=>void}>();
-  let stationControls=$state<StationBuildingControls>(),stationPicked=$state<Position>(),stationRemovalTarget=$state<Position>(),stationPreview=$state<import('./generated/contracts.ts').StationBuildingPreview>();
+  let stationControls=$state<StationControls>(),stationPicked=$state<Position>(),stationRemovalTarget=$state<Position>(),stationPreview=$state<import('./generated/contracts.ts').StationBuildingPreview>(),platformPreview=$state<import('./generated/contracts.ts').ThinPlatformPreview>();
   export async function removeStation(position:Position){activateTool('station');await tick();stationRemovalTarget={...position};}
   let removeControls=$state<{cancelDraft:()=>boolean;pickMode:()=> 'object'|'auto'|'level'}>(),removePicked=$state<Selection|Position>();
   let removeLevel=$state(1),removalPath=$state<Position[]>([]);
@@ -101,7 +101,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { untrack(()=>{railControls?.cancelDraft();removeControls?.cancelDraft();stationControls?.cancelDraft();});stationPicked=undefined;stationRemovalTarget=undefined;stationPreview=undefined;removePicked=undefined;removalPath=[];railPicked=undefined;railPreview=undefined;slopePreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;cornerSelection=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { untrack(()=>{railControls?.cancelDraft();removeControls?.cancelDraft();stationControls?.cancelDraft();});stationPicked=undefined;stationRemovalTarget=undefined;stationPreview=undefined;platformPreview=undefined;removePicked=undefined;removalPath=[];railPicked=undefined;railPreview=undefined;slopePreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;cornerSelection=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -246,7 +246,7 @@
     else if(railway&&tool==='station'&&!blocked&&!panel){
       stationRemovalTarget=undefined;
       const selected=stationControls?.isRemoving()?renderer?.pick(p,camera.zoom):undefined;
-      stationPicked=selected?.kind==='station'?{...selected.position}:stationControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:'ground'}):tileAt(p,railLevel,camera,width,height,space);
+      stationPicked=selected&&(selected.kind==='station'||selected.kind==='railway'&&selected.component==='platform')?{...selected.position}:stationControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:stationControls?.pickPolicy()??'ground'}):tileAt(p,railLevel,camera,width,height,space);
     }
     else if(railway&&tool==='remove'&&!blocked&&!panel){
       const pick=removeControls?.pickMode();
@@ -293,6 +293,16 @@
     }
     camera = { ...space.center(location), zoom: Math.min(1.5, Math.max(.5, width / 850)) }; dirty = true;
   }
+  function framePlatform(positions:Position[]) {
+    if(!positions.length)return;
+    const projected=positions.map(p=>space.center(p)),r=canvas.getBoundingClientRect(),overlay=document.querySelector('.station-task')?.getBoundingClientRect();
+    const center=overlay ? overlay.width>=r.width*.8
+      ? {x:width/2,y:Math.max(0,overlay.top-r.top)/2}
+      : {x:(Math.max(0,overlay.right-r.left)+width)/2,y:height/2} : {x:width/2,y:height/2};
+    const x=projected.reduce((n,p)=>n+p.x,0)/projected.length,y=projected.reduce((n,p)=>n+p.y,0)/projected.length;
+    camera={...camera,x:x-(center.x-width/2)/camera.zoom,y:y-(center.y-height/2)/camera.zoom};
+    heightCut=positions[0].z;dirty=true;
+  }
   export function focusTrain(id = selectedTrain?.id) {
     const location=trainLocation(view.read,id);
     if (location && id && live) {
@@ -319,7 +329,7 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); });
   $effect(() => { void heightCut;cancelGesture(); });
-  $effect(() => { void stationLabels;void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void stationPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+  $effect(() => { void stationLabels;void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void stationPreview;void platformPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
@@ -357,7 +367,7 @@
       if (dirty && renderer && width && height && !document.hidden) {
         try {
           const ready=renderer.draw(liveScene ? camera : demoCamera(width,height), width, height, devicePixelRatio, liveScene
-            ? { stationPreview,stationLabels,trainLabels,smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
+            ? { stationPreview,platformPreview,stationLabels,trainLabels,smoothTrains:!reduced.matches&&live&&new URLSearchParams(location.search).get('smoothTrains')!=='0',motionTime:now,fleetPreview:deploymentPreview?.legal?deploymentPreview.cars:undefined,heightCut, level, drawPoles, drawSpeedLimits, night, winter, recolor, selection, preview:cornerSelection?undefined:preview, terrainCorner:cornerSelection, rectangleEnd, terrainSites, removalPath, railPreview, slopePreview, railPoints, anchor, shape, remove: tool === 'remove', season: (['winter','spring','summer','autumn'] as const)[Math.floor((gameDate(view.read!.tick).month%12)/3)] }
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           canvas.dataset.followingTrain=followingTrainId??'';canvas.dataset.cameraState=JSON.stringify(camera);
@@ -440,7 +450,7 @@
     {#key cornerGeneration}<RemoveControls bind:this={removeControls} {model} {view} picked={removePicked} bind:level={removeLevel} {heightCut} onpreview={p=>{terrainSites=[...(p?.positions??[]).map(position=>({position,skipped:false})),...(p?.skipped??[]).map(s=>({position:s.position,skipped:true}))];removalPath=p?.path??[];dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreset={()=>{removePicked=undefined;}} onreveal={()=>{heightCut=removeLevel;}}/>{/key}
   {/if}
   {#if railway && tool==='station' && !panel}
-    {#key cornerGeneration}<StationBuildingControls bind:this={stationControls} {model} {view} picked={stationPicked} removeTarget={stationRemovalTarget} bind:level={railLevel} {heightCut} onpreview={p=>{stationPreview=p;dirty=true;}} onpick={()=>{stationRemovalTarget=undefined;stationPicked=undefined;focusMap();}} onreveal={()=>{heightCut=view.read!.map.levels-1;}}/>{/key}
+    {#key cornerGeneration}<StationControls onframe={framePlatform} bind:this={stationControls} onplatformpreview={p=>{platformPreview=p;dirty=true;}} {model} {view} picked={stationPicked} removeTarget={stationRemovalTarget} bind:level={railLevel} {heightCut} onpreview={p=>{stationPreview=p;dirty=true;}} onpick={()=>{stationRemovalTarget=undefined;stationPicked=undefined;focusMap();}} onreveal={()=>{heightCut=view.read!.map.levels-1;}}/>{/key}
   {/if}
   {#if railway && (tool === 'build' || tool === 'bridge' || tool === 'girder' || tool === 'tunnel' || tool === 'speed' || tool === 'stationary' || tool === 'pole' || tool === 'signal' || tool === 'garage') && !panel}
     {#key cornerGeneration}<TrackControls {oncatalog} infrastructure={tool==='speed'?'speed':tool==='stationary'?'stationary':tool==='pole'?'pole':tool==='signal'?'signal':tool==='garage'?'garage':tool==='tunnel'?'tunnel':tool==='girder'?'girder':tool==='bridge'?'bridge':'normal'} bind:this={railControls} {model} {view} picked={railPicked} bind:level={railLevel} {heightCut} onpreview={p=>{railPreview=p;dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreveal={()=>{heightCut=railLevel;}}/>{/key}

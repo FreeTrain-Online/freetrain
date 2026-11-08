@@ -11,7 +11,7 @@ import { prepareCar, type TrainTarget } from './train-renderer.ts';
 
 export interface RailwayTarget {
   kind:'railway'; id:string; position:Position;
-  component:'rail'|'pier'|'support'|'accessory'|'stationary'|'speedLimit'; definition:Definition; controllerId?:string;
+  component:'rail'|'pier'|'support'|'accessory'|'stationary'|'speedLimit'|'platform'; definition:Definition; controllerId?:string; platformId?:string;
 }
 export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer;tunnel?:'portal'|'interior'}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
@@ -109,7 +109,19 @@ export class RailwayRenderPlan {
       if(v.kind==='slopefiller')continue; // Explicit invisible occupancy still controls holes.
       if(v.kind!=='traffic'){add(v.definition!,v.kind==='pier'?'pier':'support');continue;}
       const c=v.traffic!;
-      if(c.road||c.platform)throw new Error('Railway consumer unavailable'); // P6/P7 supply their exact dispatch.
+      if(c.road)throw new Error('Railway consumer unavailable');
+      if(c.platform){
+        const platform=read.mixed!.stationGraph?.platforms.find(p=>p.yards.some(y=>y.trafficOwnerId===v.ownerId&&key(y.location)===key(v.position)));
+        const yard=platform?.yards.find(y=>y.trafficOwnerId===v.ownerId);
+        const recipe=recipes.get(c.platform.recipeId);
+        if(platform?.kind!=='thin'||yard?.outlook.kind!=='plain'||!recipe||
+          recipe.frames.some(f=>f.status!=='ready'||!f.masks?.[variantKey(variant)]))throw new Error('Platform recipe unavailable');
+        const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component:'platform',definition:c.platform,platformId:platform.id};
+        for(const layer of instantiate(recipe,v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z])){
+          layer.frame={...layer.frame,stage:platform.direction===2||platform.direction===4?20:40};
+          this.layers.push(layer);ops.push({target,layer});
+        }
+      }
       if(c.car) {
         const owner=cars.get(c.car.carId),recipe=recipes.get(c.car.definition.recipeId);
         if(!owner||!recipe||!c.rail)throw new Error('Car binding unavailable');
@@ -134,7 +146,7 @@ export class RailwayRenderPlan {
     }
     for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position))),
-      this.columns.get(index)?.map(o=>o.tunnel),
+      this.columns.get(index)?.map(o=>o.tunnel),this.columns.get(index)?.filter(o=>o.target.kind==='railway'&&o.target.component==='platform').map(o=>o.target),
       this.columns.get(index)?.filter(o=>o.target.kind==='train').map(o=>[o.target,o.layer.recipeId,o.layer.frame.key,o.layer.frame.anchor])]));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}
@@ -147,6 +159,7 @@ export class RailwayRenderPlan {
   private order(op:RailwayOperation):number {
     if(op.target.kind==='train')return 30;
     if(op.target.component==='speedLimit')return 60;
+    if(op.target.component==='platform')return (op.layer.frame.stage??20)>=30?41:21;
     const after=(op.layer.frame.stage??20)>=30;
     return op.target.component==='accessory'?(after?50:10):(after?40:20);
   }

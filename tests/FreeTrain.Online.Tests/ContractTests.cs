@@ -14,9 +14,12 @@ public class ContractTests
     {
         var source = File.ReadAllText(path);
         var options = WireJson.CreateOptions();
-        var serialized = Path.GetFileName(path) == "preview-station-building.json"
-            ? JsonSerializer.Serialize(JsonSerializer.Deserialize<StationBuildingPreviewRead>(source, options), options)
-            : JsonSerializer.Serialize(JsonSerializer.Deserialize<WireMessage>(source, options), options);
+        var serialized = Path.GetFileName(path) switch
+        {
+            "preview-station-building.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<StationBuildingPreviewRead>(source, options), options),
+            "preview-thin-platform.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<ThinPlatformPreviewRead>(source, options), options),
+            _ => JsonSerializer.Serialize(JsonSerializer.Deserialize<WireMessage>(source, options), options)
+        };
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(source), JsonNode.Parse(serialized)), path);
     }
 

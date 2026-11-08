@@ -1,0 +1,44 @@
+{
+  "query": {
+    "expectedWorldEpoch": "1",
+    "expectedGeometryRevision": "0",
+    "expectedMinute": "517",
+    "expectedContentVersion": "mixed-railway-content-1",
+    "action": "place",
+    "position": {
+      "x": 10,
+      "y": 10,
+      "z": 2
+    },
+    "direction": 2,
+    "length": 4,
+    "roof": true,
+    "platformId": "0",
+    "expectedPlatformRevision": "0"
+  },
+  "legal": true,
+  "reason": null,
+  "cost": "2000000",
+  "positions": [
+    {
+      "x": 10,
+      "y": 10,
+      "z": 2
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "z": 2
+    },
+    {
+      "x": 12,
+      "y": 10,
+      "z": 2
+    },
+    {
+      "x": 13,
+      "y": 10,
+      "z": 2
+    }
+  ]
+}

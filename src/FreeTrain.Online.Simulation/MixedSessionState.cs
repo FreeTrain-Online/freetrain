@@ -46,7 +46,9 @@ public sealed class MixedSessionState
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
         this.trainCallback=trainCallback ?? FleetMovement.Tick;
-        this.stationCallback=stationCallback ?? ((_,_) => throw new InvalidOperationException("stationDispatchRequiresP6PassengerLifecycle"));
+        this.stationCallback=stationCallback ?? ((session,handler) => handler.StartsWith("platform/",StringComparison.Ordinal)
+            ? StationLifecycle.Tick(session,handler,g=>g)
+            : throw new InvalidOperationException("stationDispatchRequiresP6PassengerLifecycle"));
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
