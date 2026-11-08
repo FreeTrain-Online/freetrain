@@ -616,3 +616,12 @@ Stale/role/receipt/draft/camera safeguards retain the established shell boundary
 Full manager/groups/tracking, manual/TAT and Outside behavior, integrated recovery,
 capacity and native/optional acceptance retain their subsequent P5 owners.
 [Reciprocal manual bindings](web-parity-manual.md#p5-11-deployment-browser-slice).
+
+## P5-27 fleet continuation and recovery
+
+[Fleet recovery evidence](web-parity-fleet-continuation.md) verifies MAN-F01–07,
+MAN-T06–08, MAN-W07–10, MAN-A10–13/17 and DEV-P14/18–20/24 through exact
+Save9 continuation, EN/JA named-slot/download/reconnect and actual checkpoint
+process restart. Rejected uploads and interrupted file writes preserve prior
+state/files. [Reciprocal manual scope](web-parity-manual.md#p5-27-fleet-continuation-and-recovery)
+retains P10 historical/full-city recovery and P5-28/29 capacity/distribution gates.

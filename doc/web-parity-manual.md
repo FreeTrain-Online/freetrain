@@ -648,3 +648,16 @@ The panel displays the actual effective controller and current unsupported
 controller/Outside behavior. Subsequent P5 gates retain full manager, reversal,
 Outside, controller, recovery/capacity and native/optional acceptance.
 [Reciprocal action bindings](web-parity-actions.md#p5-11-deployment-browser-slice).
+
+## P5-27 fleet continuation and recovery
+
+[Fleet continuation verification](web-parity-fleet-continuation.md) binds
+MAN-F01–07, MAN-T06–08, MAN-W07–10, MAN-A10–13/17 and DEV-P14/18–20/24 to the
+existing Saves panel: save slot2, download, confirm reopen and reconnect with a
+peer. Actual process restart restores current fleet/controller/group references,
+purchase times, movement/wait counters, forwarding, boarding origin, accounts
+and one-shot callback order. Invalid uploads preserve the world and named slot;
+interrupted temporary writes preserve the prior checkpoint. No new controls or
+translations ship. [Reciprocal action bindings](web-parity-actions.md#p5-27-fleet-continuation-and-recovery).
+Historical import and full-city recovery retain P10; fleet capacity and clean
+distribution retain P5-28/29, and canonical Manual driving remains retired.
