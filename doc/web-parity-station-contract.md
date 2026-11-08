@@ -264,7 +264,8 @@ Fresh verification on 8 November 2026:
   not tests of real P6 passenger stations. No other-browser/native/device,
   container, optional-suite or P6 capacity acceptance is claimed.
 
-P6-02 is next. Its independent literal fixture derivation and later production
-consumers remain open. EXAV-GAL-001 visual correction, P7 city providers/evolution,
+[P6-02 independent literal fixtures](web-parity-station-fixtures.md) now supply
+the source-derived geometry/lifecycle/arithmetic handoff. Production consumers
+remain with P6-03 onward. EXAV-GAL-001 visual correction, P7 city providers/evolution,
 P8 full financial reporting, P10 historical imports and P11 integrated capacity
 retain their named owners and acceptance boundaries.
