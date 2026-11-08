@@ -89,15 +89,21 @@ Deno.test('choice-junction heads render without evaluating shared controllers',(
  }
 });
 Deno.test('motion/reversal changes only dependent columns, reuses decoded assets and clears old Inside slots on withdrawal/Outside',async()=>{
- const decoded=new Set<string>(),images=cache(decoded),s=sceneFixture(stocks[3]),before=await TerrainScene.prepare(s,catalog,images,day,5),count=decoded.size;
+ const decoded=new Set<string>(),images=cache(decoded),s=sceneFixture(stocks[3]);
+ // Move a car onto existing track; moving its entire Traffic voxel would also
+ // build/remove track and correctly invalidate neighboring grid masks.
+ const destination=structuredClone(s.mixed!.voxels[0]);destination.ownerId='30';destination.position.y--;destination.traffic!.car=null;
+ const owner=structuredClone(s.entities![0]);owner.id='30';owner.anchor=destination.position;
+ s.entities!.push(owner);s.mixed!.voxels.push(destination);s.mixed!.nextEntityId='31';
+ const before=await TerrainScene.prepare(s,catalog,images,day,5),count=decoded.size;
  const after=structuredClone(s);after.revision='7';after.mixed!.geometryRevision='7';
- const train=after.mixed!.fleet!.trains[0],car=train.cars[0];car.state.location={...car.state.location!,y:car.state.location!.y-1};after.mixed!.voxels[0].position=car.state.location;
- after.entities![0].anchor=car.state.location;
+ const train=after.mixed!.fleet!.trains[0],car=train.cars[0];car.state.location={...destination.position};
+ after.mixed!.voxels.at(-1)!.traffic!.car=after.mixed!.voxels[0].traffic!.car;after.mixed!.voxels[0].traffic!.car=null;
  const moved=await TerrainScene.prepare(after,catalog,images,day,5,before);assert.equal(decoded.size,count);
  const columns=moved.changedColumns(before)!;assert.equal(columns.length,2);
  const old=before.operations.find(o=>o.target.kind==='train'&&o.target.carId==='19');
  assert.equal(moved.operations.find(o=>o.target.kind==='train'&&o.target.carId==='19'),old);
- const outside=structuredClone(after);outside.mixed!.voxels[0].traffic!.car=null;outside.mixed!.fleet!.trains[0].cars[0].state.kind='outside';
+ const outside=structuredClone(after);outside.mixed!.voxels.at(-1)!.traffic!.car=null;outside.mixed!.fleet!.trains[0].cars[0].state.kind='outside';
  // The pure plan does not draw unplaced/Outside state without a Traffic slot.
  const plan=new RailwayRenderPlan(outside,catalog,day);assert.equal(plan.layers.filter(l=>l.entityId==='18').length,0);
  const reversed=structuredClone(s),t=reversed.mixed!.fleet!.trains[0];t.isReversed=true;t.cars.reverse();

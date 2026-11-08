@@ -384,7 +384,7 @@ export async function trainSlopePixels(catalog:RenderCatalog,variant:Variant) {
 export {TrainColorCatalog,defaultTrainColors,colorTestCarId} from '../../src/lib/train-colors.ts';
 export {RecipeImageCache,instantiate} from '../../src/lib/content-recipes.ts';
 
-export async function structureGridPixels(catalog:RenderCatalog) {
+function gridFixture(catalog:RenderCatalog,pattern?:number):Snapshot {
  const s=structuredClone(mixedSource) as Snapshot;
  s.map={width:3,height:5,levels:6,coordinateSystem:'hv'};s.entities=[];
  s.terrain={...s.terrain!,geometryRevision:'0',nextEntityId:'1',waterLevel:0,occupants:[],cells:Array.from({length:15},()=>({ground:1,surface:'cut'}))};
@@ -394,6 +394,17 @@ export async function structureGridPixels(catalog:RenderCatalog) {
  const definition={packId:'exav-stable-bundled',contributionId:'{{98619BD4-46C3-4B90-1703d-kokakyo2}-E',recipeId:'{{98619BD4-46C3-4B90-1703d-kokakyo2}-E'};
  s.entities.push({id,revision:'0',definition,anchor:p,footprint:[{offset:{x:0,y:0,z:0},transparent:true}],owned:true,silentlyReclaimable:false,value:'0'});
  s.mixed.nextEntityId='2';s.mixed.voxels.push({position:p,ownerId:id,kind:'stationary',traffic:null,definition,sprite:0,drawGroundBelow:true,drawGroundAbove:true,supportedOwnerId:null});
+ if(pattern!==undefined) {
+  s.entities[0].definition={packId:catalog.packId,contributionId:'system:traffic',recipeId:'geometry:traffic-components-1'};
+  const v=s.mixed.voxels[0];v.kind='traffic';v.definition=null;
+  const definition={packId:catalog.packId,contributionId:`system:pattern/${pattern}`,recipeId:`system:pattern/${pattern}`};
+  v.traffic={rail:{definition,pattern,variant:0,direction:0,controllerId:null,terrainBackup:null},road:null,accessory:null,car:null,platform:null};
+ }
+ return s;
+}
+
+export async function structureGridPixels(catalog:RenderCatalog,pattern?:number) {
+ const s=gridFixture(catalog,pattern);
  let checked=0;
  for(const night of [false,true]) {
   const scene=await TerrainScene.prepare(s,catalog,new RecipeImageCache(),{season:'spring',night},5);
@@ -414,4 +425,52 @@ export async function structureGridPixels(catalog:RenderCatalog) {
   }
  }
  return {checked};
+}
+
+
+export async function diagonalTrackPixels(catalog:RenderCatalog) {
+ let checked=0,hidden=0;
+ for(const pattern of [1,7]) {
+  const s=gridFixture(catalog,pattern),space=new WorldSpace(3,5,6),template=s.mixed!.voxels[0],owner=s.entities![0];
+  s.mixed!.voxels=[];s.entities=[];
+  for(let i=0;i<3;i++) {
+   const position=space.location({h:pattern===1?1:i,v:pattern===1?i*2:2,z:1}),id=String(i+1);
+   s.mixed!.voxels.push({...structuredClone(template),position,ownerId:id});
+   s.entities.push({...structuredClone(owner),id,anchor:position});
+  }
+  s.mixed!.nextEntityId='4';
+  for(const night of [false,true]) {
+   const scene=await TerrainScene.prepare(s,catalog,new RecipeImageCache(),{season:'spring',night},5);
+   const rails=scene.operations.filter(o=>o.target.kind==='railway');
+   for(const mode of ['direct','fallback','viewport'])for(const dpr of [1,2])for(const zoom of [.75,1,4]) {
+    const width=480,height=300,view={x:80,y:100,zoom};
+    const a=new OffscreenCanvas(width*dpr,height*dpr),b=new OffscreenCanvas(width*dpr,height*dpr),ctx=a.getContext('2d')!,ref=b.getContext('2d')!;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ref.setTransform(dpr,0,0,dpr,0,0);
+    scene.paintOperations(ref as unknown as CanvasRenderingContext2D,view,width,height,rails);
+    const Canvas=globalThis.OffscreenCanvas;
+    try {
+     if(mode==='fallback')Reflect.set(globalThis,'OffscreenCanvas',undefined);
+     if(mode==='viewport') {
+      const viewport=new TerrainViewport(scene);let settled=false;
+      for(let n=0;n<1000;n++)if(!viewport.draw(ctx as unknown as CanvasRenderingContext2D,view,width,height,dpr).pending){settled=true;break;}
+      if(!settled)throw new Error('Diagonal track viewport did not settle');
+     }else scene.paintOperations(ctx as unknown as CanvasRenderingContext2D,view,width,height,scene.operations);
+    }finally{Reflect.set(globalThis,'OffscreenCanvas',Canvas);}
+    const actual=ctx.getImageData(0,0,a.width,a.height).data,expected=ref.getImageData(0,0,b.width,b.height).data;
+    for(let i=0;i<actual.length;i+=4)if(expected[i+3]===255) {
+     checked++;if(actual.slice(i,i+4).some((v,j)=>v!==expected[i+j]))throw new Error(`Ground broke diagonal ${pattern}, ${mode}, zoom ${zoom}, DPR ${dpr}, pixel ${i/4}`);
+    }
+   }
+   // A raised neighboring tile still covers rail: protection is same-level only.
+   const raised=structuredClone(s);raised.terrain!.cells[3].ground=2;
+   const high=await TerrainScene.prepare(raised,catalog,new RecipeImageCache(),{season:'spring',night},5);
+   const a=new OffscreenCanvas(160,120),b=new OffscreenCanvas(160,120),ctx=a.getContext('2d')!,ref=b.getContext('2d')!,view={x:16,y:48,zoom:1};
+   high.paintOperations(ctx as unknown as CanvasRenderingContext2D,view,160,120,high.operations);
+   scene.paintOperations(ref as unknown as CanvasRenderingContext2D,view,160,120,rails);
+   const actual=ctx.getImageData(0,0,160,120).data,expected=ref.getImageData(0,0,160,120).data;
+   for(let i=0;i<actual.length;i+=4)if(expected[i+3]===255&&actual.slice(i,i+3).some((v,j)=>v!==expected[i+j]))hidden++;
+  }
+ }
+ if(!hidden)throw new Error('Raised terrain must still obscure lower track');
+ return {checked,hidden};
 }

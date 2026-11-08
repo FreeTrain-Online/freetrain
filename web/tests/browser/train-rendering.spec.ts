@@ -129,3 +129,27 @@ test('terrain grids stay behind opaque buildable structure pixels at fractional 
  const result=await page.evaluate(async catalog=>{const {structureGridPixels}=await import('/__tests/train-rendering.js');return structureGridPixels(catalog);},catalog);
  expect(result.checked).toBeGreaterThan(1000);
 });
+
+
+test('terrain grids stay behind all straight curved and junction track bitmaps',async({page})=>{
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ const result=await page.evaluate(async catalog=>{
+  const {structureGridPixels}=await import('/__tests/train-rendering.js');let checked=0;
+  for(let pattern=0;pattern<28;pattern++)checked+=(await structureGridPixels(catalog,pattern)).checked;
+  return {checked};
+ },catalog);
+ expect(result.checked).toBeGreaterThan(28000);
+});
+
+
+test('continuous diagonal tracks survive neighboring ground fills while higher terrain still obscures them',async({page})=>{
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ const result=await page.evaluate(async catalog=>{const {diagonalTrackPixels}=await import('/__tests/train-rendering.js');return diagonalTrackPixels(catalog);},catalog);
+ expect(result.checked).toBeGreaterThan(1000);expect(result.hidden).toBeGreaterThan(0);
+});

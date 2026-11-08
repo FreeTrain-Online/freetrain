@@ -353,16 +353,37 @@ Deno.test('structure grid masks follow opaque pixels and invalidate neighboring 
  const empty=flat(3,5),before=await prepare(empty);
  const built=structuredClone(empty),type=stationaryTypes.find((t:any)=>t.id==='{{98619BD4-46C3-4B90-1703d-kokakyo2}-E')!;
  const id=stationary(built,type),scene=await prepare(built,5,catalog,before);
- const affected=scene.operations.filter(o=>'points' in o&&o.gridMasks?.length);
+ const affected=scene.operations.filter(o=>'points' in o&&o.terrainMasks?.length);
  assert(affected.length>1,'Sprite overhang must protect neighboring grid strokes');
  assert(affected.every(o=>o.target.kind==='terrain'&&o.target.surface==='ground'&&'points' in o&&o.color==='transparent'));
  const changed=scene.changedColumns(before)!;
  for(const op of affected)assert(changed.includes(scene.columnIndex(op)),'Neighbor masks must participate in retained raster damage');
  const mask=affected[0];assert('points' in mask);
- assert(mask.gridMasks!.some(m=>m.rows.some(r=>r.includes('0')&&r.includes('1'))),'Transparent pixels must remain available to the grid');
+ assert(mask.terrainMasks!.some(m=>m.rows.some(r=>r.includes('0')&&r.includes('1'))),'Transparent pixels must remain available to the grid');
  const removed=await prepare(empty,5,catalog,scene);
  for(const op of affected)assert(removed.changedColumns(scene)!.includes(scene.columnIndex(op)));
- assert(!removed.operations.some(o=>'points' in o&&o.gridMasks?.length));
- const hidden=await prepare(built,0);assert(!hidden.operations.some(o=>'points' in o&&o.gridMasks?.length));
+ assert(!removed.operations.some(o=>'points' in o&&o.terrainMasks?.length));
+ const hidden=await prepare(built,0);assert(!hidden.operations.some(o=>'points' in o&&o.terrainMasks?.length));
  assert(railwayOps(scene).some(o=>o.target.id===id));
+});
+
+
+Deno.test('building and removing track updates neighboring grid masks',async()=>{
+ const empty=flat(3,5),before=await prepare(empty),built=structuredClone(empty);rail(built,0,0,1,10);
+ const scene=await prepare(built,5,catalog,before),affected=scene.operations.filter(o=>'points' in o&&o.terrainMasks?.length);
+ assert(affected.length>1,'Track must mask the grid in neighboring columns');
+ const changed=scene.changedColumns(before)!;
+ for(const op of affected)assert(changed.includes(scene.columnIndex(op)));
+ const removed=await prepare(empty,5,catalog,scene);
+ for(const op of affected)assert(removed.changedColumns(scene)!.includes(scene.columnIndex(op)));
+ assert(!removed.operations.some(o=>'points' in o&&o.terrainMasks?.length));
+});
+
+Deno.test('diagonal rail overhangs stay pickable across empty same-level neighbors but remain behind higher ground',async()=>{
+ const s=flat(3,5);const first=rail(s,1,0,1,1);rail(s,1,2,1,1);rail(s,1,4,1,1);
+ const scene=await prepare(s);
+ for(const x of [44.5,45.5,50.5,51.5])assert.equal(scene.pick({x,y:-.5},view)?.id,first.ownerId,'Ground must not intercept the repaired join');
+ const raised=structuredClone(s);raised.terrain!.cells[3].ground=2;
+ const high=await prepare(raised),target=high.pick({x:44.5,y:-15.5},view);
+ assert.equal(target?.kind,'terrain');assert.equal(target?.position.z,2);
 });
