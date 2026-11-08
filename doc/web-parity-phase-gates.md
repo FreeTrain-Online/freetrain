@@ -1,5 +1,15 @@
 # Parity phase review — 21 October 2026
 
+**P5 integrated review — 8 November 2026:** [P5 acceptance](web-parity-p5-acceptance.md)
+closes bundled browser/portable train scope with Manual driving owner-removed.
+The [P6 train/harbor handoff](web-parity-p6-train-handoff.md) specifies yard stop
+indices, host/controller resolution, passenger/forwarding order, fares and hourly
+companions. Fresh moderate validation: 369 .NET / 75 client / 26 Python unit cases
+and 16 Chromium workflows pass. P1 final review, P2/native/human/optional
+qualifications and P11 performance findings retain their named owners; no station/
+passenger gameplay or full resource/release acceptance is granted. Earlier dated
+entries below retain their historical scope.
+
 **Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.
 
 **P2 remaining acceptance update — 27 October 2026:** [bundled audio, localization and final regression evidence](web-parity-p2-acceptance.md) implements MIDI/bell playback and a scalable language/content-presentation structure. Existing source-defect/optional-suite deferrals and native/device/fidelity qualifications remain explicit; overall P2 stays open.

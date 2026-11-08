@@ -1,5 +1,11 @@
 # P5-01 train/controller source contract — 2 November 2026
 
+**Current phase disposition — 8 November:** [P5 integrated acceptance](web-parity-p5-acceptance.md)
+and [P6 handoff](web-parity-p6-train-handoff.md) reconcile delivered runtime and
+remaining qualifications. Manual driving is owner-removed; TRAIN-D014 and the
+Manual descriptions below record the original specification, not a restoration
+requirement. The source review and its hashes remain unchanged.
+
 **P5-01 is complete at source-specification scope.** The
 [P5-02 companion fixtures](web-parity-train-fixtures.md) supply independent
 source vectors and existing-interface checks. This review adds no train gameplay, controller command, browser UI,
