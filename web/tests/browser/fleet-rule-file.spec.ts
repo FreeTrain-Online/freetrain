@@ -5,12 +5,15 @@ const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const expected=JSON.parse(readFileSync('tests/fixtures/timetable/expected.json','utf8'));
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
-for(const locale of ['en','ja'] as const)test(`${locale} rule files preview ordered append, portable round trip, peer conflict and restart`,async({page,browser,baseURL,worldServer})=>{
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+ test.use({hasTouch:coarse});
+ test(`${locale} rule files preview ordered append, portable round trip, peer conflict and restart`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  const initial=await state(page),input=readFileSync('../tmp/p5-23-rule-fleet.json');
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
- if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');}
+ if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}
+ if(coarse){await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');}
  const baseline=await state(page),source=baseline.mixed.fleet.controllers.find((c:any)=>c.kind==='timetable');
  async function manager(p:Page,t=text,l=locale){await openPanel(p,'fleet',l);await p.getByRole('button',{name:t.controllerManager,exact:true}).click();const controls=p.locator('.fleet-controller-manager');await controls.getByLabel(t.controllerManager,{exact:true}).selectOption(source.id);return controls;}
  const controls=await manager(page);
@@ -26,7 +29,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} rule files preview orde
  await expect(dialog.getByRole('list',{name:text.ruleFilePreview,exact:true}).getByRole('listitem')).toHaveCount(9);
  await expect(dialog).toContainText(text.ruleFileLegacy);await expect(dialog).toContainText(text.ruleFileAppendHelp);
  expect(await saved()).toEqual(before);
- mkdirSync(evidence+'/rule-files',{recursive:true});await dialog.getByRole('list',{name:text.ruleFilePreview,exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:evidence+`/rule-files/${locale}-preview.png`});
+ mkdirSync(evidence+'/rule-files',{recursive:true});await dialog.getByRole('list',{name:text.ruleFilePreview,exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:evidence+`/rule-files/${locale}-${coarse?'coarse':'desktop'}-preview.png`});
  await dialog.getByRole('button',{name:text.cancel,exact:true}).click();expect(await saved()).toEqual(before);
  await dialog.getByLabel(text.ruleFileRead,{exact:true}).setInputFiles({name:'wrong.ftdd.json',mimeType:'application/json',buffer:Buffer.from('{"format":"wrong","version":1,"rules":[]}')});
  await expect(dialog).toContainText(text.ruleFileError);expect(await saved()).toEqual(before);
@@ -70,4 +73,5 @@ for(const locale of ['en','ja'] as const)test(`${locale} rule files preview orde
  await expect(page.getByRole('dialog')).toHaveCount(0);await page.goto('/');await ready(page,locale);expect((await current()).harbors[0].rules).toEqual(finalRules);
  await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
  expect((await current()).harbors[0].rules).toEqual(finalRules);const final=await state(page);expect(final.tick).toBe(baseline.tick);expect(final.cash).toBe(baseline.cash);expect(final.mixed.queue).toEqual(baseline.mixed.queue);expect(errors).toEqual([]);
+});
 });

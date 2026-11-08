@@ -19,10 +19,12 @@ async function manager(page:Page,text= en,locale='en'){
 async function owned(page:Page,text=en){
  await page.getByRole('button',{name:new RegExp(`^${text.ownedStock}`)}).click();return page.locator('.fleet-details');
 }
-for(const locale of ['en','ja'] as const)test(`${locale} shared controller management, copy isolation, assignments and reopen`,async({page,browser,baseURL,worldServer})=>{
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+ test.use({hasTouch:coarse});
+ test(`${locale} shared controller management, copy isolation, assignments and reopen`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  await setup(page,locale);const initial=await state(page);
- if(locale==='ja'){await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
+ if(coarse){await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');}
  let controls=await manager(page,text,locale);
  await controls.getByRole('button',{name:text.controllerCreate,exact:true}).click();
  let dialog=page.getByRole('dialog',{name:text.controllerCreate,exact:true});
@@ -34,7 +36,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} shared controller manag
  await controls.getByRole('button',{name:text.controllerConfigure,exact:true}).click();dialog=page.getByRole('dialog',{name:text.controllerConfigure,exact:true});
  for(const [axis,value] of [['X','22'],['Y','20'],['Z','2']])await dialog.getByLabel(axis,{exact:true}).fill(value);
  await dialog.getByRole('button',{name:text.controllerLocation,exact:true}).click();
- mkdirSync(evidence+'/controller-manager',{recursive:true});await page.screenshot({path:evidence+`/controller-manager/${locale}-configure.png`});
+ mkdirSync(evidence+'/controller-manager',{recursive:true});await page.screenshot({path:evidence+`/controller-manager/${locale}-${coarse?'coarse':'desktop'}-configure.png`});
  await dialog.getByLabel(text.controllerMinutes,{exact:true}).fill('17');await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);
  await controls.getByRole('combobox',{name:text.sharedController,exact:true}).selectOption(source.id);
  await expect(page.locator('.command-feedback')).toHaveText(text.accepted);
@@ -82,10 +84,11 @@ for(const locale of ['en','ja'] as const)test(`${locale} shared controller manag
   await expect(peer.getByRole('dialog').getByRole('button',{name:en.controllerApply,exact:true})).toBeDisabled();
  }finally{await context.close();}
  controls=await manager(page,text,locale);await controls.getByRole('combobox',{name:text.controllerManager,exact:true}).selectOption(source.id);
- mkdirSync(evidence+'/controller-manager',{recursive:true});await page.screenshot({path:evidence+`/controller-manager/${locale}.png`});
+ mkdirSync(evidence+'/controller-manager',{recursive:true});await page.screenshot({path:evidence+`/controller-manager/${locale}-${coarse?'coarse':'desktop'}.png`});
  expect(errors).toEqual([]);
  await closePanel(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
  expect((await state(page)).mixed.fleet.controllers.find((c:any)=>c.id===source.id).harbors[0].minutes).toBe(17);
+});
 });
 test('controller drafts detect peer revision changes and identical command receipts do not create twice',async({page,browser,baseURL})=>{
  await setup(page);let transport:WebSocketRoute|undefined;const commands:any[]=[],replies:any[]=[];

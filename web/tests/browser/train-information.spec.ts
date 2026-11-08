@@ -27,7 +27,13 @@ for(const locale of ['en','ja'] as const)test(`${locale} information, local labe
  expect(await page.evaluate(()=>(window as any).__decodes)).toBe(decodes);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(bytes);
  mkdirSync(evidence+'/information',{recursive:true});await page.screenshot({path:evidence+`/information/${locale}.png`});
  await closePanel(page);await canvas.focus();const camera=await canvas.getAttribute('data-camera-state');
- for(let i=0;i<3;i++){const tick=(await state(page)).tick;await page.keyboard.press('n');await expect.poll(async()=>(await state(page)).tick).toBe(String(BigInt(tick)+1n));}
+ for(let i=0;i<3;i++){
+  // HTTP state can publish before the originating client's receipt arrives.
+  // Wait until that client can send again before pressing another shortcut.
+  await expect(page.locator('.transport .step')).toBeEnabled();
+  const tick=(await state(page)).tick;await canvas.focus();await page.keyboard.press('n');
+  await expect.poll(async()=>(await state(page)).tick).toBe(String(BigInt(tick)+1n));
+ }
  expect((await state(page)).mixed.fleet.trains[1].cars[0].state.location).not.toEqual(train.cars[0].state.location);
  await expect.poll(()=>canvas.getAttribute('data-camera-state')).not.toBe(camera);await expect(canvas).toHaveAttribute('data-following-train',train.id);
  await page.keyboard.press('+');await expect(canvas).toHaveAttribute('data-following-train',train.id);

@@ -14,17 +14,17 @@ async function setup(page:Page,locale='en'){
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}
 }
-for(const locale of ['en','ja'] as const)test.describe(locale,()=>{
- test.use({hasTouch:locale==='ja'});
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+ test.use({hasTouch:coarse});
  test(`${locale} MAN-A17 nested group reassignment, overrides and durable reopen`,async({page,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
  await setup(page,locale);const initial=await state(page),f=initial.mixed.fleet;
- if(locale==='ja'){await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');}
+ if(coarse){await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='200%');}
  const groups=await manager(page,text,locale),trainControls=groups.locator('.fleet-group-trains');
  const selectGroup=groups.getByRole('combobox',{name:text.controllerGroup,exact:true});
  const apply=async()=>{const dialog=page.locator('dialog.decision-dialog');await dialog.getByRole('button',{name:text.controllerApply,exact:true}).click();await expect(dialog).toHaveCount(0);};
  async function create(name:string){
-  const button=groups.getByRole('button',{name:text.groupCreate,exact:true});if(locale==='ja')await button.tap();else await button.click();const dialog=page.getByRole('dialog',{name:text.groupCreate,exact:true});
+  const button=groups.getByRole('button',{name:text.groupCreate,exact:true});if(coarse)await button.tap();else await button.click();const dialog=page.getByRole('dialog',{name:text.groupCreate,exact:true});
   await dialog.getByLabel(text.groupName,{exact:true}).fill(name);await apply();return (await state(page)).mixed.fleet.groups.at(-1);
  }
  const a=await create('本線・Main');await selectGroup.selectOption(a.id);const b=await create('支線・Branch');
@@ -63,7 +63,7 @@ for(const locale of ['en','ja'] as const)test.describe(locale,()=>{
  await expect(groups.getByRole('button',{name:text.groupRename,exact:true})).toBeFocused();
  const saved=await state(page);expect(saved.tick).toBe(initial.tick);expect(saved.cash).toBe(initial.cash);expect(saved.mixed.queue).toEqual(initial.mixed.queue);expect(saved.mixed.voxels).toEqual(initial.mixed.voxels);
  expect(saved.mixed.fleet.trains[0].groupId).toBe(b.id);expect(saved.mixed.fleet.groups.find((g:any)=>g.id===a.id).parentId).toBe(c.id);
- mkdirSync(evidence+'/groups',{recursive:true});await page.screenshot({path:evidence+`/groups/${locale}.png`});
+ mkdirSync(evidence+'/groups',{recursive:true});await page.screenshot({path:evidence+`/groups/${locale}-${coarse?'coarse':'desktop'}.png`});
  const bytes=await(await page.request.get('/api/saves/download')).body();expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+saved.worldEpoch,{data:bytes})).ok()).toBe(true);
  await page.goto('/');await ready(page,locale);expect((await state(page)).mixed.fleet).toEqual(saved.mixed.fleet);
  await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,locale);
