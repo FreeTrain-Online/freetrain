@@ -35,6 +35,7 @@ export interface ShellState {
   catalogSelections: Record<CatalogCategory, string>;
   signalDirection: SignalDirection;
 }
+const stations = (read?:ReadState) => read?.mixed?.stationGraph?.buildings ?? read?.stations ?? [];
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
   let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id, catalogSelections: { ...initialCatalogSelection }, signalDirection: 0 };
   let client: SessionClient | undefined;
@@ -78,7 +79,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
             update({ draftInterrupted: state.draftInterrupted || interrupted });
           }
           authorizedBefore = true;
-          const station = read.stations.find(item => item.id === stationId) ?? (!stationId ? read.stations[0] : undefined);
+          const station = stations(read).find(item => item.id === stationId) ?? (!stationId ? stations(read)[0] : undefined);
           if (!dirty) draftRevision = station?.revision;
           update({ read, participantId: client?.participantId, role: client?.role, connection: 'ready', ...(!dirty ? { draft: station?.name ?? '' } : {}) });
         });
@@ -110,7 +111,7 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if (result.type === 'accepted') {
         if (payload.kind === 'renameStation' && submittedDraft === state.draft && (!stationId || stationId === payload.stationId)) {
           dirty = false;
-          const station = state.read!.stations.find(item => item.id === payload.stationId);
+          const station = stations(state.read).find(item => item.id === payload.stationId);
           draftRevision = station?.revision;
           update({ draft: station?.name ?? '' });
         }
@@ -156,6 +157,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale slope preview');
       return result;
     },
+    async previewStationBuilding(query:import('../generated/contracts.ts').StationBuildingQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewStationBuilding)throw new Error('Unavailable');
+      const result=await active.previewStationBuilding(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      return result;
+    },
     async previewRailway(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRailway)throw new Error('Unavailable');
@@ -187,11 +195,11 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if (state.pending || !isCatalogItem(category, id) || direction !== undefined && (category !== 'signal' || !signalDirections.some(d => d.value === direction))) return;
       update({ catalogSelections: { ...state.catalogSelections, [category]: id }, ...(direction !== undefined ? { signalDirection: direction } : {}) });
     },
-    selectStation(id: string) { stationId = id; dirty = false; const station = state.read?.stations.find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false, draftInterrupted: false }); },
-    resetDraft() { dirty = false; const station = state.read?.stations.find(item => item.id === stationId) ?? (!stationId ? state.read?.stations[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },
+    selectStation(id: string) { stationId = id; dirty = false; const station = stations(state.read).find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false, draftInterrupted: false }); },
+    resetDraft() { dirty = false; const station = stations(state.read).find(item => item.id === stationId) ?? (!stationId ? stations(state.read)[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },
     rename() {
       if (state.composing || !state.draft.trim() || !state.read) return;
-      const station = state.read.stations.find(item => item.id === stationId) ?? (!stationId ? state.read.stations[0] : undefined);
+      const station = stations(state.read).find(item => item.id === stationId) ?? (!stationId ? stations(state.read)[0] : undefined);
       if (station) return send({ kind: 'renameStation', stationId: station.id, expectedRevision: draftRevision ?? station.revision, name: state.draft });
     },
     async leave(revoke: () => Promise<void>) {

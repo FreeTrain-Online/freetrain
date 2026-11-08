@@ -165,6 +165,996 @@
         "sourceSha256": "a3889c13890a6a5f95a7bdef05262fc290707add19aa1f50b9ad6d41896ca991"
       },
       "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎1(L)",
+      "originalTextSha256": "4db78138712d922e0aa87eb3772beedb2e37716cc7c400eb0d7412136fc65b9f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/name[0]/text()",
+        "text": "Local station 1 (L)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎",
+      "originalTextSha256": "acf6d7a0c411e24ef4b60bcae1f34347f59ff712544e922ce9e239d4bbeb17f0",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/group[0]/text()",
+        "text": "Local station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{1F332AE9-97B7-42eb-A434-03F4F952081A}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{1F332AE9-97B7-42eb-A434-03F4F952081A}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎1(R)",
+      "originalTextSha256": "a8deb8f555c91f6201bc29fc9e236f19a84d3f47a052b786aa6a8ff83ee8b788",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{1F332AE9-97B7-42eb-A434-03F4F952081A}/name[0]/text()",
+        "text": "Local station 1 (R)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{1F332AE9-97B7-42eb-A434-03F4F952081A}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{1F332AE9-97B7-42eb-A434-03F4F952081A}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎",
+      "originalTextSha256": "acf6d7a0c411e24ef4b60bcae1f34347f59ff712544e922ce9e239d4bbeb17f0",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{1F332AE9-97B7-42eb-A434-03F4F952081A}/group[0]/text()",
+        "text": "Local station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{723092AA-BC86-4fca-BA98-42B60B7D4151}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{723092AA-BC86-4fca-BA98-42B60B7D4151}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎2(L)",
+      "originalTextSha256": "a727d7642302679752d6aea82be81428fe842e0f4d3904f41e068369f1e9f061",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{723092AA-BC86-4fca-BA98-42B60B7D4151}/name[0]/text()",
+        "text": "Local station 2 (L)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{723092AA-BC86-4fca-BA98-42B60B7D4151}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{723092AA-BC86-4fca-BA98-42B60B7D4151}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎",
+      "originalTextSha256": "acf6d7a0c411e24ef4b60bcae1f34347f59ff712544e922ce9e239d4bbeb17f0",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{723092AA-BC86-4fca-BA98-42B60B7D4151}/group[0]/text()",
+        "text": "Local station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎2(R)",
+      "originalTextSha256": "a6b84894196164a9be6d1a5400b26d81188b5371c0df20a3693f3c1449683956",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/name[0]/text()",
+        "text": "Local station 2 (R)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "ローカル駅舎",
+      "originalTextSha256": "acf6d7a0c411e24ef4b60bcae1f34347f59ff712544e922ce9e239d4bbeb17f0",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/group[0]/text()",
+        "text": "Local station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "都会型駅舎(L)",
+      "originalTextSha256": "0c501d8e6191c8dca41dc37abea3084b0097951de35a05d513912808f2f5a9ab",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/name[0]/text()",
+        "text": "City station (L)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "都会型駅舎",
+      "originalTextSha256": "0df47f61b2d050bac33d796736226a5e766f979d3682c21b205917e88c8b3ea5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/group[0]/text()",
+        "text": "City station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{F9508B52-B25C-439e-811C-82B5A259676A}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{F9508B52-B25C-439e-811C-82B5A259676A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{F9508B52-B25C-439e-811C-82B5A259676A}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "都会型駅舎(R)",
+      "originalTextSha256": "f7efb1c789150cab4a196bf11d6f0780754ab7bc37a4392d520802e00748e86a",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{F9508B52-B25C-439e-811C-82B5A259676A}/name[0]/text()",
+        "text": "City station (R)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{F9508B52-B25C-439e-811C-82B5A259676A}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{F9508B52-B25C-439e-811C-82B5A259676A}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{F9508B52-B25C-439e-811C-82B5A259676A}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "都会型駅舎",
+      "originalTextSha256": "0df47f61b2d050bac33d796736226a5e766f979d3682c21b205917e88c8b3ea5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{F9508B52-B25C-439e-811C-82B5A259676A}/group[0]/text()",
+        "text": "City station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "高架下駅舎(L)",
+      "originalTextSha256": "811e212d961277d56a1eb8433d2af42cf96c49dd282004c60a9793fa91d66c11",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/name[0]/text()",
+        "text": "Lower deck station (L)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "高架下駅舎",
+      "originalTextSha256": "69e60657720fc8c0bdd067d101e406bf9eeccd0ae9c5695a1e175c1db05c64e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/group[0]/text()",
+        "text": "Lower deck station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{A8392557-3054-4017-8948-F3FC22A71D0E}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{A8392557-3054-4017-8948-F3FC22A71D0E}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A8392557-3054-4017-8948-F3FC22A71D0E}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "高架下駅舎(R)",
+      "originalTextSha256": "af49943b7404d65d62044b24d99a69ad523ed9075eedbe1fcef7c69ab5a43e9f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{A8392557-3054-4017-8948-F3FC22A71D0E}/name[0]/text()",
+        "text": "Lower deck station (R)",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{A8392557-3054-4017-8948-F3FC22A71D0E}/group": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{A8392557-3054-4017-8948-F3FC22A71D0E}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A8392557-3054-4017-8948-F3FC22A71D0E}/group[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "高架下駅舎",
+      "originalTextSha256": "69e60657720fc8c0bdd067d101e406bf9eeccd0ae9c5695a1e175c1db05c64e3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{A8392557-3054-4017-8948-F3FC22A71D0E}/group[0]/text()",
+        "text": "Lower deck station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station/{3D64E31D-0579-4d37-920A-5A5201A8C984}/name": {
+      "pluginId": "org.kohsuke.freetrain.station",
+      "contributionId": "{3D64E31D-0579-4d37-920A-5A5201A8C984}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceKey": "plug-in/contribution:{3D64E31D-0579-4d37-920A-5A5201A8C984}/name[0]/text()",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "originalText": "函館駅",
+      "originalTextSha256": "d0a6bd3e2d186d5f9bc6759a21c9c6f2af12fb521a9e9ce45b1124673788f5de",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station/plugin.xml",
+        "key": "plug-in/contribution:{3D64E31D-0579-4d37-920A-5A5201A8C984}/name[0]/text()",
+        "text": "Hakodate Station",
+        "sourceSha256": "c732c39b7a620d2f218f0d35de47d6668e6639edb7f7b4e4807c29c044538a61"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (entrance) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (entrance) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (ticket gate) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Wooden station (ticket gate) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (entrance) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (entrance) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (ticket gate) L",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+        "text": "Private station (ticket gate) R",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+        "key": "plug-in/contribution:{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+        "text": "Overground station",
+        "sourceSha256": "0e39bf71a39c30dca9496efdd51d33fa5ef847306bbcdeb680362a2c77055a91"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）L",
+      "originalTextSha256": "032df519c2d0816239942f322db0faa935a9db8c5070d04e2b515021073026cb",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（入口側）R",
+      "originalTextSha256": "ceca2ea2ec730d583b38866cdd0c4100da9ec6b4fb23587b0be6cea49206d15f",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）L",
+      "originalTextSha256": "48b1d6aeb9619e2ffdc2dd10ffcad87e329d07fdfa51c807583736acbe37f565",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/name": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/name[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1（改札口側）R",
+      "originalTextSha256": "e1e9e96dc601871ae60e313341f92ac7384246cc8afb5f18bb86ca5a399a1a70",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.qra",
+      "contributionId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceKey": "plug-in/contribution:{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/group[0]/text()",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "originalText": "地上駅舎1",
+      "originalTextSha256": "68cc375acef7c51a0e618baa8009fb8b5cfb4f079476263b18c227c3f03baa8b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.station.teha/{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "contributionId": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group[0]/text()",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.teha/{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "contributionId": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group[0]/text()",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.teha/{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "contributionId": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group[0]/text()",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.station.teha/{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group": {
+      "pluginId": "org.kohsuke.freetrain.station.teha",
+      "contributionId": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group[0]/text()",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "originalText": "無人駅",
+      "originalTextSha256": "5154747f44954f0ce8c2597cfcaa7e4a96fa15395e5cee022732340f51410dc7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+        "key": "plug-in/contribution:{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group[0]/text()",
+        "text": "Unmanned station",
+        "sourceSha256": "1981335ff5685c3d1a4ae01e70500d105b3f8827794dbef5d1963087cad1af8f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.stationary.c915/{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}/group": {
+      "pluginId": "org.kohsuke.freetrain.stationary.c915",
+      "contributionId": "{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}/group[0]/text()",
+      "sourceSha256": "1a53d45e25704b8667ed02160e41fcd62f29f040b6d2ba8555c8c0beccd4e236",
+      "originalText": "東京駅",
+      "originalTextSha256": "b1da97b0d5652c7498c02f717fa6be043b6b519f801732f8f4c0d7cafd41153e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+        "key": "plug-in/contribution:{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}/group[0]/text()",
+        "text": "Tokyo Station",
+        "sourceSha256": "cc454610fdd1bc47b8f4cfaacdab43918d7b64917f74a10371daf55a2b518e9a"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.stationary.c915/{000B7EA8-D97B-4BD0-899F-B3808E7339AF}/group": {
+      "pluginId": "org.kohsuke.freetrain.stationary.c915",
+      "contributionId": "{000B7EA8-D97B-4BD0-899F-B3808E7339AF}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{000B7EA8-D97B-4BD0-899F-B3808E7339AF}/group[0]/text()",
+      "sourceSha256": "1a53d45e25704b8667ed02160e41fcd62f29f040b6d2ba8555c8c0beccd4e236",
+      "originalText": "東京駅",
+      "originalTextSha256": "b1da97b0d5652c7498c02f717fa6be043b6b519f801732f8f4c0d7cafd41153e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+        "key": "plug-in/contribution:{000B7EA8-D97B-4BD0-899F-B3808E7339AF}/group[0]/text()",
+        "text": "Tokyo Station",
+        "sourceSha256": "cc454610fdd1bc47b8f4cfaacdab43918d7b64917f74a10371daf55a2b518e9a"
+      },
+      "comparison": "changed-text; meaning-review-required"
     }
   }
 }

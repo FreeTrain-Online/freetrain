@@ -223,3 +223,12 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   }
   return validSnapshot(next)?immutable(next):undefined;
 }
+
+const validateStationBuilding=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/StationBuildingPreview'});
+export function parseStationBuildingPreview(value:unknown):import('../generated/contracts.ts').StationBuildingPreview {
+  if(!validateStationBuilding(value))throw new Error('Invalid station preview');
+  const p=value as import('../generated/contracts.ts').StationBuildingPreview;
+  if(BigInt(p.cost)<0n || (p.legal ? p.reason!==null||!p.positions.length : p.reason===null||p.cost!=='0'))throw new Error('Inconsistent station preview');
+  if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate station positions');
+  return p;
+}

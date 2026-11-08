@@ -95,9 +95,9 @@
   const worldHint = $derived(mixed ? text.mixedWorldHint : terrain ? text.terrainWorldHint : text.referenceWorldHint);
   const clockDisabled = $derived(saveBusy || view.pending || view.connection !== 'ready' || !live || view.role === 'observer');
   const disabled = $derived(reference || clockDisabled);
-  const draftStation = $derived(read?.stations.find(item => item.id === view.draftStationId));
+  const draftStation = $derived(read?.mixed?.stationGraph?.buildings.find(item=>item.id===view.draftStationId) ?? read?.stations.find(item => item.id === view.draftStationId));
   const draftConflict = $derived(view.draftDirty && (!draftStation || draftStation.revision !== view.draftRevision));
-  const canApply = $derived(!disabled && !view.composing && !!view.draft.trim() && !draftConflict);
+  const canApply = $derived(!(mixed ? clockDisabled : disabled) && !view.composing && !!view.draft.trim() && !draftConflict);
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   $effect(() => applyScheme(scheme));
@@ -147,7 +147,7 @@
     request(() => {
       mapSelection = selection;
       if(selection?.kind==='train')informationTrainId=selection.id;
-      if (selection?.kind === 'station' && !read?.mixed) model.selectStation(selection.id);
+      if (selection?.kind === 'station') model.selectStation(selection.id);
       launcher = document.querySelector('canvas') ?? undefined;
       if (selection) { panel = 'inspector'; void tick().then(() => document.querySelector<HTMLElement>('.primary-panel h2')?.focus({ preventScroll: true })); }
     });
@@ -283,7 +283,7 @@
       {#snippet stationActions()}
           <button class="primary" type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station' && !mixed)} footer={panel === 'inspector' && mapSelection?.kind === 'station' && !mixed ? stationActions : undefined}>
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
         {#if panel === 'fleet'}
           <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
         {:else if panel === 'inspector'}
@@ -298,10 +298,15 @@
             {#key `${read!.worldEpoch}/${fleetTrain.id}`}<FleetDeploymentControls bind:this={inspectorFleetControls} {model} {view} trainId={fleetTrain.id} disabled={clockDisabled||synchronizing} allowPlacement={false} onmap={()=>{}} onpreview={p=>{deploymentPreview=p;}}/>{/key}
             <FleetControllerAssignment {model} {view} targetId={fleetTrain.id} disabled={clockDisabled||synchronizing}/>
             <ObjectProvenance id={fleetCar.definition.contributionId} packId={fleetCar.definition.packId} locale={view.locale}/>
-          {:else if stationBuilding}
-            <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{stationBuilding.name}</dd></div></dl>
-            <ObjectProvenance id={stationBuilding.definition.contributionId} packId={stationBuilding.definition.packId} locale={view.locale}/>
-          {:else if station || (mapSelection?.kind === 'station' && !mixed && view.draftDirty)}
+          {:else if stationBuilding || (mixed && mapSelection?.kind==='station' && view.draftDirty)}
+            <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{stationBuilding?.name ?? text.unavailableObject}</dd></div></dl>
+            <form id="station-name-form" onsubmit={event=>{event.preventDefault();if(canApply)void model.rename();}}>
+              <label class="field">{text.stationName}<input value={view.draft} oninput={event=>model.setDraft(event.currentTarget.value)} oncompositionstart={()=>model.setComposing(true)} oncompositionend={()=>model.setComposing(false)} onblur={()=>model.setComposing(false)} onkeydown={event=>{if(event.key==='Enter'&&(event.isComposing||event.keyCode===229||view.composing))event.preventDefault();}} maxlength="128"/></label>
+              <p class="hint">{draftConflict?text.draftConflict:text.draft}</p>
+            </form>
+            {#if stationBuilding}<ObjectProvenance id={stationBuilding.definition.contributionId} packId={stationBuilding.definition.packId} locale={view.locale}/>
+            <button disabled={clockDisabled} onclick={()=>request(()=>{const p={...mapSelection!.position};panel=undefined;map.removeStation(p);})}>{text.stationRemove}</button>{/if}
+          {:else if station || (mapSelection?.kind === 'station' && view.draftDirty)}
             <dl class="details"><div><dt>{text.confirmedName}</dt><dd data-testid="confirmed-name">{station?.name ?? text.unavailableObject}</dd></div></dl>
             <form id="station-name-form" onsubmit={event => { event.preventDefault(); if (canApply) void model.rename(); }}>
               <label class="field">{text.stationName}<input value={view.draft} oninput={event => model.setDraft(event.currentTarget.value)} oncompositionstart={() => model.setComposing(true)} oncompositionend={() => model.setComposing(false)} onblur={() => model.setComposing(false)} onkeydown={event => { if (event.key === 'Enter' && (event.isComposing || event.keyCode === 229 || view.composing)) event.preventDefault(); }} maxlength="120" aria-describedby="draft-hint" /></label>
@@ -345,7 +350,7 @@
           <p>{text[view.connection]} · {view.role ? text[view.role] : ''}</p><p>{text[view.feedback]}</p><button disabled={saveBusy || view.pending} onclick={() => request(model.reconnect)}>{text.reconnect}</button><button disabled={saveBusy} onclick={leave}>{text.leaveGame}</button>
         {:else if panel === 'help'}
           <p>{text.mapHelp}</p><p>{text.toolShortcuts}</p><p>{text.toolbarHelp}</p>
-          {#if reference}<p>{worldHint}</p>{#if terrain||mixed}<h3>{text.trackTask}</h3><p>{text.railHelp}</p><p>{text.railHeuristicHelp}</p><p>{text.railRemovalHelp}</p><p>{text.railCutHelp}</p><h3>{text.stationaryTask}</h3><p>{text.stationaryHelp}</p><p>{text.stationaryRules}</p><p>{text.stationaryRemovalHelp}</p><h3>{text.speedTask}</h3><p>{text.speedHelp}</p><p>{text.speedRules}</p><p>{text.speedRemovalHelp}</p><h3>{text.poleTask}</h3><p>{text.poleHelp}</p><p>{text.poleRules}</p><p>{text.poleRemovalHelp}</p><h3>{text.signalTask}</h3><p>{text.signalHelp}</p><p>{text.signalRules}</p><p>{text.signalRemovalHelp}</p><h3>{text.garageTask}</h3><p>{text.garageDescription}</p><p>{text.garageHelp}</p><p>{text.garageRules}</p><p>{text.garageRemovalHelp}</p><h3>{text.tunnelTask}</h3><p>{text.tunnelDescription}</p><p>{text.tunnelHelp}</p><p>{text.tunnelRules}</p><p>{text.tunnelRemovalHelp}</p><h3>{text.girderTask}</h3><p>{text.girderDescription}</p><p>{text.girderHelp}</p><p>{text.girderRules}</p><p>{text.girderRemovalHelp}</p><h3>{text.bridgeTask}</h3><p>{text.bridgeDescription}</p><p>{text.bridgeHelp}</p><p>{text.bridgeRules}</p><p>{text.bridgeRemovalHelp}</p><h3>{text.slopeTask}</h3><p>{text.slopeHelp}</p><p>{text.slopeRemovalHelp}</p><p>{text.slopeGhostHelp}</p>{/if}
+          {#if reference}<p>{worldHint}</p>{#if terrain||mixed}<h3>{text.stationTask}</h3><p>{text.stationBuildingHelp}</p><p>{text.stationServicePending}</p><h3>{text.trackTask}</h3><p>{text.railHelp}</p><p>{text.railHeuristicHelp}</p><p>{text.railRemovalHelp}</p><p>{text.railCutHelp}</p><h3>{text.stationaryTask}</h3><p>{text.stationaryHelp}</p><p>{text.stationaryRules}</p><p>{text.stationaryRemovalHelp}</p><h3>{text.speedTask}</h3><p>{text.speedHelp}</p><p>{text.speedRules}</p><p>{text.speedRemovalHelp}</p><h3>{text.poleTask}</h3><p>{text.poleHelp}</p><p>{text.poleRules}</p><p>{text.poleRemovalHelp}</p><h3>{text.signalTask}</h3><p>{text.signalHelp}</p><p>{text.signalRules}</p><p>{text.signalRemovalHelp}</p><h3>{text.garageTask}</h3><p>{text.garageDescription}</p><p>{text.garageHelp}</p><p>{text.garageRules}</p><p>{text.garageRemovalHelp}</p><h3>{text.tunnelTask}</h3><p>{text.tunnelDescription}</p><p>{text.tunnelHelp}</p><p>{text.tunnelRules}</p><p>{text.tunnelRemovalHelp}</p><h3>{text.girderTask}</h3><p>{text.girderDescription}</p><p>{text.girderHelp}</p><p>{text.girderRules}</p><p>{text.girderRemovalHelp}</p><h3>{text.bridgeTask}</h3><p>{text.bridgeDescription}</p><p>{text.bridgeHelp}</p><p>{text.bridgeRules}</p><p>{text.bridgeRemovalHelp}</p><h3>{text.slopeTask}</h3><p>{text.slopeHelp}</p><p>{text.slopeRemovalHelp}</p><p>{text.slopeGhostHelp}</p>{/if}
           {:else}<p>{text.observerHint}</p><p>{text.constructionHelp}</p>{/if}
           {#if terrain}<h3>{text.terrainTool}</h3><p>{text.terrainPaintHelp}</p><p>{text.rectangleHelp}</p>{/if}
         {/if}

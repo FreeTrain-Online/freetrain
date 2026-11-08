@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Simulation;
@@ -58,4 +59,31 @@ public sealed partial class SessionHost
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
         { return "invalidPlacement"; }
     }
+    private string? RenameStationBuilding(RenameStationCommand command)
+    {
+        try
+        {
+            var state = mixedState;
+            if (state?.World.Stations is not {} graph) return "operationUnavailable";
+            if (!long.TryParse(command.StationId,System.Globalization.NumberStyles.None,System.Globalization.CultureInfo.InvariantCulture,out var id)) return "invalidInput";
+            var building = graph.Buildings.SingleOrDefault(b=>b.Id==id);
+            if (building == null || building.Revision != command.ExpectedRevision) return "staleRevision";
+            var name = command.Name.Trim();
+            if (name.Length is < 1 or > 128 || name.Any(char.IsControl)) return "invalidInput";
+            var changed = new StationGraph(graph.Profile,graph.Buildings.Select(b=>b.Id==id
+                ? b with {Name=name,Revision=checked(b.Revision+1)} : b),graph.Platforms,graph.Passages,
+                graph.NextStationName,graph.NextPlatformName,graph.Listeners,graph.ListenerMemberships);
+            var w = state.World;
+            var spatial = new SpatialState(w.Spatial.NextEntityId,w.Spatial.Entities.Select(e=>e.Id==id
+                ? e with {Revision=checked(e.Revision+1)} : e).ToImmutableArray());
+            var world = w.Replace(w.Revision,w.Terrain,spatial,w.Voxels,w.Slopes,stations:changed);
+            var after = state.Successor(state.Revision,new(world,state.Construction.Accounts),state.ConstructionMode);
+            MixedWire.ValidateTransition(state,after);
+            mixedState = after;
+            return null;
+        }
+        catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+        { return "invalidInput"; }
+    }
+
 }

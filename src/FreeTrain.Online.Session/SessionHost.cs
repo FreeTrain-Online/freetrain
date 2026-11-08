@@ -440,6 +440,7 @@ public sealed partial class SessionHost : IDisposable
                             case SetAuthoringModeCommand mode: code = SetAuthoringMode(queued.Participant,mode); break;
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
+                            case RenameStationCommand rename when rename.Name != null: code = RenameStationBuilding(rename); break;
                             case EditStationBuildingCommand edit when edit.Query != null: code = CommitStationBuilding(edit); break;
                             case EditSlopeCommand edit when edit.Query != null: code = CommitSlope(edit.Query); break;
                             case RemoveObjectCommand remove when remove.Query != null: code = CommitRemoval(remove.Query); break;

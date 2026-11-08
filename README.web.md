@@ -1,4 +1,4 @@
-**P6-07 station presentation:** [Station building art, picking and names](doc/web-parity-station-rendering.md) render all 35 bundled definitions through source recipes, including Gray cut footprints and stable station picks. View offers local EN/JA station-name preferences. [Immediate construction/removal APIs](doc/web-parity-station-construction.md) retain source booking and lifecycle. Save10/protocol8 remain current; construction controls and passenger service follow in later P6 steps.
+**P6-08 playable station buildings:** [Stations browser workflow](doc/web-parity-station-browser.md) adds the building tab (J), all 35 authored variants, EN/JA map/coordinate placement, exact ghost/cost/loss checks, confirmed removal and picked name editing with Apply/Discard/Keep editing. Owner/Operator edits, Observer inspection, peer updates and exact save/reopen retain Save10/protocol8. Platforms and passenger service follow in later P6 steps.
 
 **P5-26 moving-fleet integration:** [Cross-tool and lifecycle regression](doc/web-parity-fleet-cross-tool.md)
 uses purchased three-car trains to verify construction protection, source-specific

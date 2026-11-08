@@ -45,6 +45,258 @@
       "text": "High tone",
       "status": "reviewed-with-feature",
       "review": "P2 audio presentation; source meaning checked; bell names describe their sounds"
+    },
+    "org.kohsuke.freetrain.station/{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/name": {
+      "text": "Local station building1(L)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{E1C41DF8-6C9B-465d-A798-2624551AC4FD}/group": {
+      "text": "Local station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{1F332AE9-97B7-42eb-A434-03F4F952081A}/name": {
+      "text": "Local station building1(R)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{1F332AE9-97B7-42eb-A434-03F4F952081A}/group": {
+      "text": "Local station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{723092AA-BC86-4fca-BA98-42B60B7D4151}/name": {
+      "text": "Local station building2(L)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{723092AA-BC86-4fca-BA98-42B60B7D4151}/group": {
+      "text": "Local station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/name": {
+      "text": "Local station building2(R)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}/group": {
+      "text": "Local station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/name": {
+      "text": "Urban station building(L)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{DFF22973-08DB-4064-8CD6-26BAB537C0F0}/group": {
+      "text": "Urban station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{F9508B52-B25C-439e-811C-82B5A259676A}/name": {
+      "text": "Urban station building(R)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{F9508B52-B25C-439e-811C-82B5A259676A}/group": {
+      "text": "Urban station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/name": {
+      "text": "Under-viaduct station building(L)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}/group": {
+      "text": "Under-viaduct station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{A8392557-3054-4017-8948-F3FC22A71D0E}/name": {
+      "text": "Under-viaduct station building(R)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{A8392557-3054-4017-8948-F3FC22A71D0E}/group": {
+      "text": "Under-viaduct station building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station/{3D64E31D-0579-4d37-920A-5A5201A8C984}/name": {
+      "text": "Hakodate Station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A01-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A02-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A03-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0A04-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B01-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B02-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B03-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0B04-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C01-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C02-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C03-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0C04-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D01-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D02-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D03-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0D04-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E01-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (entrance side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E02-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) L",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E03-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/name": {
+      "text": "Ground-level station building 1 (ticket-gate side) R",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.qra/{372D89DD-0E04-554B-8BC3-8B8567CA7F59}/group": {
+      "text": "Ground-level station building 1",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.teha/{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}/group": {
+      "text": "Unstaffed station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.teha/{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}/group": {
+      "text": "Unstaffed station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.teha/{CEF4B968-307D-4F59-AE33-AE83CC56B415}/group": {
+      "text": "Unstaffed station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.station.teha/{577F66EE-01D9-47F1-ADCB-FBC53FA42651}/group": {
+      "text": "Unstaffed station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.stationary.c915/{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}/group": {
+      "text": "Tokyo Station",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.stationary.c915/{000B7EA8-D97B-4BD0-899F-B3808E7339AF}/group": {
+      "text": "Tokyo Station",
+      "status": "reviewed-with-feature"
     }
   }
 }

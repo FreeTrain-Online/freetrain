@@ -1,3 +1,4 @@
+import {stationDefinitions} from './station-building-edit.ts';
 import {TrainColorCatalog} from './train-colors.ts';
 import { TrainMotionPlayer } from './train-motion.ts';
 import { TrainCompositor } from './train-compositor.ts';
@@ -12,7 +13,7 @@ import { ports } from './prototype/rail-geometry.ts';
 import { mapSpace } from './map-space.ts';
 import { TerrainScene, type SceneTarget } from './terrain-renderer.ts';
 import { TerrainViewport } from './terrain-viewport.ts';
-import { loadRenderCatalog, RecipeImageCache, type RenderCatalog, type Variant } from './content-recipes.ts';
+import { loadRenderCatalog, RecipeImageCache, instantiate, traversal, type RenderCatalog, type Variant } from './content-recipes.ts';
 import { isTerrainWorld, isMixedWorld } from './world-identity.ts';
 import { DemoRailway } from './demo-railway.ts';
 import { demoCar, demoLoop } from './demo-railway-path.ts';
@@ -20,7 +21,7 @@ import type { RailwayPickPolicy } from './railway-renderer.ts';
 import {stationNamePositions,type StationLabels} from './station-labels.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -33,6 +34,8 @@ export class MapRenderer {
   private motion=new TrainMotionPlayer();
   private compositor=new TrainCompositor();
   private renderCatalog?:RenderCatalog;
+  private stationGhostKey='';
+  private stationGhost?:Awaited<ReturnType<RecipeImageCache['ready']>>;
   private motionPainted=false;
   resetTrainMotion() {this.motion.reset();this.motionPainted=false;}
   resumeTrainMotion(now:number) {this.motion.resume(now);this.motionPainted=false;}
@@ -193,6 +196,34 @@ export class MapRenderer {
       }
       const limits=read.mixed?.speedLimits;
       this.canvas.dataset.speedLimitCells=String(limits?new Set([...limits.low,...limits.medium,...limits.fast].map(p=>`${p.x},${p.y},${p.z}`)).size:0);
+      const station=options.stationPreview;
+      this.canvas.dataset.stationGhostCells=String(station?.positions.length??0);
+      const stationType=stationDefinitions.find(d=>d.reference.recipeId===station?.query.definition?.recipeId);
+      const stationCap=station&&stationType&&options.heightCut!==read.map.levels-1&&options.heightCut<station.query.position.z+stationType.height;
+      const ghostKey=JSON.stringify([read.worldEpoch,read.requiredPacks,station,variant,options.heightCut]);
+      if(ghostKey!==this.stationGhostKey){
+        this.stationGhostKey=ghostKey;this.stationGhost=undefined;
+        if(station?.legal&&!stationCap&&station.query.action==='place'&&this.renderCatalog){
+          const recipe=this.renderCatalog.renderRecipes.find(r=>r.id===station.query.definition?.recipeId);
+          if(recipe){const p=station.query.position;
+            const layers=traversal(instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z])).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
+            void this.terrainCache.ready(this.renderCatalog,layers,variant).then(ready=>{if(this.stationGhostKey===ghostKey){this.stationGhost=ready;this.invalidate();}}).catch(()=>{if(this.stationGhostKey===ghostKey)this.invalidate();});
+          }
+        }
+      }
+      this.canvas.dataset.stationGhostReady=station?.legal&&(station.query.action==='remove'||stationCap||this.stationGhost)?'true':'false';
+      if(station){
+        ctx.save();ctx.globalAlpha=.55;
+        this.stationGhost?.draw(ctx,{x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom});ctx.globalAlpha=1;
+        ctx.strokeStyle=station.legal?(station.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';ctx.lineWidth=2;
+        for(const position of station.positions.length?station.positions:[station.query.position]){
+          if(position.z>options.heightCut)continue;
+          const p=toScreen(position,camera,width,height,this.space),rx=16*camera.zoom,ry=8*camera.zoom;
+          ctx.beginPath();ctx.moveTo(p.x-rx,p.y);ctx.lineTo(p.x,p.y-ry);ctx.lineTo(p.x+rx,p.y);ctx.lineTo(p.x,p.y+ry);ctx.closePath();if(stationCap&&position.z===station.query.position.z){ctx.fillStyle='#808080';ctx.fill();}ctx.stroke();
+        }
+        for(const loss of station.losses){const p=toScreen(loss.position,camera,width,height,this.space);ctx.beginPath();ctx.moveTo(p.x-5,p.y-5);ctx.lineTo(p.x+5,p.y+5);ctx.moveTo(p.x+5,p.y-5);ctx.lineTo(p.x-5,p.y+5);ctx.stroke();}
+        ctx.restore();
+      }
       const rail=options.railPreview;
       if(rail){
         ctx.strokeStyle=rail.legal?(rail.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';ctx.lineWidth=3;

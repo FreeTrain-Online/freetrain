@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal' | 'pole' | 'stationary' | 'speed';
+export type Tool = 'station' | 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal' | 'pole' | 'stationary' | 'speed';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', fleet: 'fleet', saves: 'saves', view: 'view',
   settings: 'settings', session: 'session', help: 'help',
@@ -25,6 +25,7 @@ export const registry = {
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
   terrain: { kind: 'tool', tool: 'terrain', labelKey: 'terrainTool', icon: 'pointer', availability: 'mutation' },
+  station: { kind: 'tool', tool: 'station', labelKey: 'stationTask', icon: 'rail', availability: 'mutation' },
   stationary: { kind: 'tool', tool: 'stationary', labelKey: 'stationaryTask', icon: 'rail', availability: 'mutation' },
   speed: { kind: 'tool', tool: 'speed', labelKey: 'speedTask', icon: 'rail', availability: 'mutation' },
   pole: { kind: 'tool', tool: 'pole', labelKey: 'poleTask', icon: 'rail', availability: 'mutation' },
@@ -140,6 +141,7 @@ export const tools = [
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'girder', shortcut: 'V', label: registry.girder.labelKey, icon: 'girder' },
+  { id: 'station', shortcut: 'J', label: registry.station.labelKey, icon: '▤' },
   { id: 'stationary', shortcut: 'A', label: registry.stationary.labelKey, icon: '▥' },
   { id: 'speed', shortcut: 'L', label: registry.speed.labelKey, icon: '◴' },
   { id: 'pole', shortcut: 'E', label: registry.pole.labelKey, icon: 'pole' },

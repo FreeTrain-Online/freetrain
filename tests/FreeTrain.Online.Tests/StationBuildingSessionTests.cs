@@ -24,6 +24,33 @@ public class StationBuildingSessionTests
             removal ? b!.Id : 0,removal ? b!.Revision : 0);
     }
     [Fact]
+    public async Task Building_names_are_revisioned_with_spatial_owner_and_preserve_timers_accounts_and_exact_reopen()
+    {
+        using var h=Host(Build(Empty()));
+        var before=h.Snapshot();var b=before.Mixed!.StationGraph!.Buildings[0];
+        var op=new ParticipantContext("operator",ParticipantRole.Operator);var observer=new ParticipantContext("observer",ParticipantRole.Observer);
+        h.RegisterParticipant(op);h.RegisterParticipant(observer);
+        var command=new RenameStationCommand(b.Id.ToString(),b.Revision," 新中央駅 / Central ");
+        var bytes=await Save(h);
+        Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await Send(h,command,observer)).Code);
+        foreach(var name in new[]{" ","bad\0name",new string('a',129)})
+            Assert.Equal("invalidInput",Assert.IsType<RejectedMessage>(await Send(h,command with {Name=name},op)).Code);
+        Assert.Equal(bytes,await Save(h));
+        Assert.IsType<AcceptedMessage>(await Send(h,command,op));
+        var after=h.Snapshot();var renamed=after.Mixed!.StationGraph!.Buildings[0];
+        Assert.Equal("新中央駅 / Central",renamed.Name);Assert.Equal(b.Revision+1,renamed.Revision);
+        Assert.Equal(renamed.Revision,after.Entities!.Single(e=>e.Id==b.Id).Revision);
+        Assert.Equal(b.HourTimer,renamed.HourTimer);Assert.Equal(b.DayTimer,renamed.DayTimer);
+        Assert.Equal(before.Mixed.Accounts.Transactions,after.Mixed.Accounts.Transactions);Assert.Equal(before.Cash,after.Cash);
+        bytes=await Save(h);
+        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,command)).Code);
+        Assert.Equal(bytes,await Save(h));
+        Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+        var q=Query(h,true);var quote=h.PreviewStationBuilding(q);
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(q,quote.Cost)));
+        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,command with {ExpectedRevision=renamed.Revision})).Code);
+    }
+    [Fact]
     public async Task Preview_is_pure_operator_commits_observer_rejects_and_stale_confirmation_preserves_exact_save()
     {
         using var h=Host();var original=await Save(h);var query=Query(h);var preview=h.PreviewStationBuilding(query);
