@@ -18,7 +18,7 @@ public sealed partial class SessionHost
         if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
         return state;
     }
-    private static ThinPlatformPlan PlanThinPlatform(MixedSessionState state, ThinPlatformQuery query) =>
+    private static PlatformConstructionPlan PlanThinPlatform(MixedSessionState state, ThinPlatformQuery query) =>
         ThinPlatformConstruction.Preview(state.World,new(query.Position.X,query.Position.Y,query.Position.Z),
             new(query.Direction),query.Length,query.Roof,
             query.Action == "remove",query.PlatformId,query.ExpectedPlatformRevision);

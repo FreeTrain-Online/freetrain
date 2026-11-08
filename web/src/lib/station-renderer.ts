@@ -1,13 +1,14 @@
 // Stable ExAV 2.1.1.12: PThreeDimStructure.VoxelImpl.draw and
 // QuarterViewDrawer. Original authors; LGPL-2.1-or-later.
 import type {Definition,Position} from '../generated/contracts.ts';
+import type {RailwayTarget} from './railway-renderer.ts';
 import type {ReadState} from './session-client.ts';
-import {WorldSpace,type Point} from './map-geometry.ts';
+import {WorldSpace,offset,type Point} from './map-geometry.ts';
 import {instantiate,variantKey,type Layer,type RenderCatalog,type Variant} from './content-recipes.ts';
 import profile from '../generated/station-profile.json' with {type:'json'};
 
 export interface StationTarget {kind:'station';id:string;position:Position;definition:Definition}
-export type StationOperation={target:StationTarget;layer:Layer}|{target:StationTarget;points:Point[];color:string};
+export type StationOperation={target:StationTarget|RailwayTarget;layer:Layer}|{target:StationTarget;points:Point[];color:string};
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
 export class StationRenderPlan {
   readonly layers:Layer[]=[];
@@ -34,6 +35,22 @@ export class StationRenderPlan {
         const frames=recipe.frames.filter(f=>f.cell[0]===x&&f.cell[1]===y&&f.cell[2]===z);
         if(frames.length!==1)throw new Error('Station cell unavailable');
         for(const layer of instantiate({...recipe,frames:frames.map(f=>({...f,cell:[0,0,0]}))},b.id,[p.x-space.centerX,p.y,p.z])) {
+          this.layers.push(layer);column.operations.push({target,layer});
+        }
+      }
+    }
+    for(const platform of read.mixed?.stationGraph?.platforms??[])if(platform.kind==='wide') {
+      const definition={packId:read.requiredPacks[0].id,contributionId:`system:fat-${platform.direction/2%2}`,recipeId:`system:fat-${platform.direction/2%2}`},recipe=recipes.get(definition.recipeId);
+      if(!recipe||recipe.frames.some(f=>f.status!=='ready'||!f.masks?.[variantKey(variant)]))throw new Error('Wide platform center recipe unavailable');
+      const d=offset(platform.direction);this.tops.set(platform.id,platform.location.z);
+      for(let i=0;i<platform.length;i++) {
+        const p={x:platform.location.x+d.x*i,y:platform.location.y+d.y*i,z:platform.location.z},s=space.storage(p),index=s.v*space.horizontalSize+s.h;
+        this.occupied.add(key(p));this.columnIndices.add(index);
+        const column=this.columns.get(index)??{operations:[],bases:[]};this.columns.set(index,column);
+        const target:RailwayTarget={kind:'railway',id:platform.id,platformId:platform.id,position:p,component:'platform',definition};
+        // FatPlatformVoxel draws its sprite at every visible cut, without the
+        // PThreeDimStructure gray cap. Source V/H/Z traversal orders other cells.
+        for(const layer of instantiate(recipe,platform.id,[p.x-space.centerX,p.y,p.z])){
           this.layers.push(layer);column.operations.push({target,layer});
         }
       }

@@ -908,5 +908,9 @@
   "platformLegal": "Platform placement is legal. Review the preview and cost.",
   "platformConfirm": "Confirm slim platform",
   "platformAction": "Platform action",
-  "platformFrame": "Show platform preview"
+  "platformFrame": "Show platform preview",
+  "platformWide": "Wide platform",
+  "platformSecondLane": "Include second rail lane (left side)",
+  "platformWideConfirm": "Confirm wide platform",
+  "platformWideHelp": "Keep the center strip empty. The first track runs to the right of the chosen direction; include a second track on the left if needed. Existing tracks must be straight and aligned. Removal keeps the tracks."
 }

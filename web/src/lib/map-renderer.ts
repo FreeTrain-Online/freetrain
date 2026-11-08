@@ -1,3 +1,4 @@
+import {widePlatformGhost} from './wide-platform-edit.ts';
 import {thinPlatformGhost} from './thin-platform-edit.ts';
 import {stationDefinitions} from './station-building-edit.ts';
 import {TrainColorCatalog} from './train-colors.ts';
@@ -22,7 +23,7 @@ import type { RailwayPickPolicy } from './railway-renderer.ts';
 import {stationNamePositions,type StationLabels} from './station-labels.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { platformPreview?:import('../generated/contracts.ts').ThinPlatformPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { platformPreview?:import('./wide-platform-edit.ts').PlatformPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -208,7 +209,7 @@ export class MapRenderer {
         this.stationGhostKey=ghostKey;this.stationGhost=undefined;
         if(ghost?.legal&&!stationCap&&ghost.query.action==='place'&&this.renderCatalog){
           const catalog=this.renderCatalog;
-          const entries=platform?thinPlatformGhost(platform.query,platform.positions):[{position:station!.query.position,recipeId:station!.query.definition!.recipeId}];
+          const entries=platform?('secondLane' in platform.query?widePlatformGhost(platform.query,platform.positions):thinPlatformGhost(platform.query,platform.positions)):[{position:station!.query.position,recipeId:station!.query.definition!.recipeId}];
           const layers=traversal(entries.flatMap(e=>{const recipe=catalog.renderRecipes.find(r=>r.id===e.recipeId);if(!recipe)throw new Error('Preview recipe unavailable');const p=e.position;return instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z]);})).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
           void this.terrainCache.ready(catalog,layers,variant).then(ready=>{if(this.stationGhostKey===ghostKey){this.stationGhost=ready;this.invalidate();}}).catch(()=>{if(this.stationGhostKey===ghostKey)this.invalidate();});
         }

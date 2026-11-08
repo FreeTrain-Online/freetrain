@@ -1,10 +1,11 @@
+import {fleetRailPorts} from './fleet-state.ts';
 import { speedLimitFrame, speedIcons } from './speed-limit-display.ts';
 // Stable ExAV 2.1.1.12: Traffic.draw, RailRoad.drawBefore/After,
 // QuarterViewDrawer.shouldDrawGround/fromABToXYZ and Disambiguators.
 // Original authors; LGPL-2.1-or-later.
-import type { Definition, Position, RailwayVoxel } from '../generated/contracts.ts';
+import type { Definition, Position, RailwayVoxel, Heading } from '../generated/contracts.ts';
 import type { ReadState } from './session-client.ts';
-import { WorldSpace, type Point } from './map-geometry.ts';
+import { WorldSpace, offset, type Point } from './map-geometry.ts';
 import { instantiate, variantKey, type Layer, type RenderCatalog, type Variant } from './content-recipes.ts';
 import { railwayProfile } from './mixed-state.ts';
 import { prepareCar, type TrainTarget } from './train-renderer.ts';
@@ -15,17 +16,22 @@ export interface RailwayTarget {
 }
 export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer;tunnel?:'portal'|'interior'}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
-export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
+export type RailwayPickPolicy={kind:'widePlatform';direction:Heading}|{kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
  * The second point keeps the first point's level, including vacant elevated cells. */
 export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,policy:RailwayPickPolicy):Position|undefined {
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   const slopeOwners=new Set(read.mixed?.slopes.map(s=>s.entityId));
-  const rails=new Set(read.mixed?.voxels.filter(v=>v.traffic?.rail||policy.kind==='trafficOrGround'&&v.traffic||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary').map(v=>key(v.position)));
+  const rails=new Set(read.mixed?.voxels.filter(v=>{
+    if(policy.kind==='widePlatform'){const ports=v.traffic?.rail&&fleetRailPorts(v.traffic.rail.pattern);return ports?.includes(policy.direction)&&ports.includes((policy.direction+4)%8);}
+    return v.traffic?.rail||policy.kind==='trafficOrGround'&&v.traffic||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary';
+  }).map(v=>key(v.position)));
   for(let z=Math.min(heightCut,space.levels-1);z>=0;z--) {
     const p=space.pick(point,z);if(!space.contains(p))continue;
-    const s=space.storage(p),ground=read.terrain!.cells[s.v*space.horizontalSize+s.h].ground;
-    if(policy.kind==='sameLevel'?z===policy.level:policy.kind==='ground'?z===ground:rails.has(key(p))||z<=ground)return p;
+    const d=policy.kind==='widePlatform'?offset((policy.direction+2)%8):{x:0,y:0},candidate={x:p.x+d.x,y:p.y+d.y,z};
+    if(!space.contains(candidate))continue;
+    const s=space.storage(candidate),ground=read.terrain!.cells[s.v*space.horizontalSize+s.h].ground;
+    if(policy.kind==='sameLevel'?z===policy.level:policy.kind==='ground'?z===ground:rails.has(key(candidate))||z<=ground)return p;
   }
 }
 /** Preflight every saved binding, including offscreen and cut voxels. A car
@@ -114,11 +120,11 @@ export class RailwayRenderPlan {
         const platform=read.mixed!.stationGraph?.platforms.find(p=>p.yards.some(y=>y.trafficOwnerId===v.ownerId&&key(y.location)===key(v.position)));
         const yard=platform?.yards.find(y=>y.trafficOwnerId===v.ownerId);
         const recipe=recipes.get(c.platform.recipeId);
-        if(platform?.kind!=='thin'||yard?.outlook.kind!=='plain'||!recipe||
+        if(!platform||yard?.outlook.kind!=='plain'||!recipe||
           recipe.frames.some(f=>f.status!=='ready'||!f.masks?.[variantKey(variant)]))throw new Error('Platform recipe unavailable');
         const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component:'platform',definition:c.platform,platformId:platform.id};
         for(const layer of instantiate(recipe,v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z])){
-          layer.frame={...layer.frame,stage:platform.direction===2||platform.direction===4?20:40};
+          layer.frame={...layer.frame,stage:platform.kind==='wide'?15:platform.direction===2||platform.direction===4?20:40};
           this.layers.push(layer);ops.push({target,layer});
         }
       }
@@ -159,7 +165,7 @@ export class RailwayRenderPlan {
   private order(op:RailwayOperation):number {
     if(op.target.kind==='train')return 30;
     if(op.target.component==='speedLimit')return 60;
-    if(op.target.component==='platform')return (op.layer.frame.stage??20)>=30?41:21;
+    if(op.target.component==='platform')return op.layer.frame.stage===15?19:(op.layer.frame.stage??20)>=30?41:21;
     const after=(op.layer.frame.stage??20)>=30;
     return op.target.component==='accessory'?(after?50:10):(after?40:20);
   }

@@ -88,7 +88,7 @@
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const railwayVoxel = $derived(mapSelection?.kind === 'railway' ? read?.mixed?.voxels.find(v=>v.ownerId===mapSelection?.id&&v.position.x===mapSelection.position.x&&v.position.y===mapSelection.position.y&&v.position.z===mapSelection.position.z) : undefined);
   const selectedPlatform = $derived(mapSelection?.kind==='railway'&&mapSelection.component==='platform'?read?.mixed?.stationGraph?.platforms.find(p=>p.id===(mapSelection?.kind==='railway'?mapSelection.platformId:undefined)):undefined);
-  const railwayDefinition = $derived(mapSelection?.kind === 'railway' ? mapSelection.component==='speedLimit' ? speedLimitAt(read?.mixed?.speedLimits,mapSelection.position,mapSelection.definition) : mapSelection.component==='rail' ? railwayVoxel?.traffic?.rail?.definition : mapSelection.component==='accessory' ? railwayVoxel?.traffic?.accessory?.definition : mapSelection.component==='platform' ? railwayVoxel?.traffic?.platform : railwayVoxel?.definition : undefined);
+  const railwayDefinition = $derived(mapSelection?.kind === 'railway' ? mapSelection.component==='speedLimit' ? speedLimitAt(read?.mixed?.speedLimits,mapSelection.position,mapSelection.definition) : mapSelection.component==='rail' ? railwayVoxel?.traffic?.rail?.definition : mapSelection.component==='accessory' ? railwayVoxel?.traffic?.accessory?.definition : mapSelection.component==='platform' ? railwayVoxel?.traffic?.platform ?? (selectedPlatform?.kind==='wide'&&selectedPlatform.id===mapSelection.id ? read?.entities?.find(e=>e.id===selectedPlatform.id)?.definition : undefined) : railwayVoxel?.definition : undefined);
   const mapObjectPosition = $derived(fleetCar?.state.location ?? train?.position ?? mapSelection?.position);
   const terrain = $derived(!!read && isTerrainWorld(read));
   const mixed = $derived(!!read && isMixedWorld(read));
@@ -317,17 +317,17 @@
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>
           {:else if track}<p>{track.shape.startsWith('normal') ? `${text.normalRail} ${track.shape.slice(6)}` : text[track.shape as keyof typeof text]} · {track.revision}</p>
-          {:else if mapSelection?.kind === 'railway' && railwayVoxel && railwayDefinition}
+          {:else if mapSelection?.kind === 'railway' && (railwayVoxel || selectedPlatform) && railwayDefinition}
             <p data-testid="railway-component">{text[({rail:'track',pier:'pier',support:'railwaySupport',accessory:'railwayAccessory',stationary:'stationaryTask',speedLimit:'speedTask',platform:'platformTab'} as const)[mapSelection.component]]}</p>
             {#if selectedPlatform}<p data-testid="platform-identity">{selectedPlatform.name} · {selectedPlatform.id} · {selectedPlatform.revision}</p>{#if selectedPlatform.hostId===null}<p>{text.platformDisconnected}</p>{/if}{/if}
             <p data-testid="railway-definition">{railwayDefinition.packId} · {railwayDefinition.contributionId} · {railwayDefinition.recipeId}</p>
             <ObjectProvenance id={railwayDefinition.contributionId} packId={railwayDefinition.packId} locale={view.locale}/>
-            {#if railwayVoxel.traffic?.rail}<p>{text.railwayPattern}: {railwayVoxel.traffic.rail.pattern}</p>{/if}
-            {#if railwayVoxel.traffic?.rail?.controllerId}<p>{text.controller}: {railwayVoxel.traffic.rail.controllerId}</p>{/if}
-            {#if railwayVoxel.traffic?.rail&&signalTypes.some(s=>s.id===railwayDefinition.contributionId)}
-              <FleetControllerManager {model} {view} location={railwayVoxel.position} disabled={clockDisabled||synchronizing}/>
+            {#if railwayVoxel?.traffic?.rail}<p>{text.railwayPattern}: {railwayVoxel?.traffic.rail.pattern}</p>{/if}
+            {#if railwayVoxel?.traffic?.rail?.controllerId}<p>{text.controller}: {railwayVoxel?.traffic.rail.controllerId}</p>{/if}
+            {#if railwayVoxel?.traffic?.rail&&signalTypes.some(s=>s.id===railwayDefinition.contributionId)}
+              <FleetControllerManager {model} {view} location={railwayVoxel?.position} disabled={clockDisabled||synchronizing}/>
             {/if}
-            {#if railwayVoxel.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel.supportedOwnerId}</p>{/if}
+            {#if railwayVoxel?.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel?.supportedOwnerId}</p>{/if}
           {:else if mapSelection?.kind === 'terrain'}<p data-testid="terrain-surface">{text[({ground:'terrainGround',mountain:'terrainMountain',water:'terrainWater',underground:'terrainUnderground',terrace:'terrainTerrace',forest:'terrainForest',creek:'terrainCreek',cliff:'terrainCliff'} as const)[mapSelection.surface]]}</p><p>{text.terrainWorldHint}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}
         {:else if panel === 'catalog'}

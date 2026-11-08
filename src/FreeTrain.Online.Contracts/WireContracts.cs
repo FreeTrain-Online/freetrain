@@ -143,6 +143,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 [JsonDerivedType(typeof(EditStationBuildingCommand), "editStationBuilding")]
 [JsonDerivedType(typeof(EditThinPlatformCommand), "editThinPlatform")]
+[JsonDerivedType(typeof(EditWidePlatformCommand), "editWidePlatform")]
 [JsonDerivedType(typeof(EditSlopeCommand), "editSlope")]
 [JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
 [JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
@@ -196,6 +197,12 @@ public sealed record ThinPlatformQuery(long ExpectedWorldEpoch, long ExpectedGeo
 public sealed record ThinPlatformPreviewRead(ThinPlatformQuery Query, bool Legal, string? Reason, long Cost,
     PositionRead[] Positions);
 public sealed record EditThinPlatformCommand(ThinPlatformQuery Query, long ExpectedCost) : CommandPayload;
+public sealed record WidePlatformQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
+    string ExpectedContentVersion, string Action, PositionRead Position, int Direction, int Length, bool SecondLane,
+    long PlatformId, long ExpectedPlatformRevision);
+public sealed record WidePlatformPreviewRead(WidePlatformQuery Query, bool Legal, string? Reason, long Cost,
+    PositionRead[] Positions);
+public sealed record EditWidePlatformCommand(WidePlatformQuery Query, long ExpectedCost) : CommandPayload;
 public sealed record RemovalQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
     PositionRead Position, long ExpectedEntityId, long ExpectedEntityRevision,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead? End = null);

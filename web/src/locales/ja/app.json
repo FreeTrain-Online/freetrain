@@ -908,5 +908,9 @@
   "platformLegal": "ホームを設置できます。プレビューと費用を確認してください。",
   "platformConfirm": "狭いホームの建設を確定",
   "platformAction": "ホームの操作",
-  "platformFrame": "ホームのプレビューを表示"
+  "platformFrame": "ホームのプレビューを表示",
+  "platformWide": "広いホーム",
+  "platformSecondLane": "左側の2番線も建設",
+  "platformWideConfirm": "広いホームの建設を確定",
+  "platformWideHelp": "中央のホーム用の区画を空けてください。向きに対して右側に1番線、必要に応じて左側に2番線を建設します。既存の線路は同じ向きの直線が必要です。ホームを撤去しても線路は残ります。"
 }

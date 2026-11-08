@@ -54,7 +54,7 @@
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean;isRemoving?:()=>boolean;usesSlopePick?:()=>boolean;pickPosition?:(p:Position,append?:boolean)=>void;hoverPosition?:(p?:Position)=>void}>();
-  let stationControls=$state<StationControls>(),stationPicked=$state<Position>(),stationRemovalTarget=$state<Position>(),stationPreview=$state<import('./generated/contracts.ts').StationBuildingPreview>(),platformPreview=$state<import('./generated/contracts.ts').ThinPlatformPreview>();
+  let stationControls=$state<StationControls>(),stationPicked=$state<Position>(),stationRemovalTarget=$state<Position>(),stationPreview=$state<import('./generated/contracts.ts').StationBuildingPreview>(),platformPreview=$state<import('./lib/wide-platform-edit.ts').PlatformPreview>();
   export async function removeStation(position:Position){activateTool('station');await tick();stationRemovalTarget={...position};}
   let removeControls=$state<{cancelDraft:()=>boolean;pickMode:()=> 'object'|'auto'|'level'}>(),removePicked=$state<Selection|Position>();
   let removeLevel=$state(1),removalPath=$state<Position[]>([]);
@@ -246,7 +246,7 @@
     else if(railway&&tool==='station'&&!blocked&&!panel){
       stationRemovalTarget=undefined;
       const selected=stationControls?.isRemoving()?renderer?.pick(p,camera.zoom):undefined;
-      stationPicked=selected&&(selected.kind==='station'||selected.kind==='railway'&&selected.component==='platform')?{...selected.position}:stationControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:stationControls?.pickPolicy()??'ground'}):tileAt(p,railLevel,camera,width,height,space);
+      stationPicked=selected&&(selected.kind==='station'||selected.kind==='railway'&&selected.component==='platform')?{...selected.position}:stationControls?.usesAutomaticPick()?renderer?.pickLocation(p,stationControls?.pickPolicy()??{kind:'ground'}):tileAt(p,railLevel,camera,width,height,space);
     }
     else if(railway&&tool==='remove'&&!blocked&&!panel){
       const pick=removeControls?.pickMode();

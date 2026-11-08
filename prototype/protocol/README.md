@@ -227,3 +227,19 @@ queue must exactly match `clock`. Version7 peers and Save9 documents are rejecte
 The shared [snapshot](fixtures/snapshot-stations.json) and
 [save](saves/stations-v10.json) are literal transport witnesses, not constructed
 station gameplay. [Implementation, reproduction and scope](../../doc/web-parity-station-transport.md).
+
+## Platform construction queries
+
+`ThinPlatformQuery` and `WidePlatformQuery` carry expected epoch, geometry
+revision, minute and content version, Place/Remove, position, cardinal direction,
+length1–100 and target platform ID/revision. Thin adds `roof`; wide adds
+`secondLane`, with lane0 mandatory at creation. Preview endpoints are
+`/api/station/platform/preview` and `/api/station/wide-platform/preview`.
+`editThinPlatform` / `editWidePlatform` commit the echoed query and exact
+`expectedCost` through the existing authority/receipt boundary. Previews are
+read-only and validate transition admission; clock or geometry changes invalidate
+the quote. Wide placement positions are ordered center, lane0, optional lane1.
+Removal resolves the full platform from a center/yard cell and retains normal
+track. Both use current Save10/protocol8 state; host/service and subsequent lane
+editing retain their later P6 slices. See [wide-platform evidence](../../doc/web-parity-wide-platforms.md)
+and [slim-platform evidence](../../doc/web-parity-thin-platforms.md).

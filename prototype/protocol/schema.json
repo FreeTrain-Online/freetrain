@@ -59,6 +59,12 @@
     },
     {
       "$ref": "#/$defs/ThinPlatformPreview"
+    },
+    {
+      "$ref": "#/$defs/WidePlatformQuery"
+    },
+    {
+      "$ref": "#/$defs/WidePlatformPreview"
     }
   ],
   "$defs": {
@@ -1303,6 +1309,26 @@
             },
             "query": {
               "$ref": "#/$defs/ThinPlatformQuery"
+            },
+            "expectedCost": {
+              "$ref": "#/$defs/Money"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedCost"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editWidePlatform"
+            },
+            "query": {
+              "$ref": "#/$defs/WidePlatformQuery"
             },
             "expectedCost": {
               "$ref": "#/$defs/Money"
@@ -5465,6 +5491,111 @@
       "properties": {
         "query": {
           "$ref": "#/$defs/ThinPlatformQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "positions"
+      ]
+    },
+    "WidePlatformQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "place",
+            "remove"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "platformId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedPlatformRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "secondLane": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "position",
+        "direction",
+        "length",
+        "secondLane",
+        "platformId",
+        "expectedPlatformRevision"
+      ]
+    },
+    "WidePlatformPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/WidePlatformQuery"
         },
         "legal": {
           "type": "boolean"

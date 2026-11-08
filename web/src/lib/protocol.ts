@@ -247,3 +247,19 @@ export function parseThinPlatformPreview(value:unknown):import('../generated/con
   }
   return p;
 }
+
+const validateWidePlatform=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/WidePlatformPreview'});
+export function parseWidePlatformPreview(value:unknown):import('../generated/contracts.ts').WidePlatformPreview {
+  if(!validateWidePlatform(value))throw new Error('Invalid station preview');
+  const p=value as import('../generated/contracts.ts').WidePlatformPreview;
+  if(BigInt(p.cost)<0n || (p.legal ? p.reason!==null||!p.positions.length : p.reason===null||p.cost!=='0'))throw new Error('Inconsistent station preview');
+  if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate station positions');
+  const q=p.query;
+  if(q.action==='place'?(q.platformId!=='0'||q.expectedPlatformRevision!=='0'):q.platformId==='0')throw new Error('Invalid platform identity');
+  if(p.legal&&q.action==='place'){
+    const dx=q.direction===2?1:q.direction===6?-1:0,dy=q.direction===4?1:q.direction===0?-1:0;
+    const expected=Array.from({length:q.secondLane?3:2},(_,lane)=>Array.from({length:q.length},(_,i)=>({x:q.position.x+dx*i-dy*(lane===2?-1:lane),y:q.position.y+dy*i+dx*(lane===2?-1:lane),z:q.position.z}))).flat();
+    if(p.positions.length!==expected.length||p.positions.some((v,i)=>v.x!==expected[i].x||v.y!==expected[i].y||v.z!==expected[i].z))throw new Error('Invalid platform geometry');
+  }
+  return p;
+}

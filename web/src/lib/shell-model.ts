@@ -171,6 +171,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
       return result;
     },
+    async previewWidePlatform(query:import('../generated/contracts.ts').WidePlatformQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewWidePlatform)throw new Error('Unavailable');
+      const result=await active.previewWidePlatform(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      return result;
+    },
     async previewRailway(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRailway)throw new Error('Unavailable');

@@ -19,7 +19,9 @@ export type GameDocument =
   | StationBuildingQuery
   | StationBuildingPreview
   | ThinPlatformQuery
-  | ThinPlatformPreview;
+  | ThinPlatformPreview
+  | WidePlatformQuery
+  | WidePlatformPreview;
 export type WireMessage =
   | Join
   | Command
@@ -226,6 +228,11 @@ export type CommandPayload =
   | {
       kind: "editThinPlatform";
       query: ThinPlatformQuery;
+      expectedCost: Money;
+    }
+  | {
+      kind: "editWidePlatform";
+      query: WidePlatformQuery;
       expectedCost: Money;
     };
 
@@ -994,6 +1001,19 @@ export interface ThinPlatformQuery {
   platformId: Counter;
   expectedPlatformRevision: Counter;
 }
+export interface WidePlatformQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "place" | "remove";
+  position: Position;
+  direction: 0 | 2 | 4 | 6;
+  length: number;
+  platformId: Counter;
+  expectedPlatformRevision: Counter;
+  secondLane: boolean;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1383,6 +1403,16 @@ export interface StationBuildingPreview {
 }
 export interface ThinPlatformPreview {
   query: ThinPlatformQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  /**
+   * @maxItems 32768
+   */
+  positions: Position[];
+}
+export interface WidePlatformPreview {
+  query: WidePlatformQuery;
   legal: boolean;
   reason: string | null;
   cost: Money;
