@@ -33,7 +33,7 @@ test('all bundled moving-car poses paint exact independent crop/anchor pixels an
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/train-rendering-report.json`,JSON.stringify({variants:report,local:{picks:local.picks,columns:local.columns}},null,2));
 });
 
-test('fractional train damage replay and alpha picks match full source-order composition, with discrete tunnel fallback',async({page},testInfo)=>{
+test('fractional train damage replay and alpha picks match full source-order composition, with hidden tunnel interiors',async({page},testInfo)=>{
  const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
@@ -45,6 +45,38 @@ test('fractional train damage replay and alpha picks match full source-order com
   writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/smooth-composition-${night?'night':'day'}.png`,png);
   await testInfo.attach(`smooth-composition-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
  }
+});
+
+test('tunnel trains cross both portals smoothly with hidden interiors and matching alpha picks',async({page},testInfo)=>{
+ test.setTimeout(120_000);
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ for(const night of [false,true]) {
+  const report=await page.evaluate(async({catalog,night})=>{const {trainTunnelPixels}=await import('/__tests/train-rendering.js');return trainTunnelPixels(catalog,{season:'spring',night});},{catalog,night});
+  expect(report.frames).toBe(504);expect(report.picks).toBe(970200);
+  expect(report.visible).toBeGreaterThan(0);expect(report.hidden).toBeGreaterThan(0);
+  const png=Buffer.from(report.png.split(',')[1],'base64');writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/train-tunnel-smooth-${night?'night':'day'}.png`,png);
+  await testInfo.attach(`train-tunnel-smooth-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
+ }
+});
+
+test('tunnel damage replay has bounded paint work per frame @performance',async({page},testInfo)=>{
+ const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
+ await page.goto('/');await ready(page);
+ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
+ const report=await page.evaluate(async catalog=>{
+  const {trainTunnelPixels}=await import('/__tests/train-rendering.js');
+  const result=await trainTunnelPixels(catalog,{season:'spring',night:false},true);
+  const sorted=result.frameTimes.sort((a:number,b:number)=>a-b);
+  return {frames:result.frames,paintCalls:result.paintCalls,p95:sorted[Math.floor(sorted.length*.95)],max:sorted.at(-1)};
+ },catalog);
+ console.log('tunnel redraw',report);
+ await testInfo.attach('tunnel-redraw.json',{body:JSON.stringify(report,null,2),contentType:'application/json'});
+ expect(report.paintCalls).toBeLessThan(report.frames*8);
+ expect(report.p95).toBeLessThan(16);
 });
 
 test('whole head and tail car sprites stay above neighboring track pixels in every direction',async({page},testInfo)=>{

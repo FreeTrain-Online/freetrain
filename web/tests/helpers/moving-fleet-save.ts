@@ -35,3 +35,16 @@ export function wideMovingFleetSave(twoTrains:boolean|number=false) {
  }
  return save;
 }
+
+/** Flat approaches, curves, bridges and tunnel portals share each moving ring. */
+export function tunnelMovingFleetSave() {
+ const save=wideMovingFleetSave(2),profile=JSON.parse(readFileSync('src/generated/railway-profile.json','utf8'));
+ const tunnel=profile.bindings.find((b:any)=>b.handler==='tunnel').reference;
+ const bridge=profile.bindings.find((b:any)=>b.handler==='bridge').reference;
+ for(const v of save.mixed.voxels) {
+  const rail=v.traffic?.rail;if(!rail)continue;
+  if(rail.pattern===10)Object.assign(rail,{definition:tunnel,variant:1,terrainBackup:{ne:0,se:0,sw:0,nw:0}});
+  if(rail.pattern===4)Object.assign(rail,{definition:bridge,variant:0});
+ }
+ return save;
+}

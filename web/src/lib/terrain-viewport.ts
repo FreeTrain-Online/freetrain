@@ -120,7 +120,9 @@ export class TerrainViewport {
       // Returning to the safe interior cancels an obsolete edge refresh too.
       if(this.work){this.spare=this.work.image;this.work=undefined;}
     }else if(!this.work||key!==this.work.key||!covers(this.work,view,width,height)) {
-      const reveal=this.raster&&view.zoom<this.raster.cameraZoom;
+      // Reveal newly exposed terrain before filling the much larger panning
+      // buffer. This matters for cold views and long pans as well as zoom-out.
+      const reveal=!this.raster||view.zoom!==this.raster.cameraZoom||!covers(this.raster,view,width,height);
       const renderWidth=reveal?width*(1+2*revealOverscan):paddedWidth;
       const renderHeight=reveal?height*(1+2*revealOverscan):paddedHeight;
       const pixelWidth=Math.max(1,Math.floor(renderWidth*ratio)),pixelHeight=Math.max(1,Math.floor(renderHeight*ratio));
@@ -132,7 +134,8 @@ export class TerrainViewport {
       this.work={key,scene:this.scene,image,view:target,width:pixelWidth,height:pixelHeight,steps:this.render(this.scene,image,target,pixelWidth,pixelHeight,1,view.zoom)};
       // Give the camera's first frame to the cached image before doing refinement.
     }else if(this.work) {
-      const deadline=performance.now()+5;
+      // Leave half a 60 Hz frame for presentation and incoming publications.
+      const deadline=performance.now()+8;
       do {
         const step=this.work.steps.next();
         if(step.done) {
@@ -152,7 +155,8 @@ export class TerrainViewport {
     }
     // A completed reveal still needs frames to expand into the panning buffer.
     const needsBuffer=raster&&!covers(raster,view,width,height,overscanX/2,overscanY/2);
-    return {ready:!!raster,pending:!!this.work||!!needsBuffer||this.completedKey!==key,drawn:raster?.drawn??0,renderZoom:(raster?.view.zoom??zoom)/dpr,updateKind:this.updateKind};
+    const settled=!!raster&&this.completedKey===key&&raster.scene===this.scene&&covers(raster,view,width,height);
+    return {ready:!!raster,settled,pending:!!this.work||!!needsBuffer||this.completedKey!==key,drawn:raster?.drawn??0,renderZoom:(raster?.view.zoom??zoom)/dpr,updateKind:this.updateKind};
   }
   get presentation() {return this.raster?{scene:this.raster.scene,operations:this.raster.operations,index:this.raster.index,view:this.raster.view,width:this.raster.width,height:this.raster.height}:undefined;}
   pick(p:Point,view:View) {

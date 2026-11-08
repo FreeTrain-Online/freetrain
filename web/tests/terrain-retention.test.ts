@@ -2,11 +2,25 @@ import assert from 'node:assert/strict';
 import {TerrainScene} from '../src/lib/terrain-renderer.ts';
 import {RecipeImageCache,type RenderCatalog} from '../src/lib/content-recipes.ts';
 import {trainSceneFixture} from './helpers/train-scene.ts';
+import {terrainById} from '../src/lib/terrain-state.ts';
 import type {Snapshot} from '../src/generated/contracts.ts';
 
 const catalog=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url))) as RenderCatalog;
 const source=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-fleet.json',import.meta.url))) as Snapshot;
 const gc=(globalThis as unknown as {gc?:()=>void}).gc;
+
+Deno.test({name:'unordered terrain ID indexes release superseded immutable arrays and entities',ignore:!gc,fn:async()=>{
+ let latest:readonly {id:string}[]=[];
+ const arrays:WeakRef<object>[]=[],entities:WeakRef<object>[]=[];
+ for(let n=0;n<100;n++) {
+  latest=Object.freeze(Array.from({length:1000},(_,i)=>({id:String(1000-i)})));
+  assert.equal(terrainById(latest,'1000',v=>v.id),latest[0]);
+  arrays.push(new WeakRef(latest));entities.push(new WeakRef(latest[0]));
+ }
+ for(let n=0;n<3;n++){await new Promise(resolve=>setTimeout(resolve,0));gc!();}
+ assert.equal(arrays.at(-1)!.deref(),latest);assert.equal(entities.at(-1)!.deref(),latest[0]);
+ assert.equal(arrays.filter(r=>r.deref()).length,1);assert.equal(entities.filter(r=>r.deref()).length,1);
+}});
 
 Deno.test({name:'successive train scenes release previous scenes after reusing their caches',ignore:!gc,fn:async()=>{
  const cache=new RecipeImageCache(async media=>{

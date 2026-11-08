@@ -67,6 +67,19 @@ Deno.test('junction drawing follows the actual predecessor route while a simple 
  t.cars[0].state.location!.x--;assert.equal(carOutgoing(s,t,1,r,'junction'),5);
  t.cars[0].state.heading=4;assert.equal(carOutgoing(s,t,0,r,'junction'),4);
 });
+Deno.test('tunnel occlusion uses complete neighbor topology and invalidates a portal when its neighbor changes',async()=>{
+ const {railwayProfile}=await import('../src/lib/mixed-state.ts');
+ const s=sceneFixture(),tunnel=railwayProfile.bindings.find(b=>b.handler==='tunnel')!;
+ for(const v of s.mixed!.voxels)Object.assign(v.traffic!.rail!,{definition:tunnel.reference,variant:1,terrainBackup:{ne:0,se:0,sw:0,nw:0}});
+ const before=new RailwayRenderPlan(s,catalog,day),space=new WorldSpace(16,32,6);
+ const column=(i:number)=>{const p=space.storage(s.mixed!.voxels[i].position);return p.v*16+p.h;};
+ const kinds=(plan:RailwayRenderPlan,i:number)=>plan.operations(column(i),5,0,true,2).filter(o=>'layer' in o&&o.target.kind==='railway').map(o=>'tunnel' in o?o.tunnel:undefined);
+ assert.deepEqual(kinds(before,0),['interior','interior']);assert.deepEqual(kinds(before,2),['portal','portal']);
+ const next=structuredClone(s);next.mixed!.voxels[1].traffic!.rail={...sceneFixture().mixed!.voxels[1].traffic!.rail!};
+ const after=new RailwayRenderPlan(next,catalog,day);
+ assert.deepEqual(kinds(after,0),['portal','portal']);assert.deepEqual(kinds(before,0),['interior','interior']);
+ assert.deepEqual(new Set(after.changedColumns(before)),new Set([column(0),column(1)]));
+});
 Deno.test('choice-junction heads render without evaluating shared controllers',()=>{
  const s=sceneFixture(),t=s.mixed!.fleet!.trains[0],r=s.mixed!.voxels[0].traffic!.rail!;
  r.pattern=27;r.definition=definition('system:pattern/27');t.cars[0].state.heading=4;

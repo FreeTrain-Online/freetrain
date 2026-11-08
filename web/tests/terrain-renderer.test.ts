@@ -73,6 +73,22 @@ Deno.test('small gameplay maps retain terrain pixels between animation frames',a
     equal(repaints,0);
   });
 });
+Deno.test('cold views and uncovered pans publish visible terrain and picks before completing the panning buffer',async()=>{
+ await withViewport((_scene,viewport,ctx)=>{
+  for(const camera of [{x:0,y:32,zoom:1},{x:-2000,y:32,zoom:1}]) {
+   assert(!viewport.draw(ctx,camera,128,96,1).settled);
+   let revealed=false;
+   for(let n=0;n<1000;n++) {
+    const state=viewport.draw(ctx,camera,128,96,1);
+    if(state.settled){assert(state.pending,'Visible terrain should precede background prefetch');revealed=true;break;}
+   }
+   assert(revealed);assert(viewport.pick({x:16,y:24},camera));
+   let complete=false;
+   for(let n=0;n<1000;n++)if(!viewport.draw(ctx,camera,128,96,1).pending){complete=true;break;}
+   assert(complete);
+  }
+ });
+});
 
 Deno.test('offscreen edits on small maps retain complete source operations for a later pan',async()=>{
  await withViewport(async(_scene,_viewport,ctx)=>{

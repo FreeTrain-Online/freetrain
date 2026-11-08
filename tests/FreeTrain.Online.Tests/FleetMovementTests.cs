@@ -295,7 +295,41 @@ public partial class FleetMovementTests
     }
 
     [Fact]
-    public async Task Unsupported_tunnel_and_Outside_steps_emit_ordered_reset_markers()
+    public async Task Tunnel_motion_records_all_cars_through_both_portals_in_every_direction_and_orientation()
+    {
+        foreach(var direction in new[]{0,2,4,6})foreach(var reversed in new[]{false,true})
+        {
+            var heading=new Heading(direction);var (dx,dy)=heading.Offset;
+            Location At(int k)=>new(26+k*dx,23+k*dy,2);
+            var w=TunnelConstructionTests.World(Enumerable.Range(0,4).Select(At)).EnableFleet(RollingStockCatalog.Bundled.FleetProfile);
+            var plan=TunnelRailwayConstruction.Preview(w,At(-3),At(7));
+            Assert.True(plan.Legal,plan.Reason);w=TunnelRailwayConstruction.Apply(new(w),plan,new(100)).World;
+            var s=Purchase(w,3);var train=s.Fleet!.Trains[0];
+            train=train with{Revision=1,State=TrainOperationalState.Moving,IsReversed=reversed,
+                Cars=(reversed?train.Cars.Reverse():train.Cars).Select((c,n)=>c with{Revision=1,State=new FleetCarState.Inside(At(-1-n),heading)}).ToImmutableArray()};
+            s=Session(Install(s.World,train),new(199,10,[new(8,8,200,MixedSessionState.TrainHandler(train.Id),0)]),new(1_000_000));
+            using var host=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+            var run=host.Enqueue(new("owner"),new("tunnel-motion",host.WorldEpoch,new RunCommand()));
+            host.Pump();Assert.IsType<AcceptedMessage>(await run);host.Pump(16);
+            var motion=host.Snapshot().TrainMotion!;Assert.Equal(8,motion.Steps.Length);
+            Assert.All(motion.Steps,step=>{Assert.Equal(2,step.Duration);Assert.Equal(3,step.Cars.Length);});
+            foreach(var (car,index) in train.Cars.Select((c,i)=>(c,i)))
+            {
+                var poses=motion.Steps.Select(step=>step.Cars.Single(c=>c.CarId==car.Id)).ToArray();
+                for(var n=0;n<poses.Length;n++)
+                {
+                    var p=At(n-index-1);var q=At(n-index);
+                    Assert.Equal(new PositionRead(p.X,p.Y,p.Z),poses[n].From.Position);
+                    Assert.Equal(new PositionRead(q.X,q.Y,q.Z),poses[n].To.Position);
+                    Assert.Equal(reversed,poses[n].From.Reversed);Assert.Equal(heading.Index,poses[n].From.Outgoing);
+                    if(n>0)Assert.Equal(poses[n-1].To,poses[n].From);
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Outside_steps_emit_ordered_reset_markers()
     {
         var s=SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v9.json")),
             TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;

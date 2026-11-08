@@ -151,7 +151,7 @@ export async function smoothMovementPixels(catalog:RenderCatalog,variant:Variant
   for(const [column,progress] of [0,.25,.5,.75,1].entries()){
    const car={trainId:t.id,carId:t.cars[0].id,from,to,progress};
    paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,240,180);scene.draw(paint,view,240,180);
-   compositor.draw(paint,view,240,180,scene,scene.operations,catalog,handler==='tunnel'?[]:[car],16,15);
+   compositor.draw(paint,view,240,180,scene,scene.operations,catalog,[car],16,15);
    const dynamic={target:original.target,layer:movingCarLayer(recipe,car,15)};
    // Independent full operation replay at the containing source voxel.
    const position=progress<.5?from.position:to.position,storage=space.storage(position),index=storage.v*16+storage.h;
@@ -175,6 +175,81 @@ export async function smoothMovementPixels(catalog:RenderCatalog,variant:Variant
   }
  }
  return {png:gallery.toDataURL(),frames,picks,hidden};
+}
+
+/** Independent tunnel oracle: whole cars over the static scene, alpha-clipped
+ * by every solid interior and portal foreground, without voxel ownership. */
+export async function trainTunnelPixels(catalog:RenderCatalog,variant:Variant,measure=false) {
+ const stock=catalog.renderRecipes.find(r=>r.handler==='train-composition')!,cache=new RecipeImageCache();
+ const tunnel=railwayProfile.bindings.find(b=>b.handler==='tunnel')!;
+ const space=new WorldSpace(32,48,6),anchor=space.location({h:15,v:24,z:2});
+ const phases=[0,.25,.49,.5,.51,.75,1],gallery=document.createElement('canvas');
+ gallery.width=phases.length*260;gallery.height=8*200;const contact=gallery.getContext('2d')!;
+ let frames=0,picks=0,visible=0,hidden=0,row=0,paintCalls=0,totalPaintCalls=0;const frameTimes:number[]=[];
+ for(const heading of [0,2,4,6])for(const reversed of [false,true]) {
+  const [dx,dy]=[[0,-1],[1,0],[0,1],[-1,0]][heading/2];
+  const position=(k:number)=>({x:anchor.x+k*dx,y:anchor.y+k*dy,z:2});
+  const s=trainSceneFixture(source as Snapshot,catalog,stock,reversed,32,48),train=s.mixed!.fleet!.trains[0];
+  const template=structuredClone(s.mixed!.voxels[0]),entity=structuredClone(s.entities![0]);
+  const pattern=heading%4===0?10:4,portal=dy>0||dx<0?3:0;
+  s.entities=[];s.mixed!.voxels=[];s.mixed!.nextEntityId='54';
+  // Authority is beyond the exit while presentation is still entering.
+  for(const [i,c] of train.cars.entries())c.state={kind:'inside',location:position(7-i),heading,countdown:null};
+  for(let k=-5;k<=8;k++) {
+   const v=structuredClone(template),id=String(k+45);v.ownerId=id;v.position=position(k);
+   const car=train.cars.find(c=>JSON.stringify(c.state.location)===JSON.stringify(v.position));
+   v.traffic!.car=car?{definition:car.definition,trainId:train.id,carId:car.id}:null;
+   v.traffic!.rail!.pattern=pattern;
+   v.traffic!.rail!.definition=k>=0&&k<=3?tunnel.reference:{...v.traffic!.rail!.definition,contributionId:`system:pattern/${pattern}`,recipeId:`system:pattern/${pattern}`};
+   v.traffic!.rail!.variant=k>=0&&k<=3&&heading%4===0?1:0;
+   v.traffic!.rail!.terrainBackup=k>=0&&k<=3?{ne:0,se:0,sw:0,nw:0}:null;
+   s.mixed!.voxels.push(v);s.entities.push({...structuredClone(entity),id,anchor:v.position});
+  }
+  const scene=await TerrainScene.prepare(s,catalog,cache,variant,5),compositor=new TrainCompositor();
+  if(measure){const paint=scene.paintOperations.bind(scene);scene.paintOperations=(...args)=>{paintCalls++;return paint(...args);};}
+  const p=space.project(position(2)),view={x:130-p.x,y:100-p.y,zoom:1};
+  const staticOps=scene.operations.filter(o=>o.target.kind!=='train');
+  const originals=new Map(scene.operations.filter(o=>o.target.kind==='train').map(o=>[o.target.kind==='train'?o.target.carId:'',o]));
+  const blockers=staticOps.filter(o=>o.target.kind==='railway'&&o.target.definition.recipeId===tunnel.reference.recipeId&&'layer' in o&&
+   ((o.layer.frame.stage??20)>=30||JSON.stringify(o.target.position)!==JSON.stringify(position(portal))));
+  const canvas=document.createElement('canvas'),reference=document.createElement('canvas'),sprites=document.createElement('canvas');
+  canvas.width=reference.width=sprites.width=260;canvas.height=reference.height=sprites.height=200;
+  const paint=canvas.getContext('2d')!,ref=reference.getContext('2d')!,ink=sprites.getContext('2d')!;
+  for(let step=-2;step<=6;step++)for(const [column,progress] of phases.entries()) {
+   const cars=train.cars.map((c,i)=>({trainId:train.id,carId:c.id,
+    from:{position:position(step-i),heading,outgoing:heading,reversed},
+    to:{position:position(step+1-i),heading,outgoing:heading,reversed},progress}));
+   paint.fillStyle=scene.backgroundColor;paint.fillRect(0,0,260,200);scene.draw(paint,view,260,200);
+   const start=performance.now(),calls=paintCalls;
+   compositor.draw(paint,view,260,200,scene,scene.operations,catalog,cars,32,space.centerX);
+   if(measure){frameTimes.push(performance.now()-start);totalPaintCalls+=paintCalls-calls;frames++;continue;}
+   const dynamic=cars.map(car=>({target:originals.get(car.carId)!.target,
+    layer:movingCarLayer(catalog.renderRecipes.find(r=>r.id===train.cars.find(c=>c.id===car.carId)!.definition.recipeId)!,car,space.centerX)}));
+   dynamic.sort((a,b)=>compareTrainLayers(a.layer,b.layer));
+   ref.fillStyle=scene.backgroundColor;ref.fillRect(0,0,260,200);scene.paintOperations(ref,view,260,200,staticOps);
+   ink.clearRect(0,0,260,200);scene.paintOperations(ink,view,260,200,dynamic);
+   ink.globalCompositeOperation='destination-out';scene.paintOperations(ink,view,260,200,blockers);ink.globalCompositeOperation='source-over';
+   ref.drawImage(sprites,0,0);
+   const a=paint.getImageData(0,0,260,200).data,b=ref.getImageData(0,0,260,200).data;
+   for(let i=0;i<a.length;i++)if(a[i]!==b[i]){
+    const point={x:(i/4|0)%260+.5,y:Math.floor((i/4|0)/260)+.5};
+    const hits=[...staticOps,...dynamic].filter(o=>scene.pickOperations(point,view,[o])).map(o=>({target:o.target,...('layer' in o?{frame:o.layer.frame.key,tunnel:'tunnel' in o?o.tunnel:undefined,position:o.layer.position}:{})}));
+    throw new Error(`Tunnel pixels: ${heading}/${reversed}/${step}/${progress} at ${i/4|0}, actual=${JSON.stringify([...a.slice(i-i%4,i-i%4+4)])}, expected=${JSON.stringify([...b.slice(i-i%4,i-i%4+4)])}, hits=${JSON.stringify(hits)}`);
+   }
+   let hits=0;
+   for(let y=30;y<170;y+=4)for(let x=20;x<240;x+=4) {
+    const point={x:x+.5,y:y+.5},blocked=scene.pickOperations(point,view,blockers);
+    const expected=(!blocked&&scene.pickOperations(point,view,dynamic))||scene.pickOperations(point,view,staticOps);
+    const actual=compositor.pick(point,view);
+    if(JSON.stringify(actual)!==JSON.stringify(expected))throw new Error(`Tunnel pick: ${heading}/${reversed}/${step}/${progress} at ${x},${y}`);
+    if(actual?.kind==='train')hits++;picks++;
+   }
+   if(hits)visible++;else hidden++;
+   if(step===3)contact.drawImage(canvas,column*260,row*200);frames++;
+  }
+  row++;
+ }
+ return {png:gallery.toDataURL(),frames,picks,visible,hidden,frameTimes,paintCalls:totalPaintCalls};
 }
 
 /** Flat-track oracle: render every rail/ground pixel first, then whole cars.

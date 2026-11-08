@@ -1,12 +1,25 @@
 import { pickTerrainIntersection, terrainCornerPoint } from '../src/lib/terrain-edit.ts';
 import { WorldSpace } from '../src/lib/map-geometry.ts';
 import { parseMessage, applyDelta, immutable } from '../src/lib/protocol.ts';
+import { terrainById } from '../src/lib/terrain-state.ts';
 import type { Snapshot, Delta } from '../src/generated/contracts.ts';
 function assert(value:unknown):asserts value {if(!value)throw new Error('Assertion failed');}
 function equal(a:unknown,b:unknown){assert(JSON.stringify(a)===JSON.stringify(b));}
 function rejects(action:()=>unknown){try{action();}catch{return;}throw new Error('Invalid terrain accepted');}
 const read=()=>Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-terrain.json',import.meta.url)).then(s=>parseMessage(s) as Snapshot);
 const change=()=>Deno.readTextFile(new URL('../../prototype/protocol/fixtures/delta-terrain.json',import.meta.url)).then(s=>parseMessage(s) as Delta);
+Deno.test('unordered immutable terrain IDs have bounded lookup work and retain independent snapshot identities',()=>{
+ const values=Object.freeze(Array.from({length:5000},(_,i)=>({id:String(9007199254740993n+BigInt(5000-i))})));
+ let visits=0;const key=(v:typeof values[number])=>{visits++;return v.id;};
+ for(const value of values)assert(terrainById(values,value.id,key)===value);
+ assert(!terrainById(values,'missing',key));
+ assert(visits<values.length*2);
+ const replacement={id:values[0].id},next=Object.freeze([replacement,...values.slice(1)]);
+ assert(terrainById(next,replacement.id,key)===replacement);
+ assert(terrainById(values,replacement.id,key)===values[0]);
+ const mutable=[{id:'3'},{id:'1'}];assert(terrainById(mutable,'1',v=>v.id)===mutable[1]);
+ mutable[1]={id:'2'};assert(!terrainById(mutable,'1',v=>v.id));assert(terrainById(mutable,'2',v=>v.id)===mutable[1]);
+});
 Deno.test('shared server terrain snapshot carries actual zero-rail world, stable realized trees and original provenance',async()=>{
   const state=await read();
   assert(state.tracks.length===0&&state.entities!.length===3&&state.terrain!.cells.length===9);

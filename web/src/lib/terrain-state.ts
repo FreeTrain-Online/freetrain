@@ -21,9 +21,18 @@ function put(index:Index,i:number,e:SpatialEntity|undefined,o:TerrainOccupant|un
  const page=index.pages[n]??=( {entities:[],occupants:[]} );page.entities[j]=e;page.occupants[j]=o;
 }
 const orders=new WeakMap<object,boolean>();
+const unorderedIds=new WeakMap<object,Map<string,unknown>>();
 export function terrainById<T>(values:readonly T[],id:string,key:(value:T)=>string):T|undefined {
  let sorted=orders.get(values);if(sorted===undefined){sorted=values.every((v,i)=>{if(!i)return true;const a=key(values[i-1]),b=key(v);return a.length<b.length||a.length===b.length&&a<b;});orders.set(values,sorted);}
- if(!sorted)return values.find(v=>key(v)===id);
+ if(!sorted){
+  // Packed terrain and mixed upserts need not retain ID order. Rendering an
+  // entire viewport with a linear search per cell becomes quadratic. Index an
+  // immutable array once; weak ownership releases it with its world snapshot.
+  if(!Object.isFrozen(values))return values.find(v=>key(v)===id);
+  let lookup=unorderedIds.get(values);
+  if(!lookup){lookup=new Map();for(const value of values){const k=key(value);if(!lookup.has(k))lookup.set(k,value);}unorderedIds.set(values,lookup);}
+  return lookup.get(id) as T|undefined;
+ }
  let lo=0,hi=values.length;
  while(lo<hi){const m=(lo+hi)>>>1,k=key(values[m]);if(k.length<id.length||k.length===id.length&&k<id)lo=m+1;else hi=m;}
  return lo<values.length&&key(values[lo])===id?values[lo]:undefined;

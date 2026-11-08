@@ -24,6 +24,7 @@ export class TrainCompositor {
   private width=0;
   private scratch?:OffscreenCanvas;
   private maskedImage?:OffscreenCanvas;
+  private carMasks:OffscreenCanvas[]=[];
   private catalog?:RenderCatalog;
   private recipes=new Map<string,Recipe>();
   private positions=new Map<string,Position>();
@@ -54,7 +55,7 @@ export class TrainCompositor {
   }
   private rank(op:TerrainOperation):number {
     let p=op.target.position;
-    if(this.dynamic.includes(op)&&'layer' in op) {
+    if(this.isMoving(op)&&'layer' in op) {
       const car=op.target.kind==='train'?this.routes.get(op.target.carId):undefined;
       p={x:Math.round(op.layer.position[0]+this.centerX),y:Math.round(op.layer.position[1]),
         z:car?(car.progress<.5?car.from:car.to).position.z:p.z};
@@ -67,14 +68,29 @@ export class TrainCompositor {
   }
   private compose(ops:TerrainOperation[],dynamic:TerrainOperation[]) {
     const staticOps=ops.filter(op=>op.target.kind!=='train'||!this.hidden.has(op.target.carId)).sort((a,b)=>this.spatial?this.spatial.compare(a,b):this.order.get(a)!-this.order.get(b)!);
-    for(const op of dynamic){const rank=this.rank(op);let i=0;while(i<staticOps.length&&this.rank(staticOps[i])<=rank)i++;staticOps.splice(i,0,op);}
+    const tunnels=staticOps.filter(op=>op.tunnel);
+    for(const op of dynamic){
+      const rank=this.rank(op);let i=0;while(i<staticOps.length&&this.rank(staticOps[i])<=rank)i++;
+      // A fractional car can overlap two tunnel voxels. Keep both solid
+      // interiors and portal foregrounds ahead of it throughout the move,
+      // instead of exchanging their order at the rounded voxel boundary.
+      const cover=tunnels.find(o=>o.target.position.z===op.target.position.z&&
+        overlaps(this.scene!.boundsFor(o),this.scene!.boundsFor(op)));
+      if(cover)i=Math.min(i,staticOps.indexOf(cover));
+      staticOps.splice(i,0,op);
+    }
     return staticOps;
   }
   private isBed(op:TerrainOperation) {
+    if(op.tunnel)return op.tunnel==='portal'&&'layer' in op&&(op.layer.frame.stage??20)<30;
     return op.target.kind==='terrain'&&op.target.surface==='ground'||
       op.target.kind==='railway'&&op.target.component==='rail'&&'layer' in op&&(op.layer.frame.stage??20)<30;
   }
   private isMoving(op:TerrainOperation) {return op.target.kind==='train'&&this.hidden.has(op.target.carId);}
+  private tunnelCovers(op:TerrainOperation,car:TerrainOperation) {
+    return !!op.tunnel&&op.target.position.z===car.target.position.z&&
+      (op.tunnel==='interior'||'layer' in op&&(op.layer.frame.stage??20)>=30);
+  }
   private maskedBy(op:TerrainOperation,car:TerrainOperation) {
     if(!this.isMoving(car)||car.target.kind!=='train')return false;
     if(this.isMoving(op)&&'layer' in op&&'layer' in car)return compareTrainLayers(op.layer,car.layer)<0;
@@ -101,11 +117,51 @@ export class TrainCompositor {
     // Structural foregrounds and mixed elevations keep the general mask path.
     const moving=ops.filter(op=>this.isMoving(op));
     const level=moving[0]?.target.position.z;
-    if(moving.length&&moving.every(car=>'layer' in car&&car.layer.position[2]===level)&&ops.every(op=>this.isMoving(op)||this.isBed(op)&&op.target.position.z===level)) {
+    const tunnels=ops.filter(op=>op.tunnel);
+    if(moving.length&&moving.every(car=>'layer' in car&&car.layer.position[2]===level)&&ops.every(op=>this.isMoving(op)||(this.isBed(op)||op.tunnel)&&op.target.position.z===level)) {
       this.scene!.paintOperations(ctx,view,width,height,ops.filter(op=>!this.isMoving(op)));
-      this.scene!.paintOperations(ctx,view,width,height,moving.sort((a,b)=>'layer' in a&&'layer' in b?compareTrainLayers(a.layer,b.layer):0));
+      moving.sort((a,b)=>'layer' in a&&'layer' in b?compareTrainLayers(a.layer,b.layer):0);
+      const blockers=tunnels.filter(op=>this.tunnelCovers(op,moving[0]));
+      if(!blockers.length)this.scene!.paintOperations(ctx,view,width,height,moving);
+      else {
+        // Paint the bed once, then clip the complete consist once. Repeating
+        // tunnel masks for every ground tile floods the canvas command queue.
+        const bounds=moving.map(car=>this.scene!.boundsFor(car)).reduce(union);
+        const left=Math.max(0,Math.floor(view.x+bounds.left*view.zoom)-1),top=Math.max(0,Math.floor(view.y+bounds.top*view.zoom)-1);
+        const w=Math.min(width,Math.ceil(view.x+bounds.right*view.zoom)+1)-left,h=Math.min(height,Math.ceil(view.y+bounds.bottom*view.zoom)+1)-top;
+        if(w>0&&h>0) {
+          const mask=this.carMasks[0]??=new OffscreenCanvas(w,h);
+          if(mask.width<w)mask.width=w;if(mask.height<h)mask.height=h;
+          const ink=mask.getContext('2d')!;ink.setTransform(1,0,0,1,0,0);ink.clearRect(0,0,w,h);
+          const local={...view,x:view.x-left,y:view.y-top};
+          this.scene!.paintOperations(ink as unknown as CanvasRenderingContext2D,local,w,h,moving);
+          ink.globalCompositeOperation='destination-out';
+          this.scene!.paintOperations(ink as unknown as CanvasRenderingContext2D,local,w,h,blockers);
+          ink.globalCompositeOperation='source-over';ctx.drawImage(mask,0,0,w,h,left,top,w,h);
+        }
+      }
       return;
     }
+    // General foregrounds keep source order. Clip each car in its own small
+    // surface once per replay, then reuse that mask for every overlapping bed.
+    const masks=new Map<TerrainOperation,{image:OffscreenCanvas;left:number;top:number;width:number;height:number}|undefined>();
+    const blockers=new Map(moving.map(car=>[car,tunnels.filter(op=>this.tunnelCovers(op,car)&&overlaps(this.scene!.boundsFor(op),this.scene!.boundsFor(car)))]));
+    let maskCount=0;
+    const maskFor=(car:TerrainOperation)=>{
+      if(masks.has(car))return masks.get(car);
+      const b=this.scene!.boundsFor(car),left=Math.max(0,Math.floor(view.x+b.left*view.zoom)-1),top=Math.max(0,Math.floor(view.y+b.top*view.zoom)-1);
+      const w=Math.min(width,Math.ceil(view.x+b.right*view.zoom)+1)-left,h=Math.min(height,Math.ceil(view.y+b.bottom*view.zoom)+1)-top;
+      if(w<=0||h<=0){masks.set(car,undefined);return;}
+      const image=this.carMasks[maskCount++]??=new OffscreenCanvas(w,h);
+      if(image.width<w)image.width=w;if(image.height<h)image.height=h;
+      const ink=image.getContext('2d')!;ink.setTransform(1,0,0,1,0,0);ink.clearRect(0,0,w,h);
+      const local={...view,x:view.x-left,y:view.y-top};
+      this.scene!.paintOperations(ink as unknown as CanvasRenderingContext2D,local,w,h,[car]);
+      ink.globalCompositeOperation='destination-out';
+      this.scene!.paintOperations(ink as unknown as CanvasRenderingContext2D,local,w,h,blockers.get(car)!);
+      ink.globalCompositeOperation='source-over';
+      const mask={image,left,top,width:w,height:h};masks.set(car,mask);return mask;
+    };
     const cars:TerrainOperation[]=[];
     for(const op of ops) {
       const covered=cars.filter(car=>this.maskedBy(op,car)&&overlaps(this.scene!.boundsFor(car),this.scene!.boundsFor(op)));
@@ -119,7 +175,11 @@ export class TrainCompositor {
         const paint=image.getContext('2d')!;paint.setTransform(1,0,0,1,0,0);paint.clearRect(0,0,w,h);
         this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,local,w,h,[op]);
         paint.globalCompositeOperation='destination-out';
-        this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,local,w,h,covered);
+        for(const car of covered) {
+          if(!blockers.get(car)?.length){this.scene!.paintOperations(paint as unknown as CanvasRenderingContext2D,local,w,h,[car]);continue;}
+          const mask=maskFor(car);
+          if(mask)paint.drawImage(mask.image,0,0,mask.width,mask.height,mask.left-left,mask.top-top,mask.width,mask.height);
+        }
         paint.globalCompositeOperation='source-over';ctx.drawImage(image,0,0,w,h,left,top,w,h);
       }else this.scene!.paintOperations(ctx,view,width,height,[op]);
       if(this.isMoving(op))cars.push(op);
@@ -175,7 +235,7 @@ export class TrainCompositor {
     const hit=(op:TerrainOperation)=>{if(!hits.has(op))hits.set(op,this.scene!.pickOperations(point,view,[op]));return hits.get(op);};
     for(let i=ops.length-1;i>=0;i--) {
       const op=ops[i];
-      if(ops.some((car,j)=>j<i&&this.maskedBy(op,car)&&hit(car)))continue;
+      if(ops.some((car,j)=>j<i&&this.maskedBy(op,car)&&hit(car)&&!ops.some(o=>this.tunnelCovers(o,car)&&hit(o))))continue;
       const target=hit(op);if(target)return target;
     }
   }

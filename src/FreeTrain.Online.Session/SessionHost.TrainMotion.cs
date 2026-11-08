@@ -67,9 +67,6 @@ public sealed partial class SessionHost
     {
         if (train.Cars[index].State is not FleetCarState.Inside pose || world.At(pose.Location)?.Traffic?.Rail is not {} rail) return null;
         var handler = world.Profile.Resolve(rail.Definition).Handler;
-        // Tunnel foregrounds are authored for voxel anchors. Until their
-        // continuous interior masks are proven, preserve exact discrete hiding.
-        if (handler is RailwayHandler.Tunnel) return null;
         var predecessor = index == 0 ? (Location?)null : (train.Cars[index-1].State as FleetCarState.Inside)?.Location;
         var outgoing = FleetRailGuidance.Guide(handler,rail.Pattern,pose.Heading,predecessor:predecessor,location:pose.Location);
         var slope = handler == RailwayHandler.Slope ? SlopeRailwayConstruction.Pattern(rail.Pattern) : default;

@@ -13,7 +13,7 @@ import type { TrainTarget } from './train-renderer.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
 export type SceneTarget=TerrainTarget|RailwayTarget|TrainTarget;
-type Operation = { target:SceneTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer};
+type Operation = ({ target:SceneTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer}) & {tunnel?:'portal'|'interior'};
 export type TerrainOperation = Operation;
 type Bounds={left:number;top:number;right:number;bottom:number};
 const diamond=[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}];
@@ -158,7 +158,9 @@ export class TerrainScene {
       let reused=false;
       try {
       const cell=t.cells[v*read.map.width+h],base=space.location({h,v,z:cell.ground});
-      if(railway) {
+      // Skip dependency serialization for cells that cannot enter the bounded
+      // reuse cache and have no previous operations to compare.
+      if(railway&&(cellCache.size<maximumCachedCells||reusable?.has(index))) {
         // Terrain faces can overhang a neighbor. Include its corners/ground in
         // the dependency key, alongside this column's exact saved operations.
         signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,0),move(base,2),move(base,4),move(base,6)].map(p=>{

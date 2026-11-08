@@ -13,7 +13,7 @@ export interface RailwayTarget {
   kind:'railway'; id:string; position:Position;
   component:'rail'|'pier'|'support'|'accessory'|'stationary'|'speedLimit'; definition:Definition; controllerId?:string;
 }
-export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer}
+export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer;tunnel?:'portal'|'interior'}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
 export type RailwayPickPolicy={kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
@@ -54,8 +54,8 @@ export class RailwayRenderPlan {
     for(const speed of ['low','medium','fast'] as const)for(const p of read.mixed!.speedLimits?.[speed]??[]){
       const k=key(p),values=limits.get(k)??[];if(!values.includes(speed))values.push(speed);limits.set(k,values);
     }
+    for(const v of read.mixed!.voxels)this.voxels.set(key(v.position),v);
     for(const v of read.mixed!.voxels) {
-      this.voxels.set(key(v.position),v);
       const s=space.storage(v.position),index=s.v*space.horizontalSize+s.h,ops=this.columns.get(index)??[];
       this.columns.set(index,ops);
       const column=states.get(index)??[];column.push(v);states.set(index,column);
@@ -74,7 +74,12 @@ export class RailwayRenderPlan {
           // P2's signal stages describe needsToDrawAfter's name. GEO-007
           // follows SignalRailRoad's actual inverted calls in the live world.
           if(recipe.handler==='signal')layer.frame={...layer.frame,stage:layer.frame.stage===40?10:40};
-          this.layers.push(layer);ops.push({target,layer});
+          // Only the frontmost S/W tunnel background belongs behind a car.
+          // Interior backgrounds also close the gaps between authored foregrounds.
+          const front=v.traffic?.rail?.variant===1?{...v.position,y:v.position.y+1}:{...v.position,x:v.position.x-1};
+          const next=pier.handler==='tunnel'?this.voxels.get(key(front))?.traffic?.rail:undefined;
+          const tunnel=pier.handler==='tunnel'?(next&&binding(next.definition).handler==='tunnel'?'interior':'portal'):undefined;
+          this.layers.push(layer);ops.push({target,layer,...(tunnel?{tunnel}:{})});
         }
       };
       if(v.kind==='stationary'){
@@ -129,6 +134,7 @@ export class RailwayRenderPlan {
     }
     for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position))),
+      this.columns.get(index)?.map(o=>o.tunnel),
       this.columns.get(index)?.filter(o=>o.target.kind==='train').map(o=>[o.target,o.layer.recipeId,o.layer.frame.key,o.layer.frame.anchor])]));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}

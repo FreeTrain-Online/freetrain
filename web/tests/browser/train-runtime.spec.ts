@@ -1,7 +1,7 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect} from './fixtures.ts';
 import {canonicalState,ready} from './browser-helpers.ts';
-import {wideMovingFleetSave} from '../helpers/moving-fleet-save.ts';
+import {wideMovingFleetSave,tunnelMovingFleetSave} from '../helpers/moving-fleet-save.ts';
 
 test('cold Run and resume fill once, then move continuously through startup delivery stalls',async({page},testInfo)=>{
  test.setTimeout(90_000);
@@ -207,6 +207,73 @@ test('foreground return refills once after focus, visibility and interrupted ani
  await page.getByRole('button',{name:'Pause',exact:false}).first().click();
  await expect(canvas).toHaveAttribute('data-train-motion','discrete');
  await testInfo.attach('foreground-return.json',{body:JSON.stringify(report,null,2),contentType:'application/json'});
+});
+
+test('tunnel and bridge viewport redraws settle promptly while paused and running @performance',async({page},testInfo)=>{
+ test.setTimeout(180_000);
+ await page.setViewportSize({width:1920,height:1080});
+ const before=await canonicalState(page),save=process.env.FREETRAIN_VIEWPORT_REGRESSION_WORLD
+  ?JSON.parse(readFileSync(process.env.FREETRAIN_VIEWPORT_REGRESSION_WORLD,'utf8')):tunnelMovingFleetSave();
+ save.paused=true;
+ const upload=await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:JSON.stringify(save)});
+ expect(upload.ok(),await upload.text()).toBe(true);
+ const cdp=await page.context().newCDPSession(page),report=[];
+ await cdp.send('Profiler.enable');await cdp.send('Profiler.start');
+ const initialStart=Date.now();
+ await page.goto('/');await expect(page.locator('.command-bar')).toBeVisible({timeout:60_000});await ready(page);
+ const initialMs=Date.now()-initialStart;
+ const initialProfile=await cdp.send('Profiler.stop');
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/tunnel-viewport-initial.cpuprofile`,JSON.stringify(initialProfile.profile));
+ const canvas=page.locator('.world-canvas');
+ await expect(canvas).toHaveAttribute('data-presentation','ready',{timeout:30_000});
+ const tunnel=save.mixed.voxels.find((v:any)=>v.traffic?.rail?.definition.contributionId==='{3E66FC7A-2B58-4182-8A8E-2D5A01BE78E5}');
+ const target=tunnel?.position??save.mixed.fleet.trains[0].cars[0].state.location;
+ const box=(await canvas.boundingBox())!;await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down({button:'middle'});
+ await canvas.evaluate((c,{target,v})=>{
+  const [cx,cy]=c.dataset.camera!.split(',').map(Number),zoom=Number(c.dataset.zoom),b=c.getBoundingClientRect(),center=Math.floor((v-1)/2);
+  const x=16*(target.x+target.y-center)+16,y=8*(-target.x+target.y+center)-16*target.z+8;
+  c.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:1,button:1,buttons:4,clientX:b.x+b.width/2+(cx-x)*zoom,clientY:b.y+b.height/2+(cy-y)*zoom}));
+ },{target,v:save.map.height});await page.mouse.up({button:'middle'});
+ await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:30_000});
+ for(const running of [false,true]) {
+  if(running){await page.getByLabel('Game speed',{exact:true}).selectOption('0.125');await page.getByRole('button',{name:'Run',exact:false}).first().click();}
+  await cdp.send('Profiler.start');
+  try {
+   for(const zoom of [.5,1,.5]) {
+    const began=Date.now();await canvas.focus();const current=Number(await canvas.getAttribute('data-zoom'));
+    for(let n=0;n<Math.round(Math.abs(zoom-current)/.25);n++)await page.keyboard.press(zoom>current?'+':'-');
+    await expect(canvas).toHaveAttribute('data-zoom',zoom.toFixed(3));
+    await expect(canvas).toHaveAttribute('data-presentation','ready',{timeout:30_000});
+    const redrawMs=Date.now()-began;
+    await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:30_000});
+    const sample={running,zoom,redrawMs,refinementMs:Date.now()-began};report.push(sample);console.log('viewport redraw',sample);
+   }
+   const panStart=Date.now(),camera=await canvas.getAttribute('data-camera');
+   await canvas.evaluate((el,direction)=>el.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaX:el.clientWidth*.8*direction,deltaY:0})),running?-1:1);
+   await expect(canvas).not.toHaveAttribute('data-camera',camera!);
+   await expect(canvas).toHaveAttribute('data-presentation','ready',{timeout:30_000});
+   const panMs=Date.now()-panStart;
+   await expect(canvas).toHaveAttribute('data-refinement','ready',{timeout:30_000});
+   report.push({running,zoom:.5,redrawMs:panMs,refinementMs:Date.now()-panStart,pan:true});
+   const timing=await canvas.evaluate(el=>new Promise<{p95Frame:number;p95Paint:number}>(resolve=>{
+    const frames:number[]=[],paint:number[]=[],start=performance.now();let last=start;
+    const observer=new MutationObserver(()=>paint.push(Number(el.dataset.paintMs)));observer.observe(el,{attributes:true,attributeFilter:['data-paint-ms']});
+    const frame=(now:number)=>{frames.push(now-last);last=now;
+     if(now-start<2000)requestAnimationFrame(frame);
+     else {observer.disconnect();const p95=(v:number[])=>v.sort((a,b)=>a-b)[Math.floor(v.length*.95)]??0;resolve({p95Frame:p95(frames),p95Paint:p95(paint)});}
+    };requestAnimationFrame(frame);
+   }));
+   console.log('tunnel viewport frames',{running,...timing});
+   expect(timing.p95Frame).toBeLessThan(70);expect(timing.p95Paint).toBeLessThan(40);
+  }finally {
+   const {profile}=await cdp.send('Profiler.stop');
+   writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/tunnel-viewport-${running?'running':'paused'}.cpuprofile`,JSON.stringify(profile));
+  }
+  if(running)await page.getByRole('button',{name:'Pause',exact:false}).first().click();
+ }
+ console.log('tunnel viewport',{initialMs,redraws:report});
+ await testInfo.attach('tunnel-viewport.json',{body:JSON.stringify({initialMs,redraws:report},null,2),contentType:'application/json'});
+ for(const sample of report)expect(sample.redrawMs).toBeLessThan(3000);
 });
 
 test('many moving trains remain responsive with smooth Normal and discrete Fast @performance',async({page},testInfo)=>{

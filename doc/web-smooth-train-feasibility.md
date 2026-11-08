@@ -385,8 +385,8 @@ covered by the initial focused checks. **This initial slice used committed discr
 poses for slopes and tunnel transitions across the entire affected consist.**
 Slope support was added on 7 November 2026; see Continuous slope traversal below. An intermediate tunnel
 probe exposed 25 pickable car pixels at the half-voxel boundary even though both
-voxel endpoints were hidden. Tunnel smoothing therefore remains disabled until
-continuous interior occlusion is implemented and verified. Reversal animation and
+voxel endpoints were hidden. Tunnel smoothing was enabled on 8 November 2026
+with continuous interior occlusion; see Continuous tunnel traversal below. Reversal animation and
 Outside presentation remain later geometry/lifecycle work; their existing P5
 scope is unchanged.
 
@@ -701,7 +701,7 @@ fixture serializes delivery so injected jitter retains WebSocket message order.
 
 Confirmed movement history now includes each car's slope climb direction and
 quarter-ramp level. Surface and underground ramps use the same recorded route.
-Tunnel, Outside and lifecycle discontinuities retain their existing reset markers.
+Outside and lifecycle discontinuities retain their existing reset markers.
 The client validates the ramp's storage-Z transition, direction and level order,
 including directly adjoining ramps, before buffering it on the existing timeline.
 
@@ -722,3 +722,52 @@ travel directions, surface/underground ramps and reversed formations; every
 bundled recipe's authored endpoints and fractional height continuity; malformed
 ramp routes; and 1,568 Chromium pixel/picking frames covering surface ramps,
 flat joins, multiple cars and coalesced authority in day and night variants.
+
+### Continuous tunnel traversal — 8 November 2026
+
+Committed history now retains every car's route across tunnel entries, interiors
+and exits, using the existing buffered flat-track timeline and native timing.
+The renderer identifies the frontmost S/W portal from complete voxel topology;
+changing its neighbor invalidates the affected cached column too.
+
+Fractional cars stay behind overlapping tunnel foregrounds and solid interior
+backgrounds. Only the frontmost portal background stays behind the visible car.
+Roadbed masks subtract tunnel coverage before removing pixels, so a hidden car
+cannot erase surrounding ground or make a hidden sprite pickable. Painting and
+alpha picking use the same coverage, including when authority is several cells
+ahead of presentation.
+
+Coverage includes three-car committed histories in all four directions and both
+formation orientations, portal-neighbor cache invalidation, and 1,008 day/night
+Chromium frames compared pixel-for-pixel with an independent clipped-sprite
+oracle. The frames cover both portals, hidden interiors and the half-cell join,
+with 1,940,400 sampled alpha picks. Outside and lifecycle resets remain discrete.
+
+### Tunnel and large-map rendering follow-up — 8 November 2026
+
+The initial tunnel compositor repeated clipping for each covered ground/rail
+operation. Flat tunnel scenes now paint the static bed once and clip the whole
+consist once; scenes with other foregrounds reuse each car's clipped mask across
+the damaged tiles. The focused 504-frame workload dropped from 140,448 to 1,512
+scene paint calls while retaining the independent pixel and picking oracle.
+
+A saved 400×600 map with 53,222 terrain occupants, bridges, tunnels and two trains
+also exposed a separate paused-rendering bottleneck. Unordered immutable entity
+arrays fell back to a linear ID search for every rendered terrain cell. A weakly
+owned ID index now serves those arrays, while sorted arrays retain binary search
+and mutable fixtures retain uncached lookups. Uncacheable cells no longer pay
+for dependency serialization after the bounded operation cache fills.
+
+Cold views, scale changes and uncovered pans reveal the current viewport first,
+then fill the larger panning buffer. Presentation readiness describes the visible
+area; refinement readiness still includes background prefetch. Refinement gets an
+8 ms work allowance per frame. In an isolated copy of that saved map, initial
+display fell from about 21 seconds to about 2 seconds; uncached visible pan/zoom
+redraws took 0.3–1.9 seconds versus the earlier 30-second timeout. Settled running
+frames had a 16.8 ms p95 interval and 2.7 ms p95 paint time. Full panning-buffer
+prefetch can take several additional seconds on this map.
+
+Regression coverage includes frozen unordered-ID lookup work and collection,
+early viewport reveal with matching picks, the tunnel paint-work budget, and
+paused/running pan and zoom journeys with an optional saved-world override via
+`FREETRAIN_VIEWPORT_REGRESSION_WORLD`.

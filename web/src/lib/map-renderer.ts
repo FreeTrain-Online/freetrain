@@ -131,7 +131,7 @@ export class MapRenderer {
       this.needsFrame=progressive?.pending??false;
       // The previous scene stays usable while replacement assets/raster work
       // finish. Expose completion separately from retained-buffer readiness.
-      this.canvas.dataset.presentation=this.terrainPreparedKey===key&&!progressive?.pending?'ready':'pending';
+      this.canvas.dataset.presentation=this.terrainPreparedKey===key&&(progressive?progressive.settled:true)?'ready':'pending';
       if(this.canvas.dataset.presentation==='ready')this.canvas.dataset.renderRevision=read.revision;
       this.canvas.dataset.refinement=progressive?.pending?'pending':'ready';
       this.canvas.dataset.terrainUpdate=progressive?.updateKind??'full';
