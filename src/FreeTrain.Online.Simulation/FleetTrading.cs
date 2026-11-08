@@ -51,7 +51,7 @@ public static class FleetTrading
                 w.Voxels,w.Slopes,w.Revision,w.SpeedLimits,initial,w.Stations);
             var detached=new MixedSessionState(new(initialized,session.Construction.Accounts),session.Provenance,
                 session.ConstructionMode,session.Clock.Capture(),session.Paused,session.Random.Capture(),session.Revision,
-                trainCallback:session.TrainDispatcher);
+                trainCallback:session.TrainDispatcher,stationCallback:session.StationDispatcher);
             var firstQuote=QuotePurchase(detached,definition,length,quantity);
             var candidate=firstQuote.Candidate.World;
             // These members are first published together: every new identity starts at revision zero.

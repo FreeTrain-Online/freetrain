@@ -19,9 +19,10 @@ public sealed class MixedConstructionState
     // No construction-mode argument: authoring does not waive source charges.
     public MixedConstructionState Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes,
-        ConstructionBooking booking, GameTime time, string operation, SpeedLimits? speedLimits = null, FleetGraph? fleet = null)
+        ConstructionBooking booking, GameTime time, string operation, SpeedLimits? speedLimits = null, FleetGraph? fleet = null,
+        StationGraph? stations = null)
     {
-        var candidate = World.Replace(expectedRevision,terrain,spatial,voxels,slopes,speedLimits,fleet);
+        var candidate = World.Replace(expectedRevision,terrain,spatial,voxels,slopes,speedLimits,fleet,stations);
         var accounts = Accounts.Book(booking,candidate.Revision,time,operation);
         return new(candidate,accounts);
     }

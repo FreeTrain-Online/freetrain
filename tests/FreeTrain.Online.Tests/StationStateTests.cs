@@ -10,16 +10,16 @@ namespace FreeTrain.Online.Tests;
 public class StationStateTests
 {
     static RailwayProfile RailProfile => RailwayProfiles.Bundled;
-    static StationProfile Profile => RailProfile.Stations!;
-    static StationDefinition Definition => Profile.Definitions.First(d => d.SizeX == 1 && d.SizeY == 1 && d.Height == 1);
-    static JsonDocument Fixtures() => JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/station-fixtures.json")));
-    static IEnumerable<JsonElement> Cases(JsonDocument doc, string group) => doc.RootElement.GetProperty("groups").GetProperty(group).GetProperty("cases").EnumerateArray();
+    internal static StationProfile Profile => RailProfile.Stations!;
+    internal static StationDefinition Definition => Profile.Definitions.First(d => d.SizeX == 1 && d.SizeY == 1 && d.Height == 1);
+    internal static JsonDocument Fixtures() => JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Spatial/station-fixtures.json")));
+    internal static IEnumerable<JsonElement> Cases(JsonDocument doc, string group) => doc.RootElement.GetProperty("groups").GetProperty(group).GetProperty("cases").EnumerateArray();
     static Location Point(JsonElement a) => new(a[0].GetInt32(),a[1].GetInt32(),a[2].GetInt32());
-    static StationBuilding Building(long id = 1, ImmutableArray<long> children = default) => new(id,0,Definition.Reference,new(12,12,2),"Station",
+    internal static StationBuilding Building(long id = 1, ImmutableArray<long> children = default) => new(id,0,Definition.Reference,new(12,12,2),"Station",
         children.IsDefault ? [] : children,new(),new(),new(),new());
-    static StationGraph Graph(IEnumerable<StationBuilding>? buildings = null, IEnumerable<StationPlatform>? platforms = null,
+    internal static StationGraph Graph(IEnumerable<StationBuilding>? buildings = null, IEnumerable<StationPlatform>? platforms = null,
         IEnumerable<StationPassage>? passages = null) => new(Profile,buildings ?? [],platforms ?? [],passages);
-    static StationPlatform Platform(long id = 2, PlatformKind kind = PlatformKind.Thin, int direction = 0, int length = 4,
+    internal static StationPlatform Platform(long id = 2, PlatformKind kind = PlatformKind.Thin, int direction = 0, int length = 4,
         bool roof = false, bool lane0 = true, bool lane1 = false, long? host = null, long firstTraffic = 10,
         ImmutableArray<long> children = default, Location? location = null)
     {
@@ -31,9 +31,9 @@ public class StationStateTests
                 kind == PlatformKind.Thin && roof && i >= length/4 && i < length-length/4,new()));
         return p with {Yards=yards.ToImmutable()};
     }
-    static TerrainWorld Terrain() => new(TerrainProfiles.Bundled,"Stations",new(64,24,8),0,
+    internal static TerrainWorld Terrain() => new(TerrainProfiles.Bundled,"Stations",new(64,24,8),0,
         Enumerable.Repeat(new TerrainCell(2),64*24),new(1,[]),[]);
-    static MixedWorld World(StationGraph graph, FleetGraph? fleet = null)
+    internal static MixedWorld World(StationGraph graph, FleetGraph? fleet = null)
     {
         var entities = new List<SpatialEntity>(); var voxels = new List<RailwayVoxel>();
         foreach (var b in graph.Buildings) entities.Add(new(b.Id,b.Revision,b.Definition,b.Location,Profile.Resolve(b.Definition).Footprint,true,false,0));

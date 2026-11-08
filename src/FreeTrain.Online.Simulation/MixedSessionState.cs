@@ -23,7 +23,9 @@ public sealed class MixedSessionState
     public long Revision { get; private set; }
     public void ReviseSession() => Revision = checked(Revision + 1);
     private readonly TrainCallback trainCallback;
+    private readonly StationCallback stationCallback;
     public TrainCallback TrainDispatcher => trainCallback;
+    public StationCallback StationDispatcher => stationCallback;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
     public static string TrainHandler(long trainId) => "train/" + trainId.ToString(CultureInfo.InvariantCulture);
     private IReadOnlyDictionary<string, Action> Bindings(MixedWorld world, bool dispatch = true)
@@ -32,16 +34,19 @@ public sealed class MixedSessionState
         foreach (var t in world.Fleet?.Trains ?? [])
             if (t.State != TrainOperationalState.Unplaced)
                 result.Add(TrainHandler(t.Id), () => { if (dispatch) TickTrain(t.Id); });
+        foreach (var timer in StationLifecycle.Timers(world.Stations))
+            result.Add(timer.HandlerId, () => { if (dispatch) TickStation(timer.HandlerId); });
         return result;
     }
     public MixedSessionState(MixedConstructionState construction, TerrainProvenance provenance, bool constructionMode = false,
         ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0,
-        TrainCallback? trainCallback = null)
+        TrainCallback? trainCallback = null, StationCallback? stationCallback = null)
     {
         if (revision < construction.World.Revision) throw new ArgumentException("Invalid mixed session revision.");
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
         this.trainCallback=trainCallback ?? FleetMovement.Tick;
+        this.stationCallback=stationCallback ?? ((_,_) => throw new InvalidOperationException("stationDispatchRequiresP6PassengerLifecycle"));
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
@@ -49,12 +54,14 @@ public sealed class MixedSessionState
     }
     private void ValidateBoundary()
     {
-        var pending = Clock.Capture().Pending;
+        var clock = Clock.Capture(); var pending = clock.Pending;
+        StationLifecycle.Validate(World.Stations,clock);
+        var timers = StationLifecycle.Timers(World.Stations).ToDictionary(t => t.HandlerId,StringComparer.Ordinal);
         var construction=StationaryConstruction.Bindings(World);
         var deployed=(Fleet?.Trains ?? []).Where(t => t.State != TrainOperationalState.Unplaced).ToArray();
-        var expected=construction.Keys.Concat(deployed.Select(t => TrainHandler(t.Id))).ToHashSet(StringComparer.Ordinal);
+        var expected=construction.Keys.Concat(deployed.Select(t => TrainHandler(t.Id))).Concat(timers.Keys).ToHashSet(StringComparer.Ordinal);
         var sites=World.Voxels.Where(v => v.Construction != null).Select(v => v.OwnerId).Distinct().Count();
-        if (pending.Length != expected.Count || pending.Any(a => a.Interval != 0 || !expected.Contains(a.HandlerId) ||
+        if (pending.Length != expected.Count || pending.Any(a => !expected.Contains(a.HandlerId) || (timers.ContainsKey(a.HandlerId) ? a != timers[a.HandlerId] : a.Interval != 0) ||
                 construction.ContainsKey(a.HandlerId) && a.DueMinute - Clock.Time.AbsoluteMinute > 119) ||
             pending.Select(a => a.HandlerId).Distinct().Count() != expected.Count ||
             sites > 0 && Construction.Accounts.Transactions.Length + sites > NormalRailwayConstruction.MaximumAccountTransactions)
@@ -81,13 +88,22 @@ public sealed class MixedSessionState
         Construction=candidate;
         if (!ReferenceEquals(before,candidate)) Revision=checked(Revision+1);
     }
+    private void TickStation(string handlerId)
+    {
+        var timer=StationLifecycle.Timers(World.Stations).Single(t => t.HandlerId == handlerId);
+        var candidate=stationCallback(this,handlerId);
+        ValidateCandidate(candidate);
+        var expected=timer with {Order=Clock.NextOrder,DueMinute=checked(Clock.Time.AbsoluteMinute+timer.Interval)};
+        if (!StationLifecycle.Timers(candidate.World.Stations).Contains(expected)) throw new ArgumentException("Invalid station callback continuation.");
+        Construction=candidate; Revision=checked(Revision+1);
+    }
     // Terrain projection for mixed encoding/authoring; fleet and queue are carried
     // separately by MixedWire. These inert bindings never execute simulation.
     public TerrainSessionState CaptureTerrain()
     {
         return new(World.Terrain,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,Bindings(World,false));
     }
-    public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback);
+    public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback,stationCallback);
     public void SetPaused(bool paused)
     { if (Paused==paused) return; var next=checked(Revision+1); Paused=paused; Revision=next; }
     public void AdvanceOneMinute()
@@ -110,8 +126,9 @@ public sealed class MixedSessionState
         if (candidate.World.Profile != World.Profile || candidate.World.Revision != checked(World.Revision+1))
             throw new ArgumentException("Invalid mixed successor.");
         if (Fleet != null && candidate.World.Fleet == null) throw new ArgumentException("Cannot discard fleet graph.");
+        if (World.Stations != null && candidate.World.Stations == null) throw new ArgumentException("Cannot discard station graph.");
         World.Replace(World.Revision,candidate.World.Terrain,candidate.World.Spatial.Capture(),candidate.World.Voxels,candidate.World.Slopes,
-            candidate.World.SpeedLimits,candidate.World.Fleet);
+            candidate.World.SpeedLimits,candidate.World.Fleet,candidate.World.Stations);
         var before=Construction.Accounts; var after=candidate.Accounts;
         if (before.InitialCash != after.InitialCash || before.Settings != after.Settings ||
             after.Transactions.Length < before.Transactions.Length ||
@@ -130,9 +147,10 @@ public sealed class MixedSessionState
         var beforeClock=Clock.Capture();
         if (schedule.AbsoluteMinute != beforeClock.AbsoluteMinute || schedule.NextOrder < beforeClock.NextOrder)
             throw new ArgumentException("Invalid successor clock boundary.");
-        // Cancel ONLY callbacks owned by removed/withdrawn trains/sites. Unknown
+        StationLifecycle.ValidateSuccessor(World.Stations,candidate.World.Stations,beforeClock);
+        // Cancel ONLY callbacks owned by removed trains/sites/stations/platforms. Unknown
         // payloads must reject, rather than disappearing through a broad filter.
         schedule=schedule with {Pending=schedule.Pending.Where(a => !previous.ContainsKey(a.HandlerId) || active.ContainsKey(a.HandlerId)).ToImmutableArray()};
-        return new(candidate,Provenance,constructionMode,schedule,Paused,random ?? Random.Capture(),checked(Revision+1),trainCallback);
+        return new(candidate,Provenance,constructionMode,schedule,Paused,random ?? Random.Capture(),checked(Revision+1),trainCallback,stationCallback);
     }
 }
