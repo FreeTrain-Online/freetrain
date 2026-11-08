@@ -30,3 +30,12 @@ for (const [field, value] of [['revision', 9007199254740992], ['cash', '92233720
 Deno.test('reject an unsupported command kind', () => {
   assert.equal(validate({ type: 'command', requestId: 'bad', expectedWorldEpoch: '1', payload: { kind: 'arbitrary' } }), false);
 });
+Deno.test('station construction uses exact definition identities and canonical decimal fences', async () => {
+  const fixture=JSON.parse(await readFile(new URL('fixtures/command-station-building.json',root),'utf8'));
+  assert.ok(validate(fixture),JSON.stringify(validate.errors));
+  for(const [field,value] of [['expectedMinute',517],['stationId','01'],['expectedStationRevision','-1']]) {
+    const invalid=structuredClone(fixture);invalid.payload.query[field]=value;
+    assert.equal(validate(invalid),false,field);
+  }
+  const invalid=structuredClone(fixture);invalid.payload.query.definition.extra='unexpected';assert.equal(validate(invalid),false);
+});

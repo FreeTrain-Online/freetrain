@@ -47,6 +47,12 @@
     },
     {
       "$ref": "#/$defs/FleetDeploymentPreview"
+    },
+    {
+      "$ref": "#/$defs/StationBuildingQuery"
+    },
+    {
+      "$ref": "#/$defs/StationBuildingPreview"
     }
   ],
   "$defs": {
@@ -1260,6 +1266,26 @@
             "kind",
             "expectedRevision",
             "configuration"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editStationBuilding"
+            },
+            "query": {
+              "$ref": "#/$defs/StationBuildingQuery"
+            },
+            "expectedCost": {
+              "$ref": "#/$defs/Money"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedCost"
           ]
         }
       ]
@@ -5235,6 +5261,111 @@
       "required": [
         "stationId",
         "providers"
+      ]
+    },
+    "StationBuildingQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "place",
+            "remove"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stationId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedStationRevision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "position",
+        "definition",
+        "stationId",
+        "expectedStationRevision"
+      ]
+    },
+    "StationBuildingPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/StationBuildingQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "losses": {
+          "type": "array",
+          "maxItems": 24576,
+          "items": {
+            "$ref": "#/$defs/RailwayLoss"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "positions",
+        "losses"
       ]
     }
   }

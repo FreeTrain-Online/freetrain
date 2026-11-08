@@ -15,7 +15,9 @@ export type GameDocument =
   | FleetTradeQuery
   | FleetTradePreview
   | FleetDeploymentQuery
-  | FleetDeploymentPreview;
+  | FleetDeploymentPreview
+  | StationBuildingQuery
+  | StationBuildingPreview;
 export type WireMessage =
   | Join
   | Command
@@ -213,6 +215,11 @@ export type CommandPayload =
       kind: "configureFleetColor";
       expectedRevision: Counter;
       configuration: FleetColorTest;
+    }
+  | {
+      kind: "editStationBuilding";
+      query: StationBuildingQuery;
+      expectedCost: Money;
     };
 
 export interface Join {
@@ -956,6 +963,17 @@ export interface FleetDeploymentQuery {
   tail: Position | null;
   reverse: boolean;
 }
+export interface StationBuildingQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "place" | "remove";
+  position: Position;
+  definition: Definition | null;
+  stationId: Counter;
+  expectedStationRevision: Counter;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1328,4 +1346,18 @@ export interface FleetDeploymentCar {
   carId: Counter;
   location: Position;
   heading: number;
+}
+export interface StationBuildingPreview {
+  query: StationBuildingQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  /**
+   * @maxItems 32768
+   */
+  positions: Position[];
+  /**
+   * @maxItems 24576
+   */
+  losses: RailwayLoss[];
 }

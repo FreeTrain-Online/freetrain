@@ -141,6 +141,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
+[JsonDerivedType(typeof(EditStationBuildingCommand), "editStationBuilding")]
 [JsonDerivedType(typeof(EditSlopeCommand), "editSlope")]
 [JsonDerivedType(typeof(RemoveObjectCommand), "removeObject")]
 [JsonDerivedType(typeof(TradeFleetCommand), "tradeFleet")]
@@ -181,6 +182,13 @@ public sealed record SetPlaybackRateCommand(double Rate) : CommandPayload;
 public sealed record RenameStationCommand(string StationId, long ExpectedRevision, string Name) : CommandPayload;
 public sealed record BuildTrackCommand(PositionRead Position, string Shape) : CommandPayload;
 public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevision) : CommandPayload;
+// Exact station contribution identity includes its authored orientation.
+public sealed record StationBuildingQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
+    string ExpectedContentVersion, string Action, PositionRead Position, DefinitionRead? Definition,
+    long StationId, long ExpectedStationRevision);
+public sealed record StationBuildingPreviewRead(StationBuildingQuery Query, bool Legal, string? Reason, long Cost,
+    PositionRead[] Positions, RailwayLossRead[] Losses);
+public sealed record EditStationBuildingCommand(StationBuildingQuery Query, long ExpectedCost) : CommandPayload;
 public sealed record RemovalQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
     PositionRead Position, long ExpectedEntityId, long ExpectedEntityRevision,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead? End = null);

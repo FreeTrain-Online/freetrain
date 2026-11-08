@@ -25,7 +25,7 @@ and format/protocol numbers remain unchanged.
 settings to Save9/protocol7. An absent array means empty; writers omit empty
 arrays, preserving existing no-junction payloads. Format/protocol numbers remain unchanged.
 
-[P6-05 station transport](web-parity-station-transport.md) advances the current contract to **Save10/protocol8**. Only Save10 is read and written. Exact station/platform hosts, listener edges, logs and repeated timers are durable; constructing, presentation and passenger slices remain open.
+[P6-05 station transport](web-parity-station-transport.md) advances the current contract to **Save10/protocol8**. Only Save10 is read and written. Exact station/platform hosts, listener edges, logs and repeated timers are durable; [P6-06 construction](web-parity-station-construction.md) adds immediate station-building preview/commit and removal using this state. Presentation, controls and passenger slices remain open.
 
 ## Current behavior
 

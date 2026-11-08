@@ -1,0 +1,28 @@
+{
+  "type": "command",
+  "requestId": "station-place",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editStationBuilding",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "0",
+      "expectedMinute": "517",
+      "expectedContentVersion": "mixed-railway-content-1",
+      "action": "place",
+      "position": {
+        "x": 10,
+        "y": 10,
+        "z": 2
+      },
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+        "recipeId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}"
+      },
+      "stationId": "0",
+      "expectedStationRevision": "0"
+    },
+    "expectedCost": "12000000"
+  }
+}

@@ -1,5 +1,6 @@
 // Stable ExAV 883cf7d station contributions, Thin/FatPlatform and PassagewayRail.
-// State bindings only; construction, rendering and callback dispatch have later owners.
+// Exact content bindings; StationBuildingConstruction owns immediate construction.
+// Rendering and passenger callback dispatch retain their later P6 owners.
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 
