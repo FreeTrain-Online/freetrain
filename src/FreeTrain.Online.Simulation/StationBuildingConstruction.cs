@@ -106,8 +106,8 @@ public static class StationBuildingConstruction
     }
 }
 
-// Pure lifecycle extension points for P6-11 host discovery and P6-16 listener
-// advertising. Construction always passes through these before publication.
+// Pure lifecycle extension points for station creation/removal and P6-16 listener
+// advertising. Station creation never auto-rehosts disconnected platforms.
 public static class StationBuildingLifecycle
 {
     public static StationGraph Created(StationGraph graph, StationBuilding building) => new(graph.Profile,

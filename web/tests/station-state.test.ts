@@ -51,3 +51,27 @@ Deno.test('station chunk assembly publishes only a complete coherent terrain, ow
   result=await assembler.accept(chunk);if(offset+stateChunkBytes<bytes.length)assert.equal(result,undefined);
  }assert.deepEqual(result,snapshot);
 });
+
+Deno.test('host reparent and recursive disconnect deltas preserve real station identity and require reciprocal owner revisions',async()=>{
+ const s=immutable(await scene()),d=delta(s as Snapshot);d.mixed!.geometryRevision='1';
+ const g=d.mixed!.stationGraph!,thin=g.platforms.find(p=>p.kind==='thin')!,wide=g.platforms.find(p=>p.kind==='wide')!,station=g.buildings[0];
+ // The thin platform explicitly joins the wide platform's real station chain.
+ thin.hostId=wide.id;thin.revision='1';wide.children=[thin.id];wide.revision='1';station.children=[wide.id];station.revision='1';
+ d.entities=s.entities!.filter(e=>[station.id,wide.id].includes(e.id)).map(e=>({...e,revision:'1'}));
+ const joined=applyDelta(s,d);assert(joined);assert.equal(joined.mixed!.stationGraph!.platforms[0].hostId,wide.id);
+ for(const mutate of [(bad:Delta)=>bad.mixed!.stationGraph!.platforms.find(p=>p.kind==='wide')!.children=[],
+  (bad:Delta)=>bad.entities!.find(e=>e.id===wide.id)!.revision='0',
+  (bad:Delta)=>bad.mixed!.stationGraph!.buildings[0].children.push(thin.id)]){
+  const bad=structuredClone(d);mutate(bad);assert.equal(applyDelta(s,bad),undefined);
+ }
+ const clear=delta(joined);clear.baseRevision=joined.revision;clear.revision='2';clear.mixed!.geometryRevision='2';
+ const cleared=clear.mixed!.stationGraph!;
+ for(const p of cleared.platforms){p.hostId=null;p.children=[];p.revision='2';}
+ cleared.buildings[0].children=[];cleared.buildings[0].revision='2';
+ clear.entities=joined.entities!.filter(e=>[station.id,wide.id].includes(e.id)).map(e=>({...e,revision:'2'}));
+ const disconnected=applyDelta(joined,clear);assert(disconnected);
+ assert(disconnected.mixed!.stationGraph!.platforms.every(p=>p.hostId===null));
+ assert.deepEqual(disconnected.mixed!.queue,joined.mixed!.queue);
+ assert.deepEqual(disconnected.mixed!.accounts,joined.mixed!.accounts);
+ assert.equal(s.mixed!.stationGraph!.platforms[0].hostId,station.id);
+});

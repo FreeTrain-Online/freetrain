@@ -82,6 +82,10 @@ plus columns x10…13/y10 across all valid z. Any station structure voxel can
 supply a candidate. Automatic construction selects a **direct Station**, while
 properties may explicitly select an already connected Platform.
 
+P6-11 preserves the exact source lookup distinction: thin platforms are found
+through their yards, wide platforms through their center voxels. A wide yard
+alone is not returned by `FatPlatform.get` or `ThinPlatform.get`.
+
 Source Set enumeration is Hashtable-unordered. The portable automatic choice is
 stable station-ID order over the exact direct candidate set; this is a declared
 deterministic adaptation, not a source nearest-host guarantee. Save the chosen

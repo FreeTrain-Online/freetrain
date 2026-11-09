@@ -41,6 +41,27 @@ export async function closePanel(page: Page) {
   const close = page.locator('.primary-panel .panel-title button:last-child');
   if (await close.count()) await close.click();
 }
+// Touch coordinates must reach the canvas even when localized task text changes
+// the narrow sheet's height. Pan using ordinary map input before the real tap.
+export async function exposeMapPoint(page:Page,point:{x:number;y:number}) {
+  const canvas=page.locator('canvas.world-canvas');
+  const target=await canvas.evaluate((el,p)=>{
+    if(document.elementFromPoint(p.x,p.y)===el)return p;
+    const r=el.getBoundingClientRect();
+    for(const y of [.3,.2,.4,.5,.6])for(const x of [.5,.4,.6,.3,.7]){
+      const q={x:r.x+r.width*x,y:r.y+r.height*y};
+      if(document.elementFromPoint(q.x,q.y)===el)return q;
+    }
+    throw new Error('Map has no clear point for touch input');
+  },point);
+  if(target.x===point.x&&target.y===point.y)return point;
+  const camera=await canvas.getAttribute('data-camera'),dx=point.x-target.x||.5;
+  await canvas.dispatchEvent('wheel',{deltaX:dx,deltaY:point.y-target.y,deltaMode:0});
+  await expect(canvas).not.toHaveAttribute('data-camera',camera!);
+  const result={x:point.x-dx,y:target.y};
+  expect(await canvas.evaluate((el,p)=>document.elementFromPoint(p.x,p.y)===el,result)).toBe(true);
+  return result;
+}
 export async function previewRemovalLine(page:Page,from:number[],to:number[],level=1,ja=false){
  const tool=page.getByRole('button',{name:ja?'撤去':'Remove',exact:true});
  if(await tool.getAttribute('aria-pressed')!=='true')await tool.click();

@@ -54,7 +54,7 @@
  const reasons={...railwayReasons,stationGround:'stationGround',platformNotFound:'platformNotFound',invalidPlatformGeometry:'platformGeometry',incompatiblePlatformRail:'platformRail',unavailableStationBinding:'railBinding'} as const;
 </script>
 <section class="platform-task" use:primaryAction aria-label={text.platformTab}>
- <p class="hint">{text.platformDisconnected}</p>
+ <p class="hint">{text.platformConnectionHelp}</p>
  <form onsubmit={e=>{e.preventDefault();void check();}}>
  <fieldset disabled={view.pending}>
  <label>{text.platformAction}<select aria-label={text.platformAction} bind:value={action} onchange={edit}><option value="place">{text.stationaryPlace}</option><option value="remove">{text.railRemove}</option></select></label>

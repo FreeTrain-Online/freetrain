@@ -1,5 +1,5 @@
 // Stable ExAV 883cf7d ThinPlatform/FatPlatform/PlatformController/YardRailRoad.
-// Original authors, LGPL-2.1-or-later. Host discovery belongs to P6-11.
+// Original authors, LGPL-2.1-or-later.
 using System.Collections.Immutable;
 using System.Globalization;
 
@@ -114,11 +114,14 @@ internal static class PlatformConstruction
                     ? p with {Revision=checked(p.Revision+1),HostId=null,Children=[]}
                     : p.Children.Contains(platform.Id) ? p with {Revision=checked(p.Revision+1),Children=p.Children.Remove(platform.Id)} : p);
                 changed = new(profile,buildings,platforms,graph.Passages,graph.NextStationName,graph.NextPlatformName,graph.Listeners,graph.ListenerMemberships);
-                foreach (var identity in changed.Identities)
-                    if (entities.TryGetValue(identity.Id,out var owner)) entities[identity.Id] = owner with {Revision=identity.Revision};
             }
-            else changed = new(profile,graph.Buildings,graph.Platforms.Add(platform),graph.Passages,
-                graph.NextStationName,checked(graph.NextPlatformName+1),graph.Listeners,graph.ListenerMemberships);
+            else
+            {
+                changed = StationHostConnections.Created(world,graph,platform);
+                platform = changed.Platform(platform.Id);
+            }
+            foreach (var identity in changed.Identities)
+                if (entities.TryGetValue(identity.Id,out var owner)) entities[identity.Id] = owner with {Revision=identity.Revision};
             if (voxels.Count > NormalRailwayConstruction.MaximumRailwayVoxels) return Reject("railwayCapacityLimit");
             var candidate = world.Replace(world.Revision,world.Terrain,new(next,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),
                 voxels.Values,world.Slopes,stations:changed);

@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
-import {ready,canonicalState as state,closePanel} from './browser-helpers.ts';
+import {ready,canonicalState as state,closePanel,exposeMapPoint} from './browser-helpers.ts';
 test.use({hasTouch:true});
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
@@ -73,7 +73,7 @@ for(const ja of [false,true])test(`slim platforms ${ja?'JA narrow touch':'EN key
   await page.getByRole('button',{name:ja?'地図でホームの位置を選択':'Pick platform position on map',exact:true}).click();
   await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
   const tile=await page.locator('canvas.world-canvas').evaluate(el=>{const r=el.getBoundingClientRect(),[cx,cy]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom);return {x:r.x+r.width/2+(16*(30-19+30)+16-cx)*zoom,y:r.y+r.height/2+(8*(30-30+19)-64+8-cy)*zoom};});
-  if(ja)await page.touchscreen.tap(tile.x,tile.y);else await page.mouse.click(tile.x,tile.y);
+  if(ja){const exposed=await exposeMapPoint(page,tile);await page.touchscreen.tap(exposed.x,exposed.y);}else await page.mouse.click(tile.x,tile.y);
   await expect(confirm).toBeEnabled();await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms.length).toBe(2);
   const rebuilt=(await state(page)).mixed.stationGraph.platforms.at(-1);expect(rebuilt.location).toEqual({x:30,y:30,z:4});expect(rebuilt.yards.map((y:any)=>y.trafficOwnerId).sort()).toEqual(restoredOwners);
   expect(errors).toEqual([]);
