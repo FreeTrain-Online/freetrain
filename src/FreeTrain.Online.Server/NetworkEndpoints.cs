@@ -280,6 +280,27 @@ public static class NetworkEndpoints
             catch (InvalidOperationException ex)
             { return Results.Json(new { code = ex.Message },statusCode:409); }
         });
+        app.MapPost("/api/station/platform/properties", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk,0,count);
+                }
+                var query = JsonSerializer.Deserialize<PlatformPropertiesQuery>(buffer.ToArray(),NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PlatformProperties(query),NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message },statusCode:409); }
+        });
         app.MapPost("/api/railway/preview", async Task<IResult> (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
@@ -596,6 +617,10 @@ public static class NetworkEndpoints
         RenameFleetCommand rename => rename.TrainId > 0 && rename.ExpectedRevision >= 0 && rename.Name is {Length: <= 256},
         AcquireControlCommand acquire => !string.IsNullOrWhiteSpace(acquire.TrainId),
         ReleaseControlCommand release => !string.IsNullOrWhiteSpace(release.TrainId) && !string.IsNullOrWhiteSpace(release.LeaseId),
+        EditPlatformPropertiesCommand edit => edit.Query != null && edit.Query.PlatformId > 0 &&
+            edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedPlatformRevision >= 0 &&
+            edit.Name is {Length: <= 128} && edit.Bell is {PackId.Length: > 0 and <= 512, ContributionId.Length: > 0 and <= 512, RecipeId.Length: > 0 and <= 512} &&
+            (edit.HostId == null || edit.HostId > 0) && edit.ExpectedHostRevision >= 0 && edit.ExpectedStationRevision >= 0,
         RenameStationCommand rename => rename.ExpectedRevision >= 0 && !string.IsNullOrWhiteSpace(rename.StationId) && rename.Name != null,
         RemoveTrackCommand remove => remove.ExpectedRevision >= 0 && remove.Position != null,
         RemoveObjectCommand remove => remove.Query != null && remove.Query.Position != null &&

@@ -243,3 +243,22 @@ Removal resolves the full platform from a center/yard cell and retains normal
 track. Both use current Save10/protocol8 state; host/service and subsequent lane
 editing retain their later P6 slices. See [wide-platform evidence](../../doc/web-parity-wide-platforms.md)
 and [slim-platform evidence](../../doc/web-parity-thin-platforms.md).
+
+
+## Platform properties and logical connections
+
+`POST /api/station/platform/properties` echoes a `PlatformPropertiesQuery` with
+expected epoch, geometry revision, content version and platform ID/revision. Its
+`PlatformProperties` response lists authoritative `PlatformHostCandidate` rows:
+direct ID/revision/location/type and resolved station ID/revision/location.
+This authenticated read-only operation adds no state or sound event.
+
+`editPlatformProperties` commits that query, independent `name`, exact qualified
+`bell`, nullable `hostId`, `expectedHostRevision` and `expectedStationRevision`.
+Null host requires zero host/root revisions. Commit revalidates candidate membership
+and all fences through the existing command role/epoch/receipt boundary, then
+publishes name, host, child disconnects, bell and matching spatial revisions
+atomically. No-ops preserve state; property edits preserve accounts, queues and
+RNG. Dirty browser drafts retain the query/candidate revisions until Reset.
+Save10/protocol8 already retain these fields. Bell preview is local; departure
+events remain P6-20. See [implementation and verification](../../doc/web-parity-platform-properties.md).

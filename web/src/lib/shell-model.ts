@@ -171,6 +171,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
       return result;
     },
+    async platformProperties(query:import('../generated/contracts.ts').PlatformPropertiesQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.platformProperties)throw new Error('Unavailable');
+      const result=await active.platformProperties(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision)throw new Error('Stale platform properties');
+      return result;
+    },
     async previewWidePlatform(query:import('../generated/contracts.ts').WidePlatformQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewWidePlatform)throw new Error('Unavailable');

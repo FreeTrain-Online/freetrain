@@ -444,6 +444,7 @@ public sealed partial class SessionHost : IDisposable
                             case EditStationBuildingCommand edit when edit.Query != null: code = CommitStationBuilding(edit); break;
                             case EditThinPlatformCommand edit when edit.Query != null: code = CommitThinPlatform(edit); break;
                             case EditWidePlatformCommand edit when edit.Query != null: code = CommitWidePlatform(edit); break;
+                            case EditPlatformPropertiesCommand edit when edit.Query != null: code = CommitPlatformProperties(edit); break;
                             case EditSlopeCommand edit when edit.Query != null: code = CommitSlope(edit.Query); break;
                             case RemoveObjectCommand remove when remove.Query != null: code = CommitRemoval(remove.Query); break;
                             case SetPlaybackRateCommand rate: code = SetPlaybackRate(queued.Participant, rate.Rate); break;

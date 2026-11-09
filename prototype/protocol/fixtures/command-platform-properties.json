@@ -1,0 +1,24 @@
+{
+  "type": "command",
+  "requestId": "platform-properties-example",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editPlatformProperties",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "2",
+      "expectedContentVersion": "mixed-railway-content-1",
+      "platformId": "3",
+      "expectedPlatformRevision": "1"
+    },
+    "name": "Independent / 独立ホーム",
+    "bell": {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{87B1BA1B-C18F-4E39-AD50-245255F34388}",
+      "recipeId": "{87B1BA1B-C18F-4E39-AD50-245255F34388}"
+    },
+    "hostId": "1",
+    "expectedHostRevision": "2",
+    "expectedStationRevision": "2"
+  }
+}

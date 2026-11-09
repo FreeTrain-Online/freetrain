@@ -18,6 +18,7 @@
   import SchemeSelect from './SchemeSelect.svelte';
   import LanguageSelect from './LanguageSelect.svelte';
   import BellControls from './BellControls.svelte';
+  import PlatformProperties from './PlatformProperties.svelte';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import EmptyWorldControls from './EmptyWorldControls.svelte';
   import SaveControls from './SaveControls.svelte';
@@ -59,6 +60,8 @@
   let deploymentPicking=$state(false),deploymentPicked=$state<import('./generated/contracts.ts').Position>(),deploymentPreview=$state<import('./generated/contracts.ts').FleetDeploymentPreview>();
   let fleetControls=$state<FleetControls>();
   let inspectorFleetControls=$state<FleetDeploymentControls>();
+  let platformProperties=$state<PlatformProperties>(),platformDirty=$state(false),platformCanApply=$state(false),platformDraft=$state('');
+  const platformSelection=$derived(mapSelection?.kind==='railway'&&mapSelection.component==='platform'?mapSelection.platformId:undefined);
   let fleetDirty=$state(false),fleetCanApply=$state(false),fleetDraft=$state('');
   let gameLauncher = $state<HTMLButtonElement>();
   let menuLeft = $state(0);
@@ -122,7 +125,7 @@
   function request(action: () => void) {
     if (saveBusy) return;
     map?.resetInteraction(); menu = false;
-    if (view.draftDirty||fleetDirty) navigation = action;
+    if (view.draftDirty||fleetDirty||platformDirty) navigation = action;
     else action();
   }
   function closeMenu() { menu = false; gameLauncher?.focus({ preventScroll: true }); }
@@ -173,7 +176,7 @@
         if (category === 'station') void map?.selectStationBuilding();
       }
     };
-    if (view.draftDirty) request(choose); else choose();
+    if (view.draftDirty||platformDirty) request(choose); else choose();
   }
   function requestTool(next: Tool) { request(() => {
     closeNow(); map?.activateTool(next);
@@ -183,10 +186,11 @@
   async function resolveDraft(apply: boolean) {
     const action = navigation, epoch = read?.worldEpoch;
     if (apply) {
-      if(fleetDirty){if(!fleetCanApply||!await fleetControls?.applyDraft())return;}
+      if(platformDirty){if(!platformCanApply||!await platformProperties?.applyDraft())return;}
+      else if(fleetDirty){if(!fleetCanApply||!await fleetControls?.applyDraft())return;}
       else if (!canApply || !await model.rename() || view.draftDirty) return;
       if(!live||read?.worldEpoch!==epoch||navigation!==action)return;
-    } else {model.resetDraft();fleetControls?.discardDraft();}
+    } else {model.resetDraft();fleetControls?.discardDraft();platformProperties?.discardDraft();}
     navigation = undefined; await tick(); action?.();
   }
   function leaveNow() { if (saveBusy) return; audio.disable(); soundEnabled = false; map?.resetInteraction(); void model.leave(leaveGame); }
@@ -285,7 +289,10 @@
       {#snippet stationActions()}
           <button class="primary" type="submit" form="station-name-form" disabled={!canApply}>{text.rename}</button><button type="button" onclick={model.resetDraft}>{text.resetDraft}</button>
       {/snippet}
-      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && mapSelection?.kind === 'station')} footer={panel === 'inspector' && mapSelection?.kind === 'station' ? stationActions : undefined}>
+      {#snippet platformActions()}
+        <button class="primary" type="submit" form="platform-properties-form" disabled={!platformCanApply}>{text.platformApply}</button><button type="button" disabled={view.pending} onclick={()=>platformProperties?.resetDraft()}>{text.resetDraft}</button>
+      {/snippet}
+      <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && (mapSelection?.kind === 'station'||!!platformSelection))} footer={panel === 'inspector' ? platformSelection ? platformActions : mapSelection?.kind === 'station' ? stationActions : undefined : undefined}>
         {#if panel === 'fleet'}
           <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
         {:else if panel === 'inspector'}
@@ -318,6 +325,9 @@
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>
           {:else if track}<p>{track.shape.startsWith('normal') ? `${text.normalRail} ${track.shape.slice(6)}` : text[track.shape as keyof typeof text]} · {track.revision}</p>
+          {:else if platformSelection}
+            {#key `${read!.worldEpoch}/${platformSelection}`}<PlatformProperties bind:this={platformProperties} {model} {view} id={platformSelection} disabled={clockDisabled||synchronizing} ondraft={(dirty,canApply,draft)=>{platformDirty=dirty;platformCanApply=canApply;platformDraft=draft;}} onremove={()=>request(()=>{const p={...mapSelection!.position};panel=undefined;map.removeStation(p);})}/>{/key}
+            {#if railwayDefinition}<p data-testid="railway-definition">{railwayDefinition.packId} · {railwayDefinition.contributionId} · {railwayDefinition.recipeId}</p><ObjectProvenance id={railwayDefinition.contributionId} packId={railwayDefinition.packId} locale={view.locale}/>{/if}
           {:else if mapSelection?.kind === 'railway' && (railwayVoxel || selectedPlatform) && railwayDefinition}
             <p data-testid="railway-component">{text[({rail:'track',pier:'pier',support:'railwaySupport',accessory:'railwayAccessory',stationary:'stationaryTask',speedLimit:'speedTask',platform:'platformTab'} as const)[mapSelection.component]]}</p>
             {#if selectedPlatform}<p data-testid="platform-identity">{selectedPlatform.name} · {selectedPlatform.id} · {selectedPlatform.revision}</p>{#if selectedPlatform.hostId===null}<p>{text.platformDisconnected}</p>{/if}{/if}
@@ -361,11 +371,11 @@
     {/if}
   </main>
   {#if live && navigation}
-    <DecisionModal leftAligned={fleetDirty} title={text[fleetDirty?'stockDirtyTitle':'dirtyTitle']} oncancel={() => { navigation = undefined; }}>
-      <p>{text[fleetDirty?'stockDirtyHint':'dirtyHint']}</p><p>{fleetDirty?fleetDraft:view.draft}</p>
+    <DecisionModal leftAligned={fleetDirty} title={text[platformDirty?'platformDirtyTitle':fleetDirty?'stockDirtyTitle':'dirtyTitle']} oncancel={() => { navigation = undefined; }}>
+      <p>{text[platformDirty?'platformDirtyHint':fleetDirty?'stockDirtyHint':'dirtyHint']}</p><p>{platformDirty?platformDraft:fleetDirty?fleetDraft:view.draft}</p>
       {#if draftConflict}<p role="alert">{text.draftConflict}</p>{/if}
       {#snippet actions()}
-        <button class="primary" disabled={fleetDirty?!fleetCanApply:!canApply} onclick={() => resolveDraft(true)}>{text.rename}</button>
+        <button class="primary" disabled={platformDirty?!platformCanApply:fleetDirty?!fleetCanApply:!canApply} onclick={() => resolveDraft(true)}>{text[platformDirty?'platformApply':'rename']}</button>
         <button disabled={view.pending} onclick={() => resolveDraft(false)}>{text.discard}</button>
         <button onclick={() => { navigation = undefined; }}>{text.keepEditing}</button>
       {/snippet}

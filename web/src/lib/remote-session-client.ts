@@ -1,7 +1,7 @@
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parseWidePlatformPreview, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parseWidePlatformPreview, parsePlatformProperties, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
 import { removalQueryKey } from './object-removal.ts';
 import { isRailwayPromotion, railwayQueryKey, slopeQueryKey, RailwayPreviewRequestError } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
@@ -232,6 +232,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const preview=parseThinPlatformPreview(await response.json());
       if(disposed||join!==identity||status!=='ready'||JSON.stringify(preview.query)!==JSON.stringify(query))throw new Error('Stale station preview');
       return preview;
+    },
+    async platformProperties(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/station/platform/properties?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(!response.ok)throw new Error('Platform properties failed');
+      const properties=parsePlatformProperties(await response.json());
+      if(disposed||join!==identity||status!=='ready'||JSON.stringify(properties.query)!==JSON.stringify(query))throw new Error('Stale platform properties');
+      return properties;
     },
     async previewWidePlatform(query,signal) {
       const identity=join;

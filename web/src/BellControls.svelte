@@ -4,7 +4,7 @@
   import { loadRenderCatalog, sha256, type RenderCatalog } from './lib/content-recipes.ts';
   import { bundledBells, bellCredit, type BundledBell } from './lib/bundled-audio.ts';
   import { bundledLocalization, contentText } from './lib/content-localization.ts';
-  let { locale }: { locale: Locale } = $props();
+  let { locale, selected=$bindable(), disabled=false, onchange }: { locale: Locale; selected?:string; disabled?:boolean; onchange?:(id:string)=>void } = $props();
   const text = $derived(messages[locale]);
   let catalog = $state<RenderCatalog>(), bells = $state<BundledBell[]>([]), loaded = $state(false), failed = $state(false);
   let bell = $state(''), bellFailed = $state(false);
@@ -26,12 +26,14 @@
       sound.onended = () => { if (current === bellGeneration) stopBell(); }; sound.start();
     } catch { if (current === bellGeneration) { stopBell(); bellFailed = true; } }
   }
+  $effect(()=>{if(selected!==undefined&&selected!==bell){bell=selected;stopBell();}});
+  function changed(){stopBell();selected=bell;onchange?.(bell);}
   function load() {
     failed = false;
     loadRenderCatalog().then(value => {
       if (!active) return;
       catalog = value; bells = bundledBells(value); loaded = true;
-      bell = bells[0]?.id ?? '';
+      bell = selected ?? bells[0]?.id ?? '';
     }).catch(() => { if (active) failed = true; });
   }
   onMount(() => {
@@ -44,11 +46,11 @@
 
 <fieldset>
   <legend>{text.departureBells}</legend>
-  {#if failed}<p role="status">{text.soundFailed}</p><button onclick={load}>{text.retryNow}</button>{/if}
-  <label class="field">{text.departureBells}<select aria-label={text.departureBells} bind:value={bell} disabled={!loaded} onchange={stopBell}>
+  {#if failed}<p role="status">{text.soundFailed}</p><button type="button" onclick={load}>{text.retryNow}</button>{/if}
+  <label class="field">{text.departureBells}<select aria-label={text.departureBells} bind:value={bell} disabled={!loaded||disabled} onchange={changed}>
     {#each bells as item (item.id)}<option value={item.id}>{title(item)}</option>{/each}
   </select></label>
-  <button disabled={!loaded || !bell} onclick={previewBell}>{text.previewBell}</button>
+  <button type="button" disabled={!loaded || !bell} onclick={previewBell}>{text.previewBell}</button>
   {#each bells.filter(item => item.id === bell) as item}<p data-testid="audio-credit">{text.audioCredit}: {catalog ? bellCredit(catalog, item, locale) : item.author}</p>{/each}
   {#if bellFailed}<p role="status">{text.soundFailed}</p>{/if}
 </fieldset>

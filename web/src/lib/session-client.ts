@@ -22,6 +22,7 @@ export interface SessionClient {
   previewSlope?(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').SlopePreview>;
   previewStationBuilding?(query:import('../generated/contracts.ts').StationBuildingQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').StationBuildingPreview>;
   previewThinPlatform?(query:import('../generated/contracts.ts').ThinPlatformQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').ThinPlatformPreview>;
+  platformProperties?(query:import('../generated/contracts.ts').PlatformPropertiesQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').PlatformProperties>;
   previewWidePlatform?(query:import('../generated/contracts.ts').WidePlatformQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').WidePlatformPreview>;
   previewRailway?(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').RailwayPreview>;
   previewRemoval?(query:import('../generated/contracts.ts').RemovalQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').RemovalPreview>;

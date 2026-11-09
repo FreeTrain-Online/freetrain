@@ -248,6 +248,13 @@ export function parseThinPlatformPreview(value:unknown):import('../generated/con
   return p;
 }
 
+const validateProperties=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/PlatformProperties'});
+export function parsePlatformProperties(value:unknown):import('../generated/contracts.ts').PlatformProperties {
+ if(!validateProperties(value))throw new Error('Invalid platform properties');
+ const p=value as import('../generated/contracts.ts').PlatformProperties;
+ if(new Set(p.candidates.map(c=>c.id)).size!==p.candidates.length||p.candidates.some(c=>c.id==='0'||c.stationId==='0'||c.id===p.query.platformId||c.isStation&&(c.id!==c.stationId||c.revision!==c.stationRevision||JSON.stringify(c.location)!==JSON.stringify(c.stationLocation))))throw new Error('Invalid platform host candidates');
+ return p;
+}
 const validateWidePlatform=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/WidePlatformPreview'});
 export function parseWidePlatformPreview(value:unknown):import('../generated/contracts.ts').WidePlatformPreview {
   if(!validateWidePlatform(value))throw new Error('Invalid station preview');

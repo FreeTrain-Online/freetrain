@@ -65,6 +65,12 @@
     },
     {
       "$ref": "#/$defs/WidePlatformPreview"
+    },
+    {
+      "$ref": "#/$defs/PlatformPropertiesQuery"
+    },
+    {
+      "$ref": "#/$defs/PlatformProperties"
     }
   ],
   "$defs": {
@@ -1338,6 +1344,50 @@
             "kind",
             "query",
             "expectedCost"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editPlatformProperties"
+            },
+            "query": {
+              "$ref": "#/$defs/PlatformPropertiesQuery"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "bell": {
+              "$ref": "#/$defs/Definition"
+            },
+            "hostId": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counter"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expectedHostRevision": {
+              "$ref": "#/$defs/Counter"
+            },
+            "expectedStationRevision": {
+              "$ref": "#/$defs/Counter"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "name",
+            "bell",
+            "hostId",
+            "expectedHostRevision",
+            "expectedStationRevision"
           ]
         }
       ]
@@ -5628,6 +5678,93 @@
         "reason",
         "cost",
         "positions"
+      ]
+    },
+    "PlatformPropertiesQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "platformId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedPlatformRevision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedContentVersion",
+        "platformId",
+        "expectedPlatformRevision"
+      ]
+    },
+    "PlatformHostCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Counter"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "isStation": {
+          "type": "boolean"
+        },
+        "stationId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "stationRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "stationLocation": {
+          "$ref": "#/$defs/Position"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "location",
+        "isStation",
+        "stationId",
+        "stationRevision",
+        "stationLocation"
+      ]
+    },
+    "PlatformProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/PlatformPropertiesQuery"
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 8192,
+          "items": {
+            "$ref": "#/$defs/PlatformHostCandidate"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "candidates"
       ]
     }
   }
