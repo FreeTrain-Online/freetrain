@@ -880,7 +880,7 @@
   "stationX": "Station X",
   "stationY": "Station Y",
   "stationPick": "Pick station position on map",
-  "stationBuildingHelp": "Choose an authored building orientation, then pick a map position or enter X, Y and level. Check placement before confirming. Remove targets the actual station from any occupied cell.",
+  "stationBuildingHelp": "Choose an authored building orientation, then pick a map position or enter X, Y and level. Check placement before confirming. Use the Remove tool to remove a station building from any occupied cell.",
   "stationGround": "The entire building footprint must rest at ground level.",
   "stationNotFound": "No station building at this position. Pick a current station.",
   "stationConfirm": "Confirm station building",

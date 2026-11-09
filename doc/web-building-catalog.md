@@ -1,7 +1,7 @@
 # Building catalog — 1 November 2026
 
-The first catalog categories are **Signals** (two contributions) and **Railway
-accessories** (54 stationary contributions). Further categories can be added as
+The catalog categories are **Signals** (two contributions), **Railway
+accessories** (54 stationary contributions), and **Stations** (35 authored building variants). Further categories can be added as
 their workflows are delivered; this does not close the remaining P9 catalog gate.
 
 The UX takes cues from `freetrain-modern`'s `MainWindow.Catalog.cs`,
@@ -96,3 +96,48 @@ signal directions and save/reopen, retained target points and quote invalidation
 The [grouped accessory cards](../tmp/browser-evidence-aY1iaj/catalog/grouped-variants-en.png)
 and [inline signal directions](../tmp/browser-evidence-aY1iaj/catalog/desktop-en.png)
 were visually reviewed.
+
+Station catalog integration — 9 November 2026:
+
+- Stations opens its catalog category when construction is activated. Each of the
+  35 exact building/orientation contributions is available through seven
+  searchable building cards with numbered variant buttons and source artwork, localized name and description, dimensions, price, upkeep and XML
+  provenance. Authored orientations retain their original IDs and footprints.
+- The building task consumes the catalog selection and offers **Choose from
+  catalog** in place of the building dropdown and duplicate preview image.
+  Coordinate entry, automatic height, map picking and preview/confirm
+  retain the existing authoritative construction workflow.
+- Station selection persists across tool switches. Selecting another variant
+  clears the quote while retaining coordinates; browsing categories or reopening
+  the catalog preserves the quote. Choosing a station from the catalog returns
+  the Stations tool to its building tab when Platforms was active. Observers can
+  browse the station cards without entering construction.
+
+Verification: production build and generated/content/localization checks pass,
+with zero Svelte errors or warnings. All 351 client tests pass (349 standard
+plus two retention checks). The eight catalog/station browser scenarios pass,
+including EN/JA selection, all 35 station previews, observer browsing, quote
+fencing, platform switching, desktop keyboard and narrow touch construction,
+removal and exact save/reopen. The narrow touch case pans its target into view
+after closing the catalog because the task sheet then grows taller.
+
+Station variants share cards by source plugin and family, footprint (allowing
+authored X/Y orientations), height, price and upkeep. The seven cards contain
+4, 2, 2, 1, 20, 4 and 2 variants. Numbered buttons retain every original
+contribution ID and footprint; selecting one updates the artwork, selected
+indicator, dimensions and construction selection. Clicking the main card keeps
+its selected variant. The same groups and numbering are used in EN and JA.
+
+Station building removal uses the separate **Remove** tool in single-object
+mode. Stations construction has no Building action selector. Map picking and
+coordinate entry (including upper-storey footprint cells) resolve the complete
+station building. The station inspector's **Remove station building…** shortcut
+opens Remove with a preview. Removal retains the station domain's cost quote,
+minute/revision fencing, affected-cell highlight and explicit confirmation.
+
+Removal migration verification: the production/generated/content/localization
+checks pass with zero Svelte errors or warnings, eight relevant unit tests pass,
+and all 17 catalog/station/object-removal browser scenarios pass. Coverage
+includes station map picking, upper-storey coordinate removal, the inspector
+shortcut, minute fencing, cancellation of late previews, keyboard confirmation,
+EN/JA, narrow touch, peer publication and exact save/reopen.

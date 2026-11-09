@@ -141,7 +141,7 @@ export const tools = [
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'girder', shortcut: 'V', label: registry.girder.labelKey, icon: 'girder' },
-  { id: 'station', shortcut: 'J', label: registry.station.labelKey, icon: '▤' },
+  { id: 'station', shortcut: 'J', label: registry.station.labelKey, icon: 'station' },
   { id: 'stationary', shortcut: 'A', label: registry.stationary.labelKey, icon: '▥' },
   { id: 'speed', shortcut: 'L', label: registry.speed.labelKey, icon: '◴' },
   { id: 'pole', shortcut: 'E', label: registry.pole.labelKey, icon: 'pole' },

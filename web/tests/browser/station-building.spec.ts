@@ -26,9 +26,11 @@ async function pick(p:Page,b:any,touch=false){
  const q=await point(p,{x:16*(x+y)-f.anchor[0]+col+.5,y:8*(y-x)-16*(b.location.z+1)-f.anchor[1]+row+.5});
  if(touch)await p.touchscreen.tap(q.x,q.y);else await p.mouse.click(q.x,q.y);
 }
-async function task(p:Page,ja=false){await closePanel(p);const t=p.getByRole('button',{name:ja?'駅':'Stations',exact:true});if(await t.getAttribute('aria-pressed')!=='true')await t.click();await expect(p.locator('.station-task')).toBeVisible();}
+async function task(p:Page,ja=false){await closePanel(p);const t=p.getByRole('button',{name:ja?'駅':'Stations',exact:true});if(await t.getAttribute('aria-pressed')!=='true')await t.click();await expect(p.locator('.station-task')).toBeVisible();await expect(p.getByLabel(ja?'駅舎の操作':'Building action',{exact:true})).toHaveCount(0);}
 async function quote(p:Page,ja=false,x=25,y=25){
- await p.getByLabel(ja?'駅舎・向き':'Building / authored orientation',{exact:true}).selectOption(type.reference.recipeId);
+ if(!await p.locator('#building-catalog').count())await p.getByRole('button',{name:ja?'一覧から選択':'Choose from catalog',exact:true}).click();
+ await p.locator(`[data-catalog-variant="${type.reference.recipeId}"]`).click();
+ await p.getByRole('button',{name:ja?'建物一覧を閉じる':'Close building catalog',exact:true}).click();
  await p.getByLabel(ja?'駅舎 X':'Station X',{exact:true}).fill(String(x));await p.getByLabel(ja?'駅舎 Y':'Station Y',{exact:true}).fill(String(y));
  await p.locator('.station-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();
  await expect(p.getByRole('button',{name:ja?'駅舎の建設を確定':'Confirm station building',exact:true})).toBeEnabled();
@@ -42,10 +44,17 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
  try{
   await page.goto('/');await ready(page,ja?'ja':'en');await empty(page);await ready(page,ja?'ja':'en');
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer,ja?'en':'ja');
-  await task(page,ja);await expect(page.getByLabel(ja?'駅舎・向き':'Building / authored orientation').locator('option')).toHaveCount(35);
+  await task(page,ja);await expect(page.locator('#building-catalog [data-catalog-variant]')).toHaveCount(35);
   const original=await bytes(page);await quote(page,ja,30,30);
   expect(await bytes(page)).toEqual(original);await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-cells',String(type.sizeX*type.sizeY*type.height));
   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();
+  if(ja){
+   // Closing the upper catalog lets the task sheet grow. Pan the target
+   // into the clear map area before tapping, as with other catalog tools.
+   const canvas=page.locator('canvas.world-canvas'),camera=await canvas.getAttribute('data-camera');
+   await canvas.dispatchEvent('wheel',{deltaX:1,deltaY:150.5,deltaMode:0});
+   await expect(canvas).not.toHaveAttribute('data-camera',camera!);
+  }
   const target=await point(page,{x:16*(30-19+30)+16,y:8*19-32+8});
   if(ja)await page.touchscreen.tap(target.x,target.y);else await page.mouse.click(target.x,target.y);
   await expect(page.getByRole('button',{name:ja?'駅舎の建設を確定':'Confirm station building',exact:true})).toBeEnabled();
@@ -59,7 +68,8 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
    for(let i=0;i<data.length;i+=4)if(data[i]>data[i+1]*1.4&&data[i]>data[i+2]*1.4)red++;return red;
   },target)).toBeGreaterThan(0);
   await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-playable-${ja?'ja':'en'}-preview.png`});
-  await page.getByRole('button',{name:ja?'駅舎の建設を確定':'Confirm station building',exact:true}).click();
+  // Picking keeps focus on the map; Return must reach the nested building controls.
+  await page.locator('canvas.world-canvas').focus();await page.keyboard.press('Enter');
   await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
   const built=await state(page),b=built.mixed.stationGraph.buildings[0];expect(b.location).toEqual({x:30,y:30,z:2});
   await expect.poll(async()=>(await state(peer)).mixed?.stationGraph?.buildings).toEqual(built.mixed.stationGraph.buildings);
@@ -77,9 +87,19 @@ for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN d
   await pick(page,b,ja);await expect(input).toHaveValue('Central / 中央駅');
   await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-playable-${ja?'ja':'en'}-properties.png`});
   await page.getByRole('button',{name:ja?'駅舎を撤去…':'Remove station building…',exact:true}).click();
+  await expect(page.locator('.remove-task')).toBeVisible();await expect(page.locator('.station-task')).toHaveCount(0);
   const confirm=page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true});await expect(confirm).toBeEnabled();expect(await bytes(page)).toEqual(saved);
   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();expect(await bytes(page)).toEqual(saved);
-  await page.locator('.station-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();await expect(confirm).toBeEnabled();await confirm.click();
+  if(!ja){await pick(page,b);await expect(confirm).toBeEnabled();}
+  else{
+   // Any occupied cell can target the building, including an upper storey.
+   await page.getByLabel('ボクセル X',{exact:true}).fill(String(b.location.x));
+   await page.getByLabel('ボクセル Y',{exact:true}).fill(String(b.location.y+1));
+   await page.getByLabel('撤去する高さ',{exact:true}).fill(String(b.location.z+1));
+   await page.locator('.remove-task form').getByRole('button',{name:'撤去をプレビュー',exact:true}).click();await expect(confirm).toBeEnabled();
+  }
+  await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-cells',String(type.sizeX*type.sizeY*type.height));
+  await confirm.click();
   await expect.poll(async()=>(await state(peer)).mixed.stationGraph.buildings.length).toBe(0);expect((await state(page)).mixed.queue.pending).toHaveLength(0);expect(errors).toEqual([]);
  }finally{await context.close();}
 });
@@ -118,4 +138,28 @@ test('station quotes and name drafts fence peer edits, Observer, late previews, 
   offline=true;socket!.close();await expect(page.getByRole('heading',{name:'Connection lost',exact:true})).toBeVisible();
   offline=false;await ready(page);await pick(page,b);await expect(input).toHaveValue('Peer station');expect(await bytes(page)).toEqual(saved);
  }finally{await context.close();await observerContext.close();}
+});
+
+test('Remove tool fences station quotes by minute and cancels late station removal previews',async({page})=>{
+ await page.goto('/');await ready(page);await empty(page);await task(page);await quote(page);
+ await page.getByRole('button',{name:'Confirm station building',exact:true}).click();
+ await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
+ const b=(await state(page)).mixed.stationGraph.buildings[0];
+ await page.getByRole('button',{name:'Remove',exact:true}).click();
+ await page.getByLabel('Voxel X',{exact:true}).fill(String(b.location.x));
+ await page.getByLabel('Voxel Y',{exact:true}).fill(String(b.location.y));
+ await page.getByLabel('Removal level',{exact:true}).fill(String(b.location.z));
+ const check=page.locator('.remove-task form').getByRole('button',{name:'Preview removal',exact:true});await check.click();
+ const confirm=page.getByRole('button',{name:'Confirm removal',exact:true});await expect(confirm).toBeEnabled();
+ await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(confirm).toBeDisabled();
+ const saved=await bytes(page);
+ let release!:()=>void;const held=new Promise<void>(r=>{release=r;});let seen=false;
+ await page.route('**/api/station/building/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});
+ await page.locator('.remove-task form').getByRole('button',{name:'Preview removal',exact:true}).click();await expect.poll(()=>seen).toBe(true);
+ await page.getByRole('button',{name:'Cancel preview',exact:true}).click();release();
+ await expect(confirm).toBeDisabled();expect(await bytes(page)).toEqual(saved);
+ await page.unroute('**/api/station/building/preview?*');
+ await check.click();await expect(confirm).toBeEnabled();
+ await page.locator('canvas').focus();await page.keyboard.press('Enter');
+ await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.length).toBe(0);
 });

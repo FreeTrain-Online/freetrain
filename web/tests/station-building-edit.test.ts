@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {stationDefinitions,stationCatalog,stationBuildingAt,stationBuildingQuery,stationBuildingFence} from '../src/lib/station-building-edit.ts';
+import {catalogItems,isCatalogItem} from '../src/lib/building-catalog.ts';
 import {parseStationBuildingPreview} from '../src/lib/protocol.ts';
 import {createShellModel} from '../src/lib/shell-model.ts';
 import type {Snapshot} from '../src/generated/contracts.ts';
@@ -12,6 +13,25 @@ Deno.test('station catalog binds all 35 authored footprints, prices and reviewed
   assert(d.title.length);assert(!/[\u3040-\u30ff\u4e00-\u9fff]/u.test(d.title+d.orientation),d.title);
   assert(BigInt(d.price)>0n);assert(BigInt(d.upkeep)>=0n);assert.notEqual(d.title,ja[i].title);
  }
+});
+Deno.test('building catalog exposes and retains every exact station variant in both locales',async()=>{
+ const catalog=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url)));
+ const model=createShellModel(()=>({mode:'remote',role:'observer',subscribe:()=>()=>{},dispose:()=>{}} as any),'en',0);
+ try{
+  for(const locale of ['en','ja'] as const){
+   const items=catalogItems('station',locale,catalog),variants=items.flatMap(i=>i.variants);
+   assert.deepEqual(items.map(i=>i.variants.length),[4,2,2,1,20,4,2]);
+   assert.deepEqual(items.map(i=>i.id),catalogItems('station','en',catalog).map(i=>i.id));
+   for(const item of items)assert.deepEqual(item.variants.map(v=>v.label),item.variants.map((_,i)=>(i+1).toLocaleString(locale)));
+   assert.deepEqual(variants.map(v=>v.id),stationDefinitions.map(d=>d.reference.recipeId));
+   for(const variant of variants){
+    assert(isCatalogItem('station',variant.id));assert(variant.title.length);assert(variant.detail.length);assert(variant.price>0);
+    model.selectCatalogItem('station',variant.id);assert.equal(model.state.catalogSelections.station,variant.id);
+    model.selectCatalogItem('signal',model.state.catalogSelections.signal);assert.equal(model.state.catalogSelections.station,variant.id);
+   }
+  }
+  const before=model.state.catalogSelections.station;model.selectCatalogItem('station','invalid');assert.equal(model.state.catalogSelections.station,before);
+ }finally{model.dispose();}
 });
 Deno.test('station removal resolves the actual identity and revision from every footprint cell',async()=>{
  const s=await scene(),b=s.mixed!.stationGraph!.buildings[0],d=stationDefinitions.find(d=>d.reference.recipeId===b.definition.recipeId)!;

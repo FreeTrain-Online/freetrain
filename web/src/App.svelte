@@ -154,7 +154,7 @@
     });
   }
   function showCatalog() {
-    if (tool === 'signal' || tool === 'stationary') catalogCategory = tool;
+    if (tool === 'signal' || tool === 'stationary' || tool === 'station') catalogCategory = tool;
     catalogLauncher = document.querySelector<HTMLElement>('.tool-card button') ?? undefined;
     catalogOpen = true;
   }
@@ -170,13 +170,14 @@
       if (!clockDisabled && (terrain || mixed)) {
         panel = undefined;
         if (tool !== category) map?.activateTool(category);
+        if (category === 'station') void map?.selectStationBuilding();
       }
     };
     if (view.draftDirty) request(choose); else choose();
   }
   function requestTool(next: Tool) { request(() => {
     closeNow(); map?.activateTool(next);
-    if (tool === 'signal' || tool === 'stationary') { catalogCategory = tool; catalogOpen = true; }
+    if (tool === 'signal' || tool === 'stationary' || tool === 'station') { catalogCategory = tool; catalogOpen = true; }
   }); }
 
   async function resolveDraft(apply: boolean) {
@@ -198,7 +199,7 @@
     // focused. Both should still activate the visible panel's default action.
     if (event.key === 'Enter' && live && !synchronizing && !menu && !navigation && !creditsOpen && !optionalCredits && !licenseOpen
       && event.target instanceof HTMLElement && event.target.matches('canvas, body, html')) {
-      const scope = document.querySelector<HTMLElement>('.map-stage .deployment-controls') ?? document.querySelector<HTMLElement>('.map-stage .primary-panel, .map-stage .tool-card');
+      const scope = document.querySelector<HTMLElement>('.map-stage .deployment-controls') ?? document.querySelector<HTMLElement>('.map-stage .primary-panel, .map-stage .tool-card[data-primary-scope], .map-stage .tool-card [data-primary-scope]');
       if (scope) activatePrimary(event, scope);
       return;
     }

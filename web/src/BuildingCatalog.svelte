@@ -1,14 +1,17 @@
 <script lang="ts">
   import { messages, type Locale } from './lib/localization.ts';
   import { catalogCategories, catalogItems, signalDirections, type SignalDirection, type CatalogCategory } from './lib/building-catalog.ts';
+  import { bundledCatalog } from './lib/bundled-catalog.ts';
   import CatalogPreview from './CatalogPreview.svelte';
   import ObjectProvenance from './ObjectProvenance.svelte';
   let { locale, category, selections, signalDirection, pending, oncategory, onselect, onclose }:
     { locale: Locale; category: CatalogCategory; selections: Record<CatalogCategory, string>; signalDirection: SignalDirection; pending: boolean;
       oncategory: (category: CatalogCategory) => void; onselect: (category: CatalogCategory, id: string, direction?: SignalDirection) => void; onclose: () => void } = $props();
   const text = $derived(messages[locale]);
-  let queries = $state({ signal: '', stationary: '' }), expanded = $state(false);
-  const items = $derived(catalogItems(category, locale));
+  let queries = $state({ signal: '', stationary: '', station: '' }), expanded = $state(false);
+  let content = $state<Awaited<ReturnType<typeof bundledCatalog>>>();
+  $effect(() => { let active = true; void bundledCatalog().then(value => { if (active) content = value; }); return () => { active = false; }; });
+  const items = $derived(catalogItems(category, locale, content));
   const visible = $derived(items.filter(item => `${item.title} ${item.variants.map(v => `${v.title} ${v.detail}`).join(' ')}`.toLocaleLowerCase(locale).includes(queries[category].trim().toLocaleLowerCase(locale))));
 </script>
 <aside id="building-catalog" class="building-catalog" class:catalog-expanded={expanded} aria-label={text.buildings}>

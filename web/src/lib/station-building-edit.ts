@@ -25,5 +25,5 @@ export function stationCatalog(catalog:RenderCatalog,locale:string){return stati
  const field=(tag:string)=>contribution.declaration.children.find(c=>c.tag===tag)?.text??'';
  const localized=(tag:string)=>contentText(bundledLocalization,catalog,contribution,tag,field(tag),locale);
  const recipe=catalog.renderRecipes.find(r=>r.id===d.reference.recipeId)!;
- return {...d,title:localized('name')||localized('group'),description:localized('description'),orientation:localized('type'),price:String(recipe.fields.price),upkeep:String(recipe.fields.operationCost)};
+ return {...d,pluginId:contribution.pluginId,familyId:field('group')||field('name'),familyTitle:localized('group')||localized('name'),title:localized('name')||localized('group'),description:localized('description'),orientation:localized('type'),price:String(recipe.fields.price),upkeep:String(recipe.fields.operationCost)};
 });}

@@ -143,6 +143,62 @@ test('catalog keyboard selection, narrow layout and observer browsing', async ({
         return ctx.getImageData(0, 0, 96, 80).data.some((value, index) => index % 4 === 3 && value > 0);
       })).toBe(true);
     }
+    await viewerCatalog.getByLabel('Category', { exact: true }).selectOption('station');
+    await expect(variants).toHaveCount(35); await variants.last().click();
+    await expect(viewer.locator('.station-task')).toHaveCount(0);
     await expect(viewer.getByRole('button', { name: 'Inspect', exact: true })).toHaveAttribute('aria-pressed', 'true');
   } finally { await viewer.close(); await restore(page, original); }
+});
+
+for (const ja of [false, true]) test(`station catalog variants, quotes and platform switching ${ja ? 'JA' : 'EN'}`, async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('/'); await ready(page); await empty(page);
+  if (ja) { await openPanel(page, 'settings'); await page.getByLabel('Language', { exact: true }).selectOption('ja'); await closePanel(page); }
+  const before = await save(page), catalog = page.locator('#building-catalog');
+  await page.getByRole('button', { name: ja ? '駅' : 'Stations', exact: true }).click();
+  const category = catalog.getByLabel(ja ? 'カテゴリ' : 'Category', { exact: true });
+  await expect(category).toHaveValue('station');
+  const cards = catalog.locator('[data-catalog-variant]');
+  await expect(cards).toHaveCount(35);
+  await expect(catalog.locator('.catalog-item')).toHaveCount(7);
+  await expect(catalog.locator('img')).toHaveCount(7);
+  await expect.poll(() => catalog.locator('img').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete))).toBe(true);
+  expect(await catalog.locator('img').evaluateAll(images => images.every(image => {
+    const canvas = document.createElement('canvas'); canvas.width = 96; canvas.height = 80;
+    const ctx = canvas.getContext('2d')!; ctx.drawImage(image as HTMLImageElement, 0, 0);
+    return ctx.getImageData(0, 0, 96, 80).data.some((value, index) => index % 4 === 3 && value > 0);
+  }))).toBe(true);
+  const ids = await cards.evaluateAll(buttons => buttons.map(b => b.getAttribute('data-catalog-variant')));
+  for (const id of ids) {
+    await catalog.locator(`[data-catalog-variant="${id}"]`).click();
+    await expect(catalog.locator('.catalog-active')).toHaveAttribute('data-variant', id!);
+    await expect(catalog.locator('.catalog-active .catalog-preview')).toHaveAttribute('data-preview-id', id!);
+    await expect(catalog.locator(`[data-catalog-variant="${id}"]`)).toHaveAttribute('aria-pressed', 'true');
+    const image = catalog.locator('.catalog-active img'); await expect(image).toHaveCount(1);
+    await image.evaluate(image => (image as HTMLImageElement).decode());
+  }
+  await cards.first().click();
+  await page.getByLabel(ja ? '駅舎 X' : 'Station X', { exact: true }).fill('30');
+  await page.getByLabel(ja ? '駅舎 Y' : 'Station Y', { exact: true }).fill('27');
+  const check = page.locator('.station-task form').getByRole('button', { name: ja ? '配置を確認' : 'Check placement', exact: true });
+  const confirm = page.getByRole('button', { name: ja ? '駅舎の建設を確定' : 'Confirm station building', exact: true });
+  await check.click(); await expect(confirm).toBeEnabled();
+  await page.screenshot({ path: `${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-catalog-${ja ? 'ja' : 'en'}.png` });
+  await category.selectOption('stationary'); await expect(confirm).toBeEnabled();
+  await category.selectOption('station'); await cards.nth(1).click(); await expect(confirm).toBeDisabled();
+  await catalog.locator('.catalog-active .catalog-item-main').click();
+  await expect(cards.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByLabel(ja ? '駅舎 X' : 'Station X', { exact: true })).toHaveValue('30');
+  await check.click(); await expect(confirm).toBeEnabled();
+  await catalog.getByRole('button', { name: ja ? '建物一覧を閉じる' : 'Close building catalog', exact: true }).click();
+  await page.getByRole('button', { name: ja ? '一覧から選択' : 'Choose from catalog', exact: true }).click();
+  await expect(confirm).toBeEnabled();
+  const tabs = page.locator('.station-task [role=tab]');
+  await tabs.nth(1).click(); await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await cards.first().click(); await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
+  const search = catalog.getByLabel(ja ? '一覧を検索' : 'Search catalog', { exact: true });
+  await search.fill('no such station'); await expect(cards).toHaveCount(0);
+  await category.selectOption('signal'); await expect(search).toHaveValue('');
+  await category.selectOption('station'); await expect(search).toHaveValue('no such station');
+  expect(await save(page)).toEqual(before);
 });
