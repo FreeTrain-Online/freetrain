@@ -268,5 +268,9 @@ export function parseWidePlatformPreview(value:unknown):import('../generated/con
     const expected=Array.from({length:q.secondLane?3:2},(_,lane)=>Array.from({length:q.length},(_,i)=>({x:q.position.x+dx*i-dy*(lane===2?-1:lane),y:q.position.y+dy*i+dx*(lane===2?-1:lane),z:q.position.z}))).flat();
     if(p.positions.length!==expected.length||p.positions.some((v,i)=>v.x!==expected[i].x||v.y!==expected[i].y||v.z!==expected[i].z))throw new Error('Invalid platform geometry');
   }
+  if(p.legal&&(q.action==='addLane'||q.action==='removeLane')){
+    const d={x:q.direction===2?1:q.direction===6?-1:0,y:q.direction===4?1:q.direction===0?-1:0},side=q.secondLane?-1:1;
+    if(p.cost!=='0'||p.positions.length!==q.length||p.positions.some((v,i)=>v.x!==q.position.x+d.x*i-d.y*side||v.y!==q.position.y+d.y*i+d.x*side||v.z!==q.position.z))throw new Error('Invalid lane geometry');
+  }
   return p;
 }

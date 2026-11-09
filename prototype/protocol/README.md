@@ -262,3 +262,11 @@ atomically. No-ops preserve state; property edits preserve accounts, queues and
 RNG. Dirty browser drafts retain the query/candidate revisions until Reset.
 Save10/protocol8 already retain these fields. Bell preview is local; departure
 events remain P6-20. See [implementation and verification](../../doc/web-parity-platform-properties.md).
+
+Wide-platform `addLane` / `removeLane` actions use the same preview and command
+boundary. For these actions `secondLane` selects lane1 (left); false selects lane0
+(right), relative to the platform heading. The position, direction and length are
+the existing center geometry; platform identity/revision must be current. Legal
+lane previews contain exactly that lane's ordered positions and cost zero. Commit
+revalidates the epoch, geometry, minute, content, platform revision and occupancy.
+Save10/protocol8 remain unchanged; slim platforms reject lane actions.

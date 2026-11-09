@@ -1017,7 +1017,7 @@ export interface WidePlatformQuery {
   expectedGeometryRevision: Counter;
   expectedMinute: Counter;
   expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
-  action: "place" | "remove";
+  action: "place" | "remove" | "addLane" | "removeLane";
   position: Position;
   direction: 0 | 2 | 4 | 6;
   length: number;

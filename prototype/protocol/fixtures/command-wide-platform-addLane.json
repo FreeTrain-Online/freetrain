@@ -1,0 +1,26 @@
+{
+  "type": "command",
+  "requestId": "wide-platform-addLane",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editWidePlatform",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "0",
+      "expectedMinute": "517",
+      "expectedContentVersion": "mixed-railway-content-1",
+      "action": "addLane",
+      "position": {
+        "x": 10,
+        "y": 10,
+        "z": 2
+      },
+      "direction": 2,
+      "length": 4,
+      "secondLane": true,
+      "platformId": "9007199254740993",
+      "expectedPlatformRevision": "7"
+    },
+    "expectedCost": "0"
+  }
+}

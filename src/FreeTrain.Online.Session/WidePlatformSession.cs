@@ -11,15 +11,20 @@ public sealed partial class SessionHost
     {
         if (query.Position == null || query.ExpectedWorldEpoch < 0 || query.ExpectedGeometryRevision < 0 || query.ExpectedMinute < 0 ||
             query.Direction is not (0 or 2 or 4 or 6) || query.Length is < 1 or > WidePlatformConstruction.MaximumLength ||
-            query.Action is not ("place" or "remove") || query.PlatformId < 0 || query.ExpectedPlatformRevision < 0 ||
+            query.Action is not ("place" or "remove" or "addLane" or "removeLane") || query.PlatformId < 0 || query.ExpectedPlatformRevision < 0 ||
             query.Action == "place" && (query.PlatformId != 0 || query.ExpectedPlatformRevision != 0) ||
-            query.Action == "remove" && (query.PlatformId == 0)) throw new ArgumentException("invalidInput");
+            query.Action != "place" && (query.PlatformId == 0)) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
         if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        if (query.Action is "addLane" or "removeLane" && state.World.Stations?.Platforms.SingleOrDefault(p=>p.Id == query.PlatformId) is {} platform &&
+            (platform.Direction.Index != query.Direction || platform.Length != query.Length)) throw new ArgumentException("invalidInput");
         return state;
     }
     private static PlatformConstructionPlan PlanWidePlatform(MixedSessionState state, WidePlatformQuery query) =>
-        WidePlatformConstruction.Preview(state.World,new(query.Position.X,query.Position.Y,query.Position.Z),
+        query.Action is "addLane" or "removeLane"
+        ? WidePlatformConstruction.PreviewLane(state.World,new(query.Position.X,query.Position.Y,query.Position.Z),
+            query.PlatformId,query.ExpectedPlatformRevision,query.SecondLane ? 1 : 0,query.Action == "removeLane")
+        : WidePlatformConstruction.Preview(state.World,new(query.Position.X,query.Position.Y,query.Position.Z),
             new(query.Direction),query.Length,query.SecondLane,
             query.Action == "remove",query.PlatformId,query.ExpectedPlatformRevision);
 

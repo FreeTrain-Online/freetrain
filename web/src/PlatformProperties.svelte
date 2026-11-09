@@ -1,5 +1,6 @@
 <script lang="ts">
  import {onDestroy,untrack} from 'svelte';
+ import WidePlatformLanes from './WidePlatformLanes.svelte';
  import BellControls from './BellControls.svelte';
  import {messages} from './lib/localization.ts';
  import {currentPlatformProperties,platformPropertiesQuery,resolvedPlatformStation,validPlatformName} from './lib/platform-properties.ts';
@@ -56,6 +57,6 @@
  {#if failed}<p role="status">{text.geometryFailed}</p>{/if}
  {#if stale}<p role="alert">{text.draftConflict}</p>{/if}
  </form>
- {#if platform?.kind==='wide'}<fieldset><legend>{text.platformLaneControls}</legend><button disabled>{text.platformLaneLeft}</button><button disabled>{text.platformLaneRight}</button><p class="hint">{text.platformLanePending}</p></fieldset>{/if}
+ {#if platform?.kind==='wide'}<WidePlatformLanes {model} {view} {id} disabled={disabled||dirty}/>{/if}
  <button disabled={disabled||!platform} onclick={onremove}>{text.platformRemove}</button>
 </section>

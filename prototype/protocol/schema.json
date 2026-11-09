@@ -5597,7 +5597,9 @@
         "action": {
           "enum": [
             "place",
-            "remove"
+            "remove",
+            "addLane",
+            "removeLane"
           ]
         },
         "position": {

@@ -927,5 +927,8 @@
   "platformLaneControls": "Wide-platform track connections",
   "platformLaneLeft": "Edit left track",
   "platformLaneRight": "Edit right track",
-  "platformLanePending": "Track extension and lane removal will be available in the next construction step."
+  "platformLaneHelp": "Add or remove either track alongside this platform. Changes are free. Removal restores normal rail and preserves its accessories and speed limits. Occupied tracks cannot be changed. Apply or reset property drafts first.",
+  "platformLaneAdd": "Add track",
+  "platformLaneRemove": "Remove track",
+  "platformLaneConfirm": "Confirm track change"
 }

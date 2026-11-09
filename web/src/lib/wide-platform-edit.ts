@@ -17,3 +17,10 @@ export function widePlatformGhost(query:WidePlatformQuery,positions:Position[]){
  const d=offset(query.direction);
  return positions.map(p=>({position:p,recipeId:(p.x-query.position.x)*-d.y+(p.y-query.position.y)*d.x===0?`system:fat-${query.direction/2%2}`:`system:pattern/${query.direction%4===0?10:4}`}));
 }
+
+// secondLane selects lane1 for lane actions; lane0 is the right side of heading.
+export function widePlatformLaneQuery(read:ReadState,id:string,lane:0|1):WidePlatformQuery|undefined {
+ const p=read.mixed?.stationGraph?.platforms.find(p=>p.id===id&&p.kind==='wide');if(!p)return;
+ const query=widePlatformQuery(read,p.location,p.direction,p.length,lane===1);if(!query)return;
+ return {...query,platformId:p.id,expectedPlatformRevision:p.revision,action:(lane===0?p.lane0:p.lane1)?'removeLane':'addLane'};
+}

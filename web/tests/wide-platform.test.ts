@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {stationScene,addRail} from './helpers/station-scene.ts';
-import {widePlatformAt,widePlatformQuery,widePlatformGhost} from '../src/lib/wide-platform-edit.ts';
+import {widePlatformAt,widePlatformQuery,widePlatformGhost,widePlatformLaneQuery} from '../src/lib/wide-platform-edit.ts';
 import {parseWidePlatformPreview} from '../src/lib/protocol.ts';
 import {WorldSpace,offset} from '../src/lib/map-geometry.ts';
 import {RailwayRenderPlan,pickRailwayLocation} from '../src/lib/railway-renderer.ts';
@@ -88,4 +88,19 @@ Deno.test('wide automatic targeting evaluates the first lane and returns the cen
 Deno.test('center rebuild identity changes invalidate every retained center column',()=>{
  const s=stationScene(64,24),p=platform(s,rows[0]),before=new StationRenderPlan(s,catalog,{season:'spring',night:false}),next=structuredClone(s);
  next.mixed!.stationGraph!.platforms[0].id='999';next.mixed!.nextEntityId='1000';const after=new StationRenderPlan(next,catalog,{season:'spring',night:false});assert.equal(after.changedColumns(before).length,p.length);
+});
+Deno.test('wide lane queries select either lane and parser rejects malformed free lane geometry and identities',()=>{
+ for(const row of rows){
+  const s=stationScene(64,24),p=platform(s,row);
+  for(const lane of [0,1] as const){
+   const q=widePlatformLaneQuery(s,p.id,lane)!;
+   assert.equal(q.secondLane,lane===1);assert.equal(q.action,(lane===0?p.lane0:p.lane1)?'removeLane':'addLane');
+   assert.equal(q.platformId,p.id);assert.equal(q.expectedPlatformRevision,p.revision);
+   const positions=Array.from({length:p.length},(_,i)=>{const d=offset(p.direction),side=lane===0?1:-1;return {x:p.location.x+d.x*i-d.y*side,y:p.location.y+d.y*i+d.x*side,z:p.location.z};});
+   const preview={query:q,legal:true,reason:null,cost:'0',positions};assert.deepEqual(parseWidePlatformPreview(preview),preview);
+   for(const bad of [{...preview,cost:'1'},{...preview,positions:positions.slice(1)},{...preview,positions:[...positions].reverse()},{...preview,query:{...q,secondLane:!q.secondLane}},{...preview,query:{...q,platformId:'0'}}])assert.throws(()=>parseWidePlatformPreview(bad));
+  }
+  assert.equal(widePlatformLaneQuery(s,'999',0),undefined);
+  p.kind='thin';assert.equal(widePlatformLaneQuery(s,p.id,0),undefined);
+ }
 });

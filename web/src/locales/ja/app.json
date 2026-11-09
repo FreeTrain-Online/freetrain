@@ -927,5 +927,8 @@
   "platformLaneControls": "広いホームの線路接続",
   "platformLaneLeft": "左の線路を編集",
   "platformLaneRight": "右の線路を編集",
-  "platformLanePending": "線路の延長と撤去は次の建設ステップで利用可能になります。"
+  "platformLaneHelp": "ホームの左右の線路を追加・撤去します。費用はかかりません。撤去後は通常の線路に戻り、付属物と速度制限は維持されます。車両がいる線路は変更できません。プロパティの下書きは先に適用するか戻してください。",
+  "platformLaneAdd": "線路を追加",
+  "platformLaneRemove": "線路を撤去",
+  "platformLaneConfirm": "線路の変更を確定"
 }

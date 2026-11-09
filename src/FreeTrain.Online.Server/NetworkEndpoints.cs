@@ -649,7 +649,7 @@ public static class NetworkEndpoints
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
             edit.Query.Direction is 0 or 2 or 4 or 6 && edit.Query.Length is >= 1 and <= 100 &&
             (edit.Query.Action == "place" && edit.Query.PlatformId == 0 && edit.Query.ExpectedPlatformRevision == 0 ||
-             edit.Query.Action == "remove" && edit.Query.PlatformId > 0 && edit.Query.ExpectedPlatformRevision >= 0),
+             edit.Query.Action is ("remove" or "addLane" or "removeLane") && edit.Query.PlatformId > 0 && edit.Query.ExpectedPlatformRevision >= 0),
         EditRailwayCommand edit => edit.Query != null && edit.Query.From != null && edit.Query.To != null &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
