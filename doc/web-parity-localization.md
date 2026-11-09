@@ -17,6 +17,7 @@ web/src/LanguageSelect.svelte
 content/localization/exav-stable-bundled/
   source.json             # source identity, Japanese text/hash, donor and comparison
   en.json                 # reviewed English wording and review status
+  plugin-en.json          # source-bound plugin titles and romanized authors
 web/scripts/check-locales.ts
 ```
 
@@ -24,8 +25,9 @@ web/scripts/check-locales.ts
 
 1. Add a directory named with its canonical BCP 47 tag, for example `sv`,
    `pt-BR` or `zh-Hant`. Copy and translate `app.json` and `gallery.json`.
-   Preserve keys and named parameters; translate complete messages. Keep names,
-   credits, identifiers and user-authored station/train names intact.
+   Preserve keys and named parameters; translate complete messages. Keep credits,
+   identifiers and user-authored station/train names intact. Plugin titles and
+   author romanizations belong to the pack-owned metadata table described below.
 2. Supply `formats.json`: seven weekdays starting on Sunday, a `gameTime`
    template and `frameCount` plural forms. Use the plural categories needed by
    that language (`zero`, `one`, `two`, `few`, `many`, `other`); `other` is required.
@@ -99,10 +101,42 @@ experiment and the six departure-bell names used by the current preview controls
 [Music playback is deferred](web-audio-policy.md); its retained translations do
 not imply a player. It is **not** an approval of all 977 bundled
 XML candidates or later gameplay names/help. Those continue with their implementing
-P3–P9 slices and final P11 reconciliation. Source authors and notices remain literal
-attribution. Follow the existing terminology review in
+P3–P9 slices and final P11 reconciliation. Retained source authors and notices
+remain literal attribution; plugin presentation can use the romanizations below.
+Follow the existing terminology review in
 [the content specification](web-parity-content.md#translation-and-implementation-status)
 and `doc/parity/exav-content-rules.json` when adding feature vocabulary.
+
+## Plugin names and authors
+
+`content/localization/exav-stable-bundled/plugin-en.json` supplies English titles
+and author romanizations for all 56 plugins in the pinned review (54 are prepared
+for the game). Japanese displays the original catalog strings. Latin-only author
+names stay identical in both languages; mixed-script handles are romanized only
+in English using the spellings in the table. An empty author remains
+unspecified. Historical English manifests inform established spellings, but their
+changed credits are not substituted for the ExAV author (for example, `いっちー`
+is `Icchi`, not the historical pier plugin's different author).
+
+`pluginText` binds each field to pack ID, source revision, plugin ID and exact
+original text. Regional tags use the shared locale matcher; unknown languages,
+plugins or changed source fields fall back to the original. Build checks require
+full review coverage, matching manifest paths/hashes and original fields, English
+wording without Japanese script, and unchanged Latin-only authors. Edit this
+table when reviewing plugin metadata; do not edit the generated catalogs.
+
+`ObjectProvenance` resolves the contribution's owning plugin, including generated
+recipes, and updates titles and authors when the UI language changes. This covers
+catalog cards, construction details and inspected objects. The developer gallery
+continues to show literal source attribution as evidence. Translation does not
+change plugin IDs, gameplay bindings, saved worlds or the prepared catalog hash.
+
+Departure-bell **Audio credits** reuse the same author romanizations when the
+retained audio credit exactly matches its owning plugin's author. For example,
+`川口耕介` displays as `Kohsuke Kawaguchi`, and `915さん` as `915` in English.
+Japanese retains the source credit, and language changes update it immediately.
+Latin names and distinct contribution or asset credits remain intact; plugin
+metadata never replaces a different audio credit.
 
 ## Verification
 

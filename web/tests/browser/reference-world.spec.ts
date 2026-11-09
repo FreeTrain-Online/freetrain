@@ -314,9 +314,12 @@ test('bundled bells keep gesture-gated localized previews with BGM deferred and 
   await expect(page.getByRole('button',{name:'Play music',exact:true})).toHaveCount(0);
   expect(await page.evaluate(()=>(window as any).__audioContexts.length)).toBe(0);
   const bells=page.getByLabel('Departure bells',{exact:true});await expect(bells.locator('option')).toHaveCount(6);
+  const systemBellIds=['{9B087AEA-6E9C-48cd-A1F3-1B774500752E}','{87B1BA1B-C18F-4E39-AD50-245255F34388}'];
   for(const id of await bells.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
     const contexts=await page.evaluate(()=>(window as any).__audioContexts.length);
-    await bells.selectOption(id);await page.getByRole('button',{name:'Preview bell',exact:true}).click();
+    await bells.selectOption(id);
+    await expect(page.getByTestId('audio-credit')).toHaveText(`Audio credits: ${systemBellIds.includes(id)?'Kohsuke Kawaguchi':'915'}`);
+    await page.getByRole('button',{name:'Preview bell',exact:true}).click();
     await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.length)).toBe(contexts+1);
     await expect.poll(()=>page.evaluate(()=>(window as any).__audioContexts.at(-1)?.state)).toBe('closed');
   }
@@ -325,6 +328,18 @@ test('bundled bells keep gesture-gated localized previews with BGM deferred and 
   await page.getByLabel('Language',{exact:true}).selectOption('ja');
   await expect(page.locator('html')).toHaveAttribute('lang','ja');await expect(page.locator('html')).toHaveAttribute('dir','ltr');
   await expect(page.getByLabel('発車ベル',{exact:true}).locator('option')).toHaveCount(6);
+  const japaneseBells=page.getByLabel('発車ベル',{exact:true});
+  for(const id of await japaneseBells.locator('option').evaluateAll(options=>options.map(o=>(o as HTMLOptionElement).value))) {
+    await japaneseBells.selectOption(id);
+    await expect(page.getByTestId('audio-credit')).toHaveText(`音源のクレジット: ${systemBellIds.includes(id)?'川口耕介':'915さん'}`);
+  }
+  const selectedBell=await japaneseBells.inputValue();
+  await page.getByLabel('言語',{exact:true}).selectOption('en');
+  await expect(page.getByTestId('audio-credit')).toHaveText('Audio credits: 915');
+  await expect(bells).toHaveValue(selectedBell);
+  await page.getByLabel('Language',{exact:true}).selectOption('ja');
+  await expect(page.getByTestId('audio-credit')).toHaveText('音源のクレジット: 915さん');
+  await expect(japaneseBells).toHaveValue(selectedBell);
   await expect(page.getByRole('button',{name:'音楽を再生',exact:true})).toHaveCount(0);
   await page.setViewportSize({width:360,height:800});
   await page.getByRole('button',{name:'ベルを試聴',exact:true}).click();

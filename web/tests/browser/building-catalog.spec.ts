@@ -21,6 +21,23 @@ async function restore(page: Page, bytes: Buffer) {
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch=' + state.worldEpoch, { data: bytes })).ok()).toBe(true);
 }
 
+test('plugin attribution follows language changes while the catalog stays open', async ({ page }) => {
+  await page.goto('/'); await ready(page);
+  await openPanel(page, 'catalog');
+  const catalog = page.locator('#building-catalog');
+  await expect(catalog.getByTestId('object-author').first()).toHaveText('Author: Kohsuke Kawaguchi');
+  await expect(catalog.getByTestId('object-plugin').first()).toHaveText('Plugin: Railway Signals');
+  const camera = await map(page).getAttribute('data-camera');
+  for (const locale of ['ja', 'en']) {
+    await openPanel(page, 'settings', locale === 'ja' ? 'en' : 'ja');
+    await page.getByLabel(locale === 'ja' ? 'Language' : '言語', { exact: true }).selectOption(locale);
+    await closePanel(page);
+    await expect(catalog.getByTestId('object-author').first()).toHaveText(locale === 'ja' ? '作者: 川口耕介' : 'Author: Kohsuke Kawaguchi');
+    await expect(catalog.getByTestId('object-plugin').first()).toHaveText(locale === 'ja' ? 'プラグイン: 鉄道用信号機' : 'Plugin: Railway Signals');
+    expect(await map(page).getAttribute('data-camera')).toBe(camera);
+  }
+});
+
 for (const ja of [false, true]) test(`independent catalog, category browsing and synchronized construction ${ja ? 'JA' : 'EN'}`, async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('/'); await ready(page); const original = await save(page);
@@ -39,15 +56,15 @@ for (const ja of [false, true]) test(`independent catalog, category browsing and
     await expect(catalog.locator('.catalog-item')).toHaveCount(2);
     await expect(catalog.locator('img')).toHaveCount(2);
     const signalCard = catalog.getByRole('button', { name: ja ? '三灯式' : 'Three-aspect signal', exact: true });
-    await expect(signalCard.getByTestId('object-author')).toHaveText(`${ja ? '作者' : 'Author'}: 川口耕介`);
-    await expect(signalCard.getByTestId('object-plugin')).toHaveText(`${ja ? 'プラグイン' : 'Plugin'}: 鉄道用信号機`);
+    await expect(signalCard.getByTestId('object-author')).toHaveText(ja ? '作者: 川口耕介' : 'Author: Kohsuke Kawaguchi');
+    await expect(signalCard.getByTestId('object-plugin')).toHaveText(ja ? 'プラグイン: 鉄道用信号機' : 'Plugin: Railway Signals');
     await expect(inspect).toHaveAttribute('aria-pressed', 'true');
     await category.selectOption('stationary'); await expect(catalog.locator('.catalog-item')).toHaveCount(9);
     await expect(catalog.locator('[data-catalog-variant]')).toHaveCount(54);
     await expect(catalog.locator('img')).toHaveCount(9);
     await expect(catalog.getByTestId('object-author')).toHaveCount(9);
-    await expect(catalog.locator('.catalog-item').first().getByTestId('object-author')).toHaveText(`${ja ? '作者' : 'Author'}: いっちー`);
-    await expect(catalog.locator('.catalog-item').first().getByTestId('object-plugin')).toHaveText(`${ja ? 'プラグイン' : 'Plugin'}: もっともっと橋脚`);
+    await expect(catalog.locator('.catalog-item').first().getByTestId('object-author')).toHaveText(ja ? '作者: いっちー' : 'Author: Icchi');
+    await expect(catalog.locator('.catalog-item').first().getByTestId('object-plugin')).toHaveText(ja ? 'プラグイン: もっともっと橋脚' : 'Plugin: Even More Bridge Piers');
     await expect.poll(() => catalog.locator('img').evaluateAll(images => images.every(image => (image as HTMLImageElement).complete))).toBe(true);
     expect(await catalog.locator('img').evaluateAll(images => images.every(image => {
       const canvas = document.createElement('canvas'); canvas.width = 96; canvas.height = 80;

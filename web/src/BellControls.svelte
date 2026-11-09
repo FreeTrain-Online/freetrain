@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { messages, type Locale } from './lib/localization.ts';
   import { loadRenderCatalog, sha256, type RenderCatalog } from './lib/content-recipes.ts';
-  import { bundledBells, type BundledBell } from './lib/bundled-audio.ts';
+  import { bundledBells, bellCredit, type BundledBell } from './lib/bundled-audio.ts';
   import { bundledLocalization, contentText } from './lib/content-localization.ts';
   let { locale }: { locale: Locale } = $props();
   const text = $derived(messages[locale]);
@@ -49,6 +49,6 @@
     {#each bells as item (item.id)}<option value={item.id}>{title(item)}</option>{/each}
   </select></label>
   <button disabled={!loaded || !bell} onclick={previewBell}>{text.previewBell}</button>
-  {#each bells.filter(item => item.id === bell) as item}<p>{text.audioCredit}: {item.author}</p>{/each}
+  {#each bells.filter(item => item.id === bell) as item}<p data-testid="audio-credit">{text.audioCredit}: {catalog ? bellCredit(catalog, item, locale) : item.author}</p>{/each}
   {#if bellFailed}<p role="status">{text.soundFailed}</p>{/if}
 </fieldset>

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { bundledBells } from '../src/lib/bundled-audio.ts';
+import { bundledBells, bellCredit } from '../src/lib/bundled-audio.ts';
 import type { RenderCatalog } from '../src/lib/content-recipes.ts';
 import { createBrowserAudio } from '../src/lib/browser-audio.ts';
 const event = (id: string, epoch = '1') => ({ type: 'soundEvent' as const, eventId: id, worldEpoch: epoch, kind: 'stationArrived' as const });
@@ -41,4 +41,19 @@ Deno.test('bell previews bind all six exact WAVs without depending on retained B
   assert.deepEqual(bundledBells(withoutMusic), bells);
   const missing = structuredClone(catalog); missing.assets = [];
   assert.throws(() => bundledBells(missing), /Missing bundled audio/);
+});
+
+Deno.test('audio credits romanize matching plugin authors and preserve source, Latin and distinct credits', async () => {
+  const catalog: RenderCatalog = JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json', import.meta.url)));
+  const bells = bundledBells(catalog);
+  for (const bell of bells) {
+    assert.equal(bellCredit(catalog, bell, 'en-US'), bell.pluginId === 'system' ? 'Kohsuke Kawaguchi' : '915');
+    for (const locale of ['ja', 'ja-JP', 'sv-SE']) assert.equal(bellCredit(catalog, bell, locale), bell.author);
+    assert.equal(bellCredit({...catalog, packId:'other'}, bell, 'en'), bell.author);
+    assert.equal(bellCredit({...catalog, source:{revision:'changed'}}, bell, 'en'), bell.author);
+    for (const author of ['Latin Author', '別の作者', '']) {
+      assert.equal(bellCredit(catalog, {...bell, author}, 'en'), author);
+      assert.equal(bellCredit(catalog, {...bell, author}, 'ja'), author);
+    }
+  }
 });

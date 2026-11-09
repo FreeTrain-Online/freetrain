@@ -1,0 +1,681 @@
+{
+  "schemaVersion": 1,
+  "packId": "exav-stable-bundled",
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "sourceLocale": "ja",
+  "notes": "Japanese uses the original plugin title and author. English titles translate the pinned ExAV wording. Japanese author names are transliterated. Existing English manifests inform spellings where applicable, but changed credits are not copied (notably the Icchi bridge piers). Empty source credits remain empty.",
+  "entries": {
+    "SpeedLimit": {
+      "sourcePath": "trunk/plugins/SpeedLimit/plugin.xml",
+      "sourceSha256": "065d8e62d98b00022d11f9d25e97cfc41e15fa17d4a65f4fb61da36e6d8f8e21",
+      "title": {
+        "original": "速度制限モジュール",
+        "text": "Speed Limit Module"
+      },
+      "author": {
+        "original": "nanashi",
+        "text": "nanashi"
+      }
+    },
+    "foobarbazer.Mountain2": {
+      "sourcePath": "trunk/plugins/foobarbazer.Mountain2/plugin.xml",
+      "sourceSha256": "1c0e98394951472b44cd553049061a6c38c01704c950c3df69bd18257a35e77f",
+      "title": {
+        "original": "地形操作２",
+        "text": "Terrain Editing 2"
+      },
+      "author": {
+        "original": "foobar",
+        "text": "foobar"
+      }
+    },
+    "jp.co.tripod.chiname.financial.bank": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.bank/plugin.xml",
+      "sourceSha256": "030b5933dcd014da7027457250f48def08598fe2d65bc43584f6ad6f60612d81",
+      "title": {
+        "original": "銀行モジュール",
+        "text": "Banking Module"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.financial.stockmarket": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.financial.stockmarket/plugin.xml",
+      "sourceSha256": "0c82a06dfd47d2554a3b275527311c9445cbf9a924e5cf50ac79e7acc73d2310",
+      "title": {
+        "original": "株取引モジュール",
+        "text": "Stock Trading Module"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.lib.fence": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.fence/plugin.xml",
+      "sourceSha256": "8f416d4808455372b3a7b608ce59379a10756507aeccf14aafb47f4a3fa25017",
+      "title": {
+        "original": "柵",
+        "text": "Fences"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.lib.generic": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.generic/plugin.xml",
+      "sourceSha256": "a8c452a9ad8c92148babaaaba74207d153831101df5ca67a471b08816322a513",
+      "title": {
+        "original": "汎用プラグイン",
+        "text": "Generic Plugin"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.lib.halfvoxel": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib.halfvoxel/plugin.xml",
+      "sourceSha256": "82f5ddce73fd6e3776bf67d70131c3548ede280a71d4b2f43fe5a81aaa87e045",
+      "title": {
+        "original": "半ボクセル建築",
+        "text": "Half-voxel Structures"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.lib": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.lib/plugin.xml",
+      "sourceSha256": "2f6e6ab06bd097f7aa15af8c33e4107d27cd32f8b599693273f8392829b10417",
+      "title": {
+        "original": "横断歩道",
+        "text": "Pedestrian Crossings"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse": {
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "title": {
+        "original": "半ボクセル住宅",
+        "text": "Half-voxel Houses"
+      },
+      "author": {
+        "original": "C477@2両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "jp.sourceforge.freetrain-exav.plugin.tools.stationlist": {
+      "sourcePath": "trunk/plugins/jp.sourceforge.freetrain-exav.plugin.tools.stationlist/plugin.xml",
+      "sourceSha256": "9de5c5596b9e1256a1a83dcaefa16d7947587fa86985b7a7eaa388ee480e46bb",
+      "title": {
+        "original": "駅一覧ウィンドウ",
+        "text": "Station List Window"
+      },
+      "author": {
+        "original": "FreeTrain Ex-AV Project",
+        "text": "FreeTrain Ex-AV Project"
+      }
+    },
+    "org.kohsuke.freetrain.land.477": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "title": {
+        "original": "農家とビニールハウス",
+        "text": "Farmhouses and Greenhouses"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.land.bulldoze": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.bulldoze/plugin.xml",
+      "sourceSha256": "2c3e9bcafb43161b5e4e241a4c84e10a53ec427a50b1b7fe47455329fedcb6fd",
+      "title": {
+        "original": "地表の整地",
+        "text": "Ground Leveling"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.land.creek.eikichiya": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.creek.eikichiya/plugin.xml",
+      "sourceSha256": "4da3cc34fb32024f1c0fc95355cbd5b6f0db8e2d09078ef46c6d3586dfe1ad3f",
+      "title": {
+        "original": "小川",
+        "text": "Creeks"
+      },
+      "author": {
+        "original": "永吉屋駅前店さん",
+        "text": "Nagayoshiya Ekimaeten"
+      }
+    },
+    "org.kohsuke.freetrain.land.farmland": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.farmland/plugin.xml",
+      "sourceSha256": "d1752bcc5ebed01124cc801704907242c30814c1326f11f47396b1ed6fe3c66a",
+      "title": {
+        "original": "田畑",
+        "text": "Farmland"
+      },
+      "author": {
+        "original": "915さん",
+        "text": "915"
+      }
+    },
+    "org.kohsuke.freetrain.land.forest": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.forest/plugin.xml",
+      "sourceSha256": "4db81eec5fb32b5d0363b39834a381fd3d3b73f81bf659243da42111bf9a07ae",
+      "title": {
+        "original": "森林",
+        "text": "Forests"
+      },
+      "author": {
+        "original": "477@２両目",
+        "text": "477@2-ryome"
+      }
+    },
+    "org.kohsuke.freetrain.land.ricefield": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.ricefield/plugin.xml",
+      "sourceSha256": "1133dd42377f73ab7bdcaad4cf7067f761acb460df2a547e60e7b0cd9d8d0c6d",
+      "title": {
+        "original": "水田",
+        "text": "Rice Paddies"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.music.a4mem": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.a4mem/plugin.xml",
+      "sourceSha256": "5235a1397a0c306b57d1c443986f2117214adebbdf57684fc046a830f3a90eab",
+      "title": {
+        "original": "Ａ４メモリアルパックＢＧＭ",
+        "text": "A4 Memorial Pack BGM"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.music.bell": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music.bell/plugin.xml",
+      "sourceSha256": "cffab0a0b64765cd0c9fdd842cad06ab6c68f6a598423793d2871e47b2df7bcb",
+      "title": {
+        "original": "発車ベルセット",
+        "text": "Departure Bell Set"
+      },
+      "author": {
+        "original": "915さん",
+        "text": "915"
+      }
+    },
+    "org.kohsuke.freetrain.music": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.music/plugin.xml",
+      "sourceSha256": "e15e3884b779d896212a8431f4c47d9607974e63956914c91cf2d226841d1348",
+      "title": {
+        "original": "基本ＢＧＭセット",
+        "text": "Basic BGM Set"
+      },
+      "author": {
+        "original": "",
+        "text": ""
+      }
+    },
+    "org.kohsuke.freetrain.rail.electricPole": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.electricPole/plugin.xml",
+      "sourceSha256": "7c5a72db5afbd94c8897664c24231ce6b02defeeac7901c161590d5f4d12db59",
+      "title": {
+        "original": "架線柱",
+        "text": "Catenary Poles"
+      },
+      "author": {
+        "original": "綾瀬さん＆川口耕介",
+        "text": "Ayase & Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.rail.garage": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.garage/plugin.xml",
+      "sourceSha256": "428cb1eac8be7bf51e742c342396e4d65908e2db611d2e2ea186f2f0d28b22fa",
+      "title": {
+        "original": "機関庫",
+        "text": "Locomotive Sheds"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.rail.signal": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail.signal/plugin.xml",
+      "sourceSha256": "26dcce64ae4fea28a4709189f640fbac2dc1d5e6162e4adbf0c6ef67eef25904",
+      "title": {
+        "original": "鉄道用信号機",
+        "text": "Railway Signals"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.rail": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.rail/plugin.xml",
+      "sourceSha256": "b9a826f058374f918047833b43253f5ffdd3863ddc20ebed927fdcf16abab913",
+      "title": {
+        "original": "鉄橋・トンネル",
+        "text": "Railway Bridges and Tunnels"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.road.dh": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.road.dh/plugin.xml",
+      "sourceSha256": "d199c1f199cc1da8d80af213d9902611635ab2c28a385696dc8a5cfb3147cba3",
+      "title": {
+        "original": "二車線道路(15枚絵)",
+        "text": "Two-lane Roads (15 Sprites)"
+      },
+      "author": {
+        "original": "romulanWarbird",
+        "text": "romulanWarbird"
+      }
+    },
+    "org.kohsuke.freetrain.road.pc-9801fa": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.road.pc-9801fa/plugin.xml",
+      "sourceSha256": "32560d1f51b7edfd60ca15f5d8e5bef8ccccf6376a482ed12499dfce42997a5b",
+      "title": {
+        "original": "道路",
+        "text": "Roads"
+      },
+      "author": {
+        "original": "PC-9801FAさん",
+        "text": "PC-9801FA"
+      }
+    },
+    "org.kohsuke.freetrain.road.syosei": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.road.syosei/plugin.xml",
+      "sourceSha256": "d78e335239b86a848d3506e9b55b748019e5537d66792ab7289f30447d765ab2",
+      "title": {
+        "original": "道路",
+        "text": "Roads"
+      },
+      "author": {
+        "original": "鐘声さん",
+        "text": "Syosei"
+      }
+    },
+    "org.kohsuke.freetrain.soccerStadium": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.soccerStadium/plugin.xml",
+      "sourceSha256": "de6108fd34b1c19ca810ebea5eb883815a62cb9678fccc421781e8683eceeaa1",
+      "title": {
+        "original": "サッカースタジアム",
+        "text": "Soccer Stadium"
+      },
+      "author": {
+        "original": "プレミア好きさん＆川口耕介",
+        "text": "Premier Suki & Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.station.qra": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.qra/plugin.xml",
+      "sourceSha256": "c921493cd8d9670306d2cba0aad326d330180be0231051ec3ce82022cd1368e3",
+      "title": {
+        "original": "駅舎",
+        "text": "Station Buildings"
+      },
+      "author": {
+        "original": "qra_ra",
+        "text": "qra_ra"
+      }
+    },
+    "org.kohsuke.freetrain.station.teha": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station.teha/plugin.xml",
+      "sourceSha256": "696ead0155c4105a7869861c65f5e11154d5690eb87d25018606d00eb48b757a",
+      "title": {
+        "original": "無人駅",
+        "text": "Unstaffed Stations"
+      },
+      "author": {
+        "original": "ては(ヘボドッタ",
+        "text": "Teha (Hebodotta"
+      }
+    },
+    "org.kohsuke.freetrain.station": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.station/plugin.xml",
+      "sourceSha256": "8bed5ba74dd61308cbf6ddd1054c52b6f94fb7f164c865ffe19c5621b3c4311f",
+      "title": {
+        "original": "基本駅舎キット",
+        "text": "Basic Station Building Kit"
+      },
+      "author": {
+        "original": "絵師見習い",
+        "text": "Eshiminarai"
+      }
+    },
+    "org.kohsuke.freetrain.stationary.ayase": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.ayase/plugin.xml",
+      "sourceSha256": "2943d974d219f92f5d6678e9ba99765e5991b05cc7c9d0fc1689715b8f3aaa87",
+      "title": {
+        "original": "もっともっと橋脚",
+        "text": "Even More Bridge Piers"
+      },
+      "author": {
+        "original": "いっちー",
+        "text": "Icchi"
+      }
+    },
+    "org.kohsuke.freetrain.stationary.c915": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.c915/plugin.xml",
+      "sourceSha256": "1a53d45e25704b8667ed02160e41fcd62f29f040b6d2ba8555c8c0beccd4e236",
+      "title": {
+        "original": "レンガ橋脚",
+        "text": "Brick Bridge Piers"
+      },
+      "author": {
+        "original": "915さん",
+        "text": "915"
+      }
+    },
+    "org.kohsuke.freetrain.stationary.hima": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.stationary.hima/plugin.xml",
+      "sourceSha256": "0c03edb55dcd7844b90ddb32d6dfbce3fac5e4ae8bf759cb6e39b7677f6ac5d7",
+      "title": {
+        "original": "信号所",
+        "text": "Signal Boxes"
+      },
+      "author": {
+        "original": "暇さん",
+        "text": "Hima"
+      }
+    },
+    "org.kohsuke.freetrain.structure.ayase": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "title": {
+        "original": "建物プラグイン",
+        "text": "Building Plugin"
+      },
+      "author": {
+        "original": "綾瀬ヒロ",
+        "text": "Hiro Ayase"
+      }
+    },
+    "org.kohsuke.freetrain.structure.c477": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "C477@ニ両目",
+        "text": "C477@2-ryome"
+      }
+    },
+    "org.kohsuke.freetrain.structure.c915": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "title": {
+        "original": "お寺",
+        "text": "Temples"
+      },
+      "author": {
+        "original": "915さん",
+        "text": "915"
+      }
+    },
+    "org.kohsuke.freetrain.structure.cozy": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "cozy@E.G.R.さん",
+        "text": "cozy@E.G.R."
+      }
+    },
+    "org.kohsuke.freetrain.structure.eshi": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "絵師見習いさん",
+        "text": "Eshiminarai"
+      }
+    },
+    "org.kohsuke.freetrain.structure.hima": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "暇さん",
+        "text": "Hima"
+      }
+    },
+    "org.kohsuke.freetrain.structure.ima": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "imaさん",
+        "text": "ima"
+      }
+    },
+    "org.kohsuke.freetrain.structure.miha": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.miha/plugin.xml",
+      "sourceSha256": "29a7e8424ebac3c220fb7ac6642e8b078ea8f5fd886bb7a6a542801eba85650b",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "ミハさん",
+        "text": "Miha"
+      }
+    },
+    "org.kohsuke.freetrain.structure.nokto": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "sourceSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "noktoさん",
+        "text": "nokto"
+      }
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "title": {
+        "original": "大阪城",
+        "text": "Osaka Castle"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.structure.others": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+      "sourceSha256": "021c2d677d403b1c6bb16e50a6705211dae5fa4b4abe53f6fab80a1ab700c79f",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "その他の名無しさん",
+        "text": "Sonota no Nanashi"
+      }
+    },
+    "org.kohsuke.freetrain.structure.pcb": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.pcb/plugin.xml",
+      "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "ばんかれさん",
+        "text": "Bankare"
+      }
+    },
+    "org.kohsuke.freetrain.structure.ryokounotomo": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "title": {
+        "original": "建物セット",
+        "text": "Building Set"
+      },
+      "author": {
+        "original": "旅行の友さん",
+        "text": "Ryokounotomo"
+      }
+    },
+    "org.kohsuke.freetrain.structure.syousei": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "sourceSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "title": {
+        "original": "民家",
+        "text": "Houses"
+      },
+      "author": {
+        "original": "syousei",
+        "text": "syousei"
+      }
+    },
+    "org.kohsuke.freetrain.tc.manual": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tc.manual/plugin.xml",
+      "sourceSha256": "8f92e919cf886dca61d5ff8cd212caa00162e50832dfb03010510868a6db26ad",
+      "title": {
+        "original": "手動運転ダイヤグラム",
+        "text": "Manual Operation Timetables"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.tc.tat": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tc.tat/plugin.xml",
+      "sourceSha256": "00ebd3e0235cb3e947d4202d62a89868919a5b3a44292305ec1ba878463023f7",
+      "title": {
+        "original": "「Ａ列車で行こう」式ダイヤグラム設定",
+        "text": "A-Train Style Timetable Settings"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.terrain.terrace": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.terrain.terrace/plugin.xml",
+      "sourceSha256": "a4b7523f0b0b080ae2f7df3714552640554f525b821b1579c0f55b5d6250ec89",
+      "title": {
+        "original": "雛壇と切り通し",
+        "text": "Terraces and Cuttings"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "org.kohsuke.freetrain.tools.dbgwnd": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tools.dbgwnd/plugin.xml",
+      "sourceSha256": "e6e7bfaf45af36cdfd30ae174d242c834169062f79f13116dea174ca510e45c4",
+      "title": {
+        "original": "デバッグ情報ウィンドウ",
+        "text": "Debug Information Window"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.tools.lvinspect": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tools.lvinspect/plugin.xml",
+      "sourceSha256": "95a8ad070f9994f057c193b552e9c3ae4dbd636c88e01fe2889b3445f8ab590b",
+      "title": {
+        "original": "地価の検査ウィンドウ",
+        "text": "Land Value Inspector Window"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.tools.terrainloader": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.tools.terrainloader/plugin.xml",
+      "sourceSha256": "8c178a8194a04bd7036c0ee08fa177b4d835983aa6ec78b8a2d3decbb48d5554",
+      "title": {
+        "original": "地形ローダー",
+        "text": "Terrain Loader"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.trains.colorTest": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains.colorTest/plugin.xml",
+      "sourceSha256": "c707b9d5ccac1a049e9d6c3b3094034cb45cd2dc0e153da267b786e9c463a583",
+      "title": {
+        "original": "色試験列車",
+        "text": "Color Test Train"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    },
+    "org.kohsuke.freetrain.trains": {
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.trains/plugin.xml",
+      "sourceSha256": "c8fd247c224b318eeff5310aaac7f2c6d2ca8f0077327613068d249460b0b738",
+      "title": {
+        "original": "基本車両キット",
+        "text": "Basic Rolling Stock Kit"
+      },
+      "author": {
+        "original": "477さん",
+        "text": "477"
+      }
+    },
+    "system": {
+      "sourcePath": "trunk/plugins/system/plugin.xml",
+      "sourceSha256": "1e60b42e39ef1e04df283ee2d2bd8d764bc942495bc843416e3ae299c8e69298",
+      "title": {
+        "original": "システム",
+        "text": "System"
+      },
+      "author": {
+        "original": "川口耕介",
+        "text": "Kohsuke Kawaguchi"
+      }
+    }
+  }
+}

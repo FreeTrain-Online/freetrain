@@ -4,6 +4,7 @@ import { bundledLocalization } from '../src/lib/content-localization.ts';
 import { sha256 } from '../src/lib/content-recipes.ts';
 import stockCatalog from '../src/generated/stock-catalog.json' with {type:'json'};
 import stockEnglish from '../../content/localization/exav-stable-bundled/stock-en.json' with {type:'json'};
+import { bundledPluginLocalization } from '../src/lib/plugin-localization.ts';
 
 export function parameters(text: string): string[] {
   return [...new Set([...text.matchAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g)].map(m => m[1]))].sort();
@@ -35,6 +36,28 @@ export async function checkLocales() {
     if (!locale.formats.frameCount.other) throw new Error(`${id}: plural fallback required`);
   }
   const review = JSON.parse(await Deno.readTextFile(new URL('../../content/bundled-v2/review.json', import.meta.url)));
+  const pluginBundle = bundledPluginLocalization;
+  const sourceIndex = JSON.parse(await Deno.readTextFile(new URL('../../content/bundled-v2/source-index.json', import.meta.url)));
+  if (pluginBundle.packId !== 'exav-stable-bundled' || pluginBundle.sourceRevision !== review.source.revision || pluginBundle.sourceLocale !== 'ja')
+    throw new Error('Plugin localization source changed');
+  if (JSON.stringify(Object.keys(pluginBundle.entries).sort()) !== JSON.stringify(review.plugins.map((plugin: {id:string}) => plugin.id).sort()))
+    throw new Error('Plugin translation coverage changed');
+  const japaneseScript = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u;
+  for (const plugin of review.plugins) {
+    const entry = pluginBundle.entries[plugin.id];
+    const file = sourceIndex.files.find((file: {path:string}) => file.path === plugin.path);
+    if (entry.sourcePath !== plugin.path || entry.sourceSha256 !== file?.sourceSha256)
+      throw new Error(`Stale plugin translation source: ${plugin.id}`);
+    for (const field of ['title', 'author'] as const) {
+      const value = entry[field];
+      if (value.original !== plugin[field] || typeof value.text !== 'string' ||
+        (plugin[field].trim() ? !value.text.trim() : value.text !== '') || japaneseScript.test(value.text) ||
+        (field === 'author' && !japaneseScript.test(value.original) && value.text !== value.original))
+        throw new Error(`Invalid plugin translation: ${plugin.id}/${field}`);
+      if (JSON.stringify(parameters(value.text)) !== JSON.stringify(parameters(value.original)))
+        throw new Error(`Plugin parameters differ: ${plugin.id}/${field}`);
+    }
+  }
   if (bundledLocalization.packId !== 'exav-stable-bundled' || bundledLocalization.sourceRevision !== review.source.revision) throw new Error('Content localization source changed');
   for (const [key, entry] of Object.entries(bundledLocalization.entries)) {
     if (key !== `${entry.pluginId}/${entry.contributionId}/${entry.field}`) throw new Error(`Invalid content identity: ${key}`);
@@ -51,6 +74,6 @@ export async function checkLocales() {
       if (JSON.stringify(parameters(entry.text)) !== JSON.stringify(parameters(original.originalText))) throw new Error(`Content parameters differ: ${key}`);
     }
   }
-  console.log(`Localization checks passed: ${Object.keys(locales).length} UI locales, ${Object.keys(bundledLocalization.entries).length} source-bound content strings`);
+  console.log(`Localization checks passed: ${Object.keys(locales).length} UI locales, ${Object.keys(bundledLocalization.entries).length} source-bound content strings, ${Object.keys(pluginBundle.entries).length} localized plugins`);
 }
 if (import.meta.main) await checkLocales();

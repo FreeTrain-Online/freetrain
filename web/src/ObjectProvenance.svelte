@@ -6,11 +6,11 @@
   const text = $derived(messages[locale]);
   let origin = $state<ObjectOrigin>(), failed = $state(false);
   $effect(() => {
-    const selected = id, pack = packId; let active = true;
+    const selected = id, pack = packId, language = locale; let active = true;
     origin = undefined; failed = false;
     if (pack === bundledPackId) {
       void bundledCatalog().then(catalog => {
-        if (active) origin = objectOrigin(catalog, selected);
+        if (active) origin = objectOrigin(catalog, selected, language);
       }).catch(() => { if (active) failed = true; });
     }
     return () => { active = false; };

@@ -1,8 +1,14 @@
 import type { Media, RenderCatalog } from './content-recipes.ts';
+import { pluginText } from './plugin-localization.ts';
 
 export interface BundledBell {
   id: string; pluginId: string; sourcePath: string; name: string;
   media: Media; author: string;
+}
+/** Reuse the owning plugin's romanization only for an exact credit match.
+ * A distinct contribution/asset credit keeps its own attribution. */
+export function bellCredit(catalog: RenderCatalog, bell: BundledBell, locale: string): string {
+  return pluginText(catalog, { id: bell.pluginId, author: bell.author }, 'author', locale) ?? bell.author;
 }
 /** Bind departure bells to their exact prepared, hashed WAV resources.
  * BGM declarations remain source metadata; playback is deferred. */

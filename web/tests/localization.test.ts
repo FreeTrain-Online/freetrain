@@ -3,6 +3,9 @@ import { locales, resolveLocale, negotiateLocale, interpolate, pluralMessage } f
 import { matchLocale } from '../src/lib/locale-matching.ts';
 import { checkLocales, validateMessages } from '../scripts/check-locales.ts';
 import { bundledLocalization, contentText } from '../src/lib/content-localization.ts';
+import { bundledPluginLocalization, pluginText } from '../src/lib/plugin-localization.ts';
+import { objectOrigin } from '../src/lib/object-provenance.ts';
+import type { RenderCatalog } from '../src/lib/content-recipes.ts';
 
 Deno.test('registered UI locales and reviewed content strings retain complete source bindings', checkLocales);
 Deno.test('BCP 47 lookup handles regions, scripts, extensions, invalid tags and ordered browser preferences', () => {
@@ -43,4 +46,45 @@ Deno.test('pack-local presentation falls back for missing languages, changed ide
   const draft=structuredClone(bundledLocalization);
   draft.locales.en.entries[`${target.pluginId}/${target.id}/name`].status='draft';
   assert.equal(contentText(draft,pack,target,'name','開拓','en'),'開拓');
+});
+
+Deno.test('plugin titles and authors localize by owning plugin, retaining Japanese and Latin names', async () => {
+  const catalog: RenderCatalog = JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json', import.meta.url)));
+  // The review also retains excluded plugins; every prepared plugin is covered.
+  assert.ok(catalog.plugins!.length > 0);
+  for (const plugin of catalog.plugins!) {
+    const entry = bundledPluginLocalization.entries[plugin.id];
+    for (const field of ['title', 'author'] as const) {
+      assert.equal(pluginText(catalog, plugin, field, 'en-US'), entry[field].text);
+      for (const locale of ['ja', 'ja-JP', 'sv-SE', 'invalid_tag'])
+        assert.equal(pluginText(catalog, plugin, field, locale), plugin[field]);
+    }
+  }
+  const signal = catalog.contributions!.find(item => item.pluginId === 'org.kohsuke.freetrain.rail.signal')!;
+  assert.deepEqual(objectOrigin(catalog, signal.id, 'en'), {author:'Kohsuke Kawaguchi', plugin:'Railway Signals'});
+  assert.deepEqual(objectOrigin(catalog, signal.id, 'ja'), {author:'川口耕介', plugin:'鉄道用信号機'});
+  // A generated recipe without a direct declaration still follows its owner.
+  const generated = catalog.renderRecipes.find(item => !catalog.contributions!.some(c => c.id === item.id))!;
+  const owner = catalog.plugins!.find(plugin => plugin.id === generated.pluginId)!;
+  assert.deepEqual(objectOrigin(catalog, generated.id, 'en'), {
+    author: pluginText(catalog, owner, 'author', 'en')?.trim() || undefined,
+    plugin: pluginText(catalog, owner, 'title', 'en')?.trim() || undefined,
+  });
+  const latin = catalog.plugins!.find(plugin => plugin.author === 'romulanWarbird')!;
+  assert.equal(pluginText(catalog, latin, 'author', 'en'), 'romulanWarbird');
+  assert.equal(pluginText(catalog, latin, 'author', 'ja'), 'romulanWarbird');
+  assert.equal(pluginText(catalog, catalog.plugins!.find(plugin => plugin.id === 'org.kohsuke.freetrain.music')!, 'author', 'en'), '');
+  assert.equal(objectOrigin(catalog, 'missing', 'en'), undefined);
+});
+
+Deno.test('plugin translations fall back on foreign packs, revision drift, unknown plugins and changed fields', () => {
+  const pack = {packId:bundledPluginLocalization.packId, source:{revision:bundledPluginLocalization.sourceRevision}};
+  const plugin = {id:'system', title:'システム', author:'川口耕介'};
+  assert.equal(pluginText(pack, plugin, 'title', 'en'), 'System');
+  assert.equal(pluginText({...pack, packId:'optional'}, plugin, 'title', 'en'), plugin.title);
+  assert.equal(pluginText({...pack, source:{revision:'changed'}}, plugin, 'title', 'en'), plugin.title);
+  assert.equal(pluginText(pack, {...plugin, id:'unknown'}, 'author', 'en'), plugin.author);
+  assert.equal(pluginText(pack, {...plugin, author:'別の作者'}, 'author', 'en'), '別の作者');
+  assert.equal(pluginText(pack, {...plugin, title:'変更'}, 'title', 'en'), '変更');
+  assert.equal(pluginText(pack, {...plugin, author:null}, 'author', 'en'), undefined);
 });
