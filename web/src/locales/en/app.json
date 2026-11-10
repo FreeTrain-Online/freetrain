@@ -752,6 +752,7 @@
   "controllerCopyHelp": "The copy has independent settings. Existing assignments keep using the original controller.",
   "controllerDeleteHelp": "Delete this unused controller?",
   "controllerSharedHelp": "These location settings affect every train using this controller. Unconfigured harbors wait 10 minutes, then depart. Apply or cancel this location before editing another.",
+  "stationSharedController": "Choose the shared timetable to edit for this station. All connected platforms use the station location, including platforms connected through other platforms. Each train uses its current train or group controller. Simple waits 30 game minutes; unconfigured TAT waits 10. Removing a station preserves timetable settings for reuse at the same location.",
   "signalSharedController": "Choose the shared controller whose settings you want to edit here. Each passing train uses its own effective controller. Each passing train uses its own effective controller within one eighth-turn of the signal direction. Simple controllers pass signals without waiting. Signals exchange no passengers.",
   "controllerDelegationHelp": "A train uses its group controller only when assigned “Use group controller”. Explicit train assignments stay in effect.",
   "controllerLocation": "Add or select location",

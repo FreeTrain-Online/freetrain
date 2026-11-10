@@ -26,3 +26,16 @@ FREETRAIN_SERVICE_OUTPUT="$PWD/web/tests/fixtures/passenger-service" dotnet test
 `passenger-service.spec.ts` reads these files by default; no ignored `tmp/` setup
 or environment flag is required. `FREETRAIN_SERVICE_OUTPUT` can select a separate
 fresh generation with the same `-east.json` / `-west.json` and metadata suffixes.
+
+`station-controller-v10.json` is the P6-22 baseline generated and byte-checked by
+`StationYardStopTests.Multiple_real_platforms_share_host_location_and_rebuilt_station_reuses_retained_TAT_setting`.
+It constructs two station locations, three slim platforms, purchases/deploys a
+three-car train and removes/rebuilds/reconnects the source host through domain
+operations. Two platforms share that rebuilt station; the other station is
+independent. The inherited TAT has location-keyed Fixed40/reverse and Pass entries.
+Passengers, origins and stop-call counts are zero; no test harbor is injected.
+The single special `ConstantPopulation(10000)` provider is explicitly controlled
+supply bound to a real rail owner through the P7 interface. City producers remain P7.
+The browser creates and edits its own additional shared TAT through the UI.
+The generator checks committed bytes on every ordinary run; for deliberate fixture
+regeneration update the committed save together with the domain generator.

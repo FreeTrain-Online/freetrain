@@ -7,7 +7,7 @@
  import profile from './generated/fleet-profile.json' with {type:'json'};
  import type {FleetController,FleetHarbor,FleetJunction,Position} from './generated/contracts.ts';
  import type {ShellModel,ShellState} from './lib/shell-model.ts';
- let {model,view,disabled=false,location}:{model:ShellModel;view:ShellState;disabled?:boolean;location?:Position}=$props();
+ let {model,view,disabled=false,location,station=false}:{model:ShellModel;view:ShellState;disabled?:boolean;location?:Position;station?:boolean}=$props();
  const text=$derived(messages[view.locale]),fleet=$derived(view.read?.mixed?.fleet);
  const blocked=$derived(disabled||view.pending||view.connection!=='ready'||view.role==='observer');
  const instances=$derived(fleet?.controllers.filter(c=>c.provider!==null)??[]);
@@ -72,7 +72,7 @@
  }
 </script>
 <section class="fleet-controller-manager" aria-label={text.controllerManager}>
- {#if location}<p class="hint">{text.signalSharedController}</p>{/if}
+ {#if location}<p class="hint">{station?text.stationSharedController:text.signalSharedController}</p>{/if}
  <label class="field">{text.controllerManager}<select aria-label={text.controllerManager} bind:value={selectedId} disabled={view.pending}>
   <option value="">{text.controllerChoose}</option>
   {#each instances as c}<option value={c.id}>{c.name} · {text.controllerTimetable} · #{c.id}</option>{/each}

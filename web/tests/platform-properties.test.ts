@@ -21,3 +21,15 @@ Deno.test('platform properties response rejects duplicate self inconsistent and 
  for(const name of ['Independent / 独立ホーム','  New name  ','a'.repeat(128)])assert(validPlatformName(name));
  for(const name of ['','  ','bad\0name','bad\u0085name','a'.repeat(129)])assert(!validPlatformName(name));
 });
+Deno.test('station controller keys resolve platform chains and stop on disconnected, removed or cyclic hosts',async()=>{
+ const read=await scene(),g=read.mixed!.stationGraph!,station=g.buildings[0],first=g.platforms[0];
+ const second={...first,id:'999999',hostId:first.id};g.platforms.push(second);
+ const before=JSON.stringify(read);
+ assert.deepEqual(resolvedPlatformStation(read,second.id)?.location,station.location);
+ assert.equal(resolvedPlatformStation(read,station.id)?.id,station.id);
+ assert.equal(JSON.stringify(read),before);
+ first.hostId=null;assert.equal(resolvedPlatformStation(read,second.id),undefined);
+ first.hostId=station.id;g.buildings=[];assert.equal(resolvedPlatformStation(read,second.id),undefined);
+ first.hostId=second.id;assert.equal(resolvedPlatformStation(read,second.id),undefined);
+ assert.equal(resolvedPlatformStation(undefined,second.id),undefined);
+});

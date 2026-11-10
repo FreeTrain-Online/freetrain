@@ -4,6 +4,7 @@ Tests are grouped by the behavior they protect.
 
 | Suite | Coverage |
 | --- | --- |
+| `station-controller.spec.ts` | P6-22 EN/JA desktop/narrow touch picked station and multiple platform TAT keys, independent station settings, legacy companion preview/append/export, live inherited controller reassignment, real waits/pass-through, exact peers/save/checkpoint replay and peer host removal/rebuild/chained reconnection. Uses committed domain-generated `station-controller-v10.json`. |
 | `station-yard.spec.ts` | P6-19 constructed host/platform, real purchased stock, Simple wait and packed boarding/cost/occupancy publication, EN/JA Observer peer, duplicate receipt, exact reopen and process checkpoint restart. Generate `FREETRAIN_YARD_FLEET_OUTPUT` with `StationYardStopTests` first. |
 | `station-transport.spec.ts` | EN/JA peers, controlled providers, aligned hourly decay, midnight import/export/train-log rotation, relative platform upkeep, duplicate receipts, save/reopen and actual checkpoint process restart |
 | `thin-platform.spec.ts` | EN/JA slim roofed/unroofed ground/elevated/underground construction, exact roof-run ghosts and cuts, touch/map rail attachment, removal/restoration, peers, roles, stale/cancel/replacement fences and checkpoint restart |

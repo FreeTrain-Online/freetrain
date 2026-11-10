@@ -19,6 +19,7 @@
   import LanguageSelect from './LanguageSelect.svelte';
   import BellControls from './BellControls.svelte';
   import PlatformProperties from './PlatformProperties.svelte';
+  import { resolvedPlatformStation } from './lib/platform-properties.ts';
   import { applyScheme, initialScheme, type Scheme } from './lib/ui-preferences.ts';
   import EmptyWorldControls from './EmptyWorldControls.svelte';
   import SaveControls from './SaveControls.svelte';
@@ -91,6 +92,7 @@
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const railwayVoxel = $derived(mapSelection?.kind === 'railway' ? read?.mixed?.voxels.find(v=>v.ownerId===mapSelection?.id&&v.position.x===mapSelection.position.x&&v.position.y===mapSelection.position.y&&v.position.z===mapSelection.position.z) : undefined);
   const selectedPlatform = $derived(mapSelection?.kind==='railway'&&mapSelection.component==='platform'?read?.mixed?.stationGraph?.platforms.find(p=>p.id===(mapSelection?.kind==='railway'?mapSelection.platformId:undefined)):undefined);
+  const controllerStation = $derived(stationBuilding ?? resolvedPlatformStation(read, selectedPlatform?.id));
   const railwayDefinition = $derived(mapSelection?.kind === 'railway' ? mapSelection.component==='speedLimit' ? speedLimitAt(read?.mixed?.speedLimits,mapSelection.position,mapSelection.definition) : mapSelection.component==='rail' ? railwayVoxel?.traffic?.rail?.definition : mapSelection.component==='accessory' ? railwayVoxel?.traffic?.accessory?.definition : mapSelection.component==='platform' ? railwayVoxel?.traffic?.platform ?? (selectedPlatform?.kind==='wide'&&selectedPlatform.id===mapSelection.id ? read?.entities?.find(e=>e.id===selectedPlatform.id)?.definition : undefined) : railwayVoxel?.definition : undefined);
   const mapObjectPosition = $derived(fleetCar?.state.location ?? train?.position ?? mapSelection?.position);
   const terrain = $derived(!!read && isTerrainWorld(read));
@@ -344,6 +346,11 @@
             {#if railwayVoxel?.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel?.supportedOwnerId}</p>{/if}
           {:else if mapSelection?.kind === 'terrain'}<p data-testid="terrain-surface">{text[({ground:'terrainGround',mountain:'terrainMountain',water:'terrainWater',underground:'terrainUnderground',terrace:'terrainTerrace',forest:'terrainForest',creek:'terrainCreek',cliff:'terrainCliff'} as const)[mapSelection.surface]]}</p><p>{text.terrainWorldHint}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}
+          {#if controllerStation}
+            {#key `${read!.worldEpoch}/${controllerStation.id}/${selectedPlatform?.id ?? ''}/${selectedPlatform?.hostId ?? ''}`}
+              <FleetControllerManager {model} {view} station location={controllerStation.location} disabled={clockDisabled||synchronizing||view.draftDirty||platformDirty}/>
+            {/key}
+          {/if}
         {:else if panel === 'catalog'}
           {#if reference}<p>{worldHint}</p>{:else}
           <p class="hint">{text.catalogHint}</p><ul class="catalog" aria-label={text.buildings}>
