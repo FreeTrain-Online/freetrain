@@ -17,6 +17,7 @@ public class ContractTests
         var serialized = Path.GetFileName(path) switch
         {
             "preview-station-building.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<StationBuildingPreviewRead>(source, options), options),
+            "preview-passage.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<PassagePreviewRead>(source, options), options),
             "preview-thin-platform.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<ThinPlatformPreviewRead>(source, options), options),
             "preview-wide-platform.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<WidePlatformPreviewRead>(source, options), options),
             _ => JsonSerializer.Serialize(JsonSerializer.Deserialize<WireMessage>(source, options), options)

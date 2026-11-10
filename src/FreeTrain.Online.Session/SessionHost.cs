@@ -442,6 +442,7 @@ public sealed partial class SessionHost : IDisposable
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
                             case RenameStationCommand rename when rename.Name != null: code = RenameStationBuilding(rename); break;
                             case EditStationBuildingCommand edit when edit.Query != null: code = CommitStationBuilding(edit); break;
+                            case EditPassageCommand edit when edit.Query != null: code = CommitPassage(edit); break;
                             case EditThinPlatformCommand edit when edit.Query != null: code = CommitThinPlatform(edit); break;
                             case EditWidePlatformCommand edit when edit.Query != null: code = CommitWidePlatform(edit); break;
                             case EditPlatformPropertiesCommand edit when edit.Query != null: code = CommitPlatformProperties(edit); break;

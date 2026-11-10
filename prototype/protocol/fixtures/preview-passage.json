@@ -1,0 +1,40 @@
+{
+  "query": {
+    "expectedWorldEpoch": "1",
+    "expectedGeometryRevision": "0",
+    "expectedMinute": "517",
+    "expectedContentVersion": "mixed-railway-content-1",
+    "action": "place",
+    "from": {
+      "x": 10,
+      "y": 10,
+      "z": 2
+    },
+    "to": {
+      "x": 12,
+      "y": 10,
+      "z": 2
+    },
+    "material": "green"
+  },
+  "legal": true,
+  "reason": null,
+  "cost": "0",
+  "positions": [
+    {
+      "x": 10,
+      "y": 10,
+      "z": 2
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "z": 2
+    },
+    {
+      "x": 12,
+      "y": 10,
+      "z": 2
+    }
+  ]
+}

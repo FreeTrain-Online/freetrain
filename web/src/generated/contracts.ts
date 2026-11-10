@@ -23,7 +23,9 @@ export type GameDocument =
   | WidePlatformQuery
   | WidePlatformPreview
   | PlatformPropertiesQuery
-  | PlatformProperties;
+  | PlatformProperties
+  | PassageQuery
+  | PassagePreview;
 export type WireMessage =
   | Join
   | Command
@@ -245,6 +247,11 @@ export type CommandPayload =
       hostId: Counter | null;
       expectedHostRevision: Counter;
       expectedStationRevision: Counter;
+    }
+  | {
+      kind: "editPassage";
+      query: PassageQuery;
+      expectedCost: Money;
     };
 
 export interface Join {
@@ -1032,6 +1039,16 @@ export interface PlatformPropertiesQuery {
   platformId: Counter;
   expectedPlatformRevision: Counter;
 }
+export interface PassageQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "place" | "remove";
+  from: Position;
+  to: Position;
+  material: "concrete" | "brown" | "green";
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1454,4 +1471,14 @@ export interface PlatformHostCandidate {
   stationId: Counter;
   stationRevision: Counter;
   stationLocation: Position;
+}
+export interface PassagePreview {
+  query: PassageQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  /**
+   * @maxItems 32768
+   */
+  positions: Position[];
 }

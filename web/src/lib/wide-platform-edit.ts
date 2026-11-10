@@ -24,3 +24,5 @@ export function widePlatformLaneQuery(read:ReadState,id:string,lane:0|1):WidePla
  const query=widePlatformQuery(read,p.location,p.direction,p.length,lane===1);if(!query)return;
  return {...query,platformId:p.id,expectedPlatformRevision:p.revision,action:(lane===0?p.lane0:p.lane1)?'removeLane':'addLane'};
 }
+
+export type StationAccessoryPreview=PlatformPreview|import('../generated/contracts.ts').PassagePreview;

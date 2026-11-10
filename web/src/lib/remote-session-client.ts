@@ -1,7 +1,7 @@
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parseWidePlatformPreview, parsePlatformProperties, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parsePassagePreview, parseWidePlatformPreview, parsePlatformProperties, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
 import { removalQueryKey } from './object-removal.ts';
 import { isRailwayPromotion, railwayQueryKey, slopeQueryKey, RailwayPreviewRequestError } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
@@ -221,6 +221,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
       const response=await fetch(`/api/station/building/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
       if(!response.ok)throw new Error('Station preview failed');
       const preview=parseStationBuildingPreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||JSON.stringify(preview.query)!==JSON.stringify(query))throw new Error('Stale station preview');
+      return preview;
+    },
+    async previewPassage(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity)throw new Error('Unavailable');
+      const response=await fetch(`/api/station/passage/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(!response.ok)throw new Error('Station preview failed');
+      const preview=parsePassagePreview(await response.json());
       if(disposed||join!==identity||status!=='ready'||JSON.stringify(preview.query)!==JSON.stringify(query))throw new Error('Stale station preview');
       return preview;
     },

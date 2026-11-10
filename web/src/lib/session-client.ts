@@ -21,6 +21,7 @@ export interface SessionClient {
   previewCorner?(query:CornerTerrainQuery,signal:AbortSignal):Promise<CornerTerrainPreview>;
   previewSlope?(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').SlopePreview>;
   previewStationBuilding?(query:import('../generated/contracts.ts').StationBuildingQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').StationBuildingPreview>;
+  previewPassage?(query:import('../generated/contracts.ts').PassageQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').PassagePreview>;
   previewThinPlatform?(query:import('../generated/contracts.ts').ThinPlatformQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').ThinPlatformPreview>;
   platformProperties?(query:import('../generated/contracts.ts').PlatformPropertiesQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').PlatformProperties>;
   previewWidePlatform?(query:import('../generated/contracts.ts').WidePlatformQuery,signal:AbortSignal):Promise<import('../generated/contracts.ts').WidePlatformPreview>;

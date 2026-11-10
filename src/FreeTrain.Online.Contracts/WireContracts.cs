@@ -142,6 +142,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 [JsonDerivedType(typeof(EditStationBuildingCommand), "editStationBuilding")]
+[JsonDerivedType(typeof(EditPassageCommand), "editPassage")]
 [JsonDerivedType(typeof(EditThinPlatformCommand), "editThinPlatform")]
 [JsonDerivedType(typeof(EditWidePlatformCommand), "editWidePlatform")]
 [JsonDerivedType(typeof(EditPlatformPropertiesCommand), "editPlatformProperties")]
@@ -192,6 +193,10 @@ public sealed record StationBuildingQuery(long ExpectedWorldEpoch, long Expected
 public sealed record StationBuildingPreviewRead(StationBuildingQuery Query, bool Legal, string? Reason, long Cost,
     PositionRead[] Positions, RailwayLossRead[] Losses);
 public sealed record EditStationBuildingCommand(StationBuildingQuery Query, long ExpectedCost) : CommandPayload;
+public sealed record PassageQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
+    string ExpectedContentVersion, string Action, PositionRead From, PositionRead To, string Material);
+public sealed record PassagePreviewRead(PassageQuery Query, bool Legal, string? Reason, long Cost, PositionRead[] Positions);
+public sealed record EditPassageCommand(PassageQuery Query, long ExpectedCost) : CommandPayload;
 public sealed record ThinPlatformQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
     string ExpectedContentVersion, string Action, PositionRead Position, int Direction, int Length, bool Roof,
     long PlatformId, long ExpectedPlatformRevision);

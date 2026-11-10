@@ -1,3 +1,4 @@
+import {platformAppearance} from './passage-edit.ts';
 import {fleetRailPorts} from './fleet-state.ts';
 import { speedLimitFrame, speedIcons } from './speed-limit-display.ts';
 // Stable ExAV 2.1.1.12: Traffic.draw, RailRoad.drawBefore/After,
@@ -16,13 +17,14 @@ export interface RailwayTarget {
 }
 export interface RailwayOperation {target:RailwayTarget|TrainTarget;layer:Layer;tunnel?:'portal'|'interior'}
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
-export type RailwayPickPolicy={kind:'widePlatform';direction:Heading}|{kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
+export type RailwayPickPolicy={kind:'thinPlatformOrGround'}|{kind:'widePlatform';direction:Heading}|{kind:'railOrGround'}|{kind:'trafficOrGround'}|{kind:'slopeOrGround'}|{kind:'ground'}|{kind:'stationaryOrGround'}|{kind:'sameLevel';level:number};
 /** Source controller disambiguation is geometric, independent of sprite alpha.
  * The second point keeps the first point's level, including vacant elevated cells. */
 export function pickRailwayLocation(read:ReadState,point:Point,heightCut:number,policy:RailwayPickPolicy):Position|undefined {
   const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
   const slopeOwners=new Set(read.mixed?.slopes.map(s=>s.entityId));
   const rails=new Set(read.mixed?.voxels.filter(v=>{
+    if(policy.kind==='thinPlatformOrGround')return read.mixed?.stationGraph?.platforms.some(p=>p.kind==='thin'&&p.yards.some(y=>y.trafficOwnerId===v.ownerId));
     if(policy.kind==='widePlatform'){const ports=v.traffic?.rail&&fleetRailPorts(v.traffic.rail.pattern);return ports?.includes(policy.direction)&&ports.includes((policy.direction+4)%8);}
     return v.traffic?.rail||policy.kind==='trafficOrGround'&&v.traffic||policy.kind==='slopeOrGround'&&slopeOwners.has(v.ownerId)||policy.kind==='stationaryOrGround'&&v.kind==='stationary';
   }).map(v=>key(v.position)));
@@ -120,12 +122,16 @@ export class RailwayRenderPlan {
         const platform=read.mixed!.stationGraph?.platforms.find(p=>p.yards.some(y=>y.trafficOwnerId===v.ownerId&&key(y.location)===key(v.position)));
         const yard=platform?.yards.find(y=>y.trafficOwnerId===v.ownerId);
         const recipe=recipes.get(c.platform.recipeId);
-        if(!platform||yard?.outlook.kind!=='plain'||!recipe||
+        if(!platform||!yard||!recipe||
           recipe.frames.some(f=>f.status!=='ready'||!f.masks?.[variantKey(variant)]))throw new Error('Platform recipe unavailable');
         const target:RailwayTarget={kind:'railway',id:v.ownerId,position:v.position,component:'platform',definition:c.platform,platformId:platform.id};
-        for(const layer of instantiate(recipe,v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z])){
-          layer.frame={...layer.frame,stage:platform.kind==='wide'?15:platform.direction===2||platform.direction===4?20:40};
-          this.layers.push(layer);ops.push({target,layer});
+        for(const art of platformAppearance(platform,yard!,read.mixed!.stationGraph!.platforms)){
+          const recipe=recipes.get(art.recipeId);
+          if(!recipe||recipe.frames.some(f=>f.status!=='ready'||!f.masks?.[variantKey(variant)]))throw new Error('Platform outlook recipe unavailable');
+          for(const layer of instantiate(recipe,v.ownerId,[v.position.x-space.centerX,v.position.y,v.position.z])){
+            layer.frame={...layer.frame,stage:art.stage};
+            this.layers.push(layer);ops.push({target,layer});
+          }
         }
       }
       if(c.car) {
@@ -152,7 +158,7 @@ export class RailwayRenderPlan {
     }
     for(const ops of this.columns.values())ops.sort((a,b)=>a.target.position.z-b.target.position.z||this.order(a)-this.order(b));
     for(const [index,voxels] of states)this.signatures.set(index,JSON.stringify([voxels,voxels.map(v=>limits.get(key(v.position))),
-      this.columns.get(index)?.map(o=>o.tunnel),this.columns.get(index)?.filter(o=>o.target.kind==='railway'&&o.target.component==='platform').map(o=>o.target),
+      this.columns.get(index)?.map(o=>o.tunnel),this.columns.get(index)?.filter(o=>o.target.kind==='railway'&&o.target.component==='platform').map(o=>[o.target,o.layer.recipeId,o.layer.frame.stage]),
       this.columns.get(index)?.filter(o=>o.target.kind==='train').map(o=>[o.target,o.layer.recipeId,o.layer.frame.key,o.layer.frame.anchor])]));
   }
   signature(index:number):string|undefined {return this.signatures.get(index);}

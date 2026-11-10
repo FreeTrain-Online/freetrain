@@ -71,6 +71,12 @@
     },
     {
       "$ref": "#/$defs/PlatformProperties"
+    },
+    {
+      "$ref": "#/$defs/PassageQuery"
+    },
+    {
+      "$ref": "#/$defs/PassagePreview"
     }
   ],
   "$defs": {
@@ -1388,6 +1394,26 @@
             "hostId",
             "expectedHostRevision",
             "expectedStationRevision"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editPassage"
+            },
+            "query": {
+              "$ref": "#/$defs/PassageQuery"
+            },
+            "expectedCost": {
+              "$ref": "#/$defs/Money"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedCost"
           ]
         }
       ]
@@ -5767,6 +5793,96 @@
       "required": [
         "query",
         "candidates"
+      ]
+    },
+    "PassageQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "place",
+            "remove"
+          ]
+        },
+        "from": {
+          "$ref": "#/$defs/Position"
+        },
+        "to": {
+          "$ref": "#/$defs/Position"
+        },
+        "material": {
+          "enum": [
+            "concrete",
+            "brown",
+            "green"
+          ]
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "from",
+        "to",
+        "material"
+      ]
+    },
+    "PassagePreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/PassageQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "positions"
       ]
     }
   }

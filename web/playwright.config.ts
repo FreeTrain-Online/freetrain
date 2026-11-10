@@ -9,7 +9,7 @@ mkdirSync(evidence, { recursive: true });
 process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE = evidence;
 
 const canonical = [
-  'platform-lanes.spec.ts', 'platform-properties.spec.ts', 'station-hosts.spec.ts',
+  'passage.spec.ts', 'platform-lanes.spec.ts', 'platform-properties.spec.ts', 'station-hosts.spec.ts',
   'wide-platform.spec.ts', 'thin-platform.spec.ts', 'station-transport.spec.ts', 'station-building-domain.spec.ts', 'station-building.spec.ts', 'station-rendering.spec.ts',
   'fleet-reconciliation.spec.ts',
   'fleet-continuation.spec.ts',

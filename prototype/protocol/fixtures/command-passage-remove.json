@@ -1,0 +1,27 @@
+{
+  "type": "command",
+  "requestId": "passage-remove",
+  "expectedWorldEpoch": "1",
+  "payload": {
+    "kind": "editPassage",
+    "query": {
+      "expectedWorldEpoch": "1",
+      "expectedGeometryRevision": "0",
+      "expectedMinute": "517",
+      "expectedContentVersion": "mixed-railway-content-1",
+      "action": "remove",
+      "from": {
+        "x": 10,
+        "y": 10,
+        "z": 2
+      },
+      "to": {
+        "x": 12,
+        "y": 10,
+        "z": 2
+      },
+      "material": "green"
+    },
+    "expectedCost": "0"
+  }
+}

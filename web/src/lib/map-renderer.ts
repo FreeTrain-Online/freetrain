@@ -1,3 +1,4 @@
+import {passageGhost} from './passage-edit.ts';
 import {widePlatformGhost} from './wide-platform-edit.ts';
 import {thinPlatformGhost} from './thin-platform-edit.ts';
 import {stationDefinitions} from './station-building-edit.ts';
@@ -23,7 +24,7 @@ import type { RailwayPickPolicy } from './railway-renderer.ts';
 import {stationNamePositions,type StationLabels} from './station-labels.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { platformPreview?:import('./wide-platform-edit.ts').PlatformPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { platformPreview?:import('./wide-platform-edit.ts').StationAccessoryPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -209,8 +210,8 @@ export class MapRenderer {
         this.stationGhostKey=ghostKey;this.stationGhost=undefined;
         if(ghost?.legal&&!stationCap&&ghost.query.action==='place'&&this.renderCatalog){
           const catalog=this.renderCatalog;
-          const entries=platform?('secondLane' in platform.query?widePlatformGhost(platform.query,platform.positions):thinPlatformGhost(platform.query,platform.positions)):[{position:station!.query.position,recipeId:station!.query.definition!.recipeId}];
-          const layers=traversal(entries.flatMap(e=>{const recipe=catalog.renderRecipes.find(r=>r.id===e.recipeId);if(!recipe)throw new Error('Preview recipe unavailable');const p=e.position;return instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z]);})).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
+          const entries=platform?('from' in platform.query?passageGhost(read,platform as import('../generated/contracts.ts').PassagePreview):'secondLane' in platform.query?widePlatformGhost(platform.query,platform.positions):thinPlatformGhost(platform.query,platform.positions)):[{position:station!.query.position,recipeId:station!.query.definition!.recipeId}];
+          const layers=traversal(entries.flatMap(e=>{const recipe=catalog.renderRecipes.find(r=>r.id===e.recipeId);if(!recipe)throw new Error('Preview recipe unavailable');const p=e.position;return instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z]).map(l=>'stage' in e?{...l,frame:{...l.frame,stage:e.stage as number}}:l);})).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
           void this.terrainCache.ready(catalog,layers,variant).then(ready=>{if(this.stationGhostKey===ghostKey){this.stationGhost=ready;this.invalidate();}}).catch(()=>{if(this.stationGhostKey===ghostKey)this.invalidate();});
         }
       }
@@ -219,10 +220,10 @@ export class MapRenderer {
         ctx.save();ctx.globalAlpha=.55;
         this.stationGhost?.draw(ctx,{x:width/2-camera.x*camera.zoom,y:height/2-camera.y*camera.zoom,zoom:camera.zoom});ctx.globalAlpha=1;
         ctx.strokeStyle=ghost.legal?(ghost.query.action==='remove'?'#bf4a19':'#087e63'):'#b00020';ctx.lineWidth=2;
-        for(const position of ghost.positions.length?ghost.positions:[ghost.query.position]){
+        for(const position of ghost.positions.length?ghost.positions:['from' in ghost.query?ghost.query.from:ghost.query.position]){
           if(position.z>options.heightCut)continue;
           const p=toScreen(position,camera,width,height,this.space),rx=16*camera.zoom,ry=8*camera.zoom;
-          ctx.beginPath();ctx.moveTo(p.x-rx,p.y);ctx.lineTo(p.x,p.y-ry);ctx.lineTo(p.x+rx,p.y);ctx.lineTo(p.x,p.y+ry);ctx.closePath();if(stationCap&&position.z===ghost.query.position.z){ctx.fillStyle='#808080';ctx.fill();}ctx.stroke();
+          ctx.beginPath();ctx.moveTo(p.x-rx,p.y);ctx.lineTo(p.x,p.y-ry);ctx.lineTo(p.x+rx,p.y);ctx.lineTo(p.x,p.y+ry);ctx.closePath();if(stationCap&&position.z===('from' in ghost.query?ghost.query.from:ghost.query.position).z){ctx.fillStyle='#808080';ctx.fill();}ctx.stroke();
         }
         for(const loss of station?.losses??[]){const p=toScreen(loss.position,camera,width,height,this.space);ctx.beginPath();ctx.moveTo(p.x-5,p.y-5);ctx.lineTo(p.x+5,p.y+5);ctx.moveTo(p.x+5,p.y-5);ctx.lineTo(p.x-5,p.y+5);ctx.stroke();}
         ctx.restore();

@@ -238,6 +238,27 @@ public static class NetworkEndpoints
             catch (InvalidOperationException ex)
             { return Results.Json(new { code = ex.Message },statusCode:409); }
         });
+        app.MapPost("/api/station/passage/preview", async Task<IResult> (HttpContext context) =>
+        {
+            if (!Authorized(context)) return Results.Unauthorized();
+            if (!Compatible(context)) return Results.StatusCode(426);
+            try
+            {
+                using var buffer = new MemoryStream(); var chunk = new byte[1024]; int count;
+                while ((count = await context.Request.Body.ReadAsync(chunk, context.RequestAborted)) > 0)
+                {
+                    if (buffer.Length + count > MaximumMessageBytes) return Results.StatusCode(413);
+                    buffer.Write(chunk,0,count);
+                }
+                var query = JsonSerializer.Deserialize<PassageQuery>(buffer.ToArray(),NetworkSession.Json);
+                if (query == null) return Results.BadRequest(new { code = "invalidInput" });
+                return Results.Json(session.PreviewPassage(query),NetworkSession.Json);
+            }
+            catch (Exception ex) when (ex is JsonException or ArgumentException or OverflowException)
+            { return Results.BadRequest(new { code = "invalidInput" }); }
+            catch (InvalidOperationException ex)
+            { return Results.Json(new { code = ex.Message },statusCode:409); }
+        });
         app.MapPost("/api/station/platform/preview", async Task<IResult> (HttpContext context) =>
         {
             if (!Authorized(context)) return Results.Unauthorized();
@@ -638,6 +659,10 @@ public static class NetworkEndpoints
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
             (edit.Query.Action == "place" && edit.Query.Definition is {PackId.Length: > 0 and <= 512, ContributionId.Length: > 0 and <= 512, RecipeId.Length: > 0 and <= 512} && edit.Query.StationId == 0 && edit.Query.ExpectedStationRevision == 0 ||
              edit.Query.Action == "remove" && edit.Query.Definition == null && edit.Query.StationId > 0 && edit.Query.ExpectedStationRevision >= 0),
+        EditPassageCommand edit => edit.Query != null && edit.Query.From != null && edit.Query.To != null && edit.ExpectedCost == 0 &&
+            edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedMinute >= 0 &&
+            edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
+            edit.Query.Action is "place" or "remove" && edit.Query.Material is "concrete" or "brown" or "green",
         EditThinPlatformCommand edit => edit.Query != null && edit.Query.Position != null && edit.ExpectedCost >= 0 &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedMinute >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&

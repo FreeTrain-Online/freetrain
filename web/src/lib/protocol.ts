@@ -1,3 +1,4 @@
+import {passagePath} from './passage-edit.ts';
 import {validStationSuccessor} from './station-state.ts';
 import {validTrainMotion} from './train-motion-contract.ts';
 import {validFleetSuccessor} from './fleet-state.ts';
@@ -273,4 +274,13 @@ export function parseWidePlatformPreview(value:unknown):import('../generated/con
     if(p.cost!=='0'||p.positions.length!==q.length||p.positions.some((v,i)=>v.x!==q.position.x+d.x*i-d.y*side||v.y!==q.position.y+d.y*i+d.x*side||v.z!==q.position.z))throw new Error('Invalid lane geometry');
   }
   return p;
+}
+
+const validatePassage=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/PassagePreview'});
+export function parsePassagePreview(value:unknown):import('../generated/contracts.ts').PassagePreview {
+ if(!validatePassage(value))throw new Error('Invalid passage preview');
+ const p=value as import('../generated/contracts.ts').PassagePreview;
+ const path=passagePath(p.query.from,p.query.to);
+ if(p.cost!=='0'||(p.legal?p.reason!==null||!path.length||JSON.stringify(path)!==JSON.stringify(p.positions):p.reason===null||p.positions.length!==0))throw new Error('Inconsistent passage preview');
+ return p;
 }
