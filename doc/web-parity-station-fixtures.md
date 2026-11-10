@@ -69,6 +69,11 @@ not an admissible saved graph. P6-16/25 must reconcile actual removal with
 STATION-D003's preserved asymmetry and its prohibition on dangling references;
 these literals do not normalize the graph or decide a new runtime policy.
 
+The [P6-16 implementation](web-parity-station-demand.md#catchment-and-source-anomaly)
+now records the runtime disposition: preserve the missing fifth reverse edge,
+but clear the removed station's local ID without finding a replacement. Original
+source fixtures and their dangling diagnostic stay unchanged.
+
 All six material/lighting variants of stair index23 retain the authored
 `(388,4,32,36)` crop outside336×153. EXAV-GAL-001 remains with P6-15/27; no guessed
 replacement, corrected asset or native fidelity is approved by these fixtures.

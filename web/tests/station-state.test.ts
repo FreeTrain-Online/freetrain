@@ -29,6 +29,27 @@ Deno.test('station decoder rejects malformed hosts, art, ownership, logs, listen
  ];for(const mutate of mutations){const candidate=structuredClone(s);mutate(candidate);assert.throws(()=>parseMessage(JSON.stringify(candidate)));}
  assert.equal(s.mixed!.stationGraph!.buildings[0].name,'Station / 駅');
 });
+Deno.test('controlled station provider expressions are bounded and require owner revisions on update',async()=>{
+ const s=await scene(),g=s.mixed!.stationGraph!,l=g.listeners[0];
+ l.provider={input:'controlled',landValue:3,xySize:6,zSize:8,special:false,
+  population:{kind:'PersistentPopulation',base:0,factor:1,entering:0,tables:[],children:[
+   {kind:'ResidentialPopulation',base:125,factor:1,entering:0,tables:[],children:[]}]}};
+ g.listenerMemberships=[{stationId:g.buildings[0].id,providers:[l.providerId]}];
+ assert.deepEqual(parseMessage(JSON.stringify(s)),s);
+ const d=delta(s);d.mixed!.geometryRevision='1';d.mixed!.stationGraph!.listeners[0].provider!.landValue=4;
+ assert.equal(applyDelta(immutable(s),structuredClone(d)),undefined);
+ d.entities=s.entities!.filter(e=>e.id===l.providerId).map(e=>({...e,revision:'1'}));
+ assert(applyDelta(immutable(s),d));
+ const mutations:((x:Snapshot)=>void)[]=[
+  x=>x.mixed!.stationGraph!.listeners[0].provider!.population.children=[],
+  x=>x.mixed!.stationGraph!.listeners[0].provider!.population.tables=[Array(24).fill(0)],
+  x=>x.mixed!.stationGraph!.listeners[0].provider!.input='city' as 'controlled',
+  x=>{let p=x.mixed!.stationGraph!.listeners[0].provider!.population;for(let i=0;i<18;i++){p.children=[structuredClone(p)];p=p.children[0];}},
+  x=>x.mixed!.stationGraph!.listeners[0].stations=[],
+ ];
+ for(const mutate of mutations){const bad=structuredClone(s);mutate(bad);assert.throws(()=>parseMessage(JSON.stringify(bad)));}
+ assert.equal(l.provider.input,'controlled');
+});
 Deno.test('station logical edits require revisions and fixed geometry; complete removal preserves name allocators atomically',async()=>{
  const s=immutable(await scene()),d=delta(s as Snapshot);d.mixed!.geometryRevision='1';d.mixed!.stationGraph!.platforms[0].name='Edited';
  assert.equal(applyDelta(s,structuredClone(d)),undefined);d.mixed!.stationGraph!.platforms[0].revision='1';const renamed=applyDelta(s,d);assert(renamed);

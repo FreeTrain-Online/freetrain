@@ -1,4 +1,4 @@
-# Runtime save policy — updated 8 November 2026
+# Runtime save policy — updated 10 November 2026
 
 **Owner direction:** Online prototype Save 1 is unsupported. Do not import,
 convert, continue or write it, or relabel its payload as a new format. Historical
@@ -26,6 +26,12 @@ settings to Save9/protocol7. An absent array means empty; writers omit empty
 arrays, preserving existing no-junction payloads. Format/protocol numbers remain unchanged.
 
 [P6-05 station transport](web-parity-station-transport.md) advances the current contract to **Save10/protocol8**. Only Save10 is read and written. Exact station/platform hosts, listener edges, logs and repeated timers are durable; [P6-06 construction](web-parity-station-construction.md) adds immediate station-building preview/commit and removal using this state. Presentation, controls and passenger slices remain open.
+
+[P6-16 demand providers](web-parity-station-demand.md) adds optional data-only
+`listeners[].provider` metadata to Save10/protocol8. Absent inputs stay unbound;
+writers omit them. Expression shape/depth/node limits and owner revisions are
+validated before publication. Source asymmetric edges remain durable; station
+removal clears dangling local references without rebuilding catchment.
 
 ## Current behavior
 

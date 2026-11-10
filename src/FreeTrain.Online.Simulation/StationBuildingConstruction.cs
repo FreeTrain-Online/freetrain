@@ -81,7 +81,8 @@ public static class StationBuildingConstruction
                 building = new(next,0,type.Reference,position,name,[],new(),new(),new(),new());
                 next = checked(next+1);
                 entities.Add(building.Id,new(building.Id,0,type.Reference,position,type.Footprint,true,false,0));
-                changed = StationBuildingLifecycle.Created(StationBuildingLifecycle.Reclaimed(graph,reclaimed.Keys.ToHashSet()),building);
+                changed = StationCatchment.Advertise(StationBuildingLifecycle.Created(StationBuildingLifecycle.Reclaimed(graph,reclaimed.Keys.ToHashSet()),building),
+                    building.Id, world.Spatial, world.Terrain.Space);
                 booking = StationBooking.BuildingPlacement(type);
             }
             // Lifecycle changes revise their actual spatial owners, including

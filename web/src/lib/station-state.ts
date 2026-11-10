@@ -1,4 +1,4 @@
-import type {Snapshot,StationGraph,MixedAction,StationPlatform} from '../generated/contracts.ts';
+import type {Snapshot,StationGraph,MixedAction,StationPlatform,Population} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import profile from '../generated/station-profile.json' with {type:'json'};
 import rail from '../generated/railway-profile.json' with {type:'json'};
@@ -9,6 +9,17 @@ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const validName=(s:string)=>s.trim().length>0&&!/[\u0000-\u001f\u007f-\u009f]/u.test(s);
 const unique=(ids:string[])=>new Set(ids).size===ids.length;
+export function validPopulation(root:Population):boolean {
+ let count=0;
+ const visit=(p:Population,depth:number):boolean=>{
+  if(depth>16||++count>256)return false;
+  const n=p.children.length,t=p.tables.length;
+  const valid=p.kind==='CombinationPopulation'?t===0:
+   p.kind==='MultiplierPopulation'||p.kind==='PersistentPopulation'?n===1&&t===0:
+   p.kind==='HourlyPopulation'?n===0&&t===4:p.kind==='HourlyWeeklyPopulation'?n===0&&t===14:n===0&&t===0;
+  return valid&&p.children.every(c=>visit(c,depth+1));
+ };return visit(root,0);
+}
 export function stationTimers(g:StationGraph|undefined):MixedAction[]{return [...(g?.buildings??[]).flatMap(b=>[b.hourTimer,b.dayTimer]),...(g?.platforms??[]).map(p=>p.dayTimer)].filter((t):t is MixedAction=>t!==null);}
 export function validMixedQueue(read:Snapshot):boolean {
  const m=read.mixed!,q=m.queue;
@@ -95,8 +106,9 @@ export function validStations(read:Snapshot):boolean {
  }
  const providers=new Set(g.listeners.map(l=>l.providerId));
  if(!unique(g.listeners.map(l=>l.providerId))||!unique(g.listenerMemberships.map(l=>l.stationId))||g.listeners.some(l=>
-   !entities.has(l.providerId)||ids.has(l.providerId)||!unique(l.stations)||l.stations.some(id=>!buildings.has(id)))||
-   g.listenerMemberships.some(l=>!buildings.has(l.stationId)||!unique(l.providers)||l.providers.some(id=>!providers.has(id))))return false;
+   !entities.has(l.providerId)||ids.has(l.providerId)||!unique(l.stations)||l.stations.some(id=>!buildings.has(id))||l.provider&&!validPopulation(l.provider.population))||
+   g.listenerMemberships.some(l=>!buildings.has(l.stationId)||!unique(l.providers)||l.providers.some(id=>!providers.has(id)||
+    g.listeners.some(p=>p.providerId===id&&p.provider&&!p.stations.some(s=>s===l.stationId)))))return false;
  const timers=stationTimers(g);return unique(timers.map(t=>t.registration))&&unique(timers.map(t=>t.order));
 }
 export function validStationSuccessor(before:NonNullable<ReadState['mixed']>['stationGraph'],after:StationGraph|undefined,firstId:string,previous:Snapshot,next:Snapshot):boolean {
@@ -114,6 +126,7 @@ export function validStationSuccessor(before:NonNullable<ReadState['mixed']>['st
   !equal(before.listenerMemberships.find(l=>l.stationId===b.id)?.providers??[],after.listenerMemberships.find(l=>l.stationId===b.id)?.providers??[]))return false;
  for(const id of new Set([...(before?.listeners??[]).map(l=>l.providerId),...after.listeners.map(l=>l.providerId),...(before?.passages??[]).map(p=>p.trafficOwnerId),...after.passages.map(p=>p.trafficOwnerId)])){
   if((!equal(before?.listeners.find(l=>l.providerId===id)?.stations??[],after.listeners.find(l=>l.providerId===id)?.stations??[])||
+     !equal(before?.listeners.find(l=>l.providerId===id)?.provider,after.listeners.find(l=>l.providerId===id)?.provider)||
      !equal(before?.passages.find(p=>p.trafficOwnerId===id),after.passages.find(p=>p.trafficOwnerId===id)))&&
      next.entities!.some(e=>e.id===id&&e.revision===previous.entities!.find(e=>e.id===id)?.revision))return false;
  }

@@ -23,7 +23,7 @@ public sealed record StationPlatform(long Id, long Revision, PlatformKind Kind, 
 public sealed record StationPassage(long TrafficOwnerId, Location Location, Heading Direction, PassageMaterial Material);
 
 // Source catchment edges are deliberately asymmetric (STATION-D003).
-public sealed record StationListener(long ProviderId, ImmutableArray<long> Stations);
+public sealed record StationListener(long ProviderId, ImmutableArray<long> Stations, StationProvider? Provider = null);
 public sealed record StationListenerMembership(long StationId, ImmutableArray<long> Providers);
 
 public sealed class StationGraph
@@ -36,7 +36,7 @@ public sealed class StationGraph
     public ImmutableArray<StationListenerMembership> ListenerMemberships { get; }
     public int NextStationName { get; }
     public int NextPlatformName { get; }
-    public bool IsEmpty => Buildings.IsEmpty && Platforms.IsEmpty && Passages.IsEmpty;
+    public bool IsEmpty => Buildings.IsEmpty && Platforms.IsEmpty && Passages.IsEmpty && Listeners.IsEmpty && ListenerMemberships.IsEmpty;
     private readonly FrozenDictionary<long, StationBuilding> buildings;
     private readonly FrozenDictionary<long, StationPlatform> platforms;
     private readonly FrozenDictionary<long, long?> resolved;
@@ -47,6 +47,7 @@ public sealed class StationGraph
     public StationPlatform Platform(long id) => platforms.TryGetValue(id,out var p) ? p : throw new ArgumentException("Unknown platform.");
     public StationBuilding? HostStation(long platformId) => resolved[platformId] is {} id ? buildings[id] : null;
     internal ImmutableArray<long> ListenerStations(long providerId) => listeners.GetValueOrDefault(providerId)?.Stations ?? [];
+    internal StationProvider? Provider(long providerId) => listeners.GetValueOrDefault(providerId)?.Provider;
     internal StationPassage? Passage(long trafficOwnerId) => passages.GetValueOrDefault(trafficOwnerId);
     internal bool IsSpatialOwner(long id) => buildings.ContainsKey(id) || platforms.TryGetValue(id,out var p) && p.Kind == PlatformKind.Wide;
 
@@ -145,6 +146,9 @@ public sealed class StationGraph
             ListenerMemberships.Select(l => l.StationId).Distinct().Count() != ListenerMemberships.Length)
             throw new ArgumentException("Invalid ordered station listeners.");
         this.listeners = Listeners.ToFrozenDictionary(l => l.ProviderId);
+        foreach (var listener in Listeners) listener.Provider?.Validate();
+        if (ListenerMemberships.Any(m => m.Providers.Any(id => this.listeners[id].Provider != null && !this.listeners[id].Stations.Contains(m.StationId))))
+            throw new ArgumentException("Bound reverse listener must have a local station link.");
 
     }
     private static void Name(string name)

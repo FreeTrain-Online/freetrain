@@ -254,6 +254,7 @@ public sealed class MixedWorld
                     .SequenceEqual(after.OrderBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z)) ||
                     slopeOwners.GetValueOrDefault(e.Id) != candidate.slopeOwners.GetValueOrDefault(e.Id) ||
                     Stations?.Passage(e.Id) != candidate.Stations?.Passage(e.Id) ||
+                    Stations?.Provider(e.Id) != candidate.Stations?.Provider(e.Id) ||
                     !(Stations?.ListenerStations(e.Id) ?? []).SequenceEqual(candidate.Stations?.ListenerStations(e.Id) ?? []))
                     throw new ArgumentException("Changed entity requires revision.");
             }

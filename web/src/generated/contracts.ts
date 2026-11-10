@@ -43,6 +43,36 @@ export type Counter = string;
 export type Money = string;
 export type Heading = number;
 export type EntityId = string;
+/**
+ * @minItems 24
+ * @maxItems 24
+ */
+export type PopulationTable = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number
+];
 export type PlaybackRate = 0.125 | 0.25 | 0.5 | 1 | 2;
 export type CommandPayload =
   | {
@@ -842,6 +872,153 @@ export interface StationListener {
    */
   stations:
     [] | [EntityId] | [EntityId, EntityId] | [EntityId, EntityId, EntityId] | [EntityId, EntityId, EntityId, EntityId];
+  provider?: StationProvider;
+}
+export interface StationProvider {
+  population: Population;
+  landValue: number;
+  zSize: number;
+  special: boolean;
+  input: "controlled";
+  xySize: number;
+}
+export interface Population {
+  kind:
+    | "AgriculturalPopulation"
+    | "BarPopulation"
+    | "BusinessInnPopulation"
+    | "LeisureHotelPopulation"
+    | "LeisureLandPopulation"
+    | "OfficePopulation"
+    | "ResidentialPopulation"
+    | "RestaurantPopulation"
+    | "SchoolPopulation"
+    | "ShopperPopulation"
+    | "ConstantPopulation"
+    | "CombinationPopulation"
+    | "MultiplierPopulation"
+    | "PersistentPopulation"
+    | "HourlyPopulation"
+    | "HourlyWeeklyPopulation"
+    | "StadiumPopulation";
+  base: number;
+  factor: number;
+  entering: number;
+  /**
+   * @maxItems 256
+   */
+  children: Population[];
+  /**
+   * @maxItems 14
+   */
+  tables:
+    | []
+    | [PopulationTable]
+    | [PopulationTable, PopulationTable]
+    | [PopulationTable, PopulationTable, PopulationTable]
+    | [PopulationTable, PopulationTable, PopulationTable, PopulationTable]
+    | [PopulationTable, PopulationTable, PopulationTable, PopulationTable, PopulationTable]
+    | [PopulationTable, PopulationTable, PopulationTable, PopulationTable, PopulationTable, PopulationTable]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ]
+    | [
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable,
+        PopulationTable
+      ];
 }
 export interface StationListenerMembership {
   stationId: EntityId;

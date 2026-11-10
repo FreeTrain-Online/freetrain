@@ -361,5 +361,8 @@ public sealed record StationPlatformRead(long Id, long Revision, string Kind, Po
 public sealed record StationPassageRead(long TrafficOwnerId, PositionRead Location, int Direction, string Material);
 public sealed record StationGraphRead(int NextStationName, int NextPlatformName, StationBuildingRead[] Buildings,
     StationPlatformRead[] Platforms, StationPassageRead[] Passages, StationListenerRead[] Listeners, StationListenerMembershipRead[] ListenerMemberships);
-public sealed record StationListenerRead(long ProviderId, long[] Stations);
+public sealed record StationListenerRead(long ProviderId, long[] Stations,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StationProviderRead? Provider = null);
+public sealed record StationProviderRead(PopulationRead Population, int LandValue, int XYSize, int ZSize, bool Special, string Input);
+public sealed record PopulationRead(string Kind, int Base, int Factor, int Entering, PopulationRead[] Children, int[][] Tables);
 public sealed record StationListenerMembershipRead(long StationId, long[] Providers);

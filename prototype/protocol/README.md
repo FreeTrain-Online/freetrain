@@ -221,6 +221,14 @@ provider's local station order; `listenerMemberships` separately retains ordered
 station-side provider IDs. STATION-D003 permits asymmetric edges; loaders never
 rediscover or repair them. Provider references resolve actual spatial owners.
 
+P6-16 adds optional `listeners[].provider`: data-only population expressions,
+land value, XY/height scale, special classification and `input: "controlled"`.
+Absent metadata remains unbound and is omitted by writers. Expressions have
+depth16/node256 bounds and checked source arithmetic. Metadata edits require
+the provider owner's revision. The source fifth-station asymmetry remains;
+removal clears dangling local IDs without rediscovery. Save10/protocol8 and
+catalog identities are unchanged. [P7 handoff and evidence](../../doc/web-parity-station-demand.md).
+
 Station callbacks use intervals60/1440, retain registration cookies and advance
 FIFO order; construction/train callbacks remain one-shot. The duplicated save
 queue must exactly match `clock`. Version7 peers and Save9 documents are rejected.

@@ -106,6 +106,12 @@ local ordered station references and station-side memberships separately; do not
 rebuild nearest-four or demand reciprocal equality on load. Duplicate/dangling
 references remain invalid. P6-16/P6-25 and P7 own consuming tests/handoff.
 
+[P6-16](web-parity-station-demand.md) implements these traces against actual
+spatial owners and persists controlled provider expressions. Its removal
+disposition preserves the missing reverse membership, while clearing local IDs
+for removed stations without rediscovery; no dangling source diagnostic is
+accepted as canonical state. The report publishes the precise P7 handoff.
+
 Ordinary contribution is `min(rawPopulation / stationCount,
 landValue * XYSize * max(1,ZSize/4) + 10)` with source integer division/grouping;
 special listeners divide raw demand by station count without that land cap.

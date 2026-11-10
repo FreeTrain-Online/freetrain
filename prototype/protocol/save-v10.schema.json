@@ -2243,6 +2243,9 @@
             "$ref": "#/$defs/EntityId"
           },
           "maxItems": 4
+        },
+        "provider": {
+          "$ref": "#/$defs/StationProvider"
         }
       },
       "required": [
@@ -2269,6 +2272,121 @@
         "stationId",
         "providers"
       ]
+    },
+    "Population": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "AgriculturalPopulation",
+            "BarPopulation",
+            "BusinessInnPopulation",
+            "LeisureHotelPopulation",
+            "LeisureLandPopulation",
+            "OfficePopulation",
+            "ResidentialPopulation",
+            "RestaurantPopulation",
+            "SchoolPopulation",
+            "ShopperPopulation",
+            "ConstantPopulation",
+            "CombinationPopulation",
+            "MultiplierPopulation",
+            "PersistentPopulation",
+            "HourlyPopulation",
+            "HourlyWeeklyPopulation",
+            "StadiumPopulation"
+          ]
+        },
+        "base": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "factor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "entering": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Population"
+          },
+          "maxItems": 256
+        },
+        "tables": {
+          "type": "array",
+          "maxItems": 14,
+          "items": {
+            "$ref": "#/$defs/PopulationTable"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "base",
+        "factor",
+        "entering",
+        "children",
+        "tables"
+      ],
+      "title": "Population"
+    },
+    "StationProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "population": {
+          "$ref": "#/$defs/Population"
+        },
+        "landValue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "zSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "special": {
+          "type": "boolean"
+        },
+        "input": {
+          "const": "controlled"
+        },
+        "xySize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "population",
+        "landValue",
+        "xySize",
+        "zSize",
+        "special",
+        "input"
+      ],
+      "title": "StationProvider"
+    },
+    "PopulationTable": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "title": "PopulationTable"
     }
   },
   "allOf": [
