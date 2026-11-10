@@ -25,6 +25,15 @@
       "unsupportedBehavior": "Older formats return incompatibleSave before current-format deserialization; preserve current world, epoch and rejected files, including checkpoints",
       "migrationPolicy": "No migration parsers during this iteration stage; revisit when there are saves to retain",
       "review": "doc/web-parity-runtime-policy.md"
+    },
+    {
+      "id": "ONLINE-SAVE-003",
+      "decidedOn": "2026-11-10",
+      "authority": "owner direction: automatic checkpoints are transient; discard checkpoint save data when loading fails",
+      "status": "implemented: discard rejected startup checkpoints and continue checkpointing",
+      "supersedes": "ONLINE-SAVE-001 and ONLINE-SAVE-002 preservation requirements for automatic startup checkpoints only",
+      "encounterBehavior": "Report startup load failure, delete checkpoint.json and start a fresh world with automatic, explicit and shutdown checkpoints enabled. Fail startup if deletion fails.",
+      "manualSavePolicy": "Named slots and rejected uploads remain preserved; current-format-only compatibility is unchanged"
     }
   ]
 }

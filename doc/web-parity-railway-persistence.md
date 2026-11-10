@@ -36,8 +36,9 @@ Save8 is current-format-only for all three canonical profiles. Save1–7 and fut
 versions return `incompatibleSave`; no migration, version relabeling or regeneration
 is attempted. Previous Save7 schemas/files are retained under
 `prototype/protocol/historical/save-v7` for rejection evidence. The existing
-checkpoint failure policy preserves unsupported files, disables automatic overwrite
-and permits deliberate recovery through compatible input. Protocol5 peers receive
+checkpoint failure policy is superseded by ONLINE-SAVE-003: failed startup
+checkpoints are discarded and fresh checkpointing remains enabled; named saves
+and rejected uploads are preserved. Protocol5 peers receive
 the existing incompatibility response; matching static/server artifacts are required.
 
 ## Durable composition

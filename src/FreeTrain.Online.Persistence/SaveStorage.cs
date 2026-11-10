@@ -16,6 +16,8 @@ public sealed class SaveStorage : IDisposable
     private string PathFor(string id) => Slots.Contains(id, StringComparer.Ordinal)
         ? Path.Combine(directory, id + ".json") : throw new InvalidDataException("invalidSlot");
     public bool Exists(string id) => File.Exists(PathFor(id));
+    // Checkpoints are transient recovery data. Called during startup before writers run.
+    public void DiscardCheckpoint() => File.Delete(PathFor("checkpoint"));
     // Bounded opaque input only. Reading a file does not make its format supported.
     public byte[] Read(string id)
     {

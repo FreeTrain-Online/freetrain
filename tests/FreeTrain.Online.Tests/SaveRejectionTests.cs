@@ -51,31 +51,41 @@ public class SaveRejectionTests
         => Assert.Equal("saveTooLarge", Assert.Throws<InvalidDataException>(() => SaveCodec.Read(new byte[SaveCodec.MaximumBytes + 1])).Message);
 
     [Theory]
-    [InlineData("{\"saveVersion\":1}", "incompatibleSave")]
-    [InlineData("{\"saveVersion\":2}", "incompatibleSave")]
-    [InlineData("{\"saveVersion\":3}", "incompatibleSave")]
-    [InlineData("{\"saveVersion\":4}", "incompatibleSave")]
-    [InlineData("{broken", "invalidSave")]
-    public async Task Ignored_checkpoint_is_reported_and_preserved_through_shutdown_and_manual_save(string text, string error)
+    [InlineData("{\"saveVersion\":1}", "incompatibleSave", false)]
+    [InlineData("{\"saveVersion\":9}", "incompatibleSave", false)]
+    [InlineData("{broken", "invalidSave", false)]
+    [InlineData("{\"saveVersion\":1}", "incompatibleSave", true)]
+    [InlineData("{broken", "invalidSave", true)]
+    public async Task Rejected_checkpoint_is_discarded_and_fresh_checkpoints_survive_restart(string text, string error, bool customHost)
     {
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-rejected-save-" + Guid.NewGuid());
         Directory.CreateDirectory(directory);
         var path = Path.Combine(directory, "checkpoint.json");
         File.WriteAllText(path, text);
+        File.WriteAllText(Path.Combine(directory, "slot2.json"), text);
         try
         {
             using var storage = new SaveStorage(directory);
-            var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup());
+            var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup(),
+                hostFactory: customHost ? (epoch, _) => SessionComposition.CreateGeneratedHost(TestWorlds.SmallStartup(), epoch) : null);
             Assert.Equal(error, session.StartupSaveError);
             Assert.True(session.SavingAvailable);
             Assert.Equal(1, session.Bootstrap().WorldEpoch); Assert.Equal(FreeTrain.Online.Simulation.GameTime.StartMinute, session.Bootstrap().Snapshot.Tick);
             Assert.NotNull(session.Bootstrap().Snapshot.Terrain);
-            Assert.False(session.AutomaticCheckpointAvailable);
-            Assert.Equal(error, (await Assert.ThrowsAsync<InvalidDataException>(() => session.Checkpoint())).Message);
+            Assert.False(File.Exists(path));
+            Assert.True(session.AutomaticCheckpointAvailable);
+            var checkpoint = session.Checkpoint(); session.Tick(DateTimeOffset.UtcNow); await checkpoint;
+            var saved = storage.Read("checkpoint");
+            Assert.NotNull(SaveCodec.ReadWorld(saved, TerrainProfiles.Resolve).Terrain);
             var slot = session.Checkpoint("slot1"); session.Tick(DateTimeOffset.UtcNow); await slot;
             Assert.NotNull(SaveCodec.ReadWorld(File.ReadAllBytes(Path.Combine(directory, "slot1.json")), FreeTrain.Online.Content.TerrainProfiles.Resolve).Terrain);
             session.PrepareShutdown(); await session.FinalCheckpoint();
-            Assert.Equal(text, File.ReadAllText(path));
+            Assert.Equal(saved, storage.Read("checkpoint"));
+            Assert.Equal(text, File.ReadAllText(Path.Combine(directory, "slot2.json")));
+            var restarted = new NetworkSession(new(), storage, startupWorld: new() { Width = -1 });
+            Assert.Null(restarted.StartupSaveError);
+            var restored = restarted.CaptureSave(); restarted.Tick(DateTimeOffset.UtcNow);
+            Assert.Equal(saved, await restored);
             Assert.True(File.Exists(Path.Combine(directory, "slot1.json")));
             Assert.Empty(Directory.GetFiles(directory, "*.tmp"));
         }

@@ -216,7 +216,7 @@ public class TerrainPersistenceTests
     }
 
     [Fact]
-    public async Task Missing_pack_checkpoint_is_not_overwritten_on_shutdown()
+    public async Task Missing_pack_checkpoint_is_discarded_and_replaced_on_shutdown()
     {
         var node = JsonNode.Parse(SaveCodec.Write(Scene()))!; node["requiredPacks"]![0]!["catalogHash"] = new string('f', 64);
         var rejected = Bytes(node); var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-pack-" + Guid.NewGuid());
@@ -225,7 +225,10 @@ public class TerrainPersistenceTests
             using var storage = new SaveStorage(directory); await storage.Write("checkpoint", rejected);
             var session = new NetworkSession(new(), storage, startupWorld: TestWorlds.SmallStartup()); Assert.Equal("incompatibleSave", session.StartupSaveError);
             Assert.Equal(TerrainProfile.Ruleset, session.Bootstrap().Ruleset);
-            session.PrepareShutdown(); await session.FinalCheckpoint(); Assert.Equal(rejected, storage.Read("checkpoint"));
+            Assert.False(storage.Exists("checkpoint"));
+            Assert.True(session.AutomaticCheckpointAvailable);
+            session.PrepareShutdown(); await session.FinalCheckpoint();
+            Assert.NotNull(SaveCodec.ReadWorld(storage.Read("checkpoint"), TerrainProfiles.Resolve).Terrain);
         }
         finally { Directory.Delete(directory, true); }
     }

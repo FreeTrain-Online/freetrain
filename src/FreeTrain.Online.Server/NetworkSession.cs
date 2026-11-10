@@ -45,7 +45,8 @@ public sealed partial class NetworkSession
             catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
             {
                 StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";
-                logger?.LogWarning("Ignored checkpoint ({Reason}); generating a new world. The file was preserved.", StartupSaveError);
+                storage.DiscardCheckpoint();
+                logger?.LogWarning("Discarded checkpoint ({Reason}); generating a new world.", StartupSaveError);
             }
         }
         host = this.hostFactory(1, options.InputExpiry);
@@ -58,13 +59,14 @@ public sealed partial class NetworkSession
             catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException)
             {
                 StartupSaveError = ex is InvalidDataException ? ex.Message : "saveFailed";
-                logger?.LogWarning("Ignored checkpoint ({Reason}); starting a new world. The file was preserved.", StartupSaveError);
+                storage.DiscardCheckpoint();
+                logger?.LogWarning("Discarded checkpoint ({Reason}); starting a new world.", StartupSaveError);
             }
         }
     }
     private readonly Func<long, TimeSpan, SessionHost> hostFactory;
     public bool SavingAvailable => host.SavingAvailable;
-    public bool AutomaticCheckpointAvailable => SavingAvailable && StartupSaveError == null;
+    public bool AutomaticCheckpointAvailable => SavingAvailable;
     public string? StartupSaveError { get; }
     private bool disconnectCheckpoint;
     public bool TakeCheckpointRequest() { lock (gate) { var requested = disconnectCheckpoint; disconnectCheckpoint = false; return requested; } }
@@ -78,8 +80,6 @@ public sealed partial class NetworkSession
     public async Task Checkpoint(string id = "checkpoint", long? epoch = null, ParticipantContext? participant = null)
     {
         if (!SavingAvailable) throw new InvalidDataException("savingUnavailable");
-        // A rejected startup checkpoint is never overwritten, including on shutdown.
-        if (id == "checkpoint" && StartupSaveError != null) throw new InvalidDataException(StartupSaveError);
         if (storage == null) return;
         await storage.Write(id, await CaptureSave(epoch, participant));
     }
@@ -147,7 +147,7 @@ public sealed partial class NetworkSession
     // Shutdown has stopped the driver, so explicitly drain this final queued capture.
     public async Task FinalCheckpoint()
     {
-        if (storage == null || !SavingAvailable || StartupSaveError != null) return;
+        if (storage == null || !SavingAvailable) return;
         Task<byte[]> capture;
         lock (gate) { capture = host.CaptureSave(); host.Pump(); }
         await storage.Write("checkpoint", await capture);

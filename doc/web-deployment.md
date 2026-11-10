@@ -183,7 +183,9 @@ including when an operator WebSocket remains open. Startup restores paused,
 with a fresh server incarnation/epoch; credentials must be exchanged again.
 
 Automatic checkpoints run every 30 seconds by default, after load/disconnect,
-and at graceful shutdown. An abrupt crash can lose all changes since the last
+and at graceful shutdown. Checkpoints are transient: a checkpoint that fails to load
+at startup is deleted, and fresh checkpointing remains enabled. Named saves are
+preserved. An abrupt crash can lose all changes since the last
 successful checkpoint; repeated disk-write failures can make that window
 longer. HTTP/WS acknowledgement means committed in memory, not crash-durable.
 Do not use `docker compose down --volumes` for a real deployment.

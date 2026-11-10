@@ -204,7 +204,7 @@ public class MixedContinuationTests
 
     [Theory]
     [InlineData("corrupt")][InlineData("handler")][InlineData("pack")][InlineData("hash")][InlineData("oversize")]
-    public async Task Invalid_full_network_input_and_startup_checkpoint_survive_until_explicit_recovery(string kind)
+    public async Task Invalid_startup_checkpoint_is_discarded_while_named_slots_and_rejected_uploads_are_preserved(string kind)
     {
         var good=await Network.Value;var node=JsonNode.Parse(good)!;
         if(kind=="handler")node["mixed"]!["voxels"]!.AsArray().First(v=>v!["traffic"]?["rail"]!=null)!["traffic"]!["rail"]!["definition"]!["recipeId"]="unregistered:p4-21";
@@ -219,20 +219,22 @@ public class MixedContinuationTests
             File.WriteAllBytes(path,bad);
             if(kind=="oversize"){using var file=File.OpenWrite(path);file.SetLength(SaveCodec.MaximumBytes+1L);}
             var length=new FileInfo(path).Length;
+            var slotPath=Path.Combine(directory,"slot3.json");File.Copy(path,slotPath);
             await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true)){
+                Assert.False(File.Exists(path));
                 await server.Bootstrap();var status=await server.Http.GetStringAsync("/api/saves/status");Assert.Contains("startupError",status);
                 Assert.Contains(kind=="oversize"?"saveTooLarge":kind is "pack" or "hash"?"incompatibleSave":"invalidSave",status);
                 var before=await server.Http.GetByteArrayAsync("/api/saves/download");
                 var rejected=kind=="oversize"
-                    ?await server.Http.PostAsync("/api/saves/checkpoint/load?expectedWorldEpoch=1",null)
+                    ?await server.Http.PostAsync("/api/saves/slot3/load?expectedWorldEpoch=1",null)
                     :await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1",new ByteArrayContent(bad));
                 Assert.Equal(kind=="oversize"?HttpStatusCode.RequestEntityTooLarge:HttpStatusCode.BadRequest,rejected.StatusCode);
                 Assert.Equal(before,await server.Http.GetByteArrayAsync("/api/saves/download"));
-                Assert.Equal(1,(await server.Bootstrap()).WorldEpoch);Assert.Equal(length,new FileInfo(path).Length);
-                if(kind!="oversize")Assert.Equal(bad,File.ReadAllBytes(path));
+                Assert.Equal(1,(await server.Bootstrap()).WorldEpoch);Assert.Equal(length,new FileInfo(slotPath).Length);
+                if(kind!="oversize")Assert.Equal(bad,File.ReadAllBytes(slotPath));
                 Assert.True((await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1",new ByteArrayContent(good))).IsSuccessStatusCode);
                 Assert.Equal(good,await server.Http.GetByteArrayAsync("/api/saves/download"));
-                Assert.Equal(length,new FileInfo(path).Length); // Recovery is deliberate and does not rewrite the input.
+                Assert.Equal(length,new FileInfo(slotPath).Length); // Named input survives recovery.
                 Assert.True((await server.Http.PostAsync("/api/saves/slot2/save?expectedWorldEpoch=2",null)).IsSuccessStatusCode);
                 Assert.Equal(good,File.ReadAllBytes(Path.Combine(directory,"slot2.json")));
             }

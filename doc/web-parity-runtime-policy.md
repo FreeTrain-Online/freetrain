@@ -40,9 +40,10 @@ removal clears dangling local references without rebuilding catchment.
   `saveTooLarge`. Validation completes before world replacement. Failure preserves
   the world, epoch and queued work.
 - Startup reports rejected checkpoints in the log and `/api/saves/status`, then
-  starts a fresh canonical world. Rejected files are never rewritten: automatic
-  and shutdown checkpoint attempts are disabled for that process, and explicit
-  checkpoint writes fail. Named slots and downloads can save the fresh world.
+  discards the transient checkpoint and starts a fresh canonical world. Automatic,
+  explicit and shutdown checkpoint writes remain enabled. Named slots and rejected
+  uploads are preserved. If the checkpoint cannot be deleted, startup fails rather
+  than continuing with stale recovery data.
 - Valid Save10 uploads are checked before the browser offers replacement confirmation.
   Confirmed load joins the authority FIFO and rechecks Owner role and expected
   epoch. Success advances the epoch and publishes a full coherent snapshot (bounded chunks for large state); queued requests

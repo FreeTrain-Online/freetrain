@@ -108,9 +108,10 @@ The 1 MiB/depth-32 limits, strict numbers/required fields, duplicate-member
 rejection, owner authority, epoch fencing and atomic replacement remain. Unknown
 profiles/packs/definitions return `incompatibleSave`; malformed graph/allocator
 state returns `invalidSave`. Saves 1–4 return `incompatibleSave` before current
-format deserialization. No old parser or upgrade path remains. Rejection preserves
-the active world/epoch and files, including automatic/manual/shutdown protection
-for an incompatible startup checkpoint. Retired Save 4 artifacts live under
+format deserialization. No old parser or upgrade path remains. Rejected uploads
+and named slots preserve the active world/epoch and files. Under ONLINE-SAVE-003,
+failed startup checkpoints are discarded and fresh checkpointing remains enabled.
+Retired Save 4 artifacts live under
 [`historical/save-v4`](../prototype/protocol/historical/save-v4/README.md).
 
 ## Verification and remaining gates
