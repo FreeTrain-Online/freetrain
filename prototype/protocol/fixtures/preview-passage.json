@@ -15,7 +15,8 @@
       "y": 10,
       "z": 2
     },
-    "material": "green"
+    "material": "green",
+    "part": "passage"
   },
   "legal": true,
   "reason": null,

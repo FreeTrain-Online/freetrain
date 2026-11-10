@@ -280,7 +280,7 @@ const validatePassage=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/Passage
 export function parsePassagePreview(value:unknown):import('../generated/contracts.ts').PassagePreview {
  if(!validatePassage(value))throw new Error('Invalid passage preview');
  const p=value as import('../generated/contracts.ts').PassagePreview;
- const path=passagePath(p.query.from,p.query.to);
+ const path=p.query.part==='stairs'?(JSON.stringify(p.query.from)===JSON.stringify(p.query.to)?[p.query.from]:[]):passagePath(p.query.from,p.query.to);
  if(p.cost!=='0'||(p.legal?p.reason!==null||!path.length||JSON.stringify(path)!==JSON.stringify(p.positions):p.reason===null||p.positions.length!==0))throw new Error('Inconsistent passage preview');
  return p;
 }

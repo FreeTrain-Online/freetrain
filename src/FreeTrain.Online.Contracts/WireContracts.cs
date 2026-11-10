@@ -194,7 +194,7 @@ public sealed record StationBuildingPreviewRead(StationBuildingQuery Query, bool
     PositionRead[] Positions, RailwayLossRead[] Losses);
 public sealed record EditStationBuildingCommand(StationBuildingQuery Query, long ExpectedCost) : CommandPayload;
 public sealed record PassageQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
-    string ExpectedContentVersion, string Action, PositionRead From, PositionRead To, string Material);
+    string ExpectedContentVersion, string Action, PositionRead From, PositionRead To, string Material, string Part = "passage");
 public sealed record PassagePreviewRead(PassageQuery Query, bool Legal, string? Reason, long Cost, PositionRead[] Positions);
 public sealed record EditPassageCommand(PassageQuery Query, long ExpectedCost) : CommandPayload;
 public sealed record ThinPlatformQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,

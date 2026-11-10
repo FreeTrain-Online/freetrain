@@ -1048,6 +1048,7 @@ export interface PassageQuery {
   from: Position;
   to: Position;
   material: "concrete" | "brown" | "green";
+  part?: "passage" | "stairs";
 }
 export interface Accepted {
   type: "accepted";

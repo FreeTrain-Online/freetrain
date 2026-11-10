@@ -949,6 +949,20 @@
   "passageLegal": "Passage edit is legal. Cosmetic changes are free.",
   "passageFrame": "Show passage preview",
   "passageConfirm": "Confirm passage",
-  "passageHelp": "Cosmetic passages cost ¥0. Cross slim platforms at right angles. Width follows the adjacent opposite-facing passage; endpoints may remain unbridged. Empty cells are left empty. Passages do not connect logical station hosts or start passenger service. An existing bridged passage keeps its material.",
-  "passageSummary": "Free cosmetic passages across slim platforms. Logical station connections stay unchanged."
+  "passageHelp": "Cosmetic passages cost ¥0. Cross slim platforms at right angles. Width follows the adjacent opposite-facing passage; endpoints may remain unbridged. Empty cells are left empty. Passages do not connect logical station hosts or start passenger service. An existing bridged passage keeps its material. Stairs use one slim-platform cell beside a passage. A forward passage takes precedence; roof and width follow the platform. Removing a passage retains existing stairs.",
+  "passageSummary": "Free cosmetic passages across slim platforms. Logical station connections stay unchanged.",
+  "passagePart": "Part",
+  "passageType": "Passage",
+  "stairType": "Stairs",
+  "stairTarget": "Stairs require a slim platform.",
+  "stairNeighbor": "Place a passage immediately ahead of or behind the stair target.",
+  "stairPick": "Pick stair location on map",
+  "stairConfirm": "Confirm stairs",
+  "stairSummary": "Add or remove stairs on a slim platform beside a passage.",
+  "stairX": "Stair X",
+  "stairY": "Stair Y",
+  "stairLevel": "Stair level",
+  "stairLegal": "Stair edit is valid and free.",
+  "stairAction": "Stair action",
+  "stairMaterial": "Stair material"
 }

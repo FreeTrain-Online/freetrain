@@ -40,7 +40,7 @@
     {
       "id": "exav-stable-bundled",
       "version": "2",
-      "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9"
+      "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a"
     }
   ],
   "cars": [
@@ -122,7 +122,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
       },
       "pricePerCar": 30000000,
@@ -135,7 +135,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{2C6F6C72-FA4B-4941-84C1-57553C8A5C2A}"
       },
       "pricePerCar": 28000000,
@@ -148,7 +148,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{F7134C8E-6B63-4780-AF16-90D33131CD07}"
       },
       "pricePerCar": 25000000,
@@ -161,7 +161,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}"
       },
       "pricePerCar": 50000000,
@@ -174,7 +174,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{F4D54B1E-534E-47b0-9EA7-76CE075423E4}"
       },
       "pricePerCar": 70000000,
@@ -187,7 +187,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{719F0922-EA74-409C-B829-C4950201C226}"
       },
       "pricePerCar": 100000000,
@@ -202,7 +202,7 @@
       "binding": {
         "packId": "exav-stable-bundled",
         "version": "2",
-        "catalogHash": "9e85cf889fd8bd49c24c6173c971bf7fe935a5d3a36438f4e242e84bee3c35b9",
+        "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
         "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
       },
       "kind": "timetable"

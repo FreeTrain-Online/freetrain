@@ -5832,6 +5832,12 @@
             "brown",
             "green"
           ]
+        },
+        "part": {
+          "enum": [
+            "passage",
+            "stairs"
+          ]
         }
       },
       "required": [

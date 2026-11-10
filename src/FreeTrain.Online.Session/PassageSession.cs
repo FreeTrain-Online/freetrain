@@ -9,13 +9,15 @@ public sealed partial class SessionHost
     private MixedSessionState PassageState(PassageQuery query)
     {
         if (query.From == null || query.To == null || query.ExpectedWorldEpoch < 0 || query.ExpectedGeometryRevision < 0 || query.ExpectedMinute < 0 ||
+            query.Part is not ("passage" or "stairs") || query.Part == "stairs" && query.From != query.To ||
             query.Action is not ("place" or "remove") || query.Material is not ("concrete" or "brown" or "green")) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
         if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
         return state;
     }
     private static PassageConstructionPlan PlanPassage(MixedSessionState state, PassageQuery query) =>
-        PassageConstruction.Preview(state.World,new(query.From.X,query.From.Y,query.From.Z),new(query.To.X,query.To.Y,query.To.Z),
+        query.Part == "stairs" ? PassageConstruction.PreviewStair(state.World,new(query.From.X,query.From.Y,query.From.Z),
+            Enum.Parse<PassageMaterial>(query.Material,true),query.Action == "remove") : PassageConstruction.Preview(state.World,new(query.From.X,query.From.Y,query.From.Z),new(query.To.X,query.To.Y,query.To.Z),
             Enum.Parse<PassageMaterial>(query.Material,true),query.Action == "remove");
 
     public PassagePreviewRead PreviewPassage(PassageQuery query)

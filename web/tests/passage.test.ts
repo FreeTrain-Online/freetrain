@@ -70,3 +70,28 @@ Deno.test('passage requests fence epoch geometry minute content abort reconnect 
   }finally{model.dispose();}
  }
 });
+Deno.test('all 96 stair selections are ready, bounded, roof/width aware and source ordered',()=>{
+ let count=0;
+ for(const direction of [0,2,4,6] as const)for(const material of ['concrete','brown','green'] as const)for(const upward of [false,true])for(const roof of [false,true])for(const double of [false,true]){
+  const s=stationScene(64,24),p=addPassagePlatform(s,direction),y=p.yards[0];y.roof=roof;y.outlook={kind:'stair',material,bridge:false,upward};
+  if(double){const d=offset((direction+6)%8);addPassagePlatform(s,((direction+4)%8) as Heading,{x:10+d.x,y:10+d.y,z:2});}
+  const index=direction*4|(upward?0:4)|(double?2:0)|(roof?1:0),art=platformAppearance(p,y,s.mixed!.stationGraph!.platforms);
+  assert.equal(art.length,1);assert.equal(art[0].recipeId,`system:${material}-stair-${index}${index===23?'-corrected':''}`);
+  const frame=catalog.renderRecipes.find(r=>r.id===art[0].recipeId)!.frames[0];assert.equal(frame.status,'ready');
+  const [x,cy,w,h]=frame.rectangle!;assert(x>=0&&cy>=0&&x+w<=336&&cy+h<=153);
+  if(index===23){assert.deepEqual(frame.rectangle,[288,4,32,36]);assert.equal(catalog.renderRecipes.find(r=>r.id===`system:${material}-stair-23`)!.frames[0].status,'invalid-source-crop');}
+  const plan=new RailwayRenderPlan(s,catalog,{season:'spring',night:false});const layers=plan.layers.filter(l=>l.entityId===y.trafficOwnerId&&l.recipeId.includes('stair'));
+  assert.equal(layers.length,1);assert.equal(layers[0].frame.stage,direction===2||direction===4?20:40);count++;
+ }
+ assert.equal(count,96);
+});
+Deno.test('stair single-cell preview shape and pure ghost retain forward neighbor precedence',()=>{
+ const s=stationScene(64,24),p=addPassagePlatform(s,0),at=p.location;
+ p.yards[0].outlook={kind:'plain',material:'concrete',bridge:false,upward:false};
+ addPassagePlatform(s,0,{x:10,y:9,z:2});addPassagePlatform(s,0,{x:10,y:11,z:2});
+ const q=passageQuery(s,at,at,'green',false,'stairs')!,preview={query:q,legal:true,reason:null,cost:'0',positions:[at]},bytes=JSON.stringify(s);
+ assert.deepEqual(parsePassagePreview(preview),preview);assert.throws(()=>parsePassagePreview({...preview,query:{...q,to:{...at,x:11}}}));
+ assert.equal(passageGhost(s,preview)[0].recipeId,'system:green-stair-0');assert.equal(JSON.stringify(s),bytes);
+ p.yards[0].outlook={kind:'stair',material:'brown',bridge:false,upward:false};
+ assert.equal(passageGhost(s,{...preview,query:{...q,action:'remove'}})[0].recipeId,'system:thin-0');
+});

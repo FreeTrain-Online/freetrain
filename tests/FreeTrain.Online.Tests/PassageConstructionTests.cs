@@ -20,6 +20,56 @@ public class PassageConstructionTests
         var plan=PassageConstruction.Preview(s.World,a,b,material,remove);Assert.True(plan.Legal,plan.Reason);
         var result=PassageConstruction.Commit(s,plan);MixedWire.ValidateTransition(s,result);return result;
     }
+    static MixedSessionState Stair(MixedSessionState s, Location at, PassageMaterial material=PassageMaterial.Concrete,bool remove=false)
+    {
+        var plan=PassageConstruction.PreviewStair(s.World,at,material,remove);Assert.True(plan.Legal,plan.Reason);
+        var after=PassageConstruction.Commit(s,plan);MixedWire.ValidateTransition(s,after);return after;
+    }
+    [Theory]
+    [InlineData(0)][InlineData(2)][InlineData(4)][InlineData(6)]
+    public void Stairs_all_materials_directions_forward_precedence_missing_neighbor_and_exact_continuation(int heading)
+    {
+        var at=new Location(10,10,2);var d=new Heading(heading);
+        foreach(var material in Enum.GetValues<PassageMaterial>())
+        {
+            var s=Place(Empty(),at.Move(d.Opposite),heading);var bytes=SaveCodec.Write(s);
+            Assert.Equal("stairNeighbor",PassageConstruction.PreviewStair(s.World,at,material).Reason);
+            Assert.Equal("stairTarget",PassageConstruction.PreviewStair(s.World,at.Move(d.Left90),material).Reason);
+            Assert.Equal(bytes,SaveCodec.Write(s));Assert.Same(s,Stair(s,at,remove:true));
+            var back=at.Move(d.Opposite);var forward=at.Move(d);
+            s=Edit(s,back.Move(d.Left90),back.Move(d.Right90));
+            var before=s;bytes=SaveCodec.Write(s);var preview=PassageConstruction.PreviewStair(s.World,at,material);
+            Assert.True(preview.Legal);Assert.Equal(bytes,SaveCodec.Write(s));
+            s=Stair(s,at,material);var p=s.World.Stations!.Platforms[0];
+            Assert.Equal(new PlatformOutlook(PlatformOutlookKind.Stair,material,Upward:false),p.Yards.Single(y=>y.Location==at).Outlook);
+            Assert.Same(before.Fleet,s.Fleet);Assert.Same(before.Construction.Accounts,s.Construction.Accounts);
+            Assert.Equal(before.World.Voxels.ToArray(),s.World.Voxels.ToArray());Assert.Equal(before.World.Stations!.Platforms[0].Revision+1,p.Revision);
+            Assert.Throws<InvalidOperationException>(()=>PassageConstruction.Commit(s,preview));
+            s=Edit(s,forward.Move(d.Left90),forward.Move(d.Right90));s=Stair(s,at,material);
+            Assert.True(s.World.Stations!.Platforms[0].Yards.Single(y=>y.Location==at).Outlook.Upward);
+            s=Edit(s,forward.Move(d.Left90),forward.Move(d.Right90),remove:true);
+            Assert.Equal(PlatformOutlookKind.Stair,s.World.Stations!.Platforms[0].Yards.Single(y=>y.Location==at).Outlook.Kind);
+            s=Stair(s,at,material);Assert.False(s.World.Stations!.Platforms[0].Yards.Single(y=>y.Location==at).Outlook.Upward);
+            var reopened=SaveCodec.ReadWorld(SaveCodec.Write(s),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+            s.AdvanceOneMinute();reopened.AdvanceOneMinute();Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));
+            s=Stair(s,at,remove:true);Assert.Equal(new PlatformOutlook(),s.World.Stations!.Platforms[0].Yards.Single(y=>y.Location==at).Outlook);
+        }
+    }
+    [Fact]
+    public async Task Stair_queries_use_authoritative_roles_quotes_and_replay_fences()
+    {
+        var s=Place(Empty(),new(10,10,2));s=Edit(s,new(9,9,2),new(11,9,2));
+        using var h=new SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        var snap=h.Snapshot();var q=new PassageQuery(snap.WorldEpoch,snap.Mixed!.GeometryRevision,snap.Tick,snap.ContentVersion,"place",new(10,10,2),new(10,10,2),"green","stairs");
+        Assert.True(h.PreviewPassage(q).Legal);
+        Assert.Throws<ArgumentException>(()=>h.PreviewPassage(q with {To=new(11,10,2)}));
+        var observer=new ParticipantContext("viewer",ParticipantRole.Observer);h.RegisterParticipant(observer);
+        async Task<WireMessage> Send(ParticipantContext who,long cost=0){var task=h.Enqueue(who,new(Guid.NewGuid().ToString(),h.WorldEpoch,new EditPassageCommand(q,cost)));h.Pump(0);return await task;}
+        Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await Send(observer)).Code);
+        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new("owner"),1)).Code);
+        Assert.IsType<AcceptedMessage>(await Send(new("owner")));
+        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new("owner"))).Code);
+    }
     [Theory]
     [InlineData(0)][InlineData(2)][InlineData(4)][InlineData(6)]
     public void Every_material_heading_endpoint_and_roof_retains_identity_service_and_exact_save(int heading)
@@ -108,6 +158,10 @@ public class PassageConstructionTests
         s=Edit(s,at with {Y=29},at with {Y=31},PassageMaterial.Green);
         Assert.Same(before.Fleet,s.Fleet);Assert.Equal(before.World.At(at),s.World.At(at));
         s=Edit(s,at with {Y=29},at with {Y=31},remove:true);Assert.Same(before.Fleet,s.Fleet);
+        var neighbor=at.Move(new Heading(reverse?6:2));
+        s=Edit(s,neighbor with {Y=29},neighbor with {Y=31},PassageMaterial.Brown);
+        s=Stair(s,at,PassageMaterial.Green);Assert.Same(before.Fleet,s.Fleet);
+        Assert.Equal(before.World.At(at),s.World.At(at));
         var reopened=SaveCodec.ReadWorld(SaveCodec.Write(s),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         for(var n=0;n<6;n++){s.AdvanceOneMinute();reopened.AdvanceOneMinute();}
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));Assert.Equal(0,s.Fleet!.Trains[0].Passengers);Assert.Equal(0,s.Fleet.Trains[0].StopCallCount);

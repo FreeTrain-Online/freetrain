@@ -662,7 +662,8 @@ public static class NetworkEndpoints
         EditPassageCommand edit => edit.Query != null && edit.Query.From != null && edit.Query.To != null && edit.ExpectedCost == 0 &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedMinute >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&
-            edit.Query.Action is "place" or "remove" && edit.Query.Material is "concrete" or "brown" or "green",
+            edit.Query.Action is "place" or "remove" && edit.Query.Material is "concrete" or "brown" or "green" &&
+            edit.Query.Part is "passage" or "stairs" && (edit.Query.Part != "stairs" || edit.Query.From == edit.Query.To),
         EditThinPlatformCommand edit => edit.Query != null && edit.Query.Position != null && edit.ExpectedCost >= 0 &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedMinute >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&

@@ -256,6 +256,13 @@ def system_recipes(catalog, review):
             pictures_by_path.setdefault(v['day']['path'],picture['id'])
     # Geometry gallery includes explicit platform/stair constructors and aliases.
     rows = list(review['geometryGallery']['recipes'])
+    # EXAV-GAL-001 portable correction: preserve original invalid index23 recipes.
+    # Authored roofed partner of x256 is x288 (32px stride), not source x388.
+    for material in ('concrete', 'brown', 'green'):
+        original = next(r for r in rows if r['id'] == material+'-stair-23')
+        rows.append(dict(original, id=material+'-stair-23-corrected',
+                         rectangle=[288,4,32,36],
+                         sourceSymbol='EXAV-GAL-001 portable correction; original PassagewayRail.getStairSprite index23 x388'))
     for p in review['geometry']['patterns']:
         rows.append(dict(id='pattern/'+str(p['id']), path='core/res/'+p['sheet'],
                          rectangle=p['rectangle'],anchor=p['anchor'],sourceSymbol='RailPattern'))

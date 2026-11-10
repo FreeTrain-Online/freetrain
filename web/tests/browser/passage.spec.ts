@@ -72,3 +72,55 @@ test('all 48 passage appearances match independent source crop pixels and alpha 
  }
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/passages-report.json`,JSON.stringify(reports,null,2));
 });
+for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials neighbors remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer})=>{
+ test.setTimeout(150000);const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ if(ja){await page.setViewportSize({width:430,height:860});await page.addInitScript(()=>localStorage.setItem('freetrain-online.locale','ja'));}
+ let socket:WebSocketRoute;const messages:any[]=[];
+ await page.routeWebSocket('**/api/session?*',r=>{socket=r.connectToServer();socket.onMessage(m=>{messages.push(JSON.parse(String(m)));r.send(m);});r.onMessage(m=>socket.send(m));});
+ async function stair(material='concrete',action='place',y=26){
+  await page.getByLabel(ja?'部品':'Part',{exact:true}).selectOption('stairs');
+  await page.getByLabel(ja?'階段の操作':'Stair action',{exact:true}).selectOption(action);
+  await page.getByLabel(ja?'階段の素材':'Stair material',{exact:true}).selectOption(material);
+  await page.getByLabel(ja?'階段 X':'Stair X',{exact:true}).fill('25');
+  await page.getByLabel(ja?'階段 Y':'Stair Y',{exact:true}).fill(String(y));
+  await page.getByLabel(ja?'階段の高さ':'Stair level',{exact:true}).fill('2');
+  const response=page.waitForResponse(r=>r.url().includes('/api/station/passage/preview?'));await page.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
+ }
+ try{
+  await page.goto('/');await ready(page,ja?'ja':'en');await empty(page,ja);
+  const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action:'place',position:{x:25,y:25,z:2},direction:4,length:4,roof:true,platformId:'0',expectedPlatformRevision:'0'};
+  const r=await page.request.post('/api/station/platform/preview?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1',{data:q}),v=await r.json();expect(v.legal,v.reason).toBe(true);
+  socket!.send(JSON.stringify({type:'command',requestId:'stair-platform',expectedWorldEpoch:s.worldEpoch,payload:{kind:'editThinPlatform',query:q,expectedCost:v.cost}}));await expect.poll(()=>messages.find(m=>m.requestId==='stair-platform')?.type).toBe('accepted');
+  await peer.goto('/');await ready(peer);await task(page,ja);
+  expect((await stair()).reason).toBe('stairNeighbor');
+  await page.getByLabel(ja?'部品':'Part',{exact:true}).selectOption('passage');await quote(page,ja);await page.getByRole('button',{name:ja?'通路の設置を確定':'Confirm passage',exact:true}).click();
+  const confirm=page.getByRole('button',{name:ja?'階段の設置を確定':'Confirm stairs',exact:true});
+  for(const material of ['concrete','brown','green']){
+   const before=await save(page),p=await stair(material);expect(p.legal,p.reason).toBe(true);expect(p.positions).toEqual([{x:25,y:26,z:2}]);expect(p.cost).toBe('0');expect(await save(page)).toEqual(before);
+   await page.getByRole('button',{name:ja?'通路のプレビューを表示':'Show passage preview',exact:true}).click();await expect(page.locator('canvas.world-canvas')).toHaveAttribute('data-station-ghost-ready','true');
+   if(material==='concrete'){
+    await page.getByRole('button',{name:ja?'地図で階段の位置を選択':'Pick stair location on map',exact:true}).click();
+    const point=await page.locator('canvas.world-canvas').evaluate(el=>{const r=el.getBoundingClientRect(),[cx,cy]=el.dataset.camera!.split(',').map(Number),zoom=Number(el.dataset.zoom);return {x:r.x+r.width/2+(16*(25-19+26)+16-cx)*zoom,y:r.y+r.height/2+(8*(26-25+19)-32+8-cy)*zoom};});
+    const exposed=await exposeMapPoint(page,point);if(ja)await page.touchscreen.tap(exposed.x,exposed.y);else await page.mouse.click(exposed.x,exposed.y);
+    await expect(confirm).toBeEnabled();await expect(page.getByLabel(ja?'階段 X':'Stair X',{exact:true})).toHaveValue('25');await expect(page.getByLabel(ja?'階段 Y':'Stair Y',{exact:true})).toHaveValue('26');
+   }
+   await page.getByRole('button',{name:ja?'プレビューを取消':'Cancel preview',exact:true}).click();await expect(confirm).toBeDisabled();
+   await stair(material);await confirm.click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook).toEqual({kind:'stair',material,bridge:false,upward:false});
+   await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/stairs-${ja?'ja':'en'}-${material}.png`});
+   const bytes=await save(page),now=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+now.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);await task(page,ja);
+   await stair(material,'remove');await page.getByRole('button',{name:ja?'撤去を確定':'Confirm removal',exact:true}).click();await expect.poll(async()=>(await state(peer)).mixed.stationGraph.platforms[0].yards[1].outlook.kind).toBe('plain');
+  }
+  await stair('green');await confirm.click();await expect.poll(async()=>(await state(page)).mixed.stationGraph.platforms[0].yards[1].outlook.kind).toBe('stair');
+  const bytes=await save(page);await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page,ja?'ja':'en');expect(await save(page)).toEqual(bytes);
+ }finally{await context.close();}
+});
+test('all 96 stair appearances match literal crops and alpha picks in eight variants including corrected index23',async({page})=>{
+ test.setTimeout(180000);const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/stair-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});await page.route('**/__tests/stairs.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
+ for(const season of ['spring','summer','autumn','winter'])for(const night of [false,true]){
+  const r=await page.evaluate(async({catalog,season,night})=>{const {stairPixels}=await import('/__tests/stairs.js');return stairPixels(catalog,{season,night});},{catalog,season,night});expect(r.count).toBe(96);expect(r.pixels).toBe(1152000);expect(r.picks).toBe(r.pixels);writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/stairs-${season}-${night?'night':'day'}.png`,Buffer.from(r.png.split(',')[1],'base64'));
+ }
+});
+test('stairs render and pick before or after overlapping train cars with height cuts',async({page})=>{
+ const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/stair-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});await page.route('**/__tests/stair-overlap.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
+ const report=await page.evaluate(async catalog=>{const {stairTrainOverlap}=await import('/__tests/stair-overlap.js');return stairTrainOverlap(catalog);},catalog);expect(report).toEqual({count:12,picks:76800});
+});

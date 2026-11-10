@@ -173,13 +173,14 @@ without this cast or mutation; commit stages the new outlook only after all
 predicates succeed. This is a portable safety adaptation with source neighbor
 precedence intact.
 
-**EXAV-GAL-001 remains unresolved with P6-15/P6-27.** Index23 (south, down,
-double-width, roofed) asks for `(388,4,32,36)` in336×153 sheets, all three materials
-and both day/night. Keep original selection, hashes and P2 diagnostics. This
-review does not guess a replacement coordinate, approve corrected art or claim
-native output. P6-02 pins the invalid witness; P6-15 must supply an evidence-backed
-visual disposition before visual acceptance. This named follow-up does not block
-specification closure and is not a new permission gate.
+**EXAV-GAL-001 has a P6-15 portable corrected-selection disposition; native/human
+acceptance remains P6-27.** Index23 (south, down, double-width, roofed) asks for
+`(388,4,32,36)` in 336×153 sheets, all three materials and both day/night. Original
+selection, hashes, P2 diagnostics and the P6-02 invalid witness are retained.
+P6-15 supplies separately named x288 corrected recipes and browser pixel/pick
+evidence in [the stair disposition](web-parity-stairs.md#exav-gal-001-disposition).
+Original recipes remain diagnostic; original-runtime fidelity is not claimed.
+This follow-up does not block specification closure and is not a new permission gate.
 
 ## Committed departure events
 

@@ -73,6 +73,48 @@ public static class PassageConstruction
         catch (OverflowException) { return Reject("constructionOverflow"); }
     }
 
+    // STATION-D011: pure preview; preserve source forward-then-backward precedence.
+    public static PassageConstructionPlan PreviewStair(MixedWorld world, Location at,
+        PassageMaterial material, bool removal = false)
+    {
+        PassageConstructionPlan Reject(string reason) => new(world,null,reason,[]);
+        if (!Enum.IsDefined(material)) return Reject("invalidPassageGeometry");
+        if (!world.Terrain.Space.ContainsVoxel(at)) return Reject("outside");
+        if (world.Profile.Stations is not {} profile) return Reject("unavailableStationBinding");
+        var graph = world.Stations ?? new StationGraph(profile,[],[]);
+        var rows = graph.Platforms.Where(p=>p.Kind == PlatformKind.Thin)
+            .SelectMany(p=>p.Yards.Select(y=>(Platform:p,Yard:y))).ToDictionary(r=>r.Yard.Location);
+        if (!rows.TryGetValue(at,out var row))
+            return removal ? new(world,world,null,[at]) : Reject("stairTarget");
+        try
+        {
+            var old = row.Yard.Outlook;
+            PlatformOutlook outlook;
+            if (removal)
+            {
+                if (old.Kind != PlatformOutlookKind.Stair) return new(world,world,null,[at]);
+                outlook = new();
+            }
+            else
+            {
+                bool Passage(Location p) => rows.TryGetValue(p,out var neighbor) && neighbor.Yard.Outlook.Kind == PlatformOutlookKind.Passage;
+                var upward = Passage(at.Move(row.Platform.Direction));
+                if (!upward && !Passage(at.Move(row.Platform.Direction.Opposite))) return Reject("stairNeighbor");
+                outlook = new(PlatformOutlookKind.Stair,material,Upward:upward);
+            }
+            if (outlook == old) return new(world,world,null,[at]);
+            var platforms = graph.Platforms.Select(p=>p.Id == row.Platform.Id ? p with {
+                Revision=checked(p.Revision+1), Yards=p.Yards.Select(y=>y.Location == at ? y with {Outlook=outlook} : y).ToImmutableArray()
+            } : p);
+            var entities = world.Spatial.Entities.Select(e=>e.Id == row.Yard.TrafficOwnerId ? e with {Revision=checked(e.Revision+1)} : e).ToImmutableArray();
+            var changed = new StationGraph(profile,graph.Buildings,platforms,graph.Passages,graph.NextStationName,
+                graph.NextPlatformName,graph.Listeners,graph.ListenerMemberships);
+            var candidate = world.Replace(world.Revision,world.Terrain,new(world.Spatial.NextEntityId,entities),world.Voxels,world.Slopes,stations:changed);
+            return new(world,candidate,null,[at]);
+        }
+        catch (OverflowException) { return Reject("constructionOverflow"); }
+    }
+
     public static MixedSessionState Commit(MixedSessionState before, PassageConstructionPlan plan)
     {
         if (!ReferenceEquals(before.World,plan.Source)) throw new InvalidOperationException("staleRevision");
