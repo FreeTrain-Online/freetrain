@@ -53,8 +53,9 @@ midnight, preserving FIFO order when they coincide. Removal cancels only that
 station's registrations. Geometry, accounts, graph, allocator and clock publish
 as one validated successor; late booking/allocator/queue/transport rejection
 preserves the original state. The default dispatcher continues hourly/daily
-timers and books upkeep, including after save/reopen; P6-17 still owns
-passenger/log effects. See the
+timers and books upkeep, including after save/reopen;
+[P6-17](web-parity-station-statistics.md) now supplies passenger decay and log
+rotation. See the
 [station callback crash fix](web-parity-station-booking.md#callback-boundary-and-later-consumers).
 
 ## Authoritative API

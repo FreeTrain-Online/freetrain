@@ -1,5 +1,5 @@
 // Stable ExAV 883cf7d Station/Platform timer ownership. Original authors,
-// LGPL-2.1-or-later. P6-17 supplies the station hour/day passenger/log dispatcher.
+// LGPL-2.1-or-later. StationStatistics supplies the live hour/day effects.
 using System.Collections.Immutable;
 
 namespace FreeTrain.Online.Simulation;
@@ -96,7 +96,7 @@ public static class StationLifecycle
         return before.Successor(before.Revision,new(world,accounts),before.ConstructionMode,clock:schedule.Clock);
     }
 
-    // Called by the trusted future station dispatcher. Upkeep is booked before the
+    // Called by the trusted station dispatcher. Upkeep is booked before the
     // hour/day effects; the repeated Clock entry keeps its registration cookie and
     // receives the next FIFO order AFTER this handler returns. Effects are pure
     // graph transformations; rejected callbacks discard this whole minute batch.

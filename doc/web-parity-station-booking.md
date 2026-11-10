@@ -70,11 +70,12 @@ The next due minute and FIFO order must match the existing Clock's repeat entry.
 Freeze/successor copies and first-fleet initialization retain the dispatcher.
 Session candidate validation now checks the candidate station graph explicitly.
 
-The default station dispatcher runs `StationLifecycle.Tick` for both buildings
-and platforms, retaining timer continuation and upkeep booking. Hourly callbacks
-currently advance their timers without changing passenger counts or transport
-logs; P6-17 still owns those effects. A trusted dispatcher can supply those
-effects without changing timer ownership. No delegate is serialized.
+The default station dispatcher now runs
+[`StationStatistics.Tick`](web-parity-station-statistics.md) through
+`StationLifecycle.Tick`, retaining timer continuation and upkeep booking while
+applying hourly passenger decay and daily transport-log rotation. A trusted
+dispatcher can supply effects without changing timer ownership. No delegate is
+serialized.
 
 This replaces the earlier contract-stage
 `stationDispatchRequiresP6PassengerLifecycle` rejection: once live construction

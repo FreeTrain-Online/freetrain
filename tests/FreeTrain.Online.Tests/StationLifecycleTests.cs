@@ -195,7 +195,7 @@ public class StationLifecycleTests
     public void Default_station_dispatch_advances_hours_and_days_with_upkeep_and_stable_timers()
     {
         var s=Built(0);
-        var controlled=Built(0,ControlledTick);
+        var controlled=Built(0,StationStatistics.Tick);
         for(var minute=0;minute<2880;minute++)
         {
             s.AdvanceOneMinute();controlled.AdvanceOneMinute();

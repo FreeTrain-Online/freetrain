@@ -4,6 +4,7 @@ Tests are grouped by the behavior they protect.
 
 | Suite | Coverage |
 | --- | --- |
+| `station-transport.spec.ts` | EN/JA peers, controlled providers, aligned hourly decay, midnight import/export/train-log rotation, relative platform upkeep, duplicate receipts, save/reopen and actual checkpoint process restart |
 | `thin-platform.spec.ts` | EN/JA slim roofed/unroofed ground/elevated/underground construction, exact roof-run ghosts and cuts, touch/map rail attachment, removal/restoration, peers, roles, stale/cancel/replacement fences and checkpoint restart |
 | `session-lifecycle.spec.ts` | Connection gate, sign-in, asset readiness, disconnect/rejoin, leave and revoked access |
 | `station-editing.spec.ts` | Unsaved drafts, focus traps, retargeting, stale revisions and interrupted edits |

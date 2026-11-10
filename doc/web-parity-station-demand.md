@@ -3,8 +3,9 @@
 Complete at the station-facing controlled-provider boundary. Population queries
 and catchment relationships consume actual spatial owners. Constructible city
 sources, population/land-value evolution and stadium game scheduling remain
-P7/P8. Hourly decay/upkeep activation, passenger exchange, fares and station
-information remain P6-17 onward.
+P7/P8. [P6-17](web-parity-station-statistics.md) now activates hourly decay and
+daily log rotation through the live upkeep dispatcher. Passenger exchange,
+fares and station information remain P6-18 onward.
 
 Authority is stable ExAV 2.1.1.12, Git
 `883cf7d81cf49db25ff38cd3a25d0f140afe31a0`, `trunk/`. The

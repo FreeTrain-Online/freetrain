@@ -35,16 +35,20 @@ public class StationPersistenceTests
             clock:schedule.Clock,stationCallback:Tick);
     }
     [Fact]
-    public void Default_dispatch_after_save_restore_runs_station_timers_without_changing_passengers_or_logs()
+    public void Default_dispatch_after_save_restore_runs_passenger_decay_logs_and_upkeep_exactly_once()
     {
-        var s=Scene();
+        var s=SaveCodec.ReadWorld(SaveCodec.Write(Scene()),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         // Omit the fixture's injected dispatcher, as production checkpoint loading does.
         var restored=SaveCodec.ReadWorld(SaveCodec.Write(s),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
-        var passengers=restored.World.Stations!.Buildings.Select(b=>(b.Passengers,b.Imports,b.Exports,b.Trains)).ToArray();
         for(var minute=517;minute<1957;minute++) {s.AdvanceOneMinute();restored.AdvanceOneMinute();}
         Assert.Equal(1957,restored.Clock.Time.AbsoluteMinute);
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(restored));
-        Assert.Equal(passengers,restored.World.Stations!.Buildings.Select(b=>(b.Passengers,b.Imports,b.Exports,b.Trains)));
+        Assert.All(restored.World.Stations!.Buildings,b=> {
+            Assert.Equal(new StationPassengers(),b.Passengers);
+            Assert.Equal(0,b.Imports.Today);Assert.Equal(17,b.Imports.Yesterday);
+            Assert.Equal(23.125+Math.Pow(17,0.2),b.Imports.ThisWeek);
+            Assert.Equal(31,b.Exports.Yesterday);Assert.Equal(47,b.Trains.Yesterday);
+        });
         var reopened=SaveCodec.ReadWorld(SaveCodec.Write(restored),TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
         s.AdvanceOneMinute();reopened.AdvanceOneMinute();
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));

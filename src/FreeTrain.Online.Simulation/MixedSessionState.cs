@@ -46,10 +46,7 @@ public sealed class MixedSessionState
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
         this.trainCallback=trainCallback ?? FleetMovement.Tick;
-        // Live construction registers station timers before passenger simulation
-        // is available. Keep their schedules and upkeep running in the meantime;
-        // the passenger/log slice can supply its effects through StationCallback.
-        this.stationCallback=stationCallback ?? ((session,handler) => StationLifecycle.Tick(session,handler,g=>g));
+        this.stationCallback=stationCallback ?? StationStatistics.Tick;
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);

@@ -54,7 +54,7 @@
     },
     {
       "path": "doc/web-parity-runtime-policy.md",
-      "sha256": "3905981fc719eb95db472b92592a6a747b95195851f85c7dfa8fab64c02bd2c1"
+      "sha256": "4845a65a8d2630a6cf9def05415162a7c6332271b5cb31207fc73773e12f5ca5"
     }
   ],
   "sourceReviews": [
@@ -20702,5 +20702,5 @@
     }
   ],
   "approvalGates": [],
-  "reviewSha256": "4bd25e2aa107b1b9259d613022c19e6a1b83284e5ce6aa0d88d6a62bb4599780"
+  "reviewSha256": "a4e0ce03edd1fcaddc0f0f838d789e4d4076e062fce3e8231bc62ced8d5bc9ff"
 }
