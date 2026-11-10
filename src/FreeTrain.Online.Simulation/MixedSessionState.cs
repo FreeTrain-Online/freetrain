@@ -6,7 +6,11 @@ namespace FreeTrain.Online.Simulation;
 // The dispatcher is trusted domain code, retained on detached copies. It returns
 // one atomic result and its next one-shot delay; no delegate enters durable state.
 // The production dispatcher supplies Inside movement; tests may bind a controlled dispatcher.
-public sealed record TrainCallbackResult(MixedConstructionState Candidate, long? NextDelay);
+public sealed record TrainCallbackResult(MixedConstructionState Candidate, long? NextDelay)
+{
+    public ImmutableArray<StationPassengerEffect> PassengerEffects { get; init; } = [];
+    public ImmutableArray<DepartureBellIntent> DepartureBells { get; init; } = [];
+}
 public delegate TrainCallbackResult TrainCallback(MixedSessionState session, long trainId);
 
 // One world-local scheduler/random bank surrounds immutable geometry/fleet/accounts.
@@ -21,6 +25,10 @@ public sealed class MixedSessionState
     public RandomStreams Random { get; private set; }
     public bool Paused { get; private set; }
     public long Revision { get; private set; }
+    // Last successful minute only; absent from saves, snapshots and Freeze.
+    // Failed minutes retain the previous publication and expose no new effects.
+    public ImmutableArray<StationPassengerEffect> PassengerEffects { get; private set; } = [];
+    public ImmutableArray<DepartureBellIntent> DepartureBells { get; private set; } = [];
     public void ReviseSession() => Revision = checked(Revision + 1);
     private readonly TrainCallback trainCallback;
     private readonly StationCallback stationCallback;
@@ -86,6 +94,8 @@ public sealed class MixedSessionState
             throw new ArgumentException("Invalid train callback continuation.");
         if (result.NextDelay is {} delay) Clock.Schedule(TrainHandler(trainId),delay);
         Construction=candidate;
+        PassengerEffects=PassengerEffects.AddRange(result.PassengerEffects);
+        DepartureBells=DepartureBells.AddRange(result.DepartureBells);
         if (!ReferenceEquals(before,candidate)) Revision=checked(Revision+1);
     }
     private void TickStation(string handlerId)
@@ -111,9 +121,11 @@ public sealed class MixedSessionState
         // Validate and rebind the entire detached successor BEFORE publication.
         // Any bad callback, booking, RNG use or queue overflow discards the batch.
         var next=Freeze(); next.Clock.Advance(); next.Revision=checked(next.Revision+1);
+        var passengerEffects=next.PassengerEffects; var departureBells=next.DepartureBells;
         next=next.Freeze();
         var clock=Clock.Restore(next.Clock.Capture(),Bindings(next.World));
         Construction=next.Construction; Random=next.Random; Revision=next.Revision; Clock=clock;
+        PassengerEffects=passengerEffects; DepartureBells=departureBells;
     }
     private void ValidateCandidate(MixedConstructionState candidate, bool allowUnchanged = false)
     {

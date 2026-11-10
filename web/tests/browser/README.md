@@ -4,6 +4,7 @@ Tests are grouped by the behavior they protect.
 
 | Suite | Coverage |
 | --- | --- |
+| `station-yard.spec.ts` | P6-19 constructed host/platform, real purchased stock, Simple wait and packed boarding/cost/occupancy publication, EN/JA Observer peer, duplicate receipt, exact reopen and process checkpoint restart. Generate `FREETRAIN_YARD_FLEET_OUTPUT` with `StationYardStopTests` first. |
 | `station-transport.spec.ts` | EN/JA peers, controlled providers, aligned hourly decay, midnight import/export/train-log rotation, relative platform upkeep, duplicate receipts, save/reopen and actual checkpoint process restart |
 | `thin-platform.spec.ts` | EN/JA slim roofed/unroofed ground/elevated/underground construction, exact roof-run ghosts and cuts, touch/map rail attachment, removal/restoration, peers, roles, stale/cancel/replacement fences and checkpoint restart |
 | `session-lifecycle.spec.ts` | Connection gate, sign-in, asset readiness, disconnect/rejoin, leave and revoked access |

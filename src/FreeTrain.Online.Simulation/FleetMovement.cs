@@ -25,7 +25,7 @@ public static class FleetMovement
         if (stop.Decision.Action==FleetStopAction.Wait)
         {
             train=train with {StopCallCount=checked(train.StopCallCount+1),State=TrainOperationalState.StoppingAtStation};
-            return new(Publish(session,before,train,false),stop.Decision.WaitMinutes);
+            return Result(Publish(session,before,train,false,stop:stop),stop.Decision.WaitMinutes,stop);
         }
         train=train with {Forwarding=false};
         if (stop.Decision.Action==FleetStopAction.Forwarding) train=train with {Forwarding=true};
@@ -41,12 +41,12 @@ public static class FleetMovement
             train=FleetReversal.Reverse(w,train,session.Clock.Time);
             next=Next(w,fleet,train,session.Clock.Time); // one retry; TRAIN-D001 handles both-null without dereferencing it
         }
-        return CompleteMove(session,train,next);
+        return CompleteMove(session,train,next,stop);
     }
 
     // Shared continuation after route/stop effects. Exchange uses the current
     // head BEFORE the shift, and operating expense uses post-exchange passengers.
-    public static TrainCallbackResult CompleteMove(MixedSessionState session,FleetTrain train,FleetCarState? next)
+    public static TrainCallbackResult CompleteMove(MixedSessionState session,FleetTrain train,FleetCarState? next,FleetStopResult? stop=null)
     {
         var w=session.World;var fleet=w.Fleet!;var before=fleet.Train(train.Id);
         train=train with {StopCallCount=0};
@@ -77,20 +77,25 @@ public static class FleetMovement
         var native=fleet.Profile.Resolve(train.Definition).MinutesPerVoxel;
         var delay=next is FleetCarState.Outside || before.Head.State is not FleetCarState.Inside prior
             ? native : LimitedDelay(w.SpeedLimits,prior.Location,native);
-        return new(Publish(session,before,train,moved,revenue),delay);
+        return Result(Publish(session,before,train,moved,revenue,stop),delay,stop);
     }
 
-    private static MixedConstructionState Publish(MixedSessionState session,FleetTrain before,FleetTrain train,bool moved,int? revenue=null)
+    private static TrainCallbackResult Result(MixedConstructionState candidate,long delay,FleetStopResult? stop) =>
+        new(candidate,delay) {PassengerEffects=stop?.Exchange?.Effects ?? [],DepartureBells=stop?.Bell is {} bell ? [bell] : []};
+
+    private static MixedConstructionState Publish(MixedSessionState session,FleetTrain before,FleetTrain train,bool moved,int? revenue=null,FleetStopResult? stop=null)
     {
         // Reversal plus a shift still changes each stable car revision only once.
         train=FleetReversal.NormalizeCars(before,train);
         var changed=train with {Cars=before.Cars}!=before || !train.Cars.SequenceEqual(before.Cars);
         var candidate=session.Construction;
-        if (changed)
+        if (changed || stop?.Exchange!=null)
         {
-            train=train with {Revision=checked(before.Revision+1)};
-            var world=FleetOccupancy.ReplaceTrain(session.World,train);
+            train=train with {Revision=changed?checked(before.Revision+1):before.Revision};
+            var world=FleetOccupancy.ReplaceTrain(session.World,train,stop?.Exchange?.Station);
             var accounts=candidate.Accounts;
+            if(stop?.Exchange?.Revenue is {} stationRevenue)
+                accounts=accounts.Earn(stationRevenue,world.Revision,session.Clock.Time,"stationUnload");
             var booking=ConstructionBooking.None;
             if (moved && (before.MoveCount&3)==0)
             {

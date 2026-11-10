@@ -42,6 +42,7 @@ public sealed class StationGraph
     private readonly FrozenDictionary<long, long?> resolved;
     private readonly FrozenDictionary<long, StationPassage> passages;
     private readonly FrozenDictionary<long, StationListener> listeners;
+    private readonly FrozenDictionary<long, (StationPlatform Platform, PlatformYard Yard)> yards;
     public IEnumerable<(long Id, long Revision)> Identities => Buildings.Select(b => (b.Id,b.Revision)).Concat(Platforms.Select(p => (p.Id,p.Revision)));
     public StationBuilding Building(long id) => buildings.TryGetValue(id,out var b) ? b : throw new ArgumentException("Unknown service station.");
     public StationPlatform Platform(long id) => platforms.TryGetValue(id,out var p) ? p : throw new ArgumentException("Unknown platform.");
@@ -49,6 +50,8 @@ public sealed class StationGraph
     internal ImmutableArray<long> ListenerStations(long providerId) => listeners.GetValueOrDefault(providerId)?.Stations ?? [];
     internal StationProvider? Provider(long providerId) => listeners.GetValueOrDefault(providerId)?.Provider;
     internal StationPassage? Passage(long trafficOwnerId) => passages.GetValueOrDefault(trafficOwnerId);
+    internal (StationPlatform Platform, PlatformYard Yard)? Yard(long trafficOwnerId) =>
+        yards.TryGetValue(trafficOwnerId, out var yard) ? yard : null;
     internal bool IsSpatialOwner(long id) => buildings.ContainsKey(id) || platforms.TryGetValue(id,out var p) && p.Kind == PlatformKind.Wide;
 
     public StationGraph(StationProfile profile, IEnumerable<StationBuilding> buildings, IEnumerable<StationPlatform> platforms,
@@ -136,6 +139,8 @@ public sealed class StationGraph
         if (timers.Select(t => t.Registration).Distinct().Count() != timers.Length || timers.Select(t => t.Order).Distinct().Count() != timers.Length)
             throw new ArgumentException("Duplicate station timer handle/order.");
         this.passages = Passages.ToFrozenDictionary(p => p.TrafficOwnerId);
+        this.yards = Platforms.SelectMany(p => p.Yards.Select(y => (Platform: p, Yard: y)))
+            .ToFrozenDictionary(y => y.Yard.TrafficOwnerId);
         var listenerIds = Listeners.Where(l => l != null).Select(l => l.ProviderId).ToHashSet();
         if (Listeners.Length > SpatialIndex.MaximumOccupiedCells || ListenerMemberships.Length > Buildings.Length ||
             Listeners.Any(l => l == null || l.ProviderId < 1 || l.Stations.IsDefault || l.Stations.Length > 4 ||

@@ -97,7 +97,7 @@ public static class FleetDeployment
 // Shared complete-consist publication for placement, withdrawal and movement.
 internal static class FleetOccupancy
 {
-    internal static MixedWorld ReplaceTrain(MixedWorld w,FleetTrain train)
+    internal static MixedWorld ReplaceTrain(MixedWorld w,FleetTrain train,StationBuilding? station=null)
     {
         var f=w.Fleet!;
         var graph=new FleetGraph(f.Profile,f.RootGroupId,f.Trains.Select(t=>t.Id==train.Id?train:t),f.Groups,f.Controllers,f.ColorTest);
@@ -111,9 +111,16 @@ internal static class FleetOccupancy
             if(car==traffic.Car)return v;
             changed.Add(v.OwnerId);return v with {Traffic=traffic with {Car=car}};
         }).ToImmutableArray();
-        var spatial=new SpatialState(w.Spatial.NextEntityId,w.Spatial.Entities.Select(e=>changed.Contains(e.Id)
-            ?e with {Revision=checked(e.Revision+1)}:e).ToImmutableArray());
-        return w.Replace(w.Revision,w.Terrain,spatial,voxels,w.Slopes,w.SpeedLimits,graph);
+        var stations=w.Stations;
+        if(station!=null)
+        {
+            station=station with {Revision=checked(stations!.Building(station.Id).Revision+1)};
+            stations=new(stations.Profile,stations.Buildings.Select(b=>b.Id==station.Id?station:b),stations.Platforms,
+                stations.Passages,stations.NextStationName,stations.NextPlatformName,stations.Listeners,stations.ListenerMemberships);
+        }
+        var spatial=new SpatialState(w.Spatial.NextEntityId,w.Spatial.Entities.Select(e=>e.Id==station?.Id
+            ?e with {Revision=station.Revision}:changed.Contains(e.Id)?e with {Revision=checked(e.Revision+1)}:e).ToImmutableArray());
+        return w.Replace(w.Revision,w.Terrain,spatial,voxels,w.Slopes,w.SpeedLimits,graph,stations);
     }
 }
 

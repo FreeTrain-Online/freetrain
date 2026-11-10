@@ -1,0 +1,37 @@
+// Stable ExAV 883cf7d YardRailRoad.getStopTimeSpan. LGPL-2.1-or-later.
+namespace FreeTrain.Online.Simulation;
+
+// Detached intent only. P6-20 owns committed network delivery/local playback.
+public sealed record DepartureBellIntent(long TrainId, long PlatformId, DefinitionReference Bell);
+
+internal static class StationYardStop
+{
+    internal static FleetStopResult Dispatch(MixedWorld world, FleetTrain train, StationPlatform platform,
+        PlatformYard yard, FleetHarborHandler? handler, GameTime? time)
+    {
+        var head=(FleetCarState.Inside)train.Head.State;
+        var same=head.Heading==platform.Direction;
+        var position=same ? (platform.Length+train.Cars.Length)/2-1 : (platform.Length-train.Cars.Length)/2;
+        if(head.Heading!=platform.Direction && head.Heading!=platform.Direction.Opposite ||
+            yard.Location!=head.Location || position<0 || position>=platform.Length || position!=yard.Index ||
+            world.Stations!.HostStation(platform.Id) is not {} station)
+            return new(train,FleetStopDecision.Proceed);
+
+        // Capture incoming count before controller-side reversal/re-placement.
+        var count=train.StopCallCount;
+        var result=FleetControllers.AtHarbor(world,train,
+            new FleetHarborReference.Station(station.Location,station.Id,station.Revision),handler,time);
+        if(result.Train.Id!=train.Id) throw new ArgumentException("Stop handler changed train identity.");
+        var stock=world.Fleet!.Profile.Resolve(result.Train.Definition);
+        StationExchange? exchange=null;
+        if(count==0 && result.Decision.Action==FleetStopAction.Wait)
+            exchange=StationPassengerExchange.Unload(station,result.Train,stock.Fare);
+        else if(count!=0 && result.Decision.Action!=FleetStopAction.Wait &&
+            result.Decision.Action is not (FleetStopAction.Forwarding or FleetStopAction.ReverseForwarding))
+            exchange=StationPassengerExchange.Board(station,result.Train,
+                StationCatchment.Demand(world.Stations,station.Id,time ?? throw new ArgumentException("Boarding requires game time.")),
+                stock.Create(result.Train.Cars.Length).PackedCapacity,stock.Amenity);
+        return result with {Train=exchange?.Train ?? result.Train,Exchange=exchange,
+            Bell=count!=0 && result.Decision.Action!=FleetStopAction.Wait ? new(train.Id,platform.Id,platform.Bell) : null};
+    }
+}

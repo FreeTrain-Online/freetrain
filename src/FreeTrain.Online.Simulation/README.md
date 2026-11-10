@@ -103,8 +103,10 @@ contexts and distinct Signal/Station harbor references. Positive waits preserve
 handler effects before returning; subsequent actions retain source forwarding,
 reversal, counter reset and captured-head timing. Simple chooses straight,
 ignores non-Station harbors and waits30 minutes on the first Station call before
-departing. Station adapters are test-only until P6 supplies real yards/platforms;
-manual/TAT dispatch retains its later owners. Save9/protocol7 are unchanged.
+departing. P6-19 now dispatches actual slim/wide yards through current resolved
+hosts and effective shared controllers, collecting passenger exchange and bell
+intents with atomic occupancy/account/queue publication. Bell delivery remains
+P6-20; the current contract is Save10/protocol8.
 See [controller contract and verification](../../doc/web-parity-fleet-controllers.md).
 
 

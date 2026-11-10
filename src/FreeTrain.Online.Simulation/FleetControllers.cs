@@ -36,14 +36,15 @@ public readonly record struct FleetStopDecision
 // This preserves reversal/re-placement/yard effects without serializing code.
 public sealed record FleetStopResult(FleetTrain Train, FleetStopDecision Decision)
 {
+    public StationExchange? Exchange { get; init; }
+    public DepartureBellIntent? Bell { get; init; }
     public FleetStopResult(FleetTrain train, int sourceMinutes)
         : this(train,FleetStopDecision.FromSourceMinutes(sourceMinutes)) { }
 }
 public delegate FleetStopResult FleetStopHandler(MixedWorld world, FleetTrain train);
 
-// Ordinary rail is not a harbor. Signals supply themselves; future yards supply
-// their resolved host Station, whose location is the controller's settings key.
-// Station references define the P6 boundary, not platform/boarding gameplay.
+// Signals supply themselves; yards supply their current resolved host Station,
+// whose location is the controller's shared settings key.
 public abstract record FleetHarborReference
 {
     public Location Location { get; }
@@ -97,7 +98,7 @@ public static class FleetControllers
             ? FleetStopDecision.Wait(30) : FleetStopDecision.Proceed);
     }
 
-    // Trusted adapters may bind a test/future Station or controller provider.
+    // Trusted adapters may bind a controlled controller provider.
     // The passing train resolves its shared instance on every call. Delegates
     // remain runtime bindings; only the existing graph/configuration is saved.
     public static FleetStopResult AtHarbor(MixedWorld world, FleetTrain train, FleetHarborReference harbor,
@@ -117,6 +118,8 @@ public static class FleetControllers
     {
         var head=(FleetCarState.Inside)train.Head.State;
         var voxel=world.At(head.Location)!;var rail=voxel.Traffic!.Rail!;
+        if(world.Stations?.Yard(voxel.OwnerId) is {} yard)
+            return StationYardStop.Dispatch(world,train,yard.Platform,yard.Yard,handler,time);
         if(world.Profile.Resolve(rail.Definition).Handler==RailwayHandler.Signal &&
             SignalRailwayConstruction.DelegatesStopTime(rail.Direction,head.Heading))
         {

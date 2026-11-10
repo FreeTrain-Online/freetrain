@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 namespace FreeTrain.Online.Simulation;
 
 // These are ordered, detached notifications, never callbacks into live state.
-// P7 consumes land-value/traffic effects; yard dispatch/publication belongs to P6-19.
+// P7 consumes land-value/traffic effects; real yards collect these during movement.
 public abstract record StationPassengerEffect
 {
     public sealed record LandValue(long StationId, Location Location, float Amount) : StationPassengerEffect;
