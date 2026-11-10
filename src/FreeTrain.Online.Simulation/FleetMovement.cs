@@ -61,11 +61,8 @@ public static class FleetMovement
             if(next is FleetCarState.Outside {Countdown:50})
             {
                 var stock=fleet.Profile.Resolve(train.Definition);
-                if(train.BoardingOrigin is {} origin)
-                {
-                    var distance=origin.Location.DistanceTo(((FleetCarState.Placed)train.Head.State).Location);
-                    revenue=checked(train.Passengers*stock.Fare*distance*2);
-                }
+                var unloaded=StationPassengerExchange.UnloadTrain(train,stock.Fare);
+                train=unloaded.Train;revenue=unloaded.Revenue;
                 train=train with {Passengers=train.Forwarding?0:Math.Min(100,stock.Create(train.Cars.Length).NormalCapacity),
                     BoardingOrigin=train.Forwarding?null:(FleetCarState.Placed)train.Head.State};
             }
