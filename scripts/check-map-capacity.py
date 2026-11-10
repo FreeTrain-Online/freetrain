@@ -34,7 +34,7 @@ saved = json.loads(expected)
 assert saved['saveVersion'] == 10
 jar = http.cookiejar.CookieJar()
 http = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-compat = 'protocolVersion=8&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1'
+compat = 'protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1'
 
 
 def call(path, data=None):

@@ -121,6 +121,12 @@
   }
   function useAnchor() { if(selectedPosition&&geometry?.inside){const point={...selectedPosition};clearTarget();anchor=point;} }
   function changeSnap(value:string) { snapMode=Number(value) as 0|4|8; if(rawPosition)void chooseTarget({...rawPosition}); }
+  export function departureVisible(position: Position) {
+    if (!live || position.z > heightCut) return false;
+    const p = space.center(position);
+    const x = (p.x-camera.x)*camera.zoom+width/2, y = (p.y-camera.y)*camera.zoom+height/2;
+    return x >= 0 && x < width && y >= 0 && y < height;
+  }
   export function suspendInput() { cancelGesture(); }
   export function resetInteraction() { cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }

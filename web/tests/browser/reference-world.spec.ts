@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready } from './browser-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
-const bootPath='/api/bootstrap?protocolVersion=8&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const bootPath='/api/bootstrap?protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
 // Rail-loop coverage deliberately loads its fixture; fresh services now generate terrain.
 const referenceSave=readFileSync('../prototype/protocol/saves/reference-v10.json');
@@ -146,7 +146,7 @@ test('canonical Observer can inspect and query geometry while save endpoints enf
     const page=await context.newPage();expect((await page.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
     await page.goto('/');await ready(page);await expect(page.getByTestId('participant-role')).toHaveText('Observer');
     const before=await bootstrap(page);
-    const response=await page.request.post('/api/spatial/preview?protocolVersion=8&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
+    const response=await page.request.post('/api/spatial/preview?protocolVersion=9&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
     expect(response.ok()).toBe(true);expect((await response.json()).storage).toEqual({h:10,v:28,z:0});
     expect((await page.request.post('/api/saves/slot1/save?expectedWorldEpoch='+before.worldEpoch)).status()).toBe(403);
     expect((await page.request.get('/api/saves/download')).status()).toBe(403);

@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, reopen and checkpoint restart',async({page,browser,baseURL,worldServer})=>{
  // P6-07/09/10 own station/platform presentation. This live-map witness keeps
@@ -29,7 +29,7 @@ test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, 
  try{
   await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
   for(const [i,p] of [page,peer].entries()){
-   const join=messages[i].find(m=>m.type==='join');expect(join.protocolVersion).toBe(8);expect(join.snapshot.mixed).toEqual(save.mixed);
+   const join=messages[i].find(m=>m.type==='join');expect(join.protocolVersion).toBe(9);expect(join.snapshot.mixed).toEqual(save.mixed);
    await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','station-transport'));
   }
   await page.getByRole('button',{name:'Step',exact:false}).first().click();

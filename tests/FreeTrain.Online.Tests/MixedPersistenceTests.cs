@@ -143,7 +143,7 @@ public class MixedPersistenceTests
             await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true)){
                 await server.Bootstrap();using var first=await server.Connect();
                 var cookies=new System.Net.CookieContainer();using var http=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
-                await http.GetStringAsync("/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1");using var second=await server.Connect(cookies);
+                await http.GetStringAsync("/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1");using var second=await server.Connect(cookies);
                 await NetworkTests.Read(first);await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1",new ByteArrayContent(data))).IsSuccessStatusCode);
                 Assert.True((await server.Http.PostAsync("/api/saves/upload?expectedWorldEpoch=1",new ByteArrayContent(data))).IsSuccessStatusCode);

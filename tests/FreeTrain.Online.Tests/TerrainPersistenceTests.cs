@@ -179,7 +179,7 @@ public class TerrainPersistenceTests
     {
         var directory = Path.Combine(Path.GetTempPath(), "freetrain-terrain-http-" + Guid.NewGuid());
         Directory.CreateDirectory(directory); var data = SaveCodec.Write(Scene());
-        var query = "/api/bootstrap?protocolVersion=8&contentVersion=" + TerrainProfile.ContentVersion;
+        var query = "/api/bootstrap?protocolVersion=9&contentVersion=" + TerrainProfile.ContentVersion;
         try
         {
             await using (var server = await NetworkTests.Harness.Start(saveDirectory: directory, canonical: true))
@@ -188,7 +188,7 @@ public class TerrainPersistenceTests
                 using var first = await server.Connect();
                 var secondCookies = new System.Net.CookieContainer();
                 using var secondHttp = new HttpClient(new HttpClientHandler { CookieContainer = secondCookies }) { BaseAddress = server.Http.BaseAddress };
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=8&contentVersion=" + TerrainProfile.ContentVersion);
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=9&contentVersion=" + TerrainProfile.ContentVersion);
                 using var second = await server.Connect(secondCookies);
                 await NetworkTests.Read(first); await NetworkTests.Read(second);
                 Assert.True((await server.Http.PostAsync("/api/saves/validate?expectedWorldEpoch=1", new ByteArrayContent(data))).IsSuccessStatusCode);

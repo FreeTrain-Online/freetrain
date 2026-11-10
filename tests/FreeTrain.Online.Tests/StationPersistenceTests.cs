@@ -57,7 +57,7 @@ public class StationPersistenceTests
     public void Exact_detached_roundtrip_preserves_recipes_logs_asymmetric_listeners_names_and_repeated_FIFO()
     {
         var s=Scene();var bytes=SaveCodec.Write(s);var restored=Decode(bytes);var g=restored.World.Stations!;
-        Assert.Equal(10,SaveCodec.Version);Assert.Equal(8,ProtocolIdentity.Version);
+        Assert.Equal(10,SaveCodec.Version);Assert.Equal(9,ProtocolIdentity.Version);
         Assert.Equal(bytes,SaveCodec.Write(restored));Assert.NotSame(s.World.Stations,g);
         Assert.Equal(new long[]{11,10},g.Building(1).Children);
         Assert.Equal(new long[]{5,2,3,4},g.Listeners[0].Stations);

@@ -38,7 +38,8 @@ export type WireMessage =
   | InputReset
   | SoundEvent
   | StateChunk
-  | SessionOffer;
+  | SessionOffer
+  | DepartureBell;
 export type Counter = string;
 export type Money = string;
 export type Heading = number;
@@ -286,7 +287,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 8;
+  protocolVersion: 9;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -326,6 +327,7 @@ export interface Snapshot {
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
   trainMotion?: TrainMotion;
+  effectsBaseline?: EffectsBaseline;
 }
 export interface Map {
   width: number;
@@ -1063,6 +1065,11 @@ export interface TrainMotionSlope {
   climb: 0 | 2 | 4 | 6;
   level: number;
 }
+export interface EffectsBaseline {
+  worldEpoch: Counter;
+  liveEpoch: string;
+  publicationSequence: Counter;
+}
 export interface Command {
   type: "command";
   requestId: string;
@@ -1341,7 +1348,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 8;
+  protocolVersion: 9;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -1353,6 +1360,17 @@ export interface SessionOffer {
    * @maxItems 32
    */
   requiredPacks: RequiredPack[];
+}
+export interface DepartureBell {
+  type: "departureBell";
+  worldEpoch: Counter;
+  liveEpoch: string;
+  publicationSequence: Counter;
+  effectOrdinal: number;
+  trainId: Counter;
+  platformId: Counter;
+  bell: Definition;
+  location: Position;
 }
 export interface SpatialQuery {
   expectedWorldEpoch: Counter;

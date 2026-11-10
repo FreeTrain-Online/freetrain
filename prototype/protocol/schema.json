@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v8.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v9.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -411,6 +411,9 @@
         },
         "trainMotion": {
           "$ref": "#/$defs/TrainMotion"
+        },
+        "effectsBaseline": {
+          "$ref": "#/$defs/EffectsBaseline"
         }
       },
       "required": [
@@ -1527,7 +1530,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 8
+          "const": 9
         },
         "contentVersion": {
           "type": "string",
@@ -1621,6 +1624,9 @@
         },
         {
           "$ref": "#/$defs/SessionOffer"
+        },
+        {
+          "$ref": "#/$defs/DepartureBell"
         }
       ]
     },
@@ -2320,7 +2326,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 8
+          "const": 9
         },
         "contentVersion": {
           "type": "string",
@@ -6008,6 +6014,74 @@
         "maximum": 2147483647
       },
       "title": "PopulationTable"
+    },
+    "EffectsBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "worldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "liveEpoch": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "publicationSequence": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "worldEpoch",
+        "liveEpoch",
+        "publicationSequence"
+      ]
+    },
+    "DepartureBell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "departureBell"
+        },
+        "worldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "liveEpoch": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "publicationSequence": {
+          "$ref": "#/$defs/Counter"
+        },
+        "effectOrdinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4095
+        },
+        "trainId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "platformId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "bell": {
+          "$ref": "#/$defs/Definition"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        }
+      },
+      "required": [
+        "type",
+        "worldEpoch",
+        "liveEpoch",
+        "publicationSequence",
+        "effectOrdinal",
+        "trainId",
+        "platformId",
+        "bell",
+        "location"
+      ]
     }
   }
 }

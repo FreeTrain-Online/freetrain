@@ -3,7 +3,7 @@ import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
 
 const output=process.env.FREETRAIN_YARD_FLEET_OUTPUT;
-const boot='/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 
 test('P6-19 constructed yard Simple wait and packed departure publish atomically to EN/JA peers through checkpoint restart',async({page,browser,baseURL,worldServer})=>{
@@ -44,6 +44,7 @@ test('P6-19 constructed yard Simple wait and packed departure publish atomically
   await ready(page);await ready(peer,'ja');
   while(BigInt((await snapshot(page)).tick)<BigInt(arrived.clock.absoluteMinute))await step();
   for(const i of [0,1])expect(latest(i).mixed).toEqual(arrived.mixed);
+  for(const i of [0,1])expect(messages[i].filter(m=>m.type==='departureBell')).toEqual([]);
   const waiting=await(await page.request.get('/api/saves/download')).json();
   expect(waiting.mixed.fleet.trains[0].stopCallCount).toBe(1);
   expect(waiting.mixed.stationGraph.buildings[0].trains.today).toBe(1);
@@ -58,6 +59,7 @@ test('P6-19 constructed yard Simple wait and packed departure publish atomically
   let command:any;
   while(BigInt((await snapshot(page)).tick)<BigInt(departed.clock.absoluteMinute))command=await step();
   for(const i of [0,1])expect(latest(i).mixed).toEqual(departed.mixed);
+  for(const i of [0,1]){const bell=messages[i].filter(m=>m.type==='departureBell');expect(bell).toHaveLength(1);expect(bell[0].bell).toEqual(departed.mixed.stationGraph.platforms[0].bell);}
   const train=departed.mixed.fleet.trains[0],station=departed.mixed.stationGraph.buildings[0];
   expect(train.passengers).toBeGreaterThan(0);expect(train.stopCallCount).toBe(0);expect(train.moveCount).toBe(1);
   expect(station.exports.today).toBe(train.passengers);expect(station.trains.today).toBe(2);
@@ -65,6 +67,7 @@ test('P6-19 constructed yard Simple wait and packed departure publish atomically
   sockets[0].send(JSON.stringify(command));
   await expect.poll(()=>messages[0].slice(start).find(m=>m.requestId===command.requestId)?.type).toBe('accepted');
   expect(await(await page.request.get('/api/saves/download')).json()).toEqual(saved);
+  for(const i of [0,1])expect(messages[i].filter(m=>m.type==='departureBell')).toHaveLength(1);
   for(const p of [page,peer])await expect(p.locator('canvas')).toHaveAttribute('data-instance','yard-service');
   expect(errors).toEqual([]);
  }finally{await context.close();}

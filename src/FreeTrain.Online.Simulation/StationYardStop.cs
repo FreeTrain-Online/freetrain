@@ -1,8 +1,8 @@
 // Stable ExAV 883cf7d YardRailRoad.getStopTimeSpan. LGPL-2.1-or-later.
 namespace FreeTrain.Online.Simulation;
 
-// Detached intent only. P6-20 owns committed network delivery/local playback.
-public sealed record DepartureBellIntent(long TrainId, long PlatformId, DefinitionReference Bell);
+// Capture the post-handler head before the central reversal/movement.
+public sealed record DepartureBellIntent(long TrainId, long PlatformId, DefinitionReference Bell, Location Location);
 
 internal static class StationYardStop
 {
@@ -32,6 +32,7 @@ internal static class StationYardStop
                 StationCatchment.Demand(world.Stations,station.Id,time ?? throw new ArgumentException("Boarding requires game time.")),
                 stock.Create(result.Train.Cars.Length).PackedCapacity,stock.Amenity);
         return result with {Train=exchange?.Train ?? result.Train,Exchange=exchange,
-            Bell=count!=0 && result.Decision.Action!=FleetStopAction.Wait ? new(train.Id,platform.Id,platform.Bell) : null};
+            Bell=count!=0 && result.Decision.Action!=FleetStopAction.Wait && result.Train.Head.State is FleetCarState.Inside current
+                ? new(train.Id,platform.Id,platform.Bell,current.Location) : null};
     }
 }

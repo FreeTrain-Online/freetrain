@@ -52,7 +52,7 @@ removal clears dangling local references without rebuilding catchment.
   the canonical codec. The explicit historical regression harness cannot write
   saves or accept a canonical replacement into a prototype host.
 
-The wire uses protocol8. Default identity and exact pack hash are in
+The wire uses protocol9. Default identity and exact pack hash are in
 [`canonical-profile.json`](../prototype/protocol/canonical-profile.json).
 The [Save10 schema](../prototype/protocol/save-v10.schema.json) is structural;
 the server additionally verifies the exact selected profile: the reference loop and rail ports,
@@ -67,3 +67,10 @@ Its inputs remain under
 Historical evidence remains labeled; it does not establish canonical continuation.
 
 Verification and remaining acceptance limits are recorded with [P1-01c](web-parity-reference-world.md), [P1-02](web-parity-clock.md), [P1-03](web-parity-random.md) and [P1-04](web-parity-spatial-contracts.md) and [P3-04](web-parity-terrain-transport.md).
+
+
+[P6-20 departure events](web-parity-departure-bells.md) advances only the wire to
+**protocol9**. Save10 remains unchanged. Fresh live epochs and subscription
+baselines fence committed bell events across retries, reconnect and replacement;
+no save, snapshot or receipt replays effect history. Matching static/server
+artifacts are required; earlier wire versions receive HTTP426.

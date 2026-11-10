@@ -75,7 +75,7 @@ def run(image, platform):
                                          headers={'Content-Type': 'application/json'})
         with opener.open(request, timeout=5) as response:
             assert response.status == 204
-        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&metadataOnly=true'))
+        bootstrap = json.loads(get('/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&metadataOnly=true'))
         assert bootstrap['type'] == 'sessionOffer'
         assert bootstrap['ruleset'] == 'terrain-state-1'
         assert bootstrap['requiredPacks'][0]['id'] == catalog['packId']

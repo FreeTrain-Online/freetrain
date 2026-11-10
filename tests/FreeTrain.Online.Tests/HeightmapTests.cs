@@ -188,7 +188,7 @@ public class HeightmapTests(ITestOutputHelper output)
             {
                 var before=await server.Bootstrap();using var first=await server.Connect();await NetworkTests.Read(first);
                 var secondCookies=new System.Net.CookieContainer();using var secondHttp=new HttpClient(new HttpClientHandler{CookieContainer=secondCookies}){BaseAddress=server.Http.BaseAddress};
-                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1");
+                await secondHttp.GetStringAsync("/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1");
                 using var second=await server.Connect(secondCookies);await NetworkTests.Read(second);
                 async Task<HttpResponseMessage> Preview(long revision, byte[]? bytes=null)
                 {
@@ -212,7 +212,7 @@ public class HeightmapTests(ITestOutputHelper output)
             }
             await using(var server=await NetworkTests.Harness.Start(saveDirectory:directory,canonical:true))
             {
-                await server.Http.GetStringAsync("/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1");
+                await server.Http.GetStringAsync("/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1");
                 Assert.Equal(saved,await server.Http.GetByteArrayAsync("/api/saves/download"));
             }
         }

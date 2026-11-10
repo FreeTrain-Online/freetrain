@@ -4,7 +4,7 @@ import { sourcePixelCounts } from './pixel-helpers.ts';
 import { closePanel,openPanel,ready,canonicalState as state } from './browser-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const bridge='{874B8BFD-1EF4-4828-9C5A-D0EA1049D28D}';
-const compat='protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 
 async function save(p:Page){return(await p.request.get('/api/saves/download')).body();}
 async function replace(p:Page,bytes:Buffer){const s=await state(p);expect((await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes})).ok()).toBe(true);await ready(p,(await p.locator("html").getAttribute("lang"))??"en");}

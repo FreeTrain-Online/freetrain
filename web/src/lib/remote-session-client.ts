@@ -1,5 +1,6 @@
+import { createDepartureEvents } from './departure-events.ts';
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
-import type { Accepted, Command, Join, Rejected, SoundEvent } from '../generated/contracts.ts';
+import type { Accepted, Command, Join, Rejected, SoundEvent, DepartureBell } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
 import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parsePassagePreview, parseWidePlatformPreview, parsePlatformProperties, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
 import { removalQueryKey } from './object-removal.ts';
@@ -8,7 +9,7 @@ import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 import {sessionCloseReason} from './session-close.ts';
 
-const compatibility = 'protocolVersion=8&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility = 'protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -20,7 +21,8 @@ export async function leaveGame(): Promise<void> {
 // A retry is automatic only on the same open socket, with the same request ID,
 // within the server's advertised/documented two-minute in-memory receipt window.
 // Any connection loss ends pending operations as unresolved; they are never replayed.
-export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: string) => void, onContent?: (content: EnabledContent) => void): SessionClient {
+export function createRemoteSessionClient(onSound?: (event: SoundEvent | DepartureBell, epoch: string) => void, onContent?: (content: EnabledContent) => void): SessionClient {
+  const departures = createDepartureEvents();
   const listeners = new Set<(read: ReadState) => void>();
   const statuses = new Set<(status: ConnectionStatus) => void>();
   const pending = new Map<string, { command: Command; resolve: (value: Accepted | Rejected) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout>; attempts: number }>();
@@ -53,7 +55,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
     if (!disposed) console.warn('[FreeTrain] Session reconnecting', { reason });
     clearInterval(heartbeat); clearTimeout(connectionTimer); clearPending();
     if (socket) { socket.onclose = null; socket.close(4001,sessionCloseReason(reason)); socket = undefined; }
-    join = undefined;
+    join = undefined; departures.reset();
     if (disposed) return;
     const delay = Math.min(5000, 250 * 2 ** Math.min(attempts++, 5));
     retryAt = Date.now() + delay;
@@ -123,8 +125,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
           } else if(assembly.pending)throw new Error('State interrupted');
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 8 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 9 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
+              departures.reset(message.snapshot.effectsBaseline);
               publish(message.snapshot); setStatus('ready');
               if (document.hidden) suspend();
               break;
@@ -139,6 +142,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               }
               clearTimeout(connectionTimer); resyncing = false;
               if (read && read.worldEpoch !== message.worldEpoch) clearPending();
+              departures.reset(message.effectsBaseline);
               publish(message); setStatus('ready'); break;
             case 'delta': {
               if (resyncing) break;
@@ -151,6 +155,9 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent, epoch: s
               }
               break;
             }
+            case 'departureBell':
+              if (read && departures.accept(message, read.worldEpoch) && status === 'ready') onSound?.(message, read.worldEpoch);
+              break;
             case 'soundEvent':
               if (read && status === 'ready') onSound?.(message, read.worldEpoch);
               break;

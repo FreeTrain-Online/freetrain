@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {ready,closePanel} from './browser-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
 test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{

@@ -26,7 +26,7 @@ Deno.test('bounded state assembly permits out-of-order chunks and publishes only
 });
 Deno.test('metadata-only session offers are unambiguous protocol messages',async()=>{
   const identity=await snapshot();
-  const offer={type:'sessionOffer',protocolVersion:8,contentVersion:'terrain-content-1',serverIncarnation:'test',sessionId:'reference-spatial',participantId:'owner',role:'owner',worldEpoch:'1',ruleset:'terrain-state-1',requiredPacks:identity.requiredPacks};
+  const offer={type:'sessionOffer',protocolVersion:9,contentVersion:'terrain-content-1',serverIncarnation:'test',sessionId:'reference-spatial',participantId:'owner',role:'owner',worldEpoch:'1',ruleset:'terrain-state-1',requiredPacks:identity.requiredPacks};
   equal(parseMessage(JSON.stringify(offer)),offer);
 });
 Deno.test('duplicates, conflicting identity, corruption, count bombs, length mismatch and expiry fail closed',async()=>{

@@ -9,7 +9,7 @@ using static FreeTrain.Online.Tests.StationBuildingConstructionTests;
 
 namespace FreeTrain.Online.Tests;
 
-public class StationYardStopTests
+public partial class StationYardStopTests
 {
     static int Int(JsonElement e,string key)=>e.GetProperty(key).GetInt32();
     public static IEnumerable<object[]> Positions()=>StationPassengerExchangeTests.Rows("stopIndices");
@@ -166,6 +166,7 @@ public class StationYardStopTests
         var controllerStop=FleetTimetable.Stop(s.World,s.Fleet!.Trains[0],s.Fleet.EffectiveController(entry.Id).Harbors[0].Rules,2,s.Clock.Time);
         var stop=FleetControllers.StopTime(s.World,s.Fleet.Trains[0],time:s.Clock.Time);
         Assert.Equal(controllerStop.Train.Head.State,stop.Train.Head.State);
+        Assert.Equal(((FleetCarState.Inside)controllerStop.Train.Head.State).Location,stop.Bell!.Location);
         if(action==FleetRuleAction.Reverse2)Assert.Equal(controllerStop.Train.Head.State,stop.Train.BoardingOrigin);
         else {Assert.Null(stop.Exchange);Assert.Equal(0,stop.Train.Passengers);}
         var result=FleetMovement.Tick(s,entry.Id);Assert.Equal(4,result.NextDelay);

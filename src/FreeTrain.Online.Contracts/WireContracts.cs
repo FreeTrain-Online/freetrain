@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 8;
+    public const int Version = 9;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
     public const string MixedRuleset = "mixed-railway-1";
@@ -66,6 +66,7 @@ public sealed class DecimalInt64Converter : JsonConverter<long>
 [JsonDerivedType(typeof(HeartbeatMessage), "heartbeat")]
 [JsonDerivedType(typeof(InputResetMessage), "inputReset")]
 [JsonDerivedType(typeof(SoundEventMessage), "soundEvent")]
+[JsonDerivedType(typeof(DepartureBellMessage), "departureBell")]
 [JsonDerivedType(typeof(StateChunkMessage), "stateChunk")]
 [JsonDerivedType(typeof(SessionOfferMessage), "sessionOffer")]
 public abstract record WireMessage;
@@ -77,6 +78,9 @@ public sealed record SessionOfferMessage(int ProtocolVersion, string ContentVers
 public sealed record StateTransferPayload(WireMessage Message, PackedTerrainRead? PackedTerrain);
 
 public sealed record SoundEventMessage(string EventId, long WorldEpoch, string Kind) : WireMessage;
+public sealed record EffectsBaselineMessage(long WorldEpoch, string LiveEpoch, long PublicationSequence);
+public sealed record DepartureBellMessage(long WorldEpoch, string LiveEpoch, long PublicationSequence, int EffectOrdinal,
+    long TrainId, long PlatformId, DefinitionRead Bell, PositionRead Location) : WireMessage;
 public sealed record ResyncMessage : WireMessage;
 public sealed record HeartbeatMessage : WireMessage;
 public sealed record InputResetMessage : WireMessage;
@@ -93,7 +97,8 @@ public sealed record SnapshotMessage(long WorldEpoch, long Revision, long Tick, 
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainRead? Terrain = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] EffectsBaselineMessage? EffectsBaseline = null) : WireMessage;
 public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revision, long Tick,
     bool Paused, long Cash, TrainRead[] Trains, StationRead[] Stations, BuildingRead[] Buildings,
     TrackRead[] Tracks, RemovedRead Removed, string Ruleset, string ContentVersion, RequiredPackRead[] RequiredPacks,

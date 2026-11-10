@@ -4,7 +4,7 @@ import {canonicalState as state,ready,closePanel,exposeMapPoint} from './browser
 const profile=JSON.parse(readFileSync('src/generated/station-profile.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const definition=profile.definitions.find((d:any)=>d.sizeX===1&&d.sizeY===1&&d.height===1).reference;
-const compat='protocolVersion=8&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 test.use({hasTouch:true});
 async function pick(page:Page,p:any,ja=false,readOnly=false){

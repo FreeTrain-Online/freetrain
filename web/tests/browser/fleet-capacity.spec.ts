@@ -34,7 +34,7 @@ for(const mode of ['small','medium','large','network','empty'])test(`P5-28 ${mod
   let last=0;function frame(now:number){if(w.cap.record&&last){w.cap.frames.push(now-last);}last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
  });
  await page.goto('/');await ready(page);
- const metadata=async()=>(await(await page.request.get('/api/bootstrap?protocolVersion=8&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true')).json());
+ const metadata=async()=>(await(await page.request.get('/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true')).json());
  const saved=async()=>(await page.request.get('/api/saves/download',{timeout:60000})).body();
  const began=Date.now();expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+(await metadata()).worldEpoch,{data:bytes,timeout:60000})).ok()).toBe(true);
  const uploadMs=Date.now()-began;

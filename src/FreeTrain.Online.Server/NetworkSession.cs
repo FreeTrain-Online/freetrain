@@ -163,6 +163,7 @@ public sealed partial class NetworkSession
         { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
         public CancellationTokenSource Stop { get; } = new();
         internal SnapshotMessage? LastSnapshot;
+        internal EffectsBaselineMessage? EffectsBaseline;
         internal volatile bool StateTransferInProgress;
         internal DateTimeOffset LastSeen = now;
         internal DateTimeOffset Window = now;
@@ -218,7 +219,7 @@ public sealed partial class NetworkSession
     public JoinMessage Bootstrap(ParticipantContext? participant = null) { lock (gate) return Join(participant ?? new("operator-1")); }
     private JoinMessage Join(ParticipantContext participant)
     {
-        var snapshot = host.Snapshot();
+        var snapshot = host.Snapshot() with { EffectsBaseline = host.EffectsBaseline() };
         return new(ProtocolIdentity.Version, snapshot.ContentVersion, Incarnation,
             snapshot.Map.CoordinateSystem == "hv" ? "reference-spatial" : "reference-v1", participant.ParticipantId,
             participant.Role.ToString().ToLowerInvariant(), snapshot.WorldEpoch, snapshot, snapshot.Ruleset, snapshot.RequiredPacks);
@@ -253,6 +254,7 @@ public sealed partial class NetworkSession
             host.RegisterParticipant(participant);
             var join = Join(participant);
             peer.LastSnapshot = join.Snapshot;
+            peer.EffectsBaseline = join.Snapshot.EffectsBaseline;
             Write(peer, join);
             if (HasOperators) { disconnectedAt = null; checkpointedDisconnect = false; }
             return peer;
@@ -313,7 +315,8 @@ public sealed partial class NetworkSession
         lock (gate)
         {
             if (!IsActive(peer)) return;
-            peer.LastSnapshot = host.Snapshot();
+            peer.LastSnapshot = host.Snapshot() with { EffectsBaseline = host.EffectsBaseline() };
+            peer.EffectsBaseline = peer.LastSnapshot.EffectsBaseline;
             Write(peer, peer.LastSnapshot);
         }
     }
@@ -341,11 +344,24 @@ public sealed partial class NetworkSession
                 receipts.Clear(); disconnectedAt = now;
             }
             var pump = host.PumpRealtime(now); // Service input at 20Hz; pace all simulation systems together.
+            var bells = host.TakeDepartureBells();
             // Fixed 100ms slots avoid accumulating 50ms timer jitter into a slower rate.
             // Skip missed slots after a stall; never burst an unbounded catch-up batch.
             var slot = now.UtcTicks / TimeSpan.TicksPerMillisecond / 100;
             if (slot > lastPublicationSlot)
             { foreach (var peer in peers.Values.ToArray()) Publish(peer); lastPublicationSlot = slot; }
+            // State precedes effects, including command steps outside the 100ms slot.
+            // A peer receiving a join/replacement/resync starts at that publication.
+            if (bells.Length > 0)
+                foreach (var peer in peers.Values.ToArray())
+                {
+                    Publish(peer);
+                    if (peer.StateTransferInProgress || peer.LastSnapshot?.WorldEpoch != host.WorldEpoch) continue;
+                    foreach (var bell in bells)
+                        if (peer.EffectsBaseline is {} baseline && baseline.LiveEpoch == bell.LiveEpoch &&
+                            bell.PublicationSequence > baseline.PublicationSequence)
+                            Write(peer,bell);
+                }
             foreach (var peer in peers.Values.ToArray())
                 foreach (var sound in pump.Events.Where(e => e.Kind == "stationArrived"))
                     Write(peer, new SoundEventMessage($"{Incarnation}:{host.WorldEpoch}:{sound.Tick}:{sound.SubjectId}:{sound.Kind}", host.WorldEpoch, sound.Kind));
@@ -360,7 +376,10 @@ public sealed partial class NetworkSession
         var next = host.Snapshot();
         var previous = peer.LastSnapshot;
         if (previous?.Revision == next.Revision && previous.WorldEpoch == next.WorldEpoch) return;
-        WireMessage message = previous == null || previous.WorldEpoch != next.WorldEpoch || previous.Ruleset != next.Ruleset ? next : Difference(previous, next);
+        var full = previous == null || previous.WorldEpoch != next.WorldEpoch || previous.Ruleset != next.Ruleset;
+        if (full) next = next with { EffectsBaseline = host.EffectsBaseline() };
+        WireMessage message = full ? next : Difference(previous!, next);
+        if (full) peer.EffectsBaseline = next.EffectsBaseline;
         if (Write(peer, message)) peer.LastSnapshot = next;
     }
     private bool Write(Peer peer, WireMessage message)

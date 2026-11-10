@@ -139,7 +139,7 @@ public class ReferenceWorldTests
                 var join=await server.Bootstrap(); Assert.Equal(ProtocolIdentity.ReferenceContent,join.ContentVersion);
                 using var socket=await server.Connect();await NetworkTests.Read(socket);
                 var query=new SpatialQuery(1,new(27,24,0),null,0);
-                var response=await server.Http.PostAsync("/api/spatial/preview?protocolVersion=8&contentVersion="+ProtocolIdentity.ReferenceContent,
+                var response=await server.Http.PostAsync("/api/spatial/preview?protocolVersion=9&contentVersion="+ProtocolIdentity.ReferenceContent,
                     new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(query,NetworkSession.Json)));
                 Assert.True(response.IsSuccessStatusCode);
                 var preview=JsonSerializer.Deserialize<SpatialPreviewRead>(await response.Content.ReadAsStringAsync(),NetworkSession.Json)!;

@@ -923,7 +923,7 @@
   "platformRemove": "Remove platform…",
   "platformDirtyTitle": "Unsaved platform properties",
   "platformDirtyHint": "Apply or discard the platform draft before continuing.",
-  "platformPropertiesHelp": "A logical connection links this platform to a station, directly or through another platform. Footbridges are cosmetic and do not connect stations. A timetable stop request is separate. Changing the connection disconnects child platforms. Bell preview plays locally; departure playback will be enabled with station service.",
+  "platformPropertiesHelp": "A logical connection links this platform to a station, directly or through another platform. Footbridges are cosmetic and do not connect stations. A timetable stop request is separate. Changing the connection disconnects child platforms. Bell preview plays locally. Enable sound in Settings to hear live departures from visible platforms. Muted or missed departures are not replayed.",
   "platformLaneControls": "Wide-platform track connections",
   "platformLaneLeft": "Edit left track",
   "platformLaneRight": "Edit right track",

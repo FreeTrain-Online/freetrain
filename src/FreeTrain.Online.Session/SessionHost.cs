@@ -388,6 +388,8 @@ public sealed partial class SessionHost : IDisposable
     private void CanonicalPause(bool paused) { if (mixedState != null) mixedState.SetPaused(paused); else if (terrainState != null) terrainState.SetPaused(paused); else referenceWorld!.SetPaused(paused); }
     private bool CanonicalAdvance()
     {
+        EnsureBellEpoch();
+        var nextBellSequence=checked(bellSequence+1);
         try
         {
             if (mixedState != null)
@@ -398,12 +400,20 @@ public sealed partial class SessionHost : IDisposable
             }
             else if (terrainState != null) terrainState.AdvanceOneMinute();
             else referenceWorld!.AdvanceOneMinute();
+            RecordDepartureBells(nextBellSequence);
             return true;
         }
         catch (InvalidOperationException e) when (e.Message is "unboundJunctionController" or "unboundHarborController")
         {
             // A later-phase handler is unavailable. The detached minute has
             // already rolled back; keep the host responsive for withdrawal/load.
+            CanonicalPause(true);
+            return false;
+        }
+        catch (Exception e) when (e is OverflowException or ArgumentException)
+        {
+            // Candidate validation/arithmetic rejected this minute. Resolve an
+            // explicit Step as rejected and stop realtime retries until resumed.
             CanonicalPause(true);
             return false;
         }

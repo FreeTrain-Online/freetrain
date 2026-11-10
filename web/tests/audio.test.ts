@@ -57,3 +57,50 @@ Deno.test('audio credits romanize matching plugin authors and preserve source, L
     }
   }
 });
+
+import { createDepartureEvents } from '../src/lib/departure-events.ts';
+import type { DepartureBell } from '../src/generated/contracts.ts';
+const liveEpoch = 'a'.repeat(32);
+const baseline = {worldEpoch:'1',liveEpoch,publicationSequence:'10'};
+const departure = (sequence='11', ordinal=0): DepartureBell => ({type:'departureBell',worldEpoch:'1',liveEpoch,
+  publicationSequence:sequence,effectOrdinal:ordinal,trainId:'7',platformId:'8',
+  bell:{packId:'exav-stable-bundled',contributionId:'selected',recipeId:'selected'},location:{x:27,y:15,z:2}});
+Deno.test('departure subscription rejects history, duplicates and old epochs with constant-space ordered identities', () => {
+  const events=createDepartureEvents();assert.equal(events.accept(departure(),'1'),false);events.reset(baseline);
+  assert.equal(events.accept(departure('10'),'1'),false);
+  assert.equal(events.accept(departure(),'1'),true);assert.equal(events.accept(departure(),'1'),false);
+  assert.equal(events.accept(departure('11',1),'1'),true);
+  for(let i=12;i<1000;i++)assert.equal(events.accept(departure(String(i)),'1'),true);
+  assert.equal(events.accept(departure(),'1'),false);
+  assert.equal(events.accept({...departure('1000'),liveEpoch:'b'.repeat(32)},'1'),false);
+  events.reset({...baseline,publicationSequence:'999'});assert.equal(events.accept(departure('999'),'1'),false);
+  events.reset({...baseline,worldEpoch:'2',liveEpoch:'b'.repeat(32)});
+  assert.equal(events.accept(departure('1000'),'2'),false);
+  assert.equal(events.accept({...departure(),worldEpoch:'2',liveEpoch:'b'.repeat(32)},'2'),true);
+  events.reset();assert.equal(events.accept(departure('1001'),'1'),false);
+});
+Deno.test('departure WAV resolution is selected, gesture gated, visible and cancelled across async mute/replacement', async () => {
+  const urls:string[]=[],resolved:string[]=[],verified:string[]=[];
+  let hidden=false,visible=true,release:(()=>void)|undefined;
+  const media={src:'',currentTime:0,preload:'',play(){urls.push(this.src);return Promise.resolve();},pause(){}};
+  const audio=createBrowserAudio(()=>media as unknown as HTMLAudioElement,()=>hidden,()=>visible,
+    async e=>{resolved.push(e.bell.contributionId);if(release===undefined)await new Promise<void>(r=>{release=r;});return {url:'/selected.wav',bytes:42,sha256:'hash'};},
+    async clip=>{verified.push(clip.url);});
+  await audio.event(departure(),'1');assert.deepEqual(resolved,[]);
+  await audio.enable();hidden=true;await audio.event(departure(),'1');hidden=false;
+  visible=false;await audio.event(departure(),'1');visible=true;
+  const pending=audio.event(departure(),'1');await Promise.resolve();audio.cancel();release!();await pending;
+  assert.deepEqual(urls,['/assets/station.wav']);
+  await audio.event(departure('12'),'1');assert.deepEqual(urls,['/assets/station.wav','/selected.wav']);
+  assert.deepEqual(resolved,['selected','selected']);assert.equal(verified.length,2);
+  audio.disable();await audio.event(departure('13'),'1');assert.equal(urls.length,2);
+  audio.dispose();await audio.enable();assert.equal(audio.enabled,false);
+});
+
+import { parseMessage } from '../src/lib/protocol.ts';
+Deno.test('departure envelopes validate exact counters, epoch, ordinal, selected definition and source location', () => {
+  assert.deepEqual(parseMessage(JSON.stringify(departure())),departure());
+  for(const patch of [{publicationSequence:11},{publicationSequence:'01'},{liveEpoch:'old'},
+    {effectOrdinal:-1},{effectOrdinal:4096},{bell:{packId:'x',contributionId:'y'}},{location:{x:1.5,y:15,z:2}},
+    {eventId:'invented'}, {trainId:'9223372036854775808'}])assert.throws(()=>parseMessage(JSON.stringify({...departure(),...patch})));
+});

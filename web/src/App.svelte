@@ -36,7 +36,7 @@
   import type { Selection } from './lib/map-renderer.ts';
   import { panels, type Panel, type Tool } from './lib/game-ui.ts';
   const icon = '/assets/FTOicon.png';
-  const audio = createBrowserAudio();
+  const audio = createBrowserAudio(undefined, undefined, event => !!map?.departureVisible(event.location));
   let soundEnabled = $state(false), soundFailed = $state(false), saveBusy = $state(false);
   let enabledContentHash = $state('');
   let enabledPacks = $state<PluginPack[]>([]), optionalCredits = $state<PluginPack>();
@@ -105,10 +105,11 @@
   const selected = $derived(catalog.find(item => item.id === view.selectedBuilding)!);
   $effect(() => persistLocale(view.locale));
   $effect(() => applyScheme(scheme));
+  $effect(() => { if (view.connection !== 'ready') audio.cancel(); });
   $effect(() => { if (!live) { catalogOpen = false; panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
   $effect(() => {
     if (read) {
-      if (previousEpoch && previousEpoch !== read.worldEpoch) { if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; informationTrainId=undefined; followingTrainId=undefined; colorDraft=undefined; navigation = undefined; }
+      if (previousEpoch && previousEpoch !== read.worldEpoch) { audio.cancel(); if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; informationTrainId=undefined; followingTrainId=undefined; colorDraft=undefined; navigation = undefined; }
       previousEpoch = read.worldEpoch;
     }
   });
@@ -220,6 +221,8 @@
   $effect(() => { if (live) { void tick().then(() => map?.focusMap()); } });
   onMount(() => {
     const unsubscribe = model.subscribe(next => { view = next; });
+    const audioVisibility = () => { if (document.hidden) audio.cancel(); };
+    document.addEventListener('visibilitychange', audioVisibility);
     const pagehide = (event: PageTransitionEvent) => { if (!event.persisted) dispose(); };
     const viewport = () => {
       const visible = window.visualViewport;
@@ -229,7 +232,7 @@
     };
     viewport(); window.addEventListener('resize', viewport); window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport);
     window.addEventListener('pagehide', pagehide); document.addEventListener('focusin', uiFocus);
-    return () => { window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
+    return () => { document.removeEventListener('visibilitychange', audioVisibility); window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
   });
 </script>
 

@@ -1,4 +1,4 @@
-# Wire protocol 7
+# Wire protocol 9
 
 `schema.json` is the canonical draft-07 schema for current wire messages and spatial queries. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
 mean canonical decimal strings within signed Int64 or nonnegative Int64 bounds.
@@ -8,7 +8,7 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **8**, default content `reference-spatial-content-2`, canonical **Save 10**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
+Versions are independent: protocol **9**, default content `reference-spatial-content-2`, canonical **Save 10**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
 Join conveys server incarnation, participant/session identity, server-assigned role,
 epoch and initial snapshot. A `metadataOnly=true` HTTP bootstrap returns `sessionOffer` without world geometry; large-world bootstrap always uses this bounded offer. Commands cannot choose participant identity or authority.
 
@@ -81,7 +81,7 @@ browser validates car counts/headings and the selected installed profile before
 applying reads. Source canonical geometry has shared fixtures separate from that
 compatibility world. Protocol-2 originals are preserved in `historical/v2`.
 
-`POST /api/spatial/preview?protocolVersion=8&contentVersion=reference-spatial-content-2`
+`POST /api/spatial/preview?protocolVersion=9&contentVersion=reference-spatial-content-2`
 accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
 Any authenticated role can use it. Expected epoch, position, nullable anchor and
 snap 0/4/8 select a checked read-only calculation. The result carries world
@@ -278,3 +278,14 @@ the existing center geometry; platform identity/revision must be current. Legal
 lane previews contain exactly that lane's ordered positions and cost zero. Commit
 revalidates the epoch, geometry, minute, content, platform revision and occupancy.
 Save10/protocol8 remain unchanged; slim platforms reject lane actions.
+
+
+## P6-20 committed departure effects — protocol9
+
+`departureBell` is live only: world/live epochs, committed publication sequence,
+effect ordinal, train/platform IDs, selected bell definition and source location.
+Join snapshots, replacements and resync snapshots include `effectsBaseline`;
+there is no effect history in snapshots, receipts or Save10. State precedes events.
+Clients discard old epochs, events at/before the baseline and duplicate ordered
+identities. Reconnect obtains a new baseline. Local gesture/sound/visibility/
+viewport controls cannot affect simulation. See [implementation and verification](../../doc/web-parity-departure-bells.md).
