@@ -76,10 +76,10 @@ Deno.test('all 96 stair selections are ready, bounded, roof/width aware and sour
   const s=stationScene(64,24),p=addPassagePlatform(s,direction),y=p.yards[0];y.roof=roof;y.outlook={kind:'stair',material,bridge:false,upward};
   if(double){const d=offset((direction+6)%8);addPassagePlatform(s,((direction+4)%8) as Heading,{x:10+d.x,y:10+d.y,z:2});}
   const index=direction*4|(upward?0:4)|(double?2:0)|(roof?1:0),art=platformAppearance(p,y,s.mixed!.stationGraph!.platforms);
-  assert.equal(art.length,1);assert.equal(art[0].recipeId,`system:${material}-stair-${index}${index===23?'-corrected':''}`);
+  assert.equal(art.length,1);assert.equal(art[0].recipeId,`system:${material}-stair-${index}`);
   const frame=catalog.renderRecipes.find(r=>r.id===art[0].recipeId)!.frames[0];assert.equal(frame.status,'ready');
   const [x,cy,w,h]=frame.rectangle!;assert(x>=0&&cy>=0&&x+w<=336&&cy+h<=153);
-  if(index===23){assert.deepEqual(frame.rectangle,[288,4,32,36]);assert.equal(catalog.renderRecipes.find(r=>r.id===`system:${material}-stair-23`)!.frames[0].status,'invalid-source-crop');}
+  if(index===23){assert.deepEqual(frame.rectangle,[288,4,32,36]);assert(!catalog.renderRecipes.some(r=>r.id===`system:${material}-stair-23-corrected`));}
   const plan=new RailwayRenderPlan(s,catalog,{season:'spring',night:false});const layers=plan.layers.filter(l=>l.entityId===y.trafficOwnerId&&l.recipeId.includes('stair'));
   assert.equal(layers.length,1);assert.equal(layers[0].frame.stage,direction===2||direction===4?20:40);count++;
  }

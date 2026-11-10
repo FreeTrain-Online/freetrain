@@ -256,13 +256,13 @@ def system_recipes(catalog, review):
             pictures_by_path.setdefault(v['day']['path'],picture['id'])
     # Geometry gallery includes explicit platform/stair constructors and aliases.
     rows = list(review['geometryGallery']['recipes'])
-    # EXAV-GAL-001 portable correction: preserve original invalid index23 recipes.
-    # Authored roofed partner of x256 is x288 (32px stride), not source x388.
-    for material in ('concrete', 'brown', 'green'):
-        original = next(r for r in rows if r['id'] == material+'-stair-23')
-        rows.append(dict(original, id=material+'-stair-23-corrected',
-                         rectangle=[288,4,32,36],
-                         sourceSymbol='EXAV-GAL-001 portable correction; original PassagewayRail.getStairSprite index23 x388'))
+    # EXAV-GAL-001: correct the prepared crop, retaining the pinned source witness.
+    # The authored roofed partner of x256 is x288 (32px stride), not source x388.
+    rows = [dict(row, rectangle=[288,4,32,36], sourceCorrection=dict(
+                issue='EXAV-GAL-001', originalRectangle=row['rectangle'],
+                reason='Authored roofed partner at x288; source x388 exceeds sheet bounds.'))
+            if row['id'] in {m+'-stair-23' for m in ('concrete','brown','green')}
+            else row for row in rows]
     for p in review['geometry']['patterns']:
         rows.append(dict(id='pattern/'+str(p['id']), path='core/res/'+p['sheet'],
                          rectangle=p['rectangle'],anchor=p['anchor'],sourceSymbol='RailPattern'))
@@ -307,6 +307,8 @@ def system_recipes(catalog, review):
         result.append(dict(id='system:'+row['id'],pluginId='system',sourcePath=path,
             handler='source-geometry',sourceSymbol=row['sourceSymbol'],fields={},frames=compiler.frames,
             status='source-diagnostic' if compiler.frames[0]['status']!='ready' else 'ready'))
+        if 'sourceCorrection' in row:
+            result[-1]['sourceCorrection'] = row['sourceCorrection']
     return result
 
 

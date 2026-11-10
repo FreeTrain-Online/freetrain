@@ -85,19 +85,25 @@ public class StationStateTests
         }
     }
     [Fact]
-    public void Exact_platform_passage_stair_and_bell_resources_bind_without_repairing_invalid_crops()
+    public void Platform_passage_stair_and_bell_resources_bind_with_documented_crop_correction()
     {
         Assert.Equal(149,Profile.Art.Length); Assert.Equal(6,Profile.Bells.Length);
-        Assert.Equal(3,Profile.Art.Count(a => !a.Ready));
+        Assert.All(Profile.Art,a=>Assert.True(a.Ready));
         foreach (var m in Enum.GetValues<PassageMaterial>())
         {
-            var a=Profile.Recipe(StationArtKind.Stair,23,m);Assert.False(a.Ready);
-            Assert.All(a.Frames,f => Assert.Equal((388,4,32,36),(f.X,f.Y,f.Width,f.Height)));
+            var a=Profile.Recipe(StationArtKind.Stair,23,m);Assert.True(a.Ready);
+            Assert.All(a.Frames,f => Assert.Equal((288,4,32,36),(f.X,f.Y,f.Width,f.Height)));
         }
         using var catalog=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"src/FreeTrain.Online.Content/bundled-v2.json")));
         foreach (var a in Profile.Art)
         {
             var recipe=catalog.RootElement.GetProperty("renderRecipes").EnumerateArray().Single(r => r.GetProperty("id").GetString()==a.Reference.RecipeId);
+            if(a.Kind == StationArtKind.Stair && a.Index == 23)
+            {
+                var correction=recipe.GetProperty("sourceCorrection");
+                Assert.Equal("EXAV-GAL-001",correction.GetProperty("issue").GetString());
+                Assert.Equal(new[]{388,4,32,36},correction.GetProperty("originalRectangle").EnumerateArray().Select(n=>n.GetInt32()));
+            }
             Assert.Equal(recipe.GetProperty("frames").GetArrayLength(),a.Frames.Length);
             for(var i=0;i<a.Frames.Length;i++)
             {

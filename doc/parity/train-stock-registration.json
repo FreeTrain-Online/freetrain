@@ -9,7 +9,7 @@
     "engineVersion": "2.1.1.12",
     "pluginFamily": "V2"
   },
-  "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
+  "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
   "definitions": [
     {
       "coverageId": "exav-883cf7d-trunk:contribution:system:51:{243D9F53-67FB-432E-B985-3B9B696D8CE0}-1",
@@ -321,38 +321,38 @@
     "architecture": "Arm64",
     "configuration": "Release",
     "scope": "registration-and-detached-formation-admission; moving-fleet-capacity-remains-P5-28",
-    "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
-    "coldCatalogAndRegistrationMs": 150.7194,
+    "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+    "coldCatalogAndRegistrationMs": 131.6212,
     "registration": {
       "samples": 200,
-      "medianMs": 2.3763,
-      "p95Ms": 3.0416,
-      "maximumMs": 3.7158,
-      "allocatedBytesPerOperation": 571208
+      "medianMs": 2.2345,
+      "p95Ms": 2.5546,
+      "maximumMs": 2.8363,
+      "allocatedBytesPerOperation": 572136
     },
     "request100Trains1000Cars": {
       "samples": 1000,
-      "medianMs": 0.0282,
-      "p95Ms": 0.0326,
-      "maximumMs": 0.2912,
+      "medianMs": 0.025,
+      "p95Ms": 0.0263,
+      "maximumMs": 0.6205,
       "allocatedBytesPerOperation": 19632
     },
     "maximumRequest64Trains1024Cars": {
       "samples": 1000,
-      "medianMs": 0.025,
-      "p95Ms": 0.0255,
-      "maximumMs": 0.271,
+      "medianMs": 0.023,
+      "p95Ms": 0.0236,
+      "maximumMs": 0.2445,
       "allocatedBytesPerOperation": 15840
     },
     "detachedFleet128Trains1024Cars": {
       "samples": 1000,
-      "medianMs": 0.0614,
-      "p95Ms": 0.0747,
-      "maximumMs": 0.7171,
+      "medianMs": 0.0535,
+      "p95Ms": 0.056,
+      "maximumMs": 0.2667,
       "allocatedBytesPerOperation": 49176
     },
     "passed": true,
-    "verification": "P6-15 catalog rebind, 10 November 2026; existing StockAdmissionProbe Release"
+    "verification": "EXAV-GAL-001 direct prepared crop correction, 10 November 2026; existing StockAdmissionProbe Release"
   },
   "handoffs": [
     "P5-04 fleet graph/occupancy/callbacks",

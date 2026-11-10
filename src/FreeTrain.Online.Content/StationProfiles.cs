@@ -5,7 +5,7 @@ using FreeTrain.Online.Simulation;
 
 namespace FreeTrain.Online.Content;
 
-// Bind exact inert prepared recipes. The three invalid stair-23 crops stay diagnostic.
+// Bind inert prepared recipes, including the documented EXAV-GAL-001 crop correction.
 public static class StationProfiles
 {
     public static StationProfile Build(PreparedContentCatalog catalog, TerrainProfile terrain)

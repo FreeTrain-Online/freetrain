@@ -183,9 +183,10 @@ precedence intact.
 acceptance remains P6-27.** Index23 (south, down, double-width, roofed) asks for
 `(388,4,32,36)` in 336×153 sheets, all three materials and both day/night. Original
 selection, hashes, P2 diagnostics and the P6-02 invalid witness are retained.
-P6-15 supplies separately named x288 corrected recipes and browser pixel/pick
+P6-15 corrects the prepared index23 recipes to x288, retaining the original crop
+in `sourceCorrection` metadata, and supplies browser pixel/pick
 evidence in [the stair disposition](web-parity-stairs.md#exav-gal-001-disposition).
-Original recipes remain diagnostic; original-runtime fidelity is not claimed.
+The pinned source fixtures retain the invalid crop; original-runtime fidelity is not claimed.
 This follow-up does not block specification closure and is not a new permission gate.
 
 ## Committed departure events

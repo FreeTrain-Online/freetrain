@@ -22,8 +22,7 @@ export function platformAppearance(platform:Platform,yard:PlatformYard,platforms
  const prefix=`${o.material}-`;
  if(o.kind==='stair'){
   const index=platform.direction*4|(o.upward?0:4)|(double?2:0)|(yard.roof?1:0);
-  // EXAV-GAL-001: explicit portable correction; original index23 stays diagnostic.
-  return [{position:yard.location,recipeId:`system:${prefix}stair-${index}${index===23?'-corrected':''}`,stage:platform.direction===2||platform.direction===4?20:40}];
+  return [{position:yard.location,recipeId:`system:${prefix}stair-${index}`,stage:platform.direction===2||platform.direction===4?20:40}];
  }
  const index=platform.direction/2*3+(double?(o.bridge?2:1):0);
  const entries=[{position:yard.location,recipeId:`system:${prefix}passage-${index}`,stage:platform.direction===2||platform.direction===4?20:40}];

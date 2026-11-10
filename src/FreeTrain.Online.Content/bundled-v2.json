@@ -196781,7 +196781,7 @@
           "key": "concrete-stair-23",
           "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}",
           "rectangle": [
-            388,
+            288,
             4,
             32,
             36
@@ -196800,23 +196800,32 @@
             "kind": "simple"
           },
           "selector": {},
-          "status": "invalid-source-crop",
-          "invalidVariants": [
-            "spring/day",
-            "spring/night",
-            "summer/day",
-            "summer/night",
-            "autumn/day",
-            "autumn/night",
-            "winter/day",
-            "winter/night"
-          ],
+          "status": "ready",
           "surfaceSet": "aa84e429dae21d74b4446ceb253e4d19f285ba06412954032c708e4e47fcddaf",
           "baseSurfaceSet": "aa84e429dae21d74b4446ceb253e4d19f285ba06412954032c708e4e47fcddaf",
-          "masks": {}
+          "masks": {
+            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
+          }
         }
       ],
-      "status": "source-diagnostic"
+      "status": "ready",
+      "sourceCorrection": {
+        "issue": "EXAV-GAL-001",
+        "originalRectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "reason": "Authored roofed partner at x288; source x388 exceeds sheet bounds."
+      }
     },
     {
       "id": "system:concrete-stair-24",
@@ -198990,7 +198999,7 @@
           "key": "brown-stair-23",
           "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-brown",
           "rectangle": [
-            388,
+            288,
             4,
             32,
             36
@@ -199009,23 +199018,32 @@
             "kind": "simple"
           },
           "selector": {},
-          "status": "invalid-source-crop",
-          "invalidVariants": [
-            "spring/day",
-            "spring/night",
-            "summer/day",
-            "summer/night",
-            "autumn/day",
-            "autumn/night",
-            "winter/day",
-            "winter/night"
-          ],
+          "status": "ready",
           "surfaceSet": "71fdd273744b48b6d0ff8c01d4c7f4ac0898e22c461beff1bbaa9705930f7e10",
           "baseSurfaceSet": "71fdd273744b48b6d0ff8c01d4c7f4ac0898e22c461beff1bbaa9705930f7e10",
-          "masks": {}
+          "masks": {
+            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
+          }
         }
       ],
-      "status": "source-diagnostic"
+      "status": "ready",
+      "sourceCorrection": {
+        "issue": "EXAV-GAL-001",
+        "originalRectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "reason": "Authored roofed partner at x288; source x388 exceeds sheet bounds."
+      }
     },
     {
       "id": "system:brown-stair-24",
@@ -201199,7 +201217,7 @@
           "key": "green-stair-23",
           "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-green",
           "rectangle": [
-            388,
+            288,
             4,
             32,
             36
@@ -201218,23 +201236,32 @@
             "kind": "simple"
           },
           "selector": {},
-          "status": "invalid-source-crop",
-          "invalidVariants": [
-            "spring/day",
-            "spring/night",
-            "summer/day",
-            "summer/night",
-            "autumn/day",
-            "autumn/night",
-            "winter/day",
-            "winter/night"
-          ],
+          "status": "ready",
           "surfaceSet": "62519f9b525dee26f3761ce5cba2da8ea82185650035e515ef4d1caf17bad259",
           "baseSurfaceSet": "62519f9b525dee26f3761ce5cba2da8ea82185650035e515ef4d1caf17bad259",
-          "masks": {}
+          "masks": {
+            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
+            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
+            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
+          }
         }
       ],
-      "status": "source-diagnostic"
+      "status": "ready",
+      "sourceCorrection": {
+        "issue": "EXAV-GAL-001",
+        "originalRectangle": [
+          388,
+          4,
+          32,
+          36
+        ],
+        "reason": "Authored roofed partner at x288; source x388 exceeds sheet bounds."
+      }
     },
     {
       "id": "system:green-stair-24",
@@ -202191,150 +202218,6 @@
             "autumn/night": "3fe084aefaf083bb5e029c5c215065fea66f130cae7a3e322d78a37557b81b49",
             "winter/day": "3fe084aefaf083bb5e029c5c215065fea66f130cae7a3e322d78a37557b81b49",
             "winter/night": "3fe084aefaf083bb5e029c5c215065fea66f130cae7a3e322d78a37557b81b49"
-          }
-        }
-      ],
-      "status": "ready"
-    },
-    {
-      "id": "system:concrete-stair-23-corrected",
-      "pluginId": "system",
-      "sourcePath": "trunk/plugins/system/renraku02.bmp",
-      "handler": "source-geometry",
-      "sourceSymbol": "EXAV-GAL-001 portable correction; original PassagewayRail.getStairSprite index23 x388",
-      "fields": {},
-      "frames": [
-        {
-          "key": "concrete-stair-23-corrected",
-          "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}",
-          "rectangle": [
-            288,
-            4,
-            32,
-            36
-          ],
-          "anchor": [
-            0,
-            20
-          ],
-          "cell": [
-            0,
-            0,
-            0
-          ],
-          "stage": 20,
-          "effect": {
-            "kind": "simple"
-          },
-          "selector": {},
-          "status": "ready",
-          "surfaceSet": "aa84e429dae21d74b4446ceb253e4d19f285ba06412954032c708e4e47fcddaf",
-          "baseSurfaceSet": "aa84e429dae21d74b4446ceb253e4d19f285ba06412954032c708e4e47fcddaf",
-          "masks": {
-            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
-          }
-        }
-      ],
-      "status": "ready"
-    },
-    {
-      "id": "system:brown-stair-23-corrected",
-      "pluginId": "system",
-      "sourcePath": "trunk/plugins/system/renraku02brown.bmp",
-      "handler": "source-geometry",
-      "sourceSymbol": "EXAV-GAL-001 portable correction; original PassagewayRail.getStairSprite index23 x388",
-      "fields": {},
-      "frames": [
-        {
-          "key": "brown-stair-23-corrected",
-          "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-brown",
-          "rectangle": [
-            288,
-            4,
-            32,
-            36
-          ],
-          "anchor": [
-            0,
-            20
-          ],
-          "cell": [
-            0,
-            0,
-            0
-          ],
-          "stage": 20,
-          "effect": {
-            "kind": "simple"
-          },
-          "selector": {},
-          "status": "ready",
-          "surfaceSet": "71fdd273744b48b6d0ff8c01d4c7f4ac0898e22c461beff1bbaa9705930f7e10",
-          "baseSurfaceSet": "71fdd273744b48b6d0ff8c01d4c7f4ac0898e22c461beff1bbaa9705930f7e10",
-          "masks": {
-            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
-          }
-        }
-      ],
-      "status": "ready"
-    },
-    {
-      "id": "system:green-stair-23-corrected",
-      "pluginId": "system",
-      "sourcePath": "trunk/plugins/system/renraku02green.bmp",
-      "handler": "source-geometry",
-      "sourceSymbol": "EXAV-GAL-001 portable correction; original PassagewayRail.getStairSprite index23 x388",
-      "fields": {},
-      "frames": [
-        {
-          "key": "green-stair-23-corrected",
-          "pictureId": "{3197A63A-89DC-4237-8C9B-045F41F31CDB}-green",
-          "rectangle": [
-            288,
-            4,
-            32,
-            36
-          ],
-          "anchor": [
-            0,
-            20
-          ],
-          "cell": [
-            0,
-            0,
-            0
-          ],
-          "stage": 20,
-          "effect": {
-            "kind": "simple"
-          },
-          "selector": {},
-          "status": "ready",
-          "surfaceSet": "62519f9b525dee26f3761ce5cba2da8ea82185650035e515ef4d1caf17bad259",
-          "baseSurfaceSet": "62519f9b525dee26f3761ce5cba2da8ea82185650035e515ef4d1caf17bad259",
-          "masks": {
-            "spring/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "spring/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "summer/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "summer/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "autumn/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "autumn/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b",
-            "winter/day": "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9",
-            "winter/night": "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b"
           }
         }
       ],
@@ -285277,6 +285160,82 @@
       "00000000000000000000000000000000",
       "00000000000000000000000000000000"
     ],
+    "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9": [
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000001110000000000000000",
+      "00000000001111111000000000000000",
+      "00000000011111111100000000000000",
+      "00000000011111111100000000000000",
+      "00000000011111111110000000000000",
+      "00000000011111111111000000000000",
+      "00000000011111111111000000000000",
+      "00000000011111111111100000000000",
+      "00000000011111111111110000000000",
+      "00000000011111111111110000000000",
+      "00000000001111111111111000000000",
+      "00000000001111111111111100000000",
+      "00000000000111111111111100001100",
+      "00000000000111111111111111111111",
+      "00000000000011111111111111111111",
+      "00000000000001111111111111111111",
+      "00000000000000111111111111111111",
+      "00000000000000111111111111111111",
+      "00000000000011111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000001111111111111111111",
+      "00000000000000011111111111111111",
+      "00000000000000000111111111111111",
+      "00000000000000000001111111111111",
+      "00000000000000000000011111111111",
+      "00000000000000000000000111111100",
+      "00000000000000000000000001110000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000"
+    ],
+    "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b": [
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000001110000000000000000",
+      "00000000001111111000000000000000",
+      "00000000011111111100000000000000",
+      "00000000011111111100000000000000",
+      "00000000011111111110000000000000",
+      "00000000011111111111000000000000",
+      "00000000011111111111000000000000",
+      "00000000011111111111100000000000",
+      "00000000011111111111110000000000",
+      "00000000011111111111110000000000",
+      "00000000001111111111111000000000",
+      "00000000011111111111111100000000",
+      "00000000011111111111111100001100",
+      "00000000011111111111111111111111",
+      "00000000001111111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000011111111111111111111",
+      "00000000000001111111111111111111",
+      "00000000000011111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000111111111111111111111",
+      "00000000000001111111111111111111",
+      "00000000000000011111111111111111",
+      "00000000000000000111111111111111",
+      "00000000000000000001111111111111",
+      "00000000000000000000011111111111",
+      "00000000000000000000000111111100",
+      "00000000000000000000000001110000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000",
+      "00000000000000000000000000000000"
+    ],
     "07dc80cd2b91b28db59194a51eaa79d3a5d8de8095808bafc9cd188e6ac6313a": [
       "00000000000000000000000000000000",
       "00000000000000000000000000000000",
@@ -285551,82 +285510,6 @@
       "00000000000000000111111100000000",
       "00000000000000000001110000000000",
       "00000000000000000000010000000000",
-      "00000000000000000000000000000000"
-    ],
-    "b92e6fbe6c7b86d1a18c65963943c9b856d1e83ba9147475eb65d47e1d6ddee9": [
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000001110000000000000000",
-      "00000000001111111000000000000000",
-      "00000000011111111100000000000000",
-      "00000000011111111100000000000000",
-      "00000000011111111110000000000000",
-      "00000000011111111111000000000000",
-      "00000000011111111111000000000000",
-      "00000000011111111111100000000000",
-      "00000000011111111111110000000000",
-      "00000000011111111111110000000000",
-      "00000000001111111111111000000000",
-      "00000000001111111111111100000000",
-      "00000000000111111111111100001100",
-      "00000000000111111111111111111111",
-      "00000000000011111111111111111111",
-      "00000000000001111111111111111111",
-      "00000000000000111111111111111111",
-      "00000000000000111111111111111111",
-      "00000000000011111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000001111111111111111111",
-      "00000000000000011111111111111111",
-      "00000000000000000111111111111111",
-      "00000000000000000001111111111111",
-      "00000000000000000000011111111111",
-      "00000000000000000000000111111100",
-      "00000000000000000000000001110000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000"
-    ],
-    "ddcda1e417ba18869a6051c1aef9f36f6a048ea2ae280fedc6b1a877e6bd430b": [
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000001110000000000000000",
-      "00000000001111111000000000000000",
-      "00000000011111111100000000000000",
-      "00000000011111111100000000000000",
-      "00000000011111111110000000000000",
-      "00000000011111111111000000000000",
-      "00000000011111111111000000000000",
-      "00000000011111111111100000000000",
-      "00000000011111111111110000000000",
-      "00000000011111111111110000000000",
-      "00000000001111111111111000000000",
-      "00000000011111111111111100000000",
-      "00000000011111111111111100001100",
-      "00000000011111111111111111111111",
-      "00000000001111111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000011111111111111111111",
-      "00000000000001111111111111111111",
-      "00000000000011111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000111111111111111111111",
-      "00000000000001111111111111111111",
-      "00000000000000011111111111111111",
-      "00000000000000000111111111111111",
-      "00000000000000000001111111111111",
-      "00000000000000000000011111111111",
-      "00000000000000000000000111111100",
-      "00000000000000000000000001110000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
-      "00000000000000000000000000000000",
       "00000000000000000000000000000000"
     ],
     "a01c5c1273966478d877252ac4b1765bb21cd28f9fa3bd72fdd2fd540ae0b485": [
@@ -290685,9 +290568,9 @@
     "sha256": "3269db46e274d3b4b7a183a9f1bc805e207a2f6d99d4baf24d24194dc992387e"
   },
   "recipeCounts": {
-    "recipes": 816,
-    "frames": 3180,
-    "invalidCrops": 21,
+    "recipes": 813,
+    "frames": 3177,
+    "invalidCrops": 18,
     "surfaceSets": 170
   }
 }

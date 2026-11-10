@@ -23,7 +23,7 @@
     {
       "id": "exav-stable-bundled",
       "version": "2",
-      "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a"
+      "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79"
     }
   ],
   "entities": [],
@@ -205,7 +205,7 @@
           "definition": {
             "packId": "exav-stable-bundled",
             "version": "2",
-            "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
+            "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
             "contributionId": "{3983B298-ADB1-4905-94E5-03B7AAE5A221}"
           },
           "groupId": "16",
@@ -318,7 +318,7 @@
           "provider": {
             "packId": "exav-stable-bundled",
             "version": "2",
-            "catalogHash": "ee910d1b75b287a1ee45d1c40ab0ce33559fc0666d5e6f3dbf4cc2013d6ac43a",
+            "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
             "contributionId": "{94B1F62C-E9B0-4669-80E8-6C65D803DFE5}"
           },
           "harbors": [
