@@ -2,6 +2,8 @@
   import { formatGameTime } from './lib/game-time.ts';
   import TrainColorControls from './TrainColorControls.svelte';
   import TrainInformation from './TrainInformation.svelte';
+  import StationInformation from './StationInformation.svelte';
+  import StationList from './StationList.svelte';
   import FleetDeploymentControls from './FleetDeploymentControls.svelte';
   import { isReferenceWorld, isTerrainWorld, isMixedWorld } from './lib/world-identity.ts';
   import { toolbar } from './lib/toolbar.ts';
@@ -49,6 +51,7 @@
   let mapSelection = $state<Selection>();
   let map: MapView;
   let colorDraft=$state<{configuration:import('./generated/contracts.ts').FleetColorTest;expectedRevision:string;epoch:string}>();
+  let informationStationId=$state<string>();
   let informationTrainId=$state<string>(),followingTrainId=$state<string>();
   function chooseInformationTrain(id:string){informationTrainId=id;}
   let panel = $state<Panel>(), menu = $state(false), tool = $state<Tool>('inspect');
@@ -111,11 +114,14 @@
   $effect(() => { if (!live) { catalogOpen = false; panel = undefined; menu = false; mapSelection = undefined; navigation = undefined; creditsOpen = false; optionalCredits = undefined; licenseOpen = false; } });
   $effect(() => {
     if (read) {
-      if (previousEpoch && previousEpoch !== read.worldEpoch) { audio.cancel(); if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; informationTrainId=undefined; followingTrainId=undefined; colorDraft=undefined; navigation = undefined; }
+      if (previousEpoch && previousEpoch !== read.worldEpoch) { audio.cancel(); if (panel === 'inspector') panel = undefined; menu = false; mapSelection = undefined; informationStationId=undefined; informationTrainId=undefined; followingTrainId=undefined; colorDraft=undefined; navigation = undefined; }
       previousEpoch = read.worldEpoch;
     }
   });
   $effect(()=>{if(informationTrainId&&!read?.mixed?.fleet?.trains.some(t=>t.id===informationTrainId)&&!read?.trains.some(t=>t.id===informationTrainId))informationTrainId=undefined;});
+  $effect(()=>{if(informationStationId&&!read?.mixed?.stationGraph?.buildings.some(b=>b.id===informationStationId))informationStationId=undefined;});
+  function moveStation(id:string){followingTrainId=undefined;map.focusStation(id);}
+  function inspectStation(id:string){const b=read?.mixed?.stationGraph?.buildings.find(b=>b.id===id);if(b)select({kind:'station',id:b.id,position:b.location});}
   function syncMenuPosition() {
     const stage = document.querySelector<HTMLElement>('.map-stage');
     const stageRect = stage?.getBoundingClientRect();
@@ -154,7 +160,7 @@
     request(() => {
       mapSelection = selection;
       if(selection?.kind==='train')informationTrainId=selection.id;
-      if (selection?.kind === 'station') model.selectStation(selection.id);
+      if (selection?.kind === 'station') {informationStationId=selection.id;model.selectStation(selection.id);}
       launcher = document.querySelector('canvas') ?? undefined;
       if (selection) { panel = 'inspector'; void tick().then(() => document.querySelector<HTMLElement>('.primary-panel h2')?.focus({ preventScroll: true })); }
     });
@@ -300,6 +306,8 @@
       <PanelFrame locale={view.locale} title={text[panels[panel]]} closeLabel={text.close} onclose={closePanel} primaryInContent={panel === 'fleet' || panel === 'newWorld' || panel === 'saves' || (panel === 'inspector' && (mapSelection?.kind === 'station'||!!platformSelection))} footer={panel === 'inspector' ? platformSelection ? platformActions : mapSelection?.kind === 'station' ? stationActions : undefined : undefined}>
         {#if panel === 'fleet'}
           <FleetControls picked={deploymentPicked} onmap={v=>{deploymentPicking=v;if(v){deploymentPicked=undefined;map?.focusMap();}}} onpreview={p=>{deploymentPreview=p;}} bind:this={fleetControls} {model} {view} busy={saveBusy||synchronizing||menu||!!navigation||creditsOpen||!!optionalCredits||licenseOpen} requestNavigation={request} ondraft={(dirty,canApply,draft)=>{fleetDirty=dirty;fleetCanApply=canApply;fleetDraft=draft;}}/>
+        {:else if panel === 'stations'}
+          <StationList {model} {view} selected={informationStationId} onselect={id=>request(()=>{informationStationId=id;})} onmove={moveStation} oninspect={inspectStation}/>
         {:else if panel === 'inspector'}
           {#if fleetTrain}<TrainInformation selectable={false} fleet={read?.mixed?.fleet} locale={view.locale} trainId={fleetTrain.id} onselect={chooseInformationTrain} onmove={id=>{followingTrainId=undefined;map.focusTrain(id);}} following={followingTrainId} onfollow={id=>{followingTrainId=id;if(id)map.focusTrain(id);}}/>{/if}
           {#if mapSelection && mapObjectPosition}<p data-testid="selected-object">{text[mapSelection.kind]} · {mapSelection.id} · {mapObjectPosition.x}, {mapObjectPosition.y}, {mapObjectPosition.z}</p>{/if}
@@ -346,6 +354,9 @@
             {#if railwayVoxel?.supportedOwnerId}<p>{text.railwaySupportedOwner}: {railwayVoxel?.supportedOwnerId}</p>{/if}
           {:else if mapSelection?.kind === 'terrain'}<p data-testid="terrain-surface">{text[({ground:'terrainGround',mountain:'terrainMountain',water:'terrainWater',underground:'terrainUnderground',terrace:'terrainTerrace',forest:'terrainForest',creek:'terrainCreek',cliff:'terrainCliff'} as const)[mapSelection.surface]]}</p><p>{text.terrainWorldHint}</p>
           {:else}<p>{mapSelection ? text.unavailableObject : text.pickObject}</p>{/if}
+          {#if controllerStation || selectedPlatform}
+            {#key `${read!.worldEpoch}/${controllerStation?.id ?? ''}/${selectedPlatform?.id ?? ''}`}<StationInformation {model} {view} stationId={controllerStation?.id} platformId={selectedPlatform?.id} onmove={moveStation}/>{/key}
+          {/if}
           {#if controllerStation}
             {#key `${read!.worldEpoch}/${controllerStation.id}/${selectedPlatform?.id ?? ''}/${selectedPlatform?.hostId ?? ''}`}
               <FleetControllerManager {model} {view} station location={controllerStation.location} disabled={clockDisabled||synchronizing||view.draftDirty||platformDirty}/>

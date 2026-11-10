@@ -289,3 +289,31 @@ there is no effect history in snapshots, receipts or Save10. State precedes even
 Clients discard old epochs, events at/before the baseline and duplicate ordered
 identities. Reconnect obtains a new baseline. Local gesture/sound/visibility/
 viewport controls cannot affect simulation. See [implementation and verification](../../doc/web-parity-departure-bells.md).
+
+P6-23 adds `POST /api/station/information?protocolVersion=9&contentVersion=mixed-railway-content-1`.
+The read-only `StationInformationQuery` carries expected world epoch, session
+revision and absolute minute plus station/platform/train IDs. By default these
+are exact fences. Optional `latest:true` instead accepts an earlier requested
+revision/minute and captures the latest state in the same epoch; future fences
+still reject. `observedRevision`/`observedMinute` identify the state used. Zero omits an
+optional identity; at least a station or platform is required. A selected platform
+must resolve to the requested station, or both its host and requested station must
+be absent. Missing identities or stale fences return409, invalid input400,
+unauthenticated callers401 and incompatible clients426. Any authenticated role,
+including Observer, can query it.
+
+`StationInformation` echoes the query and returns current demand, actual waiting
+and source float32 daily boarding/alighting averages. These four fields are null
+for a disconnected platform, distinct from a connected station with zero demand.
+It also returns the required/current yard indices and a current-state diagnosis:
+missing host/platform/train, unplaced/Outside head, wrong direction, index outside
+platform, head away/wrong yard cell, arrival Pass, forwarding, wait or ordinary
+departure. Controller evaluation uses the effective train/group instance and
+resolved station location at the requested minute. It never commits a handler's
+returned train, passenger exchange, timer, booking or bell. This is a current-call
+check, not a prediction of a future departure. Clients abort/discard responses
+when selected identities or epoch change. Exact queries additionally reject
+revision/minute changes. The Information UI serializes live refreshes at most four
+per second, labels the exact observed game time, and cancels old selection requests;
+ordinary clock advancement cannot starve a live read on a delayed network. This additive HTTP
+query changes neither protocol9 socket state nor Save10.

@@ -16,6 +16,7 @@ public class ContractTests
         var options = WireJson.CreateOptions();
         var serialized = Path.GetFileName(path) switch
         {
+            "station-information.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<StationInformationRead>(source, options), options),
             "preview-station-building.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<StationBuildingPreviewRead>(source, options), options),
             "preview-passage.json" or "preview-stairs.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<PassagePreviewRead>(source, options), options),
             "preview-thin-platform.json" => JsonSerializer.Serialize(JsonSerializer.Deserialize<ThinPlatformPreviewRead>(source, options), options),

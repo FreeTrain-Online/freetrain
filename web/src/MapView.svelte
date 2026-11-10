@@ -310,6 +310,14 @@
     camera={...camera,x:x-(center.x-width/2)/camera.zoom,y:y-(center.y-height/2)/camera.zoom};
     heightCut=positions[0].z;dirty=true;
   }
+  export function focusStation(id:string) {
+    const station=view.read?.mixed?.stationGraph?.buildings.find(b=>b.id===id);
+    if(!station||!live)return;
+    const position=space.center(station.location),center=visibleCenter();
+    followingTrainId=undefined;
+    camera={...camera,x:position.x-(center.x-width/2)/camera.zoom,y:position.y-(center.y-height/2)/camera.zoom};
+    heightCut=Math.max(heightCut,station.location.z);dirty=true;
+  }
   export function focusTrain(id = selectedTrain?.id) {
     const location=trainLocation(view.read,id);
     if (location && id && live) {

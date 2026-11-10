@@ -249,6 +249,18 @@ export function parseThinPlatformPreview(value:unknown):import('../generated/con
   return p;
 }
 
+const validateStationInformation=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/StationInformation'});
+export function parseStationInformation(value:unknown):import('../generated/contracts.ts').StationInformation {
+ if(!validateStationInformation(value))throw new Error('Invalid station information');
+ const p=value as import('../generated/contracts.ts').StationInformation;
+ const absent=p.query.stationId==='0';
+ if(BigInt(p.observedRevision)<BigInt(p.query.expectedRevision)||BigInt(p.observedMinute)<BigInt(p.query.expectedMinute)||!p.query.latest&&(p.observedRevision!==p.query.expectedRevision||p.observedMinute!==p.query.expectedMinute))throw new Error('Stale station observation');
+ if([p.demand,p.waiting,p.averageBoarded,p.averageAlighted].some(n=>absent?n!==null:n===null)||
+   (p.reason==='disconnected')!==absent||p.waiting!==null&&p.waiting>p.demand!||
+   (p.reason==='wait'?p.waitMinutes<=0:p.waitMinutes!==0)||
+   ['wait','pass','forwarding','ready'].includes(p.reason)&&(p.stopIndex===null||p.stopIndex<0||p.yardIndex!==p.stopIndex||!p.controllerId||p.controllerId==='0'))throw new Error('Inconsistent station information');
+ return p;
+}
 const validateProperties=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/PlatformProperties'});
 export function parsePlatformProperties(value:unknown):import('../generated/contracts.ts').PlatformProperties {
  if(!validateProperties(value))throw new Error('Invalid platform properties');

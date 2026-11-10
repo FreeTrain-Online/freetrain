@@ -77,6 +77,12 @@
     },
     {
       "$ref": "#/$defs/PassagePreview"
+    },
+    {
+      "$ref": "#/$defs/StationInformationQuery"
+    },
+    {
+      "$ref": "#/$defs/StationInformation"
     }
   ],
   "$defs": {
@@ -6081,6 +6087,145 @@
         "platformId",
         "bell",
         "location"
+      ]
+    },
+    "StationInformationQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "stationId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "platformId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "trainId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "latest": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedRevision",
+        "expectedMinute",
+        "stationId",
+        "platformId",
+        "trainId"
+      ]
+    },
+    "StationInformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/StationInformationQuery"
+        },
+        "demand": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "waiting": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "averageBoarded": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "averageAlighted": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "stopIndex": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "yardIndex": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "controllerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "enum": [
+            "disconnected",
+            "noPlatform",
+            "noTrain",
+            "unplaced",
+            "direction",
+            "length",
+            "away",
+            "position",
+            "pass",
+            "forwarding",
+            "wait",
+            "ready"
+          ]
+        },
+        "waitMinutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observedRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "observedMinute": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "query",
+        "demand",
+        "waiting",
+        "averageBoarded",
+        "averageAlighted",
+        "stopIndex",
+        "yardIndex",
+        "controllerId",
+        "reason",
+        "waitMinutes",
+        "observedRevision",
+        "observedMinute"
       ]
     }
   }

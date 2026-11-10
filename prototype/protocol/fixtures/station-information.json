@@ -1,0 +1,21 @@
+{
+  "query": {
+    "expectedWorldEpoch": "2",
+    "expectedRevision": "9007199254740993",
+    "expectedMinute": "517",
+    "stationId": "20",
+    "platformId": "30",
+    "trainId": "40"
+  },
+  "demand": 10000,
+  "waiting": 9876,
+  "averageBoarded": 123,
+  "averageAlighted": 45,
+  "stopIndex": 2,
+  "yardIndex": 2,
+  "controllerId": "50",
+  "reason": "wait",
+  "waitMinutes": 30,
+  "observedRevision": "9007199254740993",
+  "observedMinute": "517"
+}

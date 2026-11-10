@@ -371,3 +371,9 @@ public sealed record StationListenerRead(long ProviderId, long[] Stations,
 public sealed record StationProviderRead(PopulationRead Population, int LandValue, int XYSize, int ZSize, bool Special, string Input);
 public sealed record PopulationRead(string Kind, int Base, int Factor, int Entering, PopulationRead[] Children, int[][] Tables);
 public sealed record StationListenerMembershipRead(long StationId, long[] Providers);
+
+// Read-only current-state query, independent of the saved station graph.
+public sealed record StationInformationQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
+    long StationId, long PlatformId, long TrainId, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool Latest = false);
+public sealed record StationInformationRead(StationInformationQuery Query, int? Demand, int? Waiting,
+    int? AverageBoarded, int? AverageAlighted, int? StopIndex, int? YardIndex, long? ControllerId, string Reason, int WaitMinutes, long ObservedRevision, long ObservedMinute);

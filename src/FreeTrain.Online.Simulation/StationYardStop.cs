@@ -10,9 +10,8 @@ internal static class StationYardStop
         PlatformYard yard, FleetHarborHandler? handler, GameTime? time)
     {
         var head=(FleetCarState.Inside)train.Head.State;
-        var same=head.Heading==platform.Direction;
-        var position=same ? (platform.Length+train.Cars.Length)/2-1 : (platform.Length-train.Cars.Length)/2;
-        if(head.Heading!=platform.Direction && head.Heading!=platform.Direction.Opposite ||
+        var position=StationStopGeometry.Index(platform.Length,train.Cars.Length,platform.Direction,head.Heading);
+        if(position==null ||
             yard.Location!=head.Location || position<0 || position>=platform.Length || position!=yard.Index ||
             world.Stations!.HostStation(platform.Id) is not {} station)
             return new(train,FleetStopDecision.Proceed);

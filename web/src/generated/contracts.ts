@@ -25,7 +25,9 @@ export type GameDocument =
   | PlatformPropertiesQuery
   | PlatformProperties
   | PassageQuery
-  | PassagePreview;
+  | PassagePreview
+  | StationInformationQuery
+  | StationInformation;
 export type WireMessage =
   | Join
   | Command
@@ -1677,4 +1679,39 @@ export interface PassagePreview {
    * @maxItems 32768
    */
   positions: Position[];
+}
+export interface StationInformationQuery {
+  expectedWorldEpoch: Counter;
+  expectedRevision: Counter;
+  expectedMinute: Counter;
+  stationId: Counter;
+  platformId: Counter;
+  trainId: Counter;
+  latest?: boolean;
+}
+export interface StationInformation {
+  query: StationInformationQuery;
+  demand: number | null;
+  waiting: number | null;
+  averageBoarded: number | null;
+  averageAlighted: number | null;
+  stopIndex: number | null;
+  yardIndex: number | null;
+  controllerId: Counter | null;
+  reason:
+    | "disconnected"
+    | "noPlatform"
+    | "noTrain"
+    | "unplaced"
+    | "direction"
+    | "length"
+    | "away"
+    | "position"
+    | "pass"
+    | "forwarding"
+    | "wait"
+    | "ready";
+  waitMinutes: number;
+  observedRevision: Counter;
+  observedMinute: Counter;
 }

@@ -29,7 +29,7 @@ test('real game runs, steps, renames Japanese station and recovers on refresh', 
   await expect(page.getByTestId('confirmed-name')).toHaveText('新宿駅');
   await openPanel(page, 'settings');
   await page.getByLabel('Language').selectOption('ja');
-  await expect(page.getByRole('heading', { name: '設定' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '設定', exact: true })).toBeVisible();
 
   await page.reload();
   await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
