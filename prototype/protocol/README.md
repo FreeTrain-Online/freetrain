@@ -1,5 +1,7 @@
 # Wire protocol 9
 
+P6-27 reconciles the [station operations and delivery evidence](../../doc/web-parity-station-delivery.md) without a wire/save revision. Current station graphs, provider/listener inputs, passengers, statistics and pending callbacks persist in Save10; committed departure effects are live-only and never replayed from saves. Historical protocol8 evidence below retains its recorded scope.
+
 `schema.json` is the canonical draft-07 schema for current wire messages and spatial queries. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
 mean canonical decimal strings within signed Int64 or nonnegative Int64 bounds.
 Validators must register these formats (see `web/tests/contracts.test.mjs`).

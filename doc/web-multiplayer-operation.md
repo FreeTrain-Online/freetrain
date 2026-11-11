@@ -1,6 +1,13 @@
 # Operating multiplayer games
 
-**22 October 2026:** the default server now hosts the [canonical spatial reference](web-parity-reference-world.md). Role/access/reconnect setup below still applies. Train leases, station edits, construction and shared-clock journeys below are historical prototype regression workflows; those gameplay operations are unavailable in the canonical runtime. Owner-only spatial Save 2 replacement and Observer geometry reads are verified in the new suite.
+**11 November 2026:** the default canonical world supports constructed stations,
+platform/host/lane/passage/stair edits and actual Simple/shared TAT passenger
+service with controlled population inputs. Owner and Operator can submit legal
+edits; Observer reads/previews remain nonmutating. Save10/protocol9 retain exact
+station/fleet/provider state across reopen and checkpoint recovery. Departure
+bells are committed live effects, with no reconnect/reopen replay. See the
+[P6-27 operation/witness reconciliation](web-parity-station-delivery.md).
+Earlier prototype walkthroughs below retain their historical scope.
 
 Run several browser clients against one authoritative world to test Owner,
 Operator and Observer permissions. Roles come from server configuration and the

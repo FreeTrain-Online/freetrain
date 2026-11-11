@@ -180,7 +180,7 @@ predicates succeed. This is a portable safety adaptation with source neighbor
 precedence intact.
 
 **EXAV-GAL-001 has a P6-15 portable corrected-selection disposition; native/human
-acceptance remains P6-27.** Index23 (south, down, double-width, roofed) asks for
+acceptance remains an explicit P6-28/P2 qualification; see [P6-27 delivery reconciliation](web-parity-station-delivery.md).** Index23 (south, down, double-width, roofed) asks for
 `(388,4,32,36)` in 336×153 sheets, all three materials and both day/night. Original
 selection, hashes, P2 diagnostics and the P6-02 invalid witness are retained.
 P6-15 corrects the prepared index23 recipes to x288, retaining the original crop

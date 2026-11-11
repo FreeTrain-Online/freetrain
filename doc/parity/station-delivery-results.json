@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "slice": "P6-27",
+  "recordedOn": "2026-11-11",
+  "deliverySha256": "1eb52ee1c4dc5a9843d4f27720308180c747a1f2321a90f9191d20939def7f60",
+  "generatorSha256": "722137ff4014b5bdb5caec28602d76f64e0317b6e854cd697dc540095bb4f024",
+  "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+  "checks": {
+    "dotnet": {
+      "passed": 2304,
+      "failed": 0,
+      "skipped": 0
+    },
+    "client": {
+      "passed": 386,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python": {
+      "passed": 227,
+      "failed": 0,
+      "skipped": 1,
+      "skipReason": "Owner-supplied historical persistence sample not distributed"
+    },
+    "finalDelivery": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sourceFixtures": 821,
+    "browser": {
+      "distinctPassed": 17,
+      "focusedPassed": 15,
+      "focusedSkipped": 2,
+      "bellRerunPassed": 2,
+      "unresolvedSkipped": 0
+    },
+    "hostDeno": "2.9.8",
+    "containerDeno": "2.9.7",
+    "svelte": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  "artifacts": {
+    "staticFiles": 610,
+    "imageFiles": 854,
+    "publishedFiles": 247,
+    "staticMatch": true,
+    "notices": 4,
+    "optionalManifests": 0,
+    "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79"
+  },
+  "containerChecks": {
+    "bundledPlatforms": [
+      "linux/arm64",
+      "linux/amd64"
+    ],
+    "assets": 238,
+    "media": 505,
+    "notices": 4,
+    "syntheticOptionalPlatform": "linux/arm64",
+    "syntheticModes": [
+      {
+        "mode": "source",
+        "packs": 2
+      },
+      {
+        "mode": "prepared",
+        "packs": 2
+      },
+      {
+        "mode": "base-after-optional",
+        "packs": 0
+      }
+    ],
+    "realOptionalSuiteAcceptance": false
+  },
+  "logs": [
+    {
+      "path": "tmp/p6-27-dotnet.log",
+      "sha256": "29077842e7daeaad0f9698cb248fd73654c008cd522ee390cf192edb98cdc7d8"
+    },
+    {
+      "path": "tmp/p6-27-python.log",
+      "sha256": "4a622159f0ef02b833a991f856b5386905830d7bb642ae68ddfb5e537e646b06"
+    },
+    {
+      "path": "tmp/p6-27-delivery-tests.log",
+      "sha256": "c40a86b339d64c956233f7df51f12527ef98bbfbaf88ba4a07d653e2411e0c6e"
+    },
+    {
+      "path": "tmp/p6-27-client.log",
+      "sha256": "204fdf98cd15d37009d0f0d72e0f2f6bb8456a7ca1295c3e8dd6272cd44d7079"
+    },
+    {
+      "path": "tmp/p6-27-web-build.log",
+      "sha256": "58be488f71ffe94475677dda5d426e3f6e13a9eda8aa266d2f03311fdbdbee37"
+    },
+    {
+      "path": "tmp/p6-27-publish.log",
+      "sha256": "b23dda249f9f326c35a97ae825530ea59d69e6ef91d48884d69769bf68ca9db4"
+    },
+    {
+      "path": "tmp/p6-27-container-build.log",
+      "sha256": "e065b57d6396c0ece75e82de28458939ab94372bd7588d2be77bd8f14a30449d"
+    },
+    {
+      "path": "tmp/p6-27-container-amd64-build.log",
+      "sha256": "68ed8b2e8d651ec3cbd8a0157ec2ef630211a8bc70fc329c4199a2a1f71711d5"
+    },
+    {
+      "path": "tmp/p6-27-bundled-container.log",
+      "sha256": "8600c78fb3cf6b0673e395a757d6482021eae77df059909d98f45f769a4b4618"
+    },
+    {
+      "path": "tmp/p6-27-bundled-amd64.log",
+      "sha256": "8600c78fb3cf6b0673e395a757d6482021eae77df059909d98f45f769a4b4618"
+    },
+    {
+      "path": "tmp/p6-27-optional-container.log",
+      "sha256": "5a16a8f81061328aca374a00b35fb11fdc5881fc7139187b9ded780b21399a60"
+    },
+    {
+      "path": "tmp/p6-27-browser-focused.log",
+      "sha256": "c1b0267c2ebc188f6b01a54292ccf087c241fcc0b74a745a9afe0f3f17ad763c"
+    },
+    {
+      "path": "tmp/p6-27-bell-fixtures.log",
+      "sha256": "907019cb2c5cabdb2ae34ae1cbac6987fa03d82bc440ccd1a9c857e8786b6e81"
+    },
+    {
+      "path": "tmp/p6-27-bell-browser.log",
+      "sha256": "a3d102b88825110b9f4b85062d20785cdf0296858c98ecd43a0d341b1bb2a543"
+    },
+    {
+      "path": "tmp/p6-27-fixtures.log",
+      "sha256": "ca0d7fe2c85c1ab1e66840229bab0392ee7c655b78290ef5d21efefeee064113"
+    },
+    {
+      "path": "tmp/p6-27-boundaries.log",
+      "sha256": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6"
+    },
+    {
+      "path": "tmp/p6-27-artifact-comparison.json",
+      "sha256": "05ad11be4c308ebda9f0480dc42cd8e39a5cbc781e7c3a1cbe84617d87ec137b"
+    }
+  ],
+  "visualInspection": [
+    "tmp/browser-results-2YvWRP/station-midnight-ja.png",
+    "tmp/browser-results-2YvWRP/stairs-spring-day.png"
+  ],
+  "qualifications": [
+    "Host pinned-version guard rejected Deno2.9.8; remaining checks run separately; container builds use2.9.7.",
+    "Initial Python failures corrected; interrupted broad browser run grants no acceptance.",
+    "Native/original-runtime/human/other-engine and real optional suites are not accepted.",
+    "P6-28 integrated phase review; P7/P8/P10/P11 retain their boundaries."
+  ]
+}

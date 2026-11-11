@@ -1,5 +1,7 @@
 # FreeTrain Online deployment and recovery
 
+**11 November 2026 — P6-27:** [Current station distribution checks](web-parity-station-delivery.md) verify clean default image packaging and ephemeral bundled/source/prepared registration. Save10/protocol9 are current. Synthetic pack checks do not establish real optional-suite acceptance; earlier versioned evidence below is historical.
+
 **Owner policy update — 22 October 2026:** [prototype Save 1 support is retired](web-parity-runtime-policy.md). Unsupported inputs report an error and preserve the current world/files; automatic and manual prototype writes are disabled. Earlier Save 1 compatibility/continuation statements below are historical and superseded. P1-01c now supports [canonical spatial Save 2](web-parity-reference-world.md). A rejected startup checkpoint disables automatic/shutdown overwrites for that process; named-slot/download saves remain available. Earlier movement/train/save-version evidence below remains historical. Docker execution was not rerun for this slice.
 
 Deploy one authoritative world with multiple participants and one save-directory writer.

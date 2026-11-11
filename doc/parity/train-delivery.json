@@ -203,7 +203,8 @@
       "ownedStock",
       "position",
       "ruleSaveSettingFirst",
-      "signalSharedController"
+      "signalSharedController",
+      "stationSharedController"
     ],
     "groups": [
       "cancel",

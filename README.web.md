@@ -1,3 +1,5 @@
+**P6-27 delivery audit:** [Station content, distribution and bilingual reconciliation](doc/web-parity-station-delivery.md) binds all 99 declarations, 149 platform/passage/stair recipes, 12 operations and 78 source controls to current implementation and runtime witnesses. Save10/protocol9 remain current; P6-28 integrated review, real city supply, native fidelity and P11 performance gates remain open.
+
 **P6-23 station information:** [Information, Station List and stop diagnosis](doc/web-parity-station-information.md) adds Game → Station list and live picked station/platform information in EN/JA. The sorted list retains stable IDs through renames, offers Move and properties, and updates today/yesterday boarding, alighting and train calls. Read-only authoritative queries distinguish demand from waiting and show source averages, host/stop-index problems, Pass, forwarding and zero supply. Existing station labels remain local; midnight and exact reopen retain the same state.
 
 **P6-22 station timetables:** [Shared station/controller evidence](doc/web-parity-station-controllers.md) adds TAT configuration to picked stations and connected platforms. Platforms share the resolved station location, including chained connections; real stops re-resolve the current train/group controller. EN/JA workflows cover independent stations, timetable companion files, live reassignment, peer removal/rebuild and exact save/checkpoint continuation.
@@ -174,7 +176,10 @@ coast. Lakes occupy roughly 3% of the map and use seeded random locations with
 room for a dry shoreline. Existing saved worlds restore exactly.
 You can inspect terrain, pan/zoom,
 check aligned locations, run/pause/step the source-minute calendar and save/restore
-with **Save 10**. Economy, construction, trains and stations remain future slices.
+with **Save 10** and protocol **9**. Construct railways, stations and platforms,
+purchase/deploy trains, configure Simple/shared TAT service, exchange passengers
+from controlled supply and book source-derived fares/upkeep. City population
+producers remain P7 and full accounting reports remain P8.
 Settings offers six departure-bell previews alongside the existing sound effects.
 BGM is deferred to a [future improvement project](doc/web-audio-policy.md); the
 TinySynth feasibility experiment was removed after audible pops and crackles.
@@ -527,8 +532,9 @@ is never overwritten. `/api/saves/status` reports availability and startup error
 See [the save contract](prototype/protocol/save-v10.schema.json) and
 [current policy](doc/web-parity-runtime-policy.md).
 
-Click **Enable sound** to preview the bundled station WAV and enable sound for
-new station-arrival events in the historical harness. The canonical world has no trains yet. Reconnects and refreshes do not replay old events.
+Click **Enable sound** to preview the six bundled departure bells and enable
+committed canonical train-departure playback. Local mute, browser gesture,
+visibility and viewport rules apply. Reconnects and refreshes do not replay events.
 **Disable sound** mutes it; refresh starts muted.
 
 ## Release deployment and profiling

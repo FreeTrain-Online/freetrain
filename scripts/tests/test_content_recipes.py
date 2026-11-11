@@ -85,7 +85,14 @@ class CompleteRecipes(unittest.TestCase):
         c=self.catalog
         self.assertEqual(159,c['counts']['preparedPictures'])
         self.assertEqual({d['id'] for d in c['contributions']},{r['id'] for r in c['renderRecipes'] if not r['id'].startswith('system:')})
-        self.assertEqual(21,c['recipeCounts']['invalidCrops'])
+        # P6-15 resolves three ordinary index23 recipes; source diagnostics stay pinned.
+        self.assertEqual(18,c['recipeCounts']['invalidCrops'])
+        corrected=[r for r in c['renderRecipes'] if r.get('sourceCorrection',{}).get('issue')=='EXAV-GAL-001']
+        self.assertEqual(3,len(corrected))
+        for recipe in corrected:
+            self.assertEqual([388,4,32,36],recipe['sourceCorrection']['originalRectangle'])
+            self.assertEqual([288,4,32,36],recipe['frames'][0]['rectangle'])
+            self.assertEqual('ready',recipe['status'])
         self.assertTrue(all('invalidVariants' in f for r in c['renderRecipes'] for f in r['frames'] if f['status']=='invalid-source-crop'))
         self.assertEqual('2',c['version'])
 

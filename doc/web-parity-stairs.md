@@ -54,7 +54,7 @@ x288 is within all six sheets and contains the matching roofed descending stair.
 No bitmap pixels, picture bindings, pinned source hashes or source-review crop
 tables are changed. Prepared day/night masks are generated from the corrected
 crop. All 96 selector combinations resolve to ready runtime frames.
-Native/human fidelity acceptance remains P6-27.
+Native/human fidelity remains an explicit P6-28/P2 qualification; see [P6-27 delivery reconciliation](web-parity-station-delivery.md).
 
 The direct recipe correction replaces the earlier separate-recipe renderer
 mapping, as requested on 10 November. Current catalog hashes, save/wire fixtures,
