@@ -263,8 +263,11 @@ Saving and reopening does **not** reset either count. When the accounting histor
 is full, further changes needing a new entry require a new world; you can still
 view, run and save the existing world.
 
-See the [capacity report](doc/web-parity-railway-capacity.md) for measured
-performance, remaining latency issues and detailed limits.
+See the [railway capacity report](doc/web-parity-railway-capacity.md),
+[moving-fleet measurements](doc/web-parity-fleet-capacity.md) and
+[station/passenger measurements](doc/web-parity-station-capacity.md) for measured
+performance, remaining latency issues and detailed limits. Station measurements
+use explicitly controlled population supply; evolving city providers remain P7.
 
 ## Parity source policy
 

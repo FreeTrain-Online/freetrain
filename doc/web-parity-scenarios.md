@@ -111,6 +111,10 @@ recipe. `EXAV-CITY-S/M/L` specify 64×64×16 / 128×128×32 / 256×256×64 world
 stage:4/16/64 legal rings, a connected full-size infrastructure network and an
 exact8,192-voxel boundary scene. The train/car/station/population budgets and
 full-city simulation procedure below retain their later-phase acceptance gates.
+[P6-26](web-parity-station-capacity.md) measures a separate bounded station study:
+8/32/128 stations, one three-car passenger train per constructed ring, explicitly
+controlled rail-owner demand and a full stored-map extension. It retains actual
+clock/command misses and does not close these proposed full-city budgets.
 
 A 16×32 H,V storage-grid module contains a 36-cell octagonal rail ring at
 ground z=2, water=0,

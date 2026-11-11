@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><IsTestProject>true</IsTestProject><IsPackable>false</IsPackable></PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../tools/TerrainTransportProbe/StationCapacity.cs" Link="Capacity/StationCapacity.cs" />
     <Compile Include="../../tools/TerrainTransportProbe/FleetCapacity.cs" Link="Capacity/FleetCapacity.cs" />
     <Compile Include="../../tools/TerrainTransportProbe/RailwayCapacity.cs" Link="Capacity/RailwayCapacity.cs" />
     <None Include="../../src/FreeTrain.Online.Content/bundled-v2.json" Link="src/FreeTrain.Online.Content/bundled-v2.json" CopyToOutputDirectory="PreserveNewest" />

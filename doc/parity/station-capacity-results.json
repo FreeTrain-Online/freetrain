@@ -1,0 +1,1776 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-11",
+  "scope": "P6-26 controlled station/passenger resource measurements; P7 providers and P11 full-city/native/long-soak acceptance remain open",
+  "environment": {
+    "os": "macOS-26.7.1-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "dotnet": "10.0.402",
+    "deno": "deno 2.9.8 (stable, release, aarch64-apple-darwin)\nv8 15.0.245.2-rusty\ntypescript 6.0.3",
+    "hardware": {
+      "hw.model": "MacBookPro18,2",
+      "machdep.cpu.brand_string": "Apple M1 Max",
+      "hw.memsize": "68719476736",
+      "hw.logicalcpu": "10"
+    },
+    "macOS": "26.7.1"
+  },
+  "budgets": {
+    "frameP95Ms": 33.333333333333336,
+    "localFeedbackP95Ms": 100,
+    "rtt100FeedbackP95Ms": 250,
+    "minimumClockProgressFraction": 0.9
+  },
+  "fixtures": {
+    "small": {
+      "mode": "small",
+      "rings": 4,
+      "trains": 4,
+      "cars": 12,
+      "stations": 8,
+      "platforms": 8,
+      "providers": 32,
+      "controlledPopulationPerProvider": 2500,
+      "scope": "Controlled rail-owner population bindings; P7 city providers pending",
+      "dimensions": {
+        "h": 64,
+        "v": 64,
+        "z": 16
+      },
+      "saveSha256": "b58eaae2bb3daf6a0ea08bbdf4d4584d9e59b22b72b4e357861ca00c072442a5",
+      "railwaySha256": "dfe604adc030d77b0921fe0e53f3a934b5292655ab520eeb766c371969898110",
+      "contentSha256": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+      "fixtureSha256": "66c55c2c4005c91a9303e8399f724a236dd00791993a8c350e62a01897637970",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+        "recipeId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}"
+      },
+      "stock": {
+        "packId": "exav-stable-bundled",
+        "version": "2",
+        "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+        "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+      },
+      "carRecipes": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        }
+      ],
+      "saveBytes": 170832,
+      "packetBytes": 161702,
+      "reopenMs": 3.9224,
+      "buildMs": {
+        "count": 8,
+        "p50": 0.6301,
+        "p95": 3.4995,
+        "max": 3.4995
+      },
+      "attachMs": {
+        "count": 32,
+        "p50": 0.3446,
+        "p95": 0.9095,
+        "max": 0.9917
+      },
+      "churnMs": {
+        "count": 30,
+        "p50": 0.4805,
+        "p95": 1.4501,
+        "max": 3.1183
+      },
+      "previewMs": {
+        "count": 30,
+        "p50": 0.1934,
+        "p95": 0.958,
+        "max": 1.0055
+      },
+      "editMs": {
+        "count": 30,
+        "p50": 1.833,
+        "p95": 2.0472,
+        "max": 2.0548
+      },
+      "callbacks": 28,
+      "departures": "8",
+      "waiting": {
+        "count": 8,
+        "p50": 9406,
+        "p95": 10775,
+        "max": 10775
+      },
+      "exports": "4752",
+      "imports": "2376",
+      "transactions": 93,
+      "managedRetainedBytes": "110288712",
+      "tickMs": {
+        "count": 120,
+        "p50": 0.0617,
+        "p95": 2.5944,
+        "max": 8.7949
+      },
+      "hourBurstMs": {
+        "count": 1,
+        "p50": 4.3969,
+        "p95": 4.3969,
+        "max": 4.3969
+      },
+      "midnightBurstMs": {
+        "count": 1,
+        "p50": 8.7949,
+        "p95": 8.7949,
+        "max": 8.7949
+      },
+      "maximumDueCallbacks": 16,
+      "rawReport": "tmp/p6-26-capacity/small/measurement.json",
+      "rawReportSha256": "58802dbef4441c309f2290dc3167034e71c4a4b93fb22f1fa6c0ce6f660084cf",
+      "expectedSha256": "2a4b2b8fd0e18acf765003e79641f0c1d33ddada9c14abec13f1c9153b837aa0"
+    },
+    "medium": {
+      "mode": "medium",
+      "rings": 16,
+      "trains": 16,
+      "cars": 48,
+      "stations": 32,
+      "platforms": 32,
+      "providers": 128,
+      "controlledPopulationPerProvider": 2500,
+      "scope": "Controlled rail-owner population bindings; P7 city providers pending",
+      "dimensions": {
+        "h": 128,
+        "v": 128,
+        "z": 32
+      },
+      "saveSha256": "b42c8c989a2f4ff1e4ed51b13b366cdbde2a0026010c711bf9394e8a57e32cf2",
+      "railwaySha256": "c221ed30b901f4fd57d29011e43b38fc8e50c281602d7cca46ad2f423596c358",
+      "contentSha256": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+      "fixtureSha256": "66c55c2c4005c91a9303e8399f724a236dd00791993a8c350e62a01897637970",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+        "recipeId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}"
+      },
+      "stock": {
+        "packId": "exav-stable-bundled",
+        "version": "2",
+        "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+        "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+      },
+      "carRecipes": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        }
+      ],
+      "saveBytes": 661212,
+      "packetBytes": 643596,
+      "reopenMs": 58.2585,
+      "buildMs": {
+        "count": 32,
+        "p50": 5.935,
+        "p95": 27.4903,
+        "max": 29.5335
+      },
+      "attachMs": {
+        "count": 128,
+        "p50": 3.7675,
+        "p95": 4.527,
+        "max": 8.5179
+      },
+      "churnMs": {
+        "count": 30,
+        "p50": 4.3926,
+        "p95": 5.38,
+        "max": 5.6837
+      },
+      "previewMs": {
+        "count": 30,
+        "p50": 1.4598,
+        "p95": 2.7213,
+        "max": 2.9401
+      },
+      "editMs": {
+        "count": 30,
+        "p50": 10.404,
+        "p95": 13.5181,
+        "max": 17.412
+      },
+      "callbacks": 112,
+      "departures": "32",
+      "waiting": {
+        "count": 32,
+        "p50": 9406,
+        "p95": 10775,
+        "max": 10775
+      },
+      "exports": "19008",
+      "imports": "9504",
+      "transactions": 369,
+      "managedRetainedBytes": "116734016",
+      "tickMs": {
+        "count": 120,
+        "p50": 0.7436,
+        "p95": 39.3675,
+        "max": 196.6204
+      },
+      "hourBurstMs": {
+        "count": 1,
+        "p50": 79.8684,
+        "p95": 79.8684,
+        "max": 79.8684
+      },
+      "midnightBurstMs": {
+        "count": 1,
+        "p50": 196.6204,
+        "p95": 196.6204,
+        "max": 196.6204
+      },
+      "maximumDueCallbacks": 64,
+      "rawReport": "tmp/p6-26-capacity/medium/measurement.json",
+      "rawReportSha256": "362f7d93bcc7890392daf3f8ead87fcea73850fdaa3e0ab98245173c0b99c648",
+      "expectedSha256": "72d9a9e0a1ace06139fa3b625606fe2eedee025aef6c3898d5c473c27b488243"
+    },
+    "large": {
+      "mode": "large",
+      "rings": 64,
+      "trains": 64,
+      "cars": 192,
+      "stations": 128,
+      "platforms": 128,
+      "providers": 512,
+      "controlledPopulationPerProvider": 2500,
+      "scope": "Controlled rail-owner population bindings; P7 city providers pending",
+      "dimensions": {
+        "h": 256,
+        "v": 256,
+        "z": 64
+      },
+      "saveSha256": "105f8cc1519fce8ffc418271803383bbea551661291e3bdac00fbf24b67d4403",
+      "railwaySha256": "cc2ad03ecb663ece2fb2d9753a981e17c1051f0eafc7ca0e031b2aa0299c7af9",
+      "contentSha256": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+      "fixtureSha256": "66c55c2c4005c91a9303e8399f724a236dd00791993a8c350e62a01897637970",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+        "recipeId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}"
+      },
+      "stock": {
+        "packId": "exav-stable-bundled",
+        "version": "2",
+        "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+        "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+      },
+      "carRecipes": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        }
+      ],
+      "saveBytes": 2634599,
+      "packetBytes": 2582022,
+      "reopenMs": 111.1502,
+      "buildMs": {
+        "count": 128,
+        "p50": 13.6997,
+        "p95": 23.7209,
+        "max": 36.6207
+      },
+      "attachMs": {
+        "count": 512,
+        "p50": 7.4222,
+        "p95": 17.8277,
+        "max": 21.6295
+      },
+      "churnMs": {
+        "count": 30,
+        "p50": 11.2684,
+        "p95": 23.8046,
+        "max": 23.9762
+      },
+      "previewMs": {
+        "count": 30,
+        "p50": 4.581,
+        "p95": 17.8123,
+        "max": 23.1629
+      },
+      "editMs": {
+        "count": 30,
+        "p50": 37.3759,
+        "p95": 46.1525,
+        "max": 47.8115
+      },
+      "callbacks": 448,
+      "departures": "128",
+      "waiting": {
+        "count": 128,
+        "p50": 9406,
+        "p95": 10775,
+        "max": 10775
+      },
+      "exports": "76032",
+      "imports": "38016",
+      "transactions": 1473,
+      "managedRetainedBytes": "113817576",
+      "tickMs": {
+        "count": 120,
+        "p50": 0.8959,
+        "p95": 603.9665,
+        "max": 2331.332
+      },
+      "hourBurstMs": {
+        "count": 1,
+        "p50": 1266.2069,
+        "p95": 1266.2069,
+        "max": 1266.2069
+      },
+      "midnightBurstMs": {
+        "count": 1,
+        "p50": 2331.332,
+        "p95": 2331.332,
+        "max": 2331.332
+      },
+      "maximumDueCallbacks": 256,
+      "rawReport": "tmp/p6-26-capacity/large/measurement.json",
+      "rawReportSha256": "89477aac849cf25ede3878e58253563958c17da9e317e1603978a53c13b39457",
+      "expectedSha256": "de68174cb7a6263c55974bdb8e3eb8e582939544331707615df8ac3156cf29f1"
+    },
+    "extent": {
+      "mode": "extent",
+      "rings": 64,
+      "trains": 64,
+      "cars": 192,
+      "stations": 128,
+      "platforms": 128,
+      "providers": 512,
+      "controlledPopulationPerProvider": 2500,
+      "scope": "Controlled rail-owner population bindings; P7 city providers pending",
+      "dimensions": {
+        "h": 1500,
+        "v": 1090,
+        "z": 45
+      },
+      "saveSha256": "c81588cdd8a09ce7dacacad22b10297e8fbd911c457daed278c1eb664a4d44d1",
+      "railwaySha256": "a73c83c2103bd12a87e37bac40ba840a8e4013bbde2a09556d77f8e849205712",
+      "contentSha256": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+      "fixtureSha256": "66c55c2c4005c91a9303e8399f724a236dd00791993a8c350e62a01897637970",
+      "definition": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+        "recipeId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}"
+      },
+      "stock": {
+        "packId": "exav-stable-bundled",
+        "version": "2",
+        "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+        "contributionId": "{F3604C61-D0D5-4c9c-ADD6-405610FA6250}"
+      },
+      "carRecipes": [
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        },
+        {
+          "packId": "exav-stable-bundled",
+          "contributionId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}",
+          "recipeId": "{9EE438DE-B766-4b37-A474-9CE6EE73FE75}"
+        }
+      ],
+      "saveBytes": 4802647,
+      "packetBytes": 4750069,
+      "reopenMs": 183.1301,
+      "buildMs": {
+        "count": 128,
+        "p50": 12.948,
+        "p95": 18.2259,
+        "max": 43.7889
+      },
+      "attachMs": {
+        "count": 512,
+        "p50": 7.5281,
+        "p95": 17.8465,
+        "max": 20.4262
+      },
+      "churnMs": {
+        "count": 30,
+        "p50": 11.4693,
+        "p95": 26.7243,
+        "max": 27.7057
+      },
+      "previewMs": {
+        "count": 30,
+        "p50": 4.3971,
+        "p95": 6.2765,
+        "max": 22.0343
+      },
+      "editMs": {
+        "count": 30,
+        "p50": 27.1802,
+        "p95": 45.227,
+        "max": 46.2874
+      },
+      "callbacks": 448,
+      "departures": "128",
+      "waiting": {
+        "count": 128,
+        "p50": 9406,
+        "p95": 10775,
+        "max": 10775
+      },
+      "exports": "76032",
+      "imports": "38016",
+      "transactions": 1485,
+      "managedRetainedBytes": "262359392",
+      "tickMs": {
+        "count": 120,
+        "p50": 0.8787,
+        "p95": 511.9116,
+        "max": 2183.6945
+      },
+      "hourBurstMs": {
+        "count": 1,
+        "p50": 1129.0084,
+        "p95": 1129.0084,
+        "max": 1129.0084
+      },
+      "midnightBurstMs": {
+        "count": 1,
+        "p50": 2183.6945,
+        "p95": 2183.6945,
+        "max": 2183.6945
+      },
+      "maximumDueCallbacks": 256,
+      "rawReport": "tmp/p6-26-capacity/extent/measurement.json",
+      "rawReportSha256": "5ef513f5c2860bc2f63f8d9a9e6474d228e15244e8139efc28c4f22dac6e1596",
+      "expectedSha256": "4fb00e98e3ed39bf75f8d037b06aaa38b945281d3924a136f405fccade36ebf4"
+    }
+  },
+  "browser": {
+    "small": {
+      "mode": "small",
+      "browser": "156.0.8078.4",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "fixtureSha256": "b58eaae2bb3daf6a0ea08bbdf4d4584d9e59b22b72b4e357861ca00c072442a5",
+      "uploadMs": 150,
+      "stationPreviewMs": {
+        "count": 30,
+        "p50": 23,
+        "p95": 36,
+        "max": 59
+      },
+      "coldMs": {
+        "count": 3,
+        "p50": 1606,
+        "p95": 1642,
+        "max": 1642
+      },
+      "feedback": {
+        "local": {
+          "count": 30,
+          "p50": 51,
+          "p95": 133,
+          "max": 138
+        },
+        "rtt100": {
+          "count": 30,
+          "p50": 217,
+          "p95": 246,
+          "max": 288
+        }
+      },
+      "windows": [
+        {
+          "running": false,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 60863,
+          "frameMs": {
+            "count": 3645,
+            "p50": 16.69999999999709,
+            "p95": 16.799999999995634,
+            "max": 16.80000000000291
+          },
+          "paintMs": {
+            "count": 0
+          },
+          "finalTick": "1437",
+          "moves": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "transactions": 49,
+          "stationCount": 8,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 0,
+              "accumulatedLoaded": 0,
+              "accumulatedUnloaded": 0
+            },
+            "exports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 0
+          },
+          "receivedWebSocketBytes": 0,
+          "receivedBytesPerSecond": 0.0,
+          "largestMessageBytes": 0,
+          "advancedMinutes": 0,
+          "nominalMinutesAtSlowestRate": 0
+        },
+        {
+          "running": true,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 60694,
+          "frameMs": {
+            "count": 3642,
+            "p50": 16.69999999999709,
+            "p95": 16.70000000001164,
+            "max": 33.30000000000291
+          },
+          "paintMs": {
+            "count": 1835,
+            "p50": 2.6,
+            "p95": 3.8,
+            "max": 8
+          },
+          "finalTick": "1588",
+          "moves": [
+            36,
+            36,
+            36,
+            36
+          ],
+          "transactions": 101,
+          "stationCount": 8,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 3420,
+              "accumulatedLoaded": 4740,
+              "accumulatedUnloaded": 4748
+            },
+            "exports": {
+              "today": 4752,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 4752,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 16,
+              "yesterday": 4,
+              "thisWeek": 4,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 151,
+            "p50": 400.39999997615814,
+            "p95": 406.19999998807907,
+            "max": 500.5999999642372
+          },
+          "receivedWebSocketBytes": 18067976,
+          "receivedBytesPerSecond": 297689.6563086961,
+          "largestMessageBytes": 127588,
+          "advancedMinutes": 151,
+          "nominalMinutesAtSlowestRate": 151.735
+        }
+      ],
+      "browserPeakRss": 1188937728,
+      "decodedImageRgbaEstimateBytes": 644416,
+      "saveMs": 207,
+      "joinMs": 1791,
+      "restartMs": 2592,
+      "finalSha256": "bc155fe9dca3bb32006aea1cdb56b03f70bba277ee9aa5ea97a0c97dceb32b15",
+      "errors": [],
+      "feedbackCoverage": {
+        "local": {
+          "requested": 30,
+          "succeeded": 30,
+          "failed": 0,
+          "unmeasured": 0
+        },
+        "rtt100": {
+          "requested": 30,
+          "succeeded": 30,
+          "failed": 0,
+          "unmeasured": 0
+        }
+      },
+      "sampledServerPeakRss": 648970240,
+      "heapAfterGC": 48655928,
+      "rawReport": "tmp/p6-26-capacity/browser/small.json",
+      "rawReportSha256": "75d2daf093e9b4ab9e2e415bd195970f454a6ed0f3e40e72336d29aea2d120c8",
+      "screenshotSha256": "53afd0ecd9980b465440336528f538453fe3fe3764f7a67b0f157070a47d08c0"
+    },
+    "medium": {
+      "mode": "medium",
+      "browser": "156.0.8078.4",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "fixtureSha256": "b42c8c989a2f4ff1e4ed51b13b366cdbde2a0026010c711bf9394e8a57e32cf2",
+      "uploadMs": 207,
+      "stationPreviewMs": {
+        "count": 30,
+        "p50": 35,
+        "p95": 69,
+        "max": 71
+      },
+      "coldMs": {
+        "count": 3,
+        "p50": 1870,
+        "p95": 1894,
+        "max": 1894
+      },
+      "feedback": {
+        "local": {
+          "count": 30,
+          "p50": 115,
+          "p95": 169,
+          "max": 832
+        },
+        "rtt100": {
+          "count": 30,
+          "p50": 221,
+          "p95": 519,
+          "max": 598
+        }
+      },
+      "windows": [
+        {
+          "running": false,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 61019,
+          "frameMs": {
+            "count": 3642,
+            "p50": 16.69999999999709,
+            "p95": 16.799999999995634,
+            "max": 50
+          },
+          "paintMs": {
+            "count": 4,
+            "p50": 25.3,
+            "p95": 46.1,
+            "max": 46.1
+          },
+          "finalTick": "1437",
+          "moves": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "transactions": 193,
+          "stationCount": 32,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 0,
+              "accumulatedLoaded": 0,
+              "accumulatedUnloaded": 0
+            },
+            "exports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 0
+          },
+          "receivedWebSocketBytes": 0,
+          "receivedBytesPerSecond": 0.0,
+          "largestMessageBytes": 0,
+          "advancedMinutes": 0,
+          "nominalMinutesAtSlowestRate": 0
+        },
+        {
+          "running": true,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 60699,
+          "frameMs": {
+            "count": 3467,
+            "p50": 16.69999999999709,
+            "p95": 16.79999999998836,
+            "max": 133.3000000000029
+          },
+          "paintMs": {
+            "count": 1675,
+            "p50": 3.8,
+            "p95": 6.2,
+            "max": 46
+          },
+          "finalTick": "1588",
+          "moves": [
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36,
+            36
+          ],
+          "transactions": 401,
+          "stationCount": 32,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 13680,
+              "accumulatedLoaded": 18960,
+              "accumulatedUnloaded": 18992
+            },
+            "exports": {
+              "today": 19008,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 19008,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 64,
+              "yesterday": 16,
+              "thisWeek": 16,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 151,
+            "p50": 400.10000002384186,
+            "p95": 407.5,
+            "max": 522.0999999642372
+          },
+          "receivedWebSocketBytes": 71835339,
+          "receivedBytesPerSecond": 1183468.2449463748,
+          "largestMessageBytes": 507610,
+          "advancedMinutes": 151,
+          "nominalMinutesAtSlowestRate": 151.7475
+        }
+      ],
+      "browserPeakRss": 1308246016,
+      "decodedImageRgbaEstimateBytes": 644416,
+      "saveMs": 206,
+      "joinMs": 2325,
+      "restartMs": 3069,
+      "finalSha256": "f856d45f0ef46f73474f5c03d2c26bb421c053e88daa17c7a3a7c8382b3bb725",
+      "errors": [],
+      "feedbackCoverage": {
+        "local": {
+          "requested": 30,
+          "succeeded": 30,
+          "failed": 0,
+          "unmeasured": 0
+        },
+        "rtt100": {
+          "requested": 30,
+          "succeeded": 30,
+          "failed": 0,
+          "unmeasured": 0
+        }
+      },
+      "sampledServerPeakRss": 536379392,
+      "heapAfterGC": 76860956,
+      "rawReport": "tmp/p6-26-capacity/browser/medium.json",
+      "rawReportSha256": "8ca426bc219d1b7b46e8376d6733bcf2fed5fe6642c6a9a2c56b1412bb607370",
+      "screenshotSha256": "e42585d20ecb1c919d7e2f02e4f331c11c03f0cff05b095d7b3e1afbc05aa3e6"
+    },
+    "large": {
+      "mode": "large",
+      "browser": "156.0.8078.4",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "fixtureSha256": "105f8cc1519fce8ffc418271803383bbea551661291e3bdac00fbf24b67d4403",
+      "uploadMs": 318,
+      "stationPreviewMs": {
+        "count": 30,
+        "p50": 98,
+        "p95": 155,
+        "max": 188
+      },
+      "coldMs": {
+        "count": 3,
+        "p50": 2340,
+        "p95": 2372,
+        "max": 2372
+      },
+      "feedback": {
+        "local": {
+          "count": 27,
+          "p50": 150,
+          "p95": 259,
+          "max": 3023
+        },
+        "rtt100": {
+          "count": 19,
+          "p50": 251,
+          "p95": 2493,
+          "max": 2493
+        }
+      },
+      "feedbackFailures": [
+        {
+          "network": "local",
+          "key": "pause",
+          "sample": 13,
+          "elapsedMs": 15091,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: /Run$/ })\nExpected: visible\nTimeout: 15000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('button', { name: /Run$/ }) with timeout 15000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /Run$/ })\u001b[22m\n",
+          "status": "Game \u25be\n\u2161 Pause\n\u25b6| Single step\nSlowest\nSlower\nSlow\nNormal\nFast\nRailway world\nRunning\nYear 1 \u00b7 1/2 (Mon) 01:40\n\u00a52,085,644,800\nView\nSession \u00b7 Owner\nConnected to game\n\u2196\n\u25a5\n\u25f4\n\ud83d\udea6\n\u26f0\n\u00d7\n\u2212\n150%\n\uff0b\nReset camera\nInspect \u00b7 Select a map object to inspect\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nA command outcome is unresolved. Review the refreshed state before trying again."
+        },
+        {
+          "network": "rtt100",
+          "key": "pause",
+          "sample": 9,
+          "elapsedMs": 15046,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: /Run$/ })\nExpected: visible\nTimeout: 15000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('button', { name: /Run$/ }) with timeout 15000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /Run$/ })\u001b[22m\n",
+          "status": "Game \u25be\n\u2161 Pause\n\u25b6| Single step\nSlowest\nSlower\nSlow\nNormal\nFast\nRailway world\nRunning\nYear 1 \u00b7 1/2 (Mon) 01:40\n\u00a52,097,036,800\nView\nSession \u00b7 Owner\nConnected to game\n\u2196\n\u25a5\n\u25f4\n\ud83d\udea6\n\u26f0\n\u00d7\n\u2212\n150%\n\uff0b\nReset camera\nInspect \u00b7 Select a map object to inspect\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nA command outcome is unresolved. Review the refreshed state before trying again."
+        }
+      ],
+      "windows": [
+        {
+          "running": false,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 61522,
+          "frameMs": {
+            "count": 3640,
+            "p50": 16.69999999999709,
+            "p95": 16.700000000004366,
+            "max": 50
+          },
+          "paintMs": {
+            "count": 19,
+            "p50": 8.4,
+            "p95": 50.2,
+            "max": 50.2
+          },
+          "finalTick": "1437",
+          "moves": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "transactions": 769,
+          "stationCount": 128,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 0,
+              "accumulatedLoaded": 0,
+              "accumulatedUnloaded": 0
+            },
+            "exports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 0
+          },
+          "receivedWebSocketBytes": 0,
+          "receivedBytesPerSecond": 0.0,
+          "largestMessageBytes": 0,
+          "advancedMinutes": 0,
+          "nominalMinutesAtSlowestRate": 0
+        },
+        {
+          "running": true,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 60703,
+          "frameMs": {
+            "count": 3260,
+            "p50": 16.69999999999709,
+            "p95": 16.80000000000291,
+            "max": 183.3000000000029
+          },
+          "paintMs": {
+            "count": 1704,
+            "p50": 3.7,
+            "p95": 6.2,
+            "max": 58.9
+          },
+          "finalTick": "1554",
+          "moves": [
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28,
+            28
+          ],
+          "transactions": 1409,
+          "stationCount": 128,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 68416,
+              "accumulatedLoaded": 75968,
+              "accumulatedUnloaded": 38016
+            },
+            "exports": {
+              "today": 76032,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 38016,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 192,
+              "yesterday": 64,
+              "thisWeek": 64,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 115,
+            "p50": 401.89999997615814,
+            "p95": 817.8999999761581,
+            "max": 2166.900000035763
+          },
+          "receivedWebSocketBytes": 225192686,
+          "receivedBytesPerSecond": 3709745.580943281,
+          "largestMessageBytes": 2012302,
+          "advancedMinutes": 117,
+          "nominalMinutesAtSlowestRate": 151.7575
+        }
+      ],
+      "browserPeakRss": 1395949568,
+      "decodedImageRgbaEstimateBytes": 721216,
+      "saveMs": 208,
+      "joinMs": 2185,
+      "restartMs": 3576,
+      "finalSha256": "a89f0257439cfb54a7b77d012da001172d08b0e1c5ea3d37f18440db617b7fe1",
+      "errors": [],
+      "feedbackCoverage": {
+        "local": {
+          "requested": 30,
+          "succeeded": 27,
+          "failed": 1,
+          "unmeasured": 2
+        },
+        "rtt100": {
+          "requested": 30,
+          "succeeded": 19,
+          "failed": 1,
+          "unmeasured": 10
+        }
+      },
+      "sampledServerPeakRss": 614236160,
+      "heapAfterGC": 64531724,
+      "rawReport": "tmp/p6-26-capacity/browser/large.json",
+      "rawReportSha256": "8feab5ee28f68adc410fa5ef4fe1687db24595a9ec2d391d7645057c0023374e",
+      "screenshotSha256": "e65e3675d424367b53a290d7aacd0b671813caf2c4384751fbb33e34c97ecba2"
+    },
+    "extent": {
+      "mode": "extent",
+      "browser": "156.0.8078.4",
+      "viewport": {
+        "width": 1880,
+        "height": 1040
+      },
+      "fixtureSha256": "c81588cdd8a09ce7dacacad22b10297e8fbd911c457daed278c1eb664a4d44d1",
+      "uploadMs": 583,
+      "stationPreviewMs": {
+        "count": 30,
+        "p50": 105,
+        "p95": 153,
+        "max": 200
+      },
+      "coldMs": {
+        "count": 3,
+        "p50": 2336,
+        "p95": 2375,
+        "max": 2375
+      },
+      "feedback": {
+        "local": {
+          "count": 25,
+          "p50": 150,
+          "p95": 265,
+          "max": 3340
+        },
+        "rtt100": {
+          "count": 21,
+          "p50": 249,
+          "p95": 254,
+          "max": 2904
+        }
+      },
+      "feedbackFailures": [
+        {
+          "network": "local",
+          "key": "pause",
+          "sample": 12,
+          "elapsedMs": 15089,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: /Run$/ })\nExpected: visible\nTimeout: 15000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('button', { name: /Run$/ }) with timeout 15000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /Run$/ })\u001b[22m\n",
+          "status": "Game \u25be\n\u2161 Pause\n\u25b6| Single step\nSlowest\nSlower\nSlow\nNormal\nFast\nRailway world\nRunning\nYear 1 \u00b7 1/2 (Mon) 01:40\n\u00a51,217,536,800\nView\nSession \u00b7 Owner\nConnected to game\n\u2196\n\u25a5\n\u25f4\n\ud83d\udea6\n\u26f0\n\u00d7\n\u2212\n150%\n\uff0b\nReset camera\nInspect \u00b7 Select a map object to inspect\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nA command outcome is unresolved. Review the refreshed state before trying again."
+        },
+        {
+          "network": "rtt100",
+          "key": "pause",
+          "sample": 10,
+          "elapsedMs": 15036,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: /Run$/ })\nExpected: visible\nTimeout: 15000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('button', { name: /Run$/ }) with timeout 15000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: /Run$/ })\u001b[22m\n",
+          "status": "Game \u25be\n\u2161 Pause\n\u25b6| Single step\nSlowest\nSlower\nSlow\nNormal\nFast\nRailway world\nRunning\nYear 1 \u00b7 1/2 (Mon) 01:40\n\u00a51,217,536,800\nView\nSession \u00b7 Owner\nConnected to game\n\u2196\n\u25a5\n\u25f4\n\ud83d\udea6\n\u26f0\n\u00d7\n\u2212\n150%\n\uff0b\nReset camera\nInspect \u00b7 Select a map object to inspect\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nBuild, remove and inspect railway infrastructure. Terrain tools protect occupied cells and preserve tunnel and terrace backups.\n\nA command outcome is unresolved. Review the refreshed state before trying again."
+        }
+      ],
+      "windows": [
+        {
+          "running": false,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 62512,
+          "frameMs": {
+            "count": 3639,
+            "p50": 16.69999999999709,
+            "p95": 16.700000000004366,
+            "max": 50
+          },
+          "paintMs": {
+            "count": 14,
+            "p50": 8.5,
+            "p95": 49.9,
+            "max": 49.9
+          },
+          "finalTick": "1437",
+          "moves": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "transactions": 781,
+          "stationCount": 128,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 0,
+              "accumulatedLoaded": 0,
+              "accumulatedUnloaded": 0
+            },
+            "exports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 0,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 0
+          },
+          "receivedWebSocketBytes": 0,
+          "receivedBytesPerSecond": 0.0,
+          "largestMessageBytes": 0,
+          "advancedMinutes": 0,
+          "nominalMinutesAtSlowestRate": 0
+        },
+        {
+          "running": true,
+          "view": {
+            "camera": "160.0,64.0",
+            "zoom": "1.500",
+            "width": 1840,
+            "height": 1000,
+            "dpr": 1
+          },
+          "elapsedMs": 60767,
+          "frameMs": {
+            "count": 3181,
+            "p50": 16.69999999999709,
+            "p95": 16.80000000000291,
+            "max": 250
+          },
+          "paintMs": {
+            "count": 1656,
+            "p50": 3.8,
+            "p95": 6.4,
+            "max": 162.4
+          },
+          "finalTick": "1552",
+          "moves": [
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27,
+            27
+          ],
+          "transactions": 1421,
+          "stationCount": 128,
+          "stationCounterTotals": {
+            "passengers": {
+              "gone": 68416,
+              "accumulatedLoaded": 75968,
+              "accumulatedUnloaded": 38016
+            },
+            "exports": {
+              "today": 76032,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "imports": {
+              "today": 38016,
+              "yesterday": 0,
+              "thisWeek": 0,
+              "lastWeekPerDay": 0
+            },
+            "trains": {
+              "today": 192,
+              "yesterday": 64,
+              "thisWeek": 64,
+              "lastWeekPerDay": 0
+            }
+          },
+          "tickDeliveryIntervalMs": {
+            "count": 113,
+            "p50": 400.80000001192093,
+            "p95": 939.1999999880791,
+            "max": 2190.399999976158
+          },
+          "receivedWebSocketBytes": 232282465,
+          "receivedBytesPerSecond": 3822509.997202429,
+          "largestMessageBytes": 2057309,
+          "advancedMinutes": 115,
+          "nominalMinutesAtSlowestRate": 151.9175
+        }
+      ],
+      "browserPeakRss": 1351417856,
+      "decodedImageRgbaEstimateBytes": 868928,
+      "saveMs": 220,
+      "joinMs": 2664,
+      "restartMs": 3653,
+      "finalSha256": "336b4945f4e916a82ab8d979de4ec2b2d07842156f38826ebc57116df95f4ed0",
+      "errors": [],
+      "feedbackCoverage": {
+        "local": {
+          "requested": 30,
+          "succeeded": 25,
+          "failed": 1,
+          "unmeasured": 4
+        },
+        "rtt100": {
+          "requested": 30,
+          "succeeded": 21,
+          "failed": 1,
+          "unmeasured": 8
+        }
+      },
+      "sampledServerPeakRss": 721534976,
+      "heapAfterGC": 72612356,
+      "rawReport": "tmp/p6-26-capacity/browser/extent.json",
+      "rawReportSha256": "7811bf4373dc380e5897831979382630cb02274b257ca26892a1661e343902dd",
+      "screenshotSha256": "a671e87b82600a28e38da8c61021c35a7419154f07373bdf7c0b7feb9c0f7101"
+    }
+  },
+  "misses": [
+    {
+      "id": "STATION-CAP-002",
+      "scene": "small",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "local feedback p95 includes driver overhead",
+      "actual": 133,
+      "target": 100
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "medium",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "local feedback p95 includes driver overhead",
+      "actual": 169,
+      "target": 100
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "medium",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "rtt100 feedback p95 includes driver overhead",
+      "actual": 519,
+      "target": 250
+    },
+    {
+      "id": "STATION-CAP-001",
+      "scene": "large",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Progress below 90% of slowest nominal rate",
+      "actual": 117,
+      "target": 151.7575
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "large",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "local feedback p95 includes driver overhead",
+      "actual": 259,
+      "target": 100
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "large",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "rtt100 feedback p95 includes driver overhead",
+      "actual": 2493,
+      "target": 250
+    },
+    {
+      "id": "STATION-CAP-004",
+      "scene": "large",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Feedback unresolved/timed out; phase aborted and accepted paused scene restored",
+      "actual": 15091,
+      "target": 15000
+    },
+    {
+      "id": "STATION-CAP-004",
+      "scene": "large",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Feedback unresolved/timed out; phase aborted and accepted paused scene restored",
+      "actual": 15046,
+      "target": 15000
+    },
+    {
+      "id": "STATION-CAP-001",
+      "scene": "extent",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Progress below 90% of slowest nominal rate",
+      "actual": 115,
+      "target": 151.9175
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "extent",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "local feedback p95 includes driver overhead",
+      "actual": 265,
+      "target": 100
+    },
+    {
+      "id": "STATION-CAP-002",
+      "scene": "extent",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "rtt100 feedback p95 includes driver overhead",
+      "actual": 254,
+      "target": 250
+    },
+    {
+      "id": "STATION-CAP-004",
+      "scene": "extent",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Feedback unresolved/timed out; phase aborted and accepted paused scene restored",
+      "actual": 15089,
+      "target": 15000
+    },
+    {
+      "id": "STATION-CAP-004",
+      "scene": "extent",
+      "owner": "P11 integrated station/resource performance",
+      "reason": "Feedback unresolved/timed out; phase aborted and accepted paused scene restored",
+      "actual": 15036,
+      "target": 15000
+    },
+    {
+      "id": "STATION-CAP-004",
+      "scenes": [
+        "large",
+        "extent"
+      ],
+      "owner": "P11 command/publication performance",
+      "reason": "Initial normal-rate pause became unresolved in both 128-station scenes; diagnostic assertions timed out after 60 seconds"
+    }
+  ],
+  "diagnosticFailures": {
+    "tmp/p6-26-capacity/diagnostics/extent-unresolved.md": "2e9a7fb9a1d81858ee6da5b942d00bfe502c7abea688de2ae2638fcbcea9feb9",
+    "tmp/p6-26-capacity/diagnostics/large-unresolved.md": "6500522d73bdc43df2abb0167dccae177d6ba9aa8f479c0f35013e57912cfeb9"
+  },
+  "validation": {
+    "dotnetCapacity": {
+      "passed": 4,
+      "log": "tmp/p6-26-isolated.log",
+      "sha256": "72f1b0b5f27d3c6cb159131584e3ed22849e3767d7fd878206a2d5e4f4ddd273"
+    },
+    "dotnetStationSaveRegression": {
+      "passed": 769,
+      "log": "tmp/p6-26-regression.log",
+      "sha256": "e72b5794dc39c237c302628d27e704a39b07f724a610447dfd3e79175f5e24c3"
+    },
+    "client": {
+      "passed": 26,
+      "log": "tmp/p6-26-client.log",
+      "sha256": "d486b84852de8eaef6f89dfea40761aea7ec457b1aea7a0c8950b15901593519"
+    },
+    "chromiumReports": 4
+  },
+  "buildAndHarnessHashes": {
+    "tools/TerrainTransportProbe/StationCapacity.cs": "7bc8d45cb4cb8b7f563b6196d48a035bd6d5acc7593fd904dacb2616493c42cd",
+    "tools/TerrainTransportProbe/RailwayCapacity.cs": "713c26ca4d365672fc1ded6bf74f33940dd9956a172f50fef4a9fc1b99ded586",
+    "web/tests/browser/capacity-harness.ts": "9ee7db7c20abd8e3013c3e12ad476c92a9a4888fbbd47621b90fae5785f5b2f3",
+    "web/tests/browser/station-capacity.spec.ts": "ed646f64eabe80c20de8212a2fbdddda18a1dc57db96e7350b2b8c3c8552845b",
+    "web/playwright.station-capacity.config.ts": "eaadd9d8554d0d9de8058d016e7ec621eb21b6276da5a4cf5e3f36442d11cfcb",
+    "tests/FreeTrain.Online.Tests/StationCapacityTests.cs": "24134e08f1e943c74715fdb81201023a4fdabb46bb7f6a3c8cc05b530588369a",
+    "scripts/summarize-station-capacity.py": "011eacf3690018dae06e77d52a075a28c4ad43e73e38e73250e984c5e055f84f",
+    "web/public/content/bundled-v2/catalog.json": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll": "3b6acb9981d28e04e970d8c42c9916b178978c46d8ee236036435c1a9b663305",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Content.dll": "7b8af727a36edb9af835aa9b5bc7d22a43650f3c5c2231aad248b86080d83861",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Contracts.dll": "f7a1bfcdb95a8fc60736610f1633f7f3f0b046559131e3fffbd8b7d52ee04dd4",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Content.dll": "30b8431b800ab9c9ec48f386309b5458579a9fdf7c314ddc442bbaafc5c465d6",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Contracts.dll": "09c636c0d905b852d0bcc4bcdbc15c3fa2cd7a7b5388b8f36b9459a2bbedfd63",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Persistence.dll": "e39144dfa2bebe47811230fa996f1c77893cb7123800ca63984b071a3b4580d5",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Plugins.ManualController.dll": "f20d5dd0d71c0f5eabc9f6fdcaf268b3ade433f9d1e80950ac696338bd2f4b06",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Session.dll": "5a4dccc7ab2a8b611c23fe6ed585f3a7c64ac166c279fba9e4d7151c44dd7fc7",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Simulation.dll": "d34071abeae8612520508b1c7dbececed18053ab08766c89da4b8ffb280ff212",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Persistence.dll": "8d679ab79a323f11de48132093f35694709bb30833f5ad8cf381091acf8355c1",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Plugins.ManualController.dll": "8568f609530a07e4733e136d75c33b6d83a784c49c288a57d9808c9054daafd3",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Server.dll": "3b0adc9ba1b87874f6714b7a6d2aea0cff5d32cac464dec853319db620158916",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Session.dll": "e8dc59af4714c6287a618146173a6d11315a149c0921487c49c203990601b77e",
+    "src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Simulation.dll": "6bb81e10166065c37e0ebe1e7f1630236bde06a0863948c8566f3c7f0394830e",
+    "web/dist/index.html": "54b0179ce16489ab2acb479f20223c8015dc30561ac5b5c0328b9ae04475d25f",
+    "web/dist/assets/.DS_Store": "d65165279105ca6773180500688df4bdc69a2c7b771752f0a46ef120b7fd8ec3",
+    "web/dist/assets/COPYING.txt": "49b07772b218bd3837383e6af3761166ea68914ed00fe0312ab561715a35ed5d",
+    "web/dist/assets/FTOicon.png": "5bcf0d38894508b9fcb41aba01284397daccf74f4a732f10876a2598a7c20f3b",
+    "web/dist/assets/NOTICE.txt": "1528463db9230e5904cf2e1e0deee11526fb801d93ca971de156d9a5d3d5121f",
+    "web/dist/assets/app-C6Q5xasW.css": "a072eee1b54fc5d6fe5162cf7f137b1d839be7d9c5a9b1b6525addd831a85f76",
+    "web/dist/assets/app-CWMO8Agx.js": "bdff158abe080bde0d8dcf17f851f123dd8b2f5ad95414beec9d75e67144f41d",
+    "web/dist/assets/condo-bottom-night.png": "1982557510004b7cedbcffca67b0e35a8e31f5f25bd7dc07e9d929683fc51512",
+    "web/dist/assets/condo-bottom-tint.png": "b19d8dd1b507d150684f5ebb7b1b6fab304bb46b64a8fef82e829f55fda9f51e",
+    "web/dist/assets/condo-bottom.png": "d1075b5f6504a0e5f60cdee73a59d2e24f718f7c78cd34ff660fb116f36029b5",
+    "web/dist/assets/condo-middle-night.png": "26781866cce89f0ecdb6df8b189e7e34a01dcb1c13d5b958cb590ba9514bca0e",
+    "web/dist/assets/condo-middle-tint.png": "5f6c62531b0ad6857c56636afa5454908bf05a41bfc4d157bc8173b085544396",
+    "web/dist/assets/condo-middle.png": "02c4bd8dd3fbe472e252cb55ee0d4fa65bbfeb6f65b8be5776d7ff3654eaaf00",
+    "web/dist/assets/condo-top-night.png": "2cf6b2c93039c35c84f41f7d2019e43a6f9930cd3d324123ee471c79297434d5",
+    "web/dist/assets/condo-top-tint.png": "7ed1cd171bfcd56aad6858d76b270013f5758bc31602bb41f3de831d8bbb643f",
+    "web/dist/assets/condo-top.png": "6c8c5d8a3b3684e92c2d9f56f5a5d35a40051ff88bc92119ef144489a6c0fbe3",
+    "web/dist/assets/content-recipes-C-CxrUNV.js": "aea0eb7bc3f6cf16b21ce96ba525283c82c1bb46f949029bf8e80b1e76c0b4d5",
+    "web/dist/assets/contentGallery-B0JRc-wT.css": "bd18727a22c83e953629c7922299f1613fce8b5184da1976bf9bd91629026d8c",
+    "web/dist/assets/contentGallery-LmJf8aSL.js": "6d9ef163d43d99e5c0f4231aaa2ba18f13e846427f83c9541a53fe26531014f3",
+    "web/dist/assets/fence-night.png": "f4407f733673725977947b5fce6694979461a30533de64afa5ca51dbb654307e",
+    "web/dist/assets/fence-tint.png": "f78fa2b6c504a9a8dfb3ef051361b6cbbdcc0d70ebe0820f274c20ff2a25e659",
+    "web/dist/assets/fence.png": "04f369a47d41cb2ed087861bf82f5f412a680ad6647dfedeaf399d83027c7c24",
+    "web/dist/assets/freetrain-online-logo.svg": "874cd2a16dc81a08171e1cf1919f242862e2be080cf0b25375a5f3d8b5995bc1",
+    "web/dist/assets/pier-night.png": "73c0ad8b11bd1628d6f5e2f7eebd94ee2f11dfb5a32c0ddb62cf326fff0abfe5",
+    "web/dist/assets/pier-tint.png": "5f013bf69796f04edf5a88ae2ad03ab5a01e2243fb5f61a0da561d4c70e811b3",
+    "web/dist/assets/pier.png": "b9bd95c6e812c6f5b1961cc466066a5db2ba46fe4c3c86daa4a37959e69f85d5",
+    "web/dist/assets/slope-night.png": "21a7ffe4d4a5f2586060e15f3a30c7c584d6cf97d6434eb6291e2dd7cc295893",
+    "web/dist/assets/slope-tint.png": "e009f3c50606949322fdab557fb2bdbaddaf0d894f58c46778de0dab8e48fe35",
+    "web/dist/assets/slope.png": "c4281707b48c9ae6ad6becb5019556899d83138d0face1b04a44f7789e06e7a2",
+    "web/dist/assets/station.wav": "d65f1213bb9044b9f4e44af97cd1a59130ba4aee9e356eff8fd190c83dd2a168",
+    "web/dist/assets/train-east-night.png": "92aaa5a9898de1d709f1f6fca2268754e3a706dec57163c70e060f698ec64f91",
+    "web/dist/assets/train-east-tint.png": "0df404e941f74fc5386c3a01c70ed915e9ec06411ed10963da3f873e0e3f379a",
+    "web/dist/assets/train-east.png": "e8a6ccd3ef545c6383f2d056dc5d937931d0e02f2f5c90b7e695bc7d6894480b",
+    "web/dist/assets/train-north-night.png": "18a413d2427727ba81335e834c1314085a4f44b355aa536fcda1d59b874a3da9",
+    "web/dist/assets/train-north-tint.png": "a1cdadaac811f4e6ae5b6c9ad052dc32874647e2036d509d2bdae156eb00f056",
+    "web/dist/assets/train-north.png": "e9db98b41e6b82b81f026d246e427209259d8ae9adf2eb627032a16bab590c89",
+    "web/dist/assets/train-south-night.png": "18a413d2427727ba81335e834c1314085a4f44b355aa536fcda1d59b874a3da9",
+    "web/dist/assets/train-south-tint.png": "a1cdadaac811f4e6ae5b6c9ad052dc32874647e2036d509d2bdae156eb00f056",
+    "web/dist/assets/train-south.png": "e9db98b41e6b82b81f026d246e427209259d8ae9adf2eb627032a16bab590c89",
+    "web/dist/assets/train-west-night.png": "92aaa5a9898de1d709f1f6fca2268754e3a706dec57163c70e060f698ec64f91",
+    "web/dist/assets/train-west-tint.png": "0df404e941f74fc5386c3a01c70ed915e9ec06411ed10963da3f873e0e3f379a",
+    "web/dist/assets/train-west.png": "e8a6ccd3ef545c6383f2d056dc5d937931d0e02f2f5c90b7e695bc7d6894480b"
+  }
+}
