@@ -1,5 +1,6 @@
 import { appName } from '../../src/lib/app-identity.ts';
 import { writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { expect,test } from './fixtures.ts';
 import { at,bootstrap,clickSprite,closePanel,evidenceDirectory,openPanel,ready,selectStation } from './browser-helpers.ts';
 import { fit,settled } from './layout-helpers.ts';
@@ -10,11 +11,15 @@ test('fixed viewport, persistent canvas and overlay-independent camera at target
   const evidence = await evidenceDirectory('responsive-layout');
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.setViewportSize({ width: 1280, height: 720 });
-  await page.addInitScript(() => {
+  const sprites=JSON.parse(readFileSync('src/generated/sprites.json','utf8')).sprites;
+  const mapPaths=Object.values(sprites).flatMap((s:any)=>[s.image,s.nightImage,s.tintImage]);
+  await page.addInitScript((mapPaths: string[]) => {
     const testWindow = window as unknown as { mapDecodes: number }; testWindow.mapDecodes = 0;
     const decode = HTMLImageElement.prototype.decode;
-    HTMLImageElement.prototype.decode = function () { testWindow.mapDecodes++; return decode.call(this); };
-  });
+    // Count this prototype map's sprites. Settings color previews have their own
+    // short-lived blob-image cache and do not reload the map's decoded art.
+    HTMLImageElement.prototype.decode = function () { if(mapPaths.includes(new URL(this.src,location.href).pathname))testWindow.mapDecodes++; return decode.call(this); };
+  },mapPaths);
   await page.goto('/'); await ready(page);
   const canvas = page.locator('canvas'); await canvas.evaluate(el => { el.setAttribute('data-instance', 'original'); });
   const box = (await canvas.boundingBox())!;
