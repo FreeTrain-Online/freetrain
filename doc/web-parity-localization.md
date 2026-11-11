@@ -159,3 +159,16 @@ bare-ground extension. Paint instructions/statuses are new owner-requested UI
 text and do not inflate source translation totals. Help and limits in each
 creation/terrain tool are checked with generated locale keys and the ordinary
 EN/JA keyboard/narrow browser workflows.
+
+## P7-01 city text scope — 11 November 2026
+
+The [city localization review](parity/city-localization-review.json) classifies
+776 source literals, 324 manifest text records and 252 category names, retaining
+stable hashes/context and historical English donor provenance. Technical/format,
+source-only extension, diagnostic, presentation and attribution records have named
+P7/P8/P9 owners. No wording is credited as shipped. Actual EN/JA catalog/help/
+inspector/settings/authority delivery follows P7's playable slices. See the
+[city meaning decisions](web-parity-city-contract.md): current-value land resale,
+three bundled road definitions, empty extension menus, settings presets versus
+world saves, actual category metadata versus proposed economics, and event-driven
+stadium demand remain distinct meanings.

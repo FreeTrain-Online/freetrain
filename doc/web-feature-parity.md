@@ -1,3 +1,5 @@
+**11 November 2026 — P7-01 source review:** [city/development contract](web-parity-city-contract.md) pins all 209 assigned declarations and 215 controls with 20 explicit decisions, exact source/translation/dependency ownership and current-value land resale. No P7 runtime or source-correction acceptance; next is P7-02 independent fixtures. Save10/protocol9 unchanged.
+
 # Web parity coverage inventory
 
 **Owner audio decision — 27 October 2026:** [BGM is deferred to a future improvement project](web-audio-policy.md). TinySynth demonstrated feasibility but produced audible pops/crackles and has been removed with its player and music controls. Sound effects and six bell previews remain. Digital audio, including reimagined MIDI compositions, is allowed; BGM/MIDI playback is no longer a P2/P9 or parity exit requirement.

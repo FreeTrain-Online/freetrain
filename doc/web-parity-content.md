@@ -338,3 +338,17 @@ and regenerate rather than editing the generated review. The repository gate
 runs both discovery and reconciliation checks. Unexpected type bindings,
 contribution references, aliases, missing resources or stale asset dispositions
 fail generation instead of silently dropping records.
+
+## P7-01 city content consumer denominator
+
+11 November 2026: [city source contract](web-parity-city-contract.md) and
+[exact declaration/registration records](parity/city-review.json) reconcile all
+209 P7-assigned declarations, nine supporting factories and 252 actual category
+entries against original stable Git blobs. The 66 commercial, 55 variable-height,
+eight half, 66 land and three road declarations retain exact IDs/XML and class/
+project bindings; null parent/child, six menus, category docking and two P8 stadium
+records have explicit dispositions. No roadAccessory/DummyCar instance is bundled.
+P3 generation reuse, P7-07–24 actual construction/art/catalog and P8 event runtime
+are separate owners. This is source review, not fresh recipe/gallery/gameplay or
+optional-suite acceptance. The [text overlay](parity/city-localization-review.json)
+classifies stable/donor text without claiming EN/JA delivery.

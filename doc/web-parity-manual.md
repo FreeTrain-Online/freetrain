@@ -698,3 +698,32 @@ recovery. EN/JA named-slot/download/rejected-upload/reconnect/process workflows
 consume gameplay-built stations and controlled supply. Historical import remains
 P10; generic city construction/providers remain P7, full history/economy P8 and
 capacity/packaging/phase acceptance P6-26–28.
+
+## P7-01 city source reconciliation
+
+11 November 2026: [source contract](web-parity-city-contract.md),
+[exact records](parity/city-review.json) and [translation dispositions](parity/city-localization-review.json).
+All 209 assigned declarations, 215 controls and 19 workflow families have named
+owners. Source specification only; P7-02 independent fixtures and runtime delivery
+remain open. MAN-O04 road labels, MAN-O05 live-value land trading and DEV-A07
+category/recipe/automatic eligibility are reconciled without adding proposed
+DEV-D06 economics or moving buses. P8 retains full market/report/stadium events.
+
+| Operation | Requirements | Owner | Controls / source contract |
+| --- | --- | --- | --- |
+| `property` | MAN-M05, MAN-O05, MAN-A16, MAN-A20, EXAV-11 | P7-15 | Buy/Sell; inclusive rectangle at selected z; cost/loss review; Confirm/Cancel; owned parcel inspection. |
+| `land-value` | MAN-M02, MAN-W10, MAN-A13, MAN-A16, EXAV-07 | P7-06/P7-15 | Pointed-location value inspector/status; world settings consumer; no editing by inspection. |
+| `fixed-buildings` | MAN-T10, MAN-M05, MAN-W11, MAN-A14, MAN-A16, DEV-A07, DEV-P16, EXAV-13 | P7-07/P7-08/P7-09/P7-12 | Definition/group/variant; supported orientation; Place/Remove; full footprint ghost; construction progress and owner inspector. |
+| `variable-buildings` | MAN-T10, MAN-W11, MAN-A14, MAN-A16, DEV-A07, DEV-P22 | P7-10/P7-12 | Definition; min/max height, native display increment4 and internal /4; supported variants; Place/Remove; stack preview. |
+| `half-voxel` | MAN-T10, MAN-W11, MAN-A14, MAN-A16, DEV-A07, EXAV-13 | P7-11/P7-12 | Eight definitions; front/direction; fore/back placement side; supported colors; Place/Remove; paired owner inspection. |
+| `catalog` | MAN-T10, MAN-M02, MAN-A16, MAN-A20, DEV-A07, DEV-D06 | P7-12/P9 | Category/subcategory; direct definition search; supported direction/color/design/height; author information; category navigation. |
+| `construction` | MAN-T10, MAN-E12, DEV-A06, EXAV-13 | P7-04/P7-07/P7-27 | Progress inspection; cancel/demolish owner; no force-completion command. |
+| `ground` | MAN-M05, MAN-O05, MAN-A16, DEV-A07, EXAV-06, EXAV-11, EXAV-13 | P7-16/P7-17/P7-18/P7-19 | Static/farm/forest/rice/creek selector; rectangle or creek endpoints; authored variants; Place/Remove; cost review. |
+| `fences` | MAN-M05, MAN-A14, MAN-A16, EXAV-13 | P7-20 | Fence/remover definition; line boundary side; rectangle perimeter; segment/corner preview and removal. |
+| `roads` | MAN-M04, MAN-O04, MAN-E11, MAN-A14, MAN-A16, MAN-A20, DEV-P13, EXAV-11, EXAV-13 | P7-21/P7-22/P7-23 | Three bundled styles; hierarchy/description; preview pattern cycle0..2; Place/Remove; cardinal two-point route and cost. |
+| `road-extensions` | MAN-O04, MAN-E17, MAN-A20, DEV-D06 | P7-24/P9 | Safe empty accessory/dummy picker; optional supported definitions only; no moving bus command. |
+| `providers-feedback` | MAN-A06, MAN-A16, MAN-E10, DEV-A05, EXAV-06, EXAV-07 | P7-13/P7-14 | Residents/outgoing/incoming inspection; station waiting/demand; live value refresh; no fixture provider editor. |
+| `development` | MAN-A13, MAN-A20, DEV-A07, EXAV-06, EXAV-07 | P7-25/P7-26/P7-27 | Automatic hourly search; station-score consumer; no player force-growth controls. |
+| `settings` | MAN-M02, MAN-E03, MAN-A16, MAN-A20, EXAV-07 | P7-28 | 11 fields; Apply/Cancel/Save settings/Load settings; defaults, units, errors and authoritative revision. |
+| `valuation` | MAN-A20, MAN-E04, EXAV-15 | P7-03/P7-07/P7-25/P8 | P7 ownership/entity-value inputs and receipt inspection; P8 subsidiary market/history/report controls. |
+| `stadium-boundary` | MAN-M05, MAN-A20, EXAV-06, EXAV-15 | P7-03/P7-13/P8 | P8 stadium placement/properties; name/team/capacity, reinforce/PR, game schedule/history and results. |

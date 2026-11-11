@@ -255,3 +255,30 @@ P1/P2 gameplay work. No generated discovery status, source pin, asset, runtime
 version or service limit changes in this reporting batch.
 
 **P0-09 follow-up — 21 October 2026:** all eight explicit-source checks (discovery, content, actions, geometry, persistence, scenarios, optional V2 and integration), **105 Python tests** and `git diff --check` pass. The [integration checker](../scripts/review-exav-integration.py) also pins the inspected importer, Docker inputs and current protocol/save constants at implementation `357c6e4095e98333e619d153db679c731e87831c`. No application/browser/native execution or content conversion was performed.
+
+## P7-01 city decision and coverage overlay — 11 November 2026
+
+[City contract](web-parity-city-contract.md), [source records](parity/city-review.json)
+and [text dispositions](parity/city-localization-review.json) close source review
+for 209 assigned declarations and 215 controls, with 193 pinned source/manifest/
+project files and 194 resources. P7 gameplay remains unimplemented by this slice;
+P7-02 independent fixtures are next. Existing P0 evidence remains immutable.
+
+CITY-D001–003 retain source heat offsets, borders, initialization, buffer swaps
+and exact conductivity notifications. CITY-D004 uses the existing authoritative
+quote adaptation for reclaim-then-buy, CITY-D005 corrects planning's acquisition
+price wording to current-value resale. CITY-D006/009 preserve cache/index quirks
+with explicit invalid-state outcomes; no cache invalidation/search correction is
+approved. CITY-D007/008/010 apply existing deterministic-session/atomicity rules,
+and CITY-D011 retains captured timer interval versus changed heat scaling.
+CITY-D012–015/019/020 distinguish actual construction, land/fence and half-owner
+callers, charged selector versus no-spend legacy paths, initial-half listener
+retention and cumulative market valuation. CITY-D016–018 preserve P6 effects/
+listeners, empty road extensions and P7/P8 stadium/economy ownership. Each record
+names independent acceptance and implementing owners. Required P7 valuation
+cannot be deferred behind full P8 market UI or replaced with a constant.
+
+This review authorizes no new source semantic correction, save/protocol/content
+change, limit increase or runtime/native/optional/P11 acceptance. EXAV-06/07/11/
+13/15, MAN-O04/05/A20 and DEV-A07/D06 are reconciled through reciprocal operations;
+P9 final action/manual closure and all earlier measured capacity misses remain.
