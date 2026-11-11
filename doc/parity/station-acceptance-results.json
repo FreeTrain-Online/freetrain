@@ -1,0 +1,573 @@
+{
+  "schemaVersion": 1,
+  "slice": "P6-28",
+  "recordedOn": "2026-11-11",
+  "implementationBase": "a5dd4da7eca63c48d56316ee70f24234cec312d0",
+  "scope": "bundled browser/portable stations and passengers; controlled population inputs",
+  "saveVersion": 10,
+  "protocolVersion": 9,
+  "hostDeno": "2.9.8",
+  "pinnedDeno": "2.9.7",
+  "hostPinnedVersionCredit": false,
+  "checks": {
+    "dotnet": {
+      "passed": 2304,
+      "failed": 0,
+      "skipped": 0
+    },
+    "client": {
+      "passed": 386,
+      "failed": 0
+    },
+    "stationPython": {
+      "passed": 35,
+      "failed": 0
+    },
+    "sourceFixtures": 821,
+    "browser": {
+      "integratedPassed": 15,
+      "familyJourneysPassed": 2,
+      "definitionsPerLocale": 35,
+      "constructedFamilySaves": 70,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "pass; zero Svelte errors/warnings; existing bundle advisory"
+  },
+  "unaccepted": [
+    "evolving city producers and land-value/traffic consumers (P7)",
+    "full finance/game reports (P8)",
+    "desktop import (P10)",
+    "native/human/original-runtime/other-engine fidelity",
+    "real optional suites",
+    "P4-CAP-001/002",
+    "FLEET-CAP-001/002",
+    "STATION-CAP-001/002/004",
+    "full-city/long-soak/release (P11)"
+  ],
+  "historicalOnly": [
+    "P6-26 capacity measurements",
+    "P6-27 packaging and synthetic mounts",
+    "P6-20/P6-27 bell playback"
+  ],
+  "initialFailures": [
+    "Sandbox VSTest local socket aborted before test execution",
+    "All-family poll dereferenced mixed state before first publication; corrected and both journeys rerun"
+  ],
+  "inputs": [
+    {
+      "path": "web/tests/browser/station-building.spec.ts",
+      "sha256": "938f2883d5e3f9600c950ca9fc1ded09a0338480ba83d22434b0df2512aa5cd3"
+    },
+    {
+      "path": "doc/parity/station-review.json",
+      "sha256": "b0b693c4b165e444941bf5b126416fd5bd7c04401c88e36f205162f5163d50cc"
+    },
+    {
+      "path": "doc/parity/station-fixtures.json",
+      "sha256": "66c55c2c4005c91a9303e8399f724a236dd00791993a8c350e62a01897637970"
+    },
+    {
+      "path": "doc/parity/station-delivery.json",
+      "sha256": "1eb52ee1c4dc5a9843d4f27720308180c747a1f2321a90f9191d20939def7f60"
+    },
+    {
+      "path": "doc/web-parity-p6-acceptance.md",
+      "sha256": "ca9d32ca84d68a1875704b4acdf80e97b633530cf78f01bfe9ba652ee1b37373"
+    },
+    {
+      "path": "doc/web-parity-p7-p8-station-handoff.md",
+      "sha256": "cdfcce2271e11ee2e7ede0c32632cdcb07bf58fefe3274ee9f5ed7da0f292738"
+    }
+  ],
+  "logs": [
+    {
+      "path": "tmp/p6-28-dotnet-accepted.log",
+      "sha256": "7ee93201fe9f3b8c7e71d01c26283364b262bb390d74bb0f5f7ea8f8e913424a"
+    },
+    {
+      "path": "tmp/p6-28-client.log",
+      "sha256": "884a15c96706f387f4271fca101bc45afae2b6fcafec4fc972142cc33869734c"
+    },
+    {
+      "path": "tmp/p6-28-python.log",
+      "sha256": "f86de9816325d2c3938c2f063cb52c73c4c05ff3f7c9ab85c6cd1e6efd03342b"
+    },
+    {
+      "path": "tmp/p6-28-review.log",
+      "sha256": "6587cc415996941622f22cab04a58fe819e912e7cb16fee18d1e2a210aab5634"
+    },
+    {
+      "path": "tmp/p6-28-fixtures.log",
+      "sha256": "ca0d7fe2c85c1ab1e66840229bab0392ee7c655b78290ef5d21efefeee064113"
+    },
+    {
+      "path": "tmp/p6-28-delivery.log",
+      "sha256": "a96d3c74eb535278805bbc3be3d2bab7d19f77c1a6652275c58d3e6a0442f343"
+    },
+    {
+      "path": "tmp/p6-28-review-pinned.log",
+      "sha256": "6587cc415996941622f22cab04a58fe819e912e7cb16fee18d1e2a210aab5634"
+    },
+    {
+      "path": "tmp/p6-28-fixtures-pinned.log",
+      "sha256": "ca0d7fe2c85c1ab1e66840229bab0392ee7c655b78290ef5d21efefeee064113"
+    },
+    {
+      "path": "tmp/p6-28-boundaries.log",
+      "sha256": "672f3409f4a1b1bfeea5830a079dd3aa4f044ac34835d9ad8a27f42543103fc6"
+    },
+    {
+      "path": "tmp/p6-28-web-build.log",
+      "sha256": "9882b60dbe228d858791ca1e2af6b92f370b5358d941104d1dec62598da51c5d"
+    },
+    {
+      "path": "tmp/p6-28-browser.log",
+      "sha256": "67f59b677d6fa3f800a0bdc0622e643df0b8788e48e84bc3a429ffa9f181dda2"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted.log",
+      "sha256": "56bd8622e3f1a9ff63aefff6ce2236b48fa60a98ed2e19f02c9403a9b6ba92a3"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "tmp/p6-28-families-accepted/station-families-en.json",
+      "sha256": "f559f98cfc04ed9bb1d217249c9cc68294b06136e28a1fd8aa12577677f02b74"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-1.json",
+      "sha256": "5ee421df1a0655b38fe59d2781a684ea10368a606cab78acf2d6d6c6a9a64f03",
+      "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-2.json",
+      "sha256": "67ef1ffaf6a905932d6ae8ca2c81d650577434a7b1c4ced5dc1c87c82444944d",
+      "contributionId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-3.json",
+      "sha256": "964245bbdf411ff52e32736323f09d44bf0c464bbdf8e464708b78561a5e3cd1",
+      "contributionId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-4.json",
+      "sha256": "bfea2e449cb91659d63c04d3f5aafb0e5b294ae899bb7c534a378e5d8601844f",
+      "contributionId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-5.json",
+      "sha256": "de9c9ea9dfac0364a3ad119fb0acfcee568576055ab71eec82e904a83e9e1c74",
+      "contributionId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-6.json",
+      "sha256": "623fbb0e57a532c41d64fd3c6bc2d6cb85f0512b634bad7661dc7f1f60d855fc",
+      "contributionId": "{F9508B52-B25C-439e-811C-82B5A259676A}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-7.json",
+      "sha256": "02c4eb45b642e327dd169893519bf5505ec0cabeaa3fc4b4ad4ac29ecc364609",
+      "contributionId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-8.json",
+      "sha256": "4e7417ad314393d455e709fcf3eab96c78238beadc7b1cb33118a16af71b8d4a",
+      "contributionId": "{A8392557-3054-4017-8948-F3FC22A71D0E}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-9.json",
+      "sha256": "2e18ed4b3669936a77e1e19aa098a4b2fc0789abdd2eafd4a956c91eea77061c",
+      "contributionId": "{3D64E31D-0579-4d37-920A-5A5201A8C984}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-10.json",
+      "sha256": "d3b9b8df76d5b49341f85c2036b11f7c7d19e7fd58e84017d4363ff3ee0a5afd",
+      "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-11.json",
+      "sha256": "0fb635a2e8206b5b24a7778fce4f33c343f0339a4a10cde2fa2b35f1f8bbda36",
+      "contributionId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-12.json",
+      "sha256": "640207cf1e26da470b9f271faa25dfe68cec32dc19d051c75b9d775696009096",
+      "contributionId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-13.json",
+      "sha256": "f76794e56663ba1d4e5b2d8021bed627ebe0c91ffb144f9184114ffac02e28b3",
+      "contributionId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-14.json",
+      "sha256": "7c1c903638c45564157e1ae609b5429f452cebc7272d45e3e0f3fa3076ac0fc8",
+      "contributionId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-15.json",
+      "sha256": "b43f01066e13e1a5e95c4ec3d46fd3ba350213715d35686c62dba3a1073a9838",
+      "contributionId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-16.json",
+      "sha256": "d146f7a3693231001010aff461561e7bf506ff0f7e507d708005f68a9b5cba19",
+      "contributionId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-17.json",
+      "sha256": "f8fd53bde6b90b3d79eaffad909e7f4fc8dfa07a739cfbb96c668fc97cb6ed5c",
+      "contributionId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-18.json",
+      "sha256": "d47879bbdb75606cb093a3ebcb4138583f9c41d286869806c4b349b0a40b20a4",
+      "contributionId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-19.json",
+      "sha256": "bd49bca3490a4d1e7cce0054ec4914914c7975072303a457770a1ddf9dd22b05",
+      "contributionId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-20.json",
+      "sha256": "c0317aa097440470cf7f00c7fd810a3116199f7dbb002536407469b74c8c3c4a",
+      "contributionId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-21.json",
+      "sha256": "cb5b244142d6dc5dd09a986492b124a14a68babac87b4753a6ff1aeef6b7087c",
+      "contributionId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-22.json",
+      "sha256": "fc127c1e3904f4d9eac0a2da5290fbb6a112f73bace78cee7fdafdb922a45d99",
+      "contributionId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-23.json",
+      "sha256": "19be003f9962c2b858651b5557a7454ce60d7efc71fff84f2426fb9a18a89d3c",
+      "contributionId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-24.json",
+      "sha256": "cc79a9c87b2f407441e5f0d617e5c0c48aa1e52f6146c47b0038b6ea4e84640a",
+      "contributionId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-25.json",
+      "sha256": "c8686c5ea71601e9f115fd161bcb38aecbd86865fbd029ad3934fbce1f17d232",
+      "contributionId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-26.json",
+      "sha256": "a41177fc371c16f9e4d6124fcfd74cdb16d3bde9077edbbe13b22f22620f7894",
+      "contributionId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-27.json",
+      "sha256": "b1b96fa22e12a63be550f9d2648ebe7a49006b8c7c7301dae664c3c470cc7518",
+      "contributionId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-28.json",
+      "sha256": "602054475475b31403e4ea412085516d5029f477644e65b3376edb50e0090136",
+      "contributionId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-29.json",
+      "sha256": "dc975a81214f4a2bd63ef96ffa63517b649f4e16ada97de551d17decce77803a",
+      "contributionId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-30.json",
+      "sha256": "17e790648eb48890d614b599e8a0a701424953055f50a2256bf855ebb1c68547",
+      "contributionId": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-31.json",
+      "sha256": "275c77a6bc53eb02387ade5ec3db44ceea7620983e2110d85dd8acb47831b678",
+      "contributionId": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-32.json",
+      "sha256": "8d3517b62c8870fda91baa01856da0fecf6a0a552f8956d7d74fe2c070b4aca1",
+      "contributionId": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-33.json",
+      "sha256": "fd9c70b5c8bc7035e397c637c811431d25248bd7890a8ffbf0452c3776173706",
+      "contributionId": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-34.json",
+      "sha256": "dbec33150f7f98cfdb7ce0e24a30ea59f56a495990eb6b2ff5b205afaf64b359",
+      "contributionId": "{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-en-35.json",
+      "sha256": "36f0c97a73ded2f77ebfb2c0d201baae5a40f2ac66a32f270f89d82868e14740",
+      "contributionId": "{000B7EA8-D97B-4BD0-899F-B3808E7339AF}",
+      "locale": "en"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-families-ja.json",
+      "sha256": "f559f98cfc04ed9bb1d217249c9cc68294b06136e28a1fd8aa12577677f02b74"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-1.json",
+      "sha256": "5ee421df1a0655b38fe59d2781a684ea10368a606cab78acf2d6d6c6a9a64f03",
+      "contributionId": "{E1C41DF8-6C9B-465d-A798-2624551AC4FD}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-2.json",
+      "sha256": "67ef1ffaf6a905932d6ae8ca2c81d650577434a7b1c4ced5dc1c87c82444944d",
+      "contributionId": "{1F332AE9-97B7-42eb-A434-03F4F952081A}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-3.json",
+      "sha256": "964245bbdf411ff52e32736323f09d44bf0c464bbdf8e464708b78561a5e3cd1",
+      "contributionId": "{723092AA-BC86-4fca-BA98-42B60B7D4151}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-4.json",
+      "sha256": "bfea2e449cb91659d63c04d3f5aafb0e5b294ae899bb7c534a378e5d8601844f",
+      "contributionId": "{6F5B56E6-F21E-41ba-89FC-B037E5EB0BE7}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-5.json",
+      "sha256": "de9c9ea9dfac0364a3ad119fb0acfcee568576055ab71eec82e904a83e9e1c74",
+      "contributionId": "{DFF22973-08DB-4064-8CD6-26BAB537C0F0}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-6.json",
+      "sha256": "623fbb0e57a532c41d64fd3c6bc2d6cb85f0512b634bad7661dc7f1f60d855fc",
+      "contributionId": "{F9508B52-B25C-439e-811C-82B5A259676A}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-7.json",
+      "sha256": "02c4eb45b642e327dd169893519bf5505ec0cabeaa3fc4b4ad4ac29ecc364609",
+      "contributionId": "{351D49DD-8682-4c4a-8BC3-1B8560CD7FE9}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-8.json",
+      "sha256": "4e7417ad314393d455e709fcf3eab96c78238beadc7b1cb33118a16af71b8d4a",
+      "contributionId": "{A8392557-3054-4017-8948-F3FC22A71D0E}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-9.json",
+      "sha256": "2e18ed4b3669936a77e1e19aa098a4b2fc0789abdd2eafd4a956c91eea77061c",
+      "contributionId": "{3D64E31D-0579-4d37-920A-5A5201A8C984}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-10.json",
+      "sha256": "d3b9b8df76d5b49341f85c2036b11f7c7d19e7fd58e84017d4363ff3ee0a5afd",
+      "contributionId": "{372D89DD-0A01-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-11.json",
+      "sha256": "0fb635a2e8206b5b24a7778fce4f33c343f0339a4a10cde2fa2b35f1f8bbda36",
+      "contributionId": "{372D89DD-0A02-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-12.json",
+      "sha256": "640207cf1e26da470b9f271faa25dfe68cec32dc19d051c75b9d775696009096",
+      "contributionId": "{372D89DD-0A03-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-13.json",
+      "sha256": "f76794e56663ba1d4e5b2d8021bed627ebe0c91ffb144f9184114ffac02e28b3",
+      "contributionId": "{372D89DD-0A04-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-14.json",
+      "sha256": "7c1c903638c45564157e1ae609b5429f452cebc7272d45e3e0f3fa3076ac0fc8",
+      "contributionId": "{372D89DD-0B01-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-15.json",
+      "sha256": "b43f01066e13e1a5e95c4ec3d46fd3ba350213715d35686c62dba3a1073a9838",
+      "contributionId": "{372D89DD-0B02-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-16.json",
+      "sha256": "d146f7a3693231001010aff461561e7bf506ff0f7e507d708005f68a9b5cba19",
+      "contributionId": "{372D89DD-0B03-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-17.json",
+      "sha256": "f8fd53bde6b90b3d79eaffad909e7f4fc8dfa07a739cfbb96c668fc97cb6ed5c",
+      "contributionId": "{372D89DD-0B04-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-18.json",
+      "sha256": "d47879bbdb75606cb093a3ebcb4138583f9c41d286869806c4b349b0a40b20a4",
+      "contributionId": "{372D89DD-0C01-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-19.json",
+      "sha256": "bd49bca3490a4d1e7cce0054ec4914914c7975072303a457770a1ddf9dd22b05",
+      "contributionId": "{372D89DD-0C02-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-20.json",
+      "sha256": "c0317aa097440470cf7f00c7fd810a3116199f7dbb002536407469b74c8c3c4a",
+      "contributionId": "{372D89DD-0C03-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-21.json",
+      "sha256": "cb5b244142d6dc5dd09a986492b124a14a68babac87b4753a6ff1aeef6b7087c",
+      "contributionId": "{372D89DD-0C04-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-22.json",
+      "sha256": "fc127c1e3904f4d9eac0a2da5290fbb6a112f73bace78cee7fdafdb922a45d99",
+      "contributionId": "{372D89DD-0D01-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-23.json",
+      "sha256": "19be003f9962c2b858651b5557a7454ce60d7efc71fff84f2426fb9a18a89d3c",
+      "contributionId": "{372D89DD-0D02-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-24.json",
+      "sha256": "cc79a9c87b2f407441e5f0d617e5c0c48aa1e52f6146c47b0038b6ea4e84640a",
+      "contributionId": "{372D89DD-0D03-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-25.json",
+      "sha256": "c8686c5ea71601e9f115fd161bcb38aecbd86865fbd029ad3934fbce1f17d232",
+      "contributionId": "{372D89DD-0D04-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-26.json",
+      "sha256": "a41177fc371c16f9e4d6124fcfd74cdb16d3bde9077edbbe13b22f22620f7894",
+      "contributionId": "{372D89DD-0E01-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-27.json",
+      "sha256": "b1b96fa22e12a63be550f9d2648ebe7a49006b8c7c7301dae664c3c470cc7518",
+      "contributionId": "{372D89DD-0E02-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-28.json",
+      "sha256": "602054475475b31403e4ea412085516d5029f477644e65b3376edb50e0090136",
+      "contributionId": "{372D89DD-0E03-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-29.json",
+      "sha256": "dc975a81214f4a2bd63ef96ffa63517b649f4e16ada97de551d17decce77803a",
+      "contributionId": "{372D89DD-0E04-554B-8BC3-8B8567CA7F59}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-30.json",
+      "sha256": "17e790648eb48890d614b599e8a0a701424953055f50a2256bf855ebb1c68547",
+      "contributionId": "{5CB98D0A-4D2A-4CEF-A5F2-2EBFFD7EE399}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-31.json",
+      "sha256": "275c77a6bc53eb02387ade5ec3db44ceea7620983e2110d85dd8acb47831b678",
+      "contributionId": "{165D7720-AF3A-4190-A5C3-A6EFD18D98A9}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-32.json",
+      "sha256": "8d3517b62c8870fda91baa01856da0fecf6a0a552f8956d7d74fe2c070b4aca1",
+      "contributionId": "{CEF4B968-307D-4F59-AE33-AE83CC56B415}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-33.json",
+      "sha256": "fd9c70b5c8bc7035e397c637c811431d25248bd7890a8ffbf0452c3776173706",
+      "contributionId": "{577F66EE-01D9-47F1-ADCB-FBC53FA42651}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-34.json",
+      "sha256": "dbec33150f7f98cfdb7ce0e24a30ea59f56a495990eb6b2ff5b205afaf64b359",
+      "contributionId": "{3DCA36FF-F475-44f8-A33F-4AD032BE3F69}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-families-accepted/station-family-ja-35.json",
+      "sha256": "36f0c97a73ded2f77ebfb2c0d201baae5a40f2ac66a32f270f89d82868e14740",
+      "contributionId": "{000B7EA8-D97B-4BD0-899F-B3808E7339AF}",
+      "locale": "ja"
+    },
+    {
+      "path": "tmp/p6-28-browser/service-en-packed.png",
+      "sha256": "e4763946ccd989fd57fa3fbc943ffb73484d0dc64ba8519f5bbefea65cc4b6c2",
+      "inspected": true
+    },
+    {
+      "path": "tmp/p6-28-browser/station-controller-ja.png",
+      "sha256": "c79cd2797db54d7625b771d801b052166de2df6dd01b407931110e43bf0c4591",
+      "inspected": true
+    }
+  ]
+}

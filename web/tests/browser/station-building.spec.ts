@@ -1,4 +1,4 @@
-import {readFileSync} from 'node:fs';
+import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,ready,closePanel,openPanel} from './browser-helpers.ts';
 test.use({hasTouch:true});
@@ -162,4 +162,42 @@ test('Remove tool fences station quotes by minute and cancels late station remov
  await check.click();await expect(confirm).toBeEnabled();
  await page.locator('canvas').focus();await page.keyboard.press('Enter');
  await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.length).toBe(0);
+});
+
+// P6 exit: every authored family must cross the actual bilingual construction
+// controls and current save boundary, beyond catalog/gallery or domain coverage.
+for(const ja of [false,true])test(`P6-28 ${ja?'JA narrow touch':'EN desktop'} constructs and reopens every bundled station family`,async({page})=>{
+ test.setTimeout(240000);
+ if(ja)await page.setViewportSize({width:430,height:860});
+ await page.addInitScript(ja=>localStorage.setItem('freetrain-online.locale',ja?'ja':'en'),ja);
+ await page.goto('/');await ready(page,ja?'ja':'en');await empty(page);await ready(page,ja?'ja':'en');
+ const baseline=await bytes(page),records=[];
+ async function replace(data:Buffer){
+  const s=await state(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data})).ok()).toBe(true);
+  await ready(page,ja?'ja':'en');
+ }
+ for(const definition of profile.definitions){
+  await task(page,ja);
+  if(!await page.locator('#building-catalog').count())await page.getByRole('button',{name:ja?'一覧から選択':'Choose from catalog',exact:true}).click();
+  const entry=page.locator(`[data-catalog-variant="${definition.reference.recipeId}"]`);
+  await expect(entry).toHaveCount(1);await expect(entry).not.toHaveText('');await entry.click();
+  await page.getByRole('button',{name:ja?'建物一覧を閉じる':'Close building catalog',exact:true}).click();
+  await page.getByLabel(ja?'駅舎 X':'Station X',{exact:true}).fill('25');
+  await page.getByLabel(ja?'駅舎 Y':'Station Y',{exact:true}).fill('25');
+  await page.locator('.station-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();
+  const confirm=page.getByRole('button',{name:ja?'駅舎の建設を確定':'Confirm station building',exact:true});
+  await expect(confirm).toBeEnabled();await confirm.click();
+  await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
+  const built=await state(page),building=built.mixed.stationGraph.buildings[0];
+  expect(building.definition).toEqual(definition.reference);
+  expect(built.entities.find((e:any)=>e.id===building.id).footprint).toHaveLength(definition.sizeX*definition.sizeY*definition.height);
+  expect(built.mixed.queue.pending).toHaveLength(2);
+  const saved=await bytes(page);await replace(saved);expect(await bytes(page)).toEqual(saved);
+  records.push({definition:definition.reference,building,timers:built.mixed.queue.pending});
+  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-family-${ja?'ja':'en'}-${records.length}.json`,saved);
+  await replace(baseline);expect(await bytes(page)).toEqual(baseline);
+ }
+ expect(records).toHaveLength(35);
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-families-${ja?'ja':'en'}.json`,JSON.stringify(records,null,2));
 });

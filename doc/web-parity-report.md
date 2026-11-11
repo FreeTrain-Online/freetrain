@@ -1,4 +1,6 @@
-**11 November 2026 — P6-27:** [Station delivery reconciliation](web-parity-station-delivery.md) supplies current runtime/content/control/translation bindings. Earlier source-review status below is historical. P6-28 overall acceptance and P7/P8/P10/P11 gates remain open.
+**11 November 2026 — P6 integrated review:** [P6 acceptance](web-parity-p6-acceptance.md) closes bundled browser/portable station scope with controlled supply and explicit native/optional/performance qualifications. [P7/P8 consuming contracts](web-parity-p7-p8-station-handoff.md) preserve source listener asymmetry and transient effect/booking/statistics semantics. City/economy/import/full-city acceptance stays P7/P8/P10/P11. Earlier source-review statuses below remain historical.
+
+**11 November 2026 — P6-27:** [Station delivery reconciliation](web-parity-station-delivery.md) supplies current runtime/content/control/translation bindings. Earlier source-review status below is historical. P7/P8/P10/P11 gates remain open; integrated P6 acceptance is linked above.
 
 # ExAV coverage, differences and delivery estimates
 

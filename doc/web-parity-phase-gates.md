@@ -1,5 +1,13 @@
 # Parity phase review — 21 October 2026
 
+**P6 integrated review — 11 November 2026:** [P6 acceptance](web-parity-p6-acceptance.md)
+closes bundled browser/portable station/passenger scope with controlled supply.
+Every exit criterion and all14 source decisions have explicit dispositions;
+[the P7/P8 handoff](web-parity-p7-p8-station-handoff.md) names consuming interfaces
+and independent witnesses. Real city/economy, P10 import, native/human/optional
+and P11 performance acceptance retain their owners. Fresh2,304 .NET/386 client/
+35 Python/17 Chromium cases pass. Earlier entries retain their historical scope.
+
 **P5 integrated review — 8 November 2026:** [P5 acceptance](web-parity-p5-acceptance.md)
 closes bundled browser/portable train scope with Manual driving owner-removed.
 The [P6 train/harbor handoff](web-parity-p6-train-handoff.md) specifies yard stop
