@@ -50,6 +50,8 @@ public sealed class MixedSessionState
         ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0,
         TrainCallback? trainCallback = null, StationCallback? stationCallback = null)
     {
+        if (construction.World.City != null)
+            throw new ArgumentException("Detached city state requires P7-04/05 lifecycle and persistence boundaries.");
         if (revision < construction.World.Revision) throw new ArgumentException("Invalid mixed session revision.");
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;

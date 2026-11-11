@@ -19,6 +19,8 @@
     <None Include="../../doc/parity/railway-accessories.json" Link="Spatial/railway-accessories.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/railway-fixtures.json" Link="Spatial/railway-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/train-fixtures.json" Link="Spatial/train-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../doc/parity/city-fixtures.json" Link="Spatial/city-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../doc/parity/city-review.json" Link="Spatial/city-review.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/station-fixtures.json" Link="Spatial/station-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/train-placement-fixtures.json" Link="Spatial/train-placement-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../doc/parity/relief-fixtures.json" Link="Spatial/relief-fixtures.json" CopyToOutputDirectory="PreserveNewest" />

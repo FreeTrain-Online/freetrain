@@ -22,6 +22,7 @@ public static class MixedWire
     public static MixedRead Read(MixedConstructionState state)
     {
         var w = state.World; var a = state.Accounts;
+        if (w.City != null) throw new ArgumentException("Detached city state requires the P7-05 codec.");
         if (w.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
         if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
             throw new InvalidDataException("saveTooLarge");
@@ -84,6 +85,7 @@ public static class MixedWire
     }
     public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
     {
+        if (world.City != null) throw new ArgumentException("Detached city state requires the P7-05 codec.");
         var terrainIds = world.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
         return world.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).Select(TerrainWire.Entity).ToArray();
     }

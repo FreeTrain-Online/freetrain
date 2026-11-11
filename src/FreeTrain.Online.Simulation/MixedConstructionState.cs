@@ -20,9 +20,9 @@ public sealed class MixedConstructionState
     public MixedConstructionState Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes,
         ConstructionBooking booking, GameTime time, string operation, SpeedLimits? speedLimits = null, FleetGraph? fleet = null,
-        StationGraph? stations = null)
+        StationGraph? stations = null, CityGraph? city = null)
     {
-        var candidate = World.Replace(expectedRevision,terrain,spatial,voxels,slopes,speedLimits,fleet,stations);
+        var candidate = World.Replace(expectedRevision,terrain,spatial,voxels,slopes,speedLimits,fleet,stations,city);
         var accounts = Accounts.Book(booking,candidate.Revision,time,operation);
         return new(candidate,accounts);
     }

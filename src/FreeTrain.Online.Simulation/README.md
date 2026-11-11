@@ -115,3 +115,9 @@ argument; movement, reversal, turning and timetable dispatch run from authoritat
 world state and game time. Manual is no longer a fleet controller kind/provider;
 saves containing it reject without conversion. Automatic Simple, Delegation and
 timetable behavior remains. See [the removal decision](../../doc/web-parity-fleet-manual.md).
+
+P7-03 adds detached city definitions, ownership, producer/construction descriptors,
+heat/search/settings/ULV state and source-derived valuation inputs to `MixedWorld`.
+All owners reuse the shared spatial allocator; roads reuse Traffic. Complete
+detached data round-trips are distinct from live Save10/protocol9 integration,
+which remains guarded until P7-04/05. See the [state contract](../../doc/web-parity-city-state.md).

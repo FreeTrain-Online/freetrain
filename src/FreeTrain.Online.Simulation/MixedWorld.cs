@@ -17,6 +17,7 @@ public sealed class MixedWorld
     public SpeedLimits SpeedLimits { get; }
     public FleetGraph? Fleet { get; }
     public StationGraph? Stations { get; }
+    public CityGraph? City { get; }
     private readonly FrozenDictionary<Location, RailwayVoxel> voxels;
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
@@ -25,7 +26,7 @@ public sealed class MixedWorld
 
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null,
-        FleetGraph? fleet = null, StationGraph? stations = null)
+        FleetGraph? fleet = null, StationGraph? stations = null, CityGraph? city = null)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(terrain);
@@ -33,7 +34,7 @@ public sealed class MixedWorld
         if (spatial.Entities.IsDefault || profile.Terrain != terrain.Profile || revision < terrain.Revision ||
             spatial.NextEntityId < terrain.Spatial.NextEntityId)
             throw new ArgumentException("Invalid mixed-world profile/revision/allocator.");
-        Profile = profile; Terrain = terrain; Revision = revision; Fleet = fleet; Stations = stations;
+        Profile = profile; Terrain = terrain; Revision = revision; Fleet = fleet; Stations = stations; City = city;
         Voxels = voxels.Take(SpatialIndex.MaximumOccupiedCells + 1).ToImmutableArray();
         Slopes = slopes.Take(SpatialIndex.MaximumOccupiedCells / 8 + 1).ToImmutableArray();
         if (Voxels.Length > SpatialIndex.MaximumOccupiedCells || Voxels.Any(v => v is null || !Enum.IsDefined(v.Kind)) ||
@@ -58,6 +59,11 @@ public sealed class MixedWorld
             if (Stations?.IsSpatialOwner(e.Id) == true)
             {
                 if (byOwner.ContainsKey(e.Id)) throw new ArgumentException("Station cannot own railway payloads.");
+                continue;
+            }
+            if (City?.IsSpatialOwner(e.Id) == true)
+            {
+                if (byOwner.ContainsKey(e.Id)) throw new ArgumentException("City cannot own railway payloads.");
                 continue;
             }
             if (!byOwner.TryGetValue(e.Id, out var members) || e.Owned != (members[0].Construction == null) || e.SilentlyReclaimable || e.Value != 0 ||
@@ -90,6 +96,7 @@ public sealed class MixedWorld
             throw new ArgumentException("Car occupies multiple voxels.");
         Fleet?.ValidateWorld(this);
         Stations?.ValidateWorld(this);
+        City?.ValidateWorld(this);
     }
 
     public static MixedWorld FromTerrain(RailwayProfile profile, TerrainWorld terrain) =>
@@ -191,7 +198,8 @@ public sealed class MixedWorld
                     throw new ArgumentException("Invalid special rail orientation.");
             }
         }
-        if (t.Road is {} road && (Profile.Resolve(road.Definition).Handler != RailwayHandler.Road || road.Edges is < 1 or > 255))
+        if (t.Road is {} road && (City?.Profile.Road(road.Definition) is {} ?
+                road.Edges<1 || (road.Edges&~0x55)!=0 : Profile.Resolve(road.Definition).Handler != RailwayHandler.Road || road.Edges is < 1 or > 255))
             throw new ArgumentException("Invalid road component.");
         if (t.Accessory is {} a && (Profile.Resolve(a.Definition).Handler is not (RailwayHandler.Pole or RailwayHandler.Crossing) ||
             a.Direction is < 0 or > 7 || Profile.Resolve(a.Definition).Handler == RailwayHandler.Pole && a.Direction > 1)) throw new ArgumentException("Invalid accessory component.");
@@ -212,13 +220,16 @@ public sealed class MixedWorld
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null, FleetGraph? fleet = null,
-        StationGraph? stations = null)
+        StationGraph? stations = null, CityGraph? city = null)
     {
         if (expectedRevision != Revision) throw new InvalidOperationException("staleRevision");
         if (spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Allocator rewind.");
         var members=voxels.ToImmutableArray();
         var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
-        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations);
+        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations,city ?? City);
+        if (City != null) candidate.City!.ValidateSuccessor(City,Spatial.NextEntityId);
+        else if (candidate.City != null && candidate.City.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
+            throw new ArgumentException("Reused initial city identity.");
         if (Stations != null) candidate.Stations!.ValidateSuccessor(Stations,Spatial.NextEntityId);
         else if (candidate.Stations != null && candidate.Stations.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
             throw new ArgumentException("Reused initial station identity.");
@@ -245,6 +256,7 @@ public sealed class MixedWorld
             }
             else if (oldTerrainIds.Contains(e.Id) != newTerrainIds.Contains(e.Id) ||
                 (Stations?.IsSpatialOwner(e.Id) == true) != (candidate.Stations?.IsSpatialOwner(e.Id) == true) ||
+                (City?.IsSpatialOwner(e.Id) == true) != (candidate.City?.IsSpatialOwner(e.Id) == true) ||
                 byOwner.ContainsKey(e.Id) && e.Definition != previous.Definition)
                 throw new ArgumentException("Entity owner kind cannot be repurposed.");
             else if (e.Revision == previous.Revision)
@@ -255,6 +267,7 @@ public sealed class MixedWorld
                     slopeOwners.GetValueOrDefault(e.Id) != candidate.slopeOwners.GetValueOrDefault(e.Id) ||
                     Stations?.Passage(e.Id) != candidate.Stations?.Passage(e.Id) ||
                     Stations?.Provider(e.Id) != candidate.Stations?.Provider(e.Id) ||
+                    candidate.City?.SameFences(City,e.Id) == false ||
                     !(Stations?.ListenerStations(e.Id) ?? []).SequenceEqual(candidate.Stations?.ListenerStations(e.Id) ?? []))
                     throw new ArgumentException("Changed entity requires revision.");
             }

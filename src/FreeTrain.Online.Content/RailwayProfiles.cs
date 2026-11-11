@@ -61,6 +61,6 @@ public static class RailwayProfiles
                 long.Parse(fields.GetProperty("price").GetString()!, System.Globalization.CultureInfo.InvariantCulture)) };
         }
         var stock = catalog == PreparedContentCatalog.Bundled ? RollingStockCatalog.Bundled : RollingStockCatalog.Build(catalog);
-        return new(terrain, bindings, stock.FleetProfile, StationProfiles.Build(catalog,terrain));
+        return new(terrain, bindings, stock.FleetProfile, StationProfiles.Build(catalog,terrain),CityProfiles.Build(catalog,terrain));
     }
 }

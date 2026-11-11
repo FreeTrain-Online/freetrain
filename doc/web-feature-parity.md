@@ -1,3 +1,5 @@
+**11 November 2026 — P7-03 detached city state:** [canonical city contract](web-parity-city-state.md) binds all 209 reviewed declarations and composes city ownership, producers, construction, heat/search state and valuation inputs into the existing mixed world. Complete detached round-trips and strict invariants are verified; live lifecycle/save/transport follow P7-04/05. Save10/protocol9 unchanged.
+
 **11 November 2026 — P7-01 source review:** [city/development contract](web-parity-city-contract.md) pins all 209 assigned declarations and 215 controls with 20 explicit decisions, exact source/translation/dependency ownership and current-value land resale. No P7 runtime or source-correction acceptance; next is P7-02 independent fixtures. Save10/protocol9 unchanged.
 
 # Web parity coverage inventory
