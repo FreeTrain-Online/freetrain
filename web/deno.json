@@ -33,7 +33,8 @@
     "test:browser:run": "deno run -A npm:@playwright/test@1.64.1 test",
     "test:browser:extended": "deno task build && deno task test:browser:run --config playwright.extended.config.ts",
     "test:browser:performance": "deno task build && deno task test:browser:run --config playwright.performance.config.ts",
+    "test:browser:station-continuation": "deno task build && deno run -A scripts/test-station-continuation.ts",
     "test:browser:continuation": "deno task build && deno run -A scripts/test-mixed-continuation.ts",
-    "test:browser:all": "deno task test:browser:extended && deno run -A scripts/test-mixed-continuation.ts"
+    "test:browser:all": "deno task test:browser:extended && deno run -A scripts/test-mixed-continuation.ts && deno run -A scripts/test-station-continuation.ts"
   }
 }

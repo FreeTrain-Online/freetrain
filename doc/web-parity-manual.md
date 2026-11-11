@@ -687,3 +687,14 @@ acceptance are retained in the linked contract.
 | `yard-controller` | MAN-W05, MAN-A07, MAN-A12, MAN-D03, MAN-E07 | P6-19/P6-22 | pick Station/platform harbor; existing Simple/TAT manager; shared group settings. Eight L4/N3..6 indices and14 yards witnesses through real hosts, first/later/pass/forward/reverse/TURNING, shared multi-platform key, signals passenger-free and Manual absent. |
 | `departure-events` | MAN-M06, MAN-W05, MAN-O07, MAN-A08, MAN-A12, MAN-A15 | P6-20 | per-platform bell choice; preview; local effects/mute; gesture enable. Epoch+committed publication sequence+effect ordinal dedup; no snapshot/save history replay, join/reconnect subscription baseline, duplicate receipts/delivery/rejected callback silent, two peers hear independently eligible live events. |
 | `information-list` | MAN-M02, MAN-M03, MAN-W10, MAN-A05, MAN-A13, MAN-O16, MAN-A15, MAN-E03, DEV-P16, EXAV-14 | P6-08/P6-23 | name Apply/Cancel; Information; actual waiting/demand; today/yesterday board/alight/train; sorted list; Move; station labels. EN/JA duplicate names/rename/removal/empty list, exact logs/averages, peer stale edits, narrow layout and retained selection/focus/canvas. |
+
+## P6-25 station continuation and recovery
+
+[P6-25 continuation evidence](web-parity-station-continuation.md) verifies
+MAN-F01–07, MAN-W07–10, MAN-A06/07/12–14/16 and DEV-P24/29–31 at current
+station scope: actual listener graphs, logs, passenger origins, ordered bookings,
+host rebuilds and FIFO train/station timers survive Save10 reopen and checkpoint
+recovery. EN/JA named-slot/download/rejected-upload/reconnect/process workflows
+consume gameplay-built stations and controlled supply. Historical import remains
+P10; generic city construction/providers remain P7, full history/economy P8 and
+capacity/packaging/phase acceptance P6-26–28.
