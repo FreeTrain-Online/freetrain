@@ -163,3 +163,12 @@ Client checks: **386 pass** (384 ordinary plus two retention checks). Python:
 generated contracts, prepared content/catalog identity, both locales, report links
 and whitespace checks pass. Tool versions: .NET SDK10.0.402, Deno2.9.8,
 Python3.15.2. Logs and SHA-256s are retained in `tmp/p7-03-validation.json`.
+
+## P7-04 continuation handoff
+
+[Detached generic construction](web-parity-city-construction.md) now executes
+site lifecycle, caller-specific charges and completion ownership, and preserves
+the caller alongside each site's original identity. `CityCandidate` also checks
+account capacity including accessory completion reservations and site-delay
+bounds. Public Save10/protocol9 codecs and live `MixedSessionState` still reject
+city graphs pending P7-05; the historical P7-03 test counts above are unchanged.

@@ -1,6 +1,6 @@
 // Canonical detached contracts from ExAV 883cf7d: LandPropertyVoxel, LandVoxel,
 // PThreeDimStructure, VarHeightBuilding, HVStructure, ULV and SearchPlan.
-// Original authors, LGPL-2.1-or-later. Lifecycle execution belongs to P7-04+.
+// Original authors, LGPL-2.1-or-later. Detached lifecycle: CityConstruction.
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -25,9 +25,11 @@ public sealed record CityGround(long Id, long Revision, DefinitionReference Defi
 // accounting/history and events; P7 retains the actual cumulative valuation inputs.
 public sealed record CitySubsidiary(long MarketPrice, long TotalLandValue, ScheduledAction? Callback = null);
 public sealed record CityConstructionVoxel(Location Offset, ConstructionCell Cell, ScheduledAction? Callback);
+public enum CityConstructionCaller { LegacyPlayer, CatalogPlayer, Automated }
 public sealed record CityStructure(long Id, long Revision, DefinitionReference Definition, Location Location,
     int Height, bool Owned, CitySubsidiary? Subsidiary,
-    ImmutableArray<CityHalf> Halves, ImmutableArray<CityConstructionVoxel> Construction);
+    ImmutableArray<CityHalf> Halves, ImmutableArray<CityConstructionVoxel> Construction,
+    CityConstructionCaller Caller = CityConstructionCaller.LegacyPlayer);
 // Retain the initial half's population binding even after that half is removed.
 // Listener edges remain exclusively in StationGraph; no station population copy.
 public sealed record CityProducer(long OwnerId, DefinitionReference InitialDefinition, int InitialHeight);
@@ -194,7 +196,7 @@ public sealed class CityGraph
     private void ValidateStructure(CityStructure s)
     {
         var d=Profile.Structure(s.Definition); d.Price(s.Height);
-        if(s.Halves.IsDefault || s.Construction.IsDefault || (d.Kind==CityStructureKind.Half) != !s.Halves.IsEmpty ||
+        if(!Enum.IsDefined(s.Caller) || s.Halves.IsDefault || s.Construction.IsDefault || (d.Kind==CityStructureKind.Half) != !s.Halves.IsEmpty ||
             s.Halves.Length>2 || s.Subsidiary is {} sub && (sub.MarketPrice<0 || sub.TotalLandValue<0))
             throw new ArgumentException("Invalid city structure payload.");
         if(!s.Halves.IsEmpty)
@@ -211,6 +213,7 @@ public sealed class CityGraph
             var offsets=d.Footprint(s.Height).Members.Select(m=>m.Offset).ToHashSet();
             if(s.Owned || s.Subsidiary!=null || s.Construction.Length!=offsets.Count ||
                 s.Construction.Any(c=>c==null || c.Cell==null || c.Cell.State is <0 or >4 || c.Cell.Ground is <0 or >6 ||
+                    c.Cell.NeedsDoor && c.Offset.X==0 && c.Offset.Y==d.SizeY-1 ||
                     !offsets.Remove(c.Offset) || (c.Cell.State<4)!=(c.Callback!=null) || c.Callback is {} a && a.Interval!=0) ||
                 offsets.Count!=0 || s.Construction.All(c=>c.Cell.State==4))
                 throw new ArgumentException("Invalid city construction cells/ownership.");
@@ -296,7 +299,7 @@ public sealed class CityGraph
             else if(previous.structures.ContainsKey(id)!=structures.ContainsKey(id) || previous.ground.ContainsKey(id)!=ground.ContainsKey(id) ||
                 previous.properties.Contains(id)!=properties.Contains(id) || previous.fenceHosts.ContainsKey(id)!=fenceHosts.ContainsKey(id) ||
                 previous.SpatialOwner(id).Definition!=SpatialOwner(id).Definition || previous.SpatialOwner(id).Anchor!=SpatialOwner(id).Anchor ||
-                structures.TryGetValue(id,out var s) && s.Height!=previous.structures[id].Height)
+                structures.TryGetValue(id,out var s) && (s.Height!=previous.structures[id].Height || s.Caller!=previous.structures[id].Caller))
                 throw new ArgumentException("City owner kind cannot change.");
             else if(revision==rev && !SamePayload(previous,id)) throw new ArgumentException("Changed city payload requires revision.");
             if(old.ContainsKey(id) && previous.State.Producers.SingleOrDefault(p=>p.OwnerId==id) is {} p &&
@@ -321,7 +324,7 @@ public sealed class CityGraph
 }
 
 // Detached continuation envelope: use the existing world-local queue/random bank,
-// never independent static RNGs or a second scheduler. P7-04 supplies dispatch.
+// never independent static RNGs or a second scheduler. CityConstruction dispatches sites.
 public sealed class CityCandidate
 {
     public MixedConstructionState Construction { get; }
@@ -331,8 +334,15 @@ public sealed class CityCandidate
     {
         var graph=construction.World.City ?? throw new ArgumentException("Missing city graph.");
         var callbacks=graph.Callbacks;
+        var railwaySites=construction.World.Voxels.Where(v=>v.Construction!=null).Select(v=>v.OwnerId).Distinct().Count();
+        if(construction.Accounts.Transactions.Length+railwaySites>NormalRailwayConstruction.MaximumAccountTransactions ||
+            callbacks.Where(a=>a.HandlerId.StartsWith("city/construction/",StringComparison.Ordinal))
+                .Any(a=>a.DueMinute-clock.AbsoluteMinute>119))
+            throw new ArgumentException("City account/schedule capacity exceeded.");
         if(callbacks.Any(a=>!clock.Pending.Contains(a))) throw new ArgumentException("Missing city callback registration.");
-        var railway=StationaryConstruction.Bindings(construction.World).Keys;
+        var railway=StationaryConstruction.Bindings(construction.World).Keys.ToHashSet(StringComparer.Ordinal);
+        if(clock.Pending.Any(a=>railway.Contains(a.HandlerId) && (a.Interval!=0 || a.DueMinute-clock.AbsoluteMinute>119)))
+            throw new ArgumentException("Invalid railway construction schedule in city candidate.");
         var trains=(construction.World.Fleet?.Trains ?? []).Where(t=>t.State!=TrainOperationalState.Unplaced).Select(t=>MixedSessionState.TrainHandler(t.Id));
         var station=StationLifecycle.Timers(construction.World.Stations);
         var expected=railway.Concat(trains).Concat(station.Select(a=>a.HandlerId)).Concat(callbacks.Select(a=>a.HandlerId)).ToArray();

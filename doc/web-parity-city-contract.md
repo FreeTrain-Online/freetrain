@@ -221,3 +221,15 @@ sample skip (239 tests total). P5/P6 prerequisite source checks, project boundar
 and diff whitespace pass. Commands/results/hashes are retained under
 `tmp/p7-01-*`, including `p7-01-validation.json`. These runs establish review
 integrity only; no browser, .NET city runtime or P7-02 fixture execution is claimed.
+
+## P7-04 production handoff
+
+[Generic construction lifecycle and evidence](web-parity-city-construction.md)
+binds the construction row above (MAN-T10, MAN-E12, DEV-A06, EXAV-13) to
+`ConstructionLifecycle`, `CityConstruction`, durable caller/handle state and
+`CityConstructionTests`. It executes CITY-D008/012/020 at detached domain scope.
+The exact constructor/gate/branch/FIFO fixtures remain P7-02 source evidence.
+Progress inspection and cancel/demolish browser controls remain P7-07/09/12/27;
+there is no force-completion action. Actual listener attachment, family
+reclamation and integrated city save/authority retain their numbered owners.
+No catalog translation classification or source decision is changed.

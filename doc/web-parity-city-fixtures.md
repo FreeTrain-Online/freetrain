@@ -154,3 +154,13 @@ Fixture file SHA-256:
 `5a52c89b264a896465005f58a1522dd54f4d47fcb2f3d80856be28040e85933d`.
 Internal canonical JSON digest:
 `26d1b6a124a054e33d15721c8224b6c95dcaff7322b74c780f396d0983b86e83`.
+
+## P7-04 runtime consumers
+
+[The generic construction report](web-parity-city-construction.md) binds all
+16 construction gates, five traces, four FIFO vectors and the eight-voxel
+constructor-order case to production consumers in `CityConstructionTests`.
+`ConstructionLifecycle` is shared with railway accessories. The immutable
+fixture counts, hashes and `runtimeAcceptance: false` continue to describe the
+source oracle; fresh runtime results belong to the P7-04 report. Later land,
+heat, search, listener and rendering fixture groups retain their actual owners.

@@ -111,8 +111,8 @@ public static class StationaryConstruction
                 var cell = voxels[p]; var rng = random["construction"];
                 // The source suppresses the south-west corner door without drawing RNG.
                 var door = p.X != owner.Anchor.X || p.Y != owner.Anchor.Y+type.SizeY-1;
-                cell = cell with { Construction = new(NeedsDoor:door && rng.Next(4)==0) }; voxels[p] = cell;
-                var due = checked(clock.AbsoluteMinute+40+rng.Next(80));
+                cell = cell with { Construction = ConstructionLifecycle.Initial(!door,rng.Next) }; voxels[p] = cell;
+                var due = checked(clock.AbsoluteMinute+ConstructionLifecycle.Delay(rng.Next));
                 pending.Add(new(order,order,due,Handler(cell),0)); order = checked(order+1);
             }
         }
@@ -123,16 +123,18 @@ public static class StationaryConstruction
 
     internal static bool CanProceed(MixedWorld world, RailwayVoxel v, GameTime time)
     {
+        // Preserve the source's early time gate before inspecting neighboring floors.
         if (time.IsWeekend || time.HourOfDay < 9 || time.HourOfDay > 17) return false;
         var state = v.Construction!.State;
         var below = world.At(v.Position with {Z=v.Position.Z-1});
         var above = world.At(v.Position with {Z=v.Position.Z+1});
         var members = world.Voxels.Where(c => c.OwnerId == v.OwnerId).ToArray();
         int Floor(int z) => members.Where(c => c.Position.Z==z).Min(c => c.Construction!.State);
-        if (below?.Construction != null && (below.Construction.State < 2 || Floor(below.Position.Z) <= state || state==1 && Floor(below.Position.Z)<3)) return false;
-        if (above?.Construction != null && (state==2 && Floor(above.Position.Z)<1 || state==3 && Floor(above.Position.Z)<3)) return false;
-        return true;
+        return ConstructionLifecycle.CanProceed(time.IsWeekend,time.HourOfDay,state,
+            below?.Construction?.State,below?.Construction==null?0:Floor(below.Position.Z),
+            above?.Construction?.State,above?.Construction==null?0:Floor(above.Position.Z));
     }
+
     internal static MixedConstructionState Tick(MixedSessionState session, RailwayVoxel registered)
     {
         var w = session.World;
@@ -140,13 +142,8 @@ public static class StationaryConstruction
         var c = v.Construction ?? throw new InvalidOperationException("Missing construction state.");
         var rng = session.Random["construction"];
         if (!CanProceed(w,v,session.Clock.Time))
-        { session.Clock.Schedule(Handler(v),40+rng.Next(80)); return session.Construction; }
-        if (c.Ground==0 && c.State==0 && rng.Next(2)==0)
-        {
-            var ground = rng.Next(4) switch {0=>3,1=>2,2=>1,_=>4+rng.Next(3)};
-            c = c with { Ground=ground };
-        }
-        else c = c with {State=c.State+1};
+        { session.Clock.Schedule(Handler(v),ConstructionLifecycle.Delay(rng.Next)); return session.Construction; }
+        c = ConstructionLifecycle.Progress(c,rng.Next);
         var members = w.Voxels.Where(m => m.OwnerId==v.OwnerId).Select(m => m.Position==v.Position ? m with {Construction=c} : m).ToArray();
         var finished = members.All(m => m.Construction!.State==4);
         var entities = w.Spatial.Entities.ToDictionary(e => e.Id); var owner = entities[v.OwnerId];
@@ -163,7 +160,7 @@ public static class StationaryConstruction
         else
         {
             owner = owner with {Revision=checked(owner.Revision+1)};
-            if (c.State<4) session.Clock.Schedule(Handler(v),40+rng.Next(80));
+            if (c.State<4) session.Clock.Schedule(Handler(v),ConstructionLifecycle.Delay(rng.Next));
         }
         entities[owner.Id] = owner;
         return session.Construction.Replace(w.Revision,w.Terrain,new(nextId,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),
