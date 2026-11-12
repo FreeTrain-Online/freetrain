@@ -4,38 +4,36 @@ A web-based multiplayer version of FreeTrain, a train simulation game originally
 
 We are forked from [FreeTrain English version](https://sourceforge.net/projects/freetrain/) while borrowing elements from [FreeTrain EX Av](https://w.atwiki.jp/freetrain-exav/pages/13.html), but the codebase is largely rewritten in modern C# and TypeScript. The server is built with .NET 10, while the client uses Svelte and Vite.
 
-FreeTrain Online is in early development. You can explore and edit a shared world, then build and remove normal railway routes using two map points or keyboard coordinates with a cost and loss preview. Moving trains, stations, special railway infrastructure and the city economy are still in development. There is no public online instance yet; running it currently requires a local setup.
+FreeTrain Online is in early development with limited features and a placeholder UI.
 
 ## Features
 
-- Explore a live map together, with elevation, water and forests.
+- Explore a live map together with other players, with elevation, water and forests.
 - Create flat or generated worlds, or import a heightmap image.
 - Modify terrain with painting and other terrain tools.
 - Lay, attach, branch and remove railway with an authoritative preview.
 - Purchase, manage, and place trains.
 - Create and manage time tables for trains.
+- Stations and platforms.
 - Save and restore worlds, including automatic checkpoints.
 - English and Japanese localizations.
-- Smoothly animated trains, rather than the original's stepwise movement.
+- Smoothly animated trains at lower game speeds (the original FreeTrain had no train animation at all).
 
 ## Run locally
 
-Install the .NET SDK in `global.json` (currently 10.0.402) and Deno in
-`.deno-version` (currently 2.9.7). See the official
+Install the .NET SDK in `global.json` and Deno in `.deno-version`. See the official
 [.NET download](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and
 [Deno installation guide](https://docs.deno.com/runtime/getting_started/installation/).
 
 The solution to build is `FreeTrain.Online.slnx`.
 
-In separate terminals:
+In separate terminals, run the server:
 
-```sh
-dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
-```
+    dotnet run --project src/FreeTrain.Online.Server --no-launch-profile
 
-```sh
-deno task --cwd web dev
-```
+And the web client:
+
+    deno task --cwd web dev
 
 Open the Vite loopback URL printed in the second terminal. The server binds to
 `http://127.0.0.1:5080`; Vite proxies `/api` HTTP and WebSocket traffic to it.
