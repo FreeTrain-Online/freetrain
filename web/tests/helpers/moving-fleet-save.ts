@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 /** A real moving-ring save, expanded to exercise progressive viewport builds. */
 export function wideMovingFleetSave(twoTrains:boolean|number=false) {
  const count=typeof twoTrains==='number'?twoTrains:twoTrains?2:1;
- const save=JSON.parse(readFileSync('tests/helpers/moving-fleet-v10.json','utf8'));
+ const save=JSON.parse(readFileSync('tests/helpers/moving-fleet-v11.json','utf8'));
  save.map.width=512;
  save.packedTerrain.cells=Buffer.alloc(512*64,0x42).toString('base64');
  const provenance=save.packedTerrain.provenance,request=JSON.parse(provenance.requestJson);

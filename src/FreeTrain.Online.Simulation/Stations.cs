@@ -181,7 +181,8 @@ public sealed class StationGraph
     {
         if (world.Profile.Stations != Profile) throw new ArgumentException("Station profile mismatch.");
         var entities = world.Spatial.Entities.ToDictionary(e => e.Id);
-        if (Listeners.Any(l => !entities.ContainsKey(l.ProviderId) || IsSpatialOwner(l.ProviderId)))
+        if (Listeners.Any(l => !entities.ContainsKey(l.ProviderId) || IsSpatialOwner(l.ProviderId) ||
+            l.Provider is {Input: not "controlled"} && world.City?.IsSpatialOwner(l.ProviderId)!=true))
             throw new ArgumentException("Dangling station listener provider.");
         var fleetIds = world.Fleet?.Identities.Select(i => i.Id).ToHashSet() ?? [];
         if (Identities.Any(i => i.Id >= world.Spatial.NextEntityId || fleetIds.Contains(i.Id))) throw new ArgumentException("Station allocator collision.");

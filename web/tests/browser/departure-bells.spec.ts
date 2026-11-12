@@ -6,7 +6,7 @@ const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 
 const output=process.env.FREETRAIN_BELL_FLEET_OUTPUT;
-const boot='/api/bootstrap?protocolVersion=9&contentVersion=mixed-railway-content-1&contentVersion=terrain-content-1';
+const boot='/api/bootstrap?protocolVersion=10&contentVersion=mixed-railway-content-1&contentVersion=terrain-content-1';
 const state=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 function evidence(name:string,value:unknown){const directory=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;mkdirSync(directory,{recursive:true});writeFileSync(join(directory,name),JSON.stringify(value,null,2)+'\n');}
 const plays=(p:Page)=>p.evaluate(()=>(window as any).__liveBellPlays as string[]);

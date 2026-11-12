@@ -5,7 +5,7 @@ import {fit} from './layout-helpers.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
-const compat='protocolVersion=9&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=10&contentVersion=mixed-railway-content-1';
 const bytes=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 test.use({hasTouch:true,actionTimeout:15000});
 async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasController=false){
@@ -49,7 +49,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
  try{
   await page.goto('/');await ready(page,locale);await list();await expect(page.getByText(text.stationListEmpty,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:text.stationMove,exact:true})).toBeDisabled();
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
-  await upload(readFileSync('tests/fixtures/station-controller-v10.json'));
+  await upload(readFileSync('tests/fixtures/station-controller-v11.json'));
   let s=await consistent();const a=s.mixed.stationGraph.buildings.find((b:any)=>b.id===s.mixed.stationGraph.platforms[0].hostId),b=s.mixed.stationGraph.buildings.find((b:any)=>b.id!==a.id),train=s.mixed.fleet.trains[0];
   const q={expectedWorldEpoch:s.worldEpoch,expectedRevision:s.revision,expectedMinute:s.tick,stationId:a.id,platformId:s.mixed.stationGraph.platforms[0].id,trainId:train.id};
   const viewer=await browser.newContext({baseURL});
@@ -61,7 +61,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
    expect((await viewer.request.post(path,{data:{...q,expectedRevision:String(BigInt(q.expectedRevision)+1n)}})).status()).toBe(409);
    expect((await viewer.request.post(path,{data:{...q,expectedWorldEpoch:String(BigInt(q.expectedWorldEpoch)+1n)}})).status()).toBe(409);
    expect((await viewer.request.post(path,{data:{...q,trainId:'-1'}})).status()).toBe(400);
-   expect((await viewer.request.post(path.replace('protocolVersion=9','protocolVersion=8'),{data:q})).status()).toBe(426);
+   expect((await viewer.request.post(path.replace('protocolVersion=10','protocolVersion=8'),{data:q})).status()).toBe(426);
    expect(await bytes(page)).toEqual(before);
   }finally{await viewer.close();}
   // Empty and duplicate names are rendered by ID; native list selection supports keys.
@@ -87,7 +87,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
   let active=await state(page);for(let n=0;active.mixed.fleet.trains[0].stopCallCount===0&&n<4;n++)active=await step();
   expect(active.mixed.fleet.trains[0].stopCallCount).toBe(1);await expect(page.getByTestId('station-diagnosis')).toHaveText(text.stationDiagnosisForwarding);
   await expect(page.getByTestId('station-boarded-today')).toHaveText('0');
-  await upload(readFileSync('tests/fixtures/station-controller-v10.json'));await list(a.id);
+  await upload(readFileSync('tests/fixtures/station-controller-v11.json'));await list(a.id);
   // Move changes only the local camera; it leaves time, save and canvas intact.
   const canvas=page.locator('canvas.world-canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','station-information'));
   const beforeMove=await bytes(page);await canvas.dispatchEvent('wheel',{deltaX:150,deltaY:80,deltaMode:0});const camera=await canvas.getAttribute('data-camera');
@@ -125,7 +125,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
   const zero=(await state(page)).mixed.stationGraph.buildings.find((b:any)=>b.location.x===43);await list(zero.id);
   await expect(page.getByTestId('station-demand')).toHaveText('0');await expect(page.getByTestId('station-waiting')).toHaveText('0');await expect(page.getByTestId('station-zero-supply')).toHaveText(text.stationDiagnosisZeroSupply);
   // This committed scene reaches 23:59 through production train/hour callbacks.
-  await upload(readFileSync('tests/fixtures/station-information-midnight-v10.json'));s=await state(page);const midnight=s.mixed.stationGraph.buildings[0],platform=s.mixed.stationGraph.platforms[0];expect(midnight.exports.today).toBeGreaterThan(0);
+  await upload(readFileSync('tests/fixtures/station-information-midnight-v11.json'));s=await state(page);const midnight=s.mixed.stationGraph.buildings[0],platform=s.mixed.stationGraph.platforms[0];expect(midnight.exports.today).toBeGreaterThan(0);
   await list(midnight.id);await expect(page.getByTestId('station-boarded-today')).toHaveText(midnight.exports.today.toLocaleString(locale));
   await expect(page.getByTestId('station-average-boarded')).toHaveText('22');await expect(page.getByTestId('station-average-alighted')).toHaveText('2');
   const before=await bytes(page);s=await step();expect(BigInt(s.tick)%1440n).toBe(0n);

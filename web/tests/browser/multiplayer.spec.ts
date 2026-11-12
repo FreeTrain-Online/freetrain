@@ -9,7 +9,7 @@ test('independent browsers share edits; reconnect and hidden tabs preserve the s
   for (const page of [a, b]) page.on('pageerror', error => errors.push(error.message));
   try {
     await Promise.all([a.goto('/'), b.goto('/')]); await ready(a); await ready(b);
-    const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=9&contentVersion=prototype-content-1')).json());
+    const bootstrap = async (page: Page) => (await (await page.request.get('/api/bootstrap?protocolVersion=10&contentVersion=prototype-content-1')).json());
     const alice = await bootstrap(a), bob = await bootstrap(b);
     expect(alice.participantId).not.toBe(bob.participantId);
     expect(alice.serverIncarnation).toBe(bob.serverIncarnation); expect(alice.worldEpoch).toBe(bob.worldEpoch);
@@ -53,7 +53,7 @@ test('Leave game signs out and allows changing roles or rejoining locally', asyn
   };
   try {
     await Promise.all([a.goto('/'), b.goto('/')]); await ready(a); await ready(b);
-    const snapshot = (await (await a.request.get('/api/bootstrap?protocolVersion=9&contentVersion=prototype-content-1')).json()).snapshot;
+    const snapshot = (await (await a.request.get('/api/bootstrap?protocolVersion=10&contentVersion=prototype-content-1')).json()).snapshot;
     if (!snapshot.paused) await a.getByRole('button', { name: 'Pause', exact: false }).click();
     await selectTrain(a); await selectTrain(b);
     await b.getByRole('button', { name: 'Run', exact: false }).click();

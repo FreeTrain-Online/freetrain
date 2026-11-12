@@ -92,9 +92,9 @@ Deno.test('retired Manual fleet controller records fail wire and save validation
  (controller as {kind:string}).kind='manual';
  assert.equal(validWireShape(read),false);assert.throws(()=>parseMessageValue(read));
  const {default:Ajv}=await import('ajv');
- const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v10.schema.json',import.meta.url)));
+ const schema=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/save-v11.schema.json',import.meta.url)));
  const ajv=new Ajv({strict:true});
  for(const name of ['int64','uint63'])ajv.addFormat(name,{type:'string',validate:()=>true});
- const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/fleet-v10.json',import.meta.url)));
+ const save=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/saves/fleet-v11.json',import.meta.url)));
  save.mixed.fleet.controllers[2].kind='manual';assert.equal(ajv.compile(schema)(save),false);
 });

@@ -3,7 +3,7 @@ import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
 
 const output=process.env.FREETRAIN_YARD_FLEET_OUTPUT;
-const boot='/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 
 test('P6-19 constructed yard Simple wait and packed departure publish atomically to EN/JA peers through checkpoint restart',async({page,browser,baseURL,worldServer})=>{

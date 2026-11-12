@@ -1,3 +1,4 @@
+import {cityOwners,validCitySuccessor} from './city-state.ts';
 import {passagePath} from './passage-edit.ts';
 import {validStationSuccessor} from './station-state.ts';
 import {validTrainMotion} from './train-motion-contract.ts';
@@ -33,6 +34,14 @@ function invalidMessage(value:unknown):string {
 const validatePreview=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SpatialPreview'});
 const validateCorner=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CornerTerrainPreview'});
 const validateSlope=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/SlopePreview'});
+const validateCity=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/CityPreview'});
+export function parseCityPreview(value:unknown):import('../generated/contracts.ts').CityPreview {
+  if(!validateCity(value))throw new Error('Invalid city preview');
+  const p=value as import('../generated/contracts.ts').CityPreview;
+  if(p.query.ownerId!==p.structure.id||p.query.expectedOwnerRevision!==p.structure.revision||p.cost!=='0'||
+    p.canCancel!==!!p.structure.construction.length||(p.canCancel?p.reason!==null:p.reason!=='operationUnavailable'))throw new Error('Inconsistent city preview');
+  return p;
+}
 const validateRemoval=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/RemovalPreview'});
 export function parseRemovalPreview(value:unknown):import('../generated/contracts.ts').RemovalPreview {
   if(!validateRemoval(value))throw new Error('Invalid removal preview');
@@ -123,9 +132,12 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       new Set(delta.terrain.occupants.map(o=>o.entityId)).size!==delta.terrain.occupants.length||
       delta.terrain.occupants.some(o=>delta.removed.entityIds?.includes(o.entityId)))return;
     const old={get:(id:string)=>terrainById(state.entities!,id,e=>e.id)};
+    // City owners can be created and revised between coalesced publications.
+    // Their original identity must still be at or above the prior allocator.
+    const cityIds=new Set(cityOwners(delta.mixed?.city).map(o=>o.id));
     for(const e of delta.entities!) {
       const before=old.get(e.id);
-      if(!before?(BigInt(e.id)<BigInt(state.terrain.nextEntityId)||e.revision!=='0'):
+      if(!before?(BigInt(e.id)<BigInt(mixed?state.mixed!.nextEntityId:state.terrain.nextEntityId)||e.revision!=='0'&&!cityIds.has(e.id)):
         (BigInt(e.revision)<BigInt(before.revision)||
           e.revision===before.revision&&JSON.stringify(e)!==JSON.stringify(before)))return;
     }
@@ -189,7 +201,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   if(mixed) {
     if(!validSnapshot(next,state as Snapshot)||!state.mixed||!next.mixed)return;
     const before=state.mixed,after=next.mixed;
-    if(!validStationSuccessor(before.stationGraph,after.stationGraph,before.nextEntityId,state as Snapshot,next)||
+    if(!validCitySuccessor(before.city,after.city,before.nextEntityId)||!validStationSuccessor(before.stationGraph,after.stationGraph,before.nextEntityId,state as Snapshot,next)||
       !validFleetSuccessor(before.fleet,after.fleet,before.nextEntityId)||
       before.queue&&after.queue&&BigInt(after.queue.nextOrder)<BigInt(before.queue.nextOrder))return;
     if(BigInt(after.nextEntityId)<BigInt(before.nextEntityId)||BigInt(after.geometryRevision)<BigInt(before.geometryRevision))return;

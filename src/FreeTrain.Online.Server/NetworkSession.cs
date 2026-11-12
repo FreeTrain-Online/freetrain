@@ -232,6 +232,7 @@ public sealed partial class NetworkSession
     public StationInformationRead StationInformation(StationInformationQuery query) { lock (gate) return host.StationInformation(query); }
     public PlatformPropertiesRead PlatformProperties(PlatformPropertiesQuery query) { lock (gate) return host.PlatformProperties(query); }
     public WidePlatformPreviewRead PreviewWidePlatform(WidePlatformQuery query) { lock (gate) return host.PreviewWidePlatform(query); }
+    public CityPreviewRead PreviewCity(CityQuery query) { lock(gate) return host.PreviewCity(query); }
     public StationBuildingPreviewRead PreviewStationBuilding(StationBuildingQuery query) { lock (gate) return host.PreviewStationBuilding(query); }
     public RailwayPreviewRead PreviewRailway(RailwayQuery query) { lock (gate) return host.PreviewRailway(query); }
     public FleetDeploymentPreviewRead PreviewFleetDeployment(FleetDeploymentQuery query) { lock (gate) return host.PreviewFleetDeployment(query); }

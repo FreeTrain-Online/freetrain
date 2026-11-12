@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,confirmRemoval,openPanel,previewRemovalLine,ready,canonicalState as state } from './browser-helpers.ts';
-const mixed=readFileSync('../prototype/protocol/saves/mixed-v10.json');
-const terrain=readFileSync('../prototype/protocol/saves/terrain-v10.json');
+const mixed=readFileSync('../prototype/protocol/saves/mixed-v11.json');
+const terrain=readFileSync('../prototype/protocol/saves/terrain-v11.json');
 const save=async(page:Page)=>(await page.request.get('/api/saves/download')).body();
 async function replace(page:Page,data:Buffer){const s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data})).ok()).toBe(true);await ready(page);await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');}
 async function click(page:Page,x:number,y:number){

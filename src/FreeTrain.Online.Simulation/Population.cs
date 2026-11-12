@@ -86,8 +86,8 @@ public sealed record StationProvider(Population Population, int LandValue, int X
 {
     public void Validate()
     {
-        if (Population == null || LandValue < 0 || XYSize < 1 || ZSize < 1 || Input != "controlled")
-            throw new ArgumentException("Invalid controlled station provider.");
+        if (Population == null || LandValue < 0 || XYSize < 1 || ZSize < 1 || Input is not ("controlled" or "city-fixed" or "city-variable" or "city-half" or "city-ground"))
+            throw new ArgumentException("Invalid station provider.");
         Population.Validate();
     }
     public int Share(GameTime time, int stations) => Contribution(Population.Outgoing(time), stations, LandValue, XYSize, ZSize, Special);

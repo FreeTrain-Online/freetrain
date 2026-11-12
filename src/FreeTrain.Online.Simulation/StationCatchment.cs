@@ -101,7 +101,7 @@ public static class StationCatchment
         var entities = world.Spatial.Entities.Select(e => identities.TryGetValue(e.Id, out var revision) ? e with { Revision = revision } :
             !(world.Stations?.ListenerStations(e.Id) ?? []).SequenceEqual(graph.ListenerStations(e.Id)) || world.Stations?.Provider(e.Id) != graph.Provider(e.Id)
             ? e with { Revision = checked(e.Revision + 1) } : e).ToImmutableArray();
-        return world.Replace(world.Revision, world.Terrain, new(world.Spatial.NextEntityId, entities), world.Voxels, world.Slopes, stations: graph);
+        return world.Replace(world.Revision, world.Terrain, new(world.Spatial.NextEntityId, entities), world.Voxels, world.Slopes, stations: graph,city:world.City?.WithSpatialRevisions(entities));
     }
 
     public static int Demand(StationGraph graph, long stationId, GameTime time)

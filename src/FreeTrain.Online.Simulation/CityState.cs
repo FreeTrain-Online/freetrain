@@ -282,11 +282,46 @@ public sealed class CityGraph
         foreach(var c in State.LandCache)
             if(new Cube(c.Corner,c.SizeX,c.SizeY,1).Locations().Any(l=>!world.Terrain.Space.ContainsVoxel(l)))
                 throw new ArgumentException("City cache outside world.");
-        // P7-05 extends StationProvider.Input and codecs. Until then city producer
-        // descriptors cannot masquerade as P6 controlled listener payloads.
-        if(world.Stations?.Listeners.Any(l=>IsSpatialOwner(l.ProviderId))==true)
-            throw new ArgumentException("City station listener publication requires P7-05 producer boundary.");
+        foreach(var listener in world.Stations?.Listeners ?? [])
+        {
+            if(!IsSpatialOwner(listener.ProviderId))
+            {
+                if(listener.Provider?.Input != null && listener.Provider.Input != "controlled")
+                    throw new ArgumentException("City provider requires an actual city owner.");
+                continue;
+            }
+            var producer=State.Producers.SingleOrDefault(p=>p.OwnerId==listener.ProviderId);
+            if(producer==null || listener.Provider is not {} provider)
+                throw new ArgumentException("City listener requires completed producer.");
+            var expected=Provider(producer.OwnerId,provider.LandValue);
+            if(provider.Input!=expected.Input || provider.Special || provider.XYSize!=expected.XYSize || provider.ZSize!=expected.ZSize ||
+                !SamePopulation(provider.Population,expected.Population))
+                throw new ArgumentException("City listener content/lifecycle mismatch.");
+        }
     }
+    internal CityGraph WithSpatialRevisions(IEnumerable<SpatialEntity> entities)
+    {
+        var revisions=entities.Where(e=>IsSpatialOwner(e.Id)).ToDictionary(e=>e.Id,e=>e.Revision);
+        return new(Profile,State with {
+            Structures=State.Structures.Select(s=>s with {Revision=revisions[s.Id]}).ToImmutableArray(),
+            Ground=State.Ground.Select(s=>s with {Revision=revisions[s.Id]}).ToImmutableArray(),
+            Properties=State.Properties.Select(s=>s with {Revision=revisions[s.Id]}).ToImmutableArray(),
+            FenceHosts=State.FenceHosts.Select(s=>s with {Revision=revisions[s.Id]}).ToImmutableArray()});
+    }
+    public StationProvider Provider(long ownerId,int actualLandValue)
+    {
+        var producer=State.Producers.Single(p=>p.OwnerId==ownerId);
+        var structure=structures.GetValueOrDefault(ownerId);
+        var definition=structure==null ? null : Profile.Structure(producer.InitialDefinition);
+        var kind=definition==null ? "city-ground" : "city-"+definition.Kind.ToString().ToLowerInvariant();
+        return new(ProducerPopulation(ownerId),actualLandValue,definition==null ? 1 : definition.Area,
+            structure==null || definition?.Kind==CityStructureKind.Half ? 1 : producer.InitialHeight,false,kind);
+    }
+    private static bool SamePopulation(Population a,Population b) => a.Kind==b.Kind && a.Base==b.Base && a.Factor==b.Factor && a.Entering==b.Entering &&
+        (a.Children.IsDefault ? [] : a.Children).Length==(b.Children.IsDefault ? [] : b.Children).Length &&
+        (a.Children.IsDefault ? [] : a.Children).Zip(b.Children.IsDefault ? [] : b.Children).All(p=>SamePopulation(p.First,p.Second)) &&
+        (a.Tables.IsDefault ? [] : a.Tables).Length==(b.Tables.IsDefault ? [] : b.Tables).Length &&
+        (a.Tables.IsDefault ? [] : a.Tables).Zip(b.Tables.IsDefault ? [] : b.Tables).All(p=>p.First.SequenceEqual(p.Second));
     internal void ValidateSuccessor(CityGraph previous,long allocator)
     {
         if(Profile!=previous.Profile) throw new ArgumentException("City profile changed.");
@@ -344,6 +379,8 @@ public sealed class CityCandidate
         if(clock.Pending.Any(a=>railway.Contains(a.HandlerId) && (a.Interval!=0 || a.DueMinute-clock.AbsoluteMinute>119)))
             throw new ArgumentException("Invalid railway construction schedule in city candidate.");
         var trains=(construction.World.Fleet?.Trains ?? []).Where(t=>t.State!=TrainOperationalState.Unplaced).Select(t=>MixedSessionState.TrainHandler(t.Id));
+        if(clock.Pending.Any(a=>trains.Contains(a.HandlerId) && a.Interval!=0))
+            throw new ArgumentException("Invalid city train callback interval.");
         var station=StationLifecycle.Timers(construction.World.Stations);
         var expected=railway.Concat(trains).Concat(station.Select(a=>a.HandlerId)).Concat(callbacks.Select(a=>a.HandlerId)).ToArray();
         if(expected.Distinct(StringComparer.Ordinal).Count()!=expected.Length || clock.Pending.IsDefault ||

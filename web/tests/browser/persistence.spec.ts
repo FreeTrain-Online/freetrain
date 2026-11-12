@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { expect,test } from './fixtures.ts';
 
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
-const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=9&contentVersion=prototype-content-1')).json()).snapshot;
+const bootstrap = async (page:any) => (await (await page.request.get('/api/bootstrap?protocolVersion=10&contentVersion=prototype-content-1')).json()).snapshot;
 const pause = async(page:any)=>{if(!(await bootstrap(page)).paused)await page.getByRole('button',{name:'Pause',exact:false}).click();};
 
 test('prototype and relabelled saves are rejected; writing is unavailable and world stays intact',async({page})=>{

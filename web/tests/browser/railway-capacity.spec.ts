@@ -11,7 +11,7 @@ const serverURL='http://127.0.0.1:5420',webURL='http://127.0.0.1:4493';
 const directory=resolve(process.env.FREETRAIN_ONLINE_PROFILE_EVIDENCE??'../tmp/p4-23-capacity/browser'),saves=mkdtempSync(join(tmpdir(),'freetrain-capacity-'));
 const dll=resolve('../src/FreeTrain.Online.Server/bin/Release/net10.0/FreeTrain.Online.Server.dll');
 const probe=resolve('../tools/TerrainTransportProbe/bin/Release/net10.0/TerrainTransportProbe.dll');
-const boot='/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true';
+const boot='/api/bootstrap?protocolVersion=10&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true';
 let server:ChildProcess,web:ChildProcess;
 const log=(child:ChildProcess)=>{child.stdout?.on('data',()=>{});child.stderr?.on('data',b=>process.stderr.write(b));return child;};
 async function startServer(){server=log(spawn('dotnet',[dll,'--urls',serverURL],{env:{...process.env,FreeTrainOnline__Saves__Directory:saves,

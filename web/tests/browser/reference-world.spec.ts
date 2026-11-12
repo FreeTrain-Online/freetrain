@@ -3,10 +3,10 @@ import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
 import { closePanel,openPanel,ready } from './browser-helpers.ts';
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
-const bootPath='/api/bootstrap?protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const bootPath='/api/bootstrap?protocolVersion=10&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const bootstrap=async(page:Page)=>(await(await page.request.get(bootPath)).json()).snapshot;
 // Rail-loop coverage deliberately loads its fixture; fresh services now generate terrain.
-const referenceSave=readFileSync('../prototype/protocol/saves/reference-v10.json');
+const referenceSave=readFileSync('../prototype/protocol/saves/reference-v11.json');
 let previousWorld:Buffer;
 test.beforeEach(async({request})=>{
   const before=await(await request.get(bootPath)).json();
@@ -71,7 +71,7 @@ test('source H/V targeting checks eight-direction snapping without changing the 
 
 test('real Save 9 download, upload confirmation and socket epoch replacement preserve the canvas',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page),canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','save-preserved'));
-  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(10);
+  const save=await(await page.request.get('/api/saves/download')).body();expect(JSON.parse(save.toString()).saveVersion).toBe(11);
   await openPanel(page,'saves');await expect(page.getByRole('button',{name:'Save slot',exact:true})).toBeEnabled();
   await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'canonical.json',mimeType:'application/json',buffer:save});
   const confirmation=page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true});
@@ -146,7 +146,7 @@ test('canonical Observer can inspect and query geometry while save endpoints enf
     const page=await context.newPage();expect((await page.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);
     await page.goto('/');await ready(page);await expect(page.getByTestId('participant-role')).toHaveText('Observer');
     const before=await bootstrap(page);
-    const response=await page.request.post('/api/spatial/preview?protocolVersion=9&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
+    const response=await page.request.post('/api/spatial/preview?protocolVersion=10&contentVersion=reference-spatial-content-2',{data:{expectedWorldEpoch:before.worldEpoch,position:{x:27,y:24,z:0},anchor:null,snap:0}});
     expect(response.ok()).toBe(true);expect((await response.json()).storage).toEqual({h:10,v:28,z:0});
     expect((await page.request.post('/api/saves/slot1/save?expectedWorldEpoch='+before.worldEpoch)).status()).toBe(403);
     expect((await page.request.get('/api/saves/download')).status()).toBe(403);
@@ -400,7 +400,7 @@ test('gallery language switching keeps the composition canvas, decoded images an
 });
 
 test('mixed Save10 loads into the playable railway shell, steps and saves exactly while malformed mixed peers block reveal',async({page})=>{
-  const data=readFileSync('../prototype/protocol/saves/mixed-v10.json');
+  const data=readFileSync('../prototype/protocol/saves/mixed-v11.json');
   const before=await bootstrap(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data})).ok()).toBe(true);
   await page.goto('/');await ready(page);
@@ -410,7 +410,7 @@ test('mixed Save10 loads into the playable railway shell, steps and saves exactl
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   await expect.poll(async()=>(await bootstrap(page)).tick).toBe('130082');
   const saved=JSON.parse((await(await page.request.get('/api/saves/download')).body()).toString());
-  expect(saved.saveVersion).toBe(10);expect(saved.mixed).toEqual(JSON.parse(data.toString()).mixed);
+  expect(saved.saveVersion).toBe(11);expect(saved.mixed).toEqual(JSON.parse(data.toString()).mixed);
   await page.routeWebSocket('**/api/session?*',route=>{
     const server=route.connectToServer();server.onMessage(message=>{const body=JSON.parse(String(message));if(body.type==='join')body.snapshot.mixed.accounts.transactions[0].cashAfter='1';route.send(JSON.stringify(body));});
     route.onMessage(message=>server.send(message));

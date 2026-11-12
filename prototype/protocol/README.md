@@ -1,6 +1,10 @@
-# Wire protocol 9
+# Wire protocol 10
 
-P6-27 reconciles the [station operations and delivery evidence](../../doc/web-parity-station-delivery.md) without a wire/save revision. Current station graphs, provider/listener inputs, passengers, statistics and pending callbacks persist in Save10; committed departure effects are live-only and never replayed from saves. Historical protocol8 evidence below retains its recorded scope.
+P7-05 adds strict city state, producer provenance and construction cancellation
+through **Save11/protocol10**. See the [city boundary](../../doc/web-parity-city-transport.md).
+Earlier P5/P6 sections retain their recorded implementation versions.
+
+At P6-27, the port reconciled the [station operations and delivery evidence](../../doc/web-parity-station-delivery.md) without a wire/save revision. Station graphs, provider/listener inputs, passengers, statistics and pending callbacks persisted in Save10; committed departure effects are live-only and never replayed from saves. Historical protocol8 evidence below retains its recorded scope.
 
 `schema.json` is the canonical draft-07 schema for current wire messages and spatial queries. `$defs` are referenced explicitly; custom formats `int64` and `uint63`
 mean canonical decimal strings within signed Int64 or nonnegative Int64 bounds.
@@ -10,7 +14,7 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **9**, default content `reference-spatial-content-2`, canonical **Save 10**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
+Versions are independent: protocol **10**, default content `reference-spatial-content-2`, canonical **Save 11**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
 Join conveys server incarnation, participant/session identity, server-assigned role,
 epoch and initial snapshot. A `metadataOnly=true` HTTP bootstrap returns `sessionOffer` without world geometry; large-world bootstrap always uses this bounded offer. Commands cannot choose participant identity or authority.
 
@@ -34,7 +38,7 @@ Protocols 1 and 2 are rejected with HTTP 426; deploy matching static and server 
 Online prototype Save 1 is unsupported. The current schema and generated types
 contain no Save 1 model. Historical data is kept only under `historical/save-v1`
 and the archived implementation. The runtime rejects unsupported input with
-`incompatibleSave`. Canonical Save 10 uses `save-v10.schema.json` and `saves/reference-v10.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3/4/5/6/7/8/9 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` `historical/save-v3` and `historical/save-v4`. Prototype writes remain unavailable. See the
+`incompatibleSave`. Canonical Save 11 uses `save-v11.schema.json` and `saves/reference-v11.json`; the codec additionally validates topology, clock ranges, bound scheduler actions and the complete versioned random bank. Only the current format is supported during parity iteration; Saves 1/2/3/4/5/6/7/8/9/10 return `incompatibleSave` without conversion. Retired schemas and rejection fixtures live under `historical/save-v1`, `historical/save-v2` `historical/save-v3` and `historical/save-v4`. Prototype writes remain unavailable. See the
 [owner-directed policy](../../doc/web-parity-runtime-policy.md).
 
 Run from the repo root:
@@ -83,7 +87,7 @@ browser validates car counts/headings and the selected installed profile before
 applying reads. Source canonical geometry has shared fixtures separate from that
 compatibility world. Protocol-2 originals are preserved in `historical/v2`.
 
-`POST /api/spatial/preview?protocolVersion=9&contentVersion=reference-spatial-content-2`
+`POST /api/spatial/preview?protocolVersion=10&contentVersion=reference-spatial-content-2`
 accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
 Any authenticated role can use it. Expected epoch, position, nullable anchor and
 snap 0/4/8 select a checked read-only calculation. The result carries world
@@ -101,7 +105,7 @@ The historical prototype omits these fields. Optional schema fields preserve the
 common protocol-3 envelope; exact ruleset dispatch enforces their presence for
 canonical reads. Unknown or inconsistent graphs block reveal.
 
-Save 10 also stores `spatial.nextEntityId`; removed IDs are never allocated again.
+Save 11 also stores `spatial.nextEntityId`; removed IDs are never allocated again.
 The allocator is private durable state and is absent from public reads. See
 [P1-04](../../doc/web-parity-spatial-contracts.md) for source mappings and limits.
 
@@ -122,7 +126,7 @@ The client validates the merged graph before exposing it. Name, dimensions and
 provenance changes require an epoch replacement snapshot. Coalesced entity revision
 advances are supported, allocator rewind and removed-ID reuse are rejected.
 
-Save 10 supports reference, terrain or mixed railway profiles; Saves 1–9 are rejected without conversion.
+Save 11 supports reference, terrain or mixed railway profiles; Saves 1–10 are rejected without conversion.
 Save/upload/assembled state have a 256 MiB limit; ordinary incoming commands remain 16 KiB. Large terrain snapshots and joins use `stateChunk` messages, with at most 48 KiB of payload per chunk, one transfer ID/epoch/revision, declared total/count/lengths and SHA-256. The payload has `message` (the scalar snapshot/join header) and `packedTerrain`. A client checks shape, structure, integrity, exact profile and complete geometry before atomic reveal. Duplicate/conflicting/stale/corrupt transfers fail closed; out-of-order chunks are assembled by index. Missing chunks expire after 30 seconds. One assembly per socket and two server state writers bound transient transfers; live changes coalesce until the snapshot writer finishes, then resume from the last queued revision.
 
 Packed terrain uses `terrain-packed-1`: one byte per row-major ground cell, an interned definition table, 43-byte little-endian occupant headers and three bytes per realized tree. All Int64 values remain exact. The [capacity report](../../doc/web-parity-map-capacity.md) specifies the binary layout, resource bounds, current tested scenes and the later full-city qualification. The logical in-process snapshot and delta contracts retain explicit cells, occupants, ownership and geometry. Source algorithms and content identities are unchanged.
@@ -188,7 +192,7 @@ fleet removals together with references and Traffic occupancy. Scalar queue chan
 can occur without a geometry revision. The save queue must exactly match `clock`.
 `RailComponent.controllerId` is reserved-null for every signal (TRAIN-D010).
 
-[`fleet-v10.json`](saves/fleet-v10.json), [snapshot](fixtures/snapshot-fleet.json)
+[`fleet-v11.json`](saves/fleet-v11.json), [snapshot](fixtures/snapshot-fleet.json)
 and [delta](fixtures/delta-fleet.json) are literal data-only witnesses. The fleet
 fixture requires a trusted dispatcher supplied to `SaveCodec.ReadWorld`; the
 P5-08 movement implementation is not activated here. Unplaced inventory needs
@@ -235,7 +239,7 @@ Station callbacks use intervals60/1440, retain registration cookies and advance
 FIFO order; construction/train callbacks remain one-shot. The duplicated save
 queue must exactly match `clock`. Version7 peers and Save9 documents are rejected.
 The shared [snapshot](fixtures/snapshot-stations.json) and
-[save](saves/stations-v10.json) are literal transport witnesses, not constructed
+[save](saves/stations-v11.json) are literal transport witnesses, not constructed
 station gameplay. [Implementation, reproduction and scope](../../doc/web-parity-station-transport.md).
 
 ## Platform construction queries
@@ -292,7 +296,7 @@ Clients discard old epochs, events at/before the baseline and duplicate ordered
 identities. Reconnect obtains a new baseline. Local gesture/sound/visibility/
 viewport controls cannot affect simulation. See [implementation and verification](../../doc/web-parity-departure-bells.md).
 
-P6-23 adds `POST /api/station/information?protocolVersion=9&contentVersion=mixed-railway-content-1`.
+P6-23 adds `POST /api/station/information?protocolVersion=10&contentVersion=mixed-railway-content-1`.
 The read-only `StationInformationQuery` carries expected world epoch, session
 revision and absolute minute plus station/platform/train IDs. By default these
 are exact fences. Optional `latest:true` instead accepts an earlier requested
@@ -319,3 +323,15 @@ revision/minute changes. The Information UI serializes live refreshes at most fo
 per second, labels the exact observed game time, and cancels old selection requests;
 ordinary clock advancement cannot starve a live read on a delayed network. This additive HTTP
 query changes neither protocol9 socket state nor Save10.
+
+## P7-05 city boundary — Save11/protocol10
+
+[`City`](schema.json) adds optional `mixed.city` format1 with explicit ownership,
+producer provenance, construction callbacks, heat/settings/search/cache continuation
+and both station listener directions. The current save schema is
+[`save-v11.schema.json`](save-v11.schema.json); Save10 files/schema are retained
+only under `historical/save-v10`. Current code rejects all older formats.
+`POST /api/city/preview` reads a fenced structure/cancellation preview;
+`cancelCityConstruction` uses the command FIFO, Owner/Operator authority and normal
+receipts. Source-family placement, heat and development remain later work.
+See [contract and verification](../../doc/web-parity-city-transport.md).

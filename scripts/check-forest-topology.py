@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 
 def check(path):
-    raw=path.read_bytes();saved=json.loads(raw);assert saved['saveVersion']==10
+    raw=path.read_bytes();saved=json.loads(raw);assert saved['saveVersion']==11
     packed=saved['packedTerrain'];r=json.loads(packed['provenance']['requestJson']);o=r['Options']
     h,v,z=[r['Dimensions'][k] for k in ('H','V','Z')];water=r['WaterLevel'];center=(v-1)//2
     assert saved['map']['width']==h and saved['map']['height']==v and saved['map']['levels']==z

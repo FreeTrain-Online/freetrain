@@ -97,7 +97,7 @@ observation minute; it does not predict the next scheduled callback's outcome.
 
 ## Independent continuation scene
 
-`station-information-midnight-v10.json` is generated and byte-checked by
+`station-information-midnight-v11.json` is generated and byte-checked by
 `StationInformationTests.cs` using the existing constructed-yard domain scene.
 Actual train callbacks run, board/alight and continue until 23:59; no passenger,
 log or midnight-counter injection is used. At that boundary it contains boarded 2376,

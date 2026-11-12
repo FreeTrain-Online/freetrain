@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,ready} from './browser-helpers.ts';
 const profile=JSON.parse(readFileSync('src/generated/station-profile.json','utf8'));
-const compat='protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 
 // Domain API witness: building controls and source art belong to P6-07/08.

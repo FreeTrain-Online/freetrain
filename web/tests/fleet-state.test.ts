@@ -93,9 +93,9 @@ Deno.test('source-priced sale delta removes reversed Inside/Outside stock and bo
  read.cash='18014398509481986';assert.equal((parseMessage(JSON.stringify(read)) as Snapshot).cash,read.cash);
  read.mixed!.accounts.transactions[0].revenue='9223372036854775807';
  assert.throws(()=>parseMessage(JSON.stringify(read)));
- const save=await json('saves/fleet-v10.json');save.mixed=structuredClone(a.mixed);save.spatial.entities=read.entities!.filter(e=>BigInt(e.id)>=7n);
+ const save=await json('saves/fleet-v11.json');save.mixed=structuredClone(a.mixed);save.spatial.entities=read.entities!.filter(e=>BigInt(e.id)>=7n);
  save.revision=a.revision;save.clock.pending=[];
- const validate=new Ajv({strict:true}).compile(await json('save-v10.schema.json'));
+ const validate=new Ajv({strict:true}).compile(await json('save-v11.schema.json'));
  assert(validate(save),JSON.stringify(validate.errors));
 });
 Deno.test('literal Save10 fleet preserves reversed stock, shared controllers, absent harbor locations and exact queue integers',async()=>{
@@ -103,7 +103,7 @@ Deno.test('literal Save10 fleet preserves reversed stock, shared controllers, ab
  assert.equal(read.mixed!.nextEntityId,'9007199254741003');assert.equal(q.pending[0].registration,'9007199254740993');
  assert.deepEqual(f.trains[0].cars.map(c=>c.id),['19','18']);assert.equal(f.trains[1].purchaseMinute,null);
  assert.deepEqual(f.groups[0].members,['20','16']);assert.equal(f.controllers[3].harbors[0].location.x,-123);
- const schema=await json('save-v10.schema.json'),save=await json('saves/fleet-v10.json');
+ const schema=await json('save-v11.schema.json'),save=await json('saves/fleet-v11.json');
  const validate=new Ajv({strict:true}).compile(schema);assert(validate(save),JSON.stringify(validate.errors));
  assert.equal(validate({...save,saveVersion:8}),false);
  assert.throws(()=>parseMessage(JSON.stringify({...read,mixed:{...read.mixed,queue:{...q,nextOrder:9007199254740994}}})));
@@ -156,7 +156,7 @@ Deno.test('queue-only callback successor is coherent without a geometry revision
  const rewind=structuredClone(d);rewind.tick='130080';assert.equal(applyDelta(before,rewind),undefined);
 });
 Deno.test('out-of-order fleet chunks publish only the complete validated header to two peers',async()=>{
- const snapshot=await scene(),save=await json('saves/fleet-v10.json');
+ const snapshot=await scene(),save=await json('saves/fleet-v11.json');
  const bytes=new TextEncoder().encode(JSON.stringify({message:{...snapshot,terrain:undefined,entities:save.spatial.entities},packedTerrain:save.packedTerrain})+' '.repeat(2*stateChunkBytes));
  const sha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
  const chunks:StateChunk[]=[];

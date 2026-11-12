@@ -188,7 +188,7 @@ public class MixedContinuationTests
                     Assert.Equal(data,File.ReadAllBytes(Path.Combine(directory,slot+".json")));
                 }
                 var cookies=new CookieContainer();using var peer=new HttpClient(new HttpClientHandler{CookieContainer=cookies}){BaseAddress=server.Http.BaseAddress};
-                await peer.GetStringAsync("/api/bootstrap?protocolVersion=9&contentVersion=mixed-railway-content-1");
+                await peer.GetStringAsync("/api/bootstrap?protocolVersion=10&contentVersion=mixed-railway-content-1");
                 using var second=await server.Connect(cookies);var join=Assert.IsType<JoinMessage>(await NetworkTests.Read(second));
                 Assert.Equal(System.Text.Json.JsonSerializer.Serialize(published.Mixed,NetworkSession.Json),System.Text.Json.JsonSerializer.Serialize(join.Snapshot.Mixed,NetworkSession.Json));
                 Assert.True((await server.Http.PostAsync("/api/saves/slot2/load?expectedWorldEpoch=2",null)).IsSuccessStatusCode);

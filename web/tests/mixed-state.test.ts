@@ -13,7 +13,7 @@ Deno.test('literal mixed Save10 schema, snapshot and complete removal delta pres
  assert.equal(next.cash,'6999800000');assert.equal(next.mixed!.voxels.length,3);assert.equal(next.mixed!.voxels[0].supportedOwnerId,'7');
  assert.equal(next.entities!.length,6);assert.equal(next.terrain!.nextEntityId,'7');assert.equal(next.mixed!.nextEntityId,'11');
  assert.equal(before.mixed!.voxels.length,4);assert.equal(next.mixed!.accounts.transactions.length,3);
- const schema=await json('save-v10.schema.json'),validate=new Ajv({strict:true}).compile(schema),save=await json('saves/mixed-v10.json');
+ const schema=await json('save-v11.schema.json'),validate=new Ajv({strict:true}).compile(schema),save=await json('saves/mixed-v11.json');
  assert(validate(save),JSON.stringify(validate.errors));assert.equal(validate({...save,saveVersion:7}),false);
 });
 Deno.test('unknown profiles, overwritten terrain, malformed components, journal replay and future timestamps reject before reveal',async()=>{
@@ -38,7 +38,7 @@ Deno.test('mixed deltas reject owner revision loss, allocator rewind, journal re
  assert.equal(before.entities!.length,7);assert.equal(before.mixed!.geometryRevision,'5');
 });
 Deno.test('mixed chunk transfer retains railway header entities and publishes only the complete validated graph',async()=>{
- const snapshot=await scene(),saved=await json('saves/mixed-v10.json');
+ const snapshot=await scene(),saved=await json('saves/mixed-v11.json');
  const header={...snapshot,terrain:undefined,entities:saved.spatial.entities};
  const bytes=new TextEncoder().encode(JSON.stringify({message:header,packedTerrain:saved.packedTerrain})+' '.repeat(stateChunkBytes));
  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');

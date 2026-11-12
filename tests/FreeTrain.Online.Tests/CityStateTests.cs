@@ -27,7 +27,7 @@ public class CityStateTests
         return state with {Structures=structures.ToImmutableArray(),Producers=structures.Where(s=>s.Construction.IsEmpty && Profile.Structure(s.Definition).Population!=null)
             .Select(s=>new CityProducer(s.Id,s.Definition,s.Height)).ToImmutableArray()};
     }
-    static MixedWorld World(CityState state,MixedWorld? basis=null,IEnumerable<SpatialEntity>? entities=null,
+    internal static MixedWorld World(CityState state,MixedWorld? basis=null,IEnumerable<SpatialEntity>? entities=null,
         IEnumerable<RailwayVoxel>? voxels=null,long? next=null)
     {
         basis ??= MixedWorld.FromTerrain(Rail,Terrain());
@@ -271,7 +271,7 @@ public class CityStateTests
         Assert.Throws<ArgumentException>(()=>World(colliding.State,station));
     }
     [Fact]
-    public void Detached_candidates_preserve_FIFO_handles_and_world_local_random_continuation_and_refuse_live_Save10_sessions()
+    public void Detached_candidates_preserve_FIFO_handles_and_world_local_random_continuation_at_the_city_wire_boundary()
     {
         var state=Empty();var time=GameTime.StartMinute;
         var heat=new ScheduledAction(0,0,time+600,CityHandlers.Heat,600);
@@ -284,11 +284,10 @@ public class CityStateTests
         Assert.Throws<ArgumentException>(()=>new CityCandidate(construction,clock with {Pending=[heat]},saved));
         Assert.Throws<ArgumentException>(()=>new CityCandidate(construction,clock with {Pending=[heat,development with {Order=0}]},saved));
         Assert.Throws<ArgumentException>(()=>new CityGraph(Profile,state with {DevelopmentCallback=development with {Registration=0}}));
-        var provenance=new TerrainProvenance("fixture","empty","fixture","{}");
-        // The city guard executes before provenance/lifecycle activation.
-        Assert.Throws<ArgumentException>(()=>new MixedSessionState(construction,provenance));
-        Assert.Throws<ArgumentException>(()=>MixedWire.Read(construction));
-        Assert.Throws<ArgumentException>(()=>MixedWire.RailwayEntities(world));
+        // P7-05 installs the public city boundary. Inert terrain provenance is
+        // still invalid; live fixtures use a validated creation request.
+        Assert.NotNull(MixedWire.Read(construction).City);
+        Assert.Empty(MixedWire.RailwayEntities(world));
     }
 
     [Fact]

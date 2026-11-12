@@ -1,15 +1,16 @@
+import {currentCityDraft} from './city-edit.ts';
 import { createDepartureEvents } from './departure-events.ts';
 import { loadEnabledContent, type EnabledContent } from './optional-content.ts';
 import type { Accepted, Command, Join, Rejected, SoundEvent, DepartureBell } from '../generated/contracts.ts';
 import type { ConnectionStatus, ReadState, SessionClient } from './session-client.ts';
-import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseStationBuildingPreview, parseThinPlatformPreview, parsePassagePreview, parseWidePlatformPreview, parsePlatformProperties, parseStationInformation, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
+import { applyDelta, immutable, parseMessage, parseSpatialPreview, parseCornerPreview, parseRailwayPreview, parseSlopePreview, parseRemovalPreview, parseCityPreview, parseStationBuildingPreview, parseThinPlatformPreview, parsePassagePreview, parseWidePlatformPreview, parsePlatformProperties, parseStationInformation, parseFleetTradePreview, parseFleetDeploymentPreview } from './protocol.ts';
 import { removalQueryKey } from './object-removal.ts';
 import { isRailwayPromotion, railwayQueryKey, slopeQueryKey, RailwayPreviewRequestError } from './railway-edit.ts';
 import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 import {sessionCloseReason} from './session-close.ts';
 
-const compatibility = 'protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility = 'protocolVersion=10&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -125,7 +126,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent | Departu
           } else if(assembly.pending)throw new Error('State interrupted');
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 9 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 10 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               departures.reset(message.snapshot.effectsBaseline);
               publish(message.snapshot); setStatus('ready');
@@ -220,6 +221,15 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent | Departu
       if(!response.ok)throw new Error('Removal preview failed');
       const preview=parseRemovalPreview(await response.json());
       if(disposed||join!==identity||status!=='ready'||removalQueryKey(preview.query)!==removalQueryKey(query))throw new Error('Stale removal preview');
+      return preview;
+    },
+    async previewCity(query,signal) {
+      const identity=join;
+      if(disposed||status!=='ready'||!identity||!read||!currentCityDraft(read,query))throw new Error('Unavailable');
+      const response=await fetch(`/api/city/preview?${selectedCompatibility}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(query),credentials:'same-origin',signal:AbortSignal.any([signal,controller.signal,AbortSignal.timeout(10000)])});
+      if(!response.ok)throw new Error('City preview failed');
+      const preview=parseCityPreview(await response.json());
+      if(disposed||join!==identity||status!=='ready'||!read||!currentCityDraft(read,query)||JSON.stringify(preview.query)!==JSON.stringify(query))throw new Error('Stale city preview');
       return preview;
     },
     async previewStationBuilding(query,signal) {

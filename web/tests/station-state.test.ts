@@ -13,7 +13,7 @@ Deno.test('station literal Save10 and protocol8 retain exact graph, source asymm
  assert.deepEqual(g.buildings[0].children,['3','2']);assert.equal(g.buildings[0].imports.thisWeek,23.125);
  assert.equal(g.buildings[0].hourTimer!.registration,'9007199254740993');assert.equal(g.buildings[0].hourTimer!.interval,'60');
  assert.deepEqual(g.listeners,[{providerId:'40',stations:['1']}]);assert.deepEqual(g.listenerMemberships,[]);
- const schema=await json('save-v10.schema.json'),validate=new Ajv({strict:true}).compile(schema),save=await json('saves/stations-v10.json');
+ const schema=await json('save-v11.schema.json'),validate=new Ajv({strict:true}).compile(schema),save=await json('saves/stations-v11.json');
  assert(validate(save),JSON.stringify(validate.errors));assert(!validate({...save,saveVersion:9}));
 });
 Deno.test('station decoder rejects malformed hosts, art, ownership, logs, listener references and timer queues before reveal',async()=>{
@@ -63,7 +63,7 @@ Deno.test('station logical edits require revisions and fixed geometry; complete 
  const missing=structuredClone(removal);missing.removed.entityIds!.pop();assert.equal(applyDelta(s,missing),undefined);
 });
 Deno.test('station chunk assembly publishes only a complete coherent terrain, ownership, host and FIFO graph',async()=>{
- const snapshot=await scene(),save=await json('saves/stations-v10.json'),header={...snapshot,terrain:undefined,entities:save.spatial.entities};
+ const snapshot=await scene(),save=await json('saves/stations-v11.json'),header={...snapshot,terrain:undefined,entities:save.spatial.entities};
  const bytes=new TextEncoder().encode(JSON.stringify({message:header,packedTerrain:save.packedTerrain})+' '.repeat(stateChunkBytes));
  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
  const assembler=new StateAssembler();let result;

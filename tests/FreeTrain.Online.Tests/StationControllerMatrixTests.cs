@@ -119,7 +119,7 @@ public partial class StationYardStopTests
         Assert.Equal(40,FleetControllers.StopTime(s.World,s.Fleet!.Trains[0],time:s.Clock.Time).Decision.SourceMinutes);
         Assert.Equal(retained.Harbors,s.Fleet.EffectiveController(s.Fleet.Trains[0].Id).Harbors);
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(Open(s)));
-        Assert.Equal(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"PassengerService","station-controller-v10.json")),SaveCodec.Write(s));
+        Assert.Equal(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"PassengerService","station-controller-v11.json")),SaveCodec.Write(s));
         if(Environment.GetEnvironmentVariable("FREETRAIN_STATION_CONTROLLER_OUTPUT") is {} path)File.WriteAllBytes(path,SaveCodec.Write(s));
     }
 }

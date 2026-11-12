@@ -172,3 +172,13 @@ the caller alongside each site's original identity. `CityCandidate` also checks
 account capacity including accessory completion reservations and site-delay
 bounds. Public Save10/protocol9 codecs and live `MixedSessionState` still reject
 city graphs pending P7-05; the historical P7-03 test counts above are unchanged.
+
+## P7-05 continuation handoff — 12 November 2026
+
+[The live city boundary](web-parity-city-transport.md) now supplies Save11/protocol10
+codecs, typed producer provenance, strict current-format restoration, bounded
+snapshot/delta/chunk publication and authoritative read-only previews/FIFO site
+cancellation. The earlier detached-only guards described above are superseded.
+Live construction reuses the same lifecycle; actual land value and later city
+timers require explicit trusted consumers and reject atomically when unavailable.
+Family placement/producer attachment and heat execution retain P7-06/07/13 owners.

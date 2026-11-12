@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://freetrain-online.invalid/contracts-v9.schema.json",
+  "$id": "https://freetrain-online.invalid/contracts-v10.schema.json",
   "title": "GameDocument",
   "oneOf": [
     {
@@ -83,6 +83,12 @@
     },
     {
       "$ref": "#/$defs/StationInformation"
+    },
+    {
+      "$ref": "#/$defs/CityQuery"
+    },
+    {
+      "$ref": "#/$defs/CityPreview"
     }
   ],
   "$defs": {
@@ -1424,6 +1430,9 @@
             "query",
             "expectedCost"
           ]
+        },
+        {
+          "$ref": "#/$defs/CancelCityConstruction"
         }
       ]
     },
@@ -1536,7 +1545,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 9
+          "const": 10
         },
         "contentVersion": {
           "type": "string",
@@ -2332,7 +2341,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 9
+          "const": 10
         },
         "contentVersion": {
           "type": "string",
@@ -3305,6 +3314,9 @@
         },
         "stationGraph": {
           "$ref": "#/$defs/StationGraph"
+        },
+        "city": {
+          "$ref": "#/$defs/City"
         }
       },
       "required": [
@@ -4417,11 +4429,7 @@
           "maxLength": 128
         },
         "interval": {
-          "enum": [
-            "0",
-            "60",
-            "1440"
-          ]
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [
@@ -5992,7 +6000,13 @@
           "type": "boolean"
         },
         "input": {
-          "const": "controlled"
+          "enum": [
+            "controlled",
+            "city-fixed",
+            "city-variable",
+            "city-half",
+            "city-ground"
+          ]
         },
         "xySize": {
           "type": "integer",
@@ -6227,6 +6241,719 @@
         "observedRevision",
         "observedMinute"
       ]
+    },
+    "CityProperty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        }
+      }
+    },
+    "CityFenceHost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        }
+      }
+    },
+    "CityGround": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "location",
+        "owned",
+        "variant"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "variant": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "CityHalf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definition",
+        "side",
+        "direction",
+        "color"
+      ],
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "side": {
+          "type": "string",
+          "enum": [
+            "back",
+            "fore"
+          ]
+        },
+        "direction": {
+          "type": "integer",
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "color": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "CitySubsidiary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "marketPrice",
+        "totalLandValue",
+        "callback"
+      ],
+      "properties": {
+        "marketPrice": {
+          "$ref": "#/$defs/Counter"
+        },
+        "totalLandValue": {
+          "$ref": "#/$defs/Counter"
+        },
+        "callback": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "CityConstructionVoxel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "offset",
+        "cell",
+        "callback"
+      ],
+      "properties": {
+        "offset": {
+          "$ref": "#/$defs/Position"
+        },
+        "cell": {
+          "$ref": "#/$defs/ConstructionCell"
+        },
+        "callback": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "CityStructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "definition",
+        "location",
+        "height",
+        "owned",
+        "subsidiary",
+        "halves",
+        "construction",
+        "caller"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "revision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "owned": {
+          "type": "boolean"
+        },
+        "subsidiary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CitySubsidiary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "halves": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityHalf"
+          },
+          "maxItems": 2
+        },
+        "construction": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityConstructionVoxel"
+          },
+          "maxItems": 8192
+        },
+        "caller": {
+          "type": "string",
+          "enum": [
+            "legacyplayer",
+            "catalogplayer",
+            "automated"
+          ]
+        }
+      }
+    },
+    "CityProducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownerId",
+        "initialDefinition",
+        "initialHeight"
+      ],
+      "properties": {
+        "ownerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "initialDefinition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "initialHeight": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      }
+    },
+    "CityFence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hostOwnerId",
+        "location",
+        "side",
+        "definition"
+      ],
+      "properties": {
+        "hostOwnerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "location": {
+          "$ref": "#/$defs/Position"
+        },
+        "side": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        }
+      }
+    },
+    "CitySelectedPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definition",
+        "site",
+        "sizeX",
+        "sizeY",
+        "height",
+        "value",
+        "finalPrice"
+      ],
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/Definition"
+        },
+        "site": {
+          "$ref": "#/$defs/Position"
+        },
+        "sizeX": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "sizeY": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "height": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "value": {
+          "$ref": "#/$defs/Counter"
+        },
+        "finalPrice": {
+          "$ref": "#/$defs/Counter"
+        }
+      }
+    },
+    "CitySearchPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stationId",
+        "phase",
+        "strength",
+        "budget",
+        "work",
+        "scanning",
+        "selected"
+      ],
+      "properties": {
+        "stationId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "phase": {
+          "type": "string",
+          "enum": [
+            "start",
+            "selectstruct1",
+            "selectstruct2",
+            "fitplace",
+            "build",
+            "end"
+          ]
+        },
+        "strength": {
+          "type": "number"
+        },
+        "budget": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "work": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "maxItems": 4,
+          "minItems": 4
+        },
+        "scanning": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selected": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CitySelectedPlan"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "CityLandCache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "corner",
+        "sizeX",
+        "sizeY",
+        "landValue",
+        "entityValue"
+      ],
+      "properties": {
+        "corner": {
+          "$ref": "#/$defs/Position"
+        },
+        "sizeX": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "sizeY": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "landValue": {
+          "$ref": "#/$defs/Counter"
+        },
+        "entityValue": {
+          "$ref": "#/$defs/Counter"
+        }
+      }
+    },
+    "CityHeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horizontalSize",
+        "verticalSize",
+        "q",
+        "back",
+        "rho"
+      ],
+      "properties": {
+        "horizontalSize": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "verticalSize": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "q": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 1708196
+        },
+        "back": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 1708196
+        },
+        "rho": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 1708196
+        }
+      }
+    },
+    "CitySettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strengthDiffusion",
+        "populationPower",
+        "populationBase",
+        "populationScale",
+        "landPriceScale",
+        "replacementFactor",
+        "maximumPricePower",
+        "alpha",
+        "diffusion",
+        "updateFrequencyHours",
+        "landValuePower",
+        "bareConductivity"
+      ],
+      "properties": {
+        "strengthDiffusion": {
+          "type": "number"
+        },
+        "populationPower": {
+          "type": "number"
+        },
+        "populationBase": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "populationScale": {
+          "type": "number"
+        },
+        "landPriceScale": {
+          "type": "number"
+        },
+        "replacementFactor": {
+          "type": "number"
+        },
+        "maximumPricePower": {
+          "type": "number"
+        },
+        "alpha": {
+          "type": "number"
+        },
+        "diffusion": {
+          "type": "number"
+        },
+        "updateFrequencyHours": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "landValuePower": {
+          "type": "number"
+        },
+        "bareConductivity": {
+          "type": "number"
+        }
+      }
+    },
+    "City": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "properties",
+        "structures",
+        "ground",
+        "producers",
+        "fences",
+        "heat",
+        "settings",
+        "plans",
+        "landCache",
+        "fenceHosts",
+        "heatCallback",
+        "developmentCallback"
+      ],
+      "properties": {
+        "format": {
+          "const": 1
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityProperty"
+          },
+          "maxItems": 8192
+        },
+        "structures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityStructure"
+          },
+          "maxItems": 8192
+        },
+        "ground": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityGround"
+          },
+          "maxItems": 8192
+        },
+        "producers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityProducer"
+          },
+          "maxItems": 8192
+        },
+        "fences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityFence"
+          },
+          "maxItems": 32768
+        },
+        "heat": {
+          "$ref": "#/$defs/CityHeat"
+        },
+        "settings": {
+          "$ref": "#/$defs/CitySettings"
+        },
+        "plans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CitySearchPlan"
+          },
+          "maxItems": 8192
+        },
+        "landCache": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityLandCache"
+          },
+          "maxItems": 8192
+        },
+        "fenceHosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CityFenceHost"
+          },
+          "maxItems": 8192
+        },
+        "heatCallback": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "developmentCallback": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MixedAction"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "CityQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectedWorldEpoch",
+        "expectedRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "ownerId",
+        "expectedOwnerRevision"
+      ],
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ownerId": {
+          "$ref": "#/$defs/EntityId"
+        },
+        "expectedOwnerRevision": {
+          "$ref": "#/$defs/Counter"
+        }
+      }
+    },
+    "CityPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query",
+        "canCancel",
+        "reason",
+        "cost",
+        "structure"
+      ],
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/CityQuery"
+        },
+        "canCancel": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Counter"
+        },
+        "structure": {
+          "$ref": "#/$defs/CityStructure"
+        }
+      }
+    },
+    "CancelCityConstruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "query"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cancelCityConstruction"
+        },
+        "query": {
+          "$ref": "#/$defs/CityQuery"
+        }
+      }
     }
   }
 }

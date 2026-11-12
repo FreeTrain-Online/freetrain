@@ -55,7 +55,7 @@ for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts shar
  try{
   await page.goto('/');await ready(page,locale);
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
-  await upload(readFileSync('tests/fixtures/station-controller-v10.json'));
+  await upload(readFileSync('tests/fixtures/station-controller-v11.json'));
   let s=await consistent();const platforms=s.mixed.stationGraph.platforms,host=s.mixed.stationGraph.buildings.find((b:any)=>b.id===platforms[0].hostId),other=s.mixed.stationGraph.buildings.find((b:any)=>b.id===platforms[2].hostId);
   expect(platforms[1].hostId).toBe(host.id);expect(other.id).not.toBe(host.id);
   const controls=await manager();await controls.getByRole('button',{name:text.controllerCreate,exact:true}).click();

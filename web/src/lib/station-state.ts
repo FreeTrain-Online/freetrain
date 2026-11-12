@@ -1,3 +1,4 @@
+import {cityTimers} from './city-state.ts';
 import type {Snapshot,StationGraph,MixedAction,StationPlatform,Population} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import profile from '../generated/station-profile.json' with {type:'json'};
@@ -23,16 +24,16 @@ export function validPopulation(root:Population):boolean {
 export function stationTimers(g:StationGraph|undefined):MixedAction[]{return [...(g?.buildings??[]).flatMap(b=>[b.hourTimer,b.dayTimer]),...(g?.platforms??[]).map(p=>p.dayTimer)].filter((t):t is MixedAction=>t!==null);}
 export function validMixedQueue(read:Snapshot):boolean {
  const m=read.mixed!,q=m.queue;
- if(!m.fleet&&!m.stationGraph)return q===undefined;
+ if(!m.fleet&&!m.stationGraph&&!m.city)return q===undefined;
  if(!q)return false;
- const timers=new Map(stationTimers(m.stationGraph).map(t=>[t.handlerId,t]));
+ const timers=new Map([...stationTimers(m.stationGraph),...cityTimers(m.city)].map(t=>[t.handlerId,t]));
  const expected=new Map(m.voxels.filter(v=>v.construction&&v.construction.state<4).map(v=>[`construction/${v.ownerId}/${v.position.x}/${v.position.y}/${v.position.z}`,true]));
  for(const t of m.fleet?.trains??[])if(t.state!=='unplaced')expected.set(`train/${t.id}`,false);
  for(const id of timers.keys())expected.set(id,false);
  const orders=new Set<string>(),registrations=new Set<string>();let priorMinute=-1n,priorOrder=-1n;
  for(const a of q.pending){const due=BigInt(a.dueMinute),order=BigInt(a.order),timer=timers.get(a.handlerId);
   if(!expected.has(a.handlerId)||orders.has(a.order)||registrations.has(a.registration)||order>=BigInt(q.nextOrder)||
-   BigInt(a.registration)>order||due<=BigInt(read.tick)||due>maximumGameMinute||due<priorMinute||due===priorMinute&&order<=priorOrder||
+   BigInt(a.registration)>order||BigInt(a.interval)>maximumGameMinute||due<=BigInt(read.tick)||due>maximumGameMinute||due<priorMinute||due===priorMinute&&order<=priorOrder||
    (timer?!equal(timer,a):a.interval!=='0'||a.registration!==a.order)||expected.get(a.handlerId)&&due-BigInt(read.tick)>119n)return false;
   expected.delete(a.handlerId);orders.add(a.order);registrations.add(a.registration);priorMinute=due;priorOrder=order;
  }

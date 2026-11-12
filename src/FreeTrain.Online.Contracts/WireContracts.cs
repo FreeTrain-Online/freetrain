@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 9;
+    public const int Version = 10;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
     public const string MixedRuleset = "mixed-railway-1";
@@ -146,6 +146,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(EditCornerCommand), "editCorner")]
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
+[JsonDerivedType(typeof(CancelCityConstructionCommand), "cancelCityConstruction")]
 [JsonDerivedType(typeof(EditStationBuildingCommand), "editStationBuilding")]
 [JsonDerivedType(typeof(EditPassageCommand), "editPassage")]
 [JsonDerivedType(typeof(EditThinPlatformCommand), "editThinPlatform")]
@@ -318,7 +319,8 @@ public sealed record MixedRead(long GeometryRevision, long NextEntityId, Railway
     ConstructionAccountsRead Accounts, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpeedLimitsRead? SpeedLimits = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] FleetRead? Fleet = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedQueueRead? Queue = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StationGraphRead? StationGraph = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StationGraphRead? StationGraph = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CityRead? City = null);
 public sealed record SpeedLimitsRead(PositionRead[] Low, PositionRead[] Medium, PositionRead[] Fast);
 
 // Explicit data-only fleet contract. IDs/counters use the canonical Int64 converter.

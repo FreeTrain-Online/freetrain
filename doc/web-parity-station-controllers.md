@@ -68,7 +68,7 @@ reopen, with one train callback.
 A separate construction/removal witness retains two independent station entries,
 rebuilds one station with a different ID, reconnects its two platforms and checks
 unchanged location settings and exact save bytes. It also generates and checks
-the committed browser baseline `station-controller-v10.json`. The scene contains
+the committed browser baseline `station-controller-v11.json`. The scene contains
 only domain-constructed structures and purchased/deployed stock, with zero seeded
 passengers/origins/stop calls and no test harbor. Its rail-owned special
 `ConstantPopulation(10000)` is explicitly controlled P7 interface supply.

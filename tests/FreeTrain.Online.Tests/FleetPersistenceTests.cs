@@ -12,7 +12,7 @@ namespace FreeTrain.Online.Tests;
 
 public class FleetPersistenceTests
 {
-    static byte[] Fixture => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json"));
+    static byte[] Fixture => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v11.json"));
     // Controlled dispatcher verifies restored ownership/FIFO, without claiming motion.
     static TrainCallbackResult Wait(MixedSessionState s,long id) => new(s.Construction,2);
     static MixedSessionState Decode(byte[] data,TrainCallback? callback=null) => SaveCodec.ReadWorld(data,TerrainProfiles.Resolve,RailwayProfiles.Resolve,callback??Wait).Mixed!;

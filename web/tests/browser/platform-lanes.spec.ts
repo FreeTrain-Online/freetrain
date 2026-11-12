@@ -57,7 +57,7 @@ test('P6-13 occupied lane and complete demolition reject after a moving train in
  test.setTimeout(120000);const replies:any[]=[];let socket:WebSocketRoute|undefined,serial=0;
  await page.routeWebSocket('**/api/session?*',route=>{socket=route.connectToServer();socket.onMessage(m=>{replies.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>socket!.send(m));});
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
- const compat='protocolVersion=9&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+ const compat='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
  async function send(payload:any,expected='accepted'){const s=await state(page),requestId='occupancy-'+(++serial);socket!.send(JSON.stringify({type:'command',requestId,expectedWorldEpoch:s.worldEpoch,payload}));await expect.poll(()=>{const m=replies.find(m=>m.requestId===requestId);return m?.code??m?.type;}).toBe(expected);}
  async function query(action:string,lane:number){const s=await state(page),p=s.mixed.stationGraph.platforms[0];return {expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.mixed.geometryRevision,expectedMinute:s.tick,expectedContentVersion:s.contentVersion,action,position:p.location,direction:p.direction,length:p.length,secondLane:lane===1,platformId:p.id,expectedPlatformRevision:p.revision};}
  async function preview(q:any){const r=await page.request.post('/api/station/wide-platform/preview?'+compat,{data:q});expect(r.ok()).toBe(true);return r.json();}

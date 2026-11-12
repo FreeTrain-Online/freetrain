@@ -11,7 +11,7 @@ import struct
 
 def check(path):
     raw = path.read_bytes(); saved = json.loads(raw)
-    assert saved['saveVersion'] == 10 and saved['map']['coordinateSystem'] == 'hv'
+    assert saved['saveVersion'] == 11 and saved['map']['coordinateSystem'] == 'hv'
     h, v = saved['map']['width'], saved['map']['height']
     assert 16 <= h <= 2048 and 16 <= v <= 2048 and h*v <= 1700000
     packed = saved['packedTerrain']; request = json.loads(packed['provenance']['requestJson'])

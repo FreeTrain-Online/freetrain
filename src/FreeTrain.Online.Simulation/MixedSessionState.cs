@@ -32,6 +32,8 @@ public sealed class MixedSessionState
     public void ReviseSession() => Revision = checked(Revision + 1);
     private readonly TrainCallback trainCallback;
     private readonly StationCallback stationCallback;
+    public CityScheduledCallback? CityDispatcher { get; }
+    public Func<MixedWorld,CityStructure,long>? CityLandValue { get; }
     public TrainCallback TrainDispatcher => trainCallback;
     public StationCallback StationDispatcher => stationCallback;
     public bool CanAdvance => Clock.Time.AbsoluteMinute < GameTime.MaximumMinute && Revision < long.MaxValue;
@@ -44,19 +46,32 @@ public sealed class MixedSessionState
                 result.Add(TrainHandler(t.Id), () => { if (dispatch) TickTrain(t.Id); });
         foreach (var timer in StationLifecycle.Timers(world.Stations))
             result.Add(timer.HandlerId, () => { if (dispatch) TickStation(timer.HandlerId); });
+        foreach (var timer in world.City?.Callbacks ?? [])
+        {
+            var handler=timer.HandlerId;
+            result.Add(handler,()=> { if(dispatch) TickCity(handler); });
+        }
+        // A site's completion allocates a fresh identity and schedules its first
+        // subsidiary callback. Bind potential IDs before advancing the clock.
+        var sites=world.City?.State.Structures.Count(s=>!s.Construction.IsEmpty) ?? 0;
+        for(var i=0;i<sites && i<=long.MaxValue-world.Spatial.NextEntityId;i++)
+        {
+            var handler=CityHandlers.Subsidiary(world.Spatial.NextEntityId+i);
+            result.TryAdd(handler,()=> { if(dispatch) TickCity(handler); });
+        }
         return result;
     }
     public MixedSessionState(MixedConstructionState construction, TerrainProvenance provenance, bool constructionMode = false,
         ClockState? clock = null, bool paused = true, RandomStreamsState? random = null, long revision = 0,
-        TrainCallback? trainCallback = null, StationCallback? stationCallback = null)
+        TrainCallback? trainCallback = null, StationCallback? stationCallback = null,
+        CityScheduledCallback? cityCallback = null, Func<MixedWorld,CityStructure,long>? cityLandValue = null)
     {
-        if (construction.World.City != null)
-            throw new ArgumentException("Detached city state requires P7-04/05 lifecycle and persistence boundaries.");
         if (revision < construction.World.Revision) throw new ArgumentException("Invalid mixed session revision.");
         provenance.Validate(construction.World.Terrain);
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
         this.trainCallback=trainCallback ?? FleetMovement.Tick;
         this.stationCallback=stationCallback ?? StationStatistics.Tick;
+        CityDispatcher=cityCallback; CityLandValue=cityLandValue;
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
@@ -66,6 +81,13 @@ public sealed class MixedSessionState
     {
         var clock = Clock.Capture(); var pending = clock.Pending;
         StationLifecycle.Validate(World.Stations,clock);
+        if(World.City != null)
+        {
+            _=new CityCandidate(Construction,clock,Random.Capture());
+            if((Fleet?.Trains ?? []).Any(t=>t.PurchaseMinute>clock.AbsoluteMinute))
+                throw new ArgumentException("Purchase is newer than clock.");
+            return;
+        }
         var timers = StationLifecycle.Timers(World.Stations).ToDictionary(t => t.HandlerId,StringComparer.Ordinal);
         var construction=StationaryConstruction.Bindings(World);
         var deployed=(Fleet?.Trains ?? []).Where(t => t.State != TrainOperationalState.Unplaced).ToArray();
@@ -79,6 +101,16 @@ public sealed class MixedSessionState
         if (Construction.Accounts.Transactions.Any(t => t.AbsoluteMinute > Clock.Time.AbsoluteMinute) ||
             (Fleet?.Trains ?? []).Any(t => t.PurchaseMinute > Clock.Time.AbsoluteMinute))
             throw new ArgumentException("Booking/purchase is newer than clock.");
+    }
+    private void TickCity(string handler)
+    {
+        var site=World.City!.State.Structures.SingleOrDefault(s=>s.Construction.Any(c=>c.Callback?.HandlerId==handler));
+        var candidate=site == null
+            ? CityDispatcher?.Invoke(Construction,Clock,Random,handler) ?? throw new CityConsumerUnavailableException(handler)
+            : CityConstruction.Tick(Construction,site,handler,Clock,Random,CityLandValue ??
+                ((_,_)=>throw new CityConsumerUnavailableException("land-value")));
+        ValidateCandidate(candidate);
+        Construction=candidate; Revision=checked(Revision+1);
     }
     private void TickConstruction(RailwayVoxel v)
     {
@@ -115,7 +147,7 @@ public sealed class MixedSessionState
     {
         return new(World.Terrain,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,Bindings(World,false));
     }
-    public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback,stationCallback);
+    public MixedSessionState Freeze() => new(Construction,Provenance,ConstructionMode,Clock.Capture(),Paused,Random.Capture(),Revision,trainCallback,stationCallback,CityDispatcher,CityLandValue);
     public void SetPaused(bool paused)
     { if (Paused==paused) return; var next=checked(Revision+1); Paused=paused; Revision=next; }
     public void AdvanceOneMinute()
@@ -141,8 +173,9 @@ public sealed class MixedSessionState
             throw new ArgumentException("Invalid mixed successor.");
         if (Fleet != null && candidate.World.Fleet == null) throw new ArgumentException("Cannot discard fleet graph.");
         if (World.Stations != null && candidate.World.Stations == null) throw new ArgumentException("Cannot discard station graph.");
+        if(World.City != null && candidate.World.City == null) throw new ArgumentException("Cannot discard city graph.");
         World.Replace(World.Revision,candidate.World.Terrain,candidate.World.Spatial.Capture(),candidate.World.Voxels,candidate.World.Slopes,
-            candidate.World.SpeedLimits,candidate.World.Fleet,candidate.World.Stations);
+            candidate.World.SpeedLimits,candidate.World.Fleet,candidate.World.Stations,candidate.World.City);
         var before=Construction.Accounts; var after=candidate.Accounts;
         if (before.InitialCash != after.InitialCash || before.Settings != after.Settings ||
             after.Transactions.Length < before.Transactions.Length ||
@@ -165,6 +198,6 @@ public sealed class MixedSessionState
         // Cancel ONLY callbacks owned by removed trains/sites/stations/platforms. Unknown
         // payloads must reject, rather than disappearing through a broad filter.
         schedule=schedule with {Pending=schedule.Pending.Where(a => !previous.ContainsKey(a.HandlerId) || active.ContainsKey(a.HandlerId)).ToImmutableArray()};
-        return new(candidate,Provenance,constructionMode,schedule,Paused,random ?? Random.Capture(),checked(Revision+1),trainCallback,stationCallback);
+        return new(candidate,Provenance,constructionMode,schedule,Paused,random ?? Random.Capture(),checked(Revision+1),trainCallback,stationCallback,CityDispatcher,CityLandValue);
     }
 }

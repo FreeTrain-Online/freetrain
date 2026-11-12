@@ -1,0 +1,4580 @@
+{
+  "requiredPacks": [
+    {
+      "id": "exav-stable-bundled",
+      "version": "2",
+      "catalogHash": "2c0e68ac49484cc0918a94f0b53d2f82dbb8b5ac3fab4ccdf8b3c291841c1c79"
+    }
+  ],
+  "propertyDefinition": {
+    "packId": "exav-stable-bundled",
+    "contributionId": "system:land-property",
+    "recipeId": "system:land-property"
+  },
+  "fenceHostDefinition": {
+    "packId": "exav-stable-bundled",
+    "contributionId": "system:fence-dummy",
+    "recipeId": "geometry:fence-dummy-1"
+  },
+  "structures": [
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{BC43CE38-601A-42c7-992A-6049CCD29B94}",
+        "recipeId": "{BC43CE38-601A-42c7-992A-6049CCD29B94}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "20000000",
+      "population": {
+        "kind": "ShopperPopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}",
+        "recipeId": "{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "280000000",
+      "population": {
+        "kind": "ShopperPopulation",
+        "base": 600,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9F3E82AD-2A49-4aef-954C-E872F535B3D8}",
+        "recipeId": "{9F3E82AD-2A49-4aef-954C-E872F535B3D8}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "240000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{27D6D0C0-2B1A-4494-9257-14C208168075}",
+        "recipeId": "{27D6D0C0-2B1A-4494-9257-14C208168075}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "11000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7",
+        "recipeId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 300,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{442C7E12-A3BA-4c25-9129-C3803EA760BC}",
+        "recipeId": "{442C7E12-A3BA-4c25-9129-C3803EA760BC}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8495D468-B2EF-4816-9C2A-67D8D68FCBDA}",
+        "recipeId": "{8495D468-B2EF-4816-9C2A-67D8D68FCBDA}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1E3FC997-DD98-4b47-82E0-D1C5914B9537}",
+        "recipeId": "{1E3FC997-DD98-4b47-82E0-D1C5914B9537}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{615FF4AA-898E-466f-8004-1855F82C1B5B}",
+        "recipeId": "{615FF4AA-898E-466f-8004-1855F82C1B5B}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9BF4DD25-050A-4633-BC8B-0B8B226FC5E8}",
+        "recipeId": "{9BF4DD25-050A-4633-BC8B-0B8B226FC5E8}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "480000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 250,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5E12C371-F928-40f4-B661-FFC2DC71750E}",
+        "recipeId": "{5E12C371-F928-40f4-B661-FFC2DC71750E}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "480000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 250,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+        "recipeId": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 6,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3900000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 300,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{200CC5B5-6F63-4A49-99FF-537DC8EE3DC2}",
+        "recipeId": "{200CC5B5-6F63-4A49-99FF-537DC8EE3DC2}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 6,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3900000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 300,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6E3D2FBA-4A74-426C-88E3-4787E3946543}",
+        "recipeId": "{6E3D2FBA-4A74-426C-88E3-4787E3946543}"
+      },
+      "kind": "variable",
+      "sizeX": 6,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3900000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 300,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+        "recipeId": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}"
+      },
+      "kind": "variable",
+      "sizeX": 6,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3900000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 300,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}",
+        "recipeId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}",
+        "recipeId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5BD744B4-195B-4609-91A0-42B69A747349}",
+        "recipeId": "{5BD744B4-195B-4609-91A0-42B69A747349}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}",
+        "recipeId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-a",
+        "recipeId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-a"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-a",
+        "recipeId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-a"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5BD744B4-195B-4609-91A0-42B69A747349}-a",
+        "recipeId": "{5BD744B4-195B-4609-91A0-42B69A747349}-a"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-a",
+        "recipeId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-a"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-b",
+        "recipeId": "{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-b"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-b",
+        "recipeId": "{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-b"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5BD744B4-195B-4609-91A0-42B69A747349}-b",
+        "recipeId": "{5BD744B4-195B-4609-91A0-42B69A747349}-b"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-b",
+        "recipeId": "{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-b"
+      },
+      "kind": "variable",
+      "sizeX": 5,
+      "sizeY": 5,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "3000000000",
+      "population": {
+        "kind": "CombinationPopulation",
+        "base": 0,
+        "factor": 1,
+        "entering": 0,
+        "children": [
+          {
+            "kind": "OfficePopulation",
+            "base": 1000,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          },
+          {
+            "kind": "ShopperPopulation",
+            "base": 200,
+            "factor": 1,
+            "entering": 0,
+            "children": [],
+            "tables": []
+          }
+        ],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1F81CA6C-4D44-418B-A242-A9E4104648D3}",
+        "recipeId": "{1F81CA6C-4D44-418B-A242-A9E4104648D3}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5FACC378-154D-4FAE-8BDE-3C2DA1BAB635}",
+        "recipeId": "{5FACC378-154D-4FAE-8BDE-3C2DA1BAB635}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{736F1D68-3796-43F7-8495-11AE63F86F8E}",
+        "recipeId": "{736F1D68-3796-43F7-8495-11AE63F86F8E}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{813736D4-63A5-44DE-884C-7B10CFAEA582}",
+        "recipeId": "{813736D4-63A5-44DE-884C-7B10CFAEA582}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{542C633F-5F59-495E-9CF2-9BB46980F9EA}",
+        "recipeId": "{542C633F-5F59-495E-9CF2-9BB46980F9EA}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{346B2781-75A7-4EE3-BF36-9C8B212DD678}",
+        "recipeId": "{346B2781-75A7-4EE3-BF36-9C8B212DD678}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 3,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{40CBC11A-36B2-40BB-9A2D-EAA48973C478}",
+        "recipeId": "{40CBC11A-36B2-40BB-9A2D-EAA48973C478}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8495D468-B2EF-4816-9C2A-67D8D68F0002}",
+        "recipeId": "{8495D468-B2EF-4816-9C2A-67D8D68F0002}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1E3FC997-DD98-4b47-82E0-D1C5914B0002}",
+        "recipeId": "{1E3FC997-DD98-4b47-82E0-D1C5914B0002}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{615FF4AA-898E-466f-8004-1855F82C0002}",
+        "recipeId": "{615FF4AA-898E-466f-8004-1855F82C0002}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{40CBC11A-36B2-40BB-C477-EAA48973C478}",
+        "recipeId": "{40CBC11A-36B2-40BB-C477-EAA48973C478}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8495D468-B2EF-4816-C477-67D8D68F0002}",
+        "recipeId": "{8495D468-B2EF-4816-C477-67D8D68F0002}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1E3FC997-DD98-4b47-C477-D1C5914B0002}",
+        "recipeId": "{1E3FC997-DD98-4b47-C477-D1C5914B0002}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{615FF4AA-898E-466f-C477-1855F82C0002}",
+        "recipeId": "{615FF4AA-898E-466f-C477-1855F82C0002}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "390000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 200,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-0"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-1"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-2"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-3"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-4"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-5"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-6"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+        "recipeId": "{A5AD425E-BE10-4470-C477-204D881878E5}-7"
+      },
+      "kind": "half",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 3,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": [
+        {
+          "direction": 6,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 6,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 4,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 2,
+          "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 1,
+          "color": 0
+        }
+      ]
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}",
+        "recipeId": "{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B7C82C4E-015A-407D-9F10-5D198384B702}",
+        "recipeId": "{B7C82C4E-015A-407D-9F10-5D198384B702}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{01799382-3860-4BF6-BE11-F2E40DA093E7}",
+        "recipeId": "{01799382-3860-4BF6-BE11-F2E40DA093E7}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{F7043E4A-402D-43D1-8732-C30F52979B08}",
+        "recipeId": "{F7043E4A-402D-43D1-8732-C30F52979B08}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}",
+        "recipeId": "{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D6454FB2-A717-4862-A1B2-1A5113D686E0}",
+        "recipeId": "{D6454FB2-A717-4862-A1B2-1A5113D686E0}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{238A1579-28EB-45FF-ADEC-71D65C067435}",
+        "recipeId": "{238A1579-28EB-45FF-ADEC-71D65C067435}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}",
+        "recipeId": "{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}",
+        "recipeId": "{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DC418AA8-1D26-4B85-92DD-22938607D708}",
+        "recipeId": "{DC418AA8-1D26-4B85-92DD-22938607D708}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{28548323-07D9-476F-8B91-99F033FE117F}",
+        "recipeId": "{28548323-07D9-476F-8B91-99F033FE117F}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8D849B40-605F-4807-AB0C-5708CFA8D682}",
+        "recipeId": "{8D849B40-605F-4807-AB0C-5708CFA8D682}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "1500000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}",
+        "recipeId": "{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 4,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "100000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{24146DB8-A1CB-4355-8B26-705F2FB885D7}",
+        "recipeId": "{24146DB8-A1CB-4355-8B26-705F2FB885D7}"
+      },
+      "kind": "fixed",
+      "sizeX": 4,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "100000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}",
+        "recipeId": "{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "50000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{82B5ED65-8576-4494-BCD2-E2B9233FD787}",
+        "recipeId": "{82B5ED65-8576-4494-BCD2-E2B9233FD787}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "50000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{E0F69A4B-A3EE-4605-8987-7E63737EA481}",
+        "recipeId": "{E0F69A4B-A3EE-4605-8987-7E63737EA481}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "200000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}",
+        "recipeId": "{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "200000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{32D21DEE-99A5-414F-BAF7-6BBD705A7485}",
+        "recipeId": "{32D21DEE-99A5-414F-BAF7-6BBD705A7485}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6DFD12E5-505C-43CA-9E07-23D737D408FB}",
+        "recipeId": "{6DFD12E5-505C-43CA-9E07-23D737D408FB}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{29D7FEFA-2491-4ED0-8479-596FD805ED03}",
+        "recipeId": "{29D7FEFA-2491-4ED0-8479-596FD805ED03}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{76EA313D-CA8B-4C93-94FF-3452054615D4}",
+        "recipeId": "{76EA313D-CA8B-4C93-94FF-3452054615D4}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}",
+        "recipeId": "{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}",
+        "recipeId": "{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{628C6F59-9B1A-48a8-8815-48AC0D15765E}",
+        "recipeId": "{628C6F59-9B1A-48a8-8815-48AC0D15765E}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}",
+        "recipeId": "{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}",
+        "recipeId": "{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}",
+        "recipeId": "{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}",
+        "recipeId": "{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{0C468024-EB7E-44BE-8026-326FC3F09539}",
+        "recipeId": "{0C468024-EB7E-44BE-8026-326FC3F09539}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{924FBFF1-69E4-49C6-9067-86D915638A9A}",
+        "recipeId": "{924FBFF1-69E4-49C6-9067-86D915638A9A}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{26601128-3116-4EFA-AB8E-233BC566D031}",
+        "recipeId": "{26601128-3116-4EFA-AB8E-233BC566D031}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{91857E01-6499-40CE-8825-6D52247F80C9}",
+        "recipeId": "{91857E01-6499-40CE-8825-6D52247F80C9}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4A00A798-AC00-437e-A888-D89BA53AE521}",
+        "recipeId": "{4A00A798-AC00-437e-A888-D89BA53AE521}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8CA77980-AF45-4ee6-9835-05AE2265DE02}",
+        "recipeId": "{8CA77980-AF45-4ee6-9835-05AE2265DE02}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B33B8F45-ABEE-4c88-AD85-F37B06D1C0FB}",
+        "recipeId": "{B33B8F45-ABEE-4c88-AD85-F37B06D1C0FB}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{042F75D2-0C64-4e42-8A94-1F0245304F8B}",
+        "recipeId": "{042F75D2-0C64-4e42-8A94-1F0245304F8B}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A39D0D3D-DEE7-4492-9EBC-678D331F3A52}",
+        "recipeId": "{A39D0D3D-DEE7-4492-9EBC-678D331F3A52}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{ABD65D7D-DBFB-41A1-838C-F633CE2BF928}",
+        "recipeId": "{ABD65D7D-DBFB-41A1-838C-F633CE2BF928}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{AD743C11-C9A9-4E76-AD68-178CFA9F6E3E}",
+        "recipeId": "{AD743C11-C9A9-4E76-AD68-178CFA9F6E3E}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "35000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 40,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9ECE312F-DB6A-415a-880A-E62FCE9AEB00}",
+        "recipeId": "{9ECE312F-DB6A-415a-880A-E62FCE9AEB00}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "300000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 150,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{87F5416D-BEC0-4712-A6CB-B8E3E77EBB83}",
+        "recipeId": "{87F5416D-BEC0-4712-A6CB-B8E3E77EBB83}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "300000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 150,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{01C78302-65B7-473B-9426-A1BAB8F413BB}",
+        "recipeId": "{01C78302-65B7-473B-9426-A1BAB8F413BB}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "300000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 150,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{487900B6-EBCA-4c98-9E28-194050E9706D}",
+        "recipeId": "{487900B6-EBCA-4c98-9E28-194050E9706D}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2000000",
+      "population": {
+        "kind": "ShopperPopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}",
+        "recipeId": "{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "ShopperPopulation",
+        "base": 160,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}",
+        "recipeId": "{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 2,
+      "unitPrice": "2500000",
+      "population": {
+        "kind": "RestaurantPopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{19F42929-9606-4cfb-A2F0-EFE323487DC6}",
+        "recipeId": "{19F42929-9606-4cfb-A2F0-EFE323487DC6}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "4000000",
+      "population": {
+        "kind": "RestaurantPopulation",
+        "base": 70,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3D8FA264-BE4A-4a4f-97E6-950779C89599}",
+        "recipeId": "{3D8FA264-BE4A-4a4f-97E6-950779C89599}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8B0106A0-64A4-4680-B258-232B1A5E0B0E}",
+        "recipeId": "{8B0106A0-64A4-4680-B258-232B1A5E0B0E}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{982E924F-BA22-4ace-A71C-4523719A8444}",
+        "recipeId": "{982E924F-BA22-4ace-A71C-4523719A8444}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{F193C000-DFEB-4588-B658-D11CD80C39D5}",
+        "recipeId": "{F193C000-DFEB-4588-B658-D11CD80C39D5}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "10000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{594D6A74-2678-4a35-9FE6-E2FFA90C207A}",
+        "recipeId": "{594D6A74-2678-4a35-9FE6-E2FFA90C207A}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "1900000",
+      "population": {
+        "kind": "RestaurantPopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{551BB418-4604-4fca-88AC-5F71068FE04A}",
+        "recipeId": "{551BB418-4604-4fca-88AC-5F71068FE04A}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 3,
+      "minimumHeight": 4,
+      "maximumHeight": 4,
+      "unitPrice": "240000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 250,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8BC1629A-BD98-462c-985A-CCD03F1B8C22}",
+        "recipeId": "{8BC1629A-BD98-462c-985A-CCD03F1B8C22}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 6,
+      "maximumHeight": 6,
+      "unitPrice": "272000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 250,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C7536844-7CD0-49e0-8982-2819F5792B32}",
+        "recipeId": "{C7536844-7CD0-49e0-8982-2819F5792B32}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 5,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 120,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9716E5F8-E2CB-40f9-A9C8-5B599895F32D}",
+        "recipeId": "{9716E5F8-E2CB-40f9-A9C8-5B599895F32D}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 5,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 120,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{74915C78-348C-4696-8C19-75B9098FB79C}",
+        "recipeId": "{74915C78-348C-4696-8C19-75B9098FB79C}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 5,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 120,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9E4F3766-CC02-4854-89E9-9DAE9020CDBF}",
+        "recipeId": "{9E4F3766-CC02-4854-89E9-9DAE9020CDBF}"
+      },
+      "kind": "variable",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 2,
+      "maximumHeight": 5,
+      "unitPrice": "25000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 120,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{985CAC71-11BD-44b7-917E-D6D455CE0143}",
+        "recipeId": "{985CAC71-11BD-44b7-917E-D6D455CE0143}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "290000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 500,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B6D764D-9DB3-490b-B969-CD2CC1B41893}",
+        "recipeId": "{4B6D764D-9DB3-490b-B969-CD2CC1B41893}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 10,
+      "unitPrice": "290000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 500,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{712E0D9A-1A79-4fd5-A1A5-B08B3336F047}",
+        "recipeId": "{712E0D9A-1A79-4fd5-A1A5-B08B3336F047}"
+      },
+      "kind": "variable",
+      "sizeX": 3,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 8,
+      "unitPrice": "620000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 1100,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C1BFC436-71D9-48ab-B43B-9F56D2D0777E}",
+        "recipeId": "{C1BFC436-71D9-48ab-B43B-9F56D2D0777E}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 2,
+      "maximumHeight": 8,
+      "unitPrice": "620000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 1100,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}",
+        "recipeId": "{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 3,
+      "minimumHeight": 4,
+      "maximumHeight": 4,
+      "unitPrice": "160000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 400,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}",
+        "recipeId": "{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 5,
+      "maximumHeight": 5,
+      "unitPrice": "60000000",
+      "population": {
+        "kind": "OfficePopulation",
+        "base": 180,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}",
+        "recipeId": "{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 3,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "340000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}",
+        "recipeId": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 4,
+      "maximumHeight": 4,
+      "unitPrice": "500000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}",
+        "recipeId": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 4,
+      "maximumHeight": 4,
+      "unitPrice": "500000000",
+      "population": null,
+      "computerCannotBuild": true,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{B83A15E9-9284-4569-A1BF-266DF9B1560A}",
+        "recipeId": "{B83A15E9-9284-4569-A1BF-266DF9B1560A}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "2100000",
+      "population": {
+        "kind": "RestaurantPopulation",
+        "base": 35,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8CE18936-7C28-4a91-8B40-9CCED1F48968}",
+        "recipeId": "{8CE18936-7C28-4a91-8B40-9CCED1F48968}"
+      },
+      "kind": "fixed",
+      "sizeX": 4,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "400000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 220,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{72AF542C-3251-43ad-9094-43E6FDDE9420}",
+        "recipeId": "{72AF542C-3251-43ad-9094-43E6FDDE9420}"
+      },
+      "kind": "variable",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 2,
+      "maximumHeight": 10,
+      "unitPrice": "24000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}",
+        "recipeId": "{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 3,
+      "maximumHeight": 3,
+      "unitPrice": "300000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 150,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}",
+        "recipeId": "{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}"
+      },
+      "kind": "fixed",
+      "sizeX": 2,
+      "sizeY": 2,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "100000000",
+      "population": null,
+      "computerCannotBuild": false,
+      "halfVariants": []
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{D6DE0AED-AECF-4d7f-8455-488016997FFF}",
+        "recipeId": "{D6DE0AED-AECF-4d7f-8455-488016997FFF}"
+      },
+      "kind": "fixed",
+      "sizeX": 1,
+      "sizeY": 1,
+      "minimumHeight": 1,
+      "maximumHeight": 1,
+      "unitPrice": "15000000",
+      "population": {
+        "kind": "ResidentialPopulation",
+        "base": 10,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "halfVariants": []
+    }
+  ],
+  "ground": [
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{1CEA6341-70DA-4C06-C477-D67403CBD03E}",
+        "recipeId": "{1CEA6341-70DA-4C06-C477-D67403CBD03E}"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": true
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-0"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1a"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-1b"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-2"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-3"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-4"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-5"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6a"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-6b"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-7"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8a"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8b"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8c2"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d",
+        "recipeId": "{3C004934-9F91-46C1-C477-CA3AD090FC3A}-8d"
+      },
+      "handler": "fence",
+      "price": "1",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{66B81CAD-8B41-416C-8624-137C2D8110F2}",
+        "recipeId": "{66B81CAD-8B41-416C-8624-137C2D8110F2}"
+      },
+      "handler": "vinyl",
+      "price": "200000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4F97D7DD-749E-4B65-BF13-5733B10D8570}",
+        "recipeId": "{4F97D7DD-749E-4B65-BF13-5733B10D8570}"
+      },
+      "handler": "vinyl",
+      "price": "200000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}",
+        "recipeId": "{AE43E6DB-39F0-49FE-BE18-EE3FAC248FDE}"
+      },
+      "handler": "terrain-tool",
+      "price": "0",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}",
+        "recipeId": "{25AA2C3E-2014-4134-A4FB-DAD90FDBC758}"
+      },
+      "handler": "creek",
+      "price": "400000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,0"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,0"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,0"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,0"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,1"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,1"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,1"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,1"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,2"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,2"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,2"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,2"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,3"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,3"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,3"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,3"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4",
+        "recipeId": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4"
+      },
+      "handler": "land-0d",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}",
+        "recipeId": "{A70C51A0-B495-4F78-AA50-E4A2D2F7A7DA}"
+      },
+      "handler": "random-land",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}",
+        "recipeId": "{276DF16D-2D58-40DC-8CC2-8E56DA8B6BF4}"
+      },
+      "handler": "random-land",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5E37A96E-1111-44E0-B598-7F11BBB08083}",
+        "recipeId": "{5E37A96E-1111-44E0-B598-7F11BBB08083}"
+      },
+      "handler": "random-land",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}",
+        "recipeId": "{A0D4BEC6-FB32-410E-ABF9-C0DBBA548685}"
+      },
+      "handler": "random-land",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8622BFD2-70AB-4867-8FB6-EC3340530F71}",
+        "recipeId": "{8622BFD2-70AB-4867-8FB6-EC3340530F71}"
+      },
+      "handler": "random-land",
+      "price": "300000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}-m",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-m"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g",
+        "recipeId": "{FBD0CD06-016A-4037-AB15-02040218CBAA}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{4B732903-B207-4693-9CF7-19AED4E42604}-g",
+        "recipeId": "{4B732903-B207-4693-9CF7-19AED4E42604}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g",
+        "recipeId": "{CE18E96E-336B-4C8A-80E6-F149DAEFD6E4}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g",
+        "recipeId": "{88868086-3B45-46B5-A3F1-8D0E735DBD1C}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g",
+        "recipeId": "{77961EC1-0406-42C7-A5F5-ADEC3555400E}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g",
+        "recipeId": "{DF43FB52-E197-451D-B4A3-1114BBFF69D9}-g"
+      },
+      "handler": "forest",
+      "price": "100",
+      "gridX": 1,
+      "gridY": 1,
+      "population": null,
+      "computerCannotBuild": true,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{8EBBA0C5-30E1-41DE-9968-019EB816BC34}",
+        "recipeId": "{8EBBA0C5-30E1-41DE-9968-019EB816BC34}"
+      },
+      "handler": "rice",
+      "price": "1500000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    },
+    {
+      "reference": {
+        "packId": "exav-stable-bundled",
+        "contributionId": "{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}",
+        "recipeId": "{5787D011-657E-4CFA-8EDE-E0DDDE21C3F2}"
+      },
+      "handler": "rice",
+      "price": "1500000",
+      "gridX": 1,
+      "gridY": 1,
+      "population": {
+        "kind": "AgriculturalPopulation",
+        "base": 5,
+        "factor": 1,
+        "entering": 0,
+        "children": [],
+        "tables": []
+      },
+      "computerCannotBuild": false,
+      "remover": false
+    }
+  ],
+  "roads": [
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{7254CD19-38B1-42DB-84E3-88F9A5C88E42}",
+      "recipeId": "{7254CD19-38B1-42DB-84E3-88F9A5C88E42}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}",
+      "recipeId": "{8DB8AF0F-B615-4BC1-8160-9706FDF6FB6B}"
+    },
+    {
+      "packId": "exav-stable-bundled",
+      "contributionId": "{FAF0E7F9-3BCA-49B4-9F80-D0216B2D136A}",
+      "recipeId": "{FAF0E7F9-3BCA-49B4-9F80-D0216B2D136A}"
+    }
+  ]
+}

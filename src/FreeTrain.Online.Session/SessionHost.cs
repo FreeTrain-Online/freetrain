@@ -276,7 +276,7 @@ public sealed partial class SessionHost : IDisposable
         });
         return await Task.Run(capture);
     }
-    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver, railwayResolver, mixedState?.TrainDispatcher, mixedState?.StationDispatcher);
+    public SaveCodec.LoadedWorld PrepareSave(ReadOnlyMemory<byte> save) => SaveCodec.ReadWorld(save.Span, terrainResolver, railwayResolver, mixedState?.TrainDispatcher, mixedState?.StationDispatcher,mixedState?.CityDispatcher,mixedState?.CityLandValue);
     public Task<SnapshotMessage> LoadSave(ReadOnlyMemory<byte> save, long? expectedEpoch = null, ParticipantContext? participant = null) => AtBoundary<SnapshotMessage>(() =>
     {
         if (participant != null && participant.Role != ParticipantRole.Owner) throw new UnauthorizedAccessException();
@@ -403,6 +403,13 @@ public sealed partial class SessionHost : IDisposable
             RecordDepartureBells(nextBellSequence);
             return true;
         }
+        catch (CityConsumerUnavailableException)
+        {
+            // Missing later city consumers discard the detached minute and
+            // resolve Step normally; cancellation/save/load remain available.
+            CanonicalPause(true);
+            return false;
+        }
         catch (InvalidOperationException e) when (e.Message is "unboundJunctionController" or "unboundHarborController")
         {
             // A later-phase handler is unavailable. The detached minute has
@@ -451,6 +458,7 @@ public sealed partial class SessionHost : IDisposable
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
                             case RenameStationCommand rename when rename.Name != null: code = RenameStationBuilding(rename); break;
+                            case CancelCityConstructionCommand cancel when cancel.Query != null: code = CancelCityConstruction(cancel); break;
                             case EditStationBuildingCommand edit when edit.Query != null: code = CommitStationBuilding(edit); break;
                             case EditPassageCommand edit when edit.Query != null: code = CommitPassage(edit); break;
                             case EditThinPlatformCommand edit when edit.Query != null: code = CommitThinPlatform(edit); break;

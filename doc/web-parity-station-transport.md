@@ -77,7 +77,7 @@ large repeat cookies, source-asymmetric listener order, 924-minute continuation
 through midnight, combined purchased fleet/station state, atomic removals,
 malformed content/graphs/queues, revision checks, two peers, roles/receipts/stale
 epochs and host-dispatcher retention across replacement. The independent shared
-[save](../prototype/protocol/saves/stations-v10.json) and
+[save](../prototype/protocol/saves/stations-v11.json) and
 [snapshot](../prototype/protocol/fixtures/snapshot-stations.json) include both
 platform kinds, a cosmetic passage, nonzero logs and large timer handles.
 

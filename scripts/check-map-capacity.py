@@ -31,10 +31,10 @@ if args.save.stat().st_size > 256 * 1024 * 1024:
 expected = args.save.read_bytes()
 expected_hash = hashlib.sha256(expected).hexdigest()
 saved = json.loads(expected)
-assert saved['saveVersion'] == 10
+assert saved['saveVersion'] == 11
 jar = http.cookiejar.CookieJar()
 http = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-compat = 'protocolVersion=9&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1'
+compat = 'protocolVersion=10&contentVersion=reference-spatial-content-2&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1'
 
 
 def call(path, data=None):

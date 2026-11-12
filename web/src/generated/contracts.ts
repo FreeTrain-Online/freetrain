@@ -27,7 +27,9 @@ export type GameDocument =
   | PassageQuery
   | PassagePreview
   | StationInformationQuery
-  | StationInformation;
+  | StationInformation
+  | CityQuery
+  | CityPreview;
 export type WireMessage =
   | Join
   | Command
@@ -285,11 +287,12 @@ export type CommandPayload =
       kind: "editPassage";
       query: PassageQuery;
       expectedCost: Money;
-    };
+    }
+  | CancelCityConstruction;
 
 export interface Join {
   type: "join";
-  protocolVersion: 9;
+  protocolVersion: 10;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -503,6 +506,7 @@ export interface Mixed {
   fleet?: Fleet;
   queue?: MixedQueue;
   stationGraph?: StationGraph;
+  city?: City;
 }
 export interface RailwayVoxel {
   position: Position;
@@ -772,7 +776,7 @@ export interface MixedAction {
   order: Counter;
   dueMinute: Counter;
   handlerId: string;
-  interval: "0" | "60" | "1440";
+  interval: Counter;
 }
 export interface StationGraph {
   nextStationName: number;
@@ -883,7 +887,7 @@ export interface StationProvider {
   landValue: number;
   zSize: number;
   special: boolean;
-  input: "controlled";
+  input: "controlled" | "city-fixed" | "city-variable" | "city-half" | "city-ground";
   xySize: number;
 }
 export interface Population {
@@ -1030,6 +1034,167 @@ export interface StationListenerMembership {
    * @maxItems 8192
    */
   providers: EntityId[];
+}
+export interface City {
+  format: 1;
+  /**
+   * @maxItems 8192
+   */
+  properties: CityProperty[];
+  /**
+   * @maxItems 8192
+   */
+  structures: CityStructure[];
+  /**
+   * @maxItems 8192
+   */
+  ground: CityGround[];
+  /**
+   * @maxItems 8192
+   */
+  producers: CityProducer[];
+  /**
+   * @maxItems 32768
+   */
+  fences: CityFence[];
+  heat: CityHeat;
+  settings: CitySettings;
+  /**
+   * @maxItems 8192
+   */
+  plans: CitySearchPlan[];
+  /**
+   * @maxItems 8192
+   */
+  landCache: CityLandCache[];
+  /**
+   * @maxItems 8192
+   */
+  fenceHosts: CityFenceHost[];
+  heatCallback: MixedAction | null;
+  developmentCallback: MixedAction | null;
+}
+export interface CityProperty {
+  id: EntityId;
+  revision: Counter;
+  location: Position;
+}
+export interface CityStructure {
+  id: EntityId;
+  revision: Counter;
+  definition: Definition;
+  location: Position;
+  height: number;
+  owned: boolean;
+  subsidiary: CitySubsidiary | null;
+  /**
+   * @maxItems 2
+   */
+  halves: [] | [CityHalf] | [CityHalf, CityHalf];
+  /**
+   * @maxItems 8192
+   */
+  construction: CityConstructionVoxel[];
+  caller: "legacyplayer" | "catalogplayer" | "automated";
+}
+export interface CitySubsidiary {
+  marketPrice: Counter;
+  totalLandValue: Counter;
+  callback: MixedAction | null;
+}
+export interface CityHalf {
+  definition: Definition;
+  side: "back" | "fore";
+  direction: 0 | 2 | 4 | 6;
+  color: number;
+}
+export interface CityConstructionVoxel {
+  offset: Position;
+  cell: ConstructionCell;
+  callback: MixedAction | null;
+}
+export interface CityGround {
+  id: EntityId;
+  revision: Counter;
+  definition: Definition;
+  location: Position;
+  owned: boolean;
+  variant: number;
+}
+export interface CityProducer {
+  ownerId: EntityId;
+  initialDefinition: Definition;
+  initialHeight: number;
+}
+export interface CityFence {
+  hostOwnerId: EntityId;
+  location: Position;
+  side: number;
+  definition: Definition;
+}
+export interface CityHeat {
+  horizontalSize: number;
+  verticalSize: number;
+  /**
+   * @maxItems 1708196
+   */
+  q: number[];
+  /**
+   * @maxItems 1708196
+   */
+  back: number[];
+  /**
+   * @maxItems 1708196
+   */
+  rho: number[];
+}
+export interface CitySettings {
+  strengthDiffusion: number;
+  populationPower: number;
+  populationBase: number;
+  populationScale: number;
+  landPriceScale: number;
+  replacementFactor: number;
+  maximumPricePower: number;
+  alpha: number;
+  diffusion: number;
+  updateFrequencyHours: number;
+  landValuePower: number;
+  bareConductivity: number;
+}
+export interface CitySearchPlan {
+  stationId: EntityId;
+  phase: "start" | "selectstruct1" | "selectstruct2" | "fitplace" | "build" | "end";
+  strength: number;
+  budget: number;
+  /**
+   * @minItems 4
+   * @maxItems 4
+   */
+  work: [number, number, number, number];
+  scanning: Position | null;
+  selected: CitySelectedPlan | null;
+}
+export interface CitySelectedPlan {
+  definition: Definition;
+  site: Position;
+  sizeX: number;
+  sizeY: number;
+  height: number;
+  value: Counter;
+  finalPrice: Counter;
+}
+export interface CityLandCache {
+  corner: Position;
+  sizeX: number;
+  sizeY: number;
+  landValue: Counter;
+  entityValue: Counter;
+}
+export interface CityFenceHost {
+  id: EntityId;
+  revision: Counter;
+  location: Position;
 }
 export interface TrainMotion {
   sequence: string;
@@ -1236,6 +1401,18 @@ export interface PassageQuery {
   material: "concrete" | "brown" | "green";
   part?: "passage" | "stairs";
 }
+export interface CancelCityConstruction {
+  kind: "cancelCityConstruction";
+  query: CityQuery;
+}
+export interface CityQuery {
+  expectedWorldEpoch: Counter;
+  expectedRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: string;
+  ownerId: EntityId;
+  expectedOwnerRevision: Counter;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1350,7 +1527,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 9;
+  protocolVersion: 10;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -1714,4 +1891,11 @@ export interface StationInformation {
   waitMinutes: number;
   observedRevision: Counter;
   observedMinute: Counter;
+}
+export interface CityPreview {
+  query: CityQuery;
+  canCancel: boolean;
+  reason: string | null;
+  cost: Counter;
+  structure: CityStructure;
 }

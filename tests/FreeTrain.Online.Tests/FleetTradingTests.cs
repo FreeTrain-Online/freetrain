@@ -255,7 +255,7 @@ public class FleetTradingTests
     [Fact]
     public void Real_sale_of_literal_reversed_inside_outside_fleet_matches_independently_authored_delta()
     {
-        var before=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json")));
+        var before=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v11.json")));
         var quote=FleetTrading.QuoteSale(before,17);Assert.Equal(50_000_000,quote.Price);
         var after=FleetTrading.Commit(before,quote);
         var actual=StateDifference.Between(MixedWire.Snapshot(before,1),MixedWire.Snapshot(after,1));

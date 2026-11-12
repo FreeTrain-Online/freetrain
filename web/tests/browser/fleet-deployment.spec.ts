@@ -9,7 +9,7 @@ const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 
 for(const locale of ['en','ja'] as const)test(`${locale} reversal recovery preserves identities timer and accounts through peer restart`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const initial=await state(page),isolated=JSON.parse(readFileSync('tests/helpers/moving-fleet-v10.json','utf8'));
+ const initial=await state(page),isolated=JSON.parse(readFileSync('tests/helpers/moving-fleet-v11.json','utf8'));
  // Retain the occupied cells of a purchased/deployed ring as an isolated
  // straight consist for TRAIN-D001's both-null retry.
  isolated.mixed.voxels=isolated.mixed.voxels.filter((v:any)=>v.traffic?.car);
@@ -168,7 +168,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} playable purchase deplo
 });
 
 test('Japanese narrow deployment keeps drafts and focus, discards late previews and disables observer mutations',async({page,browser,baseURL})=>{
- const initial=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync('../prototype/protocol/saves/fleet-v10.json')})).ok()).toBe(true);
+ const initial=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync('../prototype/protocol/saves/fleet-v11.json')})).ok()).toBe(true);
  await page.setViewportSize({width:390,height:844});await page.goto('/');await ready(page);await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await openPanel(page,'fleet','ja');
  await page.getByRole('button',{name:/^保有車両/}).click();await page.locator('.catalog-item-main').last().click();await page.locator('.primary-panel .sheet-toggle').click();
  await page.locator('html').evaluate(el=>el.style.fontSize='200%');

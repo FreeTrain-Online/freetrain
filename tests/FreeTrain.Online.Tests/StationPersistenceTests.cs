@@ -57,7 +57,7 @@ public class StationPersistenceTests
     public void Exact_detached_roundtrip_preserves_recipes_logs_asymmetric_listeners_names_and_repeated_FIFO()
     {
         var s=Scene();var bytes=SaveCodec.Write(s);var restored=Decode(bytes);var g=restored.World.Stations!;
-        Assert.Equal(10,SaveCodec.Version);Assert.Equal(9,ProtocolIdentity.Version);
+        Assert.Equal(11,SaveCodec.Version);Assert.Equal(10,ProtocolIdentity.Version);
         Assert.Equal(bytes,SaveCodec.Write(restored));Assert.NotSame(s.World.Stations,g);
         Assert.Equal(new long[]{11,10},g.Building(1).Children);
         Assert.Equal(new long[]{5,2,3,4},g.Listeners[0].Stations);
@@ -86,7 +86,7 @@ public class StationPersistenceTests
     [Fact]
     public void Independent_literal_fixture_matches_the_server_snapshot_and_reopens_exactly()
     {
-        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/stations-v10.json"));
+        var bytes=File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/stations-v11.json"));
         var loaded=Decode(bytes);var expected=File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"Fixtures/snapshot-stations.json"));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(expected),JsonNode.Parse(Json<WireMessage>(MixedWire.Snapshot(loaded,1)))));
         Assert.Equal(SaveCodec.Write(loaded),SaveCodec.Write(Decode(SaveCodec.Write(loaded))));

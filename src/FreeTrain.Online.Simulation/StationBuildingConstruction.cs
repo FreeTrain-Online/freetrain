@@ -93,7 +93,7 @@ public static class StationBuildingConstruction
                 if (!listener.Stations.SequenceEqual(graph.Listeners.Single(l=>l.ProviderId == listener.ProviderId).Stations))
                     entities[listener.ProviderId] = entities[listener.ProviderId] with {Revision=checked(entities[listener.ProviderId].Revision+1)};
             var candidate = world.Replace(world.Revision,terrain,new(next,entities.Values.OrderBy(e=>e.Id).ToImmutableArray()),
-                world.Voxels,world.Slopes,stations:changed);
+                world.Voxels,world.Slopes,stations:changed,city:world.City?.WithSpatialRevisions(entities.Values));
             return new(world,candidate,removal,building,type.Bounds(building.Location).Locations(),reclaimed.Values,booking);
         }
         catch (OverflowException) { return Reject("constructionOverflow"); }

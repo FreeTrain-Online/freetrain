@@ -10,6 +10,10 @@ namespace FreeTrain.Online.Simulation;
 public delegate MixedConstructionState CityScheduledCallback(MixedConstructionState state,
     Clock clock, RandomStreams random, string handler);
 
+// Missing later-phase consumers are recoverable authority failures. The host
+// pauses/rejects the minute while keeping cancellation and load available.
+public sealed class CityConsumerUnavailableException(string consumer) : InvalidOperationException("Missing city consumer: "+consumer);
+
 public static class CityConstruction
 {
     public static ConstructionBooking StartBooking(CityStructureDefinition definition,int height,CityConstructionCaller caller)
@@ -116,7 +120,7 @@ public static class CityConstruction
         clock.Advance();
         return new(working,clock.Capture(),random.Capture());
     }
-    private static MixedConstructionState Tick(MixedConstructionState before,CityStructure site,string handler,
+    internal static MixedConstructionState Tick(MixedConstructionState before,CityStructure site,string handler,
         Clock clock,RandomStreams random,Func<MixedWorld,CityStructure,long> totalLandValue)
     {
         var graph=before.World.City!;

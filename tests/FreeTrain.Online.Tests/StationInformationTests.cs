@@ -88,7 +88,7 @@ public partial class StationYardStopTests
         while(s.Clock.Time.AbsoluteMinute<1439)s.AdvanceOneMinute();
         var before=SaveCodec.Write(s);
         if(Environment.GetEnvironmentVariable("FREETRAIN_STATION_INFORMATION_OUTPUT") is {} path)File.WriteAllBytes(path,before);
-        Assert.Equal(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"PassengerService","station-information-midnight-v10.json")),before);
+        Assert.Equal(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"PassengerService","station-information-midnight-v11.json")),before);
         var reopened=Open(s);s.AdvanceOneMinute();reopened.AdvanceOneMinute();
         Assert.Equal(SaveCodec.Write(s),SaveCodec.Write(reopened));
         Assert.Equal(0,Station(s).Exports.Today);Assert.True(Station(s).Exports.Yesterday>0);

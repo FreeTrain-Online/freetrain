@@ -33,7 +33,7 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
   let last=0;function frame(now:number){if(w.cap.record&&last){w.cap.frames.push(now-last);}last=now;requestAnimationFrame(frame);}requestAnimationFrame(frame);
  });
  await page.goto('/');await ready(page);
- const metadata=async()=>(await(await page.request.get('/api/bootstrap?protocolVersion=9&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true')).json());
+ const metadata=async()=>(await(await page.request.get('/api/bootstrap?protocolVersion=10&contentVersion=terrain-content-1&contentVersion=reference-spatial-content-2&contentVersion=mixed-railway-content-1&metadataOnly=true')).json());
  const saved=async()=>(await page.request.get('/api/saves/download',{timeout:60000})).body();
  const began=Date.now();expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+(await metadata()).worldEpoch,{data:bytes,timeout:60000})).ok()).toBe(true);
  const uploadMs=Date.now()-began;
@@ -41,7 +41,7 @@ for(const mode of modes)test(`${phase} ${mode} legal resources, feedback, sustai
  if(station){
   const initial=JSON.parse(bytes.toString()),b=initial.mixed.stationGraph.buildings[0],epoch=(await metadata()).worldEpoch;
   for(let n=0;n<30;n++){
-   const began=Date.now(),response=await page.request.post('/api/station/building/preview?protocolVersion=9&contentVersion=mixed-railway-content-1',{data:{
+   const began=Date.now(),response=await page.request.post('/api/station/building/preview?protocolVersion=10&contentVersion=mixed-railway-content-1',{data:{
     expectedWorldEpoch:epoch,expectedGeometryRevision:initial.mixed.geometryRevision,expectedMinute:initial.clock.absoluteMinute,
     expectedContentVersion:'mixed-railway-content-1',action:'remove',position:b.location,definition:null,stationId:b.id,expectedStationRevision:b.revision}});
    expect(response.ok()).toBe(true);expect((await response.json()).legal).toBe(true);stationPreviewMs.push(Date.now()-began);

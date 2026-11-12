@@ -7,7 +7,7 @@ const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const save=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 async function scene(p:Page,locale='en'){
  await p.goto('/');await ready(p,locale);const s=await state(p);
- const r=await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:readFileSync('tests/fixtures/station-controller-v10.json')});
+ const r=await p.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:readFileSync('tests/fixtures/station-controller-v11.json')});
  expect(r.ok(),await r.text()).toBe(true);await ready(p,locale);
 }
 

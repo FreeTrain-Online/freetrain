@@ -1,4 +1,4 @@
-`fleet-information-v10.json` and `fleet-follow-outside-v10.json` retain the
+`fleet-information-v11.json` and `fleet-follow-outside-v11.json` retain the
 controlled P5-25 browser witnesses previously kept only in ignored
 `tmp/p5-25-color-fleet.json` and `tmp/p5-25-outside-fleet.json`. P6-07 makes the
 fixtures repeatable with the current Save10 envelope; train, rail, account,
@@ -27,7 +27,7 @@ FREETRAIN_SERVICE_OUTPUT="$PWD/web/tests/fixtures/passenger-service" dotnet test
 or environment flag is required. `FREETRAIN_SERVICE_OUTPUT` can select a separate
 fresh generation with the same `-east.json` / `-west.json` and metadata suffixes.
 
-`station-controller-v10.json` is the P6-22 baseline generated and byte-checked by
+`station-controller-v11.json` is the P6-22 baseline generated and byte-checked by
 `StationYardStopTests.Multiple_real_platforms_share_host_location_and_rebuilt_station_reuses_retained_TAT_setting`.
 It constructs two station locations, three slim platforms, purchases/deploys a
 three-car train and removes/rebuilds/reconnects the source host through domain

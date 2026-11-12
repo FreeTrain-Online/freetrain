@@ -198,7 +198,7 @@ public class FleetDeploymentTests
     [Fact]
     public void Outside_withdrawal_cancels_callback_without_occupancy_sale_or_inventory_deletion()
     {
-        var s=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json")));
+        var s=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v11.json")));
         var before=s.Fleet!.Train(17);var after=FleetDeployment.Commit(s,FleetDeployment.PreviewWithdrawal(s,17));
         Assert.All(after.Fleet!.Train(17).Cars,c=>Assert.IsType<FleetCarState.Unplaced>(c.State));
         Assert.Empty(after.Clock.Capture().Pending);Assert.Null(after.World.Voxels[0].Traffic!.Car);
@@ -243,7 +243,7 @@ public class FleetDeploymentTests
     [Fact]
     public void Real_deployment_and_withdrawal_match_independent_complete_deltas_with_unchanged_tunnel_backup_and_neighbors()
     {
-        var s=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v10.json")));
+        var s=Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,"Saves/fleet-v11.json")));
         foreach(var action in new[]{"placement","withdrawal"})
         {
             var after=action=="placement"?Place(s,20,new(3,2,2)):

@@ -158,3 +158,13 @@ python3 scripts/review-city.py --check
 python3 scripts/check-project-boundaries.py
 git diff --check
 ```
+
+## P7-05 continuation handoff — 12 November 2026
+
+[The live city boundary](web-parity-city-transport.md) now supplies Save11/protocol10
+codecs, typed producer provenance, strict current-format restoration, bounded
+snapshot/delta/chunk publication and authoritative read-only previews/FIFO site
+cancellation. The earlier detached-only guards described above are superseded.
+Live construction reuses the same lifecycle; actual land value and later city
+timers require explicit trusted consumers and reject atomically when unavailable.
+Family placement/producer attachment and heat execution retain P7-06/07/13 owners.

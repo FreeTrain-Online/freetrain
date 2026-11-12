@@ -22,7 +22,6 @@ public static class MixedWire
     public static MixedRead Read(MixedConstructionState state)
     {
         var w = state.World; var a = state.Accounts;
-        if (w.City != null) throw new ArgumentException("Detached city state requires the P7-05 codec.");
         if (w.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
         if (w.Voxels.Length > ProtocolIdentity.MaximumRailwayVoxels || a.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
             throw new InvalidDataException("saveTooLarge");
@@ -37,13 +36,14 @@ public static class MixedWire
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
             new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
                 t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToArray()),
-            w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null, FleetWire.Read(w.Fleet), StationGraph: StationWire.Read(w.Stations));
+            w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null, FleetWire.Read(w.Fleet), StationGraph: StationWire.Read(w.Stations), City: CityWire.Read(w.City));
     }
     public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
         .Where(v => v.Construction is {State: < 4}).ToDictionary(v => StationaryConstruction.Handler(new(
             new(v.Position.X,v.Position.Y,v.Position.Z),v.OwnerId,RailwayVoxelKind.Stationary)), _ => (Action)(() => {}))
         .Concat((data.Fleet?.Trains ?? []).Where(t => t.State != "unplaced")
             .Select(t => new KeyValuePair<string, Action>(MixedSessionState.TrainHandler(t.Id), () => {})))
+        .Concat(CityWire.Timers(data.City).Select(t => new KeyValuePair<string, Action>(t.HandlerId, () => {})))
         .Concat(StationWire.Timers(data.StationGraph).Select(t => new KeyValuePair<string, Action>(t.HandlerId, () => {})))
         .ToDictionary();
     public static IReadOnlyDictionary<Location, QuarterCorners> TunnelBackups(MixedRead data, RailwayProfile profile) =>
@@ -71,7 +71,7 @@ public static class MixedWire
         var world = new MixedWorld(profile,terrain,spatial with { Entities = terrain.Spatial.Entities.AddRange(spatial.Entities) },voxels,
             data.Slopes.Select(s => new SlopeOwnership(s.EntityId,new(s.Climb))),data.GeometryRevision,
             data.SpeedLimits is {} limits ? new SpeedLimits(Locations(limits.Low),Locations(limits.Medium),Locations(limits.Fast)) : null,
-            FleetWire.Restore(data.Fleet, profile.FleetProfile), StationWire.Restore(data.StationGraph, profile.Stations));
+            FleetWire.Restore(data.Fleet, profile.FleetProfile), StationWire.Restore(data.StationGraph, profile.Stations), CityWire.Restore(data.City,profile.City));
         var accounts = ConstructionAccounts.Restore(new(data.Accounts.InitialCash,new(data.Accounts.BankruptcyIncrement),
             data.Accounts.Transactions.Select(t => new AccountTransaction(t.Sequence,t.WorldRevision,t.AbsoluteMinute,t.Operation,
                 Enum.GetValues<AccountGenre>().Single(g => g.SourceId() == t.Genre),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToImmutableArray()));
@@ -81,11 +81,10 @@ public static class MixedWire
     {
         var data = Published(state).Mixed;
         var clock = state.Clock.Capture();
-        return data with { Queue = state.Fleet == null && state.World.Stations == null ? null : FleetWire.Queue(clock) };
+        return data with { Queue = state.Fleet == null && state.World.Stations == null && state.World.City == null ? null : FleetWire.Queue(clock) };
     }
     public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
     {
-        if (world.City != null) throw new ArgumentException("Detached city state requires the P7-05 codec.");
         var terrainIds = world.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
         return world.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).Select(TerrainWire.Entity).ToArray();
     }

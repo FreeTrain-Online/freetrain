@@ -126,3 +126,27 @@ const stationProfile={definitions:catalog.contributions.filter(c=>c.type==='stat
 }),bells:catalog.contributions.filter(c=>c.type==='trainDepartureBell').map(c=>definition(c.id))};
 const stationOutput=new URL('../src/generated/station-profile.json',import.meta.url),stationJson=JSON.stringify(stationProfile,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(stationOutput,'utf8')!==stationJson)throw new Error('Generated station profile is stale.');}else await writeFile(stationOutput,stationJson);
+
+// P7 city admission consumes the same pinned declarations as CityProfiles.
+const cityContributions=catalog.contributions.filter(c=>['commercial','varHeightBuilding','HalfVoxelStructure','land','road'].includes(c.type));
+const popNode=n=>{
+ const kind=child(n,'class').attributes.name.replace('freetrain.contributions.population.','');
+ return {kind,base:kind==='CombinationPopulation'?0:Number(child(n,'base').text),factor:1,entering:0,
+  children:kind==='CombinationPopulation'?n.children.filter(c=>c.tag==='population').map(popNode):[],tables:[]};
+};
+const city={requiredPacks:terrain.requiredPacks,propertyDefinition:definition('system:land-property'),fenceHostDefinition:definition('system:fence-dummy','geometry:fence-dummy-1'),
+ structures:cityContributions.filter(c=>['commercial','varHeightBuilding','HalfVoxelStructure'].includes(c.type)).map(c=>{
+  const e=c.declaration,r=catalog.renderRecipes.find(r=>r.id===c.id),f=r.fields;
+  const kind=({commercial:'fixed',varHeightBuilding:'variable',HalfVoxelStructure:'half'})[c.type];
+  const integer=(tag,fallback)=>Number(child(e,tag)?.text??fallback),size=(child(e,'size')?.text??'1,1').split(',').map(Number);
+  return {reference:definition(c.id),kind,sizeX:size[0],sizeY:size[1],minimumHeight:integer(kind==='variable'?'minHeight':'height',1),
+   maximumHeight:integer(kind==='variable'?'maxHeight':'height',1),unitPrice:String(child(e,'price')?.text??'0'),
+   population:child(e,'population')?popNode(child(e,'population')):null,computerCannotBuild:!!child(e,'computerCannotBuild'),
+   halfVariants:kind==='half'?r.frames.map(f=>f.selector):[]};
+ }),ground:cityContributions.filter(c=>c.type==='land').map(c=>{
+  const e=c.declaration,r=catalog.renderRecipes.find(r=>r.id===c.id),grid=(child(e,'grid')?.text??'1,1').split(',').map(Number);
+  return {reference:definition(c.id),handler:r.handler,price:String(child(e,'price')?.text??'0'),gridX:grid[0],gridY:grid[1],
+   population:child(e,'population')?popNode(child(e,'population')):null,computerCannotBuild:!!child(e,'computerCannotBuild'),remover:c.implementation.name.endsWith('FenceRemover')};
+ }),roads:cityContributions.filter(c=>c.type==='road').map(c=>definition(c.id))};
+const cityOutput=new URL('../src/generated/city-profile.json',import.meta.url),cityJson=JSON.stringify(city,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(cityOutput,'utf8')!==cityJson)throw new Error('Generated city profile is stale.');}else await writeFile(cityOutput,cityJson);
