@@ -53,6 +53,9 @@ test('every preset has readable text/states in English and narrow Japanese witho
   await page.addInitScript(() => {const original=HTMLImageElement.prototype.decode; (window as any).decodes=0; HTMLImageElement.prototype.decode=function(){(window as any).decodes++;return original.call(this);};});
   await page.goto('/'); await ready(page); const canvas=page.locator('canvas'); await canvas.evaluate(el=>el.setAttribute('data-instance','preserved'));
   await page.getByRole('button',{name:'Build track',exact:true}).click(); await openPanel(page,'settings');
+  // Finish initial/demo asset requests before measuring theme-only work.
+  await page.waitForLoadState('networkidle');
+  await expect(canvas).toHaveAttribute('data-assets','ready');
   const before=await bootstrap(page),camera=await canvas.getAttribute('data-camera'),zoom=await canvas.getAttribute('data-zoom'),decodes=await page.evaluate(()=>(window as any).decodes);
   const observations:unknown[]=[];
   for(const locale of ['en','ja']) {

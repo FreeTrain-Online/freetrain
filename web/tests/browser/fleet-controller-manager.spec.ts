@@ -124,6 +124,7 @@ test('signal inspector edits a selected shared controller at its location withou
  const p=voxel.position,center=Math.trunc((read.map.height-1)/2),q={x:16*(p.x-center+p.y)-frame.anchor[0]+column+.5,y:8*(-p.x+center+p.y)-16*p.z-frame.anchor[1]+row+.5};
  await closePanel(page);const canvas=page.locator('canvas.world-canvas');
  await canvas.dispatchEvent('wheel',await canvas.evaluate((el,q)=>{const [x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return{deltaX:(q.x-x)*z,deltaY:(q.y-y)*z,deltaMode:0};},q));
+ await expect(canvas).toHaveAttribute('data-camera',`${q.x.toFixed(1)},${q.y.toFixed(1)}`);
  await expect(canvas).toHaveAttribute('data-presentation','ready');
  const click=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return{x:r.x+r.width/2+(q.x-x)*z,y:r.y+r.height/2+(q.y-y)*z};},q);await page.mouse.click(click.x,click.y);
  const inspector=page.locator('.primary-panel');await expect(inspector).toContainText(en.signalSharedController);

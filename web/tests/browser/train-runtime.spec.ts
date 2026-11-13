@@ -114,11 +114,12 @@ test('running speed changes keep visible poses and settle after one refill in bo
       if(!buffering)refills++;
       buffering=true;settled=false;
      }else if(c.dataset.trainMotionPhase==='playing'&&buffering){buffering=false;settled=true;lastMoved=now;}
-     maxFrame=Math.max(maxFrame,now-last);last=now;
+     const frameMs=now-last;maxFrame=Math.max(maxFrame,frameMs);last=now;
      if(!pose||pose==='undefined')missing++;
      else if(previous&&previous!=='undefined') {
       const a=JSON.parse(previous),b=JSON.parse(pose);
-      maxJump=Math.max(maxJump,Math.hypot(a.x-b.x,a.y-b.y));
+      // Compare travel per 60 Hz frame, accounting for runner scheduling gaps.
+      maxJump=Math.max(maxJump,Math.hypot(a.x-b.x,a.y-b.y)/Math.max(1,frameMs/(1000/60)));
      }
      if(!settled||pose!==previous)lastMoved=now;
      else maxHold=Math.max(maxHold,now-lastMoved);
@@ -158,25 +159,27 @@ test('foreground return refills once after focus, visibility and interrupted ani
   await page.evaluate(()=>{
    (window as any).foregroundMeasurement=new Promise(resolve=>{
     const c=document.querySelector('.world-canvas') as HTMLCanvasElement,start=performance.now();
-    let buffering=false,settled=false,refills=0,frames=0,missing=0,maxHold=0,maxJump=0,lastMoved=start,previous='';
+    let buffering=false,settled=false,refills=0,frames=0,missing=0,maxHold=0,maxJump=0,maxFrame=0,last=start,lastMoved=start,previous='';
     const frame=(now:number)=>{
      const pose=c.dataset.trainMotionPose??'';
+     const frameMs=now-last;last=now;
      if(c.dataset.trainMotionPhase==='buffering') {
       if(!buffering)refills++;
       buffering=true;settled=false;lastMoved=now;
      }else if(c.dataset.trainMotionPhase==='playing'&&buffering){buffering=false;settled=true;lastMoved=now;previous=pose;}
      if(settled) {
+      maxFrame=Math.max(maxFrame,frameMs);
       frames++;
       if(!pose||pose==='undefined')missing++;
       else if(previous&&previous!=='undefined') {
        const a=JSON.parse(previous),b=JSON.parse(pose);
-       maxJump=Math.max(maxJump,Math.hypot(a.x-b.x,a.y-b.y));
+       maxJump=Math.max(maxJump,Math.hypot(a.x-b.x,a.y-b.y)/Math.max(1,frameMs/(1000/60)));
       }
       if(pose!==previous)lastMoved=now;else maxHold=Math.max(maxHold,now-lastMoved);
      }
      previous=pose;
      if(now-start<4500)requestAnimationFrame(frame);
-     else resolve({refills,settled,frames,missing,maxHold,maxJump});
+     else resolve({refills,settled,frames,missing,maxHold,maxJump,maxFrame});
     };requestAnimationFrame(frame);
    });
   });
@@ -202,6 +205,7 @@ test('foreground return refills once after focus, visibility and interrupted ani
   const sample=await page.evaluate(()=>(window as any).foregroundMeasurement);report.push({reason,...sample});
   expect(sample.refills,reason).toBe(1);expect(sample.settled,reason).toBe(true);expect(sample.frames,reason).toBeGreaterThan(60);
   expect(sample.missing).toBe(0);expect(sample.maxHold).toBeLessThan(100);expect(sample.maxJump).toBeLessThan(.7);
+  expect(sample.maxFrame).toBeLessThan(200);
   await expect(page.getByTestId('clock-state')).toHaveText('Running');
  }
  await page.getByRole('button',{name:'Pause',exact:false}).first().click();

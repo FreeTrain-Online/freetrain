@@ -56,6 +56,9 @@ test('real station art cut picks names and EN/JA presentation preserve canvas ca
     const canvas=page.locator('canvas');await canvas.evaluate(el=>el.dataset.instance='station-preserved');const camera=await canvas.getAttribute('data-camera');
     await edit('place');await expect(canvas).toHaveAttribute('data-presentation','ready');
     const built=await state(page),b=built.mixed.stationGraph.buildings[0];await expect.poll(async()=>(await state(peer)).mixed.stationGraph).toEqual(built.mixed.stationGraph);
+    // The HTTP snapshot can arrive before the socket delta and its new raster.
+    await expect(canvas).toHaveAttribute('data-render-revision',built.revision);
+    await expect(canvas).toHaveAttribute('data-presentation','ready');
     const bytes=await(await page.request.get('/api/saves/download')).body();
     const f=catalog.renderRecipes.find((r:any)=>r.id===type.reference.recipeId).frames.find((f:any)=>f.cell[1]===1&&f.cell[2]===1),mask=catalog.masks[f.masks['spring/day']];
     const row=mask.findIndex((s:string)=>s.includes('1')),col=mask[row].indexOf('1'),x=b.location.x-19,y=b.location.y+1;

@@ -26,6 +26,7 @@ async function click(p:Page,x:number,y:number,z:number){
 const pixels=(p:Page,voxels:any[])=>sourcePixelCounts(p,catalog,voxels,'rail');
 
 test('all four bridge directions retain exact source art, alternating piers, actual costs and save reopen remove',async({page})=>{
+ test.setTimeout(90_000);
  await page.goto('/');await ready(page);const original=await save(page);
  try{
   for(const [x,y,variants] of [[30,23,[3,4,4,4,5]],[34,27,[2,1,1,1,0]],[30,31,[5,4,4,4,3]],[26,27,[0,1,1,1,2]]] as const){

@@ -32,7 +32,8 @@ const canonical = [
 
 export default defineConfig({
   testDir: './tests/browser',
-  use: { viewport: { width: 1280, height: 900 } },
+  globalSetup: './tests/browser/global-setup.ts',
+  use: { viewport: { width: 1280, height: 900 }, trace: 'retain-on-failure' },
   // Each worker owns its backend, preview server and save directory (fixtures.ts).
   // Tests within a file remain sequential; each case starts a fresh backend.
   workers: 2,
@@ -41,6 +42,6 @@ export default defineConfig({
     { name: 'canonical', testMatch: canonical },
     { name: 'startup', testMatch: 'startup-world.spec.ts' },
     { name: 'prototype-regression', testIgnore: [...canonical, 'startup-world.spec.ts',
-      'mixed-continuation.spec.ts', 'optional-content.spec.ts', 'capacity.spec.ts', 'railway-capacity.spec.ts', 'fleet-capacity.spec.ts'] },
+      'mixed-continuation.spec.ts', 'optional-content.spec.ts', 'capacity.spec.ts', 'railway-capacity.spec.ts', 'fleet-capacity.spec.ts', 'station-capacity.spec.ts'] },
   ],
 });

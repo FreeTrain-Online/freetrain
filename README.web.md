@@ -362,6 +362,13 @@ concurrency to four). Browser validation has the following commands:
 Tests are organized by behavior; the [browser test guide](web/tests/browser/README.md)
 maps functional suites and shows how to run an individual category.
 
+The default and extended configurations generate the controller, timetable,
+turning, rule-file and signal saves through their C# scenarios before starting
+browser workers. This requires the .NET SDK and restores locked test dependencies;
+previous files in `tmp/` are regenerated. Capacity benchmarks require separately
+prepared inputs and run through their dedicated `playwright.*capacity.config.ts`
+configurations, including `playwright.station-capacity.config.ts`.
+
 | Task (from `web/`) | Scope |
 | --- | --- |
 | `deno task test:browser` | Build/check and default browser regressions, with representative content and language/direction lifecycles |

@@ -47,19 +47,17 @@ test('fractional train damage replay and alpha picks match full source-order com
  }
 });
 
-test('tunnel trains cross both portals smoothly with hidden interiors and matching alpha picks',async({page},testInfo)=>{
+for(const night of [false,true])test(`tunnel trains cross both portals smoothly with hidden interiors and matching alpha picks (${night?'night':'day'})`,async({page},testInfo)=>{
  test.setTimeout(120_000);
  const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
- for(const night of [false,true]) {
   const report=await page.evaluate(async({catalog,night})=>{const {trainTunnelPixels}=await import('/__tests/train-rendering.js');return trainTunnelPixels(catalog,{season:'spring',night});},{catalog,night});
   expect(report.frames).toBe(504);expect(report.picks).toBe(970200);
   expect(report.visible).toBeGreaterThan(0);expect(report.hidden).toBeGreaterThan(0);
   const png=Buffer.from(report.png.split(',')[1],'base64');writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/train-tunnel-smooth-${night?'night':'day'}.png`,png);
   await testInfo.attach(`train-tunnel-smooth-${night?'night':'day'}.png`,{body:png,contentType:'image/png'});
- }
 });
 
 test('tunnel damage replay has bounded paint work per frame @performance',async({page},testInfo)=>{
