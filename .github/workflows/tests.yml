@@ -1,0 +1,69 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  csharp:
+    name: C# tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Restore locked dependencies
+        run: dotnet restore FreeTrain.Online.slnx --locked-mode
+      - name: Build
+        run: dotnet build FreeTrain.Online.slnx -c Release --no-restore
+      - name: Run C# tests
+        run: dotnet test FreeTrain.Online.slnx -c Release --no-build --no-restore
+
+  web:
+    name: Deno web tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DENO_JOBS: 4
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .deno-version
+      - name: Install locked dependencies
+        run: deno install --config web/deno.json --frozen
+      - name: Run web tests
+        run: deno task --cwd web test
+
+  playwright:
+    name: Playwright browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .deno-version
+      - name: Restore server dependencies
+        run: dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode
+      - name: Build test server
+        run: dotnet build src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore
+      - name: Install locked frontend dependencies
+        run: deno install --config web/deno.json --frozen
+      - name: Install Chromium and system dependencies
+        run: deno task --cwd web install:browser --with-deps
+      - name: Run Playwright tests
+        run: deno task --cwd web test:browser
