@@ -227,6 +227,12 @@ public sealed class MixedWorld
         var members=voxels.ToImmutableArray();
         var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
         var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations,city ?? City);
+        if (City != null)
+        {
+            var notified=CityHeat.NotifyChanges(this,candidate);
+            if (!ReferenceEquals(notified,candidate.City)) candidate=new(Profile,terrain,spatial,members,candidate.Slopes,candidate.Revision,
+                limits,candidate.Fleet,candidate.Stations,notified);
+        }
         if (City != null) candidate.City!.ValidateSuccessor(City,Spatial.NextEntityId);
         else if (candidate.City != null && candidate.City.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))
             throw new ArgumentException("Reused initial city identity.");

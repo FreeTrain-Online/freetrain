@@ -71,7 +71,7 @@ public sealed class MixedSessionState
         Construction=construction; Provenance=provenance; ConstructionMode=constructionMode; Paused=paused; Revision=revision;
         this.trainCallback=trainCallback ?? FleetMovement.Tick;
         this.stationCallback=stationCallback ?? StationStatistics.Tick;
-        CityDispatcher=cityCallback; CityLandValue=cityLandValue;
+        CityDispatcher=cityCallback; CityLandValue=cityLandValue ?? CityHeat.TotalLandValue;
         var bindings = Bindings(World);
         Clock = clock == null ? new(handlers:bindings) : Clock.Restore(clock,bindings);
         Random = random == null ? new(RandomStreams.ReferenceSeed) : RandomStreams.Restore(random);
@@ -106,7 +106,7 @@ public sealed class MixedSessionState
     {
         var site=World.City!.State.Structures.SingleOrDefault(s=>s.Construction.Any(c=>c.Callback?.HandlerId==handler));
         var candidate=site == null
-            ? CityDispatcher?.Invoke(Construction,Clock,Random,handler) ?? throw new CityConsumerUnavailableException(handler)
+            ? CityDispatcher?.Invoke(Construction,Clock,Random,handler) ?? (handler==CityHandlers.Heat ? CityHeat.Tick(Construction,Clock) : throw new CityConsumerUnavailableException(handler))
             : CityConstruction.Tick(Construction,site,handler,Clock,Random,CityLandValue ??
                 ((_,_)=>throw new CityConsumerUnavailableException("land-value")));
         ValidateCandidate(candidate);

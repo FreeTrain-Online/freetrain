@@ -152,3 +152,11 @@ Next: **P7-06 actual heat-based land value**, followed by P7-07 producer constru
 and attachment. Family tools/rendering, live development, P8 economy, optional
 packs, native/human review, P10 imports, P11 performance and P7 phase exit remain
 open.
+
+## P7-06 continuation handoff — 13 November 2026
+
+[Heat-based land value](web-parity-city-heat.md) now supplies the production heat
+callback and actual source-center construction valuation. Unsupported development
+and subsidiary callbacks still reject atomically. The city-only queue schema
+dependency is corrected within protocol10; Save11 and City1 are unchanged. The
+P7-05 counts above remain historical evidence for that slice.

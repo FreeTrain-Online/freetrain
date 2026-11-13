@@ -89,12 +89,12 @@ public static class CityConstruction
         var after=Replace(before.Construction,state,world.Spatial.NextEntityId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionRemoval");
         return new(after,before.Clock with {Pending=before.Clock.Pending.Where(a=>!registrations.Contains(a.Registration)).ToImmutableArray()},before.Random);
     }
-    // totalLandValue is the source family's actual valuation input, supplied by
-    // P7-06/07/10. No constant/default valuation is substituted here.
-    public static CityCandidate AdvanceOneMinute(CityCandidate before,Func<MixedWorld,CityStructure,long> totalLandValue,
+    // Production land value samples the source family center. Trusted adapters
+    // remain available for controlled fixtures; none is restored from save data.
+    public static CityCandidate AdvanceOneMinute(CityCandidate before,Func<MixedWorld,CityStructure,long>? totalLandValue = null,
         CityScheduledCallback? other = null)
     {
-        ArgumentNullException.ThrowIfNull(totalLandValue);
+        totalLandValue ??= CityHeat.TotalLandValue;
         var working=before.Construction;
         var random=RandomStreams.Restore(before.Random);
         Clock clock=null!;
@@ -103,7 +103,7 @@ public static class CityConstruction
             var graph=working.World.City!;
             var site=graph.State.Structures.SingleOrDefault(s=>s.Construction.Any(c=>c.Callback?.HandlerId==a.HandlerId));
             if(site==null)
-                working=other?.Invoke(working,clock,random,a.HandlerId) ?? throw new InvalidOperationException("Missing city timer consumer: "+a.HandlerId);
+                working=other?.Invoke(working,clock,random,a.HandlerId) ?? (a.HandlerId==CityHandlers.Heat ? CityHeat.Tick(working,clock) : throw new CityConsumerUnavailableException(a.HandlerId));
             else working=Tick(working,site,a.HandlerId,clock,random,totalLandValue);
         }),StringComparer.Ordinal);
         // New handlers (subsidiary completion) need bindings before scheduling.

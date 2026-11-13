@@ -3350,9 +3350,20 @@
               "required": [
                 "stationGraph"
               ]
+            },
+            {
+              "properties": {
+                "city": {}
+              },
+              "required": [
+                "city"
+              ]
             }
           ]
-        }
+        },
+        "city": [
+          "queue"
+        ]
       }
     },
     "RailwayQuery": {

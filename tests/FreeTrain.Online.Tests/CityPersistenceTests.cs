@@ -47,10 +47,10 @@ public class CityPersistenceTests
         foreach(var id in new long[]{11,12,14}) world=StationCatchment.Attach(world,id,world.City!.Provider(id,7));
         var pending=world.City!.Callbacks.OrderBy(t=>t.DueMinute).ThenBy(t=>t.Order).ToImmutableArray();
         return new(new(world),Provenance(world.Terrain),clock:new(minute,callbacks?4:1,pending),random:new RandomStreams(73).Capture(),revision:world.Revision,
-            cityLandValue:consumers?(_,_)=>20:null);
+            cityLandValue:consumers?(_,_)=>20:(_,_)=>throw new CityConsumerUnavailableException("controlled-land-value"));
     }
     static MixedSessionState Read(byte[] bytes,bool consumers=true)=>SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve,
-        cityLandValue:consumers?(_,_)=>20:null).Mixed!;
+        cityLandValue:consumers?(_,_)=>20:(_,_)=>throw new CityConsumerUnavailableException("controlled-land-value")).Mixed!;
     static SessionHost Host(MixedSessionState state)=>new(state,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
     static async Task<byte[]> Save(SessionHost h){var task=h.CaptureSave();h.Pump(0);return await task;}
     static async Task<WireMessage> Send(SessionHost h,CommandPayload payload,ParticipantContext? p=null,long? epoch=null)
@@ -91,7 +91,7 @@ public class CityPersistenceTests
         Assert.DoesNotContain(before.Clock.Capture().Pending,a=>a.HandlerId.StartsWith("city/construction/20/",StringComparison.Ordinal));
     }
     [Fact]
-    public void Missing_land_value_or_later_timer_consumer_rolls_back_whole_minute_including_random_and_callbacks()
+    public void Failing_land_value_or_later_timer_consumer_rolls_back_whole_minute_including_random_and_callbacks()
     {
         var missing=Fixture(false,false);var original=SaveCodec.Write(missing);
         Assert.Throws<CityConsumerUnavailableException>(()=>missing.AdvanceOneMinute());Assert.Equal(original,SaveCodec.Write(missing));
@@ -101,7 +101,7 @@ public class CityPersistenceTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Missing_city_consumers_reject_Step_without_stranding_receipts_or_save_load(bool laterTimer)
+    public async Task Unavailable_controlled_or_later_city_consumers_reject_Step_without_stranding_receipts_or_save_load(bool laterTimer)
     {
         using var host=Host(Fixture(laterTimer,laterTimer));
         if(laterTimer)for(var i=0;i<19;i++)Assert.IsType<AcceptedMessage>(await Send(host,new StepCommand()));

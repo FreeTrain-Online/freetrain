@@ -73,3 +73,14 @@ Deno.test('coalesced city publications accept advanced owner revisions and newly
  const next=applyDelta(before,parseMessageValue(d) as Delta);assert(next);assert.equal(next.mixed!.city!.properties.at(-1)!.revision,'3');
  const reused=structuredClone(d);reused.mixed!.city!.properties.at(-1)!.id='19';reused.entities!.at(-1)!.id='19';assert.equal(applyDelta(before,reused),undefined);
 });
+Deno.test('live heat publication retains exact Single diffusion, both buffers and repeated timer cookies',async()=>{
+ const before=JSON.parse(await Deno.readTextFile(new URL('./fixtures/city-heat-v11.json',import.meta.url)));
+ const after=parseMessageValue(JSON.parse(await Deno.readTextFile(new URL('./fixtures/city-heat-v11.json.snapshot.json',import.meta.url)))) as Snapshot;
+ const heat=after.mixed!.city!.heat,index=(h:number,v:number)=>h*(heat.verticalSize+2)+v;
+ assert.equal(before.mixed.city.heat.q[index(2,2)],10);
+ assert.equal(heat.q[index(2,2)],3.7559996); // server round-trip Single representation
+ assert.equal(heat.back[index(2,2)],10);
+ assert.equal(after.mixed!.city!.heatCallback!.registration,before.mixed.city.heatCallback.registration);
+ assert.equal(BigInt(after.mixed!.city!.heatCallback!.dueMinute)-BigInt(before.mixed.city.heatCallback.dueMinute),600n);
+ const bad=structuredClone(after);bad.mixed!.city!.heat.q[index(2,2)]=Infinity;assert.throws(()=>parseMessageValue(bad));
+});

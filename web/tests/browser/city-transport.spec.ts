@@ -48,8 +48,8 @@ test('P7-05 EN/JA clients preserve city continuations, enforce cancellation auth
   for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:p===page?'':'observer-test'}})).ok()).toBe(true);
   await page.reload();await peer.reload();await ready(page);await ready(peer,'ja');
   for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(saved.mixed);
-  // These 19 minutes precede later heat/development consumers. No timer is
-  // silently consumed and no fixture land value is installed by the service.
+  // These 19 minutes precede the equal-time heat/development callbacks.
+  // Unsupported development rolls back heat and the complete minute.
   expect((await send({kind:'step'})).type).toBe('accepted');
   for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(BigInt(saved.clock.absoluteMinute)+1n));
   for(let i=1;i<19;i++)expect((await send({kind:'step'})).type).toBe('accepted');
