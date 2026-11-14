@@ -1,3 +1,4 @@
+import {CityRenderPlan,type CityTarget} from './city-renderer.ts';
 import { speedLimitCatalog } from './speed-limit-display.ts';
 import { terrainLookup, terrainChangedColumns } from './terrain-state.ts';
 // Stable ExAV 2.1.1.12: QuarterViewDrawer, MountainVoxel.drawGround/drawTrees,
@@ -13,7 +14,7 @@ import type { TrainTarget } from './train-renderer.ts';
 import {StationRenderPlan,type StationTarget} from './station-renderer.ts';
 type Occupant=NonNullable<ReadState['terrain']>['occupants'][number];
 export interface TerrainTarget { kind:'terrain'; id:string; position:Position; surface:'ground'|'mountain'|'water'|'underground'|'terrace'|'forest'|'creek'|'cliff' }
-export type SceneTarget=TerrainTarget|RailwayTarget|TrainTarget|StationTarget;
+export type SceneTarget=TerrainTarget|RailwayTarget|TrainTarget|StationTarget|CityTarget;
 type TerrainMask={left:number;top:number;rows:readonly string[];key:string};
 type Operation = ({ target:SceneTarget; points:Point[]; color:string; edge?:string } | {target:SceneTarget; layer:Layer}) & {tunnel?:'portal'|'interior';terrainMasks?:readonly TerrainMask[]};
 export type TerrainOperation = Operation;
@@ -63,6 +64,7 @@ export class TerrainScene {
   private space?:WorldSpace;
   private railway?:RailwayRenderPlan;
   private stations?:StationRenderPlan;
+  private city?:CityRenderPlan;
   private columnBuilder?:(index:number)=>Operation[];
   private locationPicker?:(p:Point,view:View,policy:RailwayPickPolicy)=>Position|undefined;
   private constructor(public operations:readonly Operation[],private ready:ReadyScene,
@@ -107,12 +109,12 @@ export class TerrainScene {
     if(read.mixed?.speedLimits)catalog=speedLimitCatalog(catalog);
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
-    const stations=new StationRenderPlan(read,catalog,variant);
+    const stations=new StationRenderPlan(read,catalog,variant),city=new CityRenderPlan(read,catalog,variant);
     const cacheIdentity=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,variant,heightCut,read.mixed?.fleet?.colorTest]);
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
-      scene.gridKey=gridKey;scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;scene.stations=stations;
+      scene.gridKey=gridKey;scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;scene.stations=stations;scene.city=city;
       if(previous?.cacheIdentity===cacheIdentity) {
         scene.bounds=previous.bounds;scene.polygonKeys=previous.polygonKeys;
         scene.polygons=previous.polygons;
@@ -146,8 +148,8 @@ export class TerrainScene {
     // Keep grid strokes behind buildable pixels and same-level ground fills
     // behind rail overhangs, without changing terrain's source depth order.
     const gridBuckets=new Map<string,{mask:TerrainMask;z:number;rail:boolean;right:number;bottom:number}[]>();
-    if(railway)for(const index of new Set([...stations.columnIndices,...read.mixed!.voxels.map(v=>{const s=space.storage(v.position);return s.v*read.map.width+s.h;})])) {
-      for(const op of [...railway.operations(index,cut,t.waterLevel,full,t.cells[index].ground),...stations.operations(index,cut,t.waterLevel,full)])if('layer' in op&&op.target.kind!=='train') {
+    if(railway)for(const index of new Set([...stations.columnIndices,...city.columnIndices,...read.mixed!.voxels.map(v=>{const s=space.storage(v.position);return s.v*read.map.width+s.h;})])) {
+      for(const op of [...railway.operations(index,cut,t.waterLevel,full,t.cells[index].ground),...stations.operations(index,cut,t.waterLevel,full),...city.operations(index,cut,t.waterLevel,full)])if('layer' in op&&op.target.kind!=='train') {
         const l=op.layer,f=l.frame,maskId=f.masks![`${variant.season}/${variant.night?'night':'day'}`],rows=catalog.masks[maskId];
         const [x,y,z]=l.position,[ax,ay]=f.anchor!,[,,w,h]=f.rectangle!;
         const left=16*(x+y)-ax,top=8*(y-x)-16*z-ay;
@@ -192,7 +194,7 @@ export class TerrainScene {
         signature=JSON.stringify([t.waterLevel,cell,...[base,move(base,0),move(base,2),move(base,4),move(base,6)].map(p=>{
           const s=space.storage(p),surface=at.get(key(p)),backing=at.get(key({...p,z:p.z-1}));
           return [space.containsHorizontal(p)?t.cells[s.v*read.map.width+s.h]:null,surface,backing,surface&&entities.get(surface.entityId)?.definition,backing&&entities.get(backing.entityId)?.definition];
-        }),railway.signature(index),stations.signature(index),gridKey(index)]);
+        }),railway.signature(index),stations.signature(index),city.signature(index),gridKey(index)]);
         const old=reusable?.get(index);
         if(old?.signature===signature){reused=true;ops.push(...old.operations);for(const op of old.operations)if('layer' in op)layers.push(op.layer);continue;}
       }
@@ -206,18 +208,18 @@ export class TerrainScene {
       if(cut<cell.ground) {
         // A nontransparent Terrace at the cut owns this voxel; the source
         // draws its sprite instead of an underground chip over it.
-        if(!stations.contains({...base,z:cut})&&!(terrace?.kind==='terrace'&&cut===base.z-1)&&(!railway||railway.drawGround({...base,z:cut},read.map.levels)))addSprite('system:ground/underground',undefined,{...base,z:cut},target({...base,z:cut},'underground'));
+        if(!stations.contains({...base,z:cut})&&!city.contains({...base,z:cut})&&!(terrace?.kind==='terrace'&&cut===base.z-1)&&(!railway||railway.drawGround({...base,z:cut},read.map.levels)))addSprite('system:ground/underground',undefined,{...base,z:cut},target({...base,z:cut},'underground'));
         continue;
       }
       if(full&&cell.ground<t.waterLevel) {
         // Seal adjacent sea diamonds at fractional zoom: Canvas antialiasing
         // otherwise leaves pale seams through an opaque, continuous water plane.
         const p={...base,z:t.waterLevel},color=terrainColor([0,114,188],variant.night);
-        if(!stations.contains(p))addPolygon(p,target(p,'water'),diamond,color,color);continue;
+        if(!stations.contains(p)&&!city.contains(p))addPolygon(p,target(p,'water'),diamond,color,color);continue;
       }
       const mountain=surface?.kind==='mountain'?surface:undefined;
       const flat=!mountain||[mountain.ne,mountain.se,mountain.sw,mountain.nw].every(n=>n===0);
-      if(flat&&!stations.contains(base)&&(!railway||railway.drawGround(base,read.map.levels))) {
+      if(flat&&!stations.contains(base)&&!city.contains(base)&&(!railway||railway.drawGround(base,read.map.levels))) {
         const ground=target(base,'ground');
         addSprite('system:ground/'+(base.z<t.waterLevel?'water':variant.season==='winter'?'winter':'spring'),undefined,base,ground);
         // Same-level rails can extend into an otherwise empty neighbor's diamond.
@@ -265,7 +267,7 @@ export class TerrainScene {
           if(!reused) {
             const column=ops.splice(start);
             column.push(...railway.operations(index,cut,t.waterLevel,full,t.cells[index].ground));
-            column.push(...stations.operations(index,cut,t.waterLevel,full));
+            column.push(...stations.operations(index,cut,t.waterLevel,full),...city.operations(index,cut,t.waterLevel,full));
             column.sort((a,b)=>a.target.position.z-b.target.position.z);ops.push(...column);
           }
           if(cellCache.size<maximumCachedCells)cellCache.set(index,{signature,operations:ops.slice(start)});
@@ -282,7 +284,7 @@ export class TerrainScene {
     };
     if(read.map.width*read.map.height<=16384) {
       const all=build(0,read.map.width,0,read.map.height);
-      return finish(new TerrainScene(all,await cache.ready(catalog,[...layers,...carTemplates,...(railway?.layers??[]),...stations.layers],variant)));
+      return finish(new TerrainScene(all,await cache.ready(catalog,[...layers,...carTemplates,...(railway?.layers??[]),...stations.layers,...city.layers],variant)));
     }
     // Decode each required frame/surface once. Terrain instances and their
     // operations are materialized only for the current viewport, in source order.
@@ -295,8 +297,8 @@ export class TerrainScene {
         marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
       }
     }
-    templates.push(...carTemplates,...(railway?.layers??[]),...stations.layers);
-    for(const l of [...(railway?.layers??[]),...stations.layers]) {
+    templates.push(...carTemplates,...(railway?.layers??[]),...stations.layers,...city.layers);
+    for(const l of [...(railway?.layers??[]),...stations.layers,...city.layers]) {
       const [ax,ay]=l.frame.anchor!,[,,w,h]=l.frame.rectangle!;marginX=Math.max(marginX,Math.abs(ax)+w+32);marginY=Math.max(marginY,Math.abs(ay)+h+64);
     }
     return finish(new TerrainScene([],await cache.ready(catalog,templates,variant),{build,width:read.map.width,height:read.map.height,levels:read.map.levels,marginX,marginY},read.worldEpoch==='local-demo-only'?'#0072bc':variant.night?'#17232b':'#d8e5d9'));
@@ -306,7 +308,7 @@ export class TerrainScene {
     if(!this.railway&&!previous.railway)return terrainChangedColumns(previous.read,this.read);
     const terrain=this.read.terrain!.geometryRevision===previous.read.terrain!.geometryRevision?[]:terrainChangedColumns(previous.read,this.read);
     if(!terrain)return;
-    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway),...this.stations!.changedColumns(previous.stations!),
+    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway),...this.stations!.changedColumns(previous.stations!),...this.city!.changedColumns(previous.city!),
       ...previous.operations.filter(op=>'points' in op&&op.target.kind==='terrain'&&op.target.surface==='ground'&&op.color==='transparent')
         .map(op=>previous.columnIndex(op)).filter(i=>this.gridKey?.(i)!==previous.gridKey?.(i))])];
     if(this.railway||previous.railway)return;

@@ -1,3 +1,4 @@
+import {constructionParts} from './construction-renderer.ts';
 import {platformAppearance} from './passage-edit.ts';
 import {fleetRailPorts} from './fleet-state.ts';
 import { speedLimitFrame, speedIcons } from './speed-limit-display.ts';
@@ -97,15 +98,8 @@ export class RailwayRenderPlan {
           const type=railwayProfile.bindings.find(b=>b.reference.contributionId===d.contributionId)!;
           if(!('stationary' in type)||!type.stationary)throw new Error('Missing stationary dimensions');
           const x=v.position.x-owner.anchor.x,y=v.position.y-owner.anchor.y;
-          const connected=[y!==0,x!==type.stationary.sizeX-1,y!==type.stationary.sizeY-1,x!==0];
-          const part=(part:string)=>add({packId:d.packId,contributionId:`system:construction/${part}`,recipeId:`system:construction/${part}`},'stationary',undefined,undefined,d);
-          const ground=v.position.z===read.terrain!.cells[index].ground;
-          const fence=(i:number)=>{if(!connected[i])part(`fence/${i}/${c.needsDoor?1:0}`);};
-          if(ground){fence(0);fence(1);}
-          if(c.state===0){if(ground)part(`ground/${c.ground}`);}
-          else if(c.state<4){if(ground)part('ground/0');part(`bones/${c.state-1}/${connected.map(n=>n?'1':'0').join('')}`);}
-          else{for(const i of [0,1])if(!connected[i])part(`wall/${i}`);part(`bones/2/${connected.map(n=>n?'1':'0').join('')}`);for(const i of [2,3])if(!connected[i])part(`wall/${i}`);}
-          if(ground){fence(2);fence(3);}
+          for(const part of constructionParts(x,y,type.stationary.sizeX,type.stationary.sizeY,v.position.z===read.terrain!.cells[index].ground,c))
+            add({packId:d.packId,contributionId:`system:construction/${part}`,recipeId:`system:construction/${part}`},'stationary',undefined,undefined,d);
         }else {
           const type=binding(d);if(!('stationary' in type)||!type.stationary)throw new Error('Missing stationary dimensions');
           this.structures.set(v.ownerId,{anchor:owner.anchor,height:type.stationary.height,definition:d});

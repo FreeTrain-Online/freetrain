@@ -91,6 +91,7 @@
   const fleetCar = $derived(fleetTrain?.cars.find(c=>c.id===selectedCarId));
   const stationBuilding = $derived(mapSelection?.kind === 'station' ? read?.mixed?.stationGraph?.buildings.find(b=>b.id===mapSelection?.id) : undefined);
   const station = $derived(mapSelection?.kind === 'station' ? read?.stations.find(item => item.id === mapSelection?.id) : undefined);
+  const cityBuilding = $derived(mapSelection?.kind === 'building' ? read?.mixed?.city?.structures.find(b=>b.id===mapSelection?.id) : undefined);
   const building = $derived(mapSelection?.kind === 'building' ? read?.buildings.find(item => item.id === mapSelection?.id) : undefined);
   const track = $derived(mapSelection?.kind === 'track' ? read?.tracks.find(item => (item.entityId ?? `${item.position.x},${item.position.y},${item.position.z}`) === mapSelection?.id) : undefined);
   const railwayVoxel = $derived(mapSelection?.kind === 'railway' ? read?.mixed?.voxels.find(v=>v.ownerId===mapSelection?.id&&v.position.x===mapSelection.position.x&&v.position.y===mapSelection.position.y&&v.position.z===mapSelection.position.z) : undefined);
@@ -155,7 +156,7 @@
   }
   function select(selection: Selection | undefined) {
     if (selection?.kind === mapSelection?.kind && selection?.id === mapSelection?.id &&
-      (selection?.kind!=='station'||selection.position.x===mapSelection!.position.x&&selection.position.y===mapSelection!.position.y&&selection.position.z===mapSelection!.position.z) &&
+      (selection?.kind!=='station'&&selection?.kind!=='building'||selection.position.x===mapSelection!.position.x&&selection.position.y===mapSelection!.position.y&&selection.position.z===mapSelection!.position.z) &&
       (selection?.kind!=='train'||!('carId' in selection)||mapSelection?.kind==='train'&&'carId' in mapSelection&&selection.carId===mapSelection.carId)) { if (selection) { panel = 'inspector'; menu = false; } return; }
     request(() => {
       mapSelection = selection;
@@ -335,6 +336,9 @@
               {#if !['idle', 'accepted', 'waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
               <p class="hint" id="draft-hint">{draftConflict ? text.draftConflict : text.draft}</p>
             </form>
+          {:else if cityBuilding}
+            <dl class="details"><div><dt>{text.height}</dt><dd>{cityBuilding.height}</dd></div></dl>
+            <ObjectProvenance id={cityBuilding.definition.contributionId} packId={cityBuilding.definition.packId} locale={view.locale}/>
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>
           {:else if track}<p>{track.shape.startsWith('normal') ? `${text.normalRail} ${track.shape.slice(6)}` : text[track.shape as keyof typeof text]} · {track.revision}</p>
