@@ -344,7 +344,10 @@
   });
   $effect(() => { void panel; void level; void shape; cancelGesture(); cancelDraft(); });
   $effect(() => { void heightCut;cancelGesture(); });
-  $effect(() => { void stationLabels;void trainLabels;void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void stationPreview;void platformPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
+  // Read each label property: bindings mutate the reactive objects in place.
+  // Reading only their references misses visibility, font, size and color edits.
+  $effect(() => { void {...stationLabels};void {...trainLabels};dirty = true; });
+  $effect(() => { void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void stationPreview;void platformPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
