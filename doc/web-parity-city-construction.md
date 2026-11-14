@@ -168,3 +168,14 @@ cancellation. The earlier detached-only guards described above are superseded.
 Live construction reuses the same lifecycle; actual land value and later city
 timers require explicit trusted consumers and reject atomically when unavailable.
 Family placement/producer attachment and heat execution retain P7-06/07/13 owners.
+
+## P7-07 fixed-family handoff — 14 November 2026
+
+[Fixed city construction and actual producer lifecycle](web-parity-fixed-city.md)
+now supplies immutable placement/removal plans, caller-specific legality and
+reclamation, ordered nested removal bookings, actual completion-time catchment
+attachment and atomic producer/subsidiary/timer cleanup. Fixed attachment occurs
+before subsidiary initialization; variable completion retains its later source
+constructor order. Save11/protocol10 continuation and EN/JA station-demand browser
+witnesses use natural construction callbacks. Building rendering/controls remain
+P7-08/09; evolving metadata refresh remains P7-13.

@@ -84,3 +84,29 @@ Deno.test('live heat publication retains exact Single diffusion, both buffers an
  assert.equal(BigInt(after.mixed!.city!.heatCallback!.dueMinute)-BigInt(before.mixed.city.heatCallback.dueMinute),600n);
  const bad=structuredClone(after);bad.mixed!.city!.heat.q[index(2,2)]=Infinity;assert.throws(()=>parseMessageValue(bad));
 });
+
+Deno.test('natural fixed building completion publishes fresh owner, actual population, both station directions and its timer atomically',async()=>{
+ const read=async(name:string)=>JSON.parse(await Deno.readTextFile(new URL('./fixtures/fixed-city-v11.json'+name,import.meta.url)));
+ const saved=await read(''),after=parseMessageValue(await read('.snapshot.json')) as Snapshot;
+ const delta=parseMessageValue(await read('.delta.json')) as Delta;
+ const before=immutable(parseMessageValue(await read('.before.json')) as Snapshot);
+ const applied=applyDelta(before,delta);assert(applied);assert.deepEqual(JSON.parse(JSON.stringify(applied)),after);
+ assert.equal(applyDelta(applied,delta),undefined);
+ const partial=structuredClone(delta);partial.mixed!.stationGraph!.listeners[0].providerId=saved.mixed.city.structures[0].id;
+ assert.equal(applyDelta(before,partial),undefined);
+ const site=saved.mixed.city.structures[0],owner=after.mixed!.city!.structures[0];
+ assert.equal(site.construction.length,1);assert.equal(site.construction[0].cell.state,3);
+ assert.equal(saved.mixed.stationGraph.listeners.length,0);assert.equal(saved.mixed.city.producers.length,0);
+ assert.notEqual(owner.id,site.id);assert.deepEqual(owner.construction,[]);assert.equal(owner.owned,true);
+ assert.equal(owner.subsidiary!.totalLandValue,'30');
+ const listener=after.mixed!.stationGraph!.listeners[0];
+ assert.equal(listener.providerId,owner.id);assert.equal(listener.provider!.input,'city-fixed');
+ assert.equal(listener.provider!.population.kind,'ResidentialPopulation');assert.equal(listener.provider!.population.base,10);
+ assert.equal(listener.provider!.landValue,30);assert.equal(listener.provider!.xySize,1);assert.equal(listener.provider!.zSize,1);
+ assert.deepEqual(listener.stations,['1']);assert.deepEqual(after.mixed!.stationGraph!.listenerMemberships[0].providers,[owner.id]);
+ assert(delta.removed.entityIds.includes(site.id));assert(delta.entities!.some(e=>e.id===owner.id));
+ assert(after.mixed!.queue!.pending.some(a=>a.handlerId===`city/subsidiary/${owner.id}`));
+ assert(!after.mixed!.queue!.pending.some(a=>a.handlerId.startsWith(`city/construction/${site.id}/`)));
+ const bad=structuredClone(after);bad.mixed!.city!.producers=[];assert.throws(()=>parseMessageValue(bad));
+ const stale=structuredClone(after);stale.mixed!.stationGraph!.listeners[0].providerId=site.id;assert.throws(()=>parseMessageValue(stale));
+});

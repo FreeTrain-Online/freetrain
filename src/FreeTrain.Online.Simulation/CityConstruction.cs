@@ -29,15 +29,25 @@ public static class CityConstruction
         ConstructionBooking.Spend(checked(500_000*definition.SizeX*definition.SizeY),AccountGenre.Subsidiaries);
 
     private static MixedConstructionState Replace(MixedConstructionState before,CityState state,long nextId,
-        ConstructionBooking booking,GameTime time,string operation)
+        ConstructionBooking booking,GameTime time,string operation, TerrainWorld? terrain = null,
+        StationGraph? stations = null, IReadOnlySet<long>? reclaimed = null, long? attach = null)
     {
         var world=before.World;
         var graph=new CityGraph(world.City!.Profile,state);
-        var entities=world.Spatial.Entities.Where(e=>!world.City.IsSpatialOwner(e.Id))
+        stations ??= world.Stations;
+        if(reclaimed is {Count:>0} && stations!=null) stations=StationBuildingLifecycle.Reclaimed(stations,reclaimed);
+        var entities=world.Spatial.Entities.Where(e=>!world.City.IsSpatialOwner(e.Id) && !(reclaimed?.Contains(e.Id) ?? false))
             .Concat(graph.Identities.Select(i=>graph.SpatialOwner(i.Id))).OrderBy(e=>e.Id).ToImmutableArray();
-        return before.Replace(world.Revision,world.Terrain,new(nextId,entities),world.Voxels,world.Slopes,
-            booking,time,operation,city:graph);
+        if(attach is {} id) stations=AttachProducer(world,graph,nextId,entities,stations,id);
+        var revisions=stations?.Identities.ToDictionary(i=>i.Id,i=>i.Revision) ?? [];
+        entities=entities.Select(e=>revisions.TryGetValue(e.Id,out var revision) ? e with {Revision=revision} : e).ToImmutableArray();
+        return before.Replace(world.Revision,terrain ?? world.Terrain,new(nextId,entities),world.Voxels,world.Slopes,
+            booking,time,operation,stations:stations,city:graph);
     }
+    private static StationGraph AttachProducer(MixedWorld world,CityGraph graph,long nextId,
+        ImmutableArray<SpatialEntity> entities,StationGraph? stations,long id) => StationCatchment.Attach(
+            stations ?? new(world.Profile.Stations ?? throw new ArgumentException("Station profile required."),[],[]),
+            id,graph.Provider(id,CityHeat.Value(world,graph.Structure(id).Location)),new(world.Terrain.Space,nextId,entities));
     private static ScheduledAction Schedule(Clock clock,string handler,long delay)
     {
         var due=checked(clock.Time.AbsoluteMinute+delay);
@@ -50,11 +60,25 @@ public static class CityConstruction
     {
         var world=before.Construction.World;
         var d=world.City!.Profile.Structure(definition);
-        var booking=StartBooking(d,height,caller);
         if(CityOwnership.Placement(world,location,d,height).Length!=0)
             throw new ArgumentException("Construction requires atomic caller reclamation first.");
+        return StartCleared(before,location,d,height,caller,[]);
+    }
+    internal static CityCandidate StartCleared(CityCandidate before,Location location,CityStructureDefinition d,int height,
+        CityConstructionCaller caller,IReadOnlyList<long> reclamationOrder)
+    {
+        var reclaimed=reclamationOrder.ToHashSet();
+        var world=before.Construction.World;
+        var state=world.City!.State;
+        var charges=reclamationOrder.SelectMany(id=>state.Structures.SingleOrDefault(s=>s.Id==id) is {} s
+            ? RemovalBooking(world.City.Profile.Structure(s.Definition),!s.Construction.IsEmpty).Charges : []).ToList();
+        charges.AddRange(StartBooking(d,height,caller).Charges);
+        var booking=new ConstructionBooking(charges);
+        var registrations=state.Structures.Where(s=>reclaimed.Contains(s.Id)).SelectMany(s=>s.Construction.Where(c=>c.Callback!=null).Select(c=>c.Callback!.Registration)
+            .Concat(s.Subsidiary?.Callback is {} a ? [a.Registration] : Array.Empty<long>())).ToHashSet();
+        var retained=before.Clock.Pending.Where(a=>!registrations.Contains(a.Registration)).ToImmutableArray();
         var volume=checked(d.SizeX*d.SizeY*height);
-        if(volume>Clock.MaximumPending-before.Clock.Pending.Length)
+        if(volume>Clock.MaximumPending-retained.Length)
             throw new ArgumentException("City construction queue capacity exceeded.");
         var railwaySites=world.Voxels.Where(v=>v.Construction!=null).Select(v=>v.OwnerId).Distinct().Count();
         if(booking.Charges.Length>NormalRailwayConstruction.MaximumAccountTransactions-before.Construction.Accounts.Transactions.Length-railwaySites)
@@ -62,7 +86,7 @@ public static class CityConstruction
         var id=world.Spatial.NextEntityId;
         var nextId=checked(id+1);
         var random=RandomStreams.Restore(before.Random);
-        var pending=before.Clock.Pending.ToBuilder();var order=before.Clock.NextOrder;
+        var pending=retained.ToBuilder();var order=before.Clock.NextOrder;
         var cells=ImmutableArray.CreateBuilder<CityConstructionVoxel>();
         for(var z=0;z<height;z++) for(var x=0;x<d.SizeX;x++) for(var y=0;y<d.SizeY;y++)
         {
@@ -72,9 +96,15 @@ public static class CityConstruction
             var action=new ScheduledAction(order,order,due,CityHandlers.Construction(id,offset),0);
             order=checked(order+1);pending.Add(action);cells.Add(new(offset,cell,action));
         }
-        var site=new CityStructure(id,0,definition,location,height,false,null,[],cells.ToImmutable(),caller);
-        var state=world.City.State with {Structures=world.City.State.Structures.Add(site)};
-        var after=Replace(before.Construction,state,nextId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionStart");
+        var site=new CityStructure(id,0,d.Reference,location,height,false,null,[],cells.ToImmutable(),caller);
+        state=Without(state,reclaimed) with {Structures=state.Structures.Where(s=>!reclaimed.Contains(s.Id)).Append(site).ToImmutableArray()};
+        var terrain=world.Terrain;
+        if(terrain.Spatial.Entities.Any(e=>reclaimed.Contains(e.Id)))
+            terrain=terrain.Replace(terrain.Revision,terrain.Cells,terrain.WaterLevel,
+                new(terrain.Spatial.NextEntityId,terrain.Spatial.Entities.Where(e=>!reclaimed.Contains(e.Id)).ToImmutableArray()),
+                terrain.Occupants.Where(o=>!reclaimed.Contains(o.EntityId)));
+        var after=Replace(before.Construction,state,nextId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionStart",
+            terrain:terrain,reclaimed:reclaimed);
         return new(after,before.Clock with {NextOrder=order,Pending=pending.OrderBy(a=>a.DueMinute).ThenBy(a=>a.Order).ToImmutableArray()},random.Capture());
     }
     public static CityCandidate Remove(CityCandidate before,long ownerId)
@@ -83,12 +113,18 @@ public static class CityConstruction
         var booking=RemovalBooking(graph.Profile.Structure(s.Definition),!s.Construction.IsEmpty);
         var registrations=s.Construction.Where(c=>c.Callback!=null).Select(c=>c.Callback!.Registration)
             .Concat(s.Subsidiary?.Callback is {} a ? [a.Registration] : Array.Empty<long>()).ToHashSet();
-        var state=graph.State with {Structures=graph.State.Structures.Remove(s),
-            Producers=graph.State.Producers.Where(p=>p.OwnerId!=ownerId).ToImmutableArray(),
-            Fences=graph.State.Fences.Where(f=>f.HostOwnerId!=ownerId).ToImmutableArray()};
-        var after=Replace(before.Construction,state,world.Spatial.NextEntityId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionRemoval");
+        var removed=new HashSet<long>{ownerId};
+        var state=Without(graph.State,removed);
+        var after=Replace(before.Construction,state,world.Spatial.NextEntityId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionRemoval",reclaimed:removed);
         return new(after,before.Clock with {Pending=before.Clock.Pending.Where(a=>!registrations.Contains(a.Registration)).ToImmutableArray()},before.Random);
     }
+    private static CityState Without(CityState state,IReadOnlySet<long> ids) => state with {
+        Structures=state.Structures.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
+        Ground=state.Ground.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
+        Properties=state.Properties.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
+        FenceHosts=state.FenceHosts.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
+        Producers=state.Producers.Where(p=>!ids.Contains(p.OwnerId)).ToImmutableArray(),
+        Fences=state.Fences.Where(f=>!ids.Contains(f.HostOwnerId)).ToImmutableArray()};
     // Production land value samples the source family center. Trusted adapters
     // remain available for controlled fixtures; none is restored from save data.
     public static CityCandidate AdvanceOneMinute(CityCandidate before,Func<MixedWorld,CityStructure,long>? totalLandValue = null,
@@ -136,16 +172,30 @@ public static class CityConstruction
         var updated=site with {Revision=checked(site.Revision+1),Construction=site.Construction.Replace(voxel,new(p,cell,action))};
         var state=graph.State;
         var nextId=before.World.Spatial.NextEntityId;
+        StationGraph? stations=null;
         if(updated.Construction.All(c=>c.Cell.State==4))
         {
             // Remove site, create a fresh owner, then attach population at source
-            // constructor point. Station listener edges are the P7-05/07 handoff.
+            // constructor point, before fixed subsidiary initialization.
             var id=nextId;nextId=checked(nextId+1);
             var d=graph.Profile.Structure(site.Definition);
             updated=updated with {Id=id,Revision=0,Owned=site.Caller!=CityConstructionCaller.Automated,Construction=[]};
             var producers=state.Producers;
             CityProducer? producer=d.Population==null ? null : new(id,d.Reference,site.Height);
-            if(d.Kind==CityStructureKind.Fixed && producer!=null) producers=producers.Add(producer);
+            if(d.Kind==CityStructureKind.Fixed && producer!=null)
+            {
+                producers=producers.Add(producer);
+                // A provisional valuation is private staging data. The source
+                // fixed constructor attaches its listener before creating the
+                // subsidiary; any later valuation/timer failure discards both.
+                var pendingState=state with {Producers=producers,
+                    Structures=state.Structures.Replace(site,updated with {Subsidiary=new(0,0)}),
+                    Fences=state.Fences.Where(f=>f.HostOwnerId!=site.Id).ToImmutableArray()};
+                var pendingGraph=new CityGraph(graph.Profile,pendingState);
+                var entities=before.World.Spatial.Entities.Where(e=>!graph.IsSpatialOwner(e.Id))
+                    .Concat(pendingGraph.Identities.Select(i=>pendingGraph.SpatialOwner(i.Id))).ToImmutableArray();
+                stations=AttachProducer(before.World,pendingGraph,nextId,entities,before.World.Stations,id);
+            }
             var land=totalLandValue(before.World,updated);
             var subsidiary=CityValuation.Reprice(new(0,0),d.Price(site.Height),land);
             var delay=checked((long)(random["time-length"].NextDouble()*20160+20160));
@@ -155,6 +205,7 @@ public static class CityConstruction
         }
         state=state with {Structures=state.Structures.Replace(site,updated)};
         return Replace(before,state,nextId,ConstructionBooking.None,clock.Time,
-            updated.Construction.IsEmpty?"cityConstructionCompletion":"cityConstructionProgress");
+            updated.Construction.IsEmpty?"cityConstructionCompletion":"cityConstructionProgress",
+            stations:stations,attach:updated.Construction.IsEmpty && stations==null && graph.Profile.Structure(updated.Definition).Population!=null ? updated.Id : null);
     }
 }
