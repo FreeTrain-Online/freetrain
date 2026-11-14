@@ -1,0 +1,69 @@
+name: Backend benchmarks
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: Base branch or commit (defaults to the repository default branch)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-benchmarks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    name: Informational backend benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: head
+          persist-credentials: false
+      - name: Check out comparison base
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha || inputs.base_ref || github.event.repository.default_branch }}
+          path: base
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: head/global.json
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: base/global.json
+      - name: Check benchmark reporting code
+        run: |
+          python3 -m unittest discover -s head/scripts/tests -p test_backend_benchmark.py
+          node --test head/.github/scripts/backend-benchmark.test.cjs
+      - name: Compare base and PR with the same harness
+        continue-on-error: true
+        env:
+          BENCHMARK_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        run: >-
+          python3 head/scripts/benchmark-backend.py
+          --base base --head head --output benchmark-results --repetitions 3
+      - name: Publish job summary
+        if: always()
+        continue-on-error: true
+        env:
+          BENCHMARK_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node head/.github/scripts/backend-benchmark-report.cjs benchmark-results/report.json > benchmark-results/summary.md
+          cat benchmark-results/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload benchmark numbers and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-benchmark-report
+          path: benchmark-results/
+          if-no-files-found: warn
+          retention-days: 14

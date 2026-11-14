@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "cases": {
+    "minutes-small": {
+      "operations": 64,
+      "initialSha256": "337e9d6cdc32163f0e86988c05acf4a2e8972237d2a4666b3a0106cd1929d3da",
+      "finalSha256": "5298405381499433b7d8a461aacdb310d40ae9a13e1afb26431f4482eab7f5a6"
+    },
+    "minutes-large": {
+      "operations": 64,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "1993accdda0d9fa7b49bb4830b8082c2ada4f8ab9e05b1759016b9c08a6216f6"
+    },
+    "minutes-midnight": {
+      "operations": 4,
+      "initialSha256": "c58a95dc4a99b6902a20998bbc6e4c6649ef7364c9f933e8c630f632dc6227a7",
+      "finalSha256": "8dad9e078081a1235e7404aca4359b14fc493b7496ff9e0ed73c3bfad8cea73d"
+    },
+    "replace-small": {
+      "operations": 32,
+      "initialSha256": "337e9d6cdc32163f0e86988c05acf4a2e8972237d2a4666b3a0106cd1929d3da",
+      "finalSha256": "0257384905983cd63e596674bd17c6acf1569cf1ea4035f81d22e192aa66315a"
+    },
+    "replace-large": {
+      "operations": 3,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "5c56f259b191f0835d81fcd72743512ec92f2a5566d9ccf2bcc9b0ccb2e849e2"
+    },
+    "publish-1-peer": {
+      "operations": 17,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "66788671e440ccce4e02881e33169f0f8f0535a8ad4804fdcb83da1e7c732674"
+    },
+    "publish-4-peers": {
+      "operations": 17,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "66788671e440ccce4e02881e33169f0f8f0535a8ad4804fdcb83da1e7c732674"
+    },
+    "paused-1-peer": {
+      "operations": 128,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d"
+    },
+    "paused-4-peers": {
+      "operations": 128,
+      "initialSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d",
+      "finalSha256": "2df26e328b7e3a3033bb08079293c54293991e3248c3707fca263361b6f32b3d"
+    }
+  }
+}
