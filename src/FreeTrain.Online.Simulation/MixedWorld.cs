@@ -284,6 +284,36 @@ public sealed class MixedWorld
         }
     }
 
+    // Both constructors have checked unique IDs, footprints and occupancy. Compare
+    // geometry by owner before expanding cells: revisions and component changes
+    // alone do not assign/remove voxels. Never trust a shared entity to certify roads.
+    private HashSet<Location> ConductivityChanges(MixedWorld candidate)
+    {
+        var columns = new HashSet<Location>();
+        foreach (var owner in candidate.Spatial.Entities)
+        {
+            if (entities.TryGetValue(owner.Id, out var previous) &&
+                owner.Anchor == previous.Anchor &&
+                (ReferenceEquals(owner.Footprint, previous.Footprint) ||
+                 owner.Footprint.Members.AsSpan().SequenceEqual(previous.Footprint.Members.AsSpan()))) continue;
+            AddChangedCells(owner);
+            if (previous != null) AddChangedCells(previous);
+        }
+        foreach (var owner in Spatial.Entities)
+            if (!candidate.entities.ContainsKey(owner.Id)) AddChangedCells(owner);
+        foreach (var voxel in candidate.Voxels)
+            if (voxel.Traffic?.Road is {} road && At(voxel.Position)?.Traffic?.Road?.Definition != road.Definition)
+                columns.Add(voxel.Position with { Z = 0 });
+        return columns;
+
+        void AddChangedCells(SpatialEntity owner)
+        {
+            foreach (var (position, _) in owner.Footprint.At(owner.Anchor))
+                if (Spatial.At(position).Entity?.Id != candidate.Spatial.At(position).Entity?.Id)
+                    columns.Add(position with { Z = 0 });
+        }
+    }
+
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, SpeedLimits? speedLimits = null, FleetGraph? fleet = null,
@@ -296,7 +326,7 @@ public sealed class MixedWorld
         var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations,city ?? City);
         if (City != null)
         {
-            var notified=CityHeat.NotifyChanges(this,candidate);
+            var notified=CityHeat.NotifyChanges(candidate,ConductivityChanges(candidate));
             if (!ReferenceEquals(notified,candidate.City)) candidate=new(Profile,terrain,spatial,members,candidate.Slopes,candidate.Revision,
                 limits,candidate.Fleet,candidate.Stations,notified);
         }

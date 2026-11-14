@@ -195,6 +195,96 @@ public class CityHeatTests
         Assert.Equal(0.8f,gone.City!.State.Heat.Rho[i]);
     }
     [Fact]
+    public void Train_movement_and_station_counter_updates_retain_heat_identity()
+    {
+        var session=BackendPerformanceFixture.Open("small");var world=session.World;
+        var heat=world.City!.State.Heat;
+        var moved=FleetMovement.Tick(session,session.Fleet!.Trains[0].Id).Candidate.World;
+        Assert.NotSame(world,moved);
+        Assert.NotEqual(world.Voxels,moved.Voxels);
+        Assert.Same(heat,moved.City!.State.Heat);
+        var graph=world.Stations!;var station=graph.Buildings[0];
+        var updated=station with {Revision=station.Revision+1,Trains=station.Trains with {Today=station.Trains.Today+1}};
+        var stations=new StationGraph(graph.Profile,graph.Buildings.Replace(station,updated),graph.Platforms,
+            graph.Passages,graph.NextStationName,graph.NextPlatformName,graph.Listeners,graph.ListenerMemberships);
+        var spatial=world.Spatial.Capture() with {Entities=world.Spatial.Entities.Select(e=>e.Id==station.Id?e with {Revision=updated.Revision}:e).ToImmutableArray()};
+        var counted=world.Replace(world.Revision,world.Terrain,spatial,world.Voxels,world.Slopes,stations:stations);
+        Assert.Same(heat,counted.City!.State.Heat);
+    }
+
+    [Fact]
+    public void Checked_notifications_match_full_occupancy_comparison_for_owner_and_road_changes()
+    {
+        var empty=CityHeat.Enable(Empty()).World;
+        var road=new RoadComponent(Rail.City!.Roads[0].Reference,1);
+        var basis=Column(empty,[(4,road),(5,null)]);
+        // Distinct stale values make missed notifications and extra notifications visible.
+        var heat=basis.City!.State.Heat;
+        heat=heat with {Rho=heat.Rho.Select((_,i)=>0.1f+i*0.0001f).ToImmutableArray()};
+        basis=new(basis.Profile,basis.Terrain,basis.Spatial.Capture(),basis.Voxels,[],
+            city:new(basis.City.Profile,basis.City.State with {Heat=heat}));
+        var first=basis.Voxels[0];var top=basis.Voxels[1];
+        RailwayVoxel[][] changes=[
+            [first,top], // unchanged owners and payloads
+            [first with {Traffic=first.Traffic! with {Road=null}},top], // deliberate detach gap
+            [first with {Traffic=first.Traffic! with {Road=road with {Edges=4}}},top], // outlook gap
+            [first,top with {Traffic=top.Traffic! with {Road=road}}],
+            [first with {Traffic=first.Traffic! with {Road=road with {Definition=Rail.City.Roads[1].Reference}}},top],
+            [first], // removing the upper rail unmasks the road
+            [],
+            [first,top with {Position=new(11,10,5)}], // same owner moves columns
+            [first,top with {OwnerId=30}], // same occupied cell, different owner
+            [first,top,top with {OwnerId=30,Position=new(11,10,5)}]
+        ];
+        foreach(var voxels in changes)
+        {
+            var entities=voxels.Select(v=>new SpatialEntity(v.OwnerId,v.OwnerId<30?1:0,
+                basis.Profile.TrafficOwner,v.Position,Footprint.Box(new(new(0,0,0),1,1,1),true),true,false,0)).ToImmutableArray();
+            var after=basis.Replace(basis.Revision,basis.Terrain,new(31,entities),voxels,[]);
+            AssertFullNotifications(basis,after);
+            if(ReferenceEquals(voxels,changes[0]) || ReferenceEquals(voxels,changes[1]) || ReferenceEquals(voxels,changes[2]))
+                Assert.Same(heat,after.City!.State.Heat);
+        }
+    }
+
+    // Independent oracle for the original complete footprint scan. Compare every
+    // buffer entry so compatibility gaps and retained borders are also covered.
+    static void AssertFullNotifications(MixedWorld before, MixedWorld after)
+    {
+        var old=before.Spatial.Entities.SelectMany(e=>e.Footprint.At(e.Anchor).Select(c=>(c.Position,e.Id))).ToDictionary(c=>c.Position,c=>c.Id);
+        var current=after.Spatial.Entities.SelectMany(e=>e.Footprint.At(e.Anchor).Select(c=>(c.Position,e.Id))).ToDictionary(c=>c.Position,c=>c.Id);
+        var columns=old.Keys.Concat(current.Keys).Where(p=>old.GetValueOrDefault(p)!=current.GetValueOrDefault(p))
+            .Select(p=>p with {Z=0}).ToHashSet();
+        foreach(var voxel in after.Voxels)
+            if(voxel.Traffic?.Road is {} road && before.At(voxel.Position)?.Traffic?.Road?.Definition!=road.Definition)
+                columns.Add(voxel.Position with {Z=0});
+        var heat=before.City!.State.Heat;var rho=heat.Rho.ToBuilder();
+        foreach(var p in columns)
+        {
+            var hv=after.Terrain.Space.ToStorage(p);
+            rho[heat.Index(hv.H,hv.V)]=CityHeat.Conductivity(after,p);
+        }
+        Assert.Equal<float>(rho.ToImmutable(),after.City!.State.Heat.Rho);
+        Assert.Equal<float>(heat.Q,after.City.State.Heat.Q);
+        Assert.Equal<float>(heat.Back,after.City.State.Heat.Back);
+    }
+
+    [Fact]
+    public void Multi_cell_slope_assignment_and_removal_match_full_notifications()
+    {
+        var before=CityHeat.Enable(Empty());var world=before.World;
+        var plan=SlopeRailwayConstruction.PreviewBuild(world,new(10,10,2),Heading.East);
+        Assert.True(plan.Legal,plan.Reason);
+        var built=SlopeRailwayConstruction.Apply(before.Construction,plan,before.Clock.Time);
+        Assert.Contains(built.World.Spatial.Entities,e=>e.Footprint.Members.Length==8);
+        AssertFullNotifications(world,built.World);
+        var removal=SlopeRailwayConstruction.PreviewRemoval(built.World,new(10,10,2),Heading.East);
+        Assert.True(removal.Legal,removal.Reason);
+        var removed=SlopeRailwayConstruction.Apply(built,removal,before.Clock.Time);
+        AssertFullNotifications(built.World,removed.World);
+    }
+
+    [Fact]
     public void Service_reachable_fixture_emits_exact_diffusion_continuation_without_a_controlled_dispatcher()
     {
         var s=CityHeat.Enable(Empty());var world=CityHeat.Deposit(s.World,s.World.Terrain.Space.ToLocation(new(2,2,2)),4);

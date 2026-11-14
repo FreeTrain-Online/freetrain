@@ -139,7 +139,7 @@ public static class CityHeat
     // cleanup without explicitly revising the compatibility decision.
     internal static CityGraph NotifyChanges(MixedWorld before, MixedWorld after)
     {
-        var graph=after.City!;var locations=new HashSet<Location>();
+        var locations=new HashSet<Location>();
         var old=before.Spatial.Entities.SelectMany(e=>e.Footprint.At(e.Anchor).Select(c=>(c.Position,e.Id))).ToDictionary(c=>c.Position,c=>c.Id);
         var current=after.Spatial.Entities.SelectMany(e=>e.Footprint.At(e.Anchor).Select(c=>(c.Position,e.Id))).ToDictionary(c=>c.Position,c=>c.Id);
         foreach(var p in old.Keys.Concat(current.Keys))
@@ -147,6 +147,13 @@ public static class CityHeat
         foreach(var voxel in after.Voxels)
             if(voxel.Traffic?.Road is {} road && before.At(voxel.Position)?.Traffic?.Road?.Definition!=road.Definition)
                 locations.Add(voxel.Position with {Z=0});
+        return NotifyChanges(after,locations);
+    }
+    // Replacement supplies columns checked against both validated occupancy
+    // indexes. Keep the overload above as a conservative arbitrary-world scan.
+    internal static CityGraph NotifyChanges(MixedWorld after, IReadOnlySet<Location> locations)
+    {
+        var graph=after.City!;
         if(locations.Count==0) return graph;
         var rho=graph.State.Heat.Rho.ToBuilder();
         foreach(var p in locations)
