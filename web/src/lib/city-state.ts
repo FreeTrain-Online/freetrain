@@ -2,10 +2,13 @@ import type {City,Definition,MixedAction,Snapshot} from '../generated/contracts.
 import profile from '../generated/city-profile.json' with {type:'json'};
 import type {ReadState} from './session-client.ts';
 import {WorldSpace} from './map-geometry.ts';
-const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+import {terrainById} from './terrain-state.ts';
+import {entitiesById} from './entity-index.ts';
+const equal=(a:unknown,b:unknown)=>a===b||JSON.stringify(a)===JSON.stringify(b);
 const same=(a:Definition,b:Definition)=>a.packId===b.packId&&a.contributionId===b.contributionId&&a.recipeId===b.recipeId;
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const max=9223372036854775807n;
+const validatedHeat=new WeakSet<object>();
 export const cityProfile=profile;
 export const cityOwners=(c:City|undefined)=>c?[...c.properties,...c.structures,...c.ground,...c.fenceHosts]:[];
 export const cityTimers=(c:City|undefined):MixedAction[]=>c?[...c.structures.flatMap(s=>[...s.construction.map(v=>v.callback),s.subsidiary?.callback]),c.heatCallback,c.developmentCallback].filter((a):a is MixedAction=>!!a):[];
@@ -17,16 +20,18 @@ export function validCity(read:Snapshot):boolean {
  // A city discriminator cannot be laundered through controlled/foreign owners.
  const listeners=read.mixed?.stationGraph?.listeners??[];
  if(!c)return listeners.every(l=>!l.provider||l.provider.input==='controlled');
- const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),entities=new Map(read.entities!.map(e=>[e.id,e]));
+ const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),entities=entitiesById(read.entities!);
  const owners=cityOwners(c),ids=new Set(owners.map(o=>o.id)),producers=new Map(c.producers.map(p=>[p.ownerId,p]));
- const reserved=new Set([...(read.terrain?.occupants??[]).map(o=>o.entityId),...(read.mixed!.stationGraph?.buildings??[]).map(o=>o.id),
+ const reserved=new Set([...(read.mixed!.stationGraph?.buildings??[]).map(o=>o.id),
   ...(read.mixed!.stationGraph?.platforms??[]).map(o=>o.id),...(read.mixed!.fleet?.trains??[]).flatMap(t=>[t.id,...t.cars.map(v=>v.id)]),
   ...(read.mixed!.fleet?.groups??[]).map(o=>o.id),...(read.mixed!.fleet?.controllers??[]).map(o=>o.id)]);
- if(c.format!==1||owners.length>8192||ids.size!==owners.length||owners.some(o=>reserved.has(o.id)||BigInt(o.id)<1n||BigInt(o.revision)<0n)||
+ if(c.format!==1||owners.length>8192||ids.size!==owners.length||owners.some(o=>reserved.has(o.id)||terrainById(read.terrain!.occupants,o.id,v=>v.entityId)||BigInt(o.id)<1n||BigInt(o.revision)<0n)||
   producers.size!==c.producers.length||c.structures.reduce((n,s)=>n+s.construction.length,0)>8192)return false;
  const heat=c.heat,n=(read.map.width+2)*(read.map.height+2);
+ const reusableHeat=Object.isFrozen(heat)&&[heat.q,heat.back,heat.rho].every(Object.isFrozen);
  if(heat.horizontalSize!==read.map.width||heat.verticalSize!==read.map.height||heat.q.length!==n||heat.back.length!==n||heat.rho.length!==n||
-  [heat.q,heat.back,heat.rho].some(a=>a.some(v=>!Number.isFinite(v)||Math.abs(v)>3.4028234663852886e38))||heat.rho.some(v=>v<0))return false;
+  (!reusableHeat||!validatedHeat.has(heat))&&([heat.q,heat.back,heat.rho].some(a=>a.some(v=>!Number.isFinite(v)||Math.abs(v)>3.4028234663852886e38))||heat.rho.some(v=>v<0)))return false;
+ if(reusableHeat)validatedHeat.add(heat);
  if(Object.values(c.settings).some(v=>!Number.isFinite(v))||c.settings.updateFrequencyHours<1||c.settings.maximumPricePower===0||!Number.isFinite(1/c.settings.maximumPricePower))return false;
  const owner=(o:{id:string;revision:string;location:{x:number;y:number;z:number}},d:Definition,sx:number,sy:number,sz:number,owned:boolean,reusable:boolean,value:bigint,transparent:boolean)=>{
   const e=entities.get(o.id);
@@ -64,7 +69,7 @@ export function validCity(read:Snapshot):boolean {
  for(const o of c.properties)if(!owner(o,profile.propertyDefinition,1,1,1,true,true,0n,false))return false;
  for(const o of c.fenceHosts)if(!owner(o,profile.fenceHostDefinition,1,1,1,true,true,0n,true))return false;
  if(c.producers.some(p=>!c.structures.some(s=>s.id===p.ownerId)&&!c.ground.some(g=>g.id===p.ownerId)))return false;
- const occupied=new Map<string,string>();for(const e of read.entities!)for(const f of e.footprint)occupied.set(key({x:e.anchor.x+f.offset.x,y:e.anchor.y+f.offset.y,z:e.anchor.z+f.offset.z}),e.id);
+ const occupied=new Map<string,string>();if(c.fences.length)for(const e of read.entities!)for(const f of e.footprint)occupied.set(key({x:e.anchor.x+f.offset.x,y:e.anchor.y+f.offset.y,z:e.anchor.z+f.offset.z}),e.id);
  if(new Set(c.fences.map(f=>`${key(f.location)}/${f.side}`)).size!==c.fences.length||c.fences.some(f=>f.side<0||f.side>3||occupied.get(key(f.location))!==f.hostOwnerId||groundDefinition(f.definition)?.handler!=='fence'||groundDefinition(f.definition)?.remover))return false;
  const box=(p:{x:number;y:number;z:number},x:number,y:number,z:number)=>x>0&&y>0&&z>0&&[p,{...p,x:p.x+x-1},{...p,y:p.y+y-1},{x:p.x+x-1,y:p.y+y-1,z:p.z+z-1}].every(v=>space.contains(v));
  if(new Set(c.landCache.map(v=>`${key(v.corner)}/${v.sizeX}/${v.sizeY}`)).size!==c.landCache.length||c.landCache.some(v=>BigInt(v.landValue)<0n||BigInt(v.entityValue)<0n||!box(v.corner,v.sizeX,v.sizeY,1)))return false;

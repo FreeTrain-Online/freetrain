@@ -64,6 +64,23 @@ Deno.test('city stage/build/removal invalidate full footprints and preserve unre
  const removed=await TerrainScene.prepare(s,catalog,cache,day,31,done);assert(removed.changedColumns(done)!.length>=4);assert.equal(ops(removed).length,0);
  assert(removed.operations.includes(empty.operations.find(o=>o.target.id===railId)!));assert(ops(site).length>0);
 });
+Deno.test('localized city mask damage covers every changed full-render ground column at stage transitions and removal',async()=>{
+ const cache=images(catalog),s=cityScene(),built=structuredClone(s);
+ addCity(built,fixedDefinitions.find(d=>d.sizeX===2&&d.sizeY===2)!,10,22,0);
+ const staged=structuredClone(built);for(const v of staged.mixed!.city!.structures[0].construction)v.cell.state=v.cell.state===4?4:3;
+ const complete=cityScene();addCity(complete,fixedDefinitions.find(d=>d.sizeX===2&&d.sizeY===2)!);
+ let prior=await TerrainScene.prepare(s,catalog,cache,day,31);
+ const signatures=(scene:TerrainScene)=>{
+  const columns=new Map<number,unknown[]>();for(const op of scene.operations){const i=scene.columnIndex(op),rows=columns.get(i)??[];rows.push(op);columns.set(i,rows);}
+  return new Map([...columns].map(([i,ops])=>[i,JSON.stringify(ops)]));
+ };
+ for(const read of [built,staged,complete,s]){
+  const next=await TerrainScene.prepare(read,catalog,cache,day,31,prior),changed=new Set(next.changedColumns(prior)!);
+  const a=signatures(prior),b=signatures(next);
+  for(const i of new Set([...a.keys(),...b.keys()]))if(a.get(i)!==b.get(i))assert(changed.has(i),`Changed full-render column ${i} was not invalidated`);
+  prior=next;
+ }
+});
 Deno.test('missing or malformed fixed and construction art blocks readiness above cuts and offscreen',()=>{
  const s=cityScene(200,100),b=addCity(s,fixedDefinitions[0],150,70);
  for(const mutate of [(c:RenderCatalog)=>{c.renderRecipes=c.renderRecipes.filter(r=>r.id!==b.definition.recipeId);},(c:RenderCatalog)=>{c.renderRecipes.find(r=>r.id===b.definition.recipeId)!.frames=[];},(c:RenderCatalog)=>{c.renderRecipes.find(r=>r.id===b.definition.recipeId)!.frames[0].cell=[9,0,0];},(c:RenderCatalog)=>{delete c.renderRecipes.find(r=>r.id===b.definition.recipeId)!.frames[0].masks!['spring/day'];}]){

@@ -5,7 +5,7 @@ import {fit} from './layout-helpers.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
-const compat='protocolVersion=10&contentVersion=mixed-railway-content-1';
+const compat='protocolVersion=11&contentVersion=mixed-railway-content-1';
 const bytes=async(p:Page)=>(await p.request.get('/api/saves/download')).body();
 test.use({hasTouch:true,actionTimeout:15000});
 async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasController=false){
@@ -61,7 +61,7 @@ for(const locale of ['en','ja'] as const)test(`P6-23 ${locale} station informati
    expect((await viewer.request.post(path,{data:{...q,expectedRevision:String(BigInt(q.expectedRevision)+1n)}})).status()).toBe(409);
    expect((await viewer.request.post(path,{data:{...q,expectedWorldEpoch:String(BigInt(q.expectedWorldEpoch)+1n)}})).status()).toBe(409);
    expect((await viewer.request.post(path,{data:{...q,trainId:'-1'}})).status()).toBe(400);
-   expect((await viewer.request.post(path.replace('protocolVersion=10','protocolVersion=8'),{data:q})).status()).toBe(426);
+   expect((await viewer.request.post(path.replace('protocolVersion=11','protocolVersion=8'),{data:q})).status()).toBe(426);
    expect(await bytes(page)).toEqual(before);
   }finally{await viewer.close();}
   // Empty and duplicate names are rendered by ID; native list selection supports keys.

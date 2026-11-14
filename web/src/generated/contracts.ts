@@ -298,7 +298,7 @@ export type CommandPayload =
 
 export interface Join {
   type: "join";
-  protocolVersion: 10;
+  protocolVersion: 11;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;
@@ -1486,6 +1486,10 @@ export interface Delta {
   mixed?: Mixed;
   playbackRate?: PlaybackRate;
   trainMotion?: TrainMotion;
+  /**
+   * Reuse predecessor city heat at this exact base revision; dimensions must match and all three transmitted buffers must be empty. Snapshots never use this reference.
+   */
+  cityHeatBaseRevision?: string;
 }
 export interface Removed {
   trainIds: string[];
@@ -1544,7 +1548,7 @@ export interface StateChunk {
 }
 export interface SessionOffer {
   type: "sessionOffer";
-  protocolVersion: 10;
+  protocolVersion: 11;
   contentVersion: string;
   serverIncarnation: string;
   sessionId: string;

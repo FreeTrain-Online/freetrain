@@ -1,4 +1,5 @@
 import {cityTimers} from './city-state.ts';
+import {entitiesById} from './entity-index.ts';
 import type {Snapshot,StationGraph,MixedAction,StationPlatform,Population} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import profile from '../generated/station-profile.json' with {type:'json'};
@@ -6,7 +7,7 @@ import rail from '../generated/railway-profile.json' with {type:'json'};
 import {fleetRailPorts} from './fleet-state.ts';
 import {move,WorldSpace} from './map-geometry.ts';
 import {maximumGameMinute} from './game-time.ts';
-const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+const equal=(a:unknown,b:unknown)=>a===b||JSON.stringify(a)===JSON.stringify(b);
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const validName=(s:string)=>s.trim().length>0&&!/[\u0000-\u001f\u007f-\u009f]/u.test(s);
 const unique=(ids:string[])=>new Set(ids).size===ids.length;
@@ -49,7 +50,7 @@ export function validStations(read:Snapshot):boolean {
  const fleetIds=new Set([...(m.fleet?.trains??[]),...(m.fleet?.trains??[]).flatMap(t=>t.cars),...(m.fleet?.groups??[]),...(m.fleet?.controllers??[])].map(x=>x.id));
  if(ids.size!==members.length||members.some(b=>fleetIds.has(b.id)||BigInt(b.id)>=BigInt(m.nextEntityId)||!validName(b.name)||!unique(b.children)))return false;
  const buildings=new Map(g.buildings.map(b=>[b.id,b])),platforms=new Map(g.platforms.map(p=>[p.id,p]));
- const entities=new Map(read.entities!.map(e=>[e.id,e])),voxels=new Map(m.voxels.map(v=>[key(v.position),v]));
+ const entities=entitiesById(read.entities!),voxels=new Map(m.voxels.map(v=>[key(v.position),v]));
  const space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
  const timer=(t:MixedAction|null,id:string,interval:string)=>!t||t.handlerId===id&&t.interval===interval&&BigInt(t.registration)<=BigInt(t.order)&&
   BigInt(t.dueMinute)>BigInt(read.tick)&&BigInt(t.dueMinute)<=maximumGameMinute&&BigInt(t.dueMinute)-BigInt(read.tick)<=BigInt(interval)&&

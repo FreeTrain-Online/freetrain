@@ -2,7 +2,7 @@ import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready,openPanel} from './browser-helpers.ts';
 const texts=['en','ja'].map(locale=>JSON.parse(readFileSync(`src/locales/${locale}/app.json`,'utf8')));
-const compatibility='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility='protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get('/api/bootstrap?'+compatibility)).json()).snapshot;
 test('P7-07 EN/JA peers observe natural fixed producer completion, literal station demand and exact checkpoint restart',async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);

@@ -6,7 +6,7 @@ namespace FreeTrain.Online.Contracts;
 
 public static class ProtocolIdentity
 {
-    public const int Version = 10;
+    public const int Version = 11;
     public const int MaximumStateBytes = 256 * 1024 * 1024;
     public const int StateChunkBytes = 48 * 1024;
     public const string MixedRuleset = "mixed-railway-1";
@@ -105,7 +105,8 @@ public sealed record DeltaMessage(long WorldEpoch, long BaseRevision, long Revis
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] SpatialEntityRead[]? Entities = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TerrainDeltaRead? Terrain = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedRead? Mixed = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? PlaybackRate = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null) : WireMessage;
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TrainMotionRead? TrainMotion = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? CityHeatBaseRevision = null) : WireMessage;
 public sealed record RemovedRead(string[] TrainIds, string[] StationIds, string[] BuildingIds, PositionRead[] TrackPositions,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long[]? EntityIds = null);
 // Width/Height are H/V storage dimensions for hv; X/Y bounds for obsolete prototypeXY.

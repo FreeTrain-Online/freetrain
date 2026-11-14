@@ -1,4 +1,9 @@
-# Wire protocol 10
+# Wire protocol 11
+
+Protocol 11 makes unchanged city heat a delta reference and reduces repeated
+client validation and static renderer invalidation. Server and client must be
+updated together; earlier protocol clients receive HTTP 426. Saves remain Save 11.
+See [live performance changes](../../doc/web-live-performance.md).
 
 P7-05 adds strict city state, producer provenance and construction cancellation
 through **Save11/protocol10**. See the [city boundary](../../doc/web-parity-city-transport.md).
@@ -14,7 +19,7 @@ coordinates and counts are bounded JSON integers; money, ticks, epochs,
 revisions, input order, and event order are decimal strings. Consumers compare
 those using `BigInt` or `long`, never lexicographic or floating-point ordering.
 
-Versions are independent: protocol **10**, default content `reference-spatial-content-2`, canonical **Save 11**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
+Versions are independent: protocol **11**, default content `reference-spatial-content-2`, canonical **Save 11**. Online prototype Save 1 is retired. The explicit historical regression harness still identifies `prototype-content-1`.
 Join conveys server incarnation, participant/session identity, server-assigned role,
 epoch and initial snapshot. A `metadataOnly=true` HTTP bootstrap returns `sessionOffer` without world geometry; large-world bootstrap always uses this bounded offer. Commands cannot choose participant identity or authority.
 
@@ -87,7 +92,7 @@ browser validates car counts/headings and the selected installed profile before
 applying reads. Source canonical geometry has shared fixtures separate from that
 compatibility world. Protocol-2 originals are preserved in `historical/v2`.
 
-`POST /api/spatial/preview?protocolVersion=10&contentVersion=reference-spatial-content-2`
+`POST /api/spatial/preview?protocolVersion=11&contentVersion=reference-spatial-content-2`
 accepts a `SpatialQuery` and returns a `SpatialPreview` (both defined in the schema).
 Any authenticated role can use it. Expected epoch, position, nullable anchor and
 snap 0/4/8 select a checked read-only calculation. The result carries world
@@ -296,7 +301,7 @@ Clients discard old epochs, events at/before the baseline and duplicate ordered
 identities. Reconnect obtains a new baseline. Local gesture/sound/visibility/
 viewport controls cannot affect simulation. See [implementation and verification](../../doc/web-parity-departure-bells.md).
 
-P6-23 adds `POST /api/station/information?protocolVersion=10&contentVersion=mixed-railway-content-1`.
+P6-23 adds `POST /api/station/information?protocolVersion=11&contentVersion=mixed-railway-content-1`.
 The read-only `StationInformationQuery` carries expected world epoch, session
 revision and absolute minute plus station/platform/train IDs. By default these
 are exact fences. Optional `latest:true` instead accepts an earlier requested

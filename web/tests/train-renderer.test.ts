@@ -100,7 +100,12 @@ Deno.test('motion/reversal changes only dependent columns, reuses decoded assets
  const train=after.mixed!.fleet!.trains[0],car=train.cars[0];car.state.location={...destination.position};
  after.mixed!.voxels.at(-1)!.traffic!.car=after.mixed!.voxels[0].traffic!.car;after.mixed!.voxels[0].traffic!.car=null;
  const moved=await TerrainScene.prepare(after,catalog,images,day,5,before);assert.equal(decoded.size,count);
- const columns=moved.changedColumns(before)!;assert.equal(columns.length,2);
+ // An ordinary car move must not inspect the complete terrain operation list
+ // to rediscover unchanged static grid masks (the large-map regression).
+ const originalOperations=before.operations;let reads=0;
+ Object.defineProperty(before,'operations',{configurable:true,get(){reads++;return originalOperations;}});
+ const columns=moved.changedColumns(before)!;assert.equal(columns.length,2);assert.equal(reads,0);
+ Object.defineProperty(before,'operations',{configurable:true,writable:true,value:originalOperations});
  const old=before.operations.find(o=>o.target.kind==='train'&&o.target.carId==='19');
  assert.equal(moved.operations.find(o=>o.target.kind==='train'&&o.target.carId==='19'),old);
  const outside=structuredClone(after);outside.mixed!.voxels.at(-1)!.traffic!.car=null;outside.mixed!.fleet!.trains[0].cars[0].state.kind='outside';

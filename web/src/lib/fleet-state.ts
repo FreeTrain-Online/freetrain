@@ -20,7 +20,7 @@ export function validFleet(read:Snapshot):boolean {
  const m=read.mixed!,f=m.fleet;if(!f)return true;
  if(f.colorTest && (BigInt(f.colorTest.revision)<1n || !profile.colorTemplates.some(t=>equal(t,f.colorTest!.template)) || ![f.colorTest.body,f.colorTest.line1,f.colorTest.line2,f.colorTest.line3].every(c=>c.length===7&&/^#[0-9a-f]{6}$/.test(c))))return false;
  if(f.trains.reduce((n,t)=>n+t.cars.length,0)>1024)return false;
- const spatial=new Set(read.entities!.map(e=>e.id)),ids=new Set<string>();
+ const spatial=entitiesById(read.entities!),ids=new Set<string>();
  for(const row of [...f.trains,...f.trains.flatMap(t=>t.cars),...f.groups,...f.controllers]){
   if(ids.has(row.id)||spatial.has(row.id)||BigInt(row.id)>=BigInt(m.nextEntityId))return false;ids.add(row.id);
  }
@@ -129,3 +129,4 @@ export function effectiveFleetGroupController(fleet:ReadFleet,groupId:string) {
  }
  return undefined;
 }
+import {entitiesById} from './entity-index.ts';

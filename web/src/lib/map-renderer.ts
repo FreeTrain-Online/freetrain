@@ -35,6 +35,7 @@ export async function loadImages() {
   return images;
 }
 export class MapRenderer {
+  private visualKey='';
   private motion=new TrainMotionPlayer();
   private compositor=new TrainCompositor();
   private renderCatalog?:RenderCatalog;
@@ -65,6 +66,12 @@ export class MapRenderer {
   setRead(read: ReadState) {
     this.motion.update(read,performance.now());
     this.read=read;
+    this.visualKey=JSON.stringify([read.terrain?.geometryRevision,
+      read.mixed&&[read.mixed.voxels,read.mixed.slopes,read.mixed.speedLimits,
+        read.mixed.stationGraph?.buildings.map(b=>[b.id,b.definition,b.location]),
+        read.mixed.stationGraph?.platforms.map(p=>[p.id,p.kind,p.location,p.direction,p.length,p.roof,p.yards]),
+        read.mixed.city?.structures.map(b=>[b.id,b.definition,b.location,b.height,b.construction,b.halves]),
+        read.mixed.fleet?.trains.map(t=>[t.id,t.isReversed,t.cars.map(c=>[c.id,c.definition,c.state])])]]);
     delete this.canvas.dataset.demoTrain;delete this.canvas.dataset.demoLoop;
     this.space=mapSpace(read.map);
     this.buildings=new Map(read.buildings.map(building=>[building.id,building]));
@@ -109,8 +116,7 @@ export class MapRenderer {
       const read=this.read,variant={season:options.winter?'winter' as const:options.season??'spring',night:options.night,drawPoles:options.drawPoles!==false,drawSpeedLimits:options.drawSpeedLimits!==false};
       const worldKey=JSON.stringify([read.worldEpoch,read.requiredPacks,read.map,decorative]);
       const presentationKey=JSON.stringify([worldKey,variant,options.heightCut,read.mixed?.fleet?.colorTest]);
-      const key=JSON.stringify([presentationKey,read.terrain!.geometryRevision,read.mixed?.geometryRevision,
-        read.mixed?.fleet?.colorTest,read.mixed?.fleet?.trains.map(t=>[t.isReversed,t.cars])]);
+      const key=JSON.stringify([presentationKey,this.visualKey]);
       if(this.terrainKey!==key) {
         this.canvas.dataset.presentation='pending';
         // Keep the front buffer during edits and sprite/cut changes in this world.

@@ -52,6 +52,7 @@ export function inPolygon(p:Point,points:readonly Point[]):boolean {
 /** A scene is built from a validated immutable read. No random draws or world
  * mutation. Operations preserve the source v/h/z traversal and sprite anchors. */
 export class TerrainScene {
+  private gridBuckets=new Map<string,string>();
   private bounds=new WeakMap<Operation,Bounds>();
   private polygonKeys=new WeakMap<Operation,string>();
   private polygons={rasters:new Map<string,{image:OffscreenCanvas;bytes:number}>(),bytes:0};
@@ -114,7 +115,8 @@ export class TerrainScene {
     const reusable=railway&&previous?.cacheIdentity===cacheIdentity?previous.cellCache:undefined;
     const cellCache=new Map<number,{signature:string;operations:Operation[]}>();
     const finish=(scene:TerrainScene)=>{
-      scene.gridKey=gridKey;scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;scene.stations=stations;scene.city=city;
+      scene.gridKey=gridKey;scene.gridBuckets=new Map([...gridBuckets].map(([k,entries])=>[k,JSON.stringify(entries.map(e=>[e.mask.key,e.mask.left,e.mask.top,e.z,e.rail]))]));
+      scene.cellCache=cellCache;scene.cacheIdentity=cacheIdentity;scene.read=read as Snapshot;scene.space=space;scene.railway=railway;scene.stations=stations;scene.city=city;
       if(previous?.cacheIdentity===cacheIdentity) {
         scene.bounds=previous.bounds;scene.polygonKeys=previous.polygonKeys;
         scene.polygons=previous.polygons;
@@ -308,9 +310,24 @@ export class TerrainScene {
     if(!this.railway&&!previous.railway)return terrainChangedColumns(previous.read,this.read);
     const terrain=this.read.terrain!.geometryRevision===previous.read.terrain!.geometryRevision?[]:terrainChangedColumns(previous.read,this.read);
     if(!terrain)return;
-    if(this.railway&&previous.railway)return [...new Set([...terrain,...this.railway.changedColumns(previous.railway),...this.stations!.changedColumns(previous.stations!),...this.city!.changedColumns(previous.city!),
-      ...previous.operations.filter(op=>'points' in op&&op.target.kind==='terrain'&&op.target.surface==='ground'&&op.color==='transparent')
-        .map(op=>previous.columnIndex(op)).filter(i=>this.gridKey?.(i)!==previous.gridKey?.(i))])];
+    if(this.railway&&previous.railway){
+      // Moving cars never alter the static ground/grid masks. Compare the small
+      // mask buckets first; only changed buckets can damage neighboring ground.
+      const candidates=new Set<number>(),space=this.space!,w=space.horizontalSize,h=space.verticalSize;
+      for(const k of new Set([...this.gridBuckets.keys(),...previous.gridBuckets.keys()])){
+        if(this.gridBuckets.get(k)===previous.gridBuckets.get(k))continue;
+        const [bx,by]=k.split(',').map(Number),corners=[];
+        // terrainMasks tests a ground diamond from (-2,-2) to (34,18).
+        // Project the expanded bucket at both extreme ground heights. Storage
+        // coordinates are affine apart from rounding; two extra cells bound it.
+        for(const z of [0,space.levels-1])for(const x of [bx*64-34,(bx+1)*64+2])for(const y of [by*64-18,(by+1)*64+2])corners.push(space.storage(space.pick({x,y},z)));
+        const h0=Math.max(0,Math.min(...corners.map(s=>s.h))-2),h1=Math.min(w-1,Math.max(...corners.map(s=>s.h))+2);
+        const v0=Math.max(0,Math.min(...corners.map(s=>s.v))-2),v1=Math.min(h-1,Math.max(...corners.map(s=>s.v))+2);
+        for(let v=v0;v<=v1;v++)for(let x=h0;x<=h1;x++)candidates.add(v*w+x);
+      }
+      return [...new Set([...terrain,...this.railway.changedColumns(previous.railway),...this.stations!.changedColumns(previous.stations!),...this.city!.changedColumns(previous.city!),
+        ...[...candidates].filter(i=>this.gridKey?.(i)!==previous.gridKey?.(i))])];
+    }
     if(this.railway||previous.railway)return;
     return terrain;
   }

@@ -7,6 +7,12 @@ import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
 const base=new URL('../../prototype/protocol/',import.meta.url);
 const json=async(p:string)=>JSON.parse(await Deno.readTextFile(new URL(p,base)));
 const scene=async()=>parseMessageValue(await json('fixtures/snapshot-mixed.json')) as Snapshot;
+Deno.test('mixed geometry reuse rejects removal of a natural terrain entity whose occupant remains unchanged',async()=>{
+ const before=immutable(await scene()),delta=parseMessageValue(await json('fixtures/delta-mixed.json')) as Delta;
+ assert(before.terrain!.occupants.length>0);
+ delta.removed.entityIds!.push(before.terrain!.occupants[0].entityId);
+ assert.equal(applyDelta(before,delta),undefined);
+});
 Deno.test('literal mixed Save10 schema, snapshot and complete removal delta preserve terrain, accounts and orphan piers',async()=>{
  const before=await scene(),delta=parseMessageValue(await json('fixtures/delta-mixed.json')) as Delta;
  assert(supportedIdentity(before));const next=applyDelta(immutable(before),delta);assert(next);

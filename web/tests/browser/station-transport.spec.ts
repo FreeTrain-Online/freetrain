@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, reopen and checkpoint restart',async({page,browser,baseURL,worldServer})=>{
  // P6-07/09/10 own station/platform presentation. This live-map witness keeps

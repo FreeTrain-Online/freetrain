@@ -1,3 +1,8 @@
+**Live performance — 14 November:** Protocol 11 sends unchanged city heat by
+reference, retains validated immutable world sections and limits terrain-mask
+invalidation to changed regions. Saves remain Save 11. Update server and client
+together. See [implementation and measurements](doc/web-live-performance.md).
+
 **P6 integrated acceptance — 11 November:** [Station/passenger acceptance](doc/web-parity-p6-acceptance.md) closes bundled browser/portable scope with controlled population supply. [P7/P8 handoff](doc/web-parity-p7-p8-station-handoff.md) specifies provider/listener/effect and booking/statistics consumers. Every bundled station definition now has EN/JA construction and exact reopen evidence. P7 city producers, P8 economy, P10 imports and native/optional/P11 performance gates remain open; Save10/protocol9 and limits are unchanged.
 
 **P6-27 delivery audit:** [Station content, distribution and bilingual reconciliation](doc/web-parity-station-delivery.md) binds all 99 declarations, 149 platform/passage/stair recipes, 12 operations and 78 source controls to current implementation and runtime witnesses. Save10/protocol9 remain current; real city supply, native fidelity and P11 performance gates remain open; integrated P6 acceptance is linked above.

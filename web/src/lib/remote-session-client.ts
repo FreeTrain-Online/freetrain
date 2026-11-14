@@ -10,7 +10,7 @@ import { IncompatibleWorldError, sameIdentity } from './world-identity.ts';
 import { StateAssembler } from './state-transfer.ts';
 import {sessionCloseReason} from './session-close.ts';
 
-const compatibility = 'protocolVersion=10&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility = 'protocolVersion=11&contentVersion=reference-spatial-content-2&contentVersion=prototype-content-1&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 export async function authorize(secret: string): Promise<boolean> {
   const response = await fetch('/api/access', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret }), signal: AbortSignal.timeout(5000) });
   return response.ok;
@@ -126,7 +126,7 @@ export function createRemoteSessionClient(onSound?: (event: SoundEvent | Departu
           } else if(assembly.pending)throw new Error('State interrupted');
           switch (message.type) {
             case 'join':
-              if (message.protocolVersion !== 10 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
+              if (message.protocolVersion !== 11 || !sameIdentity(bootstrap,message) || message.worldEpoch !== message.snapshot.worldEpoch) throw new Error('Compatibility mismatch');
               clearTimeout(connectionTimer); join = message; resyncing = false; attempts = 0; authorizedBefore = true; authRequiredAgain = false;
               departures.reset(message.snapshot.effectsBaseline);
               publish(message.snapshot); setStatus('ready');

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Runtime.InteropServices;
 using FreeTrain.Online.Contracts;
 
 namespace FreeTrain.Online.Persistence;
@@ -31,6 +32,15 @@ public static class StateDifference
             return after.Where(x => !old.TryGetValue(key(x), out var value) ||
                 !ReferenceEquals(value,x) && JsonSerializer.Serialize(value, Json) != JsonSerializer.Serialize(x, Json)).ToArray();
         }
+        var mixed = next.Mixed;
+        long? heatBase = null;
+        if (previous.Mixed?.City?.Heat is {} oldHeat && mixed?.City is {} city && SameHeat(oldHeat, city.Heat))
+        {
+            // Delta-only reference. Snapshots and saves always keep
+            // complete buffers. Bind reuse to this peer's exact predecessor.
+            mixed = mixed with { City = city with { Heat = new(city.Heat.HorizontalSize, city.Heat.VerticalSize, [], [], []) } };
+            heatBase = previous.Revision;
+        }
         return new(next.WorldEpoch, previous.Revision, next.Revision, next.Tick, next.Paused, next.Cash,
             Changed(previous.Trains, next.Trains, x => x.Id), Changed(previous.Stations, next.Stations, x => x.Id),
             Changed(previous.Buildings, next.Buildings, x => x.Id), Changed(previous.Tracks, next.Tracks, x => x.Position),
@@ -45,6 +55,13 @@ public static class StateDifference
                 terrain.NextEntityId, ReferenceEquals(previous.Terrain?.Cells, terrain.Cells) ? [] : terrain.Cells.Select((c, i) => (c, i))
                     .Where(row => previous.Terrain == null || previous.Terrain.Cells[row.i] != row.c)
                     .Select(row => new TerrainCellChangeRead(row.i, row.c.Ground, row.c.Surface)).ToArray(),
-                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), next.Mixed, next.PlaybackRate, Motion(previous, next));
+                Changed(previous.Terrain?.Occupants ?? [], terrain.Occupants, o => o.EntityId)), mixed, next.PlaybackRate, Motion(previous, next), heatBase);
     }
+    private static bool SameHeat(CityHeatRead a, CityHeatRead b) => ReferenceEquals(a,b) ||
+        a.HorizontalSize == b.HorizontalSize && a.VerticalSize == b.VerticalSize &&
+        SameBuffer(a.Q,b.Q) && SameBuffer(a.Back,b.Back) && SameBuffer(a.Rho,b.Rho);
+    // Compare exact Single bits, including signed zero, rather than JSON or
+    // numeric equality. Unchanged copied buffers remain cheap to recognize.
+    private static bool SameBuffer(float[] a, float[] b) => ReferenceEquals(a,b) ||
+        MemoryMarshal.AsBytes(a.AsSpan()).SequenceEqual(MemoryMarshal.AsBytes(b.AsSpan()));
 }

@@ -533,6 +533,10 @@
         },
         "trainMotion": {
           "$ref": "#/$defs/TrainMotion"
+        },
+        "cityHeatBaseRevision": {
+          "$ref": "#/$defs/Counter",
+          "description": "Reuse predecessor city heat at this exact base revision; dimensions must match and all three transmitted buffers must be empty. Snapshots never use this reference."
         }
       },
       "required": [
@@ -1568,7 +1572,7 @@
           "const": "join"
         },
         "protocolVersion": {
-          "const": 10
+          "const": 11
         },
         "contentVersion": {
           "type": "string",
@@ -2364,7 +2368,7 @@
           "const": "sessionOffer"
         },
         "protocolVersion": {
-          "const": 10
+          "const": 11
         },
         "contentVersion": {
           "type": "string",

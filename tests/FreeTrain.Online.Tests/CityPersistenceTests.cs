@@ -13,6 +13,34 @@ namespace FreeTrain.Online.Tests;
 
 public class CityPersistenceTests
 {
+    [Fact]
+    public void Heat_deltas_reference_only_exact_unchanged_buffers_and_never_mutate_snapshots()
+    {
+        var before=MixedWire.Snapshot(Fixture(),7);
+        var heat=before.Mixed!.City!.Heat;
+        var copied=heat with {Q=[..heat.Q],Back=[..heat.Back],Rho=[..heat.Rho]};
+        var next=before with {Revision=before.Revision+1,Mixed=before.Mixed with {City=before.Mixed.City with {Heat=copied}}};
+        var delta=StateDifference.Between(before,next);
+        Assert.Equal(before.Revision,delta.CityHeatBaseRevision);
+        Assert.Empty(delta.Mixed!.City!.Heat.Q);Assert.Empty(delta.Mixed.City.Heat.Back);Assert.Empty(delta.Mixed.City.Heat.Rho);
+        Assert.NotEmpty(next.Mixed!.City!.Heat.Q);Assert.NotEmpty(before.Mixed.City.Heat.Q);
+        Assert.Same(copied,next.Mixed.City.Heat);
+        var options=WireJson.CreateOptions();
+        Assert.True(JsonSerializer.Serialize<WireMessage>(delta,options).Length<JsonSerializer.Serialize<WireMessage>(next,options).Length);
+        Assert.Equal(delta.CityHeatBaseRevision,Assert.IsType<DeltaMessage>(JsonSerializer.Deserialize<WireMessage>(JsonSerializer.Serialize<WireMessage>(delta,options),options)).CityHeatBaseRevision);
+        foreach(var buffer in new[]{"q","back","rho"})
+        {
+            var changed=copied with {Q=[..copied.Q],Back=[..copied.Back],Rho=[..copied.Rho]};
+            var values=buffer=="q"?changed.Q:buffer=="back"?changed.Back:changed.Rho;values[^1]+=1;
+            var modified=next with {Mixed=next.Mixed with {City=next.Mixed.City with {Heat=changed}}};
+            var full=StateDifference.Between(before,modified);
+            Assert.Null(full.CityHeatBaseRevision);Assert.Same(changed,full.Mixed!.City!.Heat);
+        }
+        var negativeZero=copied with {Q=[..copied.Q]};negativeZero.Q[^1]=-0.0f;
+        Assert.Null(StateDifference.Between(before,next with {Mixed=next.Mixed with {City=next.Mixed.City with {Heat=negativeZero}}}).CityHeatBaseRevision);
+        Assert.Null(StateDifference.Between(before with {Mixed=null},next).CityHeatBaseRevision);
+        Assert.Throws<ArgumentException>(()=>StateDifference.Between(before,next with {WorldEpoch=8}));
+    }
     static RailwayProfile Rail=>RailwayProfiles.Bundled;
     static CityProfile City=>Rail.City!;
     static CityStructureDefinition Definition=>City.Structures.First(d=>d.Kind==CityStructureKind.Fixed&&d.SizeX==1&&d.SizeY==1&&d.MinimumHeight==1&&d.Population!=null&&!d.ComputerCannotBuild);
@@ -69,7 +97,7 @@ public class CityPersistenceTests
             var successor=before.Successor(before.Revision,removed.Construction,before.ConstructionMode,removed.Random,removed.Clock);
             File.WriteAllText(path+".delta.json",JsonSerializer.Serialize<WireMessage>(StateDifference.Between(MixedWire.Snapshot(before,1),MixedWire.Snapshot(successor,1)),WireJson.CreateOptions()));
         }
-        Assert.Equal(11,SaveCodec.Version);Assert.Equal(10,ProtocolIdentity.Version);
+        Assert.Equal(11,SaveCodec.Version);Assert.Equal(11,ProtocolIdentity.Version);
         Assert.Equal(bytes,SaveCodec.Write(after));
         Assert.Equal(new long[]{1,2,3,5},after.World.Stations!.Listeners.Single(l=>l.ProviderId==10).Stations);
         Assert.DoesNotContain(10,after.World.Stations!.ListenerMemberships.SingleOrDefault(m=>m.StationId==5)?.Providers??[]);

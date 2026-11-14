@@ -1,4 +1,6 @@
 import {cityOwners,validCitySuccessor} from './city-state.ts';
+import {retainUnchanged} from './immutable-sharing.ts';
+import {entitiesById} from './entity-index.ts';
 import {passagePath} from './passage-edit.ts';
 import {validStationSuccessor} from './station-state.ts';
 import {validTrainMotion} from './train-motion-contract.ts';
@@ -120,6 +122,16 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   const mixed=isMixedWorld(state);
   const terrain=isTerrainWorld(state)||mixed;
   if(mixed!==!!delta.mixed||mixed&&BigInt(delta.tick)<BigInt(state.tick))return;
+  // Delta-only heat reuse. Never publish the empty wire
+  // placeholder or infer reuse from missing/malformed buffers.
+  if(delta.cityHeatBaseRevision!==undefined){
+    const before=(state as Snapshot).mixed?.city?.heat,after=delta.mixed?.city?.heat;
+    if(!mixed||delta.cityHeatBaseRevision!==state.revision||!before||!after||
+      after.horizontalSize!==before.horizontalSize||after.verticalSize!==before.verticalSize||
+      after.q.length||after.back.length||after.rho.length||!Object.isFrozen(state)||!validSnapshot(state as Snapshot))return;
+    delta={...delta,mixed:{...delta.mixed!,city:{...delta.mixed!.city!,heat:before}}};
+  }
+  if(mixed&&Object.isFrozen(state))delta={...delta,mixed:retainUnchanged(state.mixed,delta.mixed)};
   if((isReferenceWorld(state)||terrain)&&(!delta.entities||!delta.removed.entityIds))return;
   if(!isReferenceWorld(state)&&!terrain&&(delta.entities!==undefined||delta.removed.entityIds!==undefined))return;
   if(delta.entities&&(new Set(delta.entities.map(e=>e.id)).size!==delta.entities.length||
@@ -152,7 +164,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.terrain.waterLevel!==state.terrain.waterLevel||delta.terrain.constructionMode!==state.terrain.constructionMode)&&
       BigInt(delta.terrain.geometryRevision)<=BigInt(state.terrain.geometryRevision))return;
   } else if(delta.terrain!==undefined)return;
-  if((!mixed||JSON.stringify(delta.mixed)===JSON.stringify(state.mixed))&&terrain&&delta.terrain&&state.terrain&&delta.entities!.length===0&&delta.removed.entityIds!.length===0&&
+  if((!mixed||delta.mixed===state.mixed)&&terrain&&delta.terrain&&state.terrain&&delta.entities!.length===0&&delta.removed.entityIds!.length===0&&
     delta.terrain.cells.length===0&&delta.terrain.occupants.length===0&&
     delta.terrain.geometryRevision===state.terrain.geometryRevision&&delta.terrain.nextEntityId===state.terrain.nextEntityId&&
     delta.terrain.waterLevel===state.terrain.waterLevel&&delta.terrain.constructionMode===state.terrain.constructionMode&&
@@ -162,7 +174,7 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
     // never clone or revalidate millions of terrain cells.
     if(!frozenObjects.has(state)||!validatedReads.has(state)){if(!validSnapshot(state as Snapshot))return;}
     if(BigInt(delta.tick)<0n||BigInt(delta.tick)>maximumGameMinute||delta.cash!==(mixed?state.cash:'0')||typeof delta.paused!=='boolean')return;
-    if(mixed&&(JSON.stringify(delta.mixed)!==JSON.stringify(state.mixed)||
+    if(mixed&&(delta.mixed!==state.mixed||
       state.mixed?.queue?.pending.some(a=>BigInt(a.dueMinute)<=BigInt(delta.tick))))return;
     const next=immutable({...state,revision:delta.revision,tick:delta.tick,paused:delta.paused,cash:delta.cash,trainMotion:delta.trainMotion,...(delta.playbackRate !== undefined || state.playbackRate !== undefined ? {playbackRate:delta.playbackRate ?? 1} : {})});
     shareTerrainValidation(state,next);shareSnapshotValidation(state,next);validatedReads.add(next);return next;
@@ -206,9 +218,9 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       before.queue&&after.queue&&BigInt(after.queue.nextOrder)<BigInt(before.queue.nextOrder))return;
     if(BigInt(after.nextEntityId)<BigInt(before.nextEntityId)||BigInt(after.geometryRevision)<BigInt(before.geometryRevision))return;
     if(after.accounts.initialCash!==before.accounts.initialCash||after.accounts.bankruptcyIncrement!==before.accounts.bankruptcyIncrement||
-      after.accounts.transactions.length<before.accounts.transactions.length||before.accounts.transactions.some((t,i)=>JSON.stringify(t)!==JSON.stringify(after.accounts.transactions[i])))return;
-    const old=new Map(state.entities!.map(e=>[e.id,e]));
-    const terrainIds=new Set(state.terrain!.occupants.map(o=>o.entityId)),nextTerrainIds=new Set(next.terrain!.occupants.map(o=>o.entityId));
+      after.accounts.transactions.length<before.accounts.transactions.length||before.accounts.transactions!==after.accounts.transactions&&before.accounts.transactions.some((t,i)=>t!==after.accounts.transactions[i]&&JSON.stringify(t)!==JSON.stringify(after.accounts.transactions[i])))return;
+    const old=entitiesById(state.entities!);
+    const terrainIds={has:(id:string)=>!!terrainById(state.terrain!.occupants,id,o=>o.entityId)},nextTerrainIds={has:(id:string)=>!!terrainById(next.terrain!.occupants,id,o=>o.entityId)};
     for(const e of delta.entities!){const b=old.get(e.id);
       if(!b&&BigInt(e.id)<BigInt(before.nextEntityId)||b&&(terrainIds.has(e.id)!==nextTerrainIds.has(e.id)||
         !terrainIds.has(e.id)&&JSON.stringify(b.definition)!==JSON.stringify(e.definition)))return;
@@ -217,13 +229,18 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
       delta.entities!.some(e=>terrainIds.has(e.id)||nextTerrainIds.has(e.id))||delta.removed.entityIds!.some(id=>terrainIds.has(id))||
       delta.terrain!.waterLevel!==state.terrain!.waterLevel;
     if(terrainChanged&&BigInt(delta.terrain!.geometryRevision)<=BigInt(state.terrain!.geometryRevision))return;
-    if((JSON.stringify({...before,queue:undefined})!==JSON.stringify({...after,queue:undefined})||terrainChanged||delta.entities!.length||delta.removed.entityIds!.length||
+    // retainUnchanged has already compared all received fields by value and
+    // preserved equal subtrees. Comparing identities here never serializes heat.
+    const mixedChanged=Object.keys({...before,...after}).some(k=>k!=='queue'&&!Object.is(before[k as keyof typeof before],after[k as keyof typeof after]));
+    if((mixedChanged||terrainChanged||delta.entities!.length||delta.removed.entityIds!.length||
         delta.terrain!.constructionMode!==state.terrain!.constructionMode)&&BigInt(after.geometryRevision)<=BigInt(before.geometryRevision))return;
     const priorVoxels=new Map<string,unknown[]>(),nowVoxels=new Map<string,unknown[]>();
     for(const [rows,index] of [[before.voxels,priorVoxels],[after.voxels,nowVoxels]] as const)
       for(const v of rows){const group=index.get(v.ownerId)??[];group.push(v);index.set(v.ownerId,group);}
     // Payload changes require a revised owner even when its footprint is unchanged.
-    for(const e of next.entities!){const b=old.get(e.id);if(!b||e.revision!==b.revision)continue;
+    const nextOwners=entitiesById(next.entities!);
+    for(const id of new Set([...priorVoxels.keys(),...nowVoxels.keys(),...before.slopes.map(s=>s.entityId),...after.slopes.map(s=>s.entityId)])){
+      const e=nextOwners.get(id),b=old.get(id);if(!e||!b||e.revision!==b.revision)continue;
       const prior=priorVoxels.get(e.id)??[],now=nowVoxels.get(e.id)??[];
       if(JSON.stringify(prior)!==JSON.stringify(now)||JSON.stringify(before.slopes.find(s=>s.entityId===e.id))!==JSON.stringify(after.slopes.find(s=>s.entityId===e.id)))return;
     }

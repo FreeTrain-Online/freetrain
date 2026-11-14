@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
-const compatibility='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility='protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get('/api/bootstrap?'+compatibility)).json()).snapshot;
 test('P7-06 EN/JA peers receive real heat diffusion once and reopen/restart the exact buffers and timer',async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);

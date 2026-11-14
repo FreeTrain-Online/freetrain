@@ -9,6 +9,39 @@ import {cityQuery,currentCityDraft} from '../src/lib/city-edit.ts';
 import {StateAssembler,stateChunkBytes} from '../src/lib/state-transfer.ts';
 import type {Snapshot,Delta,StateChunk} from '../src/generated/contracts.ts';
 const snapshot=()=>parseMessageValue(structuredClone(literal)) as Snapshot;
+Deno.test('heat references reconstruct the exact immutable predecessor and reject wrong bases, dimensions, payloads and incomplete snapshots',()=>{
+ const before=immutable(snapshot()),full=structuredClone(removal) as Delta;
+ const compact=structuredClone(full);compact.cityHeatBaseRevision=before.revision;
+ const heat=compact.mixed!.city!.heat;heat.q=[];heat.back=[];heat.rho=[];
+ const next=applyDelta(before,parseMessageValue(compact) as Delta);assert(next);
+ assert.deepEqual(next,applyDelta(before,parseMessageValue(full) as Delta));
+ assert.equal(next.mixed!.city!.heat,before.mixed!.city!.heat);
+ assert.deepEqual(compact.mixed!.city!.heat.q,[],'The wire message is never mutated');
+ for(const mutate of [
+  (d:Delta)=>d.cityHeatBaseRevision='0',
+  (d:Delta)=>d.worldEpoch='99',
+  (d:Delta)=>d.mixed!.city!.heat.horizontalSize++,
+  (d:Delta)=>d.mixed!.city!.heat.q.push(1),
+  (d:Delta)=>delete d.mixed!.city,
+  (d:Delta)=>delete d.cityHeatBaseRevision,
+ ]){const bad=structuredClone(compact);mutate(bad);assert.equal(applyDelta(before,bad),undefined);}
+ const incomplete=structuredClone(literal);incomplete.mixed.city.heat.q=[];incomplete.mixed.city.heat.back=[];incomplete.mixed.city.heat.rho=[];
+ assert.throws(()=>parseMessageValue(incomplete));
+ const changed=structuredClone(full);changed.mixed!.city!.heat.q[0]+=1;
+ const replaced=applyDelta(before,parseMessageValue(changed) as Delta);assert(replaced);assert.notEqual(replaced.mixed!.city!.heat,before.mixed!.city!.heat);
+ changed.mixed!.city!.heat.rho[0]=-1;assert.equal(applyDelta(before,changed),undefined);
+});
+Deno.test('station statistics preserve certified natural terrain while changed spatial owners still match full validation',()=>{
+ const before=immutable(snapshot()),d:Delta={...structuredClone(removal) as Delta,baseRevision:before.revision,revision:String(BigInt(before.revision)+1n),tick:before.tick,cash:before.cash,
+  mixed:structuredClone(before.mixed!),entities:[],removed:{trainIds:[],stationIds:[],buildingIds:[],trackPositions:[],entityIds:[]},terrain:{...structuredClone(removal.terrain),cells:[],occupants:[]}};
+ const station=d.mixed!.stationGraph!.buildings[0];station.revision=String(BigInt(station.revision)+1n);station.imports.thisWeek++;
+ d.mixed!.geometryRevision=d.revision;d.entities=[{...structuredClone(before.entities!.find(e=>e.id===station.id)!),revision:station.revision}];
+ const next=applyDelta(before,parseMessageValue(d) as Delta);assert(next);
+ assert.equal(next.terrain!.cells,before.terrain!.cells);assert.equal(next.terrain!.occupants,before.terrain!.occupants);assert.equal(next.mixed!.city!.heat,before.mixed!.city!.heat);
+ assert.doesNotThrow(()=>parseMessageValue(structuredClone(next)));
+ const removed=structuredClone(d);removed.mixed!.city!.structures.pop();assert.equal(applyDelta(before,removed),undefined);
+ const malformed=structuredClone(d);malformed.entities![0].footprint[0].offset.x=100;assert.equal(applyDelta(before,malformed),undefined);
+});
 Deno.test('city current save/schema and snapshot retain q/back/rho, selected plan, caller, initial producer and half listener asymmetry',()=>{
  const validate=new Ajv({strict:true,validateFormats:false}).compile(schema);assert(validate(save),JSON.stringify(validate.errors));
  assert(!validate({...save,saveVersion:10}));

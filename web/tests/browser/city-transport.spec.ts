@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
-const compatibility='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const compatibility='protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get('/api/bootstrap?'+compatibility)).json()).snapshot;
 test('P7-05 EN/JA clients preserve city continuations, enforce cancellation authority, reject invalid saves and restore checkpoints',async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);
@@ -28,7 +28,7 @@ test('P7-05 EN/JA clients preserve city continuations, enforce cancellation auth
   const before=await snapshot(page),q=query(before);
   const quote=await peer.request.post('/api/city/preview?'+compatibility,{data:q});expect(quote.ok()).toBe(true);expect((await quote.json()).canCancel).toBe(true);
   expect(await snapshot(page)).toEqual(before);
-  expect((await peer.request.post('/api/city/preview?'+compatibility.replace('protocolVersion=10','protocolVersion=9'),{data:q})).status()).toBe(426);
+  expect((await peer.request.post('/api/city/preview?'+compatibility.replace('protocolVersion=11','protocolVersion=9'),{data:q})).status()).toBe(426);
   expect((await send({kind:'cancelCityConstruction',query:q},1)).code).toBe('notAuthorized');
   expect((await send({kind:'cancelCityConstruction',query:{...q,expectedRevision:String(BigInt(q.expectedRevision)+1n)}})).code).toBe('staleRevision');
   const bad=structuredClone(seed);bad.mixed.stationGraph.listeners[0].provider.input='controlled';

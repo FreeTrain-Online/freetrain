@@ -1,4 +1,5 @@
 import {cityOwners,cityProfile,validCity} from './city-state.ts';
+import {entitiesById} from './entity-index.ts';
 import {validStations,validMixedQueue} from './station-state.ts';
 import {validFleet} from './fleet-state.ts';
 import profile from '../generated/railway-profile.json' with {type:'json'};
@@ -12,15 +13,25 @@ const same=(a:Definition|null,b:Definition|null)=>a===b||!!a&&!!b&&a.packId===b.
 const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
 const maximum=9223372036854775807n,minimum=-9223372036854775808n;
 const validatedMixed=new WeakSet<object>();
+function sameTerrainData(before:Snapshot,after:Snapshot):boolean {
+ const a=before.terrain!,b=after.terrain!;
+ return before.worldEpoch===after.worldEpoch&&before.map===after.map&&a.cells===b.cells&&a.occupants===b.occupants&&
+  JSON.stringify({...a,cells:undefined,occupants:undefined})===JSON.stringify({...b,cells:undefined,occupants:undefined});
+}
 // Only reuse a certificate for immutable, already validated predecessors. These
 // comparisons cover every static field, including tunnel backups and footprints.
 function sameMovingGeometry(before:Snapshot,after:Snapshot):boolean {
- const a=before.terrain!,b=after.terrain!,old=before.entities!,now=after.entities!;
- if(before.worldEpoch!==after.worldEpoch||before.map!==after.map||a.cells!==b.cells||a.occupants!==b.occupants||
-  JSON.stringify({...a,cells:undefined,occupants:undefined})!==JSON.stringify({...b,cells:undefined,occupants:undefined})||old.length!==now.length)return false;
- if(now.some((e,i)=>e!==old[i]&&(e.id!==old[i].id||JSON.stringify({...e,revision:undefined})!==JSON.stringify({...old[i],revision:undefined}))))return false;
- const staticMixed=(m:NonNullable<Snapshot['mixed']>)=>({...m,geometryRevision:undefined,voxels:undefined,accounts:undefined,fleet:undefined,queue:undefined});
+ const old=before.entities!,now=after.entities!;
+ if(!sameTerrainData(before,after)||old.length!==now.length)return false;
+ if(now!==old&&now.some((e,i)=>e!==old[i]&&(e.id!==old[i].id||JSON.stringify({...e,revision:undefined})!==JSON.stringify({...old[i],revision:undefined}))))return false;
+ // Runtime station/city records (statistics, timers, heat, construction stages)
+ // are validated below. Only owner classification and spatial data certify the
+ // unchanged occupancy graph; removing an owner row must invalidate this path.
+ const groups=(m:NonNullable<Snapshot['mixed']>)=>[m.city?.properties,m.city?.structures,m.city?.ground,m.city?.fenceHosts,m.stationGraph?.buildings,m.stationGraph?.platforms];
+ const staticMixed=(m:NonNullable<Snapshot['mixed']>)=>[m.slopes,m.speedLimits];
  const x=before.mixed!,y=after.mixed!;
+ const prior=groups(x);
+ if(groups(y).some((rows,i)=>rows?.length!==prior[i]?.length||rows?.some((r,j)=>r.id!==prior[i]![j].id)))return false;
  if(JSON.stringify(staticMixed(x))!==JSON.stringify(staticMixed(y))||x.voxels.length!==y.voxels.length)return false;
  const staticVoxel=(v:RailwayVoxel)=>({...v,traffic:v.traffic?{...v.traffic,car:undefined}:null});
  return y.voxels.every((v,i)=>v===x.voxels[i]||JSON.stringify(staticVoxel(v))===JSON.stringify(staticVoxel(x.voxels[i])));
@@ -33,7 +44,7 @@ export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
  if(!m||!t||!read.entities||read.tracks.length||read.trains.length||read.stations.length||read.buildings.length||
     BigInt(m.geometryRevision)>BigInt(read.revision)||BigInt(m.geometryRevision)<BigInt(t.geometryRevision)||BigInt(m.nextEntityId)<BigInt(t.nextEntityId))return false;
  if(previous&&Object.isFrozen(previous)&&validatedMixed.has(previous)&&sameMovingGeometry(previous,read)) {
-  if(BigInt(read.tick)>maximumGameMinute||!validMixedAccounts(read)||!validFleet(read)||!validStations(read)||!validMixedQueue(read)||!validCity(read))return false;
+  if(BigInt(read.tick)>maximumGameMinute||!(m.accounts===previous.mixed!.accounts?read.cash===previous.cash:validMixedAccounts(read))||!validFleet(read)||!validStations(read)||!validMixedQueue(read)||!validCity(read))return false;
   shareTerrainValidation(previous,read);validatedMixed.add(read);return true;
  }
  const terrainIds=new Set(t.occupants.map(o=>o.entityId)),terrainEntities=read.entities.filter(e=>terrainIds.has(e.id));
@@ -47,7 +58,15 @@ export function validMixed(read:Snapshot,previous?:Snapshot):boolean {
    tunnelCorners.set(i,c.ne<<12|c.se<<8|c.sw<<4|c.nw);
   }
  }
- if(!validTerrain(terrainRead,tunnelCorners))return false;
+ // Mixed ownership can change while natural terrain and its tunnel boundaries
+ // stay identical. Reuse only after checking every terrain owner and backup.
+ const priorEntities=previous&&entitiesById(previous.entities!);
+ const terrainUnchanged=!!previous&&Object.isFrozen(previous)&&validatedMixed.has(previous)&&
+  sameTerrainData(previous,read)&&terrainEntities.length===t.occupants.length&&terrainEntities.every(e=>priorEntities!.get(e.id)===e)&&
+  JSON.stringify(previous.mixed!.voxels.filter(v=>v.traffic?.rail?.terrainBackup).map(v=>[v.position,v.traffic!.rail!.terrainBackup]))===
+  JSON.stringify(m.voxels.filter(v=>v.traffic?.rail?.terrainBackup).map(v=>[v.position,v.traffic!.rail!.terrainBackup]));
+ if(terrainUnchanged)shareTerrainValidation(previous!,terrainRead);
+ else if(!validTerrain(terrainRead,tunnelCorners))return false;
  shareTerrainValidation(terrainRead,read);
  const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),occupied=new Set<string>();
  const entities=new Map<string,SpatialEntity>(),owners=new Map<string,RailwayVoxel[]>(),voxels=new Map<string,RailwayVoxel>();
