@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 
 namespace FreeTrain.Online.Simulation;
 
@@ -22,6 +23,10 @@ public sealed class MixedWorld
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
     private readonly FrozenDictionary<long, SpatialEntity> entities;
+    // Share membership across replacements of the same immutable terrain. Weak
+    // keys and values containing only entities cannot retain obsolete worlds.
+    private static readonly ConditionalWeakTable<TerrainWorld, FrozenDictionary<long, SpatialEntity>> TerrainOwners = new();
+    private readonly FrozenDictionary<long, SpatialEntity> terrainOwners;
     // Each world owns a unique token. A completed replacement retains only its
     // predecessor's token, which cannot keep that world or its history alive.
     private readonly object validationIdentity = new();
@@ -51,14 +56,16 @@ public sealed class MixedWorld
         Spatial = new(terrain.Space, spatial.NextEntityId, spatial.Entities);
         this.voxels = Voxels.ToFrozenDictionary(v => v.Position);
         byOwner = Voxels.GroupBy(v => v.OwnerId).ToFrozenDictionary(g => g.Key, g => g.ToImmutableArray());
-        var terrainIds = terrain.Spatial.Entities.ToDictionary(e => e.Id);
+        terrainOwners = TerrainOwners.GetValue(terrain, static t => t.Spatial.Entities.ToFrozenDictionary(e => e.Id));
+        var matchedTerrainOwners = 0;
         slopeOwners = Slopes.ToFrozenDictionary(s => s.EntityId);
         var slopeIds = Slopes.ToDictionary(s => s.EntityId);
         entities = Spatial.Entities.ToFrozenDictionary(e => e.Id);
         foreach (var e in Spatial.Entities)
         {
-            if (terrainIds.Remove(e.Id, out var te))
+            if (terrainOwners.TryGetValue(e.Id, out var te))
             {
+                matchedTerrainOwners++;
                 if (!SameEntity(e, te) || byOwner.ContainsKey(e.Id)) throw new ArgumentException("Terrain identity was overwritten.");
                 continue;
             }
@@ -87,7 +94,7 @@ public sealed class MixedWorld
                 e.Definition != (members[0].Kind == RailwayVoxelKind.Traffic ? profile.TrafficOwner : members[0].Definition))
                 throw new ArgumentException("Invalid standalone railway owner.");
         }
-        if (terrainIds.Count != 0 || slopeIds.Count != 0 || byOwner.Keys.Any(id => !entities.ContainsKey(id)))
+        if (matchedTerrainOwners != terrainOwners.Count || slopeIds.Count != 0 || byOwner.Keys.Any(id => !entities.ContainsKey(id)))
             throw new ArgumentException("Missing mixed-world owner.");
         foreach (var v in Voxels) ValidateVoxel(v);
         SpeedLimits=speedLimits ?? SpeedLimits.Empty;
@@ -221,7 +228,61 @@ public sealed class MixedWorld
     }
 
     private static bool SameEntity(SpatialEntity a, SpatialEntity b) =>
-        a with { Footprint = b.Footprint } == b && a.Footprint.Members.SequenceEqual(b.Footprint.Members);
+        ReferenceEquals(a, b) || a.Id == b.Id && a.Revision == b.Revision && a.Definition == b.Definition &&
+        a.Anchor == b.Anchor && a.Owned == b.Owned && a.SilentlyReclaimable == b.SilentlyReclaimable && a.Value == b.Value &&
+        (ReferenceEquals(a.Footprint, b.Footprint) || a.Footprint.Members.AsSpan().SequenceEqual(b.Footprint.Members.AsSpan()));
+
+    private bool SameRailwayPayloads(MixedWorld candidate, long id)
+    {
+        var before = byOwner.GetValueOrDefault(id, []);
+        var after = candidate.byOwner.GetValueOrDefault(id, []);
+        if (before == after) return true;
+        if (before.Length != after.Length) return false;
+        // Position is a unique, stable index in each validated world. Input
+        // enumeration order is not part of a railway owner's payload identity.
+        foreach (var voxel in before)
+            if (candidate.At(voxel.Position) != voxel) return false;
+        return true;
+    }
+
+    private HashSet<long> ChangedOwnerDependencies(MixedWorld candidate)
+    {
+        var changed = new HashSet<long>();
+        foreach (var voxel in Voxels)
+            if (candidate.At(voxel.Position) != voxel) changed.Add(voxel.OwnerId);
+        foreach (var voxel in candidate.Voxels)
+            if (At(voxel.Position) != voxel) changed.Add(voxel.OwnerId);
+        foreach (var slope in Slopes)
+            if (candidate.slopeOwners.GetValueOrDefault(slope.EntityId) != slope) changed.Add(slope.EntityId);
+        foreach (var slope in candidate.Slopes)
+            if (slopeOwners.GetValueOrDefault(slope.EntityId) != slope) changed.Add(slope.EntityId);
+
+        if (!ReferenceEquals(Stations, candidate.Stations))
+        {
+            AddStationDependencies(Stations);
+            AddStationDependencies(candidate.Stations);
+        }
+        if (!ReferenceEquals(City, candidate.City))
+        {
+            AddCityDependencies(City);
+            AddCityDependencies(candidate.City);
+        }
+        return changed;
+
+        void AddStationDependencies(StationGraph? graph)
+        {
+            if (graph == null) return;
+            foreach (var identity in graph.Identities) changed.Add(identity.Id);
+            foreach (var passage in graph.Passages) changed.Add(passage.TrafficOwnerId);
+            foreach (var listener in graph.Listeners) changed.Add(listener.ProviderId);
+        }
+        void AddCityDependencies(CityGraph? graph)
+        {
+            if (graph == null) return;
+            foreach (var identity in graph.Identities) changed.Add(identity.Id);
+            foreach (var fence in graph.State.Fences) changed.Add(fence.HostOwnerId);
+        }
+    }
 
     // Candidate validation and identity checks finish before a replacement is returned.
     public MixedWorld Replace(long expectedRevision, TerrainWorld terrain, SpatialState spatial,
@@ -257,30 +318,30 @@ public sealed class MixedWorld
             if (!terrain.IsValidatedSuccessorOf(Terrain))
                 Terrain.Replace(Terrain.Revision, terrain.Cells, terrain.WaterLevel, terrain.Spatial.Capture(), terrain.Occupants, terrain.TunnelBackups);
         }
-        var old = Spatial.Entities.ToDictionary(e => e.Id);
-        var oldTerrainIds = Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
-        var newTerrainIds = terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
+        var changedDependencies = ChangedOwnerDependencies(candidate);
         foreach (var e in candidate.Spatial.Entities)
         {
-            if (!old.TryGetValue(e.Id, out var previous))
+            // Sharing an entity certifies only its own fields. Independently
+            // check every payload/dependency that can change beneath that owner.
+            if (entities.TryGetValue(e.Id, out var previous) && ReferenceEquals(e, previous) &&
+                ReferenceEquals(Terrain, terrain) && !changedDependencies.Contains(e.Id)) continue;
+            if (previous == null)
             {
                 if (e.Id < Spatial.NextEntityId || e.Revision != 0) throw new ArgumentException("Reused entity identity.");
             }
-            else if (oldTerrainIds.Contains(e.Id) != newTerrainIds.Contains(e.Id) ||
+            else if (terrainOwners.ContainsKey(e.Id) != candidate.terrainOwners.ContainsKey(e.Id) ||
                 (Stations?.IsSpatialOwner(e.Id) == true) != (candidate.Stations?.IsSpatialOwner(e.Id) == true) ||
                 (City?.IsSpatialOwner(e.Id) == true) != (candidate.City?.IsSpatialOwner(e.Id) == true) ||
                 byOwner.ContainsKey(e.Id) && e.Definition != previous.Definition)
                 throw new ArgumentException("Entity owner kind cannot be repurposed.");
             else if (e.Revision == previous.Revision)
             {
-                var before = byOwner.GetValueOrDefault(e.Id, []); var after = candidate.byOwner.GetValueOrDefault(e.Id, []);
-                if (!SameEntity(e, previous) || !before.OrderBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z)
-                    .SequenceEqual(after.OrderBy(v => v.Position.X).ThenBy(v => v.Position.Y).ThenBy(v => v.Position.Z)) ||
+                if (!SameEntity(e, previous) || !SameRailwayPayloads(candidate, e.Id) ||
                     slopeOwners.GetValueOrDefault(e.Id) != candidate.slopeOwners.GetValueOrDefault(e.Id) ||
                     Stations?.Passage(e.Id) != candidate.Stations?.Passage(e.Id) ||
                     Stations?.Provider(e.Id) != candidate.Stations?.Provider(e.Id) ||
                     candidate.City?.SameFences(City,e.Id) == false ||
-                    !(Stations?.ListenerStations(e.Id) ?? []).SequenceEqual(candidate.Stations?.ListenerStations(e.Id) ?? []))
+                    !(Stations?.ListenerStations(e.Id) ?? []).AsSpan().SequenceEqual((candidate.Stations?.ListenerStations(e.Id) ?? []).AsSpan()))
                     throw new ArgumentException("Changed entity requires revision.");
             }
             else if (e.Revision != checked(previous.Revision + 1)) throw new ArgumentException("Invalid entity revision.");

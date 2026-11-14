@@ -102,6 +102,7 @@ public sealed class CityGraph
     private readonly FrozenDictionary<long, CityGround> ground;
     private readonly FrozenSet<long> properties;
     private readonly FrozenDictionary<long,CityFenceHost> fenceHosts;
+    private readonly FrozenDictionary<long,FrozenSet<CityFence>> fencesByOwner;
     public ImmutableArray<(long Id,long Revision)> Identities { get; }
     public CityGraph(CityProfile profile, CityState state)
     {
@@ -142,6 +143,7 @@ public sealed class CityGraph
                 profile.Bindings.Single(b=>b.Reference==f.Definition).Implementation.EndsWith("FenceRemover",StringComparison.Ordinal)) ||
             state.Fences.Select(f=>(f.Location,f.Side)).Distinct().Count()!=state.Fences.Length)
             throw new ArgumentException("Invalid fence decoration.");
+        fencesByOwner=state.Fences.GroupBy(f=>f.HostOwnerId).ToFrozenDictionary(g=>g.Key,g=>g.ToFrozenSet());
         foreach(var p in state.Plans)
         {
             if(p==null || p.StationId<1 || !Enum.IsDefined(p.Phase) || !double.IsFinite(p.Strength) || p.Budget<0 ||
@@ -353,8 +355,14 @@ public sealed class CityGraph
             before.State.Producers.SingleOrDefault(p=>p.OwnerId==id)==State.Producers.SingleOrDefault(p=>p.OwnerId==id) &&
             SameFences(before,id);
     }
-    internal bool SameFences(CityGraph? before,long id) =>
-        (before?.State.Fences ?? []).Where(f=>f.HostOwnerId==id).ToHashSet().SetEquals(State.Fences.Where(f=>f.HostOwnerId==id));
+    internal bool SameFences(CityGraph? before,long id)
+    {
+        if(ReferenceEquals(this,before) || before?.State.Fences==State.Fences) return true;
+        var previous=before?.fencesByOwner.GetValueOrDefault(id);
+        var current=fencesByOwner.GetValueOrDefault(id);
+        if(ReferenceEquals(previous,current)) return true; // includes two empty memberships
+        return previous!=null && current!=null && previous.Count==current.Count && previous.SetEquals(current);
+    }
     public static CityGraph Empty(CityProfile profile,WorldSpace space) => new(profile,new([],[],[],[],[],CityHeatState.Empty(space),new(),[],[],[]));
 }
 
