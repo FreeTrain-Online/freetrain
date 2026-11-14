@@ -276,6 +276,16 @@ See the [railway capacity report](doc/web-parity-railway-capacity.md),
 performance, remaining latency issues and detailed limits. Station measurements
 use explicitly controlled population supply; evolving city providers remain P7.
 
+City buildings are available from the map's **City buildings** tool (`C`). Choose
+an authored fixed-building variant from the catalog, pick a map position or enter
+coordinates, review the server's footprint and cost, then Confirm. Construction
+advances on source workdays during 09:00–17:59 with shared time. Inspect a site
+for its actual stage progress; completed populated buildings supply nearby
+stations. Use **Remove** or the inspector's removal button to review demolition.
+English and Japanese controls, catalog text and source attribution are included.
+Variable-height and half-voxel families and automatic growth remain later P7 steps.
+See [P7-09 gameplay and verification](doc/web-parity-city-building.md).
+
 ## Parity source policy
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive

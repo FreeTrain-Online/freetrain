@@ -1004,5 +1004,20 @@
   "stationInformationLoading": "現在の駅情報を取得中…",
   "stationInformationUnavailable": "駅情報を取得できませんでした。現在の世界で再試行してください。",
   "stationPlatformLength": "ホーム長（区画）",
-  "stationObservedAt": "直近の確定情報"
+  "stationObservedAt": "直近の確定情報",
+  "cityTask": "都市の建物",
+  "cityConfirm": "建物の建設を確定",
+  "cityHelp": "建物の種類を選び、空いている場所を指定して確認・確定します。工事は共有時刻とともに進みます。",
+  "cityProgress": "建設中",
+  "cityComplete": "完成",
+  "cityRemove": "建物を撤去…",
+  "cityType": "建物",
+  "cityX": "建物 X",
+  "cityY": "建物 Y",
+  "cityLevel": "建物の高さ",
+  "cityPick": "地図で建物の位置を選択",
+  "cityLegal": "建物を配置できます",
+  "cityInvalid": "この場所には建物を配置できません",
+  "cityMissing": "建物は利用できなくなりました",
+  "cityCells": "ボクセル数"
 }

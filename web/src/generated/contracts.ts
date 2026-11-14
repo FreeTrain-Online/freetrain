@@ -29,7 +29,8 @@ export type GameDocument =
   | StationInformationQuery
   | StationInformation
   | CityQuery
-  | CityPreview;
+  | CityPreview
+  | FixedCityPreview;
 export type WireMessage =
   | Join
   | Command
@@ -288,7 +289,12 @@ export type CommandPayload =
       query: PassageQuery;
       expectedCost: Money;
     }
-  | CancelCityConstruction;
+  | CancelCityConstruction
+  | {
+      kind: "editFixedCity";
+      query: FixedCityQuery;
+      expectedCost: Money;
+    };
 
 export interface Join {
   type: "join";
@@ -1413,6 +1419,17 @@ export interface CityQuery {
   ownerId: EntityId;
   expectedOwnerRevision: Counter;
 }
+export interface FixedCityQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "place" | "remove";
+  position: Position;
+  definition: Definition | null;
+  ownerId: Counter;
+  expectedOwnerRevision: Counter;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1898,4 +1915,18 @@ export interface CityPreview {
   reason: string | null;
   cost: Counter;
   structure: CityStructure;
+}
+export interface FixedCityPreview {
+  query: FixedCityQuery;
+  legal: boolean;
+  reason: string | null;
+  cost: Money;
+  /**
+   * @maxItems 32768
+   */
+  positions: Position[];
+  /**
+   * @maxItems 24576
+   */
+  losses: RailwayLoss[];
 }

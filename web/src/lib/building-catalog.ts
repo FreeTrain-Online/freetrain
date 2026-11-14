@@ -1,3 +1,4 @@
+import {fixedCityDefinitions,fixedCityCatalog} from './fixed-city-edit.ts';
 import { stationDefinitions, stationCatalog } from './station-building-edit.ts';
 import type { RenderCatalog } from './content-recipes.ts';
 import stationaryTypes from '../generated/stationary-types.json' with { type: 'json' };
@@ -6,6 +7,7 @@ import { messages, type Locale } from './localization.ts';
 // Add categories as their construction workflows become available. Entries use
 // the same contribution identities as authoritative railway preview requests.
 export const catalogCategories = [
+  {id:'city',label:'cityTask'},
   { id: 'signal', label: 'signalTask' },
   { id: 'stationary', label: 'stationaryTask' },
   { id: 'station', label: 'stationTask' },
@@ -21,7 +23,7 @@ export const signalDirections = [
   { value: 4, label: 'signalSouth' }, { value: 6, label: 'signalWest' },
 ] as const;
 export type SignalDirection = typeof signalDirections[number]['value'];
-export const initialCatalogSelection = { signal: signalTypes[0].id, stationary: stationaryTypes[0].id, station: stationDefinitions[0].reference.recipeId };
+export const initialCatalogSelection = { city: fixedCityDefinitions[0].reference.recipeId, signal: signalTypes[0].id, stationary: stationaryTypes[0].id, station: stationDefinitions[0].reference.recipeId };
 export interface CatalogVariant {
   id: string;
   title: string;
@@ -36,6 +38,16 @@ export interface CatalogItem {
 }
 export function catalogItems(category: CatalogCategory, locale: Locale, content?: RenderCatalog): CatalogItem[] {
   const text = messages[locale];
+  if(category==='city'){
+    const groups=new Map<string,CatalogItem>();
+    for(const d of content?fixedCityCatalog(content,locale):[]){
+      const key=JSON.stringify([d.pluginId,d.title,[d.sizeX,d.sizeY].sort((a,b)=>a-b),d.minimumHeight,d.unitPrice]);
+      let group=groups.get(key);if(!group){group={id:key,title:d.title,variants:[]};groups.set(key,group);}
+      const label=String(group.variants.length+1);
+      group.variants.push({id:d.reference.recipeId,title:`${d.title} · ${label}`,label,detail:[d.orientation,`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`].filter(Boolean).join(' · '),price:Number(d.unitPrice)});
+    }
+    return [...groups.values()];
+  }
   if (category === 'signal') return signalTypes.map(type => ({ id: type.id, title: text[type.label],
     variants: [{ id: type.id, title: text[type.label], label: '', detail: text.signalDescription, price: 0 }] }));
   if (category === 'station') {
@@ -68,6 +80,7 @@ export function catalogItems(category: CatalogCategory, locale: Locale, content?
   return [...groups.values()];
 }
 export function isCatalogItem(category: CatalogCategory, id: string): boolean {
+  if(category==='city')return fixedCityDefinitions.some(d=>d.reference.recipeId===id);
   if (category === 'station') return stationDefinitions.some(type => type.reference.recipeId === id);
   return category === 'signal' ? signalTypes.some(type => type.id === id) : stationaryTypes.some(type => type.id === id);
 }

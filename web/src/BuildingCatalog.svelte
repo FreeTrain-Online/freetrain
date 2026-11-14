@@ -8,7 +8,7 @@
     { locale: Locale; category: CatalogCategory; selections: Record<CatalogCategory, string>; signalDirection: SignalDirection; pending: boolean;
       oncategory: (category: CatalogCategory) => void; onselect: (category: CatalogCategory, id: string, direction?: SignalDirection) => void; onclose: () => void } = $props();
   const text = $derived(messages[locale]);
-  let queries = $state({ signal: '', stationary: '', station: '' }), expanded = $state(false);
+  let queries = $state({ signal: '', stationary: '', station: '', city:'' }), expanded = $state(false);
   let content = $state<Awaited<ReturnType<typeof bundledCatalog>>>();
   $effect(() => { let active = true; void bundledCatalog().then(value => { if (active) content = value; }); return () => { active = false; }; });
   const items = $derived(catalogItems(category, locale, content));

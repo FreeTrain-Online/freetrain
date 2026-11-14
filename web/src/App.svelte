@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {fixedCityInspection,completedFixedCityOwner,type FixedCityInspection} from './lib/fixed-city-edit.ts';
   import { formatGameTime } from './lib/game-time.ts';
   import TrainColorControls from './TrainColorControls.svelte';
   import TrainInformation from './TrainInformation.svelte';
@@ -119,6 +120,16 @@
       previousEpoch = read.worldEpoch;
     }
   });
+  let priorCityInspection:FixedCityInspection|undefined;
+  $effect(()=>{
+    const next=read;
+    const selected=mapSelection;
+    if(next&&selected?.kind==='building'){
+      const completed=completedFixedCityOwner(priorCityInspection,next,selected.id);
+      if(completed)mapSelection={...selected,id:completed.id};
+    }
+    priorCityInspection=next&&mapSelection?.kind==='building'?fixedCityInspection(next,mapSelection.id):undefined;
+  });
   $effect(()=>{if(informationTrainId&&!read?.mixed?.fleet?.trains.some(t=>t.id===informationTrainId)&&!read?.trains.some(t=>t.id===informationTrainId))informationTrainId=undefined;});
   $effect(()=>{if(informationStationId&&!read?.mixed?.stationGraph?.buildings.some(b=>b.id===informationStationId))informationStationId=undefined;});
   function moveStation(id:string){followingTrainId=undefined;map.focusStation(id);}
@@ -167,7 +178,7 @@
     });
   }
   function showCatalog() {
-    if (tool === 'signal' || tool === 'stationary' || tool === 'station') catalogCategory = tool;
+    if (tool === 'city' || tool === 'signal' || tool === 'stationary' || tool === 'station') catalogCategory = tool;
     catalogLauncher = document.querySelector<HTMLElement>('.tool-card button') ?? undefined;
     catalogOpen = true;
   }
@@ -190,7 +201,7 @@
   }
   function requestTool(next: Tool) { request(() => {
     closeNow(); map?.activateTool(next);
-    if (tool === 'signal' || tool === 'stationary' || tool === 'station') { catalogCategory = tool; catalogOpen = true; }
+    if (tool === 'city' || tool === 'signal' || tool === 'stationary' || tool === 'station') { catalogCategory = tool; catalogOpen = true; }
   }); }
 
   async function resolveDraft(apply: boolean) {
@@ -338,6 +349,8 @@
             </form>
           {:else if cityBuilding}
             <dl class="details"><div><dt>{text.height}</dt><dd>{cityBuilding.height}</dd></div></dl>
+            <p data-testid="city-progress">{cityBuilding.construction.length ? `${text.cityProgress}: ${cityBuilding.construction.reduce((sum,v)=>sum+v.cell.state,0)}/${4*cityBuilding.construction.length}` : text.cityComplete}</p>
+            <button disabled={clockDisabled} onclick={()=>request(()=>{const p={...mapSelection!.position};panel=undefined;map.removeCity(p);})}>{text.cityRemove}</button>
             <ObjectProvenance id={cityBuilding.definition.contributionId} packId={cityBuilding.definition.packId} locale={view.locale}/>
           {:else if building}
             <dl class="details"><div><dt>{text.height}</dt><dd>{building.height}</dd></div><div><dt>{text.position}</dt><dd>{building.position.x}, {building.position.y}, {building.position.z}</dd></div></dl>

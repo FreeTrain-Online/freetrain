@@ -237,6 +237,15 @@ export function applyDelta(state: ReadState, delta: Delta): ReadState | undefine
   return validSnapshot(next)?immutable(next):undefined;
 }
 
+const validateFixedCity=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/FixedCityPreview'});
+export function parseFixedCityPreview(value:unknown):import('../generated/contracts.ts').FixedCityPreview {
+  if(!validateFixedCity(value))throw new Error('Invalid city preview');
+  const p=value as import('../generated/contracts.ts').FixedCityPreview;
+  if(BigInt(p.cost)<0n || (p.legal ? p.reason!==null||!p.positions.length : p.reason===null||p.cost!=='0'))throw new Error('Inconsistent city preview');
+  if(new Set(p.positions.map(p=>`${p.x},${p.y},${p.z}`)).size!==p.positions.length)throw new Error('Duplicate city positions');
+  return p;
+}
+
 const validateStationBuilding=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/StationBuildingPreview'});
 export function parseStationBuildingPreview(value:unknown):import('../generated/contracts.ts').StationBuildingPreview {
   if(!validateStationBuilding(value))throw new Error('Invalid station preview');

@@ -157,6 +157,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale slope preview');
       return result;
     },
+    async previewFixedCity(query:import('../generated/contracts.ts').FixedCityQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewFixedCity)throw new Error('Unavailable');
+      const result=await active.previewFixedCity(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale city preview');
+      return result;
+    },
     async previewStationBuilding(query:import('../generated/contracts.ts').StationBuildingQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewStationBuilding)throw new Error('Unavailable');

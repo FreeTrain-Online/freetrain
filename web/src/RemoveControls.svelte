@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {fixedCityAt,fixedCityQuery} from './lib/fixed-city-edit.ts';
   import { untrack } from 'svelte';
   import { primaryAction } from './lib/primary-action.ts';
   import { messages } from './lib/localization.ts';
@@ -8,23 +9,23 @@
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import type { Selection } from './lib/map-renderer.ts';
   import type { Position, RemovalPreview, RemovalQuery, StationBuildingPreview } from './generated/contracts.ts';
-  let {model,view,picked,level=$bindable(1),heightCut,onpreview,onstationpreview,onpoints,onreset,onreveal}:
-    {model:ShellModel;view:ShellState;picked?:Selection|Position;level?:number;heightCut:number;onpreview:(preview?:RemovalPreview)=>void;onstationpreview:(preview?:StationBuildingPreview)=>void;onpoints:(points:{position:Position;label:string}[])=>void;onreset:()=>void;onreveal:()=>void}=$props();
+  let {model,view,picked,level=$bindable(1),heightCut,onpreview,onstationpreview,oncitypreview,onpoints,onreset,onreveal}:
+    {model:ShellModel;view:ShellState;picked?:Selection|Position;level?:number;heightCut:number;onpreview:(preview?:RemovalPreview)=>void;onstationpreview:(preview?:StationBuildingPreview)=>void;oncitypreview:(preview?:import('./generated/contracts.ts').FixedCityPreview)=>void;onpoints:(points:{position:Position;label:string}[])=>void;onreset:()=>void;onreveal:()=>void}=$props();
   const text=$derived(messages[view.locale]);
   const blocked=$derived(view.pending||view.connection!=='ready'||view.role==='observer'||view.feedback==='unresolved');
   let mode=$state<'single'|'line'>('single'),point=$state<'from'|'to'>('from');
   let ax=$state(0),ay=$state(0),bx=$state(0),by=$state(0),hasA=$state(false),hasB=$state(false);
   let autoLevel=$state(true),autoCoordinates=true;
   let result=$state<RemovalPreview>(),stationResult=$state<StationBuildingPreview>();
-  let stationTarget=$state(false);
-  const preview=$derived(stationResult??result);
-  function currentFence(){return stationTarget?stationBuildingFence(view.read):railwayFence(view.read);}
+  let stationTarget=$state(false),cityTarget=$state(false),cityResult=$state<import('./generated/contracts.ts').FixedCityPreview>();
+  const preview=$derived(cityResult??stationResult??result);
+  function currentFence(){return stationTarget||cityTarget?stationBuildingFence(view.read):railwayFence(view.read);}
   let status=$state<'idle'|'checking'|'ready'|'failed'|'stale'|'terrain'>('idle');
   let fence=$state<string>(),submitting=$state(false);
   let version=0,request:AbortController|undefined;
   const kinds={terrain:'terrain',forest:'removeForest',creek:'removeCreek',terrace:'removeTerraceObject',slope:'removeSlope',pier:'removePier',railway:'railway',line:'removeLine'} as const;
   const reasons={...railwayReasons,terrainRequired:'removeTerrainHelp',noRailway:'removeNoRailway',nothingRemovable:'removeNothing',operationUnavailable:'removeUnavailable',stationNotFound:'stationNotFound',unavailableStationBinding:'railBinding'} as const;
-  function reset(){version++;request?.abort();result=undefined;stationResult=undefined;fence=undefined;status='idle';onpreview();onstationpreview();}
+  function reset(){version++;request?.abort();result=undefined;stationResult=undefined;cityResult=undefined;oncitypreview();fence=undefined;status='idle';onpreview();onstationpreview();}
   function points(){onpoints([...(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]),...(mode==='line'&&hasB?[{position:{x:bx,y:by,z:level},label:'B'}]:[])]);}
   function edit(){reset();points();}
   function detectLevel(){if(autoLevel&&autoCoordinates&&view.read){const z=railwayStartLevel(view.read,{x:ax,y:ay},heightCut);if(z!==undefined){level=z;autoCoordinates=false;}}}
@@ -39,6 +40,13 @@
     if(![ax,ay,level,...(mode==='line'?[bx,by]:[])].every(Number.isSafeInteger)){status='failed';return;}
     const position={x:ax,y:ay,z:level};
     stationTarget=mode==='single'&&!!stationBuildingAt(read,position);
+    cityTarget=mode==='single'&&!!fixedCityAt(read,position);
+    if(cityTarget){
+      const query=fixedCityQuery(read,position,null,true);if(!query)return;
+      fence=currentFence();status='checking';request=new AbortController();const id=version;
+      try{const p=await model.previewFixedCity(query,request.signal);if(id!==version||fence!==currentFence()||blocked)return;cityResult=p;status='ready';oncitypreview(p);}catch{if(id===version)status='failed';}
+      return;
+    }
     if(stationTarget){
       const query=stationBuildingQuery(read,position,null,true);
       if(!query){status='terrain';return;}
@@ -65,7 +73,7 @@
   async function commit(){
     if(blocked||status!=='ready'||!preview?.legal||fence!==currentFence())return;
     const id=version;submitting=true;
-    const accepted=await model.send(stationResult?{kind:'editStationBuilding',query:stationResult.query,expectedCost:stationResult.cost}:{kind:'removeObject',query:result!.query});submitting=false;
+    const accepted=await model.send(cityResult?{kind:'editFixedCity',query:cityResult.query,expectedCost:cityResult.cost}:stationResult?{kind:'editStationBuilding',query:stationResult.query,expectedCost:stationResult.cost}:{kind:'removeObject',query:result!.query});submitting=false;
     if(id!==version)return;
     if(accepted)cancelDraft();else {reset();status='stale';}
   }
@@ -84,7 +92,7 @@
     if(fence&&fence!==current&&!submitting){reset();status='stale';}
     if(view.connection!=='ready'||view.role==='observer')untrack(()=>cancelDraft());
   });
-  $effect(()=>()=>{version++;request?.abort();onpreview();onstationpreview();onpoints([]);});
+  $effect(()=>()=>{version++;request?.abort();onpreview();onstationpreview();oncitypreview();onpoints([]);});
 </script>
 
 <section class="tool-card track-task remove-task" use:primaryAction aria-label={text.removeTool}>
@@ -111,7 +119,7 @@
     <button disabled={blocked||status==='checking'}>{text.previewRemoval}</button>
   </form>
   <p role="status" data-testid="remove-status">{status==='checking'?text.checkingGeometry:status==='failed'?text.geometryFailed:status==='stale'?text.removeStale:status==='terrain'?text.removeTerrainHelp:preview?preview.legal?text.removeReady:text[reasons[preview.reason as keyof typeof reasons]??'removeUnavailable']:text[mode==='line'?(point==='from'?'railPickFrom':'railPickTo'):'removePick']}</p>
-  {#if hasA}<p data-testid="remove-target">{stationResult?text.stationBuildingTab:result?text[kinds[result.objectKind]]:text[mode==='line'?'removeLine':'removeSingle']} · {ax}, {ay}, {level}{#if mode==='line'&&hasB} → {bx}, {by}, {level}{/if}</p>{/if}
+  {#if hasA}<p data-testid="remove-target">{cityResult?text.cityTask:stationResult?text.stationBuildingTab:result?text[kinds[result.objectKind]]:text[mode==='line'?'removeLine':'removeSingle']} · {ax}, {ay}, {level}{#if mode==='line'&&hasB} → {bx}, {by}, {level}{/if}</p>{/if}
   {#if preview?.positions.length}
     <details class="rail-losses"><summary>{text.removeAffected} ({preview.positions.length})</summary><ul>{#each preview.positions as p}<li>{p.x}, {p.y}, {p.z}</li>{/each}</ul></details>
   {/if}
@@ -121,5 +129,5 @@
   {#if stationResult}<p data-testid="station-cost">{text.cornerCost}: ¥{BigInt(stationResult.cost).toLocaleString(view.locale)} · {text.stationCells}: {stationResult.positions.length}</p>{/if}
   {#if level>heightCut}<button onclick={onreveal}>{text.revealPreview}</button>{/if}
   {#if !['idle','accepted','waiting'].includes(view.feedback)}<p>{text[view.feedback]}</p>{/if}
-  <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!preview?.legal} onclick={commit}>{text.confirmRemoval}</button><button disabled={view.pending||!hasA&&!hasB&&status==='idle'} onclick={cancelDraft}>{text.cancelPreview}</button></div>
+  <div class="form-actions">{#if cityResult}<p style="flex-basis:100%;margin:0 0 4px" data-testid="city-remove-cost">{text.cornerCost}: ¥{BigInt(cityResult.cost).toLocaleString(view.locale)}</p>{/if}<button class="primary" disabled={blocked||status!=='ready'||!preview?.legal} onclick={commit}>{text.confirmRemoval}</button><button disabled={view.pending||!hasA&&!hasB&&status==='idle'} onclick={cancelDraft}>{text.cancelPreview}</button></div>
 </section>

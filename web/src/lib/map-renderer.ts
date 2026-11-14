@@ -1,6 +1,7 @@
 import {passageGhost} from './passage-edit.ts';
 import {widePlatformGhost} from './wide-platform-edit.ts';
 import {thinPlatformGhost} from './thin-platform-edit.ts';
+import {fixedCityDefinitions} from './fixed-city-edit.ts';
 import {stationDefinitions} from './station-building-edit.ts';
 import {TrainColorCatalog} from './train-colors.ts';
 import { TrainMotionPlayer } from './train-motion.ts';
@@ -24,7 +25,7 @@ import type { RailwayPickPolicy } from './railway-renderer.ts';
 import {stationNamePositions,type StationLabels} from './station-labels.ts';
 export type SpriteKey = keyof typeof content.sprites;
 export type Selection = SceneTarget | { kind: 'train' | 'station' | 'building' | 'track'; id: string; position: Position };
-export interface MapOptions { platformPreview?:import('./wide-platform-edit.ts').StationAccessoryPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
+export interface MapOptions { cityPreview?:import('../generated/contracts.ts').FixedCityPreview; platformPreview?:import('./wide-platform-edit.ts').StationAccessoryPreview; stationPreview?:import('../generated/contracts.ts').StationBuildingPreview; stationLabels?:StationLabels; trainLabels?:import('./train-information.ts').TrainLabels; smoothTrains?:boolean; motionTime?:number; fleetPreview?:import('../generated/contracts.ts').FleetDeploymentCar[]; terrainCorner?:Position; slopePreview?:import('../generated/contracts.ts').SlopePreview; railPreview?:import('../generated/contracts.ts').RailwayPreview; railPoints?:{position:Position;label:string}[]; drawPoles?:boolean; drawSpeedLimits?:boolean; heightCut: number; level: number; night: boolean; winter: boolean; season?:Variant['season']; demoTime?:number; recolor: boolean; selection?: Selection; preview?: Position; rectangleEnd?: Position; terrainSites?: {position:Position;skipped:boolean}[]; removalPath?:Position[]; anchor?: Position; shape: Track['shape']; remove: boolean; }
 interface Item { position: Position; kind: 'train'|'station'|'building'|'track'|'sample'; id: string; sprite?: SpriteKey; heading?: number; shape?: Track['shape']; cut?: boolean; }
 export async function loadImages() {
   const images = new Map<string, HTMLImageElement>();
@@ -200,10 +201,11 @@ export class MapRenderer {
       const limits=read.mixed?.speedLimits;
       this.canvas.dataset.speedLimitCells=String(limits?new Set([...limits.low,...limits.medium,...limits.fast].map(p=>`${p.x},${p.y},${p.z}`)).size:0);
       const platform=options.platformPreview;
-      const station=options.stationPreview;
+      const station=options.cityPreview??options.stationPreview;
       const ghost=station??platform;
+      this.canvas.dataset.cityGhostCells=String(options.cityPreview?.positions.length??0);
       this.canvas.dataset.stationGhostCells=String(ghost?.positions.length??0);
-      const stationType=stationDefinitions.find(d=>d.reference.recipeId===station?.query.definition?.recipeId);
+      const stationType=[...stationDefinitions,...fixedCityDefinitions.map(d=>({...d,height:d.minimumHeight}))].find(d=>d.reference.recipeId===station?.query.definition?.recipeId);
       const stationCap=station&&stationType&&options.heightCut!==read.map.levels-1&&options.heightCut<station.query.position.z+stationType.height;
       const ghostKey=JSON.stringify([read.worldEpoch,read.requiredPacks,ghost,variant,options.heightCut]);
       if(ghostKey!==this.stationGhostKey){

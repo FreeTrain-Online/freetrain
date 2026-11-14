@@ -89,6 +89,9 @@
     },
     {
       "$ref": "#/$defs/CityPreview"
+    },
+    {
+      "$ref": "#/$defs/FixedCityPreview"
     }
   ],
   "$defs": {
@@ -1433,6 +1436,26 @@
         },
         {
           "$ref": "#/$defs/CancelCityConstruction"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "editFixedCity"
+            },
+            "query": {
+              "$ref": "#/$defs/FixedCityQuery"
+            },
+            "expectedCost": {
+              "$ref": "#/$defs/Money"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedCost"
+          ]
         }
       ]
     },
@@ -6965,6 +6988,111 @@
           "$ref": "#/$defs/CityQuery"
         }
       }
+    },
+    "FixedCityQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "place",
+            "remove"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownerId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedOwnerRevision": {
+          "$ref": "#/$defs/Counter"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "position",
+        "definition",
+        "ownerId",
+        "expectedOwnerRevision"
+      ]
+    },
+    "FixedCityPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/FixedCityQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/Money"
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        },
+        "losses": {
+          "type": "array",
+          "maxItems": 24576,
+          "items": {
+            "$ref": "#/$defs/RailwayLoss"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "cost",
+        "positions",
+        "losses"
+      ]
     }
   }
 }

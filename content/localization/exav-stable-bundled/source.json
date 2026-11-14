@@ -1155,6 +1155,1086 @@
         "sourceSha256": "cc454610fdd1bc47b8f4cfaacdab43918d7b64917f74a10371daf55a2b518e9a"
       },
       "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{BC43CE38-601A-42c7-992A-6049CCD29B94}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{BC43CE38-601A-42c7-992A-6049CCD29B94}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{BC43CE38-601A-42c7-992A-6049CCD29B94}/group[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "コンビニ",
+      "originalTextSha256": "d15bbb2516a1113e437416ab893236488c8eab93f900010b73ac840261dbbf41",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+        "key": "plug-in/contribution:{BC43CE38-601A-42c7-992A-6049CCD29B94}/group[0]/text()",
+        "text": "Residential convenience store",
+        "sourceSha256": "55d34b488fdc9573cbd9df398bfe539559cf8d213934c7bfa73f5811c971ca73"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{BC43CE38-601A-42c7-992A-6049CCD29B94}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{BC43CE38-601A-42c7-992A-6049CCD29B94}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{BC43CE38-601A-42c7-992A-6049CCD29B94}/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "セブンイレブン",
+      "originalTextSha256": "69db8818e99923a904334dfd8b63f92fb8bd5a132ea2431569abd9a696b9ed36",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "老舗百貨店",
+      "originalTextSha256": "6d2bb272470d304a79502e43483f6fb8d41acc07e7ce73963c309eaf49be8fee",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+        "key": "plug-in/contribution:{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}/name[0]/text()",
+        "text": "Shinise Department Store",
+        "sourceSha256": "55d34b488fdc9573cbd9df398bfe539559cf8d213934c7bfa73f5811c971ca73"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{9F3E82AD-2A49-4aef-954C-E872F535B3D8}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{9F3E82AD-2A49-4aef-954C-E872F535B3D8}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{9F3E82AD-2A49-4aef-954C-E872F535B3D8}/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "分譲マンション",
+      "originalTextSha256": "189b7b31354c5a4804f6a3fb7baf515ff74b6faad7be5897cdc08a5e71020695",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+        "key": "plug-in/contribution:{9F3E82AD-2A49-4aef-954C-E872F535B3D8}/name[0]/text()",
+        "text": "Condo (2x2)",
+        "sourceSha256": "55d34b488fdc9573cbd9df398bfe539559cf8d213934c7bfa73f5811c971ca73"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{27D6D0C0-2B1A-4494-9257-14C208168075}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{27D6D0C0-2B1A-4494-9257-14C208168075}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{27D6D0C0-2B1A-4494-9257-14C208168075}/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "分譲住宅一戸建て",
+      "originalTextSha256": "ae6a7fef94a8a00a303967ad122e1fa5c25dbe34e47da620656c9eb94c3476e6",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+        "key": "plug-in/contribution:{27D6D0C0-2B1A-4494-9257-14C208168075}/name[0]/text()",
+        "text": "Single condo",
+        "sourceSha256": "55d34b488fdc9573cbd9df398bfe539559cf8d213934c7bfa73f5811c971ca73"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c477",
+      "contributionId": "{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7/name[0]/text()",
+      "sourceSha256": "ceeeec90a9cf0113dd309774800a252c3a49a3efd205856ccbaf238c97284db7",
+      "originalText": "中層雑居オフィスビル",
+      "originalTextSha256": "5baacb9316ff66031de1e775d5fd0856ec9252014d53ac747b554930ee64f316",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name[0]/text()",
+        "text": "Farmhouse (L)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.land.477/{B7C82C4E-015A-407D-9F10-5D198384B702}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{B7C82C4E-015A-407D-9F10-5D198384B702}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B7C82C4E-015A-407D-9F10-5D198384B702}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{01799382-3860-4BF6-BE11-F2E40DA093E7}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{01799382-3860-4BF6-BE11-F2E40DA093E7}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{01799382-3860-4BF6-BE11-F2E40DA093E7}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{01799382-3860-4BF6-BE11-F2E40DA093E7}/name[0]/text()",
+        "text": "Farmhouse (L)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.land.477/{F7043E4A-402D-43D1-8732-C30F52979B08}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{F7043E4A-402D-43D1-8732-C30F52979B08}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{F7043E4A-402D-43D1-8732-C30F52979B08}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(大)",
+      "originalTextSha256": "4899f3fc291e67cc6b609bed4f0e582ccece0d376196b169b6837a341c06240b",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name[0]/text()",
+        "text": "Farmhouse (M)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.land.477/{D6454FB2-A717-4862-A1B2-1A5113D686E0}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{D6454FB2-A717-4862-A1B2-1A5113D686E0}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{D6454FB2-A717-4862-A1B2-1A5113D686E0}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{238A1579-28EB-45FF-ADEC-71D65C067435}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{238A1579-28EB-45FF-ADEC-71D65C067435}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{238A1579-28EB-45FF-ADEC-71D65C067435}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+        "key": "plug-in/contribution:{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name[0]/text()",
+        "text": "Farmhouse (M)",
+        "sourceSha256": "6cd7c34f5cd1da64199cc8fb7fb3e358b83c6db433823ddd298dccf9fa74615f"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.land.477/{DC418AA8-1D26-4B85-92DD-22938607D708}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{DC418AA8-1D26-4B85-92DD-22938607D708}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DC418AA8-1D26-4B85-92DD-22938607D708}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{28548323-07D9-476F-8B91-99F033FE117F}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{28548323-07D9-476F-8B91-99F033FE117F}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{28548323-07D9-476F-8B91-99F033FE117F}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.land.477/{8D849B40-605F-4807-AB0C-5708CFA8D682}/name": {
+      "pluginId": "org.kohsuke.freetrain.land.477",
+      "contributionId": "{8D849B40-605F-4807-AB0C-5708CFA8D682}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.land.477/plugin.xml",
+      "sourceKey": "plug-in/contribution:{8D849B40-605F-4807-AB0C-5708CFA8D682}/name[0]/text()",
+      "sourceSha256": "ce1d5320499b7fcee8fa60f5b5c019afcd4f9726561c86e3c103f212a859217b",
+      "originalText": "農家(中)",
+      "originalTextSha256": "5de43f2fabb176f6d6a268abe7011022f8f146993b5239c9404444e87ca9428c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(コンテナ埠頭)",
+      "originalTextSha256": "47f2ecec4229cd6e2f55ef9cf52d013644259b1c6341a0a9f75ac256e24be7c7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group[0]/text()",
+        "text": "Container wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{24146DB8-A1CB-4355-8B26-705F2FB885D7}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(コンテナ埠頭)",
+      "originalTextSha256": "47f2ecec4229cd6e2f55ef9cf52d013644259b1c6341a0a9f75ac256e24be7c7",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group[0]/text()",
+        "text": "Container wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(鉄道桟橋)",
+      "originalTextSha256": "735a075b22f7600d7a51e38bf0afed41c77d422d692d1ccf220fb1378dcec88e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group[0]/text()",
+        "text": "Railroad pier",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{82B5ED65-8576-4494-BCD2-E2B9233FD787}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(鉄道桟橋)",
+      "originalTextSha256": "735a075b22f7600d7a51e38bf0afed41c77d422d692d1ccf220fb1378dcec88e",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group[0]/text()",
+        "text": "Railroad pier",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{E0F69A4B-A3EE-4605-8987-7E63737EA481}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(客船埠頭)",
+      "originalTextSha256": "17446d4ba16261ecd28755644412a338a75570aaeeac664c63829d6e9359c352",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group[0]/text()",
+        "text": "Passenger wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "港湾施設(客船埠頭)",
+      "originalTextSha256": "17446d4ba16261ecd28755644412a338a75570aaeeac664c63829d6e9359c352",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group[0]/text()",
+        "text": "Passenger wharf",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{32D21DEE-99A5-414F-BAF7-6BBD705A7485}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{6DFD12E5-505C-43CA-9E07-23D737D408FB}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{29D7FEFA-2491-4ED0-8479-596FD805ED03}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{76EA313D-CA8B-4C93-94FF-3452054615D4}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{76EA313D-CA8B-4C93-94FF-3452054615D4}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{76EA313D-CA8B-4C93-94FF-3452054615D4}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{76EA313D-CA8B-4C93-94FF-3452054615D4}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ayase/{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.ayase",
+      "contributionId": "{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group[0]/text()",
+      "sourceSha256": "a017e135cc7c6a9178d70e50c7913ff33d1af353b0a8e2e3e9ccc1cd7fcf68a0",
+      "originalText": "倉庫",
+      "originalTextSha256": "2113227fb3b5106f7eea972fd7ea9fa0e217bcb7436e3646c5b3655a23344348",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ayase/plugin.xml",
+        "key": "plug-in/contribution:{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group[0]/text()",
+        "text": "Warehouses",
+        "sourceSha256": "0c9a33cbe2cdf31764d496351838a4fb7df42b289c4d659423a5c3a1c1acfc09"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{628C6F59-9B1A-48a8-8815-48AC0D15765E}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{628C6F59-9B1A-48a8-8815-48AC0D15765E}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{628C6F59-9B1A-48a8-8815-48AC0D15765E}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "お寺",
+      "originalTextSha256": "110e523e13f7d9be83ed3bc58b85f95e6a47c46937f0a3afb9aa1cdff7a7d328",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+        "key": "plug-in/contribution:{628C6F59-9B1A-48a8-8815-48AC0D15765E}/name[0]/text()",
+        "text": "Temple",
+        "sourceSha256": "6d3877ca11c11690e40343bd7d740260b251f06158629645f4ae86cff285632b"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{0C468024-EB7E-44BE-8026-326FC3F09539}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{0C468024-EB7E-44BE-8026-326FC3F09539}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{0C468024-EB7E-44BE-8026-326FC3F09539}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{924FBFF1-69E4-49C6-9067-86D915638A9A}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{924FBFF1-69E4-49C6-9067-86D915638A9A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{924FBFF1-69E4-49C6-9067-86D915638A9A}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{26601128-3116-4EFA-AB8E-233BC566D031}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{26601128-3116-4EFA-AB8E-233BC566D031}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{26601128-3116-4EFA-AB8E-233BC566D031}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.c915/{91857E01-6499-40CE-8825-6D52247F80C9}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.c915",
+      "contributionId": "{91857E01-6499-40CE-8825-6D52247F80C9}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.c915/plugin.xml",
+      "sourceKey": "plug-in/contribution:{91857E01-6499-40CE-8825-6D52247F80C9}/name[0]/text()",
+      "sourceSha256": "1e934d9f841a14ea7b9cbde3fe7b30137a3a537a8f121af7db4435fdded5cd5c",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.cozy/{487900B6-EBCA-4c98-9E28-194050E9706D}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.cozy",
+      "contributionId": "{487900B6-EBCA-4c98-9E28-194050E9706D}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceKey": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/group[0]/text()",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "originalText": "コンビニ",
+      "originalTextSha256": "d15bbb2516a1113e437416ab893236488c8eab93f900010b73ac840261dbbf41",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+        "key": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/group[0]/text()",
+        "text": "Convenience store",
+        "sourceSha256": "926cbe5d1fde4df03416c6ad8c63c2025ff09da30a8cdd8930b7ca5e4c362bf8"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.cozy/{487900B6-EBCA-4c98-9E28-194050E9706D}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.cozy",
+      "contributionId": "{487900B6-EBCA-4c98-9E28-194050E9706D}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceKey": "plug-in/contribution:{487900B6-EBCA-4c98-9E28-194050E9706D}/name[0]/text()",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "originalText": "ファミリーマート",
+      "originalTextSha256": "9f29374dfa97e69d18ad9f1b84a849d79dade4ab7e617f11a781727e34630d76",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.cozy/{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.cozy",
+      "contributionId": "{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.cozy/plugin.xml",
+      "sourceKey": "plug-in/contribution:{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}/name[0]/text()",
+      "sourceSha256": "33a6b56d7764c08a56b50b2be1e286d1811839c8606e7b9c78d2ee64e328c4d1",
+      "originalText": "ヤマダ電機",
+      "originalTextSha256": "17d10244a51b463c27015f9d174a31374780efe86f0f3e39aa972b1dd17a5a62",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.eshi/{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.eshi",
+      "contributionId": "{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceKey": "plug-in/contribution:{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group[0]/text()",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "originalText": "吉野家",
+      "originalTextSha256": "0e9353412cf139dc894e66d5891b83242f1bafe702ed309152eb6bdca36313f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+        "key": "plug-in/contribution:{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group[0]/text()",
+        "text": "Gyudon restaurant",
+        "sourceSha256": "ecd1804f37744dc25cf81415f5a29b2fdd7409287c4ff1f93d5aad970082061d"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.eshi/{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.eshi",
+      "contributionId": "{19F42929-9606-4cfb-A2F0-EFE323487DC6}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+      "sourceKey": "plug-in/contribution:{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group[0]/text()",
+      "sourceSha256": "8358376cd0dac14754e72c6246280c26197a7fa11086fec3f4fb410fb57be9fd",
+      "originalText": "吉野家",
+      "originalTextSha256": "0e9353412cf139dc894e66d5891b83242f1bafe702ed309152eb6bdca36313f4",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.eshi/plugin.xml",
+        "key": "plug-in/contribution:{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group[0]/text()",
+        "text": "Gyudon restaurant",
+        "sourceSha256": "ecd1804f37744dc25cf81415f5a29b2fdd7409287c4ff1f93d5aad970082061d"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.hima/{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "contributionId": "{3D8FA264-BE4A-4a4f-97E6-950779C89599}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceKey": "plug-in/contribution:{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group[0]/text()",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.hima/{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "contributionId": "{8B0106A0-64A4-4680-B258-232B1A5E0B0E}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceKey": "plug-in/contribution:{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group[0]/text()",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.hima/{982E924F-BA22-4ace-A71C-4523719A8444}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "contributionId": "{982E924F-BA22-4ace-A71C-4523719A8444}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceKey": "plug-in/contribution:{982E924F-BA22-4ace-A71C-4523719A8444}/group[0]/text()",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{982E924F-BA22-4ace-A71C-4523719A8444}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.hima/{F193C000-DFEB-4588-B658-D11CD80C39D5}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.hima",
+      "contributionId": "{F193C000-DFEB-4588-B658-D11CD80C39D5}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+      "sourceKey": "plug-in/contribution:{F193C000-DFEB-4588-B658-D11CD80C39D5}/group[0]/text()",
+      "sourceSha256": "d70a42c2607a3f150fd23beac59ca2edcf40eec3e0a3f991b43e6c98c21ac000",
+      "originalText": "一戸建て",
+      "originalTextSha256": "9051cdace5728998f477ba8d3af13cf1d27c54fbdc7a36ad0e53c46265bfb03c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.hima/plugin.xml",
+        "key": "plug-in/contribution:{F193C000-DFEB-4588-B658-D11CD80C39D5}/group[0]/text()",
+        "text": "Single house",
+        "sourceSha256": "63a4a0db23d4ed07a5ab2e388ac1c0dfa9e72f6c9358276329ded8b880960acd"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ima/{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.ima",
+      "contributionId": "{594D6A74-2678-4a35-9FE6-E2FFA90C207A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+      "sourceKey": "plug-in/contribution:{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name[0]/text()",
+      "sourceSha256": "eb3dc0c9cd7f29f737a88c0902b3319c98ff84f1c8f4c740c8a417f5b2efa1ec",
+      "originalText": "マクドナルド",
+      "originalTextSha256": "9439b22d77552416b4ad344768cb8a0a96da63ba375d915a4a0d3f95a20bf7b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ima/plugin.xml",
+        "key": "plug-in/contribution:{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name[0]/text()",
+        "text": "Hamburger restaurant",
+        "sourceSha256": "922928b892c3e2cd1ad54bc7dd5e3efb976aa8589537aa2d690c563bd5e0fb1e"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.miha/{551BB418-4604-4fca-88AC-5F71068FE04A}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.miha",
+      "contributionId": "{551BB418-4604-4fca-88AC-5F71068FE04A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.miha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{551BB418-4604-4fca-88AC-5F71068FE04A}/name[0]/text()",
+      "sourceSha256": "29a7e8424ebac3c220fb7ac6642e8b078ea8f5fd886bb7a6a542801eba85650b",
+      "originalText": "マクシスタワー",
+      "originalTextSha256": "7e319fdc9742ae42cf6e6d076d506c7b93283ba25491ca6b97ea582c73235df1",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.miha/{8BC1629A-BD98-462c-985A-CCD03F1B8C22}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.miha",
+      "contributionId": "{8BC1629A-BD98-462c-985A-CCD03F1B8C22}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.miha/plugin.xml",
+      "sourceKey": "plug-in/contribution:{8BC1629A-BD98-462c-985A-CCD03F1B8C22}/name[0]/text()",
+      "sourceSha256": "29a7e8424ebac3c220fb7ac6642e8b078ea8f5fd886bb7a6a542801eba85650b",
+      "originalText": "八王子再開発ビル",
+      "originalTextSha256": "8ca31381df244f86d8da3ae016215751e0dd38a8597fc74f7835dd4d18c20611",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.nokto/{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.nokto",
+      "contributionId": "{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "sourceKey": "plug-in/contribution:{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}/name[0]/text()",
+      "sourceSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "originalText": "ミラービル",
+      "originalTextSha256": "2b94dd98a7ac4212259ba69f44f24a3dcbbc9a5f3d184c4a6122e6b742f96219",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+        "key": "plug-in/contribution:{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}/name[0]/text()",
+        "text": "Mirror Building",
+        "sourceSha256": "8eb28aec516f9d241d36a36af9aaf79f579f40b6b575ad326fd887dd74a629d7"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.nokto/{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.nokto",
+      "contributionId": "{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "sourceKey": "plug-in/contribution:{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}/name[0]/text()",
+      "sourceSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "originalText": "ミラービル",
+      "originalTextSha256": "2b94dd98a7ac4212259ba69f44f24a3dcbbc9a5f3d184c4a6122e6b742f96219",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+        "key": "plug-in/contribution:{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}/name[0]/text()",
+        "text": "Mirror Building",
+        "sourceSha256": "8eb28aec516f9d241d36a36af9aaf79f579f40b6b575ad326fd887dd74a629d7"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.nokto/{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.nokto",
+      "contributionId": "{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "sourceKey": "plug-in/contribution:{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/group[0]/text()",
+      "sourceSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "originalText": "工場",
+      "originalTextSha256": "6afcfe4a8f9a3f1a41aa1c9f1e1569b799d5f55940b21d7207de7e9eb6d530cc",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+        "key": "plug-in/contribution:{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/group[0]/text()",
+        "text": "Factory",
+        "sourceSha256": "8eb28aec516f9d241d36a36af9aaf79f579f40b6b575ad326fd887dd74a629d7"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.nokto/{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.nokto",
+      "contributionId": "{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.nokto/plugin.xml",
+      "sourceKey": "plug-in/contribution:{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/name[0]/text()",
+      "sourceSha256": "a9d98e841ac719d2a944fb6b2208736615af2cdc607c083d96bf3a79729c28a7",
+      "originalText": "重工業系の工場",
+      "originalTextSha256": "737b3644f45dacdef7892be5780e0dd8256fa44a7b4923d23c8daa4186a27ef6",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "contributionId": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceKey": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group[0]/text()",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "originalText": "大阪城",
+      "originalTextSha256": "6978a6c263987fa14fc7512881095aed9678bead2490d2f46632959c2c410e1c",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+        "key": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group[0]/text()",
+        "text": "Osaka Castle",
+        "sourceSha256": "45f3dfb3886072758481802647423f77805cea6bcd30b6d35f4ecdc053593ad9"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "contributionId": "{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceKey": "plug-in/contribution:{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/name[0]/text()",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "originalText": "天守閣1",
+      "originalTextSha256": "77b0522d4b351e8940b0f08286e540a3629e63e5f7a04dd022ced090da1aea49",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/group": {
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "contributionId": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}",
+      "field": "group",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceKey": "plug-in/contribution:{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/group[0]/text()",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "originalText": "大阪城",
+      "originalTextSha256": "6978a6c263987fa14fc7512881095aed9678bead2490d2f46632959c2c410e1c",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.osakaCastle",
+      "contributionId": "{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.osakaCastle/plugin.xml",
+      "sourceKey": "plug-in/contribution:{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/name[0]/text()",
+      "sourceSha256": "68b6a2d7f209122ce6b00c4654a2681af70af66ad15864f5264d563d5fb8d53c",
+      "originalText": "天守閣2",
+      "originalTextSha256": "d210198a4cf46eb415fe56a48ef0bec9dd34346d00154c0b70fffb4551e24318",
+      "englishDonor": null,
+      "comparison": "new-text; translation-required"
+    },
+    "org.kohsuke.freetrain.structure.others/{B83A15E9-9284-4569-A1BF-266DF9B1560A}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.others",
+      "contributionId": "{B83A15E9-9284-4569-A1BF-266DF9B1560A}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+      "sourceKey": "plug-in/contribution:{B83A15E9-9284-4569-A1BF-266DF9B1560A}/name[0]/text()",
+      "sourceSha256": "021c2d677d403b1c6bb16e50a6705211dae5fa4b4abe53f6fab80a1ab700c79f",
+      "originalText": "ほっかほっか亭",
+      "originalTextSha256": "593567f3ebb96c1975f923ae652482f71df5965a5a4d42e5c58c4c5dfe71a5b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+        "key": "plug-in/contribution:{B83A15E9-9284-4569-A1BF-266DF9B1560A}/name[0]/text()",
+        "text": "Bento shop",
+        "sourceSha256": "75a608f8af3777e4a68d31f8387d29cbd4e45c480e69b0ec5c6a75478e73be27"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.others/{8CE18936-7C28-4a91-8B40-9CCED1F48968}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.others",
+      "contributionId": "{8CE18936-7C28-4a91-8B40-9CCED1F48968}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+      "sourceKey": "plug-in/contribution:{8CE18936-7C28-4a91-8B40-9CCED1F48968}/name[0]/text()",
+      "sourceSha256": "021c2d677d403b1c6bb16e50a6705211dae5fa4b4abe53f6fab80a1ab700c79f",
+      "originalText": "高級マンション",
+      "originalTextSha256": "abad42da7c032064fb1926fa49e3faa3701a05de16e92d33517d516b26a09da5",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.others/plugin.xml",
+        "key": "plug-in/contribution:{8CE18936-7C28-4a91-8B40-9CCED1F48968}/name[0]/text()",
+        "text": "Condo (4x2)",
+        "sourceSha256": "75a608f8af3777e4a68d31f8387d29cbd4e45c480e69b0ec5c6a75478e73be27"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ryokounotomo/{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.ryokounotomo",
+      "contributionId": "{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceKey": "plug-in/contribution:{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name[0]/text()",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "originalText": "分譲マンション",
+      "originalTextSha256": "189b7b31354c5a4804f6a3fb7baf515ff74b6faad7be5897cdc08a5e71020695",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+        "key": "plug-in/contribution:{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name[0]/text()",
+        "text": "Condo (2x2)",
+        "sourceSha256": "db34d5354a96152985e6800d2e514b3f7f73f910463749618939848094b2160e"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.ryokounotomo/{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.ryokounotomo",
+      "contributionId": "{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+      "sourceKey": "plug-in/contribution:{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name[0]/text()",
+      "sourceSha256": "c371af91b6a11c1eba7d82eca6efd59f62f2959cf87a6672a47a5e9005b2c680",
+      "originalText": "公園",
+      "originalTextSha256": "d4791fb11477fe30ba4df1a8faada2b28b2b8855f65e1a06166ed650c671fc94",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.ryokounotomo/plugin.xml",
+        "key": "plug-in/contribution:{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name[0]/text()",
+        "text": "Park",
+        "sourceSha256": "db34d5354a96152985e6800d2e514b3f7f73f910463749618939848094b2160e"
+      },
+      "comparison": "changed-text; meaning-review-required"
+    },
+    "org.kohsuke.freetrain.structure.syousei/{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name": {
+      "pluginId": "org.kohsuke.freetrain.structure.syousei",
+      "contributionId": "{D6DE0AED-AECF-4d7f-8455-488016997FFF}",
+      "field": "name",
+      "sourcePath": "trunk/plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+      "sourceKey": "plug-in/contribution:{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name[0]/text()",
+      "sourceSha256": "2542ca94bccd5fba75e9ae2be57d41c0713fd196c013af87cde628c6ec0a2ece",
+      "originalText": "民家(小)",
+      "originalTextSha256": "a8a87155aaf9cb91ba8ce64d6af52487bac64cbac16262d027d3815bce1135b3",
+      "englishDonor": {
+        "revision": "1f755ca6f291253b8cd5024ef53402b85d467170",
+        "path": "plugins/org.kohsuke.freetrain.structure.syousei/plugin.xml",
+        "key": "plug-in/contribution:{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name[0]/text()",
+        "text": "Private house (S)",
+        "sourceSha256": "828df230935f43aba9e73600db7186a6fe8c906bf34123e154f4e0db39fd616f"
+      },
+      "comparison": "changed-text; meaning-review-required"
     }
   }
 }

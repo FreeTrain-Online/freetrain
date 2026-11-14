@@ -31,14 +31,14 @@ test('real site completion renders canonical owners in EN and JA narrow DPR2 and
   await page.goto('/');await ready(page);const initial=await canonicalState(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:seed})).ok()).toBe(true);await ready(page);await peer.goto('/');await ready(peer,'ja');
   const before=await canonicalState(page),site=before.mixed.city.structures[0];
-  async function pick(p:any,b:any,locale='en'){
+  async function pick(p:any,b:any,locale='en',close=true){
    const center=(before.map.height-2)/2;let pixel;
    if(b.construction.length){const f=catalog.renderRecipes.find((r:any)=>r.id==='system:construction/bones/2/0000').frames[0],mask=catalog.masks[f.masks['winter/day']],y=mask.findIndex((r:string)=>r.includes('1')),x=mask[y].indexOf('1');pixel={x:16*(b.location.x-center+b.location.y)-f.anchor[0]+x+.5,y:8*(b.location.y-b.location.x+center)-16*b.location.z-f.anchor[1]+y+.5};}
    else{const r=catalog.renderRecipes.find((r:any)=>r.id===b.definition.recipeId),f=r.frames.find((f:any)=>f.status==='ready'),mask=catalog.masks[f.masks['spring/day']],y=mask.findIndex((r:string)=>r.includes('1')),x=mask[y].indexOf('1');pixel={x:16*(b.location.x-center+f.cell[0]+b.location.y+f.cell[1])-f.anchor[0]+x+.5,y:8*(b.location.y+f.cell[1]-b.location.x+center-f.cell[0])-16*(b.location.z+f.cell[2])-f.anchor[1]+y+.5};}
    const c=p.locator('canvas');await expect(c).toHaveAttribute('data-presentation','ready');
    const point=await c.evaluate((el:any,p:any)=>{const r=el.getBoundingClientRect(),[cx,cy]=el.dataset.camera.split(',').map(Number),z=Number(el.dataset.zoom);return {x:r.x+r.width/2+(p.x-cx)*z,y:r.y+r.height/2+(p.y-cy)*z};},pixel);
    await p.mouse.click(point.x,point.y);await expect(p.getByTestId('selected-object')).toContainText((locale==='ja'?'建物':'Building')+' · '+b.id);
-   await p.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-${locale}-${b.construction.length?'site':'completed'}.png`});await closePanel(p);
+   await p.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-${locale}-${b.construction.length?'site':'completed'}.png`});if(close)await closePanel(p);
   }
   // The naturally constructed source fixture sits near the west map edge.
   // Pan through the real map gesture before inspecting its alpha pixels.
@@ -50,10 +50,11 @@ test('real site completion renders canonical owners in EN and JA narrow DPR2 and
    for(let i=0;i<count;i++){await p.mouse.move(r!.x+r!.width*.2,r!.y+r!.height*.4);await p.mouse.down({button:'middle'});await p.mouse.move(r!.x+r!.width*.2+dx/count,r!.y+r!.height*.4+dy/count,{steps:5});await p.mouse.up({button:'middle'});}
 
   }
-  await pick(page,site);await pick(peer,site,'ja');
+  await pick(page,site,'en',false);await pick(peer,site,'ja',false);
   await page.getByRole('button',{name:'▶| Single step',exact:true}).click();
   await expect.poll(async()=>(await canonicalState(page)).mixed.city.structures[0].construction.length).toBe(0);
   const after=await canonicalState(page),b=after.mixed.city.structures[0];expect(b.id).not.toBe(site.id);
+  for(const p of [page,peer]){await expect(p.getByTestId('city-progress')).toHaveText(p===page?'Completed':'完成');await expect(p.getByTestId('selected-object')).toContainText(' · '+b.id);await closePanel(p);}
   for(const p of [page,peer]){await expect(p.locator('canvas')).toHaveAttribute('data-render-revision',after.revision);await expect(p.locator('canvas')).toHaveAttribute('data-presentation','ready');}
   const bytes=await(await page.request.get('/api/saves/download')).body();await pick(page,b);await pick(peer,b,'ja');
   const canvas=page.locator('canvas'),camera=await canvas.getAttribute('data-camera');

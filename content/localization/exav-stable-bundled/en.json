@@ -297,6 +297,361 @@
     "org.kohsuke.freetrain.stationary.c915/{000B7EA8-D97B-4BD0-899F-B3808E7339AF}/group": {
       "text": "Tokyo Station",
       "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{BC43CE38-601A-42c7-992A-6049CCD29B94}/group": {
+      "text": "Convenience store",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{BC43CE38-601A-42c7-992A-6049CCD29B94}/name": {
+      "text": "7-Eleven",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{2C3ED0DA-FBA1-4586-9691-67DC93B851C9}/name": {
+      "text": "Established department store",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{9F3E82AD-2A49-4aef-954C-E872F535B3D8}/name": {
+      "text": "Condominium",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{27D6D0C0-2B1A-4494-9257-14C208168075}/name": {
+      "text": "Detached house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-0/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-1/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-2/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-3/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-4/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-5/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-6/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{B99FA2F7-F138-46a1-99F7-34AE23A157F6}-7/name": {
+      "text": "Mid-rise mixed-use office building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{7775E0B1-AF3E-46A4-A0E6-06AF87989A7E}/name": {
+      "text": "Large farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{B7C82C4E-015A-407D-9F10-5D198384B702}/name": {
+      "text": "Large farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{01799382-3860-4BF6-BE11-F2E40DA093E7}/name": {
+      "text": "Large farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{F7043E4A-402D-43D1-8732-C30F52979B08}/name": {
+      "text": "Large farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{95F5EF63-1B4D-4EE3-8BF3-4BD5B7AC5311}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{D6454FB2-A717-4862-A1B2-1A5113D686E0}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{238A1579-28EB-45FF-ADEC-71D65C067435}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{1D84E1CA-E46A-4E1D-952E-071DB6AAFD39}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{D730EC7C-97BD-471D-A4C1-BB2CCD17EAE7}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{DC418AA8-1D26-4B85-92DD-22938607D708}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{28548323-07D9-476F-8B91-99F033FE117F}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.land.477/{8D849B40-605F-4807-AB0C-5708CFA8D682}/name": {
+      "text": "Medium farmhouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{DBE8EACF-C94D-4e02-AA29-43AC34F96AC9}/group": {
+      "text": "Port facilities (container terminal)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{24146DB8-A1CB-4355-8B26-705F2FB885D7}/group": {
+      "text": "Port facilities (container terminal)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{B32B765C-C74C-4BD9-84C6-E75A3E6DFC27}/group": {
+      "text": "Port facilities (railway pier)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{82B5ED65-8576-4494-BCD2-E2B9233FD787}/group": {
+      "text": "Port facilities (railway pier)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{E0F69A4B-A3EE-4605-8987-7E63737EA481}/group": {
+      "text": "Port facilities (passenger terminal)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{472DCA58-DE17-487C-BD22-BEACFBBC8C0B}/group": {
+      "text": "Port facilities (passenger terminal)",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{32D21DEE-99A5-414F-BAF7-6BBD705A7485}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{6DFD12E5-505C-43CA-9E07-23D737D408FB}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{29D7FEFA-2491-4ED0-8479-596FD805ED03}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{76EA313D-CA8B-4C93-94FF-3452054615D4}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{D7A9451D-6EAB-4A50-8B4F-F1F30764C105}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ayase/{B7E5EE5A-0F6F-463B-ABFF-6968EE9F655D}/group": {
+      "text": "Warehouse",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{628C6F59-9B1A-48a8-8815-48AC0D15765E}/name": {
+      "text": "Temple",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{DD8340A1-BD1A-4E2E-B42D-F162D6D6CE65}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{22532C5A-CE0B-4C4D-9DC8-C7FC7C5A3FE5}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{15D9C4FA-0F6E-4915-B19F-CDBB19C29AB4}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{FA1FDEDE-6E4E-48F2-A45C-DFEA3979D1D3}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{0C468024-EB7E-44BE-8026-326FC3F09539}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{924FBFF1-69E4-49C6-9067-86D915638A9A}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{26601128-3116-4EFA-AB8E-233BC566D031}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c915/{91857E01-6499-40CE-8825-6D52247F80C9}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.cozy/{487900B6-EBCA-4c98-9E28-194050E9706D}/group": {
+      "text": "Convenience store",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.cozy/{487900B6-EBCA-4c98-9E28-194050E9706D}/name": {
+      "text": "FamilyMart",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.cozy/{D6DED1EF-FA6F-4734-A4CA-46D217A1EC1F}/name": {
+      "text": "Yamada Denki",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.eshi/{DD1224B9-2F1A-4c25-9E65-4E604F3342C7}/group": {
+      "text": "Yoshinoya",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.eshi/{19F42929-9606-4cfb-A2F0-EFE323487DC6}/group": {
+      "text": "Yoshinoya",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.hima/{3D8FA264-BE4A-4a4f-97E6-950779C89599}/group": {
+      "text": "Detached house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.hima/{8B0106A0-64A4-4680-B258-232B1A5E0B0E}/group": {
+      "text": "Detached house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.hima/{982E924F-BA22-4ace-A71C-4523719A8444}/group": {
+      "text": "Detached house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.hima/{F193C000-DFEB-4588-B658-D11CD80C39D5}/group": {
+      "text": "Detached house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ima/{594D6A74-2678-4a35-9FE6-E2FFA90C207A}/name": {
+      "text": "McDonald’s",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.miha/{551BB418-4604-4fca-88AC-5F71068FE04A}/name": {
+      "text": "Maxis Tower",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.miha/{8BC1629A-BD98-462c-985A-CCD03F1B8C22}/name": {
+      "text": "Hachioji redevelopment building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.nokto/{C6ECBE6F-7034-4d94-8F00-E89BAF06D3A2}/name": {
+      "text": "Mirror Building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.nokto/{AD825AF4-A4C9-438a-8F0C-B2DD581F2192}/name": {
+      "text": "Mirror Building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.nokto/{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/group": {
+      "text": "Factory",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.nokto/{235CBE6F-7AD4-4334-8FFB-E54B2F0643A2}/name": {
+      "text": "Heavy industry factory",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/group": {
+      "text": "Osaka Castle",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{12CA8CE9-7D92-44CA-BB96-47C4A60A8316}/name": {
+      "text": "Castle keep 1",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/group": {
+      "text": "Osaka Castle",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.osakaCastle/{6432EFFB-3B00-4E00-B4AD-F3DBBB3DD2B6}/name": {
+      "text": "Castle keep 2",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.others/{B83A15E9-9284-4569-A1BF-266DF9B1560A}/name": {
+      "text": "Hokka Hokka Tei",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.others/{8CE18936-7C28-4a91-8B40-9CCED1F48968}/name": {
+      "text": "Luxury apartment building",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ryokounotomo/{8361A9CC-DC1D-4432-8E21-7FB3564FA5CF}/name": {
+      "text": "Condominium",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.ryokounotomo/{9DEDC549-A1A8-4a14-A7A5-D18F388BE975}/name": {
+      "text": "Park",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.syousei/{D6DE0AED-AECF-4d7f-8455-488016997FFF}/name": {
+      "text": "Small house",
+      "status": "reviewed-with-feature",
+      "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
     }
   }
 }

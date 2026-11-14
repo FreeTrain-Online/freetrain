@@ -1004,5 +1004,20 @@
   "stationInformationLoading": "Reading current station information…",
   "stationInformationUnavailable": "Station information could not be read. Retry against the current world.",
   "stationPlatformLength": "Platform length (cells)",
-  "stationObservedAt": "Last confirmed reading"
+  "stationObservedAt": "Last confirmed reading",
+  "cityTask": "City buildings",
+  "cityConfirm": "Confirm building",
+  "cityHelp": "Select an authored building variant, pick an empty footprint, then review and confirm. Construction advances with shared time.",
+  "cityProgress": "Construction",
+  "cityComplete": "Completed",
+  "cityRemove": "Remove building…",
+  "cityType": "Building",
+  "cityX": "Building X",
+  "cityY": "Building Y",
+  "cityLevel": "Building level",
+  "cityPick": "Pick a building location on the map",
+  "cityLegal": "Building footprint is available",
+  "cityInvalid": "This building footprint is unavailable",
+  "cityMissing": "Building is no longer available",
+  "cityCells": "Voxels"
 }

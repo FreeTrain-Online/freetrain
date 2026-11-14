@@ -1,5 +1,5 @@
 import type { messages } from './localization.ts';
-export type Tool = 'station' | 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal' | 'pole' | 'stationary' | 'speed';
+export type Tool = 'city' | 'station' | 'inspect' | 'build' | 'remove' | 'terrain' | 'slope' | 'bridge' | 'girder' | 'tunnel' | 'garage' | 'signal' | 'pole' | 'stationary' | 'speed';
 export const panels = {
   newWorld: 'newWorld', inspector: 'selectionInspector', catalog: 'buildings', fleet: 'fleet', saves: 'saves', view: 'view',
   stations: 'stationList', settings: 'settings', session: 'session', help: 'help',
@@ -21,6 +21,7 @@ const action = (labelKey: keyof typeof messages.en, destination: Extract<Descrip
 const field = (labelKey: keyof typeof messages.en, destination: Extract<Descriptor, { kind: 'field' }>['destination'], availability: Availability): Descriptor =>
   ({ kind: 'field', labelKey, icon: 'command', destination, availability });
 export const registry = {
+  city: { kind:'tool', tool:'city', labelKey:'cityTask', icon:'rail', availability:'mutation' },
   game: { kind: 'menu', menu: 'game', labelKey: 'game', icon: 'window', availability: 'live' },
   inspect: { kind: 'tool', tool: 'inspect', labelKey: 'inspectTool', icon: 'pointer', availability: 'live' },
   rail: { kind: 'tool', tool: 'build', labelKey: 'buildTool', icon: 'rail', availability: 'mutation' },
@@ -144,6 +145,7 @@ export type ActionId = keyof typeof registry;
 
 
 export const tools = [
+  {id:'city',shortcut:'C',label:registry.city.labelKey,icon:'▤'},
   { id: 'inspect', shortcut: 'I', label: registry.inspect.labelKey, icon: '↖' },
   { id: 'build', shortcut: 'T', label: registry.rail.labelKey, icon: 'rail' },
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
