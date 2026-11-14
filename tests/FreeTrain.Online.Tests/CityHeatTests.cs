@@ -95,6 +95,26 @@ public class CityHeatTests
         Assert.Equal(initial,SaveCodec.Write(isolated));Assert.Equal(JsonSerializer.Serialize(before.Random.Capture()),JsonSerializer.Serialize(reopened.Random.Capture()));
     }
     [Fact]
+    public void Validated_heat_buffers_still_require_matching_dimensions_and_buffer_roles()
+    {
+        var space = new WorldSpace(3,3,8);
+        var heat = CityHeatState.Empty(space);
+        heat.Validate(space);
+        (heat with {}).Validate(space);
+        Assert.Throws<ArgumentException>(() => (heat with { HorizontalSize = 4 }).Validate(space));
+        Assert.Throws<ArgumentException>(() => heat.Validate(new WorldSpace(4,3,8)));
+        foreach (var invalid in new[] { float.NaN, float.PositiveInfinity, float.NegativeInfinity })
+        {
+            Assert.Throws<ArgumentException>(() => (heat with { Q = heat.Q.SetItem(0,invalid) }).Validate(space));
+            Assert.Throws<ArgumentException>(() => (heat with { Back = heat.Back.SetItem(0,invalid) }).Validate(space));
+            Assert.Throws<ArgumentException>(() => (heat with { Rho = heat.Rho.SetItem(0,invalid) }).Validate(space));
+        }
+        var negative = heat.Q.SetItem(0,-1);
+        (heat with { Q = negative, Back = negative }).Validate(space);
+        Assert.Throws<ArgumentException>(() => (heat with { Rho = negative }).Validate(space));
+    }
+
+    [Fact]
     public void Deposit_clamp_power_and_diffusion_failures_are_checked_without_mutating_prior_buffers()
     {
         var heat=CityHeatState.Empty(new(3,3,8));var settings=new CityDevelopmentSettings();

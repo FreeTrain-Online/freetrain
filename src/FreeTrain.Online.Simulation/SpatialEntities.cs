@@ -125,6 +125,55 @@ public sealed class SpatialIndex
             builder[position] = pair is {} p ? (p.Entity, p.Entity.Footprint.Members[0].Transparent) : null;
         edits = builder.ToImmutable();
     }
+    private SpatialIndex(SpatialIndex original, long nextEntityId, ImmutableArray<SpatialEntity> entities,
+        ImmutableDictionary<Location, (SpatialEntity Entity, bool Transparent)?> edits)
+    {
+        Space = original.Space; NextEntityId = nextEntityId; Entities = entities;
+        cells = original.cells; this.edits = edits;
+        // Bound the overlay independently of the number of replacements. Neither
+        // the overlay nor its frozen base references a predecessor index/world.
+        if (edits.Count > 4096)
+        {
+            var builder = cells.ToDictionary();
+            foreach (var (position, value) in edits)
+                if (value is {} cell) builder[position] = cell;
+                else builder.Remove(position);
+            cells = builder.ToFrozenDictionary();
+            this.edits = ImmutableDictionary<Location, (SpatialEntity, bool)?>.Empty;
+        }
+    }
+    // Reuse checked occupancy only when ALL owner geometry is identical. Loads,
+    // reordered owners, assignments/removals and geometry edits take the complete
+    // constructor path, preserving its overlap, bounds and occupied-cell checks.
+    internal SpatialIndex WithState(SpatialState state)
+    {
+        var next = state.Entities;
+        if (state.NextEntityId < 1 || next.IsDefault || next.Length != Entities.Length)
+            return new(Space, state.NextEntityId, next);
+        if (next == Entities && state.NextEntityId == NextEntityId) return this;
+        for (var i = 0; i < next.Length; i++)
+        {
+            var entity = next[i]; var previous = Entities[i];
+            if (entity == null || entity.Id != previous.Id || entity.Id >= state.NextEntityId ||
+                entity.Revision < 0 || entity.Definition == null || entity.Footprint == null ||
+                entity.Anchor != previous.Anchor ||
+                !ReferenceEquals(entity.Footprint, previous.Footprint) &&
+                !entity.Footprint.Members.AsSpan().SequenceEqual(previous.Footprint.Members.AsSpan()))
+                return new(Space, state.NextEntityId, next);
+        }
+        ImmutableDictionary<Location, (SpatialEntity Entity, bool Transparent)?>.Builder? builder = null;
+        for (var i = 0; i < next.Length; i++)
+        {
+            var entity = next[i];
+            if (ReferenceEquals(entity, Entities[i])) continue;
+            entity.Definition.Validate();
+            builder ??= edits.ToBuilder();
+            foreach (var (position, transparent) in entity.Footprint.At(entity.Anchor))
+                builder[position] = (entity, transparent);
+        }
+        if (builder == null && state.NextEntityId == NextEntityId) return this;
+        return new(this, state.NextEntityId, next, builder?.ToImmutable() ?? edits);
+    }
     public VoxelOccupancy At(Location position)
     {
         if (!Space.ContainsVoxel(position)) return new(VoxelStatus.Outside, null, true);
@@ -139,7 +188,7 @@ public sealed class SpatialIndex
     {
         var previous = Entities.SingleOrDefault(e => e.Id == entity.Id) ?? throw new ArgumentException("Unknown entity.");
         if (previous.Revision != expectedRevision || entity.Revision != checked(expectedRevision + 1)) throw new InvalidOperationException("staleRevision");
-        return new(Space, NextEntityId, Entities.Select(e => e.Id == entity.Id ? entity : e));
+        return WithState(new(NextEntityId, Entities.Replace(previous, entity)));
     }
     public SpatialIndex Remove(long id, long expectedRevision)
     {

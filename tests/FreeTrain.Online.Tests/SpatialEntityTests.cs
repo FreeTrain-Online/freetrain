@@ -75,6 +75,52 @@ public class SpatialEntityTests
     }
 
     [Fact]
+    public void Payload_replacements_refresh_every_cell_and_preserve_old_indexes()
+    {
+        var footprint = new Footprint([new(new(0,0,0),false),new(new(0,0,1),true)]);
+        var original = Empty().Add(Definition,Anchor,footprint,true,false,10);
+        var current = original;
+        for (var revision = 1; revision <= 100; revision++)
+        {
+            var owner = current.Entities[0] with { Revision = revision, Value = revision, SilentlyReclaimable = true };
+            current = current.Replace(owner,revision-1);
+            Assert.Same(owner,current.At(Anchor).Entity);
+            Assert.Same(owner,current.At(Anchor with { Z = 1 }).Entity);
+            Assert.False(current.At(Anchor).Transparent);
+            Assert.True(current.At(Anchor with { Z = 1 }).Transparent);
+            Assert.True(current.At(Anchor).Reusable);
+        }
+        Assert.Equal(0,original.At(Anchor).Entity!.Revision);
+        Assert.False(original.At(Anchor).Reusable);
+        var changed = current.Entities[0] with { Revision = 101, Footprint = One };
+        var next = current.Replace(changed,100);
+        Assert.True(next.At(Anchor).Transparent);
+        Assert.Equal(VoxelStatus.Vacant,next.At(Anchor with { Z = 1 }).Status);
+        Assert.Throws<ArgumentException>(() => next.Replace(changed with { Revision = 102, Definition = Definition with { RecipeId = "" } },101));
+        Assert.Throws<ArgumentException>(() => next.Replace(changed with { Revision = 102, Anchor = Anchor with { Z = 4 } },101));
+    }
+
+    [Fact]
+    public void Large_revision_overlay_compacts_without_losing_cells_or_transparency()
+    {
+        var space = new WorldSpace(64,64,4);
+        var footprint = new Footprint(Enumerable.Range(0,64).SelectMany(h => Enumerable.Range(0,64)
+            .Select(v => new VoxelMember(space.ToLocation(new(h,v,0)),v%2 == 0))));
+        // Include a second level to exceed the overlay's compaction boundary.
+        footprint = new(footprint.Members.Concat([new(new(32,32,1),false)]));
+        var entity = new SpatialEntity(1,0,Definition,new(0,0,0),footprint,true,false,0);
+        var original = new SpatialIndex(space,2,[entity]);
+        var changed = entity with { Revision = 1, Value = 42 };
+        var next = original.Replace(changed,0);
+        foreach (var (position, transparent) in footprint.At(entity.Anchor))
+        {
+            Assert.Same(changed,next.At(position).Entity);
+            Assert.Equal(transparent,next.At(position).Transparent);
+            Assert.Same(entity,original.At(position).Entity);
+        }
+    }
+
+    [Fact]
     public void Invalid_footprints_aliases_identity_and_allocator_fail_before_a_graph_is_published()
     {
         Assert.Throws<ArgumentException>(()=>new Footprint([]));

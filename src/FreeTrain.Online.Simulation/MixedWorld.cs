@@ -38,6 +38,11 @@ public sealed class MixedWorld
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
         IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision = 0, SpeedLimits? speedLimits = null,
         FleetGraph? fleet = null, StationGraph? stations = null, CityGraph? city = null)
+        : this(profile, terrain, spatial, voxels, slopes, revision, speedLimits, fleet, stations, city, null) { }
+
+    private MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
+        IEnumerable<RailwayVoxel> voxels, IEnumerable<SlopeOwnership> slopes, long revision, SpeedLimits? speedLimits,
+        FleetGraph? fleet, StationGraph? stations, CityGraph? city, SpatialIndex? previousSpatial)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(terrain);
@@ -53,7 +58,7 @@ public sealed class MixedWorld
             Slopes.Length > SpatialIndex.MaximumOccupiedCells / 8 || Slopes.Any(s => s is null) ||
             Slopes.Select(s => s.EntityId).Distinct().Count() != Slopes.Length)
             throw new ArgumentException("Invalid mixed-world members.");
-        Spatial = new(terrain.Space, spatial.NextEntityId, spatial.Entities);
+        Spatial = previousSpatial?.WithState(spatial) ?? new(terrain.Space, spatial.NextEntityId, spatial.Entities);
         this.voxels = Voxels.ToFrozenDictionary(v => v.Position);
         byOwner = Voxels.GroupBy(v => v.OwnerId).ToFrozenDictionary(g => g.Key, g => g.ToImmutableArray());
         terrainOwners = TerrainOwners.GetValue(terrain, static t => t.Spatial.Entities.ToFrozenDictionary(e => e.Id));
@@ -323,12 +328,13 @@ public sealed class MixedWorld
         if (spatial.NextEntityId < Spatial.NextEntityId) throw new ArgumentException("Allocator rewind.");
         var members=voxels.ToImmutableArray();
         var limits=speedLimits ?? SpeedLimits.Clean(members.Where(v=>v.Traffic!=null).Select(v=>v.Position).ToHashSet());
-        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations,city ?? City);
+        var candidate = new MixedWorld(Profile, terrain, spatial, members, slopes, checked(Revision + 1),limits,fleet ?? Fleet,stations ?? Stations,city ?? City,
+            ReferenceEquals(terrain, Terrain) ? Spatial : null);
         if (City != null)
         {
             var notified=CityHeat.NotifyChanges(candidate,ConductivityChanges(candidate));
             if (!ReferenceEquals(notified,candidate.City)) candidate=new(Profile,terrain,spatial,members,candidate.Slopes,candidate.Revision,
-                limits,candidate.Fleet,candidate.Stations,notified);
+                limits,candidate.Fleet,candidate.Stations,notified,candidate.Spatial);
         }
         if (City != null) candidate.City!.ValidateSuccessor(City,Spatial.NextEntityId);
         else if (candidate.City != null && candidate.City.Identities.Any(i => i.Id < Spatial.NextEntityId || i.Revision != 0))

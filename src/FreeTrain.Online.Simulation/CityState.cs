@@ -4,6 +4,8 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace FreeTrain.Online.Simulation;
 
@@ -64,6 +66,24 @@ public sealed record CityDevelopmentSettings(double StrengthDiffusion = 0.2, dou
 public sealed record CityHeatState(int HorizontalSize, int VerticalSize, ImmutableArray<float> Q,
     ImmutableArray<float> Back, ImmutableArray<float> Rho)
 {
+    // Exact immutable buffer identities only; weak keys cannot retain old heat
+    // states. Conductivity has a stricter contract than the two heat buffers.
+    private static readonly ConditionalWeakTable<float[], object> FiniteBuffers = new();
+    private static readonly ConditionalWeakTable<float[], object> ConductivityBuffers = new();
+    private static void ValidateBuffer(ImmutableArray<float> buffer, bool conductivity)
+    {
+        var cache = conductivity ? ConductivityBuffers : FiniteBuffers;
+        cache.GetValue(ImmutableCollectionsMarshal.AsArray(buffer)!, conductivity
+            ? static values => Check(values, true) : static values => Check(values, false));
+
+        static object Check(float[] values, bool conductivity)
+        {
+            foreach (var value in values)
+                if (!float.IsFinite(value) || conductivity && value < 0)
+                    throw new ArgumentException("Invalid city heat buffers.");
+            return new object();
+        }
+    }
     // H-major, V-minor includes both border rows/columns. Never recreate retained
     // borders or the back buffer from current terrain during capture/restore.
     public int Index(int h,int v)
@@ -75,9 +95,9 @@ public sealed record CityHeatState(int HorizontalSize, int VerticalSize, Immutab
     {
         var n=checked((space.HorizontalSize+2)*(space.VerticalSize+2));
         if(HorizontalSize!=space.HorizontalSize || VerticalSize!=space.VerticalSize ||
-            Q.IsDefault || Back.IsDefault || Rho.IsDefault || Q.Length!=n || Back.Length!=n || Rho.Length!=n ||
-            Q.Any(v=>!float.IsFinite(v)) || Back.Any(v=>!float.IsFinite(v)) || Rho.Any(v=>!float.IsFinite(v)||v<0))
+            Q.IsDefault || Back.IsDefault || Rho.IsDefault || Q.Length!=n || Back.Length!=n || Rho.Length!=n)
             throw new ArgumentException("Invalid city heat buffers.");
+        ValidateBuffer(Q, false); ValidateBuffer(Back, false); ValidateBuffer(Rho, true);
     }
     public static CityHeatState Empty(WorldSpace space, float bare = 0.80f)
     {
