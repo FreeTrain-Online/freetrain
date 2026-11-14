@@ -639,7 +639,9 @@ public static class NetworkEndpoints
                 }
                 finally { stateWriters.Release(); peer.StateTransferInProgress = false; }
             }
-            await socket.SendAsync(JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json), WebSocketMessageType.Text, true, timeout.Token);
+            await socket.SendAsync(message is JoinMessage or SnapshotMessage
+                ? JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json)
+                : OutboundWire.Serialize(message), WebSocketMessageType.Text, true, timeout.Token);
         }
     }
     private static async Task Receive(WebSocket socket, NetworkSession.Peer peer, NetworkSession session, CancellationToken cancellationToken, ILogger logger)

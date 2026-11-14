@@ -20,6 +20,12 @@ public sealed class BackendPerformanceCollection;
 [Trait("Category", "BackendPerformance")]
 public sealed class BackendPerformanceTests(ITestOutputHelper output)
 {
+    // The comparison runner overlays this harness onto older base commits too.
+    // Bind once outside measurement, preserving their original socket encoding.
+    private static readonly Func<WireMessage, ReadOnlyMemory<byte>> Encode =
+        typeof(NetworkSession).Assembly.GetType("FreeTrain.Online.Server.OutboundWire")?
+            .GetMethod("Serialize")?.CreateDelegate<Func<WireMessage, ReadOnlyMemory<byte>>>()
+        ?? (message => JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, NetworkSession.Json));
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { WriteIndented = true };
     private static readonly DateTimeOffset Now = new(2026, 11, 14, 12, 0, 0, TimeSpan.Zero);
     private sealed record ExpectedState(int Operations, string InitialSha256, string FinalSha256);
@@ -195,7 +201,6 @@ public sealed class BackendPerformanceTests(ITestOutputHelper output)
         var invalidBases = 0;
         var heatLength = state.World.City!.State.Heat.Q.Length;
         long wireBytes = 0, maxReferenceBytes = 0;
-        var wireJson = NetworkSession.Json;
         var now = Now;
         void Tick()
         {
@@ -206,7 +211,7 @@ public sealed class BackendPerformanceTests(ITestOutputHelper output)
                 {
                     // Same encoding used by the socket worker, with no network
                     // scheduling or wall-clock sleep inside the regression test.
-                    var encoded = JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, wireJson);
+                    var encoded = Encode(message);
                     wireBytes += encoded.Length;
                     if (message is not DeltaMessage delta) continue;
                     received[i]++;

@@ -31,12 +31,14 @@ public class CityPersistenceTests
         foreach(var buffer in new[]{"q","back","rho"})
         {
             var changed=copied with {Q=[..copied.Q],Back=[..copied.Back],Rho=[..copied.Rho]};
-            var values=buffer=="q"?changed.Q:buffer=="back"?changed.Back:changed.Rho;values[^1]+=1;
+            var values=buffer=="q"?changed.Q:buffer=="back"?changed.Back:changed.Rho;
+            values=values.SetItem(values.Length-1,values[^1]+1);
+            changed=buffer=="q"?changed with {Q=values}:buffer=="back"?changed with {Back=values}:changed with {Rho=values};
             var modified=next with {Mixed=next.Mixed with {City=next.Mixed.City with {Heat=changed}}};
             var full=StateDifference.Between(before,modified);
             Assert.Null(full.CityHeatBaseRevision);Assert.Same(changed,full.Mixed!.City!.Heat);
         }
-        var negativeZero=copied with {Q=[..copied.Q]};negativeZero.Q[^1]=-0.0f;
+        var negativeZero=copied with {Q=copied.Q.SetItem(copied.Q.Length-1,-0.0f)};
         Assert.Null(StateDifference.Between(before,next with {Mixed=next.Mixed with {City=next.Mixed.City with {Heat=negativeZero}}}).CityHeatBaseRevision);
         Assert.Null(StateDifference.Between(before with {Mixed=null},next).CityHeatBaseRevision);
         Assert.Throws<ArgumentException>(()=>StateDifference.Between(before,next with {WorldEpoch=8}));
@@ -210,7 +212,7 @@ public class CityPersistenceTests
         Assert.Equal(Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes)),chunks[0].Sha256);
         var payload=JsonSerializer.Deserialize<StateTransferPayload>(bytes,WireJson.CreateOptions())!;
         var header=Assert.IsType<SnapshotMessage>(payload.Message);Assert.Null(header.Terrain);Assert.NotNull(header.Mixed!.City);
-        Assert.Equal(snapshot.Mixed!.City!.Heat.Q,header.Mixed.City!.Heat.Q);
+        Assert.Equal<float>(snapshot.Mixed!.City!.Heat.Q,header.Mixed.City!.Heat.Q);
         Assert.Equal(snapshot.Mixed.StationGraph!.ListenerMemberships.SelectMany(m=>m.Providers),header.Mixed.StationGraph!.ListenerMemberships.SelectMany(m=>m.Providers));
     }
     [Fact]

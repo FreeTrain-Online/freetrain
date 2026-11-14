@@ -207,6 +207,23 @@ This is a smaller immediate target: simulation consumes 94% of one-peer managed
 samples. Publication/differencing grows in relative importance with four peers.
 Avoid projecting a precise overall speedup from eliminating a second encoding.
 
+Implemented follow-up: the host keeps its latest canonical snapshot, keyed by
+epoch, revision, playback rate and motion sequence. Exact predecessor identities
+share deltas within one publication; weakly owned, size-bounded outbound encodings
+serve both admission and socket sends. City heat projections share immutable
+buffers by heat identity, preserving full JSON buffers for saves and replacements.
+Prototype snapshots still include their mutable control-lease dependencies.
+
+Local Release validation against clean `45163d9e9682` passed 2,424 correctness
+tests and all ten benchmark checks in each of three base/working-tree samples.
+Median allocations per network tick fell from 48,985 to 596 bytes for four paused
+peers and from 15,282,420 to 10,716,600 bytes for four running peers. Running
+publication medians were 14.961 → 11.180 ms with one peer and 16.292 → 7.115 ms
+with four. All operation counts and canonical save hashes matched. Unrelated
+minute/replacement timings varied, including a +8.9% large-minute median; these
+short process measurements do not establish an overall simulation speedup.
+Full local results: `tmp/item5-benchmark-comparison/summary.md` and `report.json`.
+
 ### 6. Profile command admission separately after the minute path
 
 `MixedWire.ValidateAdmission` serializes full heat and creates new JSON options;

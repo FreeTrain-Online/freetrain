@@ -86,6 +86,10 @@ window. The midnight case exercises daily/hourly station work and stopped trains
 The publication cases use real `NetworkSession.Tick`, publication and queue code,
 followed by the socket sender's JSON encoding. They drain in-memory queues;
 socket I/O, joins and backpressure are outside this benchmark.
+The harness binds the server's cached outbound encoder when available, falling
+back to the original JSON encoding on older base commits. Delegate lookup occurs
+outside measurement, so comparisons include the actual encoding work for each
+version.
 
 The nine measured cases and a tenth retention test still enforce:
 

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 namespace FreeTrain.Online.Contracts;
 
 // P7 city continuation: data only; no delegates or derived indexes.
@@ -13,7 +14,7 @@ public sealed record CityFenceRead(long HostOwnerId, PositionRead Location, int 
 public sealed record CitySelectedPlanRead(DefinitionRead Definition, PositionRead Site, int SizeX, int SizeY, int Height, long Value, long FinalPrice);
 public sealed record CitySearchPlanRead(long StationId, string Phase, double Strength, int Budget, int[] Work, PositionRead? Scanning, CitySelectedPlanRead? Selected);
 public sealed record CityLandCacheRead(PositionRead Corner, int SizeX, int SizeY, long LandValue, long EntityValue);
-public sealed record CityHeatRead(int HorizontalSize, int VerticalSize, float[] Q, float[] Back, float[] Rho);
+public sealed record CityHeatRead(int HorizontalSize, int VerticalSize, ImmutableArray<float> Q, ImmutableArray<float> Back, ImmutableArray<float> Rho);
 public sealed record CitySettingsRead(double StrengthDiffusion, double PopulationPower, int PopulationBase, double PopulationScale, double LandPriceScale, double ReplacementFactor, double MaximumPricePower, float Alpha, float Diffusion, int UpdateFrequencyHours, double LandValuePower, float BareConductivity);
 public sealed record CityRead(int Format, CityPropertyRead[] Properties, CityStructureRead[] Structures, CityGroundRead[] Ground, CityProducerRead[] Producers, CityFenceRead[] Fences, CityHeatRead Heat, CitySettingsRead Settings, CitySearchPlanRead[] Plans, CityLandCacheRead[] LandCache, CityFenceHostRead[] FenceHosts, MixedActionRead? HeatCallback, MixedActionRead? DevelopmentCallback);
 

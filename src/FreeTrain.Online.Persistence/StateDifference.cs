@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Collections.Immutable;
 using System.Runtime.InteropServices;
 using FreeTrain.Online.Contracts;
 
@@ -62,6 +63,6 @@ public static class StateDifference
         SameBuffer(a.Q,b.Q) && SameBuffer(a.Back,b.Back) && SameBuffer(a.Rho,b.Rho);
     // Compare exact Single bits, including signed zero, rather than JSON or
     // numeric equality. Unchanged copied buffers remain cheap to recognize.
-    private static bool SameBuffer(float[] a, float[] b) => ReferenceEquals(a,b) ||
+    private static bool SameBuffer(ImmutableArray<float> a, ImmutableArray<float> b) => a == b ||
         MemoryMarshal.AsBytes(a.AsSpan()).SequenceEqual(MemoryMarshal.AsBytes(b.AsSpan()));
 }

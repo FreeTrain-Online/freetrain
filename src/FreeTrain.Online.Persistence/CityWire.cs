@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Simulation;
 
@@ -41,7 +42,9 @@ public static class CityWire
     private static CitySearchPlan M(CitySearchPlanRead v) => new(v.StationId, Value<CitySearchPhase>(v.Phase), v.Strength, v.Budget, v.Work.ToImmutableArray(), v.Scanning == null ? null : P(v.Scanning), v.Selected == null ? null : M(v.Selected));
     private static CityLandCacheRead M(CityLandCache v) => new(P(v.Corner), v.SizeX, v.SizeY, v.LandValue, v.EntityValue);
     private static CityLandCache M(CityLandCacheRead v) => new(P(v.Corner), v.SizeX, v.SizeY, v.LandValue, v.EntityValue);
-    private static CityHeatRead M(CityHeatState v) => new(v.HorizontalSize, v.VerticalSize, v.Q.ToArray(), v.Back.ToArray(), v.Rho.ToArray());
+    // Weak keys retain no simulation history; immutable buffers are safe to share with wire readers.
+    private static readonly ConditionalWeakTable<CityHeatState, CityHeatRead> heat = new();
+    private static CityHeatRead M(CityHeatState v) => heat.GetValue(v, h => new(h.HorizontalSize, h.VerticalSize, h.Q, h.Back, h.Rho));
     private static CityHeatState M(CityHeatRead v) => new(v.HorizontalSize, v.VerticalSize, v.Q.ToImmutableArray(), v.Back.ToImmutableArray(), v.Rho.ToImmutableArray());
     private static CitySettingsRead M(CityDevelopmentSettings v) => new(v.StrengthDiffusion, v.PopulationPower, v.PopulationBase, v.PopulationScale, v.LandPriceScale, v.ReplacementFactor, v.MaximumPricePower, v.Alpha, v.Diffusion, v.UpdateFrequencyHours, v.LandValuePower, v.BareConductivity);
     private static CityDevelopmentSettings M(CitySettingsRead v) => new(v.StrengthDiffusion, v.PopulationPower, v.PopulationBase, v.PopulationScale, v.LandPriceScale, v.ReplacementFactor, v.MaximumPricePower, v.Alpha, v.Diffusion, v.UpdateFrequencyHours, v.LandValuePower, v.BareConductivity);

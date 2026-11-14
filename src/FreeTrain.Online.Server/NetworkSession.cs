@@ -256,7 +256,7 @@ public sealed partial class NetworkSession
             peers.Add(participant.ParticipantId, peer);
             host.RegisterParticipant(participant);
             var join = Join(participant);
-            peer.LastSnapshot = join.Snapshot;
+            peer.LastSnapshot = host.Snapshot();
             peer.EffectsBaseline = join.Snapshot.EffectsBaseline;
             Write(peer, join);
             if (HasOperators) { disconnectedAt = null; checkpointedDisconnect = false; }
@@ -370,6 +370,10 @@ public sealed partial class NetworkSession
                     Write(peer, new SoundEventMessage($"{Incarnation}:{host.WorldEpoch}:{sound.Tick}:{sound.SubjectId}:{sound.Kind}", host.WorldEpoch, sound.Kind));
         }
     }
+    // One publication's deltas, keyed by exact predecessor identity, bounded by
+    // connected peers. Clearing on the next snapshot prevents a history chain.
+    private SnapshotMessage? deltaTarget;
+    private readonly Dictionary<SnapshotMessage, DeltaMessage> deltas = new(ReferenceEqualityComparer.Instance);
     private void Publish(Peer peer)
     {
         // Coalesce changes while a coherent snapshot is in flight. Once its
@@ -381,7 +385,15 @@ public sealed partial class NetworkSession
         if (previous?.Revision == next.Revision && previous.WorldEpoch == next.WorldEpoch) return;
         var full = previous == null || previous.WorldEpoch != next.WorldEpoch || previous.Ruleset != next.Ruleset;
         if (full) next = next with { EffectsBaseline = host.EffectsBaseline() };
-        WireMessage message = full ? next : Difference(previous!, next);
+        WireMessage message;
+        if (full) message = next;
+        else
+        {
+            if (!ReferenceEquals(deltaTarget, next)) { deltas.Clear(); deltaTarget = next; }
+            if (!deltas.TryGetValue(previous!, out var delta))
+                deltas.Add(previous!, delta = Difference(previous!, next));
+            message = delta;
+        }
         if (full) peer.EffectsBaseline = next.EffectsBaseline;
         if (Write(peer, message)) peer.LastSnapshot = next;
     }
@@ -389,8 +401,12 @@ public sealed partial class NetworkSession
     {
         // Canonical saves/candidates already validate total state. Serialize/chunk
         // snapshots on the bounded socket workers, outside the simulation gate.
-        if ((message is JoinMessage or SnapshotMessage || JsonSerializer.SerializeToUtf8Bytes<WireMessage>(message, Json).Length <= 16 * 1024 * 1024) &&
-            peer.Output.Writer.TryWrite(message)) return true;
+        try
+        {
+            if (message is not (JoinMessage or SnapshotMessage)) _ = OutboundWire.Serialize(message);
+            if (peer.Output.Writer.TryWrite(message)) return true;
+        }
+        catch (InvalidDataException) { }
         // Oversized state or a full bounded queue closes this peer; never lose a dependent delta or block on network I/O.
         Disconnect(peer, DateTimeOffset.UtcNow);
         return false;

@@ -556,35 +556,52 @@ public sealed partial class SessionHost : IDisposable
                 new(snapshot.Ruleset, snapshot.ContentVersion, "hv", snapshot.RequiredPacks.ToImmutableArray()));
         }
     }
+    // Only the latest committed canonical state is retained. Prototype snapshots
+    // also depend on mutable control leases and continue through their existing path.
+    private SnapshotMessage? publishedSnapshot;
+    private long publishedMotionSequence;
     public SnapshotMessage Snapshot()
     {
         lock (gate)
         {
-            if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion() };
-            if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
-            if (referenceWorld is {} reference)
-                return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
-                    new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
-                    [], [], [], reference.Rails.Select(r => new TrackRead(new(r.Position.X,r.Position.Y,r.Position.Z),
-                        $"normal{r.Pattern}",0,r.EntityId)).ToArray(),
-                    ProtocolIdentity.ReferenceRuleset,ProtocolIdentity.ReferenceContent,ProtocolIdentity.ReferencePacks,
-                    reference.Spatial.Entities.Select(e => new SpatialEntityRead(e.Id,e.Revision,
-                        new(e.Definition.PackId,e.Definition.ContributionId,e.Definition.RecipeId),new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),
-                        e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
-                        e.Owned,e.SilentlyReclaimable,e.Value)).ToArray(), PlaybackRate: PlaybackRate);
-            var state = world.Read();
-            return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
-                new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),
-                state.Trains.Select(x => new TrainRead(x.Id, x.Revision, x.Name, Position(x.Cars[0]), x.Cars.Length,
-                    x.Controller, x.Direction.ToHeading().Index, x.Cars.Select(Position).ToArray(),
-                    x.Cars.Select((car, index) => index == 0 ? x.Direction.ToHeading().Index
-                        : new Location(car.X, car.Y, car.Z).DirectionTo(new(x.Cars[index - 1].X, x.Cars[index - 1].Y, car.Z)).Index).ToArray(),
-                    Camel(x.Status.ToString()), leases.TryGetValue(x.Id, out var lease)
-                        ? new(lease.Participant.ParticipantId, lease.Id, lease.Expires.ToUnixTimeMilliseconds()) : null)).ToArray(),
-                state.Stations.Select(x => new StationRead(x.Id, x.Revision, x.Name, Position(x.Position))).ToArray(),
-                state.Buildings.Select(x => new BuildingRead(x.Id, x.DefinitionId, Position(x.Position), x.Height)).ToArray(),
-                state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray(),
-                ProtocolIdentity.PrototypeRuleset, scenario.ContentVersion, ProtocolIdentity.PrototypePacks, PlaybackRate: PlaybackRate);
+            if (SavingAvailable)
+            {
+                EnsureMotionEpoch();
+                if (publishedSnapshot is {} cached && cached.WorldEpoch == WorldEpoch &&
+                    cached.Revision == CanonicalRevision && cached.PlaybackRate == PlaybackRate &&
+                    publishedMotionSequence == motionSequence) return cached;
+                publishedMotionSequence = motionSequence;
+                return publishedSnapshot = BuildSnapshot();
+            }
+            return BuildSnapshot();
         }
+    }
+    private SnapshotMessage BuildSnapshot()
+    {
+        if (mixedState != null) return MixedWire.Snapshot(mixedState,WorldEpoch) with { PlaybackRate = PlaybackRate, TrainMotion = ReadTrainMotion() };
+        if (terrainState != null) return TerrainWire.Snapshot(terrainState, WorldEpoch, PlaybackRate);
+        if (referenceWorld is {} reference)
+            return new(WorldEpoch, reference.Revision, reference.Clock.Time.AbsoluteMinute, reference.Paused, 0,
+                new(reference.Space.HorizontalSize,reference.Space.VerticalSize,reference.Space.Levels,"hv"),
+                [], [], [], reference.Rails.Select(r => new TrackRead(new(r.Position.X,r.Position.Y,r.Position.Z),
+                    $"normal{r.Pattern}",0,r.EntityId)).ToArray(),
+                ProtocolIdentity.ReferenceRuleset,ProtocolIdentity.ReferenceContent,ProtocolIdentity.ReferencePacks,
+                reference.Spatial.Entities.Select(e => new SpatialEntityRead(e.Id,e.Revision,
+                    new(e.Definition.PackId,e.Definition.ContributionId,e.Definition.RecipeId),new(e.Anchor.X,e.Anchor.Y,e.Anchor.Z),
+                    e.Footprint.Members.Select(m => new VoxelMemberRead(new(m.Offset.X,m.Offset.Y,m.Offset.Z),m.Transparent)).ToArray(),
+                    e.Owned,e.SilentlyReclaimable,e.Value)).ToArray(), PlaybackRate: PlaybackRate);
+        var state = world.Read();
+        return new(WorldEpoch, state.Revision, state.Tick, state.Paused, state.Cash,
+            new(state.Map.Width, state.Map.Height, state.Map.Levels, "prototypeXY"),
+            state.Trains.Select(x => new TrainRead(x.Id, x.Revision, x.Name, Position(x.Cars[0]), x.Cars.Length,
+                x.Controller, x.Direction.ToHeading().Index, x.Cars.Select(Position).ToArray(),
+                x.Cars.Select((car, index) => index == 0 ? x.Direction.ToHeading().Index
+                    : new Location(car.X, car.Y, car.Z).DirectionTo(new(x.Cars[index - 1].X, x.Cars[index - 1].Y, car.Z)).Index).ToArray(),
+                Camel(x.Status.ToString()), leases.TryGetValue(x.Id, out var lease)
+                    ? new(lease.Participant.ParticipantId, lease.Id, lease.Expires.ToUnixTimeMilliseconds()) : null)).ToArray(),
+            state.Stations.Select(x => new StationRead(x.Id, x.Revision, x.Name, Position(x.Position))).ToArray(),
+            state.Buildings.Select(x => new BuildingRead(x.Id, x.DefinitionId, Position(x.Position), x.Height)).ToArray(),
+            state.Tracks.Select(x => new TrackRead(Position(x.Position), Camel(x.Shape.ToString()), x.Revision)).ToArray(),
+            ProtocolIdentity.PrototypeRuleset, scenario.ContentVersion, ProtocolIdentity.PrototypePacks, PlaybackRate: PlaybackRate);
     }
 }
