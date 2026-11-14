@@ -174,8 +174,9 @@ public sealed class MixedSessionState
         if (Fleet != null && candidate.World.Fleet == null) throw new ArgumentException("Cannot discard fleet graph.");
         if (World.Stations != null && candidate.World.Stations == null) throw new ArgumentException("Cannot discard station graph.");
         if(World.City != null && candidate.World.City == null) throw new ArgumentException("Cannot discard city graph.");
-        World.Replace(World.Revision,candidate.World.Terrain,candidate.World.Spatial.Capture(),candidate.World.Voxels,candidate.World.Slopes,
-            candidate.World.SpeedLimits,candidate.World.Fleet,candidate.World.Stations,candidate.World.City);
+        if (!candidate.World.IsValidatedSuccessorOf(World))
+            World.Replace(World.Revision,candidate.World.Terrain,candidate.World.Spatial.Capture(),candidate.World.Voxels,candidate.World.Slopes,
+                candidate.World.SpeedLimits,candidate.World.Fleet,candidate.World.Stations,candidate.World.City);
         var before=Construction.Accounts; var after=candidate.Accounts;
         if (before.InitialCash != after.InitialCash || before.Settings != after.Settings ||
             after.Transactions.Length < before.Transactions.Length ||

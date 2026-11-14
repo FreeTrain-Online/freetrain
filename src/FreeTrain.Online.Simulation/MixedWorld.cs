@@ -22,6 +22,12 @@ public sealed class MixedWorld
     private readonly FrozenDictionary<long, ImmutableArray<RailwayVoxel>> byOwner;
     private readonly FrozenDictionary<long, SlopeOwnership> slopeOwners;
     private readonly FrozenDictionary<long, SpatialEntity> entities;
+    // Each world owns a unique token. A completed replacement retains only its
+    // predecessor's token, which cannot keep that world or its history alive.
+    private readonly object validationIdentity = new();
+    private object? previousValidationIdentity;
+    internal bool IsValidatedSuccessorOf(MixedWorld previous) =>
+        ReferenceEquals(previousValidationIdentity, previous.validationIdentity);
     public RailwayVoxel? At(Location p) => voxels.GetValueOrDefault(p);
 
     public MixedWorld(RailwayProfile profile, TerrainWorld terrain, SpatialState spatial,
@@ -279,6 +285,9 @@ public sealed class MixedWorld
             }
             else if (e.Revision != checked(previous.Revision + 1)) throw new ArgumentException("Invalid entity revision.");
         }
+        // Certify this exact result only after every successor check (including
+        // any heat-notified reconstruction) has completed successfully.
+        candidate.previousValidationIdentity = validationIdentity;
         return candidate;
     }
 
