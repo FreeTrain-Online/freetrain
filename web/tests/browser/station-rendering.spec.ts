@@ -2,6 +2,7 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,ready,openPanel,closePanel} from './browser-helpers.ts';
+import {settled} from './layout-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 const profile=JSON.parse(readFileSync('src/generated/station-profile.json','utf8'));
 const compat='protocolVersion=10&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
@@ -67,8 +68,13 @@ test('real station art cut picks names and EN/JA presentation preserve canvas ca
     expect(await canvas.getAttribute('data-camera')).toBe(camera);
     let sheets=0;page.on('request',r=>{if(r.url().includes('/content/')&&r.url().endsWith('.png'))sheets++;});
     const initialDecodes=await page.evaluate(()=>(window as any).__stationDecodes);
-    await openPanel(page,'view');await page.getByLabel('Show station names',{exact:true}).uncheck();const hidden=await canvas.evaluate(el=>el.toDataURL());
-    await page.getByLabel('Show station names',{exact:true}).check();await expect.poll(()=>canvas.evaluate(el=>el.toDataURL())).not.toBe(hidden);
+    await openPanel(page,'view');await settled(page);const named=await canvas.evaluate(el=>el.toDataURL());
+    await page.getByLabel('Show station names',{exact:true}).uncheck();
+    // Checkbox state changes before the next canvas paint. Observe both pixel
+    // transitions so the hidden baseline cannot still contain station names.
+    await expect.poll(async()=>(await canvas.evaluate(el=>el.toDataURL()))!==named).toBe(true);
+    await page.getByLabel('Show station names',{exact:true}).check();
+    await expect.poll(async()=>(await canvas.evaluate(el=>el.toDataURL()))===named).toBe(true);
     await page.getByLabel('Station name font',{exact:true}).selectOption('serif');await page.getByLabel('Station name size',{exact:true}).fill('18');await page.getByLabel('Station name size',{exact:true}).blur();
     expect(await page.evaluate(()=>(window as any).__stationDecodes)).toBe(initialDecodes);
     await page.getByLabel('Height cut',{exact:true}).fill('2');await expect(canvas).toHaveAttribute('data-terrain-cut','2');await expect(canvas).toHaveAttribute('data-presentation','ready');await closePanel(page);

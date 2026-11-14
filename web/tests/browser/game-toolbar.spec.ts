@@ -175,8 +175,10 @@ test('running trains allow zoom refinement to finish and keep the 50 percent vie
      else {const p95=(a:number[])=>a.sort((x,y)=>x-y)[Math.floor(a.length*.95)];resolve({frames:intervals.length,p95Frame:p95(intervals),p95Paint:p95(paints)});}
     };requestAnimationFrame(frame);
    }));
-   expect(sample.frames).toBeGreaterThan(60);expect(sample.p95Frame).toBeLessThan(50);expect(sample.p95Paint).toBeLessThan(30);
    report.push({rate,...sample});
+   await testInfo.attach(`running-train-zoom-${rate}.json`,{body:JSON.stringify({rate,...sample},null,2),contentType:'application/json'});
+   // Include the 50 ms budget boundary (three frames on a 60 Hz display).
+   expect(sample.frames).toBeGreaterThan(60);expect(sample.p95Frame).toBeLessThanOrEqual(50);expect(sample.p95Paint).toBeLessThan(30);
   }
   await page.getByRole('button',{name:'Pause',exact:false}).first().click();
  }
