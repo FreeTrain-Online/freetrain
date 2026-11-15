@@ -79,7 +79,7 @@ public static class SaveCodec
             w.Profile.Packs.Select(p => new RequiredPackRead(p.Id,p.Version,p.CatalogHash)).ToArray(),
             new(w.Space.HorizontalSize,w.Space.VerticalSize,w.Space.Levels,"hv"),[],state.Clock.Capture(),state.Paused,
             state.Random.Capture(),new(w.Spatial.NextEntityId,[]),state.Revision,packed);
-        return checked(JsonSerializer.SerializeToUtf8Bytes(header,Json).LongLength +
+        return checked(JsonByteCount.Count(header,Json,MaximumBytes) +
             4 * ((w.Cells.Length + 2L) / 3) + 4 * ((PackedTerrain.HeaderBytes * (long)w.Occupants.Length + 3 * w.RealizedTreeCount + 2) / 3));
     }
     public static void ValidateTerrainAdmission(TerrainSessionState state)

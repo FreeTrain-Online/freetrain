@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Text.Json;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Simulation;
 
@@ -8,6 +9,24 @@ namespace FreeTrain.Online.Persistence;
 
 public static class MixedWire
 {
+    private static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
+    private const int MaximumMixedBytes = 8 * 1024 * 1024;
+    private const int MaximumDeltaBytes = 16 * 1024 * 1024;
+    private sealed record ByteCount(long Value);
+    private sealed record WorldBytes(long MixedWithoutAccounts, long Railway);
+    private sealed record QueueSection([property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] MixedQueueRead? Queue);
+    private static readonly ConstructionAccountsRead emptyAccounts = new(0, 0, []);
+    private static readonly CityHeatRead emptyHeat = new(0, 0, [], [], []);
+    private static readonly long emptyAccountBytes = Count(emptyAccounts);
+    private static readonly long emptyHeatBytes = Count(emptyHeat);
+    // Values contain counts only, never exposed mutable wire arrays or worlds.
+    private static readonly ConditionalWeakTable<MixedWorld, WorldBytes> worldBytes = new();
+    private static readonly ConditionalWeakTable<ConstructionAccounts, ByteCount> accountBytes = new();
+    private static readonly ConditionalWeakTable<CityHeatState, ByteCount> heatBytes = new();
+    private sealed record RailwayOwners(ImmutableArray<SpatialEntity> Entities);
+    private static readonly ConditionalWeakTable<MixedWorld, RailwayOwners> railwayOwners = new();
+    private static long Count<T>(T value) => JsonByteCount.Count(value, Json, MaximumMixedBytes);
+
     private sealed record Publication(MixedRead Mixed, SpatialEntityRead[] Railway, SpatialEntityRead[] Combined);
     private static readonly ConditionalWeakTable<MixedConstructionState, Publication> publications = new();
     private static Publication Published(MixedSessionState state) => publications.GetValue(state.Construction,_ =>
@@ -19,7 +38,16 @@ public static class MixedWire
     private static PositionRead P(Location p)=>new(p.X,p.Y,p.Z);
     private static DefinitionRead? Read(DefinitionReference? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
     private static DefinitionReference? Restore(DefinitionRead? d) => d == null ? null : new(d.PackId,d.ContributionId,d.RecipeId);
+    private static ConstructionAccountsRead ReadAccounts(ConstructionAccounts a) =>
+        new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
+            t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToArray());
     public static MixedRead Read(MixedConstructionState state)
+    {
+        if (state.Accounts.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
+            throw new InvalidDataException("saveTooLarge");
+        return Read(state, ReadAccounts(state.Accounts));
+    }
+    private static MixedRead Read(MixedConstructionState state, ConstructionAccountsRead accounts)
     {
         var w = state.World; var a = state.Accounts;
         if (w.Voxels.Any(v => v.Traffic?.Rail?.ControllerId != null)) throw new ArgumentException("Reserved signal controller must be null (TRAIN-D010).");
@@ -34,8 +62,7 @@ public static class MixedWire
                     t.Car is {} car ? new(Read(car.Definition)!,car.TrainId,car.CarId) : null,Read(t.Platform)),
                 Read(v.Definition),v.Sprite,v.DrawGroundBelow,v.DrawGroundAbove,v.SupportedOwnerId,v.Construction is {} site ? new(site.State,site.Ground,site.NeedsDoor) : null)).ToArray(),
             w.Slopes.OrderBy(s => s.EntityId).Select(s => new SlopeOwnerRead(s.EntityId,s.Climb.Index)).ToArray(),
-            new(a.InitialCash,a.Settings.BankruptcyIncrement,a.Transactions.Select(t => new AccountTransactionRead(t.Sequence,
-                t.WorldRevision,t.AbsoluteMinute,t.Operation,t.Genre.SourceId(),t.Expenditure,t.TopUps,t.CashAfter,t.Revenue)).ToArray()),
+            accounts,
             w.SpeedLimits.Locations.Any() ? new(w.SpeedLimits.Low.Select(P).ToArray(),w.SpeedLimits.Medium.Select(P).ToArray(),w.SpeedLimits.Fast.Select(P).ToArray()) : null, FleetWire.Read(w.Fleet), StationGraph: StationWire.Read(w.Stations), City: CityWire.Read(w.City));
     }
     public static IReadOnlyDictionary<string, Action> ConstructionBindings(MixedRead data) => data.Voxels
@@ -85,8 +112,14 @@ public static class MixedWire
     }
     public static SpatialEntityRead[] RailwayEntities(MixedWorld world)
     {
-        var terrainIds = world.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
-        return world.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).Select(TerrainWire.Entity).ToArray();
+        // Share immutable owner membership, while keeping each caller's mutable
+        // wire arrays independent. Publication, admission and saves reuse it.
+        var owners = railwayOwners.GetValue(world, w =>
+        {
+            var terrainIds = w.Terrain.Spatial.Entities.Select(e => e.Id).ToHashSet();
+            return new(w.Spatial.Entities.Where(e => !terrainIds.Contains(e.Id)).ToImmutableArray());
+        });
+        return owners.Entities.Select(TerrainWire.Entity).ToArray();
     }
     public static SnapshotMessage Snapshot(MixedSessionState state, long epoch)
     {
@@ -97,21 +130,45 @@ public static class MixedWire
     // Bound complete save/snapshot bytes; successor delta bytes are checked below.
     public static void ValidateAdmission(MixedSessionState state)
     {
-        var mixed = Read(state);
-        var mixedBytes = JsonSerializer.SerializeToUtf8Bytes(mixed,WireJson.CreateOptions()).LongLength;
-        if (mixedBytes > 8 * 1024 * 1024)
-            throw new InvalidDataException("saveTooLarge");
+        var sizes = AdmissionBytes(state);
         if (SaveCodec.TerrainSaveUpperBound(state.CaptureTerrain()) +
-            JsonSerializer.SerializeToUtf8Bytes(RailwayEntities(state.World),WireJson.CreateOptions()).LongLength +
-            mixedBytes + 4096 > ProtocolIdentity.MaximumStateBytes)
+            sizes.Railway + sizes.Mixed + 4096 > ProtocolIdentity.MaximumStateBytes)
             throw new InvalidDataException("saveTooLarge");
+    }
+    // Build private projections for sizing. Snapshot readers can mutate their
+    // wire arrays; cached counts must be certified by immutable domain objects.
+    internal static (long Mixed, long Railway) AdmissionBytes(MixedSessionState state)
+    {
+        if (state.Construction.Accounts.Transactions.Length > ProtocolIdentity.MaximumAccountTransactions)
+            throw new InvalidDataException("saveTooLarge");
+        var sizes = worldBytes.GetValue(state.World, world =>
+        {
+            var data = Read(new MixedConstructionState(world), emptyAccounts);
+            long heat = 0;
+            if (data.City is {} city)
+            {
+                heat = heatBytes.GetValue(world.City!.State.Heat, h =>
+                    new(Count(new CityHeatRead(h.HorizontalSize,h.VerticalSize,h.Q,h.Back,h.Rho)))).Value - emptyHeatBytes;
+                data = data with { City = city with { Heat = emptyHeat } };
+            }
+            // Remove only complete JSON values, preserving property names,
+            // separators and null omission through the ordinary serializer.
+            return new(checked(Count(data) + heat - emptyAccountBytes),
+                JsonByteCount.Count(RailwayEntities(world),Json,ProtocolIdentity.MaximumStateBytes));
+        });
+        var accounts = accountBytes.GetValue(state.Construction.Accounts, a => new(Count(ReadAccounts(a)))).Value;
+        var queue = state.Fleet == null && state.World.Stations == null && state.World.City == null
+            ? null : FleetWire.Queue(state.Clock.Capture());
+        var queueBytes = queue == null ? 0 : Count(new QueueSection(queue)) - 1; // two braces -> one comma
+        var mixedBytes = checked(sizes.MixedWithoutAccounts + accounts + queueBytes);
+        if (mixedBytes > MaximumMixedBytes) throw new InvalidDataException("saveTooLarge");
+        return (mixedBytes, sizes.Railway);
     }
     public static void ValidateTransition(MixedSessionState before, MixedSessionState after)
     {
         ValidateAdmission(after);
         var delta = StateDifference.Between(Snapshot(before,1),Snapshot(after,1));
-        if (JsonSerializer.SerializeToUtf8Bytes<WireMessage>(delta,WireJson.CreateOptions()).Length > 16 * 1024 * 1024)
-            throw new InvalidDataException("saveTooLarge");
+        JsonByteCount.Count<WireMessage>(delta,Json,MaximumDeltaBytes);
     }
 
 }

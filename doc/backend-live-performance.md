@@ -235,6 +235,34 @@ section byte counts where immutable dependencies prove validity. Preserve the
 complete-state and 16 MiB delta limits. This investigation does not establish
 their cost under a construction-command workload or an autosave boundary.
 
+Implemented follow-up: mixed admission and transition checks share serializer
+options and count encoded bytes through a bounded discard stream. Weak caches
+hold exact mixed-world, heat and account-section lengths by immutable domain
+identity. The callback queue is counted afresh; terrain admission still captures
+all current clock, random, provenance and mode dependencies. Railway publication,
+admission and saves share immutable railway-owner membership, while wire arrays
+remain separate. Counts come from private projections, so mutations to exposed
+snapshot arrays cannot certify admission. The 8 MiB mixed-section, complete-state
+and 16 MiB polymorphic delta limits remain enforced, as does actual save length.
+
+Regression coverage compares cached counts with complete JSON encoding across
+construction and heat callbacks, queue-only changes, equal-revision replacement
+objects, escaped/Unicode text and finite float edge cases. It checks admission at
+8 MiB minus one byte, exactly 8 MiB and one byte above, inclusive counting-stream
+limits and collection of historical worlds, accounts and heat.
+
+Three alternating local Release samples against clean `b0383e8c834c` passed all
+ten standard benchmark checks per process, with matching save hashes and operation
+counts. In the separate focused probe, large-map median warm admission fell from
+21.144 to 0.040 ms and 6.355 to 0.031 MB allocated; transition validation fell from
+30.960 to 4.214 ms. Railway commit plus transition validation, constructing a fresh
+successor each time, fell from 96.000 to 86.790 ms. With 8,000 journal entries,
+warm admission fell from 24.257 to 0.033 ms. These synchronous probes exclude
+the command FIFO, sockets and disk I/O. Unrelated minute/publication timings varied
+in both directions; they do not establish an overall simulation speedup.
+Full results and limitations: `tmp/item6-implementation/analysis.md`.
+The final Release C# suite passed all 2,446 tests.
+
 ## Validation and remaining scope
 
 No gameplay implementation or original save was changed. Release backend and both
