@@ -130,13 +130,15 @@ test('cold join to a running purchased fleet gates all input until assets and th
  }finally{releaseAssets();releaseJoin();await context.close();}
 });
 
-test('peer movement invalidates a construction quote and fresh whole-object removal skips actual car hosts at zero cost',async({page:p,browser,baseURL})=>{
+test('peer movement rejects a changed construction quote on confirmation and fresh whole-object removal skips actual car hosts at zero cost',async({page:p,browser,baseURL})=>{
  await setup(p);const context=await browser.newContext({baseURL}),peer=await context.newPage();
  try{
   await peer.request.post('/api/access',{data:{secret:'operator-test'}});await peer.goto('/');await ready(peer);
   await track(p,en,29,26,27,30);await expect(button(p,en.confirmTrack)).toBeEnabled();
-  await step(peer);await expect(p.getByTestId('rail-status')).toContainText(en.railStale);await expect(button(p,en.confirmTrack)).toBeDisabled();
+  await step(peer);await expect(button(p,en.confirmTrack)).toBeEnabled();
   const moved=await state(p),bytes=await save(p);consistent(moved);expect(moved.mixed.fleet.trains[0].cars[0].state.location).toEqual({x:29,y:27,z:1});
+  await button(p,en.confirmTrack).click();await expect(p.locator('.command-feedback')).toHaveText(en.staleRevision);
+  await expect(p.getByTestId('rail-status')).toContainText(en.railStale);await expect(button(p,en.confirmTrack)).toBeDisabled();expect(await save(p)).toEqual(bytes);
   await track(p,en,29,26,27,30);await expect(button(p,en.confirmTrack)).toBeDisabled();expect(await save(p)).toEqual(bytes);
   await previewRemovalLine(p,[28,27],[30,27]);await confirmRemoval(p);
   const after=await state(p);consistent(after);expect(after.cash).toBe(moved.cash);

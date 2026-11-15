@@ -56,20 +56,18 @@ for(const locale of ['en','ja'] as const)test(`P6-24 ${locale} station cross-too
   }
   await closePanel(p);const before=await save(p),initial=await state(p);
   await passage();await expect(confirm()).toBeEnabled();expect(await save(p)).toEqual(before);
-  // Source pole setters allow a real car/platform host. This shared edit must
-  // invalidate the passage quote while retaining the actual rail and train.
+  // Source pole setters allow a real car/platform host. The original cosmetic
+  // passage review survives this unrelated edit and the next real callback.
   await peer.getByRole('button',{name:'Electric poles',exact:true}).click();
   for(const [label,value] of [['Start X',25],['Start Y',15],['Track level',2]] as const)await peer.getByLabel(label,{exact:true}).fill(String(value));
   await peer.getByRole('button',{name:'Preview route',exact:true}).click();await peer.getByRole('button',{name:'Confirm pole change',exact:true}).click();
-  await expect(peer.getByTestId('rail-route')).toHaveCount(0);await expect(confirm()).toBeDisabled();
+  await expect(peer.getByTestId('rail-route')).toHaveCount(0);await expect(confirm()).toBeEnabled();
   expect((await state(p)).mixed.fleet).toEqual(initial.mixed.fleet);
   expect((await state(p)).mixed.queue).toEqual(initial.mixed.queue);
-  await passage();await expect(confirm()).toBeEnabled();
-  // A real peer callback invalidates the cosmetic quote, even with unchanged terrain.
   await peer.locator('.world-canvas').focus();await peer.keyboard.press('n');
-  await expect.poll(async()=>(await state(p)).tick).toBe(String(BigInt(initial.tick)+1n));await expect(confirm()).toBeDisabled();
+  await expect.poll(async()=>(await state(p)).tick).toBe(String(BigInt(initial.tick)+1n));await expect(confirm()).toBeEnabled();
   const advanced=await state(p);expect(advanced.terrain).toEqual(initial.terrain);
-  await passage();await expect(confirm()).toBeEnabled();lose=true;
+  lose=true;
   if(locale==='ja')await confirm().tap();else{await confirm().focus();await p.keyboard.press('Enter');}
   await expect.poll(()=>receipts.some(r=>r.requestId===last?.requestId&&r.type==='accepted')).toBe(true);
   const committed=await save(p),after=await state(p);

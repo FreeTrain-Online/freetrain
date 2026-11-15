@@ -53,7 +53,7 @@ test('terrace preview is read-only; fresh identity, saved corners, exact reopen,
   await expect.poll(async()=>JSON.parse((await save(page)).toString()).packedTerrain.occupantCount).toBe(4);expect((await state(page)).cash).toBe('0');
  }finally{await replace(page,original);}
 });
-test('terrace map ray selects backed-up voxel; Escape, panel and peer changes fence review',async({page,browser})=>{
+test('terrace map ray selects backed-up voxel; Escape and panels clear review, peer conflicts reject on confirmation',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page);const peer=await browser.newPage();
  try{
   await empty(page);await slope(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrace'));
@@ -63,8 +63,11 @@ test('terrace map ray selects backed-up voxel; Escape, panel and peer changes fe
   await expect(page.getByTestId('corner-position')).toContainText('20, 20, 1');await expect(confirm(page)).toBeEnabled();
   await page.keyboard.press('Escape');await expect(confirm(page)).toBeDisabled();
   await terraceTarget(page,'removeTerrace');await openPanel(page,'help');await closePanel(page);await expect(confirm(page)).toBeDisabled();
-  await page.getByLabel('Terrain selection',{exact:true}).selectOption('terrace');await terraceTarget(page,'removeTerrace');await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer,'removeTerrace');await confirm(peer).click();
-  await expect(page.getByTestId('corner-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await expect(canvas).toHaveAttribute('data-instance','terrace');
+  await page.getByLabel('Terrain selection',{exact:true}).selectOption('terrace');await terraceTarget(page,'removeTerrace');await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer,'removeTerrace');await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
+  const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
+  await expect(page.getByTestId('corner-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);await expect(canvas).toHaveAttribute('data-instance','terrace');
+  await terraceTarget(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();await expect(confirm(page)).toBeDisabled();
+  await expect.poll(async()=>Buffer.from(JSON.parse((await save(page)).toString()).packedTerrain.cells,'base64')[610]).toBe(130);
  }finally{await peer.close();await replace(page,original);}
 });
 test('Japanese narrow terrace controls support keyboard confirmation and diagnostics without pausing shared time',async({browser})=>{
@@ -93,7 +96,7 @@ test('terrace rectangle normalizes reversed coordinates, previews all cells read
   await batchTarget(page);await expect(confirm(page)).toBeDisabled();await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 0');
  }finally{await replace(page,original);}
 });
-test('two map corners select terrace batch; Escape and peer edits invalidate review on the preserved canvas',async({page,browser})=>{
+test('two map corners select terrace batch; Escape clears review and peer conflicts reject on confirmation with fresh recovery',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page),peer=await browser.newPage();
  try{
   await empty(page);await slope(page);await page.getByRole('checkbox',{name:'Place terraces in a rectangle',exact:true}).check();const before=await save(page);const canvas=page.locator('canvas');await canvas.evaluate(el=>el.setAttribute('data-instance','terrace-batch'));
@@ -101,7 +104,11 @@ test('two map corners select terrace batch; Escape and peer edits invalidate rev
   await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 4');expect(await save(page)).toEqual(before);
 
   await page.keyboard.press('Escape');await expect(confirm(page)).toBeDisabled();await batchTarget(page);
-  await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer);await confirm(peer).click();await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();await expect(canvas).toHaveAttribute('data-instance','terrace-batch');
+  await peer.goto('/');await ready(peer);await tool(peer);await terraceTarget(peer);await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
+  const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
+  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);await expect(canvas).toHaveAttribute('data-instance','terrace-batch');
+  await batchTarget(page);await expect(page.getByTestId('terrace-batch-count')).toHaveText('Terraces to place: 3');await confirm(page).click();await expect(confirm(page)).toBeDisabled();
+  await expect.poll(async()=>(await state(page)).terrain.occupants.filter((o:any)=>o.kind==='terrace').length).toBe(4);
  }finally{await peer.close();await replace(page,original);}
 });
 test('Japanese narrow terrace batch supports end coordinates and one keyboard confirmation',async({browser})=>{

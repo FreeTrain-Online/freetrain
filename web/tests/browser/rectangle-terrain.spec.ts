@@ -67,7 +67,7 @@ test('explicit repair fixes a mismatched cut cell inclusively and reports unchan
  }finally{await replace(page,original);}
 });
 
-test('rectangle malformed, oversized and stale requests preserve state; delayed previews and peer commits cannot retarget review',async({page,browser})=>{
+test('rectangle malformed, oversized and future requests preserve state; delayed previews cannot retarget review and peer conflicts reject on confirmation',async({page,browser})=>{
  await page.goto('/');await ready(page);const original=await save(page);const peer=await browser.newPage();let release=()=>{};const held=new Promise<void>(r=>{release=r;});
  try{
   await empty(page);const s=await state(page),q={expectedWorldEpoch:s.worldEpoch,expectedGeometryRevision:s.terrain.geometryRevision,position:{x:20,y:20,z:1},action:'raise',offsetX:null,offsetY:null,stroke:null,rectangle:{end:{x:21,y:21,z:1},soft:false}};
@@ -78,9 +78,17 @@ test('rectangle malformed, oversized and stale requests preserve state; delayed 
   let delayed=false;await page.route('**/api/terrain/corner/preview?*',async route=>{const response=await route.fetch();if(!delayed){delayed=true;await held;}await route.fulfill({response});});
   await target(page);await expect.poll(()=>delayed).toBe(true);await page.getByLabel('End X',{exact:true}).fill('22');await page.getByRole('button',{name:'Preview rectangle',exact:true}).click();
   await expect(page.getByTestId('rectangle-position')).toContainText('22, 21, 1');release();await expect(page.getByTestId('rectangle-position')).toContainText('22, 21, 1');
-  await peer.goto('/');await ready(peer);await tool(peer);await target(peer);await confirm(peer).click();
-  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();
-  expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:q})).status()).toBe(409);
+  await peer.goto('/');await ready(peer);await tool(peer);await target(peer);await confirm(peer).click();await expect(confirm(peer)).toBeDisabled();
+  const changed=await save(page);await expect(confirm(page)).toBeEnabled();await confirm(page).click();
+  await expect(page.getByTestId('rectangle-status')).toContainText('Terrain changed');await expect(confirm(page)).toBeDisabled();expect(await save(page)).toEqual(changed);
+  // Older geometry can be reviewed again, but a future revision is invalid.
+  const reviewed=await page.request.post('/api/terrain/corner/preview?'+compat,{data:q});expect(reviewed.ok()).toBe(true);expect(await save(page)).toEqual(changed);
+  const current=await state(page);expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:{...q,expectedGeometryRevision:String(BigInt(current.terrain.geometryRevision)+1n)}})).status()).toBe(409);
+  // Re-review the larger rectangle: the peer's completed vertex is skipped,
+  // while the remaining vertex can still be confirmed from a fresh quote.
+  await target(page,'en','raise',[20,20,1],[22,21]);await expect(confirm(page)).toBeEnabled();
+  await expect(page.locator('.tool-card')).toContainText('Skipped sites: 1');await confirm(page).click();await expect(confirm(page)).toBeDisabled();
+  await expect.poll(async()=>(await state(page)).terrain.geometryRevision).toBe(String(BigInt(current.terrain.geometryRevision)+1n));
  }finally{release();await peer.close();await replace(page,original);}
 });
 

@@ -40,9 +40,12 @@ for(const ja of [false,true])test(`P6-13 ${ja?'JA narrow touch':'EN desktop'} la
   expect((await state(page)).mixed.accounts).toEqual(accounts);expect((await state(page)).mixed.queue).toEqual(queue);
   // Local property drafts disable lane edits until reset.
   await page.getByLabel(label('Platform name','ホーム名'),{exact:true}).fill('Unapplied');await expect(left()).toBeDisabled();await page.getByRole('button',{name:label('Reset draft','下書きを戻す'),exact:true}).click();await expect(left()).toBeEnabled();
-  // A peer edit invalidates the explicit quote; replay fails at the server too.
-  const stale=await quote(1);await inspect(peer,await p(),false);await peer.getByLabel('Platform name',{exact:true}).fill('Peer lane platform');await peer.getByRole('button',{name:'Apply properties',exact:true}).click();await expect(page.getByTestId('confirmed-name')).toHaveText('Peer lane platform');await expect(confirm()).toBeDisabled();
-  const bytes=await save(page);await send({kind:'editWidePlatform',query:stale.query,expectedCost:'0'},'staleRevision');expect(await save(page)).toEqual(bytes);
+  // A changed target revision rejects on confirmation without altering lanes.
+  const stale=await quote(1);await inspect(peer,await p(),false);await peer.getByLabel('Platform name',{exact:true}).fill('Peer lane platform');await peer.getByRole('button',{name:'Apply properties',exact:true}).click();await expect(page.getByTestId('confirmed-name')).toHaveText('Peer lane platform');await expect(confirm()).toBeEnabled();
+  const bytes=await save(page),receiptCount=messages.length;await confirm().click();
+  await expect.poll(()=>messages.slice(receiptCount).find(m=>m.type==='rejected')?.code).toBe('staleRevision');await expect(confirm()).toBeDisabled();expect(await save(page)).toEqual(bytes);
+  await send({kind:'editWidePlatform',query:stale.query,expectedCost:'0'},'staleRevision');expect(await save(page)).toEqual(bytes);
+  await quote(1);await confirm().click();await expect(confirm()).toBeDisabled();await expect.poll(async()=>(await p()).lane1).toBe(false);
   // Late replies cannot recreate a canceled quote.
   let release!:()=>void,seen=false;const held=new Promise<void>(r=>release=r);await page.route('**/api/station/wide-platform/preview?*',async route=>{const response=await route.fetch();seen=true;await held;await route.fulfill({response});});
   await left().click();await expect.poll(()=>seen).toBe(true);await cancel().click();release();await expect(confirm()).toBeDisabled();await page.unroute('**/api/station/wide-platform/preview?*');
