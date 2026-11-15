@@ -204,9 +204,11 @@ test('Remove tool retains station quotes across clock steps and cancels late rem
  await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.length).toBe(0);
 });
 
-// P6 exit: every authored family must cross the actual bilingual construction
-// controls and current save boundary, beyond catalog/gallery or domain coverage.
-for(const ja of [false,true])test(`P6-28 ${ja?'JA narrow touch':'EN desktop'} constructs and reopens every bundled station family`,async({page})=>{
+// Every family crosses real construction/reopen once in EN. JA routine coverage
+// keeps a narrow touch witness; the full JA sweep remains explicitly exhaustive.
+for(const mode of ['en-all','ja-one','ja-all'] as const)test(`P6-28 ${mode==='en-all'?'EN desktop constructs and reopens every bundled station family':mode==='ja-one'?'JA narrow touch constructs and reopens a representative station family':'JA narrow touch constructs and reopens every bundled station family'}`,
+ {tag:mode==='ja-all'?['@extended']:[]},async({page})=>{
+ const ja=mode!=='en-all',definitions=mode==='ja-one'?[type]:profile.definitions;
  test.setTimeout(240000);
  if(ja)await page.setViewportSize({width:430,height:860});
  await page.addInitScript(ja=>localStorage.setItem('freetrain-online.locale',ja?'ja':'en'),ja);
@@ -217,7 +219,7 @@ for(const ja of [false,true])test(`P6-28 ${ja?'JA narrow touch':'EN desktop'} co
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data})).ok()).toBe(true);
   await ready(page,ja?'ja':'en');
  }
- for(const definition of profile.definitions){
+ for(const definition of definitions){
   await task(page,ja);
   if(!await page.locator('#building-catalog').count())await page.getByRole('button',{name:ja?'一覧から選択':'Choose from catalog',exact:true}).click();
   const entry=page.locator(`[data-catalog-variant="${definition.reference.recipeId}"]`);
@@ -238,6 +240,6 @@ for(const ja of [false,true])test(`P6-28 ${ja?'JA narrow touch':'EN desktop'} co
   writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-family-${ja?'ja':'en'}-${records.length}.json`,saved);
   await replace(baseline);expect(await bytes(page)).toEqual(baseline);
  }
- expect(records).toHaveLength(35);
- writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-families-${ja?'ja':'en'}.json`,JSON.stringify(records,null,2));
+ expect(records).toHaveLength(mode==='ja-one'?1:35);
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-families-${mode}.json`,JSON.stringify(records,null,2));
 });

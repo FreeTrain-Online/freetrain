@@ -87,25 +87,6 @@ test('Leave game signs out and allows changing roles or rejoining locally', asyn
   } finally { await first.close(); await second.close(); }
 });
 
-test('a failed Leave game request offers a retry and clears the displayed world', async ({ page }) => {
-  await page.goto('/'); await ready(page);
-  if (await page.getByTestId('clock-state').textContent() === 'Running')
-    await page.getByRole('button', { name: 'Pause', exact: false }).click();
-  await expect(page.getByTestId('clock-state')).toHaveText('Paused');
-  let attempts = 0;
-  await page.route('**/api/leave', async route => {
-    if (++attempts === 1) await route.fulfill({ status: 503 });
-    else await route.continue();
-  });
-  await openPanel(page, 'session');
-  await page.getByRole('button', { name: 'Leave game', exact: true }).click();
-  await expect(page.getByRole('status')).toHaveText('Leaving could not be confirmed. Retry Leave game to sign out.');
-  await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
-  await page.getByRole('button', { name: 'Retry leave', exact: true }).click();
-  await expect(page.getByLabel('Enter access key to join game', { exact: true })).toBeVisible();
-  expect(attempts).toBe(2);
-});
-
 test('independent UI state and observer explanations retain shared clock and authority', async ({ browser }) => {
   const aContext=await browser.newContext(),bContext=await browser.newContext();
   try {

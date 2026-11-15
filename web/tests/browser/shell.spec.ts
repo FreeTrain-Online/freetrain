@@ -139,25 +139,6 @@ test('second tab sharing one participant waits until its first socket disconnect
   await ready(competing); await expect(step(competing)).toBeEnabled();
 });
 
-test('Japanese labels fit narrow doubled-density layouts and hidden tab keeps shared time running', async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 640, height: 450 }, deviceScaleFactor: 2, locale: 'ja-JP' });
-  const page = await context.newPage(); await page.goto('/');
-  await expect(page.getByTestId('connection')).toHaveText('ゲームに接続済み');
-  for (const width of [720, 640, 360]) { await page.setViewportSize({ width, height: 900 }); expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true); }
-  await page.locator('.command-bar').getByRole('button', { name: '運転', exact: false }).click();
-  await expect(page.getByTestId('clock-state')).toHaveText('運転中');
-  await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: true }); document.dispatchEvent(new Event('visibilitychange')); });
-  await expect(page.getByTestId('clock-state')).toHaveText('運転中');
-  await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, value: false }); document.dispatchEvent(new Event('visibilitychange')); });
-  await page.getByRole('button', { name: '一時停止', exact: false }).click();
-  await expect(page.getByTestId('clock-state')).toHaveText('一時停止中');
-  await selectStation(page);
-  const input = page.getByLabel('駅名', { exact: true }); await input.focus(); await page.keyboard.press('Tab');
-  await expect(page.getByRole('button', { name: '駅名を適用', exact: true })).toBeFocused();
-
-  await context.close();
-});
-
 test('real stale station edit is rejected without losing the Japanese draft', async ({ page }) => {
   let stale = true;
   await page.routeWebSocket('**/api/session?*', route => {

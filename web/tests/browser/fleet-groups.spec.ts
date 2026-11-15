@@ -15,7 +15,8 @@ async function setup(page:Page,locale='en'){
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}
 }
-for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,
+ {tag: (locale==='ja')===coarse ? [] : ['@extended']},()=>{
  test.use({hasTouch:coarse});
  test(`${locale} MAN-A17 nested group reassignment, overrides and durable reopen`,async({page,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));

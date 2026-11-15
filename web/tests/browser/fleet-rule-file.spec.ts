@@ -6,7 +6,8 @@ const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const expected=JSON.parse(readFileSync('tests/fixtures/timetable/expected.json','utf8'));
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
-for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,
+ {tag: (locale==='ja')===coarse ? [] : ['@extended']},()=>{
  test.use({hasTouch:coarse});
  test(`${locale} rule files preview ordered append, portable round trip, peer conflict and restart`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));

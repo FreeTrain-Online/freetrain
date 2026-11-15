@@ -66,3 +66,14 @@ test('success expires, actionable rejection remains and tool Escape cancels befo
   await page.locator('canvas').focus(); await page.keyboard.press('Escape'); await expect(page.getByRole('button',{name:'Build track',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.keyboard.press('Escape'); await expect(page.getByRole('button',{name:'Inspect',exact:true})).toHaveAttribute('aria-pressed','true');
 });
+
+// The remaining Japanese layout/DPR checks live in map and responsive-layout.
+test('Japanese station name Tab navigation reaches Apply on a narrow display', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 360, height: 900 }, deviceScaleFactor: 2, locale: 'ja-JP' });
+  try {
+    const page = await context.newPage(); await page.goto('/'); await ready(page, 'ja');
+    await selectStation(page);
+    await page.getByLabel('駅名', { exact: true }).focus(); await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: '駅名を適用', exact: true })).toBeFocused();
+  } finally { await context.close(); }
+});

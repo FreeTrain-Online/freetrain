@@ -28,6 +28,20 @@ Tests are grouped by the behavior they protect.
 | `fleet-persistence.spec.ts` | Save10 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the selected run generates Outside, timing and moving inputs through focused `FleetMovementTests` |
 | `train-rendering.spec.ts` | All eight bundled car recipes against independent poses and actual PNG pixels/alpha picks in eight seasonal/light variants; infrastructure overlap contacts, hidden tunnel movement and local/full redraw identity |
 
+Routine fleet controller-manager, group, rule-file and reconciliation matrices run
+EN desktop and JA narrow/touch with 200% text. The EN narrow and JA desktop
+cross-pairs carry `@extended` and run with `playwright.extended.config.ts`.
+Both locale-switch directions remain in routine reconciliation coverage.
+Station-family construction/reopen covers all 35 definitions in EN, one
+representative in JA narrow/touch, and all 35 JA definitions under `@extended`.
+The catalog unit test retains all 35 footprints and both locale name variants.
+
+Failed-leave retry feedback belongs to `session-lifecycle.spec.ts`; Japanese
+station-name Tab focus belongs to `keyboard-controls.spec.ts`. Hidden-tab shared
+time remains in `multiplayer.spec.ts`. Prototype train selection checks for
+absent driving controls; `fleet-controller-manager.spec.ts` owns the browser
+forbidden driving-key/packet matrix.
+
 Construction and terrain suites retain their existing functional names.
 `browser-helpers.ts` holds shared interaction and world fixtures;
 `layout-helpers.ts` holds viewport checks. Helpers do not register tests or hooks.

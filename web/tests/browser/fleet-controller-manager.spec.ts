@@ -20,7 +20,8 @@ async function manager(page:Page,text= en,locale='en'){
 async function owned(page:Page,text=en){
  await page.getByRole('button',{name:new RegExp(`^${text.ownedStock}`)}).click();return page.locator('.fleet-details');
 }
-for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,()=>{
+for(const [locale,coarse] of [['en',false],['ja',false],['en',true],['ja',true]] as const)test.describe(`${locale} ${coarse?'coarse':'desktop'}`,
+ {tag: (locale==='ja')===coarse ? [] : ['@extended']},()=>{
  test.use({hasTouch:coarse});
  test(`${locale} shared controller management, copy isolation, assignments and reopen`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));

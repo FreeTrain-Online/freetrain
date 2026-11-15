@@ -140,16 +140,12 @@ test('preview and cancel never charge; buffer extension confirms once, removal a
   }finally{timers.forEach(clearTimeout);}
 });
 
-test('train selection exposes no driving controls and map keys send no train input',async({page})=>{
-  const commands:string[]=[];
-  await page.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();route.onMessage(message=>{const data=JSON.parse(String(message));if(data.type==='command')commands.push(data.payload.kind);server.send(message);});});
+// Canonical controller-manager owns the forbidden driving-key/packet matrix.
+test('prototype train selection exposes no driving controls',async({page})=>{
   await page.goto('/');await ready(page);await selectTrain(page);
   await expect(page.getByRole('combobox',{name:'Controller',exact:true})).toHaveCount(0);
-  await expect(page.getByRole('button',{name:'Take control',exact:true})).toHaveCount(0);
-  const canvas=page.locator('canvas');await canvas.focus();
-  for(const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Shift'])await canvas.press(key);
-  await page.waitForTimeout(1200);
-  expect(commands.filter(k=>['acquireControl','releaseControl','setController','controllerInput'].includes(k))).toEqual([]);
+  for(const name of ['Take control','Release control'])
+    await expect(page.getByRole('button',{name,exact:true})).toHaveCount(0);
 });
 
 test('Japanese playable map fits narrow doubled-density displays with scaled picking',async({browser})=>{

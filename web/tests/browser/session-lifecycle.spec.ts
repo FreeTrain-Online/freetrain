@@ -83,6 +83,7 @@ test('failed leave latches until revocation, then requires explicit empty-key re
   page.on('request', request => { if (request.url().includes('/api/bootstrap')) bootstraps++; });
   await openPanel(page, 'session'); await page.getByRole('button', { name: 'Leave game', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Leave not confirmed', exact: true })).toBeVisible();
+  await expect(page.getByRole('status')).toHaveText('Leaving could not be confirmed. Retry Leave game to sign out.');
   await expect(page.getByRole('button', { name: 'Retry now', exact: true })).toHaveCount(0); await expect(page.getByRole('button', { name: 'Connect', exact: true })).toHaveCount(0);
   await expect(page.locator('canvas')).toHaveAttribute('data-scene', 'demo');
   const count = bootstraps; await page.waitForTimeout(600); expect(bootstraps).toBe(count);

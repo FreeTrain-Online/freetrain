@@ -5,7 +5,8 @@ const messages=Object.fromEntries(['en','ja'].map(l=>[l,JSON.parse(readFileSync(
 
 for(const narrow of [false,true])test.describe(narrow?'coarse 390×844 200%':'desktop',()=>{
  test.use({hasTouch:narrow,viewport:narrow?{width:390,height:844}:{width:1280,height:900}});
- for(const locale of ['en','ja'])test(`P5-29 ${locale} trade and locale navigation protect a train draft`,async({page})=>{
+ for(const locale of ['en','ja'])test(`P5-29 ${locale} trade and locale navigation protect a train draft`,
+  {tag: (locale==='ja')===narrow ? [] : ['@extended']},async({page})=>{
   const errors:string[]=[];page.on('pageerror',error=>errors.push(String(error)));
   await page.addInitScript(({locale,narrow})=>{
    localStorage.setItem('freetrain-online.locale',locale);
