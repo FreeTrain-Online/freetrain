@@ -6986,6 +6986,45 @@
         },
         "structure": {
           "$ref": "#/$defs/CityStructure"
+        },
+        "population": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "residents",
+                "outgoing",
+                "incoming",
+                "landValue"
+              ],
+              "properties": {
+                "residents": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647
+                },
+                "outgoing": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647
+                },
+                "incoming": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647
+                },
+                "landValue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647
+                }
+              }
+            }
+          ]
         }
       }
     },

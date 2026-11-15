@@ -11,13 +11,19 @@ type FixtureFamily = {
 
 /** Every generated input and companion oracle has one producer and run-owned path. */
 export const fixtureFamilies = {
+  cityPopulation: {
+    env: 'FREETRAIN_CITY_POPULATION_OUTPUT',
+    producers: ['Population_refresh_fixture_has_real_completed_supply_and_atomic_heat_continuation'],
+    suffixes: ['', '.before.json', '.snapshot.json', '.delta.json'],
+    consumers: [{file:'city-building.spec.ts',title:/P7-13/}],
+  },
   city: {
     env: 'FREETRAIN_PLAYABLE_CITY_OUTPUT',
     producers: [
       'Playable_city_browser_seed_is_empty_source_clock_without_producers_or_completion_shortcut',
     ],
     suffixes: [''],
-    consumers: ['city-building.spec.ts'],
+    consumers: [{file:'city-building.spec.ts',title:/P7-09|P7-10|P7-11|P7-12/}],
   },
   controllers: {
     env: 'FREETRAIN_CONTROLLER_FLEET_OUTPUT',

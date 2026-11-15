@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CityPopulation from './CityPopulation.svelte';
   import {fixedCityInspection,completedFixedCityOwner,type FixedCityInspection} from './lib/fixed-city-edit.ts';
   import { formatGameTime } from './lib/game-time.ts';
   import TrainColorControls from './TrainColorControls.svelte';
@@ -348,6 +349,7 @@
               <p class="hint" id="draft-hint">{draftConflict ? text.draftConflict : text.draft}</p>
             </form>
           {:else if cityBuilding}
+            <CityPopulation {model} {view} id={cityBuilding.id}/>
             <dl class="details"><div><dt>{text.height}</dt><dd>{cityBuilding.height}</dd></div></dl>
             <p data-testid="city-progress">{cityBuilding.construction.length ? `${text.cityProgress}: ${cityBuilding.construction.reduce((sum,v)=>sum+v.cell.state,0)}/${4*cityBuilding.construction.length}` : text.cityComplete}</p>
             {#if cityBuilding.halves.length}<ul data-testid="city-halves">{#each cityBuilding.halves as half}<li>{text[half.side==='back'?'cityHalfBack':'cityHalfFore']} · {text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[half.direction/2]]}<ObjectProvenance id={half.definition.contributionId} packId={half.definition.packId} locale={view.locale}/></li>{/each}</ul>{/if}

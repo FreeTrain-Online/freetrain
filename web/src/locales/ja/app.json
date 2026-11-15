@@ -875,7 +875,7 @@
   "trainOccupancyHelp": "乗車率は通常定員を基準とするため、満員時は100%を超える場合があります。定員0の列車には乗車率を表示しません。",
   "stationTask": "駅",
   "stationBuildingTab": "駅舎",
-  "stationServicePending": "駅舎と接続済みのホームを建設し、列車を購入して配置します。簡易制御では30分待ってから乗車・発車します。現在の人口供給は明示された固定条件の供給元によるもので、都市の人口供給元はまだ利用できません。",
+  "stationServicePending": "人口を供給する建物、駅と接続ホームを建設して、列車を購入・配置してください。Simple制御は30分待ってから乗車・発車します。",
   "stationBuildingType": "駅舎・向き",
   "stationUpkeep": "一日の運営費",
   "stationX": "駅舎 X",
@@ -998,9 +998,9 @@
   "stationDiagnosisForwarding": "現在の発車動作は回送のため乗車しません。到着時の通過や需要ゼロとは異なります。",
   "stationDiagnosisWait": "現在の制御では接続先の駅で待機します。",
   "stationDiagnosisReady": "現在の発車制御では移動前に乗車できます。",
-  "stationDiagnosisZeroSupply": "現在の需要はゼロです。乗車客がいなくても列車は停車・発車できます。都市の人口供給はまだ利用できません。",
+  "stationDiagnosisZeroSupply": "現在の需要は0です。完成した建物と駅の集客範囲を確認してください。乗車がなくても列車は停車・発車できます。",
   "stationDiagnosisHelp": "確定した世界と表示されたゲーム時刻を確認します。将来の時刻表の予測ではありません。停止位置は進行方向と編成長で変わります。共有TATは駅の位置と列車の現在のグループ・制御割り当てを使用します。",
-  "stationSupplyHelp": "待ち客数は「現在の需要 − 既に乗車した人数」と0の大きい方です。1日平均は原作の減衰する乗客カウンターから計算します。現在の人口供給は制御された供給元によるもので、都市の人口供給はまだ利用できません。",
+  "stationSupplyHelp": "待機人数は「現在の需要−既に乗車した人数」の0以上の値です。日平均は減衰する旅客カウンターを使います。完成した街の建物が外出人口を供給します。シナリオ用の制御された供給源とは区別します。",
   "stationInformationLoading": "現在の駅情報を取得中…",
   "stationInformationUnavailable": "駅情報を取得できませんでした。現在の世界で再試行してください。",
   "stationPlatformLength": "ホーム長（区画）",
@@ -1035,5 +1035,10 @@
   "cityAllGroups": "すべて",
   "cityUngrouped": "指定なし",
   "cityManualOnly": "手動建設のみ",
-  "cityAutomaticEligible": "自動発展の対象"
+  "cityAutomaticEligible": "自動発展の対象",
+  "cityResidents": "居住人口",
+  "cityOutgoing": "現在の外出人口",
+  "cityIncoming": "現在の流入人口",
+  "cityLandValue": "地価",
+  "citySupplyHelp": "駅の需要は外出人口を建物の接続駅数で割り、現在の地価と建物の大きさによる上限を適用します。"
 }

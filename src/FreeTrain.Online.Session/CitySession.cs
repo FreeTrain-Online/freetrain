@@ -33,9 +33,17 @@ public sealed partial class SessionHost
                 var canCancel=!structure.Construction.IsEmpty;
                 if(canCancel) MixedWire.ValidateTransition(state,CancelCityCandidate(state,query.OwnerId));
                 return new(query,canCancel,canCancel ? null : "operationUnavailable",0,
-                    CityWire.Read(state.World.City)!.Structures.Single(s=>s.Id==query.OwnerId));
+                    CityWire.Read(state.World.City)!.Structures.Single(s=>s.Id==query.OwnerId),
+                    state.World.City.State.Producers.Any(p=>p.OwnerId==query.OwnerId)
+                        ? PopulationInformation(state,query.OwnerId) : null);
             }, query.ExpectedMinute);
         }
+    }
+    private static CityPopulationRead PopulationInformation(MixedSessionState state,long id)
+    {
+        var population=state.World.City!.ProducerPopulation(id);
+        return new(population.Residents,population.Outgoing(state.Clock.Time),population.Incoming(state.Clock.Time),
+            CityHeat.Value(state.World,state.World.City.Structure(id).Location));
     }
     private static MixedSessionState CancelCityCandidate(MixedSessionState state,long ownerId)
     {

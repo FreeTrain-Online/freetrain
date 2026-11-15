@@ -1930,6 +1930,12 @@ export interface CityPreview {
   reason: string | null;
   cost: Counter;
   structure: CityStructure;
+  population?: null | {
+    residents: number;
+    outgoing: number;
+    incoming: number;
+    landValue: number;
+  };
 }
 export interface FixedCityPreview {
   query: FixedCityQuery;

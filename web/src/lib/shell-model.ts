@@ -190,6 +190,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale station preview');
       return result;
     },
+    async cityInformation(query:import('../generated/contracts.ts').CityQuery,signal:AbortSignal) {
+      const active=client,current=generation;
+      if(disposed||state.connection!=='ready'||!active?.previewCity)throw new Error('City information unavailable');
+      const result=await active.previewCity(query,signal);
+      if(disposed||signal.aborted||generation!==current||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.tick!==query.expectedMinute||state.read?.revision!==query.expectedRevision)throw new Error('Stale city information');
+      return result;
+    },
     async stationInformation(query:import('../generated/contracts.ts').StationInformationQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.stationInformation)throw new Error('Unavailable');

@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 namespace FreeTrain.Online.Simulation;
 
 // Immutable expression; Persistent retains its child binding rather than cloning
-// a legacy resolver. Stadium carries controlled outgoing/entering values until P7.
+// a legacy resolver. Stadium carries controlled outgoing/entering values until P8 events.
 public sealed record Population(string Kind, int Base = 0, int Factor = 1, int Entering = 0,
     ImmutableArray<Population> Children = default, ImmutableArray<ImmutableArray<int>> Tables = default)
 {

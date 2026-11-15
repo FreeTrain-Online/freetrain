@@ -745,3 +745,10 @@ synchronized art/footprint/cost review, local drafts and authoritative peer guar
 The generic null child remains hidden; source-only builders and the 252-entry
 CategoryTree receive no playable generated-building credit. Color-test authoring
 remains P9, DEV-D06 proposals remain proposals, and later P7/P8/P9 gates stay open.
+
+15 November 2026: [P7-13 actual city population/catchment](web-parity-city-population.md)
+binds the `providers-feedback` row's MAN-A06/MAN-A16/MAN-E10 controls to real
+completed city owners, separate residents/outgoing/incoming inspection, live
+heat-based caps and retained station listener directions. P7-14 retains atomic
+passenger-effect consumption; ground construction and stadium events retain their
+later P7/P8 owners. Controlled scenario supply remains explicitly distinct.

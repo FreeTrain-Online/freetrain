@@ -107,8 +107,12 @@ public static class CityHeat
         return before.Successor(before.Revision,new(candidate,before.Construction.Accounts),before.ConstructionMode,
             clock:clock with {NextOrder=checked(clock.NextOrder+1),Pending=clock.Pending.Add(timer).OrderBy(a=>a.DueMinute).ThenBy(a=>a.Order).ToImmutableArray()});
     }
-    private static MixedWorld Replace(MixedWorld world, CityState state) => world.Replace(world.Revision,world.Terrain,
-        world.Spatial.Capture(),world.Voxels,world.Slopes,city:new(world.City!.Profile,state));
+    private static MixedWorld Replace(MixedWorld world, CityState state)
+    {
+        var graph=new CityGraph(world.City!.Profile,state);
+        var (city,stations,spatial)=CityPopulation.Refresh(world,graph);
+        return world.Replace(world.Revision,world.Terrain,spatial,world.Voxels,world.Slopes,stations:stations,city:city);
+    }
 
     public static float Conductivity(MixedWorld world, Location location)
     {

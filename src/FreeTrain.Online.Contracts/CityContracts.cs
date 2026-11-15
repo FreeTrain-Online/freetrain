@@ -20,5 +20,6 @@ public sealed record CityRead(int Format, CityPropertyRead[] Properties, CityStr
 
 public sealed record CityQuery(long ExpectedWorldEpoch, long ExpectedRevision, long ExpectedMinute,
     string ExpectedContentVersion, long OwnerId, long ExpectedOwnerRevision);
-public sealed record CityPreviewRead(CityQuery Query, bool CanCancel, string? Reason, long Cost, CityStructureRead Structure);
+public sealed record CityPreviewRead(CityQuery Query, bool CanCancel, string? Reason, long Cost, CityStructureRead Structure, CityPopulationRead? Population = null);
+public sealed record CityPopulationRead(int Residents, int Outgoing, int Incoming, int LandValue);
 public sealed record CancelCityConstructionCommand(CityQuery Query) : CommandPayload;

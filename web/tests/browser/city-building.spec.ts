@@ -283,3 +283,36 @@ test('P7-12 observer catalog and peer edits preserve local choices while rejecti
   await expect.poll(async()=>(await state(operator)).mixed.city.structures.length).toBe(2);expect((await state(viewer)).mixed.city.structures.find((s:any)=>s.definition.recipeId===variable.reference.recipeId).height).toBe(4);
  }finally{await operatorContext.close();await viewerContext.close();}
 });
+
+for(const ja of [false,true])test(`P7-13 live city population ${ja?'JA narrow touch':'EN keyboard'} building-first catchment heat demand inspection peers and reopen`,async({page,browser,baseURL})=>{
+ test.setTimeout(90000);const locale=ja?'ja':'en',t=texts[ja?1:0];
+ if(ja)await page.setViewportSize({width:430,height:860});await page.addInitScript(l=>localStorage.setItem('freetrain-online.locale',l),locale);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ await page.goto('/');await ready(page,locale);const initial=await state(page);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('cityPopulation'))})).ok()).toBe(true);await ready(page,locale);
+ const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ try{
+  expect((await peer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
+  await page.getByRole('button',{name:t.stationTask,exact:true}).click();await page.locator(`[data-catalog-variant="${station.reference.recipeId}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
+  await page.getByLabel(t.stationX,{exact:true}).fill('12');await page.getByLabel(t.stationY,{exact:true}).fill('12');await page.locator('.station-task form').getByRole('button',{name:t.stationCheck,exact:true}).click();await page.getByRole('button',{name:t.stationConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(peer)).mixed.stationGraph.buildings.length).toBe(1);
+  const before=await state(page),listener=before.mixed.stationGraph.listeners[0],stationId=before.mixed.stationGraph.buildings[0].id;
+  expect(listener.provider.input).toBe('city-variable');expect(listener.stations).toEqual([stationId]);expect(listener.provider.landValue).toBe(0);
+  await openPanel(page,'stations',locale);await page.getByLabel(t.stationSelect,{exact:true}).selectOption(stationId);await expect(page.getByTestId('station-demand')).toHaveText('10');await closePanel(page);
+  const baseline=await bytes(page),tick=BigInt(before.tick);if(ja)await page.locator('.command-bar [aria-controls="game-menu"]').click();await page.getByRole('button',{name:t.step,exact:false}).filter({visible:true}).click();if(ja)await page.keyboard.press('Escape');
+  await expect.poll(async()=>BigInt((await state(peer)).tick)).toBe(tick+1n);
+  const after=await state(page);expect(after.mixed.stationGraph.listeners[0].provider.landValue).toBe(30);expect(after.mixed.stationGraph.listeners[0].stations).toEqual(listener.stations);
+  expect(after.mixed.stationGraph.listenerMemberships).toEqual(before.mixed.stationGraph.listenerMemberships);
+  await openPanel(page,'stations',locale);await page.getByLabel(t.stationSelect,{exact:true}).selectOption(stationId);await expect(page.getByTestId('station-demand')).toHaveText('40');await closePanel(page);
+  const saved=await bytes(page);expect(saved).not.toEqual(baseline);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+after.worldEpoch,{data:saved})).ok()).toBe(true);await ready(page,locale);expect(await bytes(page)).toEqual(saved);
+  await openPanel(page,'view',locale);await page.getByLabel(t.heightCut,{exact:true}).fill('2');await closePanel(page);
+  const pixel=await exposeMapPoint(page,await point(page,{x:16*(14-15+12)+16,y:8*(12-(14-15))-32+8}));
+  if(ja)await page.touchscreen.tap(pixel.x,pixel.y);else await page.mouse.click(pixel.x,pixel.y);
+  await expect(page.getByTestId('city-residents')).toHaveText('600');await expect(page.getByTestId('city-outgoing')).toHaveText('480');await expect(page.getByTestId('city-incoming')).toHaveText('60');await expect(page.getByTestId('city-land-value')).toHaveText('30');
+  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-population-${locale}.png`});expect(await bytes(page)).toEqual(saved);
+  await page.getByRole('button',{name:t.cityRemove,exact:true}).click();await page.getByRole('button',{name:t.confirmRemoval,exact:true}).click();
+  await expect.poll(async()=>(await state(peer)).mixed.city.producers.length).toBe(0);expect((await state(page)).mixed.stationGraph.listeners).toEqual([]);
+  expect(errors).toEqual([]);
+ }finally{await context.close();}
+});
