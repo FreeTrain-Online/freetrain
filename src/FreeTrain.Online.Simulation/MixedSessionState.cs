@@ -51,6 +51,10 @@ public sealed class MixedSessionState
             var handler=timer.HandlerId;
             result.Add(handler,()=> { if(dispatch) TickCity(handler); });
         }
+        // Passenger feedback can activate the lazy city field during a callback.
+        // Bind it now without scheduling anything until the first real deposit.
+        if (world.City == null && world.Profile.City != null)
+            result.Add(CityHandlers.Heat,()=> { if(dispatch) TickCity(CityHandlers.Heat); });
         // A site's completion allocates a fresh identity and schedules its first
         // subsidiary callback. Bind potential IDs before advancing the clock.
         var sites=world.City?.State.Structures.Count(s=>!s.Construction.IsEmpty) ?? 0;
@@ -128,9 +132,14 @@ public sealed class MixedSessionState
             throw new ArgumentException("Invalid train callback continuation.");
         if (result.NextDelay is {} delay) Clock.Schedule(TrainHandler(trainId),delay);
         Construction=candidate;
+        // Consume this callback's ordered intents on the detached minute, before
+        // the next callback can query land value. The diagnostic array below is
+        // never an input to consumption (including after Freeze/reconnect).
+        Construction=StationPassengerFeedback.Apply(Construction,Clock,result.PassengerEffects);
         PassengerEffects=PassengerEffects.AddRange(result.PassengerEffects);
         DepartureBells=DepartureBells.AddRange(result.DepartureBells);
-        if (!ReferenceEquals(before,candidate)) Revision=checked(Revision+1);
+        if (!ReferenceEquals(before,Construction))
+            Revision=checked(Revision+checked(World.Revision-before.World.Revision));
     }
     private void TickStation(string handlerId)
     {

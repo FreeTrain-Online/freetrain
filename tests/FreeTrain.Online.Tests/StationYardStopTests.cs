@@ -17,7 +17,7 @@ public partial class StationYardStopTests
 
     // Every yard and host is constructed by the same domain operations as the UI.
     // Fixture callCount/passengers are explicit callback-boundary operands.
-    static MixedSessionState Scene(int length=3,int index=2,bool same=true,bool host=true,int count=0,bool wide=false,int lane=0)
+    internal static MixedSessionState Scene(int length=3,int index=2,bool same=true,bool host=true,int count=0,bool wide=false,int lane=0)
     {
         var terrain=new TerrainWorld(TerrainProfiles.Bundled,"Constructed yards",new(64,64,8),0,
             Enumerable.Repeat(new TerrainCell(2),64*64),new(1,[]),[]);
@@ -52,7 +52,7 @@ public partial class StationYardStopTests
         s=s.Successor(s.Revision,new(world,s.Construction.Accounts),false);
         return Edit(s,t=>t with {StopCallCount=count});
     }
-    static MixedSessionState Edit(MixedSessionState s,Func<FleetTrain,FleetTrain>? train=null,
+    internal static MixedSessionState Edit(MixedSessionState s,Func<FleetTrain,FleetTrain>? train=null,
         Func<FleetController,FleetController>? controller=null,SpeedLimits? limits=null)
     {
         var f=s.Fleet!;var w=s.World;var spatial=w.Spatial.Capture();var controllers=f.Controllers;var groups=f.Groups;
@@ -74,7 +74,7 @@ public partial class StationYardStopTests
     static MixedSessionState Bind(MixedSessionState s,FleetHarborHandler handler,StationCallback? station=null)=>
         new(s.Construction,s.Provenance,clock:s.Clock.Capture(),random:s.Random.Capture(),revision:s.Revision,
             trainCallback:(session,id)=>FleetMovement.Tick(session,id,(w,t)=>FleetControllers.StopTime(w,t,handler,session.Clock.Time)),stationCallback:station);
-    static void Call(MixedSessionState s)
+    internal static void Call(MixedSessionState s)
     {
         var due=s.Clock.Capture().Pending.Single(t=>t.HandlerId.StartsWith("train/",StringComparison.Ordinal)).DueMinute;
         while(s.Clock.Time.AbsoluteMinute<due)s.AdvanceOneMinute();
@@ -105,7 +105,8 @@ public partial class StationYardStopTests
         Assert.Equal(Int(e,"result"),stop.Decision.SourceMinutes);Assert.Equal(before,SaveCodec.Write(s));
         trace.Clear();var worldRevision=s.World.Revision;var trainBefore=s.Fleet.Trains[0];var stationBefore=Station(s);var accounts=s.Construction.Accounts;
         s=Bind(s,handler);Call(s);var after=s.Fleet!.Trains[0];
-        Assert.Equal(worldRevision+1,s.World.Revision);Assert.Equal(trainBefore.Revision+1,after.Revision);
+        var deposits=stop.Exchange?.Effects.OfType<StationPassengerEffect.LandValue>().Count(e=>e.Amount>0) ?? 0;
+        Assert.Equal(worldRevision+1+deposits+(deposits>0?1:0),s.World.Revision);Assert.Equal(trainBefore.Revision+1,after.Revision);
         Assert.Equal(stationBefore.Revision+(stop.Exchange==null?0:1),Station(s).Revision);
         Assert.Equal(Station(s).Revision,s.World.Spatial.Entities.Single(v=>v.Id==Station(s).Id).Revision);
         Assert.Equal<StationPassengerEffect>(stop.Exchange?.Effects ?? [],s.PassengerEffects);Assert.Equal(stop.Bell==null?0:1,s.DepartureBells.Length);

@@ -30,6 +30,7 @@ export const browserSpecs = {
     'station-information.spec.ts',
     'station-controller.spec.ts',
     'passenger-service.spec.ts',
+    'passenger-feedback.spec.ts',
     'departure-bells.spec.ts',
     'station-yard.spec.ts',
     'passage.spec.ts',

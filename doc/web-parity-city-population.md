@@ -2,7 +2,7 @@
 
 Delivered at bundled browser/portable scope. Completed ordinary buildings supply
 real population and refresh their land-value cap with heat changes. Passenger
-land deposits/traffic consumption remain P7-14; ground construction remains
+land deposits/traffic consumption are delivered by [P7-14](web-parity-city-passenger-feedback.md); ground construction remains
 P7-16–19, automatic development P7-25–29 and stadium event supply P8. Controlled
 scenario providers retain their explicit identity and receive no city credit.
 

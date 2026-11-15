@@ -11,6 +11,16 @@ type FixtureFamily = {
 
 /** Every generated input and companion oracle has one producer and run-owned path. */
 export const fixtureFamilies = {
+  passengerFeedback: {
+    env: 'FREETRAIN_PASSENGER_FEEDBACK_OUTPUT',
+    producers: [
+      'Real_city_yards_and_train_deposit_literal_board_and_unload_heat_once_with_exact_reopen',
+      'Failed_feedback_minute_rolls_back_all_state_and_previous_transients',
+    ],
+    suffixes: ['', '.after.json', '.before.json', '.snapshot.json', '.delta.json',
+      '.unload', '.unload.after.json', '.unload.before.json', '.unload.snapshot.json', '.unload.delta.json', '.rejected'],
+    consumers: ['passenger-feedback.spec.ts'],
+  },
   cityPopulation: {
     env: 'FREETRAIN_CITY_POPULATION_OUTPUT',
     producers: ['Population_refresh_fixture_has_real_completed_supply_and_atomic_heat_continuation'],

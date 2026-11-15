@@ -1,9 +1,13 @@
 # P6 station interfaces for P7 and P8 — 11 November 2026
 
 This is the consuming contract accompanying [P6 acceptance](web-parity-p6-acceptance.md).
-Save10/protocol9 are current. The interface is executable, but its population
+Save10/protocol9 were current at P6 delivery; the current contract is Save11/protocol11. The interface is executable, but its population
 inputs are **controlled**. No constructible city producer, evolving land value,
-traffic simulation, stadium game or full economic report is delivered by P6.
+traffic simulation, stadium game or full economic report was delivered by P6.
+P7-13 subsequently delivered [real city producers and refresh](web-parity-city-population.md);
+P7-14 delivers [atomic passenger feedback](web-parity-city-passenger-feedback.md).
+The original P6 interface obligations below are historical handoff requirements;
+these P7 reports define their implemented current scope.
 
 ## P7 producer lifecycle and demand
 
@@ -59,13 +63,14 @@ cast before `min(lastWeekImportsPerDay / 24, unloaded)`.
 [MixedSessionState.PassengerEffects](../src/FreeTrain.Online.Simulation/MixedSessionState.cs).
 These describe the last successful minute only. They are absent from Freeze,
 saves and snapshots; failed minutes expose no new effects and retain the previous
-publication. P7 must consume only a newly successful publication, exactly once,
-in callback/effect order. Polling the last array or replaying it after reconnect
-would apply effects twice. No durable event history or city consumer exists today.
-If city effects change saved state, integrate their detached successor before the
-atomic minute commit and add failure/overflow rollback and uninterrupted/reopen
-oracles. Applying them later as untracked live side effects is insufficient.
-Departure bells are a separate transient network/audio envelope, not a traffic log.
+publication. [P7-14](web-parity-city-passenger-feedback.md) consumes each callback's
+new result directly inside the detached minute, in callback/effect order, before
+atomic publication. Polling the last array or replaying it after reconnect would
+apply effects twice. City, fleet, station, accounts, random and queue share the
+same rollback boundary. The bundled traffic monitor has no active source
+subscriber; its typed notification creates no invented traffic or bus model.
+There is no durable event history. Departure bells are a separate transient
+network/audio envelope, not a traffic log.
 
 Independent witnesses: [StationPassengerExchangeTests](../tests/FreeTrain.Online.Tests/StationPassengerExchangeTests.cs)
 checks literal boarding/fares, zero/depleted supply, effect order/Single rounding

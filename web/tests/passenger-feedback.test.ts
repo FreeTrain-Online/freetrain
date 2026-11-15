@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {applyDelta,immutable,parseMessageValue} from '../src/lib/protocol.ts';
+import type {Snapshot,Delta} from '../src/generated/contracts.ts';
+const load=async(suffix:string)=>JSON.parse(await Deno.readTextFile(new URL(`./fixtures/passenger-feedback${suffix}`,import.meta.url)));
+for(const phase of ['', '.unload'])Deno.test(`committed actual city passenger ${phase||'boarding'} heat reconstructs its exact C# successor without transient replay`,async()=>{
+ const before=immutable(parseMessageValue(await load(phase+'.before.json')) as Snapshot);
+ const delta=parseMessageValue(await load(phase+'.delta.json')) as Delta;
+ const expected=parseMessageValue(await load(phase+'.snapshot.json')) as Snapshot,next=applyDelta(before,delta);
+ assert(next);assert.deepEqual(JSON.parse(JSON.stringify(next)),expected);
+ assert.equal(next.mixed!.stationGraph!.listeners[0].provider!.input,'city-variable');
+ assert.deepEqual(next.mixed!.stationGraph!.listeners[0].stations,before.mixed!.stationGraph!.listeners[0].stations);
+ assert.deepEqual(next.mixed!.stationGraph!.listenerMemberships,before.mixed!.stationGraph!.listenerMemberships);
+ const heat=next.mixed!.city!.heat,index=phase?9*(heat.verticalSize+2)+8:2*(heat.verticalSize+2)+21;
+ assert.equal(heat.q[index],phase?2.6041665:7.5);assert.equal(before.mixed!.city!.heat.q[index],0);
+ assert.equal(next.mixed!.fleet!.trains[0].passengers,phase?0:3);
+ assert.equal(next.mixed!.stationGraph!.listeners[0].provider!.landValue,10);
+ assert.equal(applyDelta(next,delta),undefined,'a receipt retry cannot apply the same delta twice');
+ const reconnect=parseMessageValue(structuredClone(expected)) as Snapshot;
+ assert.deepEqual(reconnect.mixed!.city!.heat,heat);
+ assert.equal('passengerEffects' in reconnect.mixed!,false);assert.equal('departureBells' in reconnect.mixed!,false);
+ const bad=structuredClone(delta);bad.mixed!.city!.heat.q[index]=Infinity;
+ assert.throws(()=>parseMessageValue(bad));
+});

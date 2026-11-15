@@ -148,6 +148,7 @@ EXAV-SCN-D01). No provider graph reconstruction may repair the missing fifth
 reverse registration. Half-owner first-listener semantics are an additional
 P7 lifecycle contract, not permission to refresh that graph.
 
+Implemented by [P7-14 atomic passenger feedback](web-parity-city-passenger-feedback.md).
 Apply ordered StationPassengerEffect deposits inside the detached successful
 minute before publication, exactly once, with accounts/random/queue/owners in
 the same rollback boundary. GlobalTrafficMonitor's nonzero-unload notification

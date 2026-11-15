@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
-import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint} from './browser-helpers.ts';
+import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint,latestCanonicalPublication} from './browser-helpers.ts';
 import {fit} from './layout-helpers.ts';
 
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
@@ -52,7 +52,7 @@ for(const west of [false,true])test(`P6-21 ${west?'JA narrow touch westbound':'E
   await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();
    server.onMessage(m=>{messages[i].push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
  }
- const latest=(i:number)=>{const m=messages[i].filter(m=>['join','snapshot','delta'].includes(m.type)).at(-1);return m?.snapshot??m;};
+ const latest=(i:number)=>latestCanonicalPublication(messages[i]);
  const bells=(i:number)=>messages[i].filter(m=>m.type==='departureBell');
  async function consistent(){const s=await state(page);for(const i of [0,1])await expect.poll(()=>latest(i)?.mixed).toEqual(s.mixed);return s;}
  async function step(){

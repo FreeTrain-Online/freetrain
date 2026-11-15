@@ -5,6 +5,23 @@ import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
 export const bootstrap = async (page: Page) => (await (await page.request.get(compatibilityURL('/api/bootstrap', ['prototype-content-1']))).json()).snapshot;
+// Mixed publications carry the complete graph, but may reference unchanged heat
+// buffers from the immediately preceding publication. Resolve that reference for
+// browser assertions comparing a peer's wire history with a full HTTP snapshot.
+export function latestCanonicalPublication(messages:any[]) {
+  let previous:any;
+  for(const message of messages) {
+    if(!['join','snapshot','delta'].includes(message.type))continue;
+    let current=message.snapshot??message;
+    if(current.cityHeatBaseRevision!==undefined) {
+      expect(current.cityHeatBaseRevision).toBe(previous?.revision);
+      expect(previous?.mixed?.city?.heat).toBeTruthy();
+      current={...current,mixed:{...current.mixed,city:{...current.mixed.city,heat:previous.mixed.city.heat}}};
+    }
+    previous=current;
+  }
+  return previous;
+}
 export async function canonicalState(page:Page) {
   const response=await(await page.request.get(compatibilityURL('/api/bootstrap', ['reference-spatial-content-2', 'terrain-content-1', 'mixed-railway-content-1']))).json();
   if(response.snapshot)return response.snapshot;
