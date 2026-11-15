@@ -2785,6 +2785,246 @@
       "sourceSha256": "1cf00b6df9610ee53f3b2955942edcc65b8cbc183f28aa11652035d8965fb8d4",
       "originalText": "立体駐車場",
       "originalTextSha256": "eaedfc393f54fe28f4466d469b82bb820e3b678fd78a1f8b8da8bbb6a7ba3d50"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-0",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-0/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てA",
+      "originalTextSha256": "517ca8e743432f6cc32cc2fd95beea18ce51c1580f193247fee5c8e4f96efbf5"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-1",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-1/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てB",
+      "originalTextSha256": "93bb04fc06ae98de9db159e819436e0913a26e12742c4ed6ca0258e9b8c82ea4"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-2",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-2/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てC",
+      "originalTextSha256": "f5dbb9559b7ac4642bae39601331273a8a0a9c5e2418cc2ff450080e2237f656"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-3",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-3/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てD",
+      "originalTextSha256": "1e57ca6627d88cc8a891c228df4c8c029219a940da2a9ecf9af1ff77f3caebb2"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-4",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-4/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てE",
+      "originalTextSha256": "7b566ab6bd4986325cd2349798b4a2dee185ae1433322b12034c1aa304293bdd"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-5",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-5/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てF",
+      "originalTextSha256": "c79f9d5c4ebedacec4290f2622a5442dd751b241c1870224b577ac894a580148"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-6",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-6/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てG",
+      "originalTextSha256": "74a5732f394ed6fc62b0d5266099accfe3275df7cbd79bd32d1e9b53c786ee5b"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/group": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+      "field": "group",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/group[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "半ボクセル建築",
+      "originalTextSha256": "26f31d16595b7707c668f2977e8f86f391ac8ab6220cdde341e5f35dc5b9ec20"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+      "field": "subgroup",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "古い民家",
+      "originalTextSha256": "fe84fa7904b40f2ff885922bb0d657d1e0f13db73f8662710bd1699d5da54d2e"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/name": {
+      "pluginId": "jp.co.tripod.chiname.structure.hv.oldhouse",
+      "contributionId": "{A5AD425E-BE10-4470-C477-204D881878E5}-7",
+      "field": "name",
+      "sourcePath": "trunk/plugins/jp.co.tripod.chiname.structure.hv.oldhouse/plugin.xml",
+      "sourceKey": "plug-in/contribution:{A5AD425E-BE10-4470-C477-204D881878E5}-7/name[0]/text()",
+      "sourceSha256": "f0adca830f29e967d5fa2bc3bea33ebc415f897f620ea1227904fae45204989b",
+      "originalText": "切妻二階建てH",
+      "originalTextSha256": "d2f11d803d63e8391e8ed86d4046a40e78fe6c63d2d2b9b4ed2222aa69ba0728"
     }
   }
 }

@@ -24,11 +24,11 @@ public static class CityConstruction
     }
     public static ConstructionBooking RemovalBooking(CityStructureDefinition definition,bool site) => site ? ConstructionBooking.None :
         // Preserve source Int32 arithmetic; reject overflow rather than publish a
-        // wrapped negative charge. Half structures have a separate P7-11 path.
-        definition.Kind==CityStructureKind.Half ? throw new ArgumentException("Half removal requires its own lifecycle.") :
+        // wrapped negative charge. A whole half owner has the source flat fee.
+        definition.Kind==CityStructureKind.Half ? ConstructionBooking.Spend(300_000,AccountGenre.Subsidiaries) :
         ConstructionBooking.Spend(checked(500_000*definition.SizeX*definition.SizeY),AccountGenre.Subsidiaries);
 
-    private static MixedConstructionState Replace(MixedConstructionState before,CityState state,long nextId,
+    internal static MixedConstructionState Replace(MixedConstructionState before,CityState state,long nextId,
         ConstructionBooking booking,GameTime time,string operation, TerrainWorld? terrain = null,
         StationGraph? stations = null, IReadOnlySet<long>? reclaimed = null, long? attach = null)
     {

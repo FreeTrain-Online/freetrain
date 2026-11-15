@@ -17,7 +17,7 @@
  const items=$derived(catalog?fixedCityCatalog(catalog,view.locale):[]);
  const definitionId=$derived(view.catalogSelections.city);
  const selected=$derived(items.find(d=>d.reference.recipeId===definitionId));
- let x=$state(0),y=$state(0),autoLevel=$state(true),floors=$state(4);
+ let x=$state(0),y=$state(0),autoLevel=$state(true),floors=$state(4),side=$state<'back'|'fore'>('back'),direction=$state<0|2|4|6>(0),color=$state(0),action=$state('place');
  const validHeight=$derived(Number.isSafeInteger(floors)&&floors%4===0&&!!selected&&floors>=selected.minimumHeight*4&&floors<=selected.maximumHeight*4);
  $effect(()=>{floors=(selected?.minimumHeight??1)*4;});
  let detectCoordinates=true;
@@ -36,7 +36,8 @@
    const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),p={x,y,z:0};
    if(space.containsHorizontal(p)){const cell=space.storage(p);level=read.terrain.cells[cell.v*space.horizontalSize+cell.h].ground;}
   }
-  const query=fixedCityQuery(read,{x,y,z:level},fixedCityDefinitions.find(d=>d.reference.recipeId===definitionId)!.reference,false,selected.kind==='variable'?floors/4:undefined);
+  const half=selected.kind==='half'?{side,direction,color}:undefined;
+  const query=fixedCityQuery(read,{x,y,z:level},fixedCityDefinitions.find(d=>d.reference.recipeId===definitionId)!.reference,selected.kind==='half'&&action==='remove',selected.kind==='variable'?floors/4:undefined,half);
   if(!query){status='missing';return;}
   fence=fixedCityFence(read);const id=version;request=new AbortController();status='checking';
   try{const p=await model.previewFixedCity(query,request.signal);if(id!==version||fence!==fixedCityFence(view.read)||blocked)return;result=p;status='ready';onpreview(p);}
@@ -49,7 +50,7 @@
   if(id!==version)return;reset();if(!accepted)status='stale';
  }
  // Derived text stays stable across snapshots; direct view reads would reset every tick.
- $effect(()=>{void text;void definitionId;void floors;untrack(reset);});
+ $effect(()=>{void text;void definitionId;void floors;void side;void direction;void color;void action;untrack(reset);});
  $effect(()=>{const p=picked;if(p)untrack(()=>{reset();x=p.x;y=p.y;detectCoordinates=false;if(autoLevel)level=p.z;void check();});});
  $effect(()=>{const current=fixedCityFence(view.read);if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
  $effect(()=>()=>{version++;request?.abort();onpreview();});
@@ -62,6 +63,13 @@
  <p data-testid="catalog-selection">{text.cityType}: {selected?.title}{#if selected?.orientation} · {selected.orientation}{/if}</p>
  <button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button>
  {#if selected}<p>{selected.description}</p><p>{text.stationaryDimensions}: {selected.sizeX} × {selected.sizeY} × {selected.kind==='variable'?floors/4:selected.minimumHeight} · {text.price}: ¥{validHeight?(BigInt(selected.unitPrice)*BigInt(selected.kind==='variable'?floors/4:1)).toLocaleString(view.locale):'—'}</p><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
+ {#if selected?.kind==='half'}
+ <label>{text.cityHalfAction}<select aria-label={text.cityHalfAction} bind:value={action} onchange={edit}><option value="place">{text.cityHalfPlace}</option><option value="remove">{text.cityHalfRemove}</option></select></label>
+ <label>{text.cityHalfSide}<select aria-label={text.cityHalfSide} bind:value={side} onchange={edit}><option value="back">{text.cityHalfBack}</option><option value="fore">{text.cityHalfFore}</option></select></label>
+ <label>{text.cityHalfDirection}<select aria-label={text.cityHalfDirection} bind:value={direction} onchange={edit}>{#each [0,2,4,6].filter(n=>selected.halfVariants.some(v=>v.direction===n)) as n}<option value={n}>{text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[n/2]]}</option>{/each}</select></label>
+ {#if new Set(selected.halfVariants.map(v=>v.color)).size>1}<label>{text.cityHalfColor}<input aria-label={text.cityHalfColor} type="number" min="0" max={Math.max(...selected.halfVariants.map(v=>v.color))} bind:value={color} oninput={edit}/></label>{/if}
+ <p class="hint">{text.cityHalfHelp}</p>
+ {/if}
  {#if selected?.kind==='variable'}<label>{text.cityHeight}<input aria-label={text.cityHeight} type="number" min={selected.minimumHeight*4} max={selected.maximumHeight*4} step="4" bind:value={floors} oninput={edit}/></label>{/if}
  <div class="form-actions"><label>X<input aria-label={text.cityX} type="number" step="1" bind:value={x} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>Y<input aria-label={text.cityY} type="number" step="1" bind:value={y} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>{text.cityLevel}<input aria-label={text.cityLevel} type="number" step="1" bind:value={level} oninput={()=>{autoLevel=false;edit();}}/></label></div>
  <label><input type="checkbox" bind:checked={autoLevel} onchange={()=>{detectCoordinates=true;edit();}}/>{text.railAutoLevel}</label>

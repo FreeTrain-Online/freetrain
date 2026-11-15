@@ -87,3 +87,12 @@ test('P7-10 all 55 variable definitions min max stacks match independent XML pix
  }
  writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-variable-report.json`,JSON.stringify(reports,null,2));
 });
+
+test('P7-11 all eight half buildings and complementary pairs match independent XML raw art and alpha picks in eight appearances',async({page})=>{
+ test.setTimeout(180000);await harness(page);await page.goto('/');await ready(page);const reports=[];
+ for(const season of ['spring','summer','autumn','winter'])for(const night of [false,true]){
+  const r=await page.evaluate(async({catalog,season,night})=>{const {halfCityGallery}=await import('/__tests/city-rendering.js');return halfCityGallery(catalog,{season,night});},{catalog,season,night});
+  expect(r.definitions).toBe(8);expect(r.cases).toBe(96);expect(r.pixels).toBe(96*160*120);expect(r.picks).toBe(r.pixels);save(`city-half-${season}-${night?'night':'day'}`,r.png);reports.push({...r,png:undefined,season,night});
+ }
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-half-rendering-report.json`,JSON.stringify(reports,null,2));
+});

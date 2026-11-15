@@ -872,6 +872,102 @@
     "org.kohsuke.freetrain.structure.pcb/{72AF542C-3251-43ad-9094-43E6FDDE9420}/group": {
       "text": "Multistory parking garage",
       "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/name": {
+      "text": "Two-story gabled house A",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/name": {
+      "text": "Two-story gabled house B",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/name": {
+      "text": "Two-story gabled house C",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/name": {
+      "text": "Two-story gabled house D",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/name": {
+      "text": "Two-story gabled house E",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/name": {
+      "text": "Two-story gabled house F",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/name": {
+      "text": "Two-story gabled house G",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/group": {
+      "text": "Half-voxel buildings",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup": {
+      "text": "Old houses",
+      "status": "reviewed-with-feature"
+    },
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/name": {
+      "text": "Two-story gabled house H",
+      "status": "reviewed-with-feature"
     }
   }
 }

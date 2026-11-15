@@ -48,7 +48,7 @@ public static class CityProfiles
                 var variants=kind==CityStructureKind.Half ? recipe.Data.GetProperty("frames").EnumerateArray().Select(f=>
                 {
                     var s=f.GetProperty("selector");
-                    return new CityHalfVariant(s.GetProperty("direction").GetInt32(),s.GetProperty("side").GetInt32(),s.GetProperty("color").GetInt32());
+                    return new CityHalfVariant(s.GetProperty("direction").GetInt32(),1-s.GetProperty("side").GetInt32(),s.GetProperty("color").GetInt32());
                 }).Distinct().ToImmutableArray() : ImmutableArray<CityHalfVariant>.Empty;
                 structures.Add(new(reference,kind,Text("name",Text("group")),size[0],size[1],min,max,price,pop,computer,variants));
             }

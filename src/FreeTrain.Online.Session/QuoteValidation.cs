@@ -50,7 +50,11 @@ public sealed partial class SessionHost
             return new { Position = p, OwnerId = ground?.Space.ContainsVoxel(location) == true ? spatial?.At(location).Entity?.Id : null };
         }).ToArray();
         return Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(new {
-            Preview = value, Owners = owners, ConstructionMode = mixedState?.ConstructionMode ?? terrainState?.ConstructionMode
+            Preview = value, Owners = owners,
+            HalfOwners = preview is FixedCityPreviewRead {Query.Half: not null} && world?.City is {} city
+                ? owners.Select(o=>o.OwnerId).OfType<long>().Distinct().Select(id=>city.State.Structures.SingleOrDefault(s=>s.Id==id))
+                    .Where(s=>s!=null && !s.Halves.IsEmpty).Select(s=>new {s!.Id,s.Halves}).ToArray() : null,
+            ConstructionMode = mixedState?.ConstructionMode ?? terrainState?.ConstructionMode
         }, QuoteJson)));
     }
     private void ValidateQuoteAge(long minute)

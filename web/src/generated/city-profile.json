@@ -1417,16 +1417,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1436,7 +1431,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1446,13 +1441,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1481,16 +1481,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1500,7 +1495,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1510,13 +1505,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1545,16 +1545,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1564,7 +1559,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1574,13 +1569,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1609,16 +1609,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1628,7 +1623,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1638,13 +1633,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1673,16 +1673,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1692,7 +1687,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1702,13 +1697,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1737,16 +1737,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1756,7 +1751,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1766,13 +1761,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1801,16 +1801,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1820,7 +1815,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1830,13 +1825,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]
@@ -1865,16 +1865,11 @@
       "halfVariants": [
         {
           "direction": 6,
-          "side": 0,
+          "side": 1,
           "color": 0
         },
         {
           "direction": 6,
-          "side": 1,
-          "color": 0
-        },
-        {
-          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1884,7 +1879,7 @@
           "color": 0
         },
         {
-          "direction": 2,
+          "direction": 4,
           "side": 0,
           "color": 0
         },
@@ -1894,13 +1889,18 @@
           "color": 0
         },
         {
-          "direction": 0,
+          "direction": 2,
           "side": 0,
           "color": 0
         },
         {
           "direction": 0,
           "side": 1,
+          "color": 0
+        },
+        {
+          "direction": 0,
+          "side": 0,
           "color": 0
         }
       ]

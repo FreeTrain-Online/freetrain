@@ -1020,5 +1020,14 @@
   "cityInvalid": "This building footprint is unavailable",
   "cityMissing": "Building is no longer available",
   "cityCells": "Voxels",
-  "cityHeight": "Building height (floors)"
+  "cityHeight": "Building height (floors)",
+  "cityHalfAction": "Half-building action",
+  "cityHalfPlace": "Place half",
+  "cityHalfRemove": "Remove selected half",
+  "cityHalfSide": "Placement side",
+  "cityHalfBack": "Back half",
+  "cityHalfFore": "Front half",
+  "cityHalfDirection": "Front direction",
+  "cityHalfColor": "Color",
+  "cityHalfHelp": "Opposite halves with a matching axis share one voxel. The first half is charged; adding the second is free. Partial removal keeps the original population. Removing the last half or whole building costs ¥300,000."
 }

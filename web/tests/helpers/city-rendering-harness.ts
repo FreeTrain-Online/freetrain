@@ -166,3 +166,35 @@ export async function variableCityGallery(catalog:RenderCatalog,variant:Variant)
  }
  return {png:gallery.toDataURL(),definitions:definitions.length,cases,pixels,picks};
 }
+
+// HalfVoxelContribution.loadSprites offsets, independently from runtime selectors.
+export async function halfCityGallery(catalog:RenderCatalog,variant:Variant){
+ const {cityProfile}=await import('../../src/lib/city-state.ts'),definitions=cityProfile.structures.filter(d=>d.kind==='half');
+ const cache=new RecipeImageCache(),key=variantKey(variant),actual=new OffscreenCanvas(160,120),expected=new OffscreenCanvas(160,120),ctx=actual.getContext('2d')!,want=expected.getContext('2d')!;
+ const gallery=document.createElement('canvas');gallery.width=8*160;gallery.height=12*140;const contact=gallery.getContext('2d')!;
+ const offsets=[[0,8],[-8,8],[0,8],[-8,8],[-8,12],[0,12],[-8,12],[0,12]],names=['north','east','south','west'];
+ let cases=0,pixels=0,picks=0;
+ const load=async(id:string)=>{const r=catalog.renderRecipes.find(r=>r.id===id)!,sheet=new Image();sheet.src=catalog.surfaceSets[r.frames[0].surfaceSet!][key].image.url;await sheet.decode();return sheet;};
+ const ground=await load('system:ground/spring');
+ for(const [di,d] of definitions.entries())for(const direction of [0,2,4,6])for(const mode of ['back','fore','pair'] as const){
+  const s=cityScene(),b=addCity(s,d),second=definitions[(di+1)%8];
+  b.halves=mode==='pair'?[{definition:second.reference,side:'fore',direction:(direction+4)%8,color:0},{definition:d.reference,side:'back',direction,color:0}]:[{definition:d.reference,side:mode,direction,color:0}];
+  const space=new WorldSpace(40,60,32),scene=await TerrainScene.prepare(s,catalog,cache,variant,31),ops=scene.operations.filter(o=>o.target.kind==='building'),q=space.project(b.location),view={x:60-q.x,y:80-q.y,zoom:1};
+  ctx.clearRect(0,0,160,120);want.clearRect(0,0,160,120);scene.paintOperations(ctx as unknown as CanvasRenderingContext2D,view,160,120,ops);
+  want.drawImage(ground,0,0,32,16,60,80,32,16);
+  for(const half of [...b.halves].sort((a,b)=>(a.side==='back'?0:1)-(b.side==='back'?0:1))){
+   const e=sourceReview.recipes.find(r=>r.contributionId===half.definition.contributionId)!.declaration,sprite=e.children.find(n=>n.tag==='sprite')!;
+   const pattern=sprite.children.find(n=>n.tag==='pattern'&&n.attributes.direction===names[half.direction/2]&&(n.attributes.side===half.side||n.attributes.side==='either'))!;
+   const [x,y]=pattern.attributes.origin.split(',').map(Number),sheet=await load(half.definition.recipeId),off=offsets[half.direction/2+(half.side==='fore'?0:4)];
+   want.drawImage(sheet,x,y,24,24,60-off[0],80-off[1],24,24);
+  }
+  const got=ctx.getImageData(0,0,160,120).data,target=want.getImageData(0,0,160,120).data;
+  for(let n=0;n<got.length;n++)if(got[n]!==target[n])throw new Error(`Half raw crop ${d.reference.recipeId}/${direction}/${mode}/${key}/${n}`);
+  for(let y=0;y<120;y++)for(let x=0;x<160;x++){
+   const hit=scene.pickOperations({x:x+.5,y:y+.5},view,ops);if(!!hit!==(target[(y*160+x)*4+3]>0)||hit&&hit.id!==b.id)throw new Error('Half owner alpha pick');picks++;
+  }
+  contact.fillStyle='#d8e5d9';contact.fillRect(cases%8*160,Math.floor(cases/8)*140,160,140);contact.drawImage(actual,cases%8*160,Math.floor(cases/8)*140);
+  contact.fillStyle='#17232b';contact.font='11px sans-serif';contact.fillText(`${di+1} ${names[direction/2]} ${mode}`,cases%8*160+5,Math.floor(cases/8)*140+134);cases++;pixels+=160*120;
+ }
+ return {png:gallery.toDataURL(),definitions:definitions.length,cases,pixels,picks};
+}

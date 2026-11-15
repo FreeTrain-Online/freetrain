@@ -1434,6 +1434,12 @@ export interface FixedCityQuery {
   ownerId: Counter;
   expectedOwnerRevision: Counter;
   height?: number;
+  half?: CityHalfSelection;
+}
+export interface CityHalfSelection {
+  side: "back" | "fore";
+  direction: 0 | 2 | 4 | 6;
+  color: number;
 }
 export interface Accepted {
   type: "accepted";

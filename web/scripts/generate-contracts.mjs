@@ -144,7 +144,7 @@ const city={requiredPacks:terrain.requiredPacks,propertyDefinition:definition('s
   return {reference:definition(c.id),kind,sizeX:size[0],sizeY:size[1],minimumHeight:integer(kind==='variable'?'minHeight':'height',1),
    maximumHeight:integer(kind==='variable'?'maxHeight':'height',1),unitPrice:String(child(e,'price')?.text??'0'),
    population:child(e,'population')?popNode(child(e,'population')):null,computerCannotBuild:!!child(e,'computerCannotBuild'),
-   halfVariants:kind==='half'?r.frames.map(f=>f.selector):[]};
+   halfVariants:kind==='half'?r.frames.map(f=>({...f.selector,side:1-f.selector.side})):[]};
  }),ground:cityContributions.filter(c=>c.type==='land').map(c=>{
   const e=c.declaration,r=catalog.renderRecipes.find(r=>r.id===c.id),grid=(child(e,'grid')?.text??'1,1').split(',').map(Number);
   return {reference:definition(c.id),handler:r.handler,price:String(child(e,'price')?.text??'0'),gridX:grid[0],gridY:grid[1],

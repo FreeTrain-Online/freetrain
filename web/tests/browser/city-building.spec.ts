@@ -144,3 +144,48 @@ for(const ja of [false,true])test(`P7-10 variable height ${ja?'JA narrow touch':
   await expect.poll(async()=>(await state(peer)).mixed.city?.structures[0]?.height).toBe(2);expect((await state(page)).mixed.city.structures[0].id).not.toBe(building.id);expect(errors).toEqual([]);
  }finally{await context.close();}
 });
+
+for(const ja of [false,true])test(`P7-11 half-building ${ja?'JA narrow touch':'EN keyboard'} all eight definitions sharing partial removal saved listener and peer publication`,async({page,browser,baseURL})=>{
+ test.setTimeout(180000);const t=texts[ja?1:0],locale=ja?'ja':'en',halves=catalog.contributions.filter((c:any)=>c.type==='HalfVoxelStructure');
+ if(ja)await page.setViewportSize({width:430,height:860});await page.addInitScript(l=>localStorage.setItem('freetrain-online.locale',l),locale);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ try{
+  await page.goto('/');await ready(page,locale);const initial=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page,locale);
+  await page.getByRole('button',{name:t.stationTask,exact:true}).click();await page.locator(`[data-catalog-variant="${station.reference.recipeId}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
+  await page.getByLabel(t.stationX,{exact:true}).fill('12');await page.getByLabel(t.stationY,{exact:true}).fill('12');await page.locator('.station-task form').getByRole('button',{name:t.stationCheck,exact:true}).click();await page.getByRole('button',{name:t.stationConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(page)).mixed.stationGraph?.buildings.length).toBe(1);
+  expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
+  await page.getByRole('button',{name:t.cityTask,exact:true}).click();
+  for(const [i,d] of halves.entries()){
+   if(i)await page.getByRole('button',{name:t.chooseFromCatalog,exact:true}).click();await page.locator(`[data-catalog-variant="${d.id}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
+   await page.getByLabel(t.cityHalfAction,{exact:true}).selectOption('place');await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption('back');await page.getByLabel(t.cityHalfDirection,{exact:true}).selectOption(String(i%2?2:0));
+   const baseline=await bytes(page);await quote(page,t);await expect(page.getByTestId('city-cost')).toContainText(ja?'2,500,000':'2,500,000');expect(await bytes(page)).toEqual(baseline);
+   const confirm=page.getByRole('button',{name:t.cityConfirm,exact:true});if(ja)await confirm.tap();else{await page.locator('canvas').focus();await page.keyboard.press('Enter');}
+   await expect.poll(async()=>(await state(peer)).mixed.city?.structures.length).toBe(1);const first=await state(page),owner=first.mixed.city.structures[0],listener=first.mixed.stationGraph.listeners[0];
+   expect(owner.construction).toEqual([]);expect(listener.provider.input).toBe('city-half');
+   await page.locator('.city-task form').getByRole('button',{name:t.stationCheck,exact:true}).click();await expect(confirm).toBeDisabled();
+   await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption('fore');await page.getByLabel(t.cityHalfDirection,{exact:true}).selectOption(String(i%2?0:2));
+   await page.locator('.city-task form').getByRole('button',{name:t.stationCheck,exact:true}).click();await expect(confirm).toBeDisabled();
+   await page.getByLabel(t.cityHalfDirection,{exact:true}).selectOption(String(i%2?6:4));await quote(page,t);await expect(page.getByTestId('city-cost')).toContainText('¥0');await confirm.click();
+   await expect.poll(async()=>(await state(peer)).mixed.city.structures[0].halves.length).toBe(2);expect((await state(page)).mixed.stationGraph.listeners[0]).toEqual(listener);
+   await page.getByLabel(t.cityHalfAction,{exact:true}).selectOption('remove');await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption('back');await quote(page,t);await expect(page.getByTestId('city-cost')).toContainText('¥0');await confirm.click();
+   await expect.poll(async()=>(await state(peer)).mixed.city.structures[0].halves.length).toBe(1);expect((await state(page)).mixed.city.producers[0].initialDefinition).toEqual(owner.definition);expect((await state(page)).mixed.stationGraph.listeners[0]).toEqual(listener);
+   if(i===0){const saved=await bytes(page),s=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:saved})).ok()).toBe(true);await ready(page,locale);expect(await bytes(page)).toEqual(saved);await page.getByRole('button',{name:t.cityTask,exact:true}).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();}
+   await page.getByLabel(t.cityHalfAction,{exact:true}).selectOption('remove');await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption('fore');await quote(page,t);await expect(page.getByTestId('city-cost')).toContainText('300,000');
+   if(i===7)await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/half-city-${locale}-removal.png`});await confirm.click();
+   await expect.poll(async()=>(await state(peer)).mixed.city.structures.length).toBe(0);expect((await state(page)).mixed.stationGraph.listeners).toEqual([]);
+  }
+  // Real cut picking and whole-owner demolition use the same shared identity.
+  await page.getByLabel(t.cityHalfAction,{exact:true}).selectOption('place');await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption('back');await quote(page,t);await page.getByRole('button',{name:t.cityConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(peer)).mixed.city.structures.length).toBe(1);
+  await page.locator('canvas').focus();await page.keyboard.press('Escape');
+  await openPanel(page,'view',locale);await page.getByLabel(t.heightCut,{exact:true}).fill('2');await closePanel(page);
+  const pixel=await exposeMapPoint(page,await point(page,{x:16*(14-11+12)+16,y:8*(12-(14-11))-32+8}));
+  const rgba=await page.locator('canvas').evaluate((el,p)=>{const r=el.getBoundingClientRect();return [...(el as HTMLCanvasElement).getContext('2d')!.getImageData(Math.floor((p.x-r.x)*(el as HTMLCanvasElement).width/r.width),Math.floor((p.y-r.y)*(el as HTMLCanvasElement).height/r.height),1,1).data];},pixel);expect(rgba).toEqual([146,94,42,255]);
+  if(ja)await page.touchscreen.tap(pixel.x,pixel.y);else await page.mouse.click(pixel.x,pixel.y);
+  await expect(page.getByTestId('city-halves')).toContainText(t.cityHalfBack);await expect(page.getByTestId('city-progress')).toHaveText(t.cityComplete);
+  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/half-city-${locale}-cut-inspector.png`});
+  await page.getByRole('button',{name:t.cityRemove,exact:true}).click();await page.getByRole('button',{name:t.confirmRemoval,exact:true}).click();await expect.poll(async()=>(await state(peer)).mixed.city.structures.length).toBe(0);
+  expect(errors).toEqual([]);
+ }finally{await context.close();}
+});

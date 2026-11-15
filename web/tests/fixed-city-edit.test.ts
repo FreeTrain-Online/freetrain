@@ -13,7 +13,7 @@ Deno.test('fixed catalog binds authored dimensions, prices, localized names and 
    assert(d.title.length);if(locale==='en')assert(!/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(d.title));assert.equal(items[i].price,Number(d.unitPrice)*(d.kind==='variable'?d.minimumHeight:1));
    assert.equal(items[i].id,d.reference.recipeId);
    assert(items[i].detail.includes(`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`));
-   const recipe=content.renderRecipes.find((r:any)=>r.id===d.reference.recipeId);assert.equal(recipe.handler,d.kind==='variable'?'variable-height':'fixed-3d');
+   const recipe=content.renderRecipes.find((r:any)=>r.id===d.reference.recipeId);assert.equal(recipe.handler,d.kind==='half'?'half-voxel':d.kind==='variable'?'variable-height':'fixed-3d');
    if(d.kind==='fixed')assert.equal(recipe.frames.length,d.sizeX*d.sizeY*d.minimumHeight);
   }
  }

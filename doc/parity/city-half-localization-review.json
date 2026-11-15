@@ -1,0 +1,32 @@
+{
+  "slice": "P7-11",
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "status": "reviewed-with-feature",
+  "policy": "Pinned Japanese source: half-voxel, old houses and two-story gabled houses A–H.",
+  "keys": [
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-0/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-1/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-2/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-3/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-4/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-5/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-6/name",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/group",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/subgroup",
+    "jp.co.tripod.chiname.structure.hv.oldhouse/{A5AD425E-BE10-4470-C477-204D881878E5}-7/name"
+  ]
+}

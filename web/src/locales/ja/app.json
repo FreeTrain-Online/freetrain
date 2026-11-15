@@ -1020,5 +1020,14 @@
   "cityInvalid": "この場所には建物を配置できません",
   "cityMissing": "建物は利用できなくなりました",
   "cityCells": "ボクセル数",
-  "cityHeight": "建物の高さ（階）"
+  "cityHeight": "建物の高さ（階）",
+  "cityHalfAction": "半ボクセル建築の操作",
+  "cityHalfPlace": "半分を建設",
+  "cityHalfRemove": "選択した半分を撤去",
+  "cityHalfSide": "設置する側",
+  "cityHalfBack": "奥側",
+  "cityHalfFore": "手前側",
+  "cityHalfDirection": "正面の向き",
+  "cityHalfColor": "色",
+  "cityHalfHelp": "同じ軸の奥側と手前側は1ボクセルを共有します。最初の建設のみ費用がかかり、追加は無料です。片側を撤去しても最初の人口は維持されます。最後の片側または建物全体の撤去費用は30万円です。"
 }

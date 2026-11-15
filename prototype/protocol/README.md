@@ -338,5 +338,22 @@ and both station listener directions. The current save schema is
 only under `historical/save-v10`. Current code rejects all older formats.
 `POST /api/city/preview` reads a fenced structure/cancellation preview;
 `cancelCityConstruction` uses the command FIFO, Owner/Operator authority and normal
-receipts. Source-family placement, heat and development remain later work.
+receipts. Fixed/variable/half placement and heat now have their own delivered slices; automatic development remains later work.
 See [contract and verification](../../doc/web-parity-city-transport.md).
+
+
+## P7-11 half-voxel construction
+
+`POST /api/city/fixed/preview` and `editFixedCity` retain the shared city
+construction API. `FixedCityQuery.half` optionally carries `{side, direction, color}`:
+`side` is `back` or `fore`, `direction` is 0/2/4/6, and color must be available in
+the actual definition. Half placement requires this selector and omits `height`;
+fixed/variable requests reject it. Half removal with a selector removes that side;
+omitting it removes the whole shared owner. Quotes contain exactly one occupied
+voxel, initial creation cost, free compatible addition/partial removal, or the
+¥300,000 last/whole-owner demolition fee. Shared half payloads participate in quote
+review; stale shared content cannot be confirmed solely because price and owner
+identity remain equal. Existing role/epoch/content/time/receipt checks apply.
+Save11/protocol10/City1 are unchanged; existing half state persists both present
+halves and initial producer/subsidiary provenance. See
+[implementation and focused evidence](../../doc/web-parity-half-city.md).

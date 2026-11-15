@@ -8,12 +8,13 @@ import {instantiate,variableFrames,variantKey,type Layer,type RenderCatalog,type
 import {cityProfile} from './city-state.ts';
 import {constructionParts} from './construction-renderer.ts';
 export interface CityTarget {kind:'building';id:string;position:Position;definition:Definition}
-export type CityOperation={target:CityTarget;layer:Layer}|{target:CityTarget;points:Point[];color:string};
+export type CityOperation={target:CityTarget;layer:Layer;halfHeight?:number}|{target:CityTarget;points:Point[];color:string};
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
 export class CityRenderPlan {
   readonly layers:Layer[]=[];
   readonly columnIndices=new Set<number>();
   private columns=new Map<number,{operations:CityOperation[];bases:CityTarget[]}>();
+  private halves=new Set<string>();
   private tops=new Map<string,number>();
   private colors=new Map<string,string>();
   private occupied=new Set<string>();
@@ -29,8 +30,25 @@ export class CityRenderPlan {
     };
     for(const b of read.mixed?.city?.structures??[]) {
       const d=cityProfile.structures.find(d=>d.reference.packId===b.definition.packId&&d.reference.contributionId===b.definition.contributionId&&d.reference.recipeId===b.definition.recipeId);
-      // Half-voxel sharing and appearance remain P7-11.
-      if(!d||d.kind==='half')continue;
+      if(!d)throw new Error('Unknown city definition');
+      if(d.kind==='half'){
+        const p=b.location,s=space.storage(p),index=s.v*space.horizontalSize+s.h;
+        this.halves.add(b.id);this.occupied.add(key(p));this.columnIndices.add(index);
+        const target:CityTarget={kind:'building',id:b.id,position:p,definition:b.definition};
+        const column=this.columns.get(index)??{operations:[] as CityOperation[],bases:[] as CityTarget[]};column.bases.push(target);this.columns.set(index,column);
+        const add=(recipe:ReturnType<typeof checked>,halfHeight?:number)=>{
+          for(const layer of instantiate(recipe,b.id,[p.x-space.centerX,p.y,p.z])){this.layers.push(layer);column.operations.push({target,layer,halfHeight});}
+        };
+        add(checked('system:ground/spring'));
+        // Source paints Back before Fore; recipe Side uses Fore=0, Back=1.
+        for(const half of [...b.halves].sort((a,b)=>(a.side==='back'?0:1)-(b.side==='back'?0:1))){
+          const recipe=checked(half.definition.recipeId),height=cityProfile.structures.find(d=>d.reference.recipeId===half.definition.recipeId)!.minimumHeight;
+          const frames=recipe.frames.filter(f=>f.selector.direction===half.direction&&f.selector.side===(half.side==='fore'?0:1)&&f.selector.color===half.color);
+          if(recipe.handler!=='half-voxel'||frames.length!==1)throw new Error('Half recipe unavailable');
+          add({...recipe,handler:'fixed-3d',frames},height);
+        }
+        continue;
+      }
       const recipe=checked(b.definition.recipeId),constructing=b.construction.length>0;
       if(recipe.handler!==(d.kind==='variable'?'variable-height':'fixed-3d'))throw new Error('City footprint recipe unavailable: '+b.definition.recipeId);
       const expanded=d.kind==='variable'?variableFrames(recipe,b.height):recipe.frames;
@@ -59,14 +77,20 @@ export class CityRenderPlan {
   changedColumns(previous:CityRenderPlan):number[]{return [...new Set([...this.columnIndices,...previous.columnIndices])].filter(i=>this.signature(i)!==previous.signature(i));}
   operations(index:number,cut:number,water:number,full:boolean):CityOperation[]{
     const column=this.columns.get(index);if(!column)return [];
+    const halfOps:CityOperation[]=[];
+    for(const target of column.bases)if(this.halves.has(target.id)&&target.position.z<=cut&&(!full||target.position.z>=water)){
+      if(!full){const q=this.space.project(target.position);halfOps.push({target,points:[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}].map(p=>({x:q.x+p.x,y:q.y+p.y})),color:'#925e2a'});}
+      halfOps.push(...column.operations.filter(op=>op.target.id===target.id&&'layer' in op&&(full||op.halfHeight!==undefined&&op.halfHeight<cut-target.position.z)));
+    }
+
     const normal=(id:string)=>full||cut>=this.tops.get(id)!;
     // Construction ignores heightCutDiff; it draws every traversed voxel.
     const built=new Set(column.bases.map(t=>t.id));
-    const result=column.operations.filter(op=>(!built.has(op.target.id)||normal(op.target.id))&&op.target.position.z<=cut&&(!full||op.target.position.z>=water));
-    for(const target of column.bases)if(!normal(target.id)&&target.position.z<=cut){
+    const result=column.operations.filter(op=>!this.halves.has(op.target.id)&&(!built.has(op.target.id)||normal(op.target.id))&&op.target.position.z<=cut&&(!full||op.target.position.z>=water));
+    for(const target of column.bases)if(!this.halves.has(target.id)&&!normal(target.id)&&target.position.z<=cut){
       const q=this.space.project(target.position);
       result.push({target,points:[{x:16,y:0},{x:32,y:8},{x:16,y:16},{x:0,y:8}].map(p=>({x:q.x+p.x,y:q.y+p.y})),color:this.colors.get(target.id)!});
     }
-    return result;
+    return [...halfOps,...result].sort((a,b)=>a.target.position.z-b.target.position.z);
   }
 }

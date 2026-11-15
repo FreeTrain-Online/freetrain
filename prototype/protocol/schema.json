@@ -7053,6 +7053,9 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 256
+        },
+        "half": {
+          "$ref": "#/$defs/CityHalfSelection"
         }
       },
       "required": [
@@ -7113,6 +7116,36 @@
         "cost",
         "positions",
         "losses"
+      ]
+    },
+    "CityHalfSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "side": {
+          "enum": [
+            "back",
+            "fore"
+          ]
+        },
+        "direction": {
+          "enum": [
+            0,
+            2,
+            4,
+            6
+          ]
+        },
+        "color": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "side",
+        "direction",
+        "color"
       ]
     }
   }

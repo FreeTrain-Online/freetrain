@@ -14,7 +14,7 @@ public sealed record CityStructureDefinition(DefinitionReference Reference, City
     bool ComputerCannotBuild, ImmutableArray<CityHalfVariant> HalfVariants = default)
 {
     public int Area => checked(SizeX * SizeY);
-    public long PricePerArea => UnitPrice / Area; // Source integral division before double exposure.
+    public long PricePerArea => Kind==CityStructureKind.Half ? checked(UnitPrice*2) : UnitPrice / Area; // Source integral division before double exposure.
     public long Price(int height)
     {
         if (height < MinimumHeight || height > MaximumHeight) throw new ArgumentException("Invalid city height.");

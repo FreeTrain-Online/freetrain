@@ -9,6 +9,7 @@ public sealed partial class SessionHost
     private MixedSessionState FixedCityState(FixedCityQuery q)
     {
         if(q.Position == null || q.ExpectedWorldEpoch<1 || q.ExpectedGeometryRevision<0 || q.ExpectedMinute<0 ||
+            q.Half is {} h && (h.Side is not ("back" or "fore") || h.Direction is not (0 or 2 or 4 or 6) || h.Color is <0 or >255) ||
             q.Height is <0 or >256 || q.Action=="remove" && q.Height!=0 || q.OwnerId<0 || q.ExpectedOwnerRevision<0 || q.Action is not ("place" or "remove") ||
             (q.Action=="place" ? q.Definition==null || q.OwnerId!=0 || q.ExpectedOwnerRevision!=0 : q.Definition!=null || q.OwnerId==0))
             throw new ArgumentException("invalidInput");
@@ -24,10 +25,19 @@ public sealed partial class SessionHost
         {
             var owner=s.World.City!.State.Structures.SingleOrDefault(o=>o.Id==q.OwnerId);
             if(owner==null || owner.Revision!=q.ExpectedOwnerRevision) throw new InvalidOperationException("staleRevision");
+            if(!owner.Halves.IsEmpty) return HalfCityConstruction.PreviewRemoval(capture,p,q.OwnerId,q.ExpectedOwnerRevision,
+                q.Half==null?null:q.Half.Side=="back"?HalfSide.Back:HalfSide.Fore);
+            if(q.Half!=null) throw new ArgumentException("Unexpected half selector.");
             return FixedCityConstruction.PreviewRemoval(capture,p,q.OwnerId,q.ExpectedOwnerRevision);
         }
         var d=q.Definition!;
         var definition=new DefinitionReference(d.PackId,d.ContributionId,d.RecipeId);
+        if(s.World.City!.Profile.Structure(definition).Kind==CityStructureKind.Half)
+        {
+            if(q.Height!=0 || q.Half==null) throw new ArgumentException("Half selector required.");
+            return HalfCityConstruction.Preview(capture,p,new(definition,q.Half.Side=="back"?HalfSide.Back:HalfSide.Fore,q.Half.Direction,q.Half.Color));
+        }
+        if(q.Half!=null) throw new ArgumentException("Unexpected half selector.");
         if(s.World.City!.Profile.Structure(definition).Kind==CityStructureKind.Variable && q.Height==0)
             throw new ArgumentException("Variable city height required.");
         return FixedCityConstruction.Preview(capture,p,definition,selectedHeight:q.Height==0 ? null : q.Height);
@@ -45,9 +55,9 @@ public sealed partial class SessionHost
                     var plan=PlanFixedCity(state,q);
                     var after=FixedCityConstruction.Commit(state,plan);
                     MixedWire.ValidateTransition(state,after);
-                    var owner=q.Action=="remove" ? state.World.City!.Structure(q.OwnerId) : after.World.City!.State.Structures.Last();
+                    var owner=q.Action=="remove" ? state.World.City!.Structure(q.OwnerId) : after.World.City!.Structure(after.World.Spatial.At(new(q.Position.X,q.Position.Y,q.Position.Z)).Entity!.Id);
                     var d=state.World.City!.Profile.Structure(owner.Definition);
-                    var positions=new Cube(owner.Location,d.SizeX,d.SizeY,owner.Height).Locations().Select(p=>new PositionRead(p.X,p.Y,p.Z)).ToArray();
+                    var positions=new Cube(owner.Location,d.SizeX,d.SizeY,d.Kind==CityStructureKind.Half?1:owner.Height).Locations().Select(p=>new PositionRead(p.X,p.Y,p.Z)).ToArray();
                     return new(q,true,null,FixedCityCost(plan),positions,[]);
                 }
                 catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException)

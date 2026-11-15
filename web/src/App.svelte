@@ -350,6 +350,7 @@
           {:else if cityBuilding}
             <dl class="details"><div><dt>{text.height}</dt><dd>{cityBuilding.height}</dd></div></dl>
             <p data-testid="city-progress">{cityBuilding.construction.length ? `${text.cityProgress}: ${cityBuilding.construction.reduce((sum,v)=>sum+v.cell.state,0)}/${4*cityBuilding.construction.length}` : text.cityComplete}</p>
+            {#if cityBuilding.halves.length}<ul data-testid="city-halves">{#each cityBuilding.halves as half}<li>{text[half.side==='back'?'cityHalfBack':'cityHalfFore']} · {text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[half.direction/2]]}<ObjectProvenance id={half.definition.contributionId} packId={half.definition.packId} locale={view.locale}/></li>{/each}</ul>{/if}
             <button disabled={clockDisabled} onclick={()=>request(()=>{const p={...mapSelection!.position};panel=undefined;map.removeCity(p);})}>{text.cityRemove}</button>
             <ObjectProvenance id={cityBuilding.definition.contributionId} packId={cityBuilding.definition.packId} locale={view.locale}/>
           {:else if building}

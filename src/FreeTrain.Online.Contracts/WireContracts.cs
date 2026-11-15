@@ -195,10 +195,12 @@ public sealed record RenameStationCommand(string StationId, long ExpectedRevisio
 public sealed record BuildTrackCommand(PositionRead Position, string Shape) : CommandPayload;
 public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevision) : CommandPayload;
 // Exact station contribution identity includes its authored orientation.
+public sealed record CityHalfSelectionRead(string Side, int Direction, int Color);
 public sealed record FixedCityQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
     string ExpectedContentVersion, string Action, PositionRead Position, DefinitionRead? Definition,
     long OwnerId, long ExpectedOwnerRevision,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] int Height = 0);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] int Height = 0,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CityHalfSelectionRead? Half = null);
 public sealed record FixedCityPreviewRead(FixedCityQuery Query, bool Legal, string? Reason, long Cost,
     PositionRead[] Positions, RailwayLossRead[] Losses);
 public sealed record EditFixedCityCommand(FixedCityQuery Query, long ExpectedCost) : CommandPayload;
