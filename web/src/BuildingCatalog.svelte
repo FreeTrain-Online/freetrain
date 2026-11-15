@@ -35,7 +35,7 @@
         <li class="catalog-item" class:catalog-active={active} data-variant={chosen.id}>
           <button class="catalog-item-main" aria-label={item.variants.length === 1 ? chosen.title : item.title} aria-pressed={active} data-catalog-variant={item.variants.length === 1 ? chosen.id : undefined} disabled={pending} onclick={() => onselect(category, chosen.id)}>
             <CatalogPreview id={chosen.id} direction={category === 'signal' ? active ? signalDirection : 0 : undefined} unavailable={text.catalogPreviewUnavailable}/>
-            <span><strong>{item.variants.length === 1 ? chosen.title : item.title}</strong><small>{chosen.detail}</small><small>{text.price}: {chosen.price.toLocaleString(locale)}</small><small><ObjectProvenance id={chosen.id} {locale}/></small></span>
+            <span><strong>{item.variants.length === 1 ? chosen.title : item.title}</strong><small>{chosen.detail}</small><small>{text.price}: ¥{chosen.price.toLocaleString(locale)}</small><small><ObjectProvenance id={chosen.id} {locale}/></small></span>
           </button>
           {#if item.variants.length > 1}
             <div class="catalog-options" role="group" aria-label={`${item.title} · ${text.catalogVariants}`}>
