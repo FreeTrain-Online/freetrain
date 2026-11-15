@@ -1,10 +1,10 @@
-import {execFileSync} from 'node:child_process';
+import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
 test('all bundled moving-car poses paint exact independent crop/anchor pixels and alpha picks in every season and light',async({page})=>{
  test.setTimeout(120_000);
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -34,7 +34,7 @@ test('all bundled moving-car poses paint exact independent crop/anchor pixels an
 });
 
 test('fractional train damage replay and alpha picks match full source-order composition, with hidden tunnel interiors',async({page},testInfo)=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -49,7 +49,7 @@ test('fractional train damage replay and alpha picks match full source-order com
 
 for(const night of [false,true])test(`tunnel trains cross both portals smoothly with hidden interiors and matching alpha picks (${night?'night':'day'})`,async({page},testInfo)=>{
  test.setTimeout(120_000);
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -61,7 +61,7 @@ for(const night of [false,true])test(`tunnel trains cross both portals smoothly 
 });
 
 test('tunnel damage replay has bounded paint work per frame @performance',async({page},testInfo)=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -79,7 +79,7 @@ test('tunnel damage replay has bounded paint work per frame @performance',async(
 
 test('whole head and tail car sprites stay above neighboring track pixels in every direction',async({page},testInfo)=>{
  test.setTimeout(90_000);
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -93,7 +93,7 @@ test('whole head and tail car sprites stay above neighboring track pixels in eve
 
 test('neighboring car sprites keep continuous depth through tight ninety-degree turns',async({page},testInfo)=>{
  test.setTimeout(120_000);
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -107,7 +107,7 @@ test('neighboring car sprites keep continuous depth through tight ninety-degree 
 
 test('slope trains cross elevations and flat joins with whole sprites and matching alpha picks',async({page},testInfo)=>{
  test.setTimeout(120_000);
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -120,7 +120,7 @@ test('slope trains cross elevations and flat joins with whole sprites and matchi
 });
 
 test('terrain grids stay behind opaque buildable structure pixels at fractional zoom and DPI',async({page})=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -130,7 +130,7 @@ test('terrain grids stay behind opaque buildable structure pixels at fractional 
 
 
 test('terrain grids stay behind all straight curved and junction track bitmaps',async({page})=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -144,7 +144,7 @@ test('terrain grids stay behind all straight curved and junction track bitmaps',
 
 
 test('continuous diagonal tracks survive neighboring ground fills while higher terrain still obscures them',async({page})=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-rendering.js',route=>route.fulfill({contentType:'text/javascript',body:harness}));
  await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));

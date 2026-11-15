@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { prepareRenderingHarnesses } from './rendering-harnesses.ts';
 import type { FullConfig } from '@playwright/test';
 import {
   configuredFixtures,
@@ -56,20 +57,22 @@ export default function setup(config: FullConfig) {
   if (!['Debug', 'Release'].includes(configuration)) {
     throw new Error('Invalid test server configuration');
   }
-  if (!selected.length) {
-    // Focused selections without generated inputs still need a current server.
-    execFileSync('dotnet', [
-      'build',
-      resolve(root, 'src/FreeTrain.Online.Server'),
-      '-c',
-      configuration,
-      '-p:RestoreLockedMode=true',
-    ], { cwd: root, stdio: 'inherit' });
-    return;
-  }
-  const output = mkdtempSync(join(tmpdir(), 'freetrain-browser-fixtures-'));
+  const output = mkdtempSync(join(tmpdir(), 'freetrain-browser-inputs-'));
   const cleanup = () => rmSync(output, { recursive: true, force: true });
   try {
+    process.env.FREETRAIN_BROWSER_HARNESSES = output;
+    prepareRenderingHarnesses(output, tests?.map(test => test.file));
+    if (!selected.length) {
+      // Focused selections without generated inputs still need a current server.
+      execFileSync('dotnet', [
+        'build',
+        resolve(root, 'src/FreeTrain.Online.Server'),
+        '-c',
+        configuration,
+        '-p:RestoreLockedMode=true',
+      ], { cwd: root, stdio: 'inherit' });
+      return cleanup;
+    }
     const env = { ...process.env };
     // Unselected producer outputs must not write to inherited developer paths.
     for (const family of Object.values(fixtureFamilies)) delete env[family.env];

@@ -47,8 +47,21 @@ Construction and terrain suites retain their existing functional names.
 `layout-helpers.ts` holds viewport checks. Helpers do not register tests or hooks.
 Tests requiring the prototype regression world remain in the
 `prototype-regression` project; file organization does not change their backend.
-The moving-art test bundles its production-renderer harness through the pinned
-Vite API into a Playwright route; the harness is absent from the shipped build.
+`rendering-harnesses.ts` prebuilds each selected production-renderer harness
+once through the pinned Vite API before workers start. Run-owned bundles are
+read into isolated page routes and removed at teardown; they are absent from
+`web/dist`. Editor runs without case selection prepare all five harness entries.
+`transport-helpers.ts` shares compatibility URLs, authentication, preview capture,
+receipt collection, a paused canonical scene, deliberate response holds, epoch-aware save replacement and
+checkpoint restart. Feature actions and assertions stay in their specs.
+
+The station construction peer witness retains real EN/JA decoder publication;
+`StationBuildingSessionTests` and `StationBuildingConstructionTests` own its
+arithmetic, timers, authorization, stale-command and receipt replay matrices.
+`WorldCreationHttpTests` owns empty/generated endpoint rejection fences.
+`RandomTests` and `SpatialEntityTests` own malformed random/graph matrices;
+`reference-world.spec.ts` keeps file-picker feedback, confirmation gating and
+state-preservation representatives.
 
 See [browser validation commands](../../../README.web.md#prerequisites-and-checks)
 for default, extended, performance and continuation coverage. From `web/`, run

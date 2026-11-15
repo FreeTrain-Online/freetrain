@@ -3,6 +3,7 @@ using FreeTrain.Online.Content;
 using FreeTrain.Online.Contracts;
 using FreeTrain.Online.Persistence;
 using FreeTrain.Online.Session;
+using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 using Xunit;
 using static FreeTrain.Online.Tests.StationStateTests;
@@ -101,6 +102,21 @@ public class StationBuildingSessionTests
         Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(removal,quote.Cost)));
         Assert.Empty(h.Snapshot().Mixed!.StationGraph!.Buildings);Assert.Equal(2,h.Snapshot().Mixed!.Accounts.Transactions.Length);
         var removed=await Save(h);Assert.Equal(removed,SaveCodec.Write(SaveCodec.ReadWorld(removed,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+    }
+    [Fact]
+    public async Task Replayed_station_receipt_does_not_allocate_timers_or_book_twice()
+    {
+        using var h=Host();
+        var network=new NetworkSession(new(),hostFactory:(_,_)=>h);
+        var now=DateTimeOffset.UtcNow;var owner=network.Connect(now,new("owner"))!;
+        var query=Query(h);var preview=h.PreviewStationBuilding(query);
+        var command=new CommandMessage("station-replay",h.WorldEpoch,new EditStationBuildingCommand(query,preview.Cost));
+        var first=network.Submit(owner,command,now);network.Tick(now);Assert.IsType<AcceptedMessage>(await first);
+        var bytes=await Save(h);var snapshot=h.Snapshot();
+        Assert.Equal(2,snapshot.Mixed!.Queue!.Pending.Length);
+        Assert.Single(snapshot.Mixed.Accounts.Transactions);
+        var replay=network.Submit(owner,command,now);network.Tick(now);Assert.IsType<AcceptedMessage>(await replay);
+        Assert.Equal(bytes,await Save(h));
     }
     [Fact]
     public async Task Clock_content_epoch_target_and_occupied_fences_do_not_partially_publish()

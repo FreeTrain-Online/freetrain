@@ -1,7 +1,8 @@
+import { compatibilityURL, protocolVersion, replaceSave, restartCheckpoint } from './transport-helpers.ts';
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
-const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
+const boot=compatibilityURL('/api/bootstrap',['terrain-content-1','mixed-railway-content-1']);
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, reopen and checkpoint restart',async({page,browser,baseURL,worldServer})=>{
  // P6-07/09/10 own station/platform presentation. This live-map witness keeps
@@ -29,7 +30,7 @@ test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, 
  try{
   await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
   for(const [i,p] of [page,peer].entries()){
-   const join=messages[i].find(m=>m.type==='join');expect(join.protocolVersion).toBe(11);expect(join.snapshot.mixed).toEqual(save.mixed);
+   const join=messages[i].find(m=>m.type==='join');expect(join.protocolVersion).toBe(protocolVersion);expect(join.snapshot.mixed).toEqual(save.mixed);
    await p.locator('canvas').evaluate(el=>el.setAttribute('data-instance','station-transport'));
   }
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
@@ -43,12 +44,10 @@ test('P6-05/P6-16 EN/JA peers retain station providers through rejected upload, 
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:Buffer.from(JSON.stringify(badProvider))})).ok()).toBe(false);
   expect((await snapshot(page))).toEqual(before);
   const downloaded=await(await page.request.get('/api/saves/download')).json();expect(downloaded.saveVersion).toBe(11);
-  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:Buffer.from(JSON.stringify(downloaded))})).ok()).toBe(true);
+  await replaceSave(page,downloaded,before.worldEpoch,[page,peer]);
   for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(before.worldEpoch)+1n));
   for(const p of [page,peer]){expect((await snapshot(p)).mixed).toEqual(downloaded.mixed);await expect(p.locator('canvas')).toHaveAttribute('data-instance','station-transport');}
-  await worldServer.restart!();
-  for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
-  await page.reload();await peer.reload();await ready(page);await ready(peer,'ja');
+  await restartCheckpoint(worldServer,[{page},{page:peer,language:'ja'}]);
   for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(downloaded.mixed);
   await page.getByRole('button',{name:'Step',exact:false}).first().click();
   for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('519');

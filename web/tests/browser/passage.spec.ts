@@ -1,4 +1,5 @@
-import {execFileSync} from 'node:child_process';
+import { previewResponse } from './transport-helpers.ts';
+import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,ready,exposeMapPoint} from './browser-helpers.ts';
@@ -10,7 +11,7 @@ async function task(p:Page,ja=false){const button=p.getByRole('button',{name:ja?
 async function quote(p:Page,ja=false,material='concrete',action='place',x=24,endX=27,y=25){
  await p.getByLabel(ja?'通路の操作':'Passage action',{exact:true}).selectOption(action);await p.getByLabel(ja?'通路の素材':'Passage material',{exact:true}).selectOption(material);
  for(const [label,value] of [[ja?'通路の始点 X':'Passage start X',x],[ja?'通路の始点 Y':'Passage start Y',y],[ja?'通路の終点 X':'Passage end X',endX],[ja?'通路の終点 Y':'Passage end Y',y],[ja?'通路の高さ':'Passage level',2]] as const)await p.getByLabel(label,{exact:true}).fill(String(value));
- const response=p.waitForResponse(r=>r.url().includes('/api/station/passage/preview?'));await p.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
+ const response=previewResponse(p,'/api/station/passage/preview');await p.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
 }
 for(const ja of [false,true])test(`passage ${ja?'JA narrow touch':'EN'} all materials preview cancel remove peer exact reopen and checkpoint`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(150000);const context=await browser.newContext({baseURL}),peer=await context.newPage();
@@ -65,7 +66,7 @@ test('passage stale peer edits late cancellation observer and replacement cannot
  }finally{await context.close();await observerContext.close();}
 });
 test('all 48 passage appearances match independent source crop pixels and alpha picking in eight variants',async({page})=>{
- test.setTimeout(180000);const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/passage-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});await page.route('**/__tests/passage.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
+ test.setTimeout(180000);const code=renderingHarness('passage');await page.route('**/__tests/passage.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
  const reports=[];
  for(const season of ['spring','summer','autumn','winter'])for(const night of [false,true]){
   const r=await page.evaluate(async({catalog,season,night})=>{const {passagePixels}=await import('/__tests/passage.js');return passagePixels(catalog,{season,night});},{catalog,season,night});expect(r.count).toBe(48);expect(r.pixels).toBe(576000);expect(r.picks).toBe(r.pixels);reports.push({season,night,count:r.count,pixels:r.pixels,picks:r.picks});writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/passages-${season}-${night?'night':'day'}.png`,Buffer.from(r.png.split(',')[1],'base64'));
@@ -84,7 +85,7 @@ for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials
   await page.getByLabel(ja?'階段 X':'Stair X',{exact:true}).fill('25');
   await page.getByLabel(ja?'階段 Y':'Stair Y',{exact:true}).fill(String(y));
   await page.getByLabel(ja?'階段の高さ':'Stair level',{exact:true}).fill('2');
-  const response=page.waitForResponse(r=>r.url().includes('/api/station/passage/preview?'));await page.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
+  const response=previewResponse(page,'/api/station/passage/preview');await page.locator('.passage-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();return(await response).json();
  }
  try{
   await page.goto('/');await ready(page,ja?'ja':'en');await empty(page,ja);
@@ -115,12 +116,12 @@ for(const ja of [false,true])test(`stairs ${ja?'JA narrow touch':'EN'} materials
  }finally{await context.close();}
 });
 test('all 96 stair appearances match literal crops and alpha picks in eight variants including corrected index23',async({page})=>{
- test.setTimeout(180000);const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/stair-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});await page.route('**/__tests/stairs.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
+ test.setTimeout(180000);const code=renderingHarness('stair');await page.route('**/__tests/stairs.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
  for(const season of ['spring','summer','autumn','winter'])for(const night of [false,true]){
   const r=await page.evaluate(async({catalog,season,night})=>{const {stairPixels}=await import('/__tests/stairs.js');return stairPixels(catalog,{season,night});},{catalog,season,night});expect(r.count).toBe(96);expect(r.pixels).toBe(1152000);expect(r.picks).toBe(r.pixels);writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/stairs-${season}-${night?'night':'day'}.png`,Buffer.from(r.png.split(',')[1],'base64'));
  }
 });
 test('stairs render and pick before or after overlapping train cars with height cuts',async({page})=>{
- const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/stair-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});await page.route('**/__tests/stair-overlap.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
+ const code=renderingHarness('stair');await page.route('**/__tests/stair-overlap.js',r=>r.fulfill({contentType:'text/javascript',body:code}));await page.goto('/');await ready(page);
  const report=await page.evaluate(async catalog=>{const {stairTrainOverlap}=await import('/__tests/stair-overlap.js');return stairTrainOverlap(catalog);},catalog);expect(report).toEqual({count:12,picks:76800});
 });

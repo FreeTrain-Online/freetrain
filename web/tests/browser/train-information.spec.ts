@@ -1,4 +1,5 @@
-import {execFileSync} from 'node:child_process';
+import { replaceSave, restartCheckpoint } from './transport-helpers.ts';
+import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,ready,openPanel,closePanel} from './browser-helpers.ts';
@@ -63,14 +64,14 @@ test('color templates, exact XML, retained drafts, shared apply, observer and ch
   await expect.poll(()=>page.locator('.world-canvas').evaluate((canvas:any)=>{const ctx=canvas.getContext('2d'),pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let n=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i]===161&&pixels[i+1]===178&&pixels[i+2]===195)n++;return n;})).toBeGreaterThan(5);
   expect(after.mixed.fleet.colorTest.body).toBe('#a1b2c3');expect(after.tick).toBe(initial.tick);expect(after.mixed.fleet.trains).toEqual(initial.mixed.fleet.trains);
   mkdirSync(evidence+'/information',{recursive:true});await page.screenshot({path:evidence+'/information/colors-en.png'});
-  const bytes=await(await page.request.get('/api/saves/download')).body();expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+after.worldEpoch,{data:bytes})).ok()).toBe(true);
+  const bytes=await(await page.request.get('/api/saves/download')).body();await replaceSave(page,bytes,after.worldEpoch);
   await page.reload();await ready(page);await openPanel(page,'settings');await expect(editor.getByLabel(en.trainColorBody,{exact:true})).toHaveValue('#a1b2c3');
-  await worldServer.restart!();expect((await page.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);await page.reload();await ready(page);expect((await state(page)).mixed.fleet.colorTest).toEqual(after.mixed.fleet.colorTest);
+  await restartCheckpoint(worldServer,[{page}]);expect((await state(page)).mixed.fleet.colorTest).toEqual(after.mixed.fleet.colorTest);
  }finally{await context.close();}
 });
 
 test('all seven color templates preserve exact source palette, night shades, crop pixels and alpha picks',async({page})=>{
- const harness=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const harness=renderingHarness('train');
  await page.route('**/__tests/train-colors.js',r=>r.fulfill({contentType:'text/javascript',body:harness}));await page.goto('/');await ready(page);
  const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
  const report=await page.evaluate(async catalog=>{

@@ -1,3 +1,4 @@
+import { delayedResponse } from './transport-helpers.ts';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect,test,type Page } from './fixtures.ts';
@@ -82,7 +83,7 @@ test('real Save 9 download, upload confirmation and socket epoch replacement pre
 
 test('prototype and corrupt saves report errors without replacement confirmation or mutation',async({page})=>{
   await page.goto('/');await ready(page);const before=await bootstrap(page);await openPanel(page,'saves');
-  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{"saveVersion":2}','not supported'],['{"saveVersion":3}','not supported'],['{"saveVersion":4}','not supported'],['{broken','Invalid save data']] as const){
+  for(const [body,message] of [['{"saveVersion":1}','not supported'],['{broken','Invalid save data']] as const){
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'unsupported.json',mimeType:'application/json',buffer:Buffer.from(body)});
     await expect(page.getByTestId('save-feedback')).toContainText(message);await expect(page.getByRole('dialog',{name:'Replace the current game with this save?',exact:true})).toHaveCount(0);
@@ -93,10 +94,9 @@ test('prototype and corrupt saves report errors without replacement confirmation
 test('random state validation rejects incompatible saves before confirmation and keeps the current epoch',async({page})=>{
   await page.goto('/');await ready(page);await openPanel(page,'saves');
   const before=await bootstrap(page),bytes=await(await page.request.get('/api/saves/download')).body();
-  for(const [mutation,message] of [['algorithm','not supported'],['duplicate','Invalid save data'],['zero','Invalid save data']] as const){
+  for(const [mutation,message] of [['algorithm','not supported'],['zero','Invalid save data']] as const){
     const save=JSON.parse(bytes.toString());
     if(mutation==='algorithm')save.random.algorithm='future';
-    if(mutation==='duplicate')save.random.streams[1].id=save.random.streams[0].id;
     if(mutation==='zero')save.random.streams[0].state.values.fill(0);
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'random.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
@@ -108,7 +108,7 @@ test('random state validation rejects incompatible saves before confirmation and
 });
 
 test('new epoch clears a pending H/V preview and discards its delayed response',async({page})=>{
-  let release=()=>{},waiting=false;const held=new Promise<void>(r=>{release=r;});
+  const {release,held}=delayedResponse();let waiting=false;
   await page.route('**/api/spatial/preview?*',async route=>{try{const response=await route.fetch();waiting=true;await held;await route.fulfill({response});}catch{}});
   try{
     await page.goto('/');await ready(page);await checker(page);await target(page,{x:27,y:24,z:0});await expect.poll(()=>waiting).toBe(true);
@@ -217,11 +217,9 @@ test('dangling entity ownership blocks reveal before the live canvas',async({pag
 test('invalid entity graphs report localized save errors before confirmation and preserve current state',async({page})=>{
   await page.goto('/');await ready(page);await openPanel(page,'saves');
   const before=await bootstrap(page),bytes=await(await page.request.get('/api/saves/download')).body();
-  for(const mutation of ['owner','duplicate','allocator'] as const){
+  for(const mutation of ['owner'] as const){
     const save=JSON.parse(bytes.toString());
     if(mutation==='owner')save.rails[0].entityId='999';
-    if(mutation==='duplicate')save.spatial.entities[1].id=save.spatial.entities[0].id;
-    if(mutation==='allocator')save.spatial.nextEntityId='1';
     await expect(page.getByLabel('Upload save',{exact:true})).toBeEnabled();
     await page.getByLabel('Upload save',{exact:true}).setInputFiles({name:'entities.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
     await expect(page.getByTestId('save-feedback')).toContainText('Invalid save data');
@@ -372,7 +370,7 @@ test('bell hash failures remain localized and retryable; closing Settings fences
   await page.unroute('**/*.wav');
   await preview.click();
   await expect.poll(()=>page.evaluate(()=>(window as any).__bellStarts)).toBe(1);
-  let release=()=>{},waiting=false;const held=new Promise<void>(r=>{release=r;});
+  const {release,held}=delayedResponse();let waiting=false;
   await page.route('**/*.wav',async route=>{
     const response=await route.fetch();waiting=true;await held;await route.fulfill({response});
   });

@@ -1,10 +1,10 @@
-import {execFileSync} from 'node:child_process';
+import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect} from './fixtures.ts';
 import {ready,openPanel,closePanel,canonicalState} from './browser-helpers.ts';
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
 async function harness(page:any){
- const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/city-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+ const code=renderingHarness('city');
  await page.route('**/__tests/city-rendering.js',(r:any)=>r.fulfill({contentType:'text/javascript',body:code}));
 }
 const save=(name:string,png:string)=>writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/${name}.png`,Buffer.from(png.split(',')[1],'base64'));

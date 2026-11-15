@@ -1,4 +1,4 @@
-import {execFileSync} from 'node:child_process';
+import {renderingHarness} from './rendering-harnesses.ts';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,ready,openPanel,closePanel} from './browser-helpers.ts';
@@ -7,7 +7,7 @@ const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','
 const profile=JSON.parse(readFileSync('src/generated/station-profile.json','utf8'));
 const compat='protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 async function harness(page:Page) {
-  const code=execFileSync('deno',['run','-A','scripts/bundle-rendering-tests.ts','tests/helpers/station-rendering-harness.ts'],{encoding:'utf8',maxBuffer:16*1024*1024});
+  const code=renderingHarness('station');
   await page.route('**/__tests/station-rendering.js',r=>r.fulfill({contentType:'text/javascript',body:code}));
 }
 async function point(page:Page,x:number,y:number) {return page.locator('canvas').evaluate((el,p)=>{

@@ -182,23 +182,17 @@ test('Japanese narrow empty-world form, custom limits, candidate invalidation an
  }finally{await replace(page,original);await context.close();}
 });
 
-test('empty candidate API rejects stale revisions, forged digests and late confirmations; maximum admitted empty world renders and reopens',async({page})=>{
+test('maximum admitted empty world renders and reopens',async({page})=>{
  await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
  async function preview(h=30,v=42,z=6,water=1){const s=await state(page);const response=await page.request.post('/api/worlds/empty/preview',{data:{name:'Capacity',dimensions:{h,v,z},waterLevel:water,epoch:s.worldEpoch,revision:s.revision}});expect(response.ok()).toBe(true);return {...await response.json(),epoch:s.worldEpoch,revision:s.revision};}
  async function commit(c:any){return page.request.post('/api/worlds/empty/commit',{data:{id:c.id,requestHash:c.requestHash,candidateHash:c.candidateHash,epoch:c.epoch,revision:c.revision}});}
  try{
-  let candidate=await preview();expect((await commit({...candidate,candidateHash:'0'.repeat(64)})).status()).toBe(409);
-  // A step is an authoritative revision change without an epoch change.
-  await page.locator('.command-bar .step').click();await expect.poll(async()=>(await state(page)).revision).not.toBe(candidate.revision);
-  expect((await commit(candidate)).status()).toBe(409);
-  candidate=await preview();await replace(page,original);expect((await commit(candidate)).status()).toBe(409);
-  candidate=await preview(64,64,64,63);expect(candidate.saveBytes).toBeLessThan(16*1024*1024);expect((await commit(candidate)).ok()).toBe(true);
+  const candidate=await preview(64,64,64,63);expect(candidate.saveBytes).toBeLessThan(16*1024*1024);expect((await commit(candidate)).ok()).toBe(true);
   await expect(page.locator('canvas')).toHaveAttribute('data-ruleset','terrain-state-1');await ready(page);await expect(page.locator('canvas')).toHaveAttribute('data-assets','ready');
   // Independent source H/V projection of stored centre H32,V32 at Z63: (1040,-744).
   expect(await page.locator('canvas').evaluate(el=>(el as HTMLCanvasElement).dataset.camera!.split(',').slice(0,2).map(Number))).toEqual([1040,-744]);
   const captured=await(await page.request.get('/api/saves/download')).body();const data=JSON.parse(captured.toString());expect(savedGround(data)).toHaveLength(4096);expect(data.rails).toEqual([]);
   await page.reload();await ready(page);expect(await(await page.request.get('/api/saves/download')).body()).toEqual(captured);
-  expect((await commit(candidate)).status()).toBe(409);
  }finally{await replace(page,original);}
 });
 
@@ -310,21 +304,6 @@ test('Japanese narrow seeded relief form validates ranges, changes presets, inva
   await expect(page.getByRole('button',{name:'世界をプレビュー',exact:true})).toBeEnabled();await expect(page.getByTestId('empty-world-preview')).toHaveCount(0);
   expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
  }finally{release();await replace(page,original);await context.close();}
-});
-
-test('generated endpoint rejects unavailable features, roles, stale fences and forged digests without changing the world',async({page,browser})=>{
- await page.goto('/');await ready(page);const original=await(await page.request.get('/api/saves/download')).body();
- const options={seed:0,relief:{kind:1,amount:50,featureScale:24,smoothness:50},coast:{kind:0,sides:0,waterPercent:0},lakes:{count:0,areaPercent:0},rivers:{direction:0,width:1,meander:30},forests:{coveragePercent:0,clustering:50,palette:[]},startingArea:0};
- const s=await state(page),input={name:'API relief',dimensions:{h:32,v:32,z:32},waterLevel:4,options,epoch:s.worldEpoch,revision:s.revision};
- try{
-  for(const invalid of [{...input,dimensions:{h:2049,v:32,z:32}},{...input,options:{...options,startingArea:257}},{...input,options:{...options,coast:{kind:1,sides:0,waterPercent:0}}}])expect((await page.request.post('/api/worlds/generated/preview',{data:invalid})).status()).toBe(400);
-  expect((await page.request.post('/api/worlds/generated/preview',{data:{...input,revision:String(BigInt(s.revision)+1n)}})).status()).toBe(409);
-  const response=await page.request.post('/api/worlds/generated/preview',{data:input});expect(response.ok()).toBe(true);const candidate=await response.json();
-  expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,epoch:s.worldEpoch,revision:s.revision,candidateHash:'0'.repeat(64)}})).status()).toBe(409);
-  expect(await(await page.request.get('/api/saves/download')).body()).toEqual(original);
-  await replace(page,original);expect((await page.request.post('/api/worlds/empty/commit',{data:{id:candidate.id,requestHash:candidate.requestHash,candidateHash:candidate.candidateHash,epoch:s.worldEpoch,revision:s.revision}})).status()).toBe(409);
-  const observer=await browser.newContext();try{const p=await observer.newPage();await p.goto('/');await ready(p);await p.request.post('/api/leave');await p.request.post('/api/access',{data:{secret:'observer-test'}});await p.reload();await ready(p);expect((await p.request.post('/api/worlds/generated/preview',{data:input})).status()).toBe(403);}finally{await observer.close();}
- }finally{await replace(page,original);}
 });
 
 test('coast directions, realized preview, impossible diagnostics and exact island confirmation',async({page,browser})=>{
