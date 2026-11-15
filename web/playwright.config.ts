@@ -1,39 +1,36 @@
-import { mkdirSync, mkdtempSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync } from 'node:fs';
+import {
+  browserSpecs,
+  validateSpecOwnership,
+} from './tests/browser/spec-ownership.ts';
 import { join, resolve } from 'node:path';
 import { defineConfig } from '@playwright/test';
 
-const evidenceParent = resolve(__dirname, '../tmp');
-mkdirSync(evidenceParent, { recursive: true });
-const evidence = process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE ?? mkdtempSync(join(evidenceParent, 'browser-results-'));
-mkdirSync(evidence, { recursive: true });
-process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE = evidence;
+validateSpecOwnership(
+  readdirSync(resolve(__dirname, 'tests/browser')).filter((file) =>
+    file.endsWith('.spec.ts')
+  ),
+  browserSpecs,
+);
 
-const canonical = [
-  'city-building.spec.ts', 'city-transport.spec.ts', 'city-heat.spec.ts', 'fixed-city.spec.ts', 'city-rendering.spec.ts',
-  'station-continuation.spec.ts',
-  'station-cross-tool.spec.ts',
-  'station-information.spec.ts', 'station-controller.spec.ts', 'passenger-service.spec.ts', 'departure-bells.spec.ts', 'station-yard.spec.ts',
-  'passage.spec.ts', 'platform-lanes.spec.ts', 'platform-properties.spec.ts', 'station-hosts.spec.ts',
-  'wide-platform.spec.ts', 'thin-platform.spec.ts', 'station-transport.spec.ts', 'station-building-domain.spec.ts', 'station-building.spec.ts', 'station-rendering.spec.ts',
-  'fleet-reconciliation.spec.ts',
-  'fleet-continuation.spec.ts',
-  'fleet-cross-tool.spec.ts',
-  'train-information.spec.ts',
-  'fleet-groups.spec.ts', 'fleet-rule-file.spec.ts', 'signal-integration.spec.ts',
-  'fleet-controller-manager.spec.ts', 'game-toolbar.spec.ts', 'train-runtime.spec.ts', 'construction-regression.spec.ts', 'cross-tool.spec.ts', 'building-catalog.spec.ts',
-  'object-removal.spec.ts', 'railway-construction.spec.ts', 'bridge-construction.spec.ts',
-  'girder-construction.spec.ts', 'garage-construction.spec.ts', 'signal-construction.spec.ts',
-  'pole-construction.spec.ts', 'speed-limit.spec.ts', 'stationary-construction.spec.ts',
-  'tunnel-construction.spec.ts', 'slope-construction.spec.ts', 'railway-rendering.spec.ts',
-  'reference-world.spec.ts', 'terrain.spec.ts', 'corner-terrain.spec.ts',
-  'rectangle-terrain.spec.ts', 'terrace-terrain.spec.ts', 'authoring-terrain.spec.ts',
-  'paint-terrain.spec.ts', 'fleet-deployment.spec.ts', 'fleet-trading.spec.ts', 'fleet-persistence.spec.ts', 'train-rendering.spec.ts',
-];
+const artifactParent = resolve(__dirname, '../tmp');
+mkdirSync(artifactParent, { recursive: true });
+const artifacts = process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT ??
+  mkdtempSync(join(artifactParent, 'browser-run-'));
+process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = resolve(artifacts);
+const evidence = process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE ??
+  join(artifacts, 'evidence');
+mkdirSync(evidence, { recursive: true });
+process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE = resolve(evidence);
 
 export default defineConfig({
   testDir: './tests/browser',
   globalSetup: './tests/browser/global-setup.ts',
-  reporter: [['list'], ['./tests/browser/required-tests-reporter.ts']],
+  outputDir: join(artifacts, 'test-results'),
+  reporter: [['list'], ['./tests/browser/required-tests-reporter.ts'], [
+    'json',
+    { outputFile: join(artifacts, 'report.json') },
+  ]],
   forbidOnly: !!process.env.CI,
   use: { viewport: { width: 1280, height: 900 }, trace: 'retain-on-failure' },
   // Each worker owns its backend, preview server and save directory (fixtures.ts).
@@ -41,9 +38,11 @@ export default defineConfig({
   workers: 2,
   grepInvert: /@extended|@performance/,
   projects: [
-    { name: 'canonical', testMatch: canonical },
-    { name: 'startup', testMatch: 'startup-world.spec.ts' },
-    { name: 'prototype-regression', testIgnore: [...canonical, 'startup-world.spec.ts',
-      'mixed-continuation.spec.ts', 'optional-content.spec.ts', 'capacity.spec.ts', 'railway-capacity.spec.ts', 'fleet-capacity.spec.ts', 'station-capacity.spec.ts'] },
+    { name: 'canonical', testMatch: browserSpecs.canonical },
+    { name: 'startup', testMatch: browserSpecs.startup },
+    {
+      name: 'prototype-regression',
+      testMatch: browserSpecs['prototype-regression'],
+    },
   ],
 });

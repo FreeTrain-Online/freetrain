@@ -1,0 +1,55 @@
+name: Exhaustive browser validation
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exhaustive-browser-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  browser:
+    name: Browser ${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      FREETRAIN_BROWSER_ARTIFACT_ROOT: ${{ github.workspace }}/tmp/browser-artifacts
+    strategy:
+      fail-fast: false
+      # Performance owns one sequential worker and runs on its own runner.
+      matrix:
+        suite: [extended, continuation, performance]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .deno-version
+      - name: Restore server dependencies
+        run: dotnet restore src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj --locked-mode
+      - name: Build test server
+        run: dotnet build src/FreeTrain.Online.Server/FreeTrain.Online.Server.csproj -c Release --no-restore
+      - name: Install locked frontend dependencies
+        run: deno install --config web/deno.json --frozen
+      - name: Install Chromium and system dependencies
+        run: deno task --cwd web install:browser --with-deps
+      - name: Run Playwright tests
+        run: deno task --cwd web test:browser:${{ matrix.suite }}
+      - name: Upload Playwright reports and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-${{ matrix.suite }}
+          path: tmp/browser-artifacts/
+          retention-days: 7

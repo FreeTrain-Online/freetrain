@@ -4,6 +4,7 @@ import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'n
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { writeTimings } from './run-timings.ts';
 
 export * from '@playwright/test';
 
@@ -64,6 +65,8 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
     const apiURL = `http://127.0.0.1:${port}`, baseURL = `http://127.0.0.1:${webPort}`;
     const directory = mkdtempSync(join(tmpdir(), 'freetrain-browser-worker-'));
     const children: ChildProcess[] = [];
+    const started = performance.now();
+    let backendMs = 0, previewMs = 0;
     const prototype = project === 'prototype-regression';
     const builder = prototype ? 0 : 1, viewer = prototype ? 1 : 0;
     try {
@@ -100,9 +103,15 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
         ...(prototype ? ['--prototype-regression-harness'] : []), '--urls', 'http://0.0.0.0:8080',
       ], process.env, `${apiURL}/health`) : running('dotnet', backendArgs, backendEnv,
         `${apiURL}/health`, resolve('../src/FreeTrain.Online.Server'));
+      const backendStarted = performance.now();
       children.push(await startBackend());
+      backendMs = performance.now() - backendStarted;
+      const previewStarted = performance.now();
       children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', ...(process.env.FREETRAIN_ONLINE_TEST_DEV_CLIENT==='1'?[]:['preview']), '--host', '127.0.0.1',
         '--port', String(webPort), '--strictPort'], { ...process.env, FREETRAIN_ONLINE_API_TARGET: apiURL }, baseURL));
+      previewMs = performance.now() - previewStarted;
+      writeTimings(`worker-${workerInfo.workerIndex}`, { project, backendMs, previewMs,
+        startupMs: performance.now() - started });
       let first = true;
       await use({ baseURL, pid: () => children[0].pid, restart: async () => {
         await stop(children[0]);

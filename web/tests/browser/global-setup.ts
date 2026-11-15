@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { prepareRenderingHarnesses } from './rendering-harnesses.ts';
+import { writeTimings } from './run-timings.ts';
 import type { FullConfig } from '@playwright/test';
 import {
   configuredFixtures,
@@ -50,51 +51,95 @@ function selectedTests(config: FullConfig): SelectedTest[] | undefined {
 }
 
 export default function setup(config: FullConfig) {
-  const tests = selectedTests(config);
-  const selected = tests ? selectedFixtures(tests) : configuredFixtures(config.projects);
-  const root = resolve(__dirname, '../../..');
-  const configuration = process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION ?? 'Release';
-  if (!['Debug', 'Release'].includes(configuration)) {
-    throw new Error('Invalid test server configuration');
+  const started = performance.now();
+  const phases: Record<string, number> = {};
+  function timed<T>(name: string, action: () => T): T {
+    const start = performance.now();
+    try {
+      return action();
+    } finally {
+      phases[name] = performance.now() - start;
+    }
   }
-  const output = mkdtempSync(join(tmpdir(), 'freetrain-browser-inputs-'));
-  const cleanup = () => rmSync(output, { recursive: true, force: true });
+  // Record discovery failures too: no worker will run in that case.
+  let status = 'failed';
   try {
-    process.env.FREETRAIN_BROWSER_HARNESSES = output;
-    prepareRenderingHarnesses(output, tests?.map(test => test.file));
-    if (!selected.length) {
-      // Focused selections without generated inputs still need a current server.
-      execFileSync('dotnet', [
-        'build',
-        resolve(root, 'src/FreeTrain.Online.Server'),
-        '-c',
-        configuration,
-        '-p:RestoreLockedMode=true',
-      ], { cwd: root, stdio: 'inherit' });
+    const tests = timed('discoveryMs', () => selectedTests(config));
+    const selected = tests
+      ? selectedFixtures(tests)
+      : configuredFixtures(config.projects);
+    const root = resolve(__dirname, '../../..');
+    const configuration =
+      process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION ?? 'Release';
+    if (!['Debug', 'Release'].includes(configuration)) {
+      throw new Error('Invalid test server configuration');
+    }
+    const output = mkdtempSync(join(tmpdir(), 'freetrain-browser-inputs-'));
+    const cleanup = () => rmSync(output, { recursive: true, force: true });
+    try {
+      process.env.FREETRAIN_BROWSER_HARNESSES = output;
+      timed(
+        'harnessesMs',
+        () =>
+          prepareRenderingHarnesses(output, tests?.map((test) => test.file)),
+      );
+      if (!selected.length) {
+        // Focused selections without generated inputs still need a current server.
+        timed('serverBuildMs', () =>
+          execFileSync('dotnet', [
+            'build',
+            resolve(root, 'src/FreeTrain.Online.Server'),
+            '-c',
+            configuration,
+            '-p:RestoreLockedMode=true',
+          ], { cwd: root, stdio: 'inherit' }));
+        status = 'passed';
+        return cleanup;
+      }
+      const env = { ...process.env };
+      // Unselected producer outputs must not write to inherited developer paths.
+      for (const family of Object.values(fixtureFamilies)) {
+        delete env[family.env];
+      }
+      for (const name of selected) {
+        const family = fixtureFamilies[name];
+        env[family.env] = process.env[family.env] = join(
+          output,
+          name + '.json',
+        );
+      }
+      console.log(`Generating browser fixtures: ${selected.join(', ')}`);
+      timed('fixtureGenerationMs', () =>
+        execFileSync('dotnet', [
+          'test',
+          resolve(root, 'tests/FreeTrain.Online.Tests'),
+          '-c',
+          configuration,
+          '-p:RestoreLockedMode=true',
+          '--filter',
+          [
+            ...new Set(
+              selected.flatMap((name) => fixtureFamilies[name].producers),
+            ),
+          ]
+            .map((name) => `FullyQualifiedName~${name}`).join('|'),
+        ], { cwd: root, stdio: 'inherit', env }));
+      timed('fixtureValidationMs', () => {
+        for (const name of selected) {
+          validateFixture(name, env[fixtureFamilies[name].env]!);
+        }
+      });
+      status = 'passed';
       return cleanup;
+    } catch (error) {
+      cleanup();
+      throw error;
     }
-    const env = { ...process.env };
-    // Unselected producer outputs must not write to inherited developer paths.
-    for (const family of Object.values(fixtureFamilies)) delete env[family.env];
-    for (const name of selected) {
-      const family = fixtureFamilies[name];
-      env[family.env] = process.env[family.env] = join(output, name + '.json');
-    }
-    console.log(`Generating browser fixtures: ${selected.join(', ')}`);
-    execFileSync('dotnet', [
-      'test',
-      resolve(root, 'tests/FreeTrain.Online.Tests'),
-      '-c',
-      configuration,
-      '-p:RestoreLockedMode=true',
-      '--filter',
-      [...new Set(selected.flatMap((name) => fixtureFamilies[name].producers))]
-        .map((name) => `FullyQualifiedName~${name}`).join('|'),
-    ], { cwd: root, stdio: 'inherit', env });
-    for (const name of selected) validateFixture(name, env[fixtureFamilies[name].env]!);
-    return cleanup;
-  } catch (error) {
-    cleanup();
-    throw error;
+  } finally {
+    writeTimings('setup', {
+      status,
+      totalMs: performance.now() - started,
+      phases,
+    });
   }
 }

@@ -10,15 +10,31 @@ import {
   validateFixture,
 } from './browser/generated-fixtures.ts';
 import RequiredTestsReporter from './browser/required-tests-reporter.ts';
-import type { FullResult, TestCase, TestResult } from '@playwright/test/reporter';
+import {
+  browserSpecs,
+  validateSpecOwnership,
+} from './browser/spec-ownership.ts';
+import { writeTimings } from './browser/run-timings.ts';
+import { readFileSync } from 'node:fs';
+import type {
+  FullResult,
+  TestCase,
+  TestResult,
+} from '@playwright/test/reporter';
 
 Deno.test('browser fixture selection follows selected cases and excludes optional capacity inputs', () => {
   deepStrictEqual(
-    selectedFixtures([{ file: '/tests/fleet-persistence.spec.ts', title: 'P5-14 Outside exit' }]),
+    selectedFixtures([{
+      file: '/tests/fleet-persistence.spec.ts',
+      title: 'P5-14 Outside exit',
+    }]),
     ['outside'],
   );
   deepStrictEqual(
-    selectedFixtures([{ file: 'fleet-deployment.spec.ts', title: 'en playable purchase deploy' }]),
+    selectedFixtures([{
+      file: 'fleet-deployment.spec.ts',
+      title: 'en playable purchase deploy',
+    }]),
     [],
   );
   deepStrictEqual(
@@ -29,17 +45,24 @@ Deno.test('browser fixture selection follows selected cases and excludes optiona
     ['operations'],
   );
   deepStrictEqual(
-    selectedFixtures([{ file: 'station-continuation.spec.ts', title: 'service en' }, {
+    selectedFixtures([{
+      file: 'station-continuation.spec.ts',
+      title: 'service en',
+    }, {
       file: 'station-continuation.spec.ts',
       title: 'midnight ja',
     }]),
     ['stationContinuation'],
   );
-  deepStrictEqual(selectedFixtures([{ file: 'fleet-capacity.spec.ts', title: 'capacity' }]), []);
+  deepStrictEqual(
+    selectedFixtures([{ file: 'fleet-capacity.spec.ts', title: 'capacity' }]),
+    [],
+  );
   deepStrictEqual(
     selectedFixtures([{
       file: 'fleet-controller-manager.spec.ts',
-      title: 'named controllers can be created and configured before buying a train',
+      title:
+        'named controllers can be created and configured before buying a train',
     }]),
     [],
   );
@@ -75,7 +98,10 @@ Deno.test('fixture preflight rejects missing, empty and directory companion outp
     path = join(directory, 'yard');
   try {
     writeFileSync(path, '{}');
-    throws(() => validateFixture('yard', path), /arrived.json; producer: Production_Simple/);
+    throws(
+      () => validateFixture('yard', path),
+      /arrived.json; producer: Production_Simple/,
+    );
     writeFileSync(path + '.arrived.json', '{}');
     writeFileSync(path + '.departed.json', '');
     throws(() => validateFixture('yard', path), /departed.json; producer:/);
@@ -91,7 +117,10 @@ Deno.test('required fixture lookup fails instead of silently skipping absent set
   const key = fixtureFamilies.bells.env, previous = process.env[key];
   try {
     delete process.env[key];
-    throws(() => browserFixture('bells'), /Generate_real_selected_bell_departure_fixtures/);
+    throws(
+      () => browserFixture('bells'),
+      /Generate_real_selected_bell_departure_fixtures/,
+    );
   } finally {
     if (previous === undefined) delete process.env[key];
     else process.env[key] = previous;
@@ -108,8 +137,69 @@ Deno.test('required browser reporter turns an otherwise green skipped selection 
   const error = console.error;
   console.error = () => {};
   try {
-    deepStrictEqual(await reporter.onEnd({ status: 'passed' } as FullResult), { status: 'failed' });
+    deepStrictEqual(await reporter.onEnd({ status: 'passed' } as FullResult), {
+      status: 'failed',
+    });
   } finally {
     console.error = error;
+  }
+});
+
+Deno.test('browser ownership rejects new, removed and duplicate specs', () => {
+  validateSpecOwnership(['one.spec.ts'], { canonical: ['one.spec.ts'] });
+  throws(
+    () => validateSpecOwnership(['new.spec.ts'], {}),
+    /Unowned browser spec/,
+  );
+  throws(
+    () => validateSpecOwnership([], { canonical: ['old.spec.ts'] }),
+    /Missing browser spec/,
+  );
+  throws(() =>
+    validateSpecOwnership(['one.spec.ts'], {
+      canonical: ['one.spec.ts'],
+      prototype: ['one.spec.ts'],
+    }), /Duplicate browser owner/);
+  equal(browserSpecs.continuation[0], 'mixed-continuation.spec.ts');
+});
+
+Deno.test('required browser reporter rejects retry-dependent success', async () => {
+  const reporter = new RequiredTestsReporter();
+  reporter.onTestEnd(
+    { titlePath: () => ['canonical', 'flaky'] } as TestCase,
+    { status: 'passed', retry: 1 } as TestResult,
+  );
+  const error = console.error;
+  console.error = () => {};
+  try {
+    deepStrictEqual(await reporter.onEnd({ status: 'passed' } as FullResult), {
+      status: 'failed',
+    });
+  } finally {
+    console.error = error;
+  }
+});
+
+Deno.test('browser timing artifacts preserve setup and separate worker measurements', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'browser-timings-'));
+  const key = 'FREETRAIN_BROWSER_ARTIFACT_ROOT', previous = process.env[key];
+  try {
+    process.env[key] = directory;
+    writeTimings('setup', { phases: { discoveryMs: 12 }, status: 'failed' });
+    writeTimings('worker-0', { backendMs: 34 });
+    deepStrictEqual(
+      JSON.parse(readFileSync(join(directory, 'timings/setup.json'), 'utf8')),
+      { phases: { discoveryMs: 12 }, status: 'failed' },
+    );
+    deepStrictEqual(
+      JSON.parse(
+        readFileSync(join(directory, 'timings/worker-0.json'), 'utf8'),
+      ),
+      { backendMs: 34 },
+    );
+  } finally {
+    if (previous === undefined) delete process.env[key];
+    else process.env[key] = previous;
+    rmSync(directory, { recursive: true, force: true });
   }
 });

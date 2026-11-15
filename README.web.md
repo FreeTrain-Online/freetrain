@@ -392,11 +392,11 @@ Capacity benchmarks require separately prepared inputs and their dedicated
 | --- | --- |
 | `deno task test:browser` | Build/check and default browser regressions, with representative content and language/direction lifecycles |
 | `deno task test:browser:run` | Same browser selection using an already-current build; accepts Playwright filters and `--workers` |
-| `deno task test:browser:extended` | Build/check and comprehensive regressions, including all recipe variants, full EN/JA and direction lifecycles, and large-world/performance cases |
+| `deno task test:browser:extended` | Build/check and comprehensive regressions, including all recipe variants, full EN/JA and direction lifecycles; excludes `@performance` |
 | `deno task test:browser:performance` | Build/check and only the publication/large-world regressions, using one worker |
 | `deno task test:browser:continuation` | Build/check, generate the gameplay network with .NET tests, and require both mixed-network browser continuations |
 | `deno task test:browser:station-continuation` | Build/check and all eight generated station continuation scenarios |
-| `deno task test:browser:all` | Extended validation (including fleet/station continuation) followed by generated mixed-network continuation; builds the frontend once; excludes optional-content and dedicated capacity suites |
+| `deno task test:browser:all` | Extended validation (including fleet/station continuation) followed by generated mixed-network continuation; builds the frontend once; excludes performance, optional-content and dedicated capacity suites |
 
 Use `test:browser` for routine development, including ordinary UI and gameplay
 changes. Its representative gallery exercises one recipe per handler/status
@@ -407,14 +407,45 @@ narrow layout and observer restrictions. This is ongoing integration coverage,
 even after the initial asset review.
 
 Use `test:browser:extended` after changes to asset inputs, content generation,
-recipe bindings or shared rendering, or when validating the full language,
-direction and performance matrices. It includes the default tests and the
+recipe bindings or shared rendering, or when validating the full language
+and direction matrices. It includes the default tests and the
 exhaustive gallery sweep of every bundled recipe in every season/light variant.
 Use `test:browser:continuation` for generated mixed-network save/gameplay
 continuation coverage, especially after shared construction/transport changes.
 Use `test:browser:all` for comprehensive/release validation or when both extended
 and continuation coverage apply. The exhaustive gallery currently runs as part
 of both `extended` and `all`; there is no separate asset-validation task.
+
+Every spec has one explicit owner in `web/tests/browser/spec-ownership.ts`.
+Discovery fails on unowned, missing or multiply assigned files. Default and
+extended share the canonical, prototype-regression and startup owners; mixed
+continuation, optional content and capacity use their dedicated configurations.
+`@extended` matrices belong to extended; `@performance` cases belong exclusively
+to the sequential performance task. Optional/capacity commands remain opt-in.
+
+PR/push CI runs the required functional selection in two shards. The
+`Exhaustive browser validation` workflow runs extended, mixed continuation and
+sequential performance on separate Linux runners weekly, on published releases,
+and through manual dispatch. These use the same frozen dependencies and tasks
+as local runs. No worker count or correctness timeout is changed.
+
+Each invocation gets a fresh `tmp/browser-run-*` artifact directory. Set
+`FREETRAIN_BROWSER_ARTIFACT_ROOT` to a unique absolute path to choose it. It holds
+`report.json` (case attempts, durations, skips, retries and test-step timings),
+`timings/setup.json` (discovery, harness, build/fixture generation and validation),
+`timings/worker-*.json` (backend/preview startup), `test-results/` (failure traces)
+and `evidence/` (custom measurements/screenshots). The legacy
+`FREETRAIN_ONLINE_BROWSER_EVIDENCE` override still works; keep it inside the
+artifact root when collecting one artifact. CI uploads the entire root on
+success or failure. Required selections fail on skips or retry-dependent success.
+Use a different root for each repeat or each task in `test:browser:all` to retain
+all reports; leave the variable unset for automatic unique roots locally.
+
+For stability measurements, run the same explicit file/grep selection three
+times with fresh roots, without retries. Compare equivalent selections and report
+build, setup and browser time separately. A filtered run does not establish the
+complete suite runtime or satisfy the three-full-local/three-Linux-run gate in
+`tmp/web-browser-test-audit.md`; collect those results separately when requested.
 
 Gallery sweeps check browser image decoding, recipe rendering, frame/diagnostic
 counts and errors, with focused pixel assertions for effects. They do not compare
