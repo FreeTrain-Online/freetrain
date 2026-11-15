@@ -212,7 +212,18 @@ for(const ja of [false,true])test(`P7-12 complete catalog ${ja?'JA narrow':'EN'}
   const image=preview.locator('img');await expect(image).toHaveCount(1);await image.evaluate(el=>(el as HTMLImageElement).decode());
   expect(await image.evaluate(el=>{const c=document.createElement('canvas');c.width=96;c.height=80;const ctx=c.getContext('2d')!;ctx.drawImage(el as HTMLImageElement,0,0);return ctx.getImageData(0,0,96,80).data.some((v,i)=>i%4===3&&v>0);})).toBe(true);
   if(d.kind==='variable')await page.getByLabel(t.cityHeight,{exact:true}).fill(String((i%2?d.maximumHeight:d.minimumHeight)*4));
-  if(d.kind==='half'){await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption(i%2?'fore':'back');await page.getByLabel(t.cityHalfDirection,{exact:true}).selectOption(String(i%4*2));}
+  if(d.kind==='half'){
+   await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption(i%2?'fore':'back');
+   const directions=cat.locator('.catalog-active .catalog-options').last().getByRole('button');
+   await expect(directions).toHaveCount(4);
+   for(let n=0;n<4;n++){
+    await directions.nth(n).click();await expect(directions.nth(n)).toHaveAttribute('aria-pressed','true');
+    await expect(preview).toHaveAttribute('data-direction',String(n*2));
+    await expect(page.getByLabel(t.cityHalfDirection,{exact:true})).toHaveValue(String(n*2));
+    await preview.locator('img').evaluate(el=>(el as HTMLImageElement).decode());
+   }
+   await directions.nth(i%4).click();
+  }
   const response=page.waitForResponse(r=>r.url().includes('/api/city/fixed/preview?'));await check.click();const quote=await(await response).json();
   expect(quote.legal,`${id}: ${quote.reason}`).toBe(true);expect(quote.query.definition).toEqual(d.reference);
   const height=d.kind==='variable'?(i%2?d.maximumHeight:d.minimumHeight):d.minimumHeight;
@@ -221,6 +232,11 @@ for(const ja of [false,true])test(`P7-12 complete catalog ${ja?'JA narrow':'EN'}
   if(d.kind==='variable'){expect(quote.query.height).toBe(height);await expect(preview).toHaveAttribute('data-height',String(height));}
   if(d.kind==='half'){expect(quote.query.half).toEqual({side:i%2?'fore':'back',direction:i%4*2,color:0});await expect(preview).toHaveAttribute('data-side',i%2?'fore':'back');}
   await expect(confirm).toBeEnabled();
+  if(d.kind==='half'){
+   await cat.locator('.catalog-active .catalog-options').last().getByRole('button').nth((i+1)%4).click();
+   await expect(confirm).toBeDisabled();
+   await check.click();await expect(confirm).toBeEnabled();
+  }
  }
  const group=cat.getByLabel(t.citySourceGroup,{exact:true}),subgroup=cat.getByLabel(t.citySourceSubgroup,{exact:true});
  await group.selectOption('半ボクセル建築');await subgroup.selectOption('古い民家');await expect(cards).toHaveCount(8);await expect(confirm).toBeEnabled();

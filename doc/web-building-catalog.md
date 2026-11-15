@@ -17,6 +17,7 @@ translation metadata and authoritative preview/confirm boundary.
 - **City buildings (C)** opens all registered ordinary building definitions. The
   numbered choices select exact authored designs/orientations; they preserve each
   definition's art, footprint and price. Only half-voxel buildings expose cardinal
+  direction buttons inside their catalog card, synchronized with the task's
   direction and Back/Front controls. Variable buildings expose supported heights
   in four-floor increments. These choices update the card artwork and task quote
   together, and changing a choice invalidates confirmation. Each definition retains

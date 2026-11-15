@@ -273,13 +273,24 @@ Deno.test('P7-12 catalog choices and bilingual browsing survive incoming state a
   await until(()=>model.state.connection==='ready');
   const variable=fixedCityDefinitions.find(d=>d.kind==='variable')!,half=fixedCityDefinitions.find(d=>d.kind==='half')!;
   model.selectCatalogItem('city',variable.reference.recipeId);model.setCityChoice(variable.reference.recipeId,{height:variable.maximumHeight});
-  model.setCityChoice(half.reference.recipeId,{side:'fore',direction:6});model.setCatalogQuery('city','古い民家');model.setCityCatalogFilter('半ボクセル建築','古い民家');
+  model.setCityChoice(half.reference.recipeId,{side:'fore',direction:6});
+  for(const direction of [0,2,4,6] as const){
+   model.selectCatalogItem('city',half.reference.recipeId,direction);
+   assert(model.state.catalogSelections.city===half.reference.recipeId);
+   assert(model.state.cityChoices[half.reference.recipeId].direction===direction);
+   assert(model.state.cityChoices[half.reference.recipeId].side==='fore');
+   assert(model.state.signalDirection===0);
+  }
+  model.selectCatalogItem('city',variable.reference.recipeId,2);
+  assert(model.state.catalogSelections.city===half.reference.recipeId);
+  model.selectCatalogItem('city',variable.reference.recipeId);
+  model.setCatalogQuery('city','古い民家');model.setCityCatalogFilter('半ボクセル建築','古い民家');
   const choices=model.state.cityChoices,queries=model.state.catalogQueries;
   model.setLocale('ja');service.publish(structuredClone(model.state.read) as Snapshot);
   assert(model.state.cityChoices===choices&&model.state.catalogQueries===queries);
   assert(model.state.cityCatalogFilter.subgroup==='古い民家');assert(model.state.catalogSelections.city===variable.reference.recipeId);
   service.setBehavior('delayed');const pending=model.send({kind:'step'});
-  model.selectCatalogItem('city',half.reference.recipeId);model.setCityChoice(variable.reference.recipeId,{height:variable.minimumHeight});
+  model.selectCatalogItem('city',half.reference.recipeId,2);model.setCityChoice(variable.reference.recipeId,{height:variable.minimumHeight});
   assert(model.state.cityChoices===choices&&model.state.catalogSelections.city===variable.reference.recipeId);await pending;
   model.selectCatalogItem('city','null-contrib-0:0');assert(model.state.catalogSelections.city===variable.reference.recipeId);
  }finally{model.dispose();}

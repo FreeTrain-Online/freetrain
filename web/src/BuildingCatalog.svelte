@@ -2,7 +2,7 @@
   import { messages, type Locale } from './lib/localization.ts';
   import { catalogCategories, catalogItems, signalDirections, type SignalDirection, type CatalogCategory } from './lib/building-catalog.ts';
   import { bundledCatalog } from './lib/bundled-catalog.ts';
-  import {cityCatalogChoice,type CityCatalogChoice} from './lib/fixed-city-edit.ts';
+  import {cityCatalogChoice,fixedCityDefinitions,type CityCatalogChoice} from './lib/fixed-city-edit.ts';
   import CatalogPreview from './CatalogPreview.svelte';
   import ObjectProvenance from './ObjectProvenance.svelte';
   let { locale, category, selections, signalDirection, cityChoices, queries, cityFilter, pending, onquery, onfilter, oncategory, onselect, onclose }:
@@ -39,9 +39,11 @@
       {#each visible as item (item.id)}
         {@const active = item.variants.some(variant => variant.id === selections[category])}
         {@const chosen = item.variants.find(variant => variant.id === selections[category]) ?? item.variants[0]}
+        {@const half = category === 'city' ? fixedCityDefinitions.find(d => d.reference.recipeId === chosen.id && d.kind === 'half') : undefined}
+        {@const choice = category === 'city' ? cityCatalogChoice(chosen.id, cityChoices) : undefined}
         <li class="catalog-item" class:catalog-active={active} data-variant={chosen.id}>
           <button class="catalog-item-main" aria-label={item.variants.length === 1 ? chosen.title : item.title} aria-pressed={active} data-catalog-variant={item.variants.length === 1 ? chosen.id : undefined} disabled={pending} onclick={() => onselect(category, chosen.id)}>
-            <CatalogPreview id={chosen.id} choice={category==='city'?cityCatalogChoice(chosen.id,cityChoices):undefined} direction={category === 'signal' ? active ? signalDirection : 0 : undefined} unavailable={text.catalogPreviewUnavailable}/>
+            <CatalogPreview id={chosen.id} {choice} direction={category === 'signal' ? active ? signalDirection : 0 : undefined} unavailable={text.catalogPreviewUnavailable}/>
             <span><strong>{item.variants.length === 1 ? chosen.title : item.title}</strong><small>{chosen.detail}</small><small>{text.price}: ¥{chosen.price.toLocaleString(locale)}</small><small><ObjectProvenance id={chosen.id} {locale}/></small></span>
           </button>
           {#if item.variants.length > 1}
@@ -49,6 +51,16 @@
               <div class="catalog-option-buttons">
                 {#each item.variants as variant (variant.id)}
                   <button aria-label={variant.title} title={`${variant.title} · ${variant.detail}`} aria-pressed={active && chosen.id === variant.id} data-catalog-variant={variant.id} disabled={pending} onclick={() => onselect(category, variant.id)}>{variant.label}</button>
+                {/each}
+              </div>
+            </div>
+          {/if}
+          {#if half && choice}
+            <div class="catalog-options" role="group" aria-label={`${item.title} · ${text.cityHalfDirection}`}>
+              <span class="hint">{text.cityHalfDirection}</span>
+              <div class="catalog-option-buttons">
+                {#each signalDirections.filter(d => half.halfVariants.some(v => v.direction === d.value && v.side === (choice.side === 'fore' ? 1 : 0) && v.color === choice.color)) as direction}
+                  <button aria-pressed={active && choice.direction === direction.value} disabled={pending} onclick={() => onselect(category, chosen.id, direction.value)}>{text[direction.label]}</button>
                 {/each}
               </div>
             </div>

@@ -1,5 +1,5 @@
 import {currentQuote} from './quote-validity.ts';
-import {cityCatalogChoice,type CityCatalogChoice} from './fixed-city-edit.ts';
+import {cityCatalogChoice,fixedCityDefinitions,type CityCatalogChoice} from './fixed-city-edit.ts';
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
@@ -245,8 +245,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       update({cityChoices:{...state.cityChoices,[id]:{...cityCatalogChoice(id,state.cityChoices),...patch}}});
     },
     selectCatalogItem(category: CatalogCategory, id: string, direction?: SignalDirection) {
-      if (state.pending || !isCatalogItem(category, id) || direction !== undefined && (category !== 'signal' || !signalDirections.some(d => d.value === direction))) return;
-      update({ catalogSelections: { ...state.catalogSelections, [category]: id }, ...(direction !== undefined ? { signalDirection: direction } : {}) });
+      if (state.pending || !isCatalogItem(category, id)) return;
+      const choice = category === 'city' ? cityCatalogChoice(id, state.cityChoices) : undefined;
+      if (direction !== undefined && !(category === 'signal' && signalDirections.some(d => d.value === direction) ||
+        choice && fixedCityDefinitions.some(d => d.reference.recipeId === id && d.kind === 'half' && d.halfVariants.some(v => v.direction === direction && v.side === (choice.side === 'fore' ? 1 : 0) && v.color === choice.color)))) return;
+      update({ catalogSelections: { ...state.catalogSelections, [category]: id },
+        ...(direction !== undefined && category === 'signal' ? { signalDirection: direction } : {}),
+        ...(direction !== undefined && choice ? { cityChoices: { ...state.cityChoices, [id]: { ...choice, direction } } } : {}) });
     },
     selectStation(id: string) { stationId = id; dirty = false; const station = stations(state.read).find(item => item.id === id); draftRevision = station?.revision; update({ draft: station?.name ?? '', composing: false, draftInterrupted: false }); },
     resetDraft() { dirty = false; const station = stations(state.read).find(item => item.id === stationId) ?? (!stationId ? stations(state.read)[0] : undefined); draftRevision = station?.revision; update({ draft: station?.name ?? '' }); },

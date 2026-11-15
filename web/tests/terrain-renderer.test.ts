@@ -594,6 +594,38 @@ Deno.test('map sprite changes retain the front buffer through preparation and pr
   });
 });
 
+Deno.test('map half-building previews use the selected side and direction sprite',async()=>{
+ await withViewport(async(scene,_viewport,ctx)=>{
+  const {fixedCityDefinitions}=await import('../src/lib/fixed-city-edit.ts');
+  const read=flat(200,100),images=cache(),prepare=TerrainScene.prepare;
+  const canvas={width:128,height:96,dataset:{},getContext:()=>ctx} as unknown as HTMLCanvasElement;
+  const renderer=new MapRenderer(canvas,new Map());
+  const ready=images.ready.bind(images);
+  let frames:import('../src/lib/content-recipes.ts').Layer[]=[];
+  images.ready=(content,layers,variant)=>{
+   const ghosts=layers.filter(l=>l.entityId==='station-preview');
+   if(ghosts.length)frames=[...ghosts];
+   return ready(content,layers,variant);
+  };
+  TerrainScene.prepare=async()=>scene;
+  Object.assign(renderer,{catalog:Promise.resolve(catalog),catalogHash:read.requiredPacks[0].catalogHash,terrainCache:images});
+  renderer.setRead(read);
+  try{
+   for(const d of fixedCityDefinitions.filter(d=>d.kind==='half'))for(const side of ['back','fore'] as const)for(const direction of [0,2,4,6] as const){
+    frames=[];
+    const position={x:0,y:0,z:1};
+    const options:MapOptions={heightCut:5,level:1,night:false,winter:false,recolor:false,shape:'eastWest',remove:false,
+     cityPreview:{query:{expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:'0',expectedMinute:read.tick,expectedContentVersion:read.contentVersion,action:'place',position,definition:d.reference,ownerId:'0',expectedOwnerRevision:'0',half:{side,direction,color:0}},legal:true,reason:null,cost:d.unitPrice,positions:[position],losses:[]}};
+    for(let n=0;n<100&&!frames.length;n++){renderer.draw({x:0,y:0,zoom:1},128,96,1,options);await Promise.resolve();}
+    equal(frames.length,1);
+    equal(frames[0].frame.selector,{direction,side:side==='fore'?0:1,color:0});
+    const authored=catalog.renderRecipes.find(r=>r.id===d.reference.recipeId)!.frames.find(f=>f.selector.direction===direction&&f.selector.side===(side==='fore'?0:1))!;
+    equal(frames[0].frame.anchor,authored.anchor);equal(frames[0].frame.rectangle,authored.rectangle);
+   }
+  }finally{TerrainScene.prepare=prepare;}
+ });
+});
+
 Deno.test('certified local terrain edits patch the completed raster and picks atomically, while global changes retain the full redraw',async()=>{
  const {parseMessage,applyDelta,immutable}=await import('../src/lib/protocol.ts');
  const before=immutable(parseMessage(JSON.stringify(flat(200,100))) as Snapshot);
