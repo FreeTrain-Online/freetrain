@@ -47,11 +47,11 @@ for(const ja of [false,true])test(`P7-09 playable populated building ${ja?'JA na
   await page.locator('canvas').focus();await page.keyboard.press('Enter');
   await expect.poll(async()=>(await state(peer)).mixed.city?.structures.length).toBe(1);
   expect((await state(page)).mixed.city.producers).toHaveLength(0);
-  // An actual running-time quote becomes stale; construction keeps progressing.
+  // Clock advancement and unrelated construction retain the reviewed quote.
   await quote(page,t,16);await page.getByLabel(t.gameSpeed,{exact:true}).selectOption('2');await page.getByRole('button',{name:t.run,exact:false}).click();
-  await expect(confirm).toBeDisabled();
   await expect.poll(async()=>(await state(page)).mixed.city.producers.length,{timeout:100000}).toBe(1);
   await page.getByRole('button',{name:t.pause,exact:false}).click();
+  await expect(confirm).toBeEnabled();
   const completed=await state(page),b=completed.mixed.city.structures[0];expect(b.construction).toEqual([]);expect(b.location).toEqual({x:14,y:12,z:2});
   expect(completed.mixed.stationGraph.listeners[0].provider.input).toBe('city-fixed');
   expect(completed.mixed.stationGraph.listeners[0].provider.population.base).toBe(10);
@@ -73,7 +73,7 @@ for(const ja of [false,true])test(`P7-09 playable populated building ${ja?'JA na
  }finally{await context.close();}
 });
 
-test('P7-09 Observer, stale minute, late response and locale fences preserve city drafts and save',async({page,browser,baseURL})=>{
+test('P7-09 Observer, clock advancement, late response and locale fences preserve city drafts and save',async({page,browser,baseURL})=>{
  test.setTimeout(90000);const t=texts[0],context=await browser.newContext({baseURL}),observer=await context.newPage();
  let server:any;const receipts:any[]=[];
  await observer.routeWebSocket('**/api/session?*',route=>{server=route.connectToServer();server.onMessage(m=>{receipts.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
@@ -87,7 +87,10 @@ test('P7-09 Observer, stale minute, late response and locale fences preserve cit
   await quote(page,t);const baseline=await bytes(page);
   server.send(JSON.stringify({type:'command',requestId:'observer-city',expectedWorldEpoch:query.expectedWorldEpoch,payload:{kind:'editFixedCity',query,expectedCost:'11000000'}}));
   await expect.poll(()=>receipts.find(r=>r.requestId==='observer-city')?.code).toBe('notAuthorized');expect(await bytes(page)).toEqual(baseline);
-  await page.getByRole('button',{name:t.step,exact:false}).click();await expect(page.getByRole('button',{name:t.cityConfirm,exact:true})).toBeDisabled();
+  const tick=BigInt((await state(page)).tick);
+  await page.getByRole('button',{name:t.step,exact:false}).click();
+  await expect.poll(async()=>BigInt((await state(page)).tick)).toBe(tick+1n);
+  await expect(page.getByRole('button',{name:t.cityConfirm,exact:true})).toBeEnabled();
   const afterStep=await bytes(page);await page.unroute('**/api/city/fixed/preview?*');
   let release!:()=>void;const held=new Promise<void>(r=>{release=r;});let seen=false;
   await page.route('**/api/city/fixed/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});

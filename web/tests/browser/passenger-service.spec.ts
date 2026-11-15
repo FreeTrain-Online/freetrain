@@ -75,7 +75,9 @@ for(const west of [false,true])test(`P6-21 ${west?'JA narrow touch westbound':'E
   const controls=page.locator('.deployment-controls');
   for(const [key,value] of [['X',west?37:25],['Y',15],['Z',2]] as const)await controls.getByLabel(key,{exact:true}).fill(String(value));
   await controls.getByLabel(text.deploymentReverse,{exact:true}).setChecked(west);
-  await controls.getByLabel('Z',{exact:true}).press('Enter');
+  // Coordinate blur/direction change requests the preview. Enter would confirm
+  // it if the response arrived before the keypress, consuming the review.
+  await controls.getByLabel('Z',{exact:true}).blur();
   await expect(page.getByTestId('deployment-car')).toHaveCount(3);
   await page.getByRole('button',{name:text.deploymentConfirm,exact:true}).click();
   await expect(page.getByRole('button',{name:text.withdrawTrain,exact:true})).toBeVisible();await consistent();
