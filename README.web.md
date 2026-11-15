@@ -334,6 +334,59 @@ is also required to prepare/check the canonical bundled content.
 
 The solution to build is `FreeTrain.Online.slnx`.
 
+### C# language and .NET compatibility direction
+
+The adopted baseline, assessed **15 November 2026**, is **C# 12.0 with
+.NET 10 LTS**. Defer the Framework Mono port. Keep the runtime target `net10.0`
+and the repository's exact SDK pin (`10.0.402`) for reproducible builds until
+a separately validated toolchain update. .NET 10 is supported through
+14 November 2028; .NET 8 and 9 reached end of support on 10 November 2026, so
+neither is an appropriate older production baseline now. See the
+[.NET support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core).
+
+Use C# 12 as the source syntax ceiling: retain records, `with`, nullable
+annotations, file-scoped namespaces, primary constructors and collection
+expressions, and avoid introducing C# 13/14/15 or preview-only syntax. C# 12
+is the lowest language revision that retains the constructs already used here
+without a broad syntax rewrite. Moving to C# 10/11 would require removing
+collection expressions and primary constructors without resolving the server's
+runtime dependencies.
+
+The compiler enforces `<LangVersion>12.0</LangVersion>` in the shared
+`eng/Build.props`, covering source, tests and the probe projects that import it.
+Do not use `latest`, `default` or `preview` for that setting, or override it in
+individual projects. The existing CI solution build rejects syntax introduced
+after C# 12; no separate linter is required. Older syntax remains permitted.
+This language setting does not certify older-SDK or Mono execution. See Microsoft's
+[language configuration](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version)
+and [version mapping](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-versioning).
+
+Language, SDK and runtime compatibility are separate promises. An SDK 8 compiler
+understands C# 12, but SDK 8 cannot build this `net10.0` solution. The current
+server still requires ASP.NET Core, and code uses newer runtime/library APIs,
+including `Convert.ToHexStringLower`, JSON constructor/nullability validation
+options and WebSocket keepalive timeouts. Lowering `LangVersion` preserves an
+older syntax baseline; it does not backport those APIs or certify Mono support.
+
+Older **10.0 SDK feature bands** may be considered separately from older .NET
+runtime majors. Before claiming one works, test its fully patched SDK against
+locked restore, the complete solution, test runner, probe tools, generated
+fixtures and publish output. `global.json` currently uses `rollForward: disable`,
+so even another 10.0 SDK is not accepted automatically. After validating a
+minimum SDK, a future change can set `version` to that tested minimum and use
+`rollForward: latestFeature` to allow installed later 10.0 feature bands while
+keeping prereleases disabled. Changing only the roll-forward setting would
+still exclude SDKs older than the existing pin. Keep CI and Docker builds on
+explicit reviewed versions and update servicing patches regularly. See
+[SDK selection rules](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json).
+
+For future Mono work, keep simulation rules independent of HTTP hosting and
+centralize unavoidable platform compatibility helpers. Retain the existing
+serializer's strict validation, canonical hashes and save/protocol behavior.
+Reassess portable targets for individual libraries only with builds and tests
+on the intended Mono version; Framework Mono's compiler and ASP.NET hosting
+remain separate migration work even with a C# 12 syntax ceiling.
+
 When updating an existing installation, use `FreeTrainOnline__…` for server
 environment variables and `FREETRAIN_ONLINE_…` for deployment/frontend tooling.
 The image is now `freetrain-online:prototype`. Reuse your existing save directory
