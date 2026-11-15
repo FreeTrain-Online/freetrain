@@ -172,8 +172,8 @@ public class ThinPlatformConstructionTests
         Assert.IsType<AcceptedMessage>(await Send(new EditThinPlatformCommand(q,preview.Cost),op,"once"));var built=await Save();
         Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new EditThinPlatformCommand(q,preview.Cost),op,"once")).Code);Assert.Equal(built,await Save());
         Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new EditThinPlatformCommand(q,preview.Cost))).Code);
-        q=Query() with {Position=new(20,10,2)};preview=h.PreviewThinPlatform(q);Assert.IsType<AcceptedMessage>(await Send(new StepCommand()));
-        var stepped=await Save();Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new EditThinPlatformCommand(q,preview.Cost))).Code);Assert.Equal(stepped,await Save());
+        q=Query() with {Position=new(10,14,2)};preview=h.PreviewThinPlatform(q);Assert.IsType<AcceptedMessage>(await Send(new StepCommand()));
+        Assert.True(preview.Legal,preview.Reason);Assert.IsType<AcceptedMessage>(await Send(new EditThinPlatformCommand(q,preview.Cost)));
         Assert.Equal(built,SaveCodec.Write(Open(built)));
     }
 }

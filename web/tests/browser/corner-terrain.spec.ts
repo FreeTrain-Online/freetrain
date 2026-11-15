@@ -93,9 +93,9 @@ test('late previews cannot overwrite newer targets; remote edits invalidate revi
   await page.getByRole('button',{name:'Preview corner',exact:true}).click();await expect.poll(()=>delayed).toBe(true);
   await page.getByLabel('Corner cell X',{exact:true}).fill('21');await page.getByRole('button',{name:'Preview corner',exact:true}).click();await expect(page.getByTestId('corner-position')).toContainText('21, 20, 1');release();await expect(page.getByTestId('corner-position')).toContainText('21, 20, 1');
   await peer.goto('/');await ready(peer);await peer.getByRole('button',{name:'Modify terrain',exact:true}).click();await target(peer);await peer.getByRole('button',{name:'Confirm terrain change',exact:true}).click();
-  await expect(page.getByTestId('corner-status')).toContainText('Terrain changed');await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:'Confirm terrain change',exact:true})).toBeEnabled();
   const before=await state(page);const q={expectedWorldEpoch:before.worldEpoch,expectedGeometryRevision:before.terrain.geometryRevision,position:{x:20,y:20,z:1},action:'raise',offsetX:null,offsetY:null,stroke:null};
-  expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:{...q,expectedGeometryRevision:'0'}})).status()).toBe(409);
+  expect((await page.request.post('/api/terrain/corner/preview?'+compat,{data:{...q,expectedGeometryRevision:'0'}})).status()).toBe(200);
   const viewer=await browser.newPage();try{
    expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);
    await expect(viewer.getByRole('button',{name:'Modify terrain',exact:true})).toBeDisabled();

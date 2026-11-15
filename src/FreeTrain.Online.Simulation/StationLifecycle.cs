@@ -90,8 +90,9 @@ public static class StationLifecycle
     {
         if (candidate.Stations == null || candidate.Revision != checked(before.World.Revision+1)) throw new ArgumentException("Invalid station candidate.");
         var schedule = Reconcile(before.World.Stations,candidate.Stations,before.Clock.Capture());
+        // Catchment connection changes revise city providers and their spatial owners together.
         var world = before.World.Replace(before.World.Revision,candidate.Terrain,candidate.Spatial.Capture(),candidate.Voxels,candidate.Slopes,
-            candidate.SpeedLimits,candidate.Fleet,schedule.Graph);
+            candidate.SpeedLimits,candidate.Fleet,schedule.Graph,city:candidate.City);
         var accounts = before.Construction.Accounts.Book(booking,world.Revision,before.Clock.Time,operation);
         return before.Successor(before.Revision,new(world,accounts),before.ConstructionMode,clock:schedule.Clock);
     }

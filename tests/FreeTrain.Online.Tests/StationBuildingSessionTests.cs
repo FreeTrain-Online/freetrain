@@ -24,6 +24,39 @@ public class StationBuildingSessionTests
             removal ? b!.Id : 0,removal ? b!.Revision : 0);
     }
     [Fact]
+    public async Task Station_placement_and_removal_near_completed_city_providers_keep_spatial_revisions_and_connections_coherent()
+    {
+        var state=CityHeat.Enable(Build(Empty(now:1980),at:new(12,12,2)));
+        var house=state.World.City!.Profile.Structures.Single(d=>d.Reference.ContributionId=="{27D6D0C0-2B1A-4494-9257-14C208168075}");
+        state=FixedCityConstruction.Commit(state,FixedCityConstruction.Preview(
+            new(state.Construction,state.Clock.Capture(),state.Random.Capture()),new(14,12,2),house.Reference));
+        for(var i=0;i<15000&&state.World.City!.State.Producers.IsEmpty;i++)state.AdvanceOneMinute();
+        var producer=Assert.Single(state.World.City!.State.Producers);
+        using var h=Host(state);var before=h.Snapshot();var original=await Save(h);
+        var query=Query(h) with {Position=new(16,12,2)};
+        var preview=h.PreviewStationBuilding(query);
+        Assert.True(preview.Legal,preview.Reason);Assert.Equal(original,await Save(h));
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(query,preview.Cost)));
+        var placed=h.Snapshot();var station=placed.Mixed!.StationGraph!.Buildings.Single(b=>b.Location==query.Position);
+        var provider=placed.Mixed.City!.Structures.Single(s=>s.Id==producer.OwnerId);
+        Assert.Equal(before.Mixed!.City!.Structures.Single(s=>s.Id==producer.OwnerId).Revision+1,provider.Revision);
+        Assert.Equal(provider.Revision,placed.Entities!.Single(e=>e.Id==provider.Id).Revision);
+        Assert.Contains(station.Id,placed.Mixed.StationGraph.Listeners.Single(l=>l.ProviderId==producer.OwnerId).Stations);
+        var saved=await Save(h);Assert.Equal(saved,SaveCodec.Write(SaveCodec.ReadWorld(saved,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));
+        query=new(placed.WorldEpoch,placed.Mixed.GeometryRevision,placed.Tick,placed.ContentVersion,"remove",station.Location,null,station.Id,station.Revision);
+        preview=h.PreviewStationBuilding(query);Assert.True(preview.Legal,preview.Reason);Assert.Equal(saved,await Save(h));
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(query,preview.Cost)));
+        var removed=h.Snapshot();var changed=removed.Mixed!.City!.Structures.Single(s=>s.Id==producer.OwnerId);
+        Assert.Equal(provider.Revision+1,changed.Revision);
+        Assert.Equal(changed.Revision,removed.Entities!.Single(e=>e.Id==producer.OwnerId).Revision);
+        Assert.DoesNotContain(station.Id,removed.Mixed.StationGraph!.Listeners.Single(l=>l.ProviderId==producer.OwnerId).Stations);
+        saved=await Save(h);var restored=SaveCodec.ReadWorld(saved,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        Assert.Equal(saved,SaveCodec.Write(restored));
+        using var reopened=Host(restored);
+        Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));Assert.IsType<AcceptedMessage>(await Send(reopened,new StepCommand()));
+        Assert.Equal(await Save(h),await Save(reopened));
+    }
+    [Fact]
     public async Task Building_names_are_revisioned_with_spatial_owner_and_preserve_timers_accounts_and_exact_reopen()
     {
         using var h=Host(Build(Empty()));
@@ -74,11 +107,10 @@ public class StationBuildingSessionTests
     {
         using var h=Host();var query=Query(h);var quote=h.PreviewStationBuilding(query);
         Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));var afterStep=await Save(h);
-        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new EditStationBuildingCommand(query,quote.Cost))).Code);
-        Assert.Equal(afterStep,await Save(h));query=Query(h);
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(query,quote.Cost)));
+        Assert.NotEqual(afterStep,await Save(h));query=Query(h);
         Assert.Equal("staleEpoch",Assert.IsType<RejectedMessage>(await Send(h,new EditStationBuildingCommand(query with {ExpectedWorldEpoch=query.ExpectedWorldEpoch+1},quote.Cost))).Code);
         Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new EditStationBuildingCommand(query with {ExpectedContentVersion="unavailable"},quote.Cost))).Code);
-        Assert.IsType<AcceptedMessage>(await Send(h,new EditStationBuildingCommand(query,quote.Cost)));
         var built=await Save(h);Assert.False(h.PreviewStationBuilding(Query(h)).Legal);
         Assert.Equal("invalidPlacement",Assert.IsType<RejectedMessage>(await Send(h,new EditStationBuildingCommand(Query(h),quote.Cost))).Code);
         var remove=Query(h,true);var cost=h.PreviewStationBuilding(remove).Cost;

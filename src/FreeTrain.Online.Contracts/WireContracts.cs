@@ -232,7 +232,8 @@ public sealed record EditPlatformPropertiesCommand(PlatformPropertiesQuery Query
     long? HostId, long ExpectedHostRevision, long ExpectedStationRevision) : CommandPayload;
 public sealed record RemovalQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
     PositionRead Position, long ExpectedEntityId, long ExpectedEntityRevision,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead? End = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead? End = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? ExpectedMinute = null);
 public sealed record RemoveObjectCommand(RemovalQuery Query) : CommandPayload;
 public sealed record RemovalSkipRead(PositionRead Position, string Reason);
 public sealed record RemovalPreviewRead(RemovalQuery Query, bool Legal, string? Reason, string ObjectKind,
@@ -272,7 +273,8 @@ public sealed record PackedTerrainRead(string Encoding, string Name, int WaterLe
 // Additive terrain tool contract; durable state uses Save9 / protocol7.
 public sealed record CornerTerrainQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, PositionRead Position,
     string Action, int? OffsetX = null, int? OffsetY = null, CornerTerrainSite[]? Stroke = null, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] RectangleTerrainSelection? Rectangle = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DefinitionRead? Forest = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DefinitionRead? Forest = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? ExpectedMinute = null);
 public sealed record RectangleTerrainSelection(PositionRead End, bool Soft = false);
 public sealed record CornerTerrainSite(PositionRead Position, string Action, int? OffsetX = null, int? OffsetY = null);
 public sealed record EditCornerCommand(CornerTerrainQuery Query) : CommandPayload;
@@ -289,7 +291,8 @@ public sealed record CornerTerrainSkipRead(PositionRead Position, string Reason)
 // Additive normal-track task; prices and candidate graphs are never command inputs.
 public sealed record RailwayQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
     PositionRead From, PositionRead To, string Action, string Routing, string Infrastructure = "normal", string TunnelRouting = "exact", string SignalType = "{5349DE2A-DF3E-49B4-87A0-973105B7E6A4}", int SignalDirection = 0, string PoleType = "{DDF7F835-8100-45fd-8AE7-EC498796D387}", string StationaryType = "", string Speed = "low", bool SpeedSlope = false, int SpeedClimb = 0,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead[]? Via = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PositionRead[]? Via = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? ExpectedMinute = null);
 public sealed record EditRailwayCommand(RailwayQuery Query) : CommandPayload;
 public sealed record RailwayRouteCellRead(PositionRead Position, int? BeforePattern, int? AfterPattern, bool ProtectedByCar);
 public sealed record RailwayLossRead(string Kind, PositionRead Position, long OwnerId, long? SupportedOwnerId);
@@ -297,7 +300,8 @@ public sealed record RailwayPreviewRead(RailwayQuery Query, bool Legal, string? 
     RailwayRouteCellRead[] Cells, PositionRead[] AddedPiers, RailwayLossRead[] Losses);
 
 public sealed record SlopeQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, string ExpectedContentVersion,
-    PositionRead Position, int Climb, string Action);
+    PositionRead Position, int Climb, string Action,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] long? ExpectedMinute = null);
 public sealed record EditSlopeCommand(SlopeQuery Query) : CommandPayload;
 public sealed record SlopeMemberRead(PositionRead Position, string Kind, int? Pattern, bool DrawGroundBelow, bool DrawGroundAbove);
 public sealed record SlopeRailPositionRead(int Level, PositionRead Position, int Pattern, int ZDiff, int ZAngle);

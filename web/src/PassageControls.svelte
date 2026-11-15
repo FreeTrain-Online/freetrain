@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {currentQuote} from './lib/quote-validity.ts';
  import {untrack} from 'svelte';
  import {messages} from './lib/localization.ts';
  import {primaryAction} from './lib/primary-action.ts';
@@ -38,8 +39,9 @@
   if(Math.abs(p.x-anchor.x)>=Math.abs(p.y-anchor.y)){endX=p.x;endY=anchor.y;}else{endX=anchor.x;endY=p.y;}
   void check();
  });});
- $effect(()=>{void view.locale;untrack(()=>{anchor=undefined;reset();});});
- $effect(()=>{if(fence&&fence!==stationBuildingFence(view.read)){reset();anchor=undefined;stale=true;}if(view.connection!=='ready'||view.role==='observer')untrack(()=>{anchor=undefined;reset();});});
+ // Derived text stays stable across snapshots; direct view reads would reset every tick.
+ $effect(()=>{void text;untrack(()=>{anchor=undefined;reset();});});
+ $effect(()=>{if(fence&&(fence!==stationBuildingFence(view.read)||result&&!currentQuote(view.read,result.query))){reset();anchor=undefined;stale=true;}if(view.connection!=='ready'||view.role==='observer')untrack(()=>{anchor=undefined;reset();});});
  $effect(()=>()=>{version++;request?.abort();onpreview();});
 </script>
 <section class="passage-task" use:primaryAction aria-label={text.passageTab}>

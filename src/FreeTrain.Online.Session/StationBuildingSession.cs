@@ -14,7 +14,7 @@ public sealed partial class SessionHost
             query.Action == "place" && (query.Definition == null || query.StationId != 0 || query.ExpectedStationRevision != 0) ||
             query.Action == "remove" && (query.Definition != null || query.StationId == 0)) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
-        if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        ValidateQuoteMinute(query.ExpectedMinute);
         return state;
     }
     private static StationBuildingPlan PlanStationBuilding(MixedSessionState state, StationBuildingQuery query) =>
@@ -26,25 +26,29 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
-            var state = StationBuildingState(query);
-            var plan = PlanStationBuilding(state,query);
-            var reason = plan.Reason;
-            if (reason == null)
+            return BuildQuote<StationBuildingQuery, StationBuildingPreviewRead>(query, () =>
             {
-                try { MixedWire.ValidateTransition(state,StationBuildingConstruction.Commit(state,plan)); }
-                catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
-                { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
-                    ? "accountCapacityLimit" : "constructionOverflow"; }
-            }
-            static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
-            return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
-                plan.Positions.Select(P).ToArray(),plan.Reclaimed.Select(r=>new RailwayLossRead("reclamation",P(r.Entity.Anchor),r.Entity.Id,null)).ToArray());
+                var state = StationBuildingState(query);
+                var plan = PlanStationBuilding(state,query);
+                var reason = plan.Reason;
+                if (reason == null)
+                {
+                    try { MixedWire.ValidateTransition(state,StationBuildingConstruction.Commit(state,plan)); }
+                    catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+                    { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
+                        ? "accountCapacityLimit" : "constructionOverflow"; }
+                }
+                static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
+                return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
+                    plan.Positions.Select(P).ToArray(),plan.Reclaimed.Select(r=>new RailwayLossRead("reclamation",P(r.Entity.Anchor),r.Entity.Id,null)).ToArray());
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitStationBuilding(EditStationBuildingCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewStationBuilding(command.Query));
             var before = StationBuildingState(command.Query);
             var plan = PlanStationBuilding(before,command.Query);
             if (!plan.Legal) return plan.Reason == "staleRevision" ? "staleRevision" : "invalidPlacement";
@@ -53,7 +57,7 @@ public sealed partial class SessionHost
             MixedWire.ValidateTransition(before,after);
             mixedState = after;
             terrainState = null;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)

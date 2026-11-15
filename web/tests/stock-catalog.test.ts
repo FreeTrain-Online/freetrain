@@ -32,7 +32,10 @@ Deno.test('stock catalog retains six exact identities, source labels and permitt
 Deno.test('fleet quote identity covers world, clock, revision, content and registered pack bytes',()=>{
   const read=fleet as any,stock=stocks[0],q=tradeQuery(read,stock,3,2);
   assertEquals(stockAvailable(stock,read),true);assertEquals(currentQuote(read,q),true);
-  for(const k of ['worldEpoch','revision','tick','contentVersion'])assertEquals(currentQuote({...read,[k]:k==='contentVersion'?'other':String(BigInt(read[k])+1n)},q),false);
+  for(const k of ['worldEpoch','contentVersion'])assertEquals(currentQuote({...read,[k]:k==='contentVersion'?'other':String(BigInt(read[k])+1n)},q),false);
+  assertEquals(currentQuote({...read,revision:String(BigInt(read.revision)+100n),tick:String(BigInt(read.tick)+720n)},q),true);
+  assertEquals(currentQuote({...read,tick:String(BigInt(read.tick)+721n)},q),false);
+  assertEquals(currentQuote(read,{...q,expectedMinute:String(BigInt(read.tick)+1n)}),false);
   assertEquals(stockAvailable(stock,{...read,requiredPacks:[]}),false);
   assertEquals(q.definition,stock.binding);
 });

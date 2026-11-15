@@ -1268,6 +1268,7 @@ export interface CornerTerrainQuery {
   stroke: CornerTerrainSite[] | null;
   rectangle?: RectangleTerrainSelection | null;
   forest?: Definition | null;
+  expectedMinute?: Counter;
 }
 export interface CornerTerrainSite {
   position: Position;
@@ -1313,6 +1314,7 @@ export interface RailwayQuery {
   speed?: "low" | "medium" | "fast";
   speedSlope?: boolean;
   speedClimb?: 0 | 2 | 4 | 6;
+  expectedMinute?: Counter;
 }
 export interface SlopeQuery {
   expectedWorldEpoch: Counter;
@@ -1321,6 +1323,7 @@ export interface SlopeQuery {
   action: "lay" | "remove";
   position: Position;
   climb: 0 | 2 | 4 | 6;
+  expectedMinute?: Counter;
 }
 export interface RemovalQuery {
   expectedWorldEpoch: Counter;
@@ -1330,6 +1333,7 @@ export interface RemovalQuery {
   expectedEntityId: Counter;
   expectedEntityRevision: Counter;
   end?: Position | null;
+  expectedMinute?: Counter;
 }
 export interface FleetTradeQuery {
   expectedWorldEpoch: Counter;

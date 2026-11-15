@@ -28,7 +28,8 @@ public sealed partial class SessionHost
     {
         if (query.ExpectedWorldEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         var world = mixedState?.World.Terrain ?? terrainState?.World ?? throw new InvalidOperationException("operationUnavailable");
-        if (query.ExpectedGeometryRevision != TerrainGeometryRevision) throw new InvalidOperationException("staleRevision");
+        if(query.ExpectedMinute is {} minute) ValidateQuoteAge(minute);
+        ValidateQuoteRevision(query.ExpectedGeometryRevision,TerrainGeometryRevision);
         if ((mixedState?.Revision ?? terrainState!.Revision) == long.MaxValue) throw new InvalidOperationException("operationUnavailable");
         if (query.Forest != null) throw new ArgumentException("invalidInput");
         if (query.Stroke?.Length > 63) throw new ArgumentException("invalidInput");
@@ -82,26 +83,30 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
-            if(AuthoringTerrain.IsAction(query.Action))return PreviewAuthoring(query);
-            var (world,_,plans) = PlanCorner(query);
-            var first = plans[0];
-            return new(WorldEpoch,TerrainGeometryRevision,new(first.Position.X,first.Position.Y,first.Position.Z),first.Action,plans.Any(p=>p.Legal),
-                plans.Any(p=>p.Legal) ? null : first.Reason,0,
-                plans.SelectMany(p=>p.Changes).Select(c => new CornerTerrainChangeRead(new(c.Position.X,c.Position.Y,c.Position.Z),c.BeforeGround,c.AfterGround,
-                    c.Before.NE,c.Before.SE,c.Before.SW,c.Before.NW,c.After.NE,c.After.SE,c.After.SW,c.After.NW,
-                    c.Remove,c.LosesForest,c.LosesOwnership)).ToArray(),
-                plans.Where(p=>!p.Legal).Select(p=>new CornerTerrainSkipRead(new(p.Position.X,p.Position.Y,p.Position.Z),p.Reason!)).ToArray());
+            return BuildQuote<CornerTerrainQuery, CornerTerrainPreviewRead>(query, () =>
+            {
+                if(AuthoringTerrain.IsAction(query.Action))return PreviewAuthoring(query);
+                var (world,_,plans) = PlanCorner(query);
+                var first = plans[0];
+                return new(WorldEpoch,TerrainGeometryRevision,new(first.Position.X,first.Position.Y,first.Position.Z),first.Action,plans.Any(p=>p.Legal),
+                    plans.Any(p=>p.Legal) ? null : first.Reason,0,
+                    plans.SelectMany(p=>p.Changes).Select(c => new CornerTerrainChangeRead(new(c.Position.X,c.Position.Y,c.Position.Z),c.BeforeGround,c.AfterGround,
+                        c.Before.NE,c.Before.SE,c.Before.SW,c.Before.NW,c.After.NE,c.After.SE,c.After.SW,c.After.NW,
+                        c.Remove,c.LosesForest,c.LosesOwnership)).ToArray(),
+                    plans.Where(p=>!p.Legal).Select(p=>new CornerTerrainSkipRead(new(p.Position.X,p.Position.Y,p.Position.Z),p.Reason!)).ToArray());
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitCorner(CornerTerrainQuery query)
     {
         try
         {
+            using var review = ReviewQuote(query, () => PreviewCorner(query));
             var (world,draft,plans) = PlanCorner(query);
             if (!plans.Any(p=>p.Legal)) return "invalidPlacement";
             var candidate = draft.Finish();
             PublishTerrain(candidate);
-            return null;
+            ConsumeQuote(query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException) { return "invalidPlacement"; }

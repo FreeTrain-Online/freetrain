@@ -41,6 +41,4 @@ export function tradeQuery(read:ReadState,stock:Stock,length:number,quantity:num
   return {expectedWorldEpoch:read.worldEpoch,expectedRevision:read.revision,expectedMinute:read.tick,
     expectedContentVersion:read.contentVersion!,action:'buy',definition:stock.binding,length,quantity,trainId:'0'};
 }
-export function currentQuote(read:ReadState,query:Pick<FleetTradeQuery,'expectedWorldEpoch'|'expectedRevision'|'expectedMinute'|'expectedContentVersion'>):boolean {
-  return read.worldEpoch===query.expectedWorldEpoch&&read.revision===query.expectedRevision&&read.tick===query.expectedMinute&&read.contentVersion===query.expectedContentVersion;
-}
+export {currentQuote} from './quote-validity.ts';

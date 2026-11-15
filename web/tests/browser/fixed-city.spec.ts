@@ -9,13 +9,24 @@ test('P7-07 EN/JA peers observe natural fixed producer completion, literal stati
  const seed=JSON.parse(readFileSync('tests/fixtures/fixed-city-v11.json','utf8'));
  const oracle=JSON.parse(readFileSync('tests/fixtures/fixed-city-v11.json.snapshot.json','utf8'));
  const context=await browser.newContext({baseURL,locale:'ja-JP',viewport:{width:430,height:860},isMobile:true,hasTouch:true}),peer=await context.newPage();
- const messages:any[][]=[[],[]],sockets:any[]=[],errors:string[]=[];
+ const messages:any[][]=[[],[]],sockets:any[]=[],errors:string[]=[],states:any[]=[];
  for(const [i,p] of [page,peer].entries()){
   p.on('pageerror',e=>errors.push(String(e)));
   await p.routeWebSocket('**/api/session?*',route=>{const server=route.connectToServer();sockets[i]=server;
-   server.onMessage(m=>{messages[i].push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
+   server.onMessage(m=>{
+    const message=JSON.parse(String(m));messages[i].push(message);
+    if(['join','snapshot','delta'].includes(message.type)){
+     let next=message.snapshot??message;
+     // Compact deltas reference the unchanged heat buffers in their exact base.
+     const previous=states[i];
+     if(next.cityHeatBaseRevision!==undefined&&next.worldEpoch===previous?.worldEpoch&&next.cityHeatBaseRevision===previous?.revision&&next.mixed?.city&&previous?.mixed?.city)
+      next={...next,mixed:{...next.mixed,city:{...next.mixed.city,heat:previous.mixed.city.heat}}};
+     states[i]=next;
+    }
+    route.send(m);
+   });route.onMessage(m=>server.send(m));});
  }
- const latest=(i:number)=>{const m=messages[i].filter(m=>['join','snapshot','delta'].includes(m.type)).at(-1);return m?.snapshot??m;};
+ const latest=(i:number)=>states[i];
  async function step(index:number,id:string){const s=await snapshot(page),start=messages[index].length;sockets[index].send(JSON.stringify({type:'command',requestId:id,expectedWorldEpoch:s.worldEpoch,payload:{kind:'step'}}));
   await expect.poll(()=>messages[index].slice(start).find(m=>m.requestId===id)).toBeTruthy();return messages[index].slice(start).find(m=>m.requestId===id);}
  try{

@@ -15,8 +15,9 @@ public sealed partial class SessionHost
         if (query.ExpectedWorldEpoch != WorldEpoch) throw new InvalidOperationException("staleEpoch");
         var terrain = terrainState?.World ?? mixedState?.World.Terrain ?? throw new InvalidOperationException("operationUnavailable");
         var mixed = mixedState?.World;
-        if (query.ExpectedGeometryRevision != (mixed?.Revision ?? terrain.Revision) ||
-            query.ExpectedContentVersion != (mixed == null ? TerrainProfile.ContentVersion : ProtocolIdentity.MixedContent))
+        ValidateQuoteRevision(query.ExpectedGeometryRevision,mixed?.Revision ?? terrain.Revision);
+        if(query.ExpectedMinute is {} minute) ValidateQuoteAge(minute);
+        if (query.ExpectedContentVersion != (mixed == null ? TerrainProfile.ContentVersion : ProtocolIdentity.MixedContent))
             throw new InvalidOperationException("staleRevision");
         var p = new Location(query.Position.X,query.Position.Y,query.Position.Z);
         static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
@@ -50,13 +51,14 @@ public sealed partial class SessionHost
 
     public RemovalPreviewRead PreviewRemoval(RemovalQuery query)
     {
-        lock (gate) return PlanRemoval(query).Preview;
+        lock (gate) return BuildQuote<RemovalQuery, RemovalPreviewRead>(query, () => PlanRemoval(query).Preview, query.ExpectedMinute);
     }
 
     private string? CommitRemoval(RemovalQuery query)
     {
         try
         {
+            using var review = ReviewQuote(query, () => PreviewRemoval(query));
             var plan = PlanRemoval(query);
             if (!plan.Preview.Legal) return "invalidPlacement";
             if (mixedState is {} before)
@@ -73,7 +75,7 @@ public sealed partial class SessionHost
                     state.Clock.Capture(),state.Paused,state.Random.Capture(),checked(state.Revision+1)));
                 state.Replace(state.Revision,plan.Terrain!,state.ConstructionMode);
             }
-            return null;
+            ConsumeQuote(query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)

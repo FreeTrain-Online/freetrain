@@ -75,10 +75,11 @@ Deno.test('city coherent removal delta cancels callbacks and owners once, preser
  (d:Delta)=>d.mixed!.city!.structures[0].caller='automated',
  ]){const bad=structuredClone(d);mutate(bad);assert.equal(applyDelta(before,bad),undefined);}
 });
-Deno.test('city previews are read-only and drafts expire on session revision, minute, epoch, content or owner revision',()=>{
+Deno.test('city previews are read-only and drafts tolerate simulation progress and expire on age, epoch, content or owner revision',()=>{
  const read=immutable(snapshot()),q=cityQuery(read,'20')!;assert(currentCityDraft(read,q));
+ assert(currentCityDraft({...read,revision:String(BigInt(read.revision)+1n),tick:String(BigInt(read.tick)+720n)},q));
  const p={query:q,canCancel:true,reason:null,cost:'0',structure:read.mixed!.city!.structures.find(s=>s.id==='20')!};assert.deepEqual(parseCityPreview(p),p);
- for(const mutate of [(s:Snapshot)=>s.revision=String(BigInt(s.revision)+1n),(s:Snapshot)=>s.tick='1981',(s:Snapshot)=>s.worldEpoch='2',(s:Snapshot)=>s.contentVersion='unknown',(s:Snapshot)=>s.mixed!.city!.structures[3].revision='1']){
+ for(const mutate of [(s:Snapshot)=>s.tick=String(BigInt(s.tick)+721n),(s:Snapshot)=>s.worldEpoch='2',(s:Snapshot)=>s.contentVersion='unknown',(s:Snapshot)=>s.mixed!.city!.structures[3].revision='1']){
   const s=structuredClone(read) as Snapshot;mutate(s);assert(!currentCityDraft(s,q));
  }
  assert.throws(()=>parseCityPreview({...p,cost:'1'}));assert.throws(()=>parseCityPreview({...p,query:{...q,ownerId:'10'}}));assert.equal(cityQuery(read,'999'),undefined);

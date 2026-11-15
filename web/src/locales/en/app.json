@@ -685,7 +685,7 @@
   "stockLimits": "Up to 128 trains / 1,024 cars owned. Quotes include every selected train.",
   "stockBuying": "Purchase quote",
   "stockSelling": "Sale quote",
-  "stockQuoteHelp": "Confirmation applies this exact quote once. Shared time or world changes require a new quote.",
+  "stockQuoteHelp": "Quotes remain valid for 12 in-game hours. Confirmation rechecks the price and affected site; changes there require a new quote.",
   "stockCapacityScope": "Capacities below are totals for the selected quantity.",
   "stockDirtyTitle": "Unsaved train name",
   "stockDirtyHint": "Save or discard this train name before continuing.",

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {constructionFence,currentQuote} from './lib/quote-validity.ts';
   import stationaryTypes from './generated/stationary-types.json' with {type:'json'};
   import { signalTypes, signalDirections, type SignalType } from './lib/building-catalog.ts';
   import { untrack } from 'svelte';
@@ -7,7 +8,7 @@
   import type { Position, RailwayPreview, RailwayQuery } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
-  import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel, RailwayPreviewRequestError } from './lib/railway-edit.ts';
+  import { railwayRevision, railwayReasons, railwayStartLevel, RailwayPreviewRequestError } from './lib/railway-edit.ts';
   let {model,view,picked,level=$bindable(1),infrastructure='normal',onpreview,onpoints,onreveal,oncatalog,heightCut}:
     {model:ShellModel;view:ShellState;picked?:Position;level?:number;infrastructure?:'normal'|'bridge'|'girder'|'tunnel'|'garage'|'signal'|'pole'|'stationary'|'speed';onpreview:(p?:RailwayPreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:()=>void;oncatalog:()=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
@@ -70,18 +71,18 @@
     if(pointTool){bx=ax;by=ay;}
     hasA=true;if(!live){hasB=true;hovering=false;}points();
     const routeVia=via.at(-1)?.x===bx&&via.at(-1)?.y===by?via.slice(0,-1):via;
-    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='normal'&&routeVia.length?{via:routeVia.map(p=>({...p,z:level})) as RailwayQuery['via']}:{}),...(infrastructure==='speed'?{speed,speedSlope,speedClimb}:{}),...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='stationary'?{stationaryType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
-    const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
+    const query:RailwayQuery={expectedWorldEpoch:read.worldEpoch,expectedMinute:read.tick,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RailwayQuery['expectedContentVersion'],from:{x:ax,y:ay,z:level},to:{x:bx,y:by,z:level},action:infrastructure==='normal'?'lay':action,routing,infrastructure,...(infrastructure==='normal'&&routeVia.length?{via:routeVia.map(p=>({...p,z:level})) as RailwayQuery['via']}:{}),...(infrastructure==='speed'?{speed,speedSlope,speedClimb}:{}),...(infrastructure==='signal'?{signalType,signalDirection}:{}),...(infrastructure==='pole'?{poleType}:{}),...(infrastructure==='stationary'?{stationaryType}:{}),...(infrastructure==='tunnel'&&action==='lay'?{tunnelRouting:autoLevel?'portals-auto' as const:'portals' as const}:{})};
+    const id=version;fence=constructionFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewRailway(query,request.signal);
-      if(id!==version||fence!==railwayFence(view.read)||blocked)return;
+      if(id!==version||fence!==constructionFence(view.read)||blocked)return;
       result=preview;status='ready';if(infrastructure==='tunnel'&&action==='lay'&&autoLevel&&preview.legal&&preview.cells.length)level=preview.cells[0].position.z;onpreview(preview);
       if(infrastructure!=='normal'&&!pointTool&&preview.cells.length)onpoints([{position:preview.cells[0].position,label:'A'},{position:preview.cells.at(-1)!.position,label:'B'}]);
       if(place&&preview.legal)await commit();
     }catch(error){if(id===version){requestRejected=error instanceof RailwayPreviewRequestError;status='failed';onpreview();}}
   }
   async function commit(){
-    if(blocked||hovering||!hasB||status!=='ready'||!result?.legal||fence!==railwayFence(view.read))return;
+    if(blocked||hovering||!hasB||status!=='ready'||!result?.legal||fence!==constructionFence(view.read))return;
     const id=version,query=result.query;submitting=true;
     const accepted=await model.send({kind:'editRailway',query});submitting=false;
     if(id!==version)return;
@@ -140,8 +141,8 @@
   }
   $effect(()=>{const p=picked;if(p)untrack(()=>pickPosition(p));});
   $effect(()=>{
-    const current=railwayFence(view.read);
-    if(fence&&fence!==current&&!submitting){reset();autoCoordinates=true;status='stale';}
+    const current=constructionFence(view.read);
+    if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();autoCoordinates=true;status='stale';}
     if(view.connection!=='ready'||view.role==='observer')untrack(()=>cancelDraft());
   });
   // Changing the catalog variant or direction invalidates an outstanding quote,

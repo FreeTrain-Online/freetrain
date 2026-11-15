@@ -1,3 +1,4 @@
+import {currentQuote} from './quote-validity.ts';
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
@@ -133,56 +134,56 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewFleetTrade)throw new Error('Unavailable');
       const result=await active.previewFleetTrade(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.revision!==query.expectedRevision||state.read?.tick!==query.expectedMinute)throw new Error('Stale fleet quote');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale fleet quote');
       return result;
     },
     async previewFleetDeployment(query:import('../generated/contracts.ts').FleetDeploymentQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewFleetDeployment)throw new Error('Unavailable');
       const result=await active.previewFleetDeployment(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||state.read?.revision!==query.expectedRevision||state.read?.tick!==query.expectedMinute)throw new Error('Stale fleet quote');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale fleet quote');
       return result;
     },
     async previewRemoval(query:import('../generated/contracts.ts').RemovalQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRemoval)throw new Error('Unavailable');
       const result=await active.previewRemoval(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale removal preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale removal preview');
       return result;
     },
     async previewSlope(query:import('../generated/contracts.ts').SlopeQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewSlope)throw new Error('Unavailable');
       const result=await active.previewSlope(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale slope preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale slope preview');
       return result;
     },
     async previewFixedCity(query:import('../generated/contracts.ts').FixedCityQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewFixedCity)throw new Error('Unavailable');
       const result=await active.previewFixedCity(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale city preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale city preview');
       return result;
     },
     async previewStationBuilding(query:import('../generated/contracts.ts').StationBuildingQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewStationBuilding)throw new Error('Unavailable');
       const result=await active.previewStationBuilding(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale station preview');
       return result;
     },
     async previewPassage(query:import('../generated/contracts.ts').PassageQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewPassage)throw new Error('Unavailable');
       const result=await active.previewPassage(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale station preview');
       return result;
     },
     async previewThinPlatform(query:import('../generated/contracts.ts').ThinPlatformQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewThinPlatform)throw new Error('Unavailable');
       const result=await active.previewThinPlatform(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale station preview');
       return result;
     },
     async stationInformation(query:import('../generated/contracts.ts').StationInformationQuery,signal:AbortSignal) {
@@ -203,21 +204,21 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewWidePlatform)throw new Error('Unavailable');
       const result=await active.previewWidePlatform(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.tick!==query.expectedMinute||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale station preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale station preview');
       return result;
     },
     async previewRailway(query:import('../generated/contracts.ts').RailwayQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewRailway)throw new Error('Unavailable');
       const result=await active.previewRailway(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision||state.read?.contentVersion!==query.expectedContentVersion)throw new Error('Stale railway preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale railway preview');
       return result;
     },
     async previewCorner(query:CornerTerrainQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewCorner)throw new Error('Unavailable');
       const result=await active.previewCorner(query,signal);
-      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||state.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(state.read)!==query.expectedGeometryRevision)throw new Error('Stale corner preview');
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale corner preview');
       return result;
     },
     async previewSpatial(query:SpatialQuery,signal:AbortSignal) {

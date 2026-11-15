@@ -15,7 +15,7 @@ public sealed partial class SessionHost
             query.Action == "place" && (query.PlatformId != 0 || query.ExpectedPlatformRevision != 0) ||
             query.Action == "remove" && (query.PlatformId == 0)) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
-        if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        ValidateQuoteMinute(query.ExpectedMinute);
         return state;
     }
     private static PlatformConstructionPlan PlanThinPlatform(MixedSessionState state, ThinPlatformQuery query) =>
@@ -27,25 +27,29 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
-            var state = ThinPlatformState(query);
-            var plan = PlanThinPlatform(state,query);
-            var reason = plan.Reason;
-            if (reason == null)
+            return BuildQuote<ThinPlatformQuery, ThinPlatformPreviewRead>(query, () =>
             {
-                try { MixedWire.ValidateTransition(state,ThinPlatformConstruction.Commit(state,plan)); }
-                catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
-                { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
-                    ? "accountCapacityLimit" : "constructionOverflow"; }
-            }
-            static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
-            return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
-                plan.Positions.Select(P).ToArray());
+                var state = ThinPlatformState(query);
+                var plan = PlanThinPlatform(state,query);
+                var reason = plan.Reason;
+                if (reason == null)
+                {
+                    try { MixedWire.ValidateTransition(state,ThinPlatformConstruction.Commit(state,plan)); }
+                    catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+                    { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
+                        ? "accountCapacityLimit" : "constructionOverflow"; }
+                }
+                static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
+                return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
+                    plan.Positions.Select(P).ToArray());
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitThinPlatform(EditThinPlatformCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewThinPlatform(command.Query));
             var before = ThinPlatformState(command.Query);
             var plan = PlanThinPlatform(before,command.Query);
             if (!plan.Legal) return plan.Reason == "staleRevision" ? "staleRevision" : "invalidPlacement";
@@ -54,7 +58,7 @@ public sealed partial class SessionHost
             MixedWire.ValidateTransition(before,after);
             mixedState = after;
             terrainState = null;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)

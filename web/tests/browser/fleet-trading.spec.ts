@@ -4,6 +4,51 @@ import {canonicalState,closePanel,openPanel,ready} from './browser-helpers.ts';
 
 const state=canonicalState;
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
+
+test('purchase confirmation stays enabled through minute 720 and expires at minute 721',async({page})=>{
+  test.setTimeout(60000);
+  let transport:WebSocketRoute|undefined;
+  const replies=new Map<string,string>();
+  await page.routeWebSocket('**/api/session?*',route=>{
+    const server=route.connectToServer();transport=server;
+    route.onMessage(m=>server.send(m));
+    server.onMessage(m=>{const message=JSON.parse(String(m));if(message.requestId?.startsWith('quote-clock-'))replies.set(message.requestId,message.type);route.send(m);});
+  });
+  await page.goto('/');await ready(page);await openPanel(page,'fleet');
+  const before=await state(page);
+  await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});await expect(dialog).toBeVisible();
+  async function step(first:number,last:number){
+    for(let n=first;n<=last;n++)transport!.send(JSON.stringify({type:'command',requestId:`quote-clock-${n}`,expectedWorldEpoch:before.worldEpoch,payload:{kind:'step'}}));
+    await expect.poll(()=>replies.get(`quote-clock-${last}`)).toBe('accepted');
+  }
+  for(let n=1;n<=720;n+=32)await step(n,Math.min(n+31,720));
+  await expect.poll(async()=>(await state(page)).tick).toBe(String(BigInt(before.tick)+720n));
+  await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeEnabled();
+  await step(721,721);
+  await expect(dialog.getByText('This quote is out of date.',{exact:false})).toBeVisible();
+  await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeDisabled();
+});
+
+test('train quotes and confirmation work while city simulation is running',async({page})=>{
+  await page.goto('/');await ready(page);
+  const initial=await state(page),seed=readFileSync('tests/fixtures/fixed-city-v11.json');
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:seed})).ok()).toBe(true);
+  await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(initial.worldEpoch);
+  await page.getByLabel('Game speed',{exact:true}).selectOption('0.125');
+  await page.getByRole('button',{name:'Run',exact:false}).first().click();
+  await openPanel(page,'fleet');
+  const started=(await state(page)).tick;
+  await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
+  await expect(dialog).toBeVisible();
+  await expect.poll(async()=>BigInt((await state(page)).tick)-BigInt(started)).toBeGreaterThanOrEqual(2n);
+  await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeEnabled();
+  await dialog.getByRole('button',{name:'Confirm purchase',exact:true}).click();
+  await expect(dialog).toHaveCount(0);
+  const after=await state(page);
+  expect(after.paused).toBe(false);expect(after.mixed.fleet.trains).toHaveLength(1);
+});
 async function desktopColumns(page:Page){
   const boxes=await page.locator('.fleet-controls').evaluate(el=>{
     const sidebar=el.querySelector<HTMLElement>('.fleet-sidebar')!,details=el.querySelector<HTMLElement>('.fleet-details')!,body=el.closest('.panel-body')!;
@@ -20,6 +65,28 @@ async function desktopColumns(page:Page){
   expect(boxes.panelRight).toBeLessThanOrEqual(boxes.viewport);
   for(const height of boxes.rows)expect(height).toBeLessThanOrEqual(60);
 }
+
+test('first train quote and purchase retain an existing city and its callbacks',async({page})=>{
+  await page.goto('/');await ready(page);
+  const initial=await state(page),seed=readFileSync('tests/fixtures/fixed-city-v11.json');
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:seed})).ok()).toBe(true);
+  await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(initial.worldEpoch);
+  const before=await state(page);
+  expect(before.mixed.fleet).toBeUndefined();expect(before.mixed.city.structures.length).toBeGreaterThan(0);
+  await openPanel(page,'fleet');
+  const response=page.waitForResponse(r=>r.url().includes('/api/fleet/preview'));
+  await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();
+  expect((await response).ok()).toBe(true);
+  const dialog=page.getByRole('dialog',{name:'Purchase quote',exact:true});
+  await expect(dialog).toBeVisible();expect(await state(page)).toEqual(before);
+  await dialog.getByRole('button',{name:'Confirm purchase',exact:true}).click();
+  await expect(dialog).toHaveCount(0);
+  const after=await state(page);
+  expect(after.mixed.fleet.trains).toHaveLength(1);
+  expect(after.mixed.city).toEqual(before.mixed.city);
+  expect(after.mixed.stationGraph).toEqual(before.mixed.stationGraph);
+  expect(after.mixed.queue).toEqual(before.mixed.queue);
+});
 
 test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resale publish once to two peers and reopen exactly',async({page,browser,baseURL})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -57,7 +124,7 @@ test('purchase, stale/cancelled quotes, duplicate confirmation, rename and resal
     expect(await state(page)).toEqual(before);await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Get purchase quote',exact:true})).toBeFocused();
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();await expect(dialog).toBeVisible();
     await peer.getByRole('button',{name:'Step',exact:false}).first().click();
-    await expect(dialog.getByText('This quote is out of date.',{exact:false})).toBeVisible();await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeDisabled();
+    await expect(dialog.getByText('This quote is out of date.',{exact:false})).toHaveCount(0);await expect(dialog.getByRole('button',{name:'Confirm purchase',exact:true})).toBeEnabled();
     await dialog.getByRole('button',{name:'Cancel',exact:true}).click();
     await page.getByRole('button',{name:'Get purchase quote',exact:true}).click();await expect(dialog).toBeVisible();
     await dialog.getByRole('button',{name:'Confirm purchase',exact:true}).dblclick();

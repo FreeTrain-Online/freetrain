@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {currentQuote} from './lib/quote-validity.ts';
  import {WorldSpace,offset} from './lib/map-geometry.ts';
  import {untrack} from 'svelte';
  import {messages} from './lib/localization.ts';
@@ -47,9 +48,10 @@
   const accepted=await model.send('secondLane' in result.query?{kind:'editWidePlatform',query:result.query,expectedCost:result.cost}:{kind:'editThinPlatform',query:result.query,expectedCost:result.cost});submitting=false;
   if(id!==version)return;reset();if(!accepted)status='stale';
  }
- $effect(()=>{void view.locale;untrack(reset);});
+ // Derived text stays stable across snapshots; direct view reads would reset every tick.
+ $effect(()=>{void text;untrack(reset);});
  $effect(()=>{const p=removeTarget??picked;if(p)untrack(()=>{reset();if(removeTarget)action='remove';x=p.x;y=p.y;detectCoordinates=false;if(autoLevel||removeTarget)level=p.z;void check();});});
- $effect(()=>{const current=stationBuildingFence(view.read);if(fence&&fence!==current&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
+ $effect(()=>{const current=stationBuildingFence(view.read);if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
  $effect(()=>()=>{version++;request?.abort();onpreview();});
  const reasons={...railwayReasons,stationGround:'stationGround',platformNotFound:'platformNotFound',invalidPlatformGeometry:'platformGeometry',incompatiblePlatformRail:'platformRail',unavailableStationBinding:'railBinding'} as const;
 </script>

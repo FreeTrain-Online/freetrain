@@ -15,7 +15,7 @@ public sealed partial class SessionHost
             query.Action == "place" && (query.PlatformId != 0 || query.ExpectedPlatformRevision != 0) ||
             query.Action != "place" && (query.PlatformId == 0)) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
-        if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        ValidateQuoteMinute(query.ExpectedMinute);
         if (query.Action is "addLane" or "removeLane" && state.World.Stations?.Platforms.SingleOrDefault(p=>p.Id == query.PlatformId) is {} platform &&
             (platform.Direction.Index != query.Direction || platform.Length != query.Length)) throw new ArgumentException("invalidInput");
         return state;
@@ -32,25 +32,29 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
-            var state = WidePlatformState(query);
-            var plan = PlanWidePlatform(state,query);
-            var reason = plan.Reason;
-            if (reason == null)
+            return BuildQuote<WidePlatformQuery, WidePlatformPreviewRead>(query, () =>
             {
-                try { MixedWire.ValidateTransition(state,WidePlatformConstruction.Commit(state,plan)); }
-                catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
-                { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
-                    ? "accountCapacityLimit" : "constructionOverflow"; }
-            }
-            static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
-            return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
-                plan.Positions.Select(P).ToArray());
+                var state = WidePlatformState(query);
+                var plan = PlanWidePlatform(state,query);
+                var reason = plan.Reason;
+                if (reason == null)
+                {
+                    try { MixedWire.ValidateTransition(state,WidePlatformConstruction.Commit(state,plan)); }
+                    catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+                    { reason = state.Construction.Accounts.Transactions.Length+plan.Booking.Charges.Length > NormalRailwayConstruction.MaximumAccountTransactions
+                        ? "accountCapacityLimit" : "constructionOverflow"; }
+                }
+                static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
+                return new(query,reason == null,reason,reason == null ? plan.Booking.Total : 0,
+                    plan.Positions.Select(P).ToArray());
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitWidePlatform(EditWidePlatformCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewWidePlatform(command.Query));
             var before = WidePlatformState(command.Query);
             var plan = PlanWidePlatform(before,command.Query);
             if (!plan.Legal) return plan.Reason == "staleRevision" ? "staleRevision" : "invalidPlacement";
@@ -59,7 +63,7 @@ public sealed partial class SessionHost
             MixedWire.ValidateTransition(before,after);
             mixedState = after;
             terrainState = null;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)

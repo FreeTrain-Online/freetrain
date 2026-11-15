@@ -41,9 +41,8 @@ public class StationarySessionTests
         using var h=Host();Assert.IsType<AcceptedMessage>(await Send(h,new EditRailwayCommand(Q(h))));
         var q=Q(h,"remove");Assert.True(h.PreviewRailway(q).Legal);
         Assert.IsType<AcceptedMessage>(await Send(h,new RunCommand()));h.Pump(256);
-        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new EditRailwayCommand(q))).Code);
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditRailwayCommand(q)));
         Assert.IsType<AcceptedMessage>(await Send(h,new PauseCommand()));
-        Assert.IsType<AcceptedMessage>(await Send(h,new EditRailwayCommand(Q(h,"remove"))));
         var bytes=await Save(h);using var reopened=Open(bytes);Assert.Equal(bytes,await Save(reopened));
         Assert.Empty(h.Snapshot().Mixed!.Accounts.Transactions);Assert.Empty(h.Snapshot().Mixed!.Voxels);
     }

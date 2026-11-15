@@ -2625,6 +2625,9 @@
               "type": "null"
             }
           ]
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [
@@ -3507,6 +3510,9 @@
             6
           ],
           "default": 0
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [
@@ -3688,6 +3694,9 @@
             4,
             6
           ]
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [
@@ -3893,6 +3902,9 @@
               "type": "null"
             }
           ]
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
         }
       },
       "required": [

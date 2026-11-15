@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {constructionFence,currentQuote} from './lib/quote-validity.ts';
   import { railwayRevision } from './lib/railway-edit.ts';
   import { primaryAction } from './lib/primary-action.ts';
   import type { PaintState } from './lib/terrain-painter.ts';
@@ -17,11 +18,11 @@
   const activeMode=$derived(view.read?.terrain?.constructionMode??false);
   async function changeMode(){
     const read=view.read;if(!read?.terrain||view.role!=='owner'||view.pending||modeUncertain)return;
-    if(modeFence!==`${read.worldEpoch}/${railwayRevision(read)!}`){modeReview=false;onreset();return;}
+    if(modeFence!==constructionFence(read)){modeReview=false;onreset();return;}
     const accepted=await model.send({kind:'setAuthoringMode',expectedGeometryRevision:railwayRevision(read)!,enabled:!activeMode});
     if(accepted)modeReview=false;else if(view.feedback==='unresolved')modeUncertain=true;
   }
-  $effect(()=>{if(modeFence&&(modeFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`||view.role!=='owner'||view.connection!=='ready')){modeReview=false;modeFence=undefined;onreset();}});
+  $effect(()=>{if(modeFence&&(modeFence!==constructionFence(view.read)||view.role!=='owner'||view.connection!=='ready')){modeReview=false;modeFence=undefined;onreset();}});
   let rectangleControls=$state<{cancelDraft:()=>boolean}>();
   const text=$derived(messages[view.locale]);
   let x=$state(0),y=$state(0),z=$state(1),action=$state<'raise'|'lower'>('raise'),terraceAction=$state<'placeTerrace'|'removeTerrace'|'placeCut'|'removeCut'>('placeTerrace');
@@ -40,12 +41,12 @@
     if(p){x=p.position.x;y=p.position.y;z=p.position.z;}
     if(![x,y,z].every(Number.isSafeInteger)){selected=false;status='failed';return;}
     selected=true;
-    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:railwayRevision(read)!,
+    const target:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedMinute:read.tick,expectedGeometryRevision:railwayRevision(read)!,
       position:{x,y,z},stroke:null,action:scope==='terrace'?terraceAction:p?.reverse?(action==='raise'?'lower':'raise'):action,offsetX:scope==='terrace'?null:p?.offsetX??null,offsetY:scope==='terrace'?null:p?.offsetY??null};
-    requestFence=`${read.worldEpoch}/${railwayRevision(read)!}`;status='checking';request=new AbortController();
+    requestFence=constructionFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewCorner(target,request.signal);
-      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||target.expectedGeometryRevision!==railwayRevision(view.read))return;
+      if(id!==version||read.worldEpoch!==view.read?.worldEpoch||!currentQuote(view.read,target))return;
       query=target;result=preview;status='ready';onpreview(preview.position);
     }catch{if(id===version)status='failed';}
   }
@@ -87,8 +88,8 @@
   onMount(()=>onmode(false,'paintRaise'));
   $effect(()=>{const p=picked;if(p&&(scope==='paint'||scope==='terrace'&&!terraceBatch)&&!modeReview)untrack(()=>{if(p.painting){reset();x=p.position.x;y=p.position.y;z=p.position.z;selected=true;}else void check(p);});});
   $effect(()=>{
-    if(requestFence&&!submitting&&requestFence!==`${view.read?.worldEpoch}/${railwayRevision(view.read)}`){clear();status='stale';}
-    if(result&&!submitting&&(view.read?.worldEpoch!==result.worldEpoch||railwayRevision(view.read)!==result.geometryRevision)){
+    if(requestFence&&!submitting&&(requestFence!==constructionFence(view.read)||query&&!currentQuote(view.read,query))){clear();status='stale';}
+    if(result&&!submitting&&(!query||!currentQuote(view.read,query))){
       version++;request?.abort();selected=false;result=undefined;status='stale';onpreview(undefined);
     }
     if(view.connection!=='ready'||view.role==='observer'){clear();}
@@ -105,7 +106,7 @@
       {#if !['idle','waiting','accepted'].includes(view.feedback)}<p role="status">{text[view.feedback]}</p>{/if}
       <div class="form-actions"><button class="primary" disabled={blocked||modeUncertain} onclick={changeMode}>{text.confirmAuthoringMode}</button><button disabled={view.pending} onclick={()=>{modeReview=false;onreset();}}>{text.cancel}</button></div>
     {:else}
-      <button disabled={blocked||modeUncertain} onclick={()=>{clear();rectangleControls?.cancelDraft();onreset();modeFence=`${view.read?.worldEpoch}/${railwayRevision(view.read)}`;modeReview=true;}}>{activeMode?text.exitAuthoring:text.enterAuthoring}</button>
+      <button disabled={blocked||modeUncertain} onclick={()=>{clear();rectangleControls?.cancelDraft();onreset();modeFence=constructionFence(view.read);modeReview=true;}}>{activeMode?text.exitAuthoring:text.enterAuthoring}</button>
     {/if}
   {/if}
 </section>

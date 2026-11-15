@@ -25,7 +25,7 @@ Deno.test('fixed removal resolves each occupied cell and previews reject inconsi
   const p={x:b.location.x+x,y:b.location.y+y,z:b.location.z+z},q=fixedCityQuery(s,p,null,true)!;
   assert.equal(fixedCityAt(s,p)?.id,b.id);assert.equal(q.ownerId,b.id);assert.equal(q.expectedOwnerRevision,b.revision);
  }
- assert.notEqual(fixedCityFence(s),fixedCityFence({...s,tick:String(BigInt(s.tick)+1n)}));
+ assert.equal(fixedCityFence(s),fixedCityFence({...s,tick:String(BigInt(s.tick)+1n)}));
  const query=fixedCityQuery(s,b.location,b.definition)!;
  const p={query,legal:true,reason:null,cost:'100',positions:[b.location],losses:[]};assert.deepEqual(parseFixedCityPreview(p),p);
  for(const bad of [{...p,positions:[]},{...p,positions:[b.location,b.location]},{...p,reason:'obstacle'},{...p,legal:false},{...p,cost:'-1'}])assert.throws(()=>parseFixedCityPreview(bad));

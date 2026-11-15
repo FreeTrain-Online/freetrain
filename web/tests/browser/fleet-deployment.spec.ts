@@ -27,7 +27,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} reversal recovery prese
   await expect(page.getByTestId('deployment-car')).toHaveCount(3);expect(await save(page)).toEqual(saved);
   await page.getByRole('button',{name:text.cancel,exact:true}).click();await expect(reverse).toBeFocused();
   await reverse.click();await peer.getByRole('button',{name:/Single step/}).first().click();
-  await expect(page.getByText(text.stockStale,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:text.fleetReverseConfirm,exact:true})).toBeDisabled();
+  await expect(page.getByText(text.stockStale,{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:text.fleetReverseConfirm,exact:true})).toBeEnabled();
   await page.getByRole('button',{name:text.cancel,exact:true}).click();const current=await state(page);
   await reverse.click();await page.getByRole('button',{name:text.fleetReverseConfirm,exact:true}).dblclick();
   await expect(page.getByTestId('deployment-car')).toHaveCount(0);
@@ -137,7 +137,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} playable purchase deplo
   await expect(page.getByTestId('deployment-car')).toHaveCount(2);await expect(page.locator('.map-stage')).toHaveClass(/fleet-picking/);
   await expect(page.locator('.primary-panel')).toHaveCSS('width','352px');await expect(canvas).toHaveAttribute('data-fleet-ghost-cars','2');
   await expect(page.getByRole('button',{name:text.deploymentPreview,exact:true})).toHaveCount(0);
-  await peer.getByRole('button',{name:/Single step/}).first().click();await expect(page.getByText(text.stockStale,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:text.deploymentConfirm,exact:true})).toBeDisabled();
+  await peer.getByRole('button',{name:/Single step/}).first().click();await expect(page.getByText(text.stockStale,{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:text.deploymentConfirm,exact:true})).toBeEnabled();
   await page.getByRole('button',{name:text.cancel,exact:true}).click();await coords(page,text);
   await expect(page.getByTestId('deployment-car')).toHaveCount(2);await expect(canvas).toHaveAttribute('data-fleet-ghost-cars','2');await page.getByRole('button',{name:text.deploymentConfirm,exact:true}).scrollIntoViewIfNeeded();
   mkdirSync(evidence,{recursive:true});await page.screenshot({path:`${evidence}/deployment-${locale}.png`});

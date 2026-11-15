@@ -54,7 +54,7 @@ test('passage stale peer edits late cancellation observer and replacement cannot
  try{
   await page.goto('/');await ready(page);await empty(page);
   await peer.goto('/');await ready(peer);await task(peer);const q=await quote(peer,false,'brown','place',30,31,30),bytes=await save(page);
-  await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(peer.getByRole('button',{name:'Confirm passage',exact:true})).toBeDisabled();
+  await page.getByRole('button',{name:'Single step',exact:false}).click();await expect.poll(async()=>(await state(peer)).tick).toBe(String(BigInt(q.query.expectedMinute)+1n));await expect(peer.getByRole('button',{name:'Confirm passage',exact:true})).toBeEnabled();
   let release!:()=>void,seen=false;const hold=new Promise<void>(r=>release=r);
   await peer.route('**/api/station/passage/preview?*',async r=>{const response=await r.fetch();seen=true;await hold;await r.fulfill({response});});
   await peer.locator('.passage-task form').getByRole('button',{name:'Check placement',exact:true}).click();await expect.poll(()=>seen).toBe(true);await peer.getByRole('button',{name:'Cancel preview',exact:true}).click();release();await expect(peer.getByRole('button',{name:'Confirm passage',exact:true})).toBeDisabled();await peer.unroute('**/api/station/passage/preview?*');

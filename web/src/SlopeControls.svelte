@@ -1,10 +1,11 @@
 <script lang="ts">
+  import {constructionFence,currentQuote} from './lib/quote-validity.ts';
   import { untrack } from 'svelte';
   import { primaryAction } from './lib/primary-action.ts';
   import type { Position, SlopePreview, SlopeQuery } from './generated/contracts.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
   import { messages } from './lib/localization.ts';
-  import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
+  import { railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
   let {model,view,picked,level=$bindable(1),onpreview,onpoints,onreveal,heightCut}:
     {model:ShellModel;view:ShellState;picked?:Position;level?:number;onpreview:(p?:SlopePreview)=>void;onpoints:(p:{position:Position;label:string}[])=>void;onreveal:(level:number)=>void;heightCut:number}=$props();
   const text=$derived(messages[view.locale]);
@@ -24,16 +25,16 @@
     if(detect&&autoLevel){const z=railwayStartLevel(read,{x,y},heightCut);if(z!==undefined)level=z;}
     if(![x,y,level].every(Number.isSafeInteger)){status='failed';return;}
     hasTarget=true;points();
-    const query:SlopeQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as SlopeQuery['expectedContentVersion'],position:{x,y,z:level},action,climb};
-    const id=version;fence=railwayFence(read);status='checking';request=new AbortController();
+    const query:SlopeQuery={expectedWorldEpoch:read.worldEpoch,expectedMinute:read.tick,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as SlopeQuery['expectedContentVersion'],position:{x,y,z:level},action,climb};
+    const id=version;fence=constructionFence(read);status='checking';request=new AbortController();
     try{
       const preview=await model.previewSlope(query,request.signal);
-      if(id!==version||fence!==railwayFence(view.read)||blocked)return;
+      if(id!==version||fence!==constructionFence(view.read)||blocked)return;
       result=preview;status='ready';onpreview(preview);
     }catch{if(id===version){status='failed';onpreview();}}
   }
   async function commit(){
-    if(blocked||status!=='ready'||!result?.legal||fence!==railwayFence(view.read))return;
+    if(blocked||status!=='ready'||!result?.legal||fence!==constructionFence(view.read))return;
     const id=version,query=result.query;submitting=true;
     const accepted=await model.send({kind:'editSlope',query});submitting=false;
     if(id!==version)return;
@@ -50,8 +51,8 @@
     points();void check(false);
   });});
   $effect(()=>{
-    const current=railwayFence(view.read);
-    if(fence&&fence!==current&&!submitting){reset();status='stale';}
+    const current=constructionFence(view.read);
+    if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();status='stale';}
     if(view.connection!=='ready'||view.role==='observer')untrack(()=>cancelDraft());
   });
   $effect(()=>()=>{version++;request?.abort();onpreview();onpoints([]);});

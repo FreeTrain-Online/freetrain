@@ -9,8 +9,8 @@ public sealed partial class SessionHost
     private MixedSessionState FleetState(FleetTradeQuery query)
     {
         if(query.ExpectedWorldEpoch!=WorldEpoch)throw new InvalidOperationException("staleEpoch");
-        if(query.ExpectedRevision!=CanonicalRevision || query.ExpectedMinute!=CanonicalMinute)
-            throw new InvalidOperationException("staleRevision");
+        ValidateQuoteRevision(query.ExpectedRevision,CanonicalRevision);
+        ValidateQuoteMinute(query.ExpectedMinute);
         return RailwayState(query.ExpectedWorldEpoch,mixedState?.World.Revision??terrainState?.World.Revision??-1,query.ExpectedContentVersion);
     }
     private static FleetTradePlan PlanTrade(MixedSessionState state,FleetTradeQuery query)
@@ -26,19 +26,23 @@ public sealed partial class SessionHost
     {
         lock(gate)
         {
-            var state=FleetState(query);var plan=PlanTrade(state,query);
-            MixedWire.ValidateTransition(state,FleetTrading.Commit(state,plan));
-            return new(query,plan.Price,plan.NormalCapacity,plan.SeatedCapacity,plan.PackedCapacity);
+            return BuildQuote<FleetTradeQuery, FleetTradePreviewRead>(query, () =>
+            {
+                var state=FleetState(query);var plan=PlanTrade(state,query);
+                MixedWire.ValidateTransition(state,FleetTrading.Commit(state,plan));
+                return new(query,plan.Price,plan.NormalCapacity,plan.SeatedCapacity,plan.PackedCapacity);
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitFleetTrade(TradeFleetCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewFleetTrade(command.Query));
             var state=FleetState(command.Query);var plan=PlanTrade(state,command.Query);
             if(plan.Price!=command.ExpectedPrice)return "staleRevision";
             var after=FleetTrading.Commit(state,plan);MixedWire.ValidateTransition(state,after);
-            mixedState=after;terrainState=null;return null;
+            mixedState=after;terrainState=null;ConsumeQuote(command.Query); return null;
         }
         catch(InvalidOperationException e) when(e.Message is "staleEpoch" or "staleRevision" or "operationUnavailable"){return e.Message;}
         catch(Exception e) when(e is ArgumentException or OverflowException or InvalidOperationException or InvalidDataException){return "invalidInput";}
@@ -46,7 +50,8 @@ public sealed partial class SessionHost
     private MixedSessionState DeploymentState(FleetDeploymentQuery query)
     {
         if(query.ExpectedWorldEpoch!=WorldEpoch)throw new InvalidOperationException("staleEpoch");
-        if(query.ExpectedRevision!=CanonicalRevision||query.ExpectedMinute!=CanonicalMinute)throw new InvalidOperationException("staleRevision");
+        ValidateQuoteRevision(query.ExpectedRevision,CanonicalRevision);
+        ValidateQuoteMinute(query.ExpectedMinute);
         if(mixedState?.Fleet==null)throw new InvalidOperationException("operationUnavailable");
         RailwayState(query.ExpectedWorldEpoch,mixedState.World.Revision,query.ExpectedContentVersion);
         return mixedState;
@@ -64,21 +69,25 @@ public sealed partial class SessionHost
     {
         lock(gate)
         {
-            var state=DeploymentState(query);
-            try {
-                var plan=PlanDeployment(state,query);MixedWire.ValidateTransition(state,FleetDeployment.Commit(state,plan));
-                return new(query,true,null,plan.Train.IsReversed,plan.Train.Cars.Where(c=>c.State is FleetCarState.Inside).Select(c=> {
-                    var pose=(FleetCarState.Inside)c.State;return new FleetDeploymentCarRead(c.Id,new(pose.Location.X,pose.Location.Y,pose.Location.Z),pose.Heading.Index);
-                }).ToArray());
-            }
-            catch(InvalidOperationException e) when(DeploymentReason(e.Message)){return new(query,false,e.Message,false,[]);}
+            return BuildQuote<FleetDeploymentQuery, FleetDeploymentPreviewRead>(query, () =>
+            {
+                var state=DeploymentState(query);
+                try {
+                    var plan=PlanDeployment(state,query);MixedWire.ValidateTransition(state,FleetDeployment.Commit(state,plan));
+                    return new(query,true,null,plan.Train.IsReversed,plan.Train.Cars.Where(c=>c.State is FleetCarState.Inside).Select(c=> {
+                        var pose=(FleetCarState.Inside)c.State;return new FleetDeploymentCarRead(c.Id,new(pose.Location.X,pose.Location.Y,pose.Location.Z),pose.Heading.Index);
+                    }).ToArray());
+                }
+                catch(InvalidOperationException e) when(DeploymentReason(e.Message)){return new(query,false,e.Message,false,[]);}
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitFleetDeployment(DeployFleetCommand command)
     {
         try {
+            using var review = ReviewQuote(command.Query, () => PreviewFleetDeployment(command.Query));
             var state=DeploymentState(command.Query);var plan=PlanDeployment(state,command.Query);
-            var after=FleetDeployment.Commit(state,plan);MixedWire.ValidateTransition(state,after);mixedState=after;return null;
+            var after=FleetDeployment.Commit(state,plan);MixedWire.ValidateTransition(state,after);mixedState=after;ConsumeQuote(command.Query); return null;
         }
         catch(InvalidOperationException e) when(e.Message is "staleEpoch" or "staleRevision" or "operationUnavailable"){return e.Message;}
         catch(InvalidOperationException e) when(DeploymentReason(e.Message)){return "invalidPlacement";}

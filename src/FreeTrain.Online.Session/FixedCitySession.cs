@@ -13,7 +13,7 @@ public sealed partial class SessionHost
             (q.Action=="place" ? q.Definition==null || q.OwnerId!=0 || q.ExpectedOwnerRevision!=0 : q.Definition!=null || q.OwnerId==0))
             throw new ArgumentException("invalidInput");
         var state=RailwayState(q.ExpectedWorldEpoch,q.ExpectedGeometryRevision,q.ExpectedContentVersion);
-        if(state.Clock.Time.AbsoluteMinute!=q.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        ValidateQuoteMinute(q.ExpectedMinute);
         return CityHeat.Enable(state);
     }
     private static FixedCityPlan PlanFixedCity(MixedSessionState s,FixedCityQuery q)
@@ -34,32 +34,36 @@ public sealed partial class SessionHost
     {
         lock(gate)
         {
-            var state=FixedCityState(q);
-            try
+            return BuildQuote<FixedCityQuery, FixedCityPreviewRead>(q, () =>
             {
-                var plan=PlanFixedCity(state,q);
-                var after=FixedCityConstruction.Commit(state,plan);
-                MixedWire.ValidateTransition(state,after);
-                var owner=q.Action=="remove" ? state.World.City!.Structure(q.OwnerId) : after.World.City!.State.Structures.Last();
-                var d=state.World.City!.Profile.Structure(owner.Definition);
-                var positions=new Cube(owner.Location,d.SizeX,d.SizeY,owner.Height).Locations().Select(p=>new PositionRead(p.X,p.Y,p.Z)).ToArray();
-                return new(q,true,null,FixedCityCost(plan),positions,[]);
-            }
-            catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException)
-            { return new(q,false,"invalidPlacement",0,[],[]); }
+                var state=FixedCityState(q);
+                try
+                {
+                    var plan=PlanFixedCity(state,q);
+                    var after=FixedCityConstruction.Commit(state,plan);
+                    MixedWire.ValidateTransition(state,after);
+                    var owner=q.Action=="remove" ? state.World.City!.Structure(q.OwnerId) : after.World.City!.State.Structures.Last();
+                    var d=state.World.City!.Profile.Structure(owner.Definition);
+                    var positions=new Cube(owner.Location,d.SizeX,d.SizeY,owner.Height).Locations().Select(p=>new PositionRead(p.X,p.Y,p.Z)).ToArray();
+                    return new(q,true,null,FixedCityCost(plan),positions,[]);
+                }
+                catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException)
+                { return new(q,false,"invalidPlacement",0,[],[]); }
+            }, q.ExpectedMinute);
         }
     }
     private string? CommitFixedCity(EditFixedCityCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewFixedCity(command.Query));
             var state=FixedCityState(command.Query);
             var plan=PlanFixedCity(state,command.Query);
             if(FixedCityCost(plan)!=command.ExpectedCost) return "staleRevision";
             var after=FixedCityConstruction.Commit(state,plan);
             MixedWire.ValidateTransition(state,after);
             mixedState=after;terrainState=null;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch(InvalidOperationException ex) when(ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") {return ex.Message;}
         catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException) {return "invalidPlacement";}

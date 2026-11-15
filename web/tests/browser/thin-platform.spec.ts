@@ -88,7 +88,7 @@ test('platform authority stale quotes late cancel and replacement never publish 
   expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);await task(peer);
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);await expect(observer.getByRole('button',{name:'Stations',exact:true})).toBeDisabled();
   const q=await quote(peer);const bytes=await save(page);socket!.send(JSON.stringify({type:'command',requestId:'observer-platform',expectedWorldEpoch:q.query.expectedWorldEpoch,payload:{kind:'editThinPlatform',query:q.query,expectedCost:q.cost}}));await expect.poll(()=>replies.find(m=>m.requestId==='observer-platform')?.code).toBe('notAuthorized');expect(await save(page)).toEqual(bytes);
-  await page.getByRole('button',{name:'Single step',exact:false}).click();const confirm=peer.getByRole('button',{name:'Confirm slim platform',exact:true});await expect(confirm).toBeDisabled();
+  await page.getByRole('button',{name:'Single step',exact:false}).click();await expect.poll(async()=>(await state(peer)).tick).toBe(String(BigInt(q.query.expectedMinute)+1n));const confirm=peer.getByRole('button',{name:'Confirm slim platform',exact:true});await expect(confirm).toBeEnabled();
   let release!:()=>void,seen=false;const held=new Promise<void>(r=>release=r);
   await peer.route('**/api/station/platform/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});
   await peer.locator('.platform-task form').getByRole('button',{name:'Check placement',exact:true}).click();await expect.poll(()=>seen).toBe(true);

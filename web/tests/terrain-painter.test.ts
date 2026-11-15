@@ -31,10 +31,10 @@ Deno.test('release during an outstanding preview prevents every later commit; no
  assert(h.painter.start(target(),'lower'));await until(()=>h.queries.length===1);h.painter.stop();gate.resolve();
  await new Promise(r=>setTimeout(r,10));assert(h.commands.length===0&&!h.painter.state.active);
 });
-Deno.test('role, epoch and geometry changes fence a captured paint preview before commit',async()=>{
- for(const change of ['role','epoch','geometry'] as const){const h=await harness(),gate=deferred<void>();h.previewGate(gate);
+Deno.test('role, epoch and expired quote changes fence a captured paint preview before commit',async()=>{
+ for(const change of ['role','epoch','expiry'] as const){const h=await harness(),gate=deferred<void>();h.previewGate(gate);
   assert(h.painter.start(target(),'raise'));await until(()=>h.queries.length===1);
-  if(change==='role')h.state.role='observer';else if(change==='epoch')h.state.read!.worldEpoch='99';else h.state.read!.terrain!.geometryRevision='99';
+  if(change==='role')h.state.role='observer';else if(change==='epoch')h.state.read!.worldEpoch='99';else h.state.read!.tick=String(BigInt(h.state.read!.tick)+721n);
   gate.resolve();await until(()=>!h.painter.state.active);assert(h.commands.length===0);h.painter.stop();
  }
 });
@@ -45,7 +45,7 @@ Deno.test('reverse target reverses paint and an ambiguous outcome stops without 
  await until(()=>!h.painter.state.active);await new Promise(r=>setTimeout(r,10));assert(h.commands.length===1&&!h.painter.start(target(),'raise'));h.painter.stop();
 });
 
-Deno.test('mixed-world painting uses infrastructure revision and fences accessory-only edits',async()=>{
+Deno.test('mixed-world painting uses infrastructure revision and revalidates across unrelated accessory edits',async()=>{
  const h=await harness();
  h.state.read!.mixed={geometryRevision:'18'} as NonNullable<typeof h.state.read>['mixed'];
  const terrainRevision=h.state.read!.terrain!.geometryRevision;
@@ -55,8 +55,8 @@ Deno.test('mixed-world painting uses infrastructure revision and fences accessor
   assert(h.state.read!.terrain!.geometryRevision===terrainRevision);
   const gate=deferred<void>();h.previewGate(gate);const count=h.commands.length;
   assert(h.painter.start(target(),'raise'));await until(()=>h.queries.length>count);
-  h.state.read!.mixed!.geometryRevision='99';gate.resolve();await until(()=>!h.painter.state.active);
-  assert(h.commands.length===count);
+  h.state.read!.mixed!.geometryRevision='99';gate.resolve();await until(()=>h.commands.length>count);h.painter.stop();
+  assert(h.commands.length>count);
  }finally{h.painter.stop();}
 });
 

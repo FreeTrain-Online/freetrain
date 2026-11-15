@@ -1,9 +1,10 @@
 <script lang="ts">
+  import {constructionFence,currentQuote} from './lib/quote-validity.ts';
   import {fixedCityAt,fixedCityQuery} from './lib/fixed-city-edit.ts';
   import { untrack } from 'svelte';
   import { primaryAction } from './lib/primary-action.ts';
   import { messages } from './lib/localization.ts';
-  import { railwayFence, railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
+  import { railwayRevision, railwayReasons, railwayStartLevel } from './lib/railway-edit.ts';
   import { stationBuildingAt, stationBuildingQuery, stationBuildingFence } from './lib/station-building-edit.ts';
   import { removalAt, removalQuery } from './lib/object-removal.ts';
   import type { ShellModel, ShellState } from './lib/shell-model.ts';
@@ -19,7 +20,7 @@
   let result=$state<RemovalPreview>(),stationResult=$state<StationBuildingPreview>();
   let stationTarget=$state(false),cityTarget=$state(false),cityResult=$state<import('./generated/contracts.ts').FixedCityPreview>();
   const preview=$derived(cityResult??stationResult??result);
-  function currentFence(){return stationTarget||cityTarget?stationBuildingFence(view.read):railwayFence(view.read);}
+  function currentFence(){return stationTarget||cityTarget?stationBuildingFence(view.read):constructionFence(view.read);}
   let status=$state<'idle'|'checking'|'ready'|'failed'|'stale'|'terrain'>('idle');
   let fence=$state<string>(),submitting=$state(false);
   let version=0,request:AbortController|undefined;
@@ -59,11 +60,11 @@
       return;
     }
     const query:RemovalQuery|undefined=mode==='line'?{
-      expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RemovalQuery['expectedContentVersion'],
+      expectedWorldEpoch:read.worldEpoch,expectedMinute:read.tick,expectedGeometryRevision:revision,expectedContentVersion:read.contentVersion as RemovalQuery['expectedContentVersion'],
       position:{x:ax,y:ay,z:level},end:{x:bx,y:by,z:level},expectedEntityId:'0',expectedEntityRevision:'0',
     }:selected?removalQuery(read,selected):removalAt(read,{x:ax,y:ay,z:level});
     if(!query){status='terrain';return;}
-    fence=railwayFence(read);status='checking';request=new AbortController();const id=version;
+    fence=constructionFence(read);status='checking';request=new AbortController();const id=version;
     try{
       const preview=await model.previewRemoval(query,request.signal);
       if(id!==version||fence!==currentFence()||blocked)return;
@@ -89,7 +90,7 @@
   });});
   $effect(()=>{
     const current=currentFence();
-    if(fence&&fence!==current&&!submitting){reset();status='stale';}
+    if(fence&&(fence!==current||(cityResult||stationResult||result)&&!currentQuote(view.read,(cityResult||stationResult||result)!.query))&&!submitting){reset();status='stale';}
     if(view.connection!=='ready'||view.role==='observer')untrack(()=>cancelDraft());
   });
   $effect(()=>()=>{version++;request?.abort();onpreview();onstationpreview();oncitypreview();onpoints([]);});

@@ -122,7 +122,7 @@ test('peer removal invalidates an object preview and late responses cannot resto
   await page.route('**/api/removal/preview?**',async route=>{const response=await route.fetch();intercepted();await waiting;await route.fulfill({response});});
   await click(page,16.5,-55.5);await received;
   await click(peer,16.5,-40.5);await expect(confirm(peer)).toBeEnabled();await expect(peer.getByTestId('remove-target')).toContainText('Pier');await confirm(peer).click();
-  await expect(page.getByTestId('remove-status')).toContainText('world changed');release();await expect(confirm(page)).toBeDisabled();
+  release();await expect(confirm(page)).toBeEnabled();await confirm(page).click();await expect(page.getByTestId('remove-status')).toContainText('world changed');await expect(confirm(page)).toBeDisabled();
   expect((await state(page)).mixed.voxels.some((v:any)=>v.ownerId==='7')).toBe(true);
   await page.unroute('**/api/removal/preview?**');await click(page,16.5,-55.5);await expect(confirm(page)).toBeEnabled();await expect(page.locator('.remove-task li')).toHaveCount(1);
  }finally{release();await peer.close();await replace(page,original);}

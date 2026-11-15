@@ -24,7 +24,8 @@ public sealed partial class SessionHost
     {
         var state=mixedState?.CaptureTerrain() ?? terrainState??throw new InvalidOperationException("operationUnavailable");
         if(query.ExpectedWorldEpoch!=WorldEpoch)throw new InvalidOperationException("staleEpoch");
-        if(query.ExpectedGeometryRevision!=TerrainGeometryRevision)throw new InvalidOperationException("staleRevision");
+        if(query.ExpectedMinute is {} minute) ValidateQuoteAge(minute);
+        ValidateQuoteRevision(query.ExpectedGeometryRevision,TerrainGeometryRevision);
         if(!state.ConstructionMode||state.Revision==long.MaxValue)throw new InvalidOperationException("operationUnavailable");
         if(query.Position==null||query.Rectangle?.End==null||query.Rectangle.Soft||query.OffsetX!=null||query.OffsetY!=null||query.Stroke?.Length>0)
             throw new ArgumentException("invalidInput");
@@ -48,9 +49,10 @@ public sealed partial class SessionHost
     {
         try
         {
+            using var review = ReviewQuote(query, () => PreviewCorner(query));
             var (plan,random)=PlanAuthoring(query);if(!plan.Sites.Any(p=>p.Legal))return "invalidPlacement";
             var candidate=plan.Draft.Finish();
-            PublishTerrain(candidate,random:random);return null;
+            PublishTerrain(candidate,random:random);ConsumeQuote(query); return null;
         }
         catch(InvalidOperationException ex) when(ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable"){return ex.Message;}
         catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException){return "invalidPlacement";}

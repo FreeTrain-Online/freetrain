@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {currentQuote} from './lib/quote-validity.ts';
  import {WorldSpace} from './lib/map-geometry.ts';
  import {untrack} from 'svelte';
  import {messages} from './lib/localization.ts';
@@ -45,9 +46,10 @@
   const accepted=await model.send({kind:'editStationBuilding',query:result.query,expectedCost:result.cost});submitting=false;
   if(id!==version)return;reset();if(!accepted)status='stale';
  }
- $effect(()=>{void view.locale;void definitionId;untrack(reset);});
+ // Derived text stays stable across snapshots; direct view reads would reset every tick.
+ $effect(()=>{void text;void definitionId;untrack(reset);});
  $effect(()=>{const p=picked;if(p)untrack(()=>{reset();x=p.x;y=p.y;detectCoordinates=false;if(autoLevel)level=p.z;void check();});});
- $effect(()=>{const current=stationBuildingFence(view.read);if(fence&&fence!==current&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
+ $effect(()=>{const current=stationBuildingFence(view.read);if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
  $effect(()=>()=>{version++;request?.abort();onpreview();});
  const reasons={...railwayReasons,stationGround:'stationGround',stationNotFound:'stationNotFound',unavailableStationBinding:'railBinding'} as const;
 </script>

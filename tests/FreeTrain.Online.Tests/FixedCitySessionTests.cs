@@ -33,6 +33,36 @@ public class FixedCitySessionTests
         Assert.All(h.Snapshot().Mixed!.StationGraph!.ListenerMemberships,m=>Assert.Empty(m.Providers));
     }
     [Fact]
+    public async Task First_train_purchase_after_city_construction_preserves_city_stations_and_pending_callbacks()
+    {
+        var state=CityHeat.Enable(StationBuildingConstructionTests.Build(StationBuildingConstructionTests.Empty(now:1980),at:new(12,12,2)));
+        using var h=new SessionHost(state,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        var building=Query(h);var preview=h.PreviewFixedCity(building);
+        Assert.True(preview.Legal,preview.Reason);
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditFixedCityCommand(building,preview.Cost)));
+        var before=h.Snapshot();var saved=await Save(h);
+        Assert.Null(before.Mixed!.Fleet);Assert.NotEmpty(before.Mixed.City!.Structures);
+        var b=RollingStockCatalog.Bundled.Trains[0].Binding;
+        var query=new FleetTradeQuery(before.WorldEpoch,before.Revision,before.Tick,before.ContentVersion,"buy",
+            new(b.PackId,b.Version,b.CatalogHash,b.ContributionId),3,1,0);
+        var quote=h.PreviewFleetTrade(query);
+        Assert.Equal(saved,await Save(h));
+        Assert.IsType<AcceptedMessage>(await Send(h,new TradeFleetCommand(query,quote.Price)));
+        var after=h.Snapshot();
+        var json=WireJson.CreateOptions();
+        Assert.Equal(System.Text.Json.JsonSerializer.Serialize(before.Mixed.City,json),System.Text.Json.JsonSerializer.Serialize(after.Mixed!.City,json));
+        Assert.Equal(System.Text.Json.JsonSerializer.Serialize(before.Mixed.StationGraph,json),System.Text.Json.JsonSerializer.Serialize(after.Mixed.StationGraph,json));
+        Assert.Equal(System.Text.Json.JsonSerializer.Serialize(before.Mixed.Queue,json),System.Text.Json.JsonSerializer.Serialize(after.Mixed.Queue,json));
+        Assert.Single(after.Mixed.Fleet!.Trains);Assert.Equal(before.Tick,after.Tick);
+        var purchased=await Save(h);
+        var reopened=SaveCodec.ReadWorld(purchased,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        Assert.Equal(purchased,SaveCodec.Write(reopened));
+        using var restored=new SessionHost(reopened,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
+        Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));
+        Assert.IsType<AcceptedMessage>(await Send(restored,new StepCommand()));
+        Assert.Equal(await Save(h),await Save(restored));
+    }
+    [Fact]
     public void Playable_city_browser_seed_is_empty_source_clock_without_producers_or_completion_shortcut()
     {
         var s=StationBuildingConstructionTests.Empty(now:1980);
@@ -58,8 +88,7 @@ public class FixedCitySessionTests
         var blocked=h.PreviewFixedCity(Query(h));Assert.False(blocked.Legal);Assert.Equal(saved,await Save(h));
         q=Query(h,true);p=h.PreviewFixedCity(q);Assert.True(p.Legal);Assert.Equal(0,p.Cost);
         Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));saved=await Save(h);
-        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new EditFixedCityCommand(q,p.Cost))).Code);Assert.Equal(saved,await Save(h));
-        q=Query(h,true);p=h.PreviewFixedCity(q);Assert.IsType<AcceptedMessage>(await Send(h,new EditFixedCityCommand(q,p.Cost)));
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditFixedCityCommand(q,p.Cost)));
         Assert.Empty(h.Snapshot().Mixed!.City!.Structures);Assert.DoesNotContain(h.Snapshot().Mixed!.Queue!.Pending,t=>t.HandlerId.StartsWith("city/construction/"));
     }
 }

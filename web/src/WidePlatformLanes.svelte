@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {currentQuote} from './lib/quote-validity.ts';
  import {onDestroy,untrack} from 'svelte';
  import {messages} from './lib/localization.ts';
  import {widePlatformLaneQuery} from './lib/wide-platform-edit.ts';
@@ -25,8 +26,9 @@
   if(blocked||!result?.legal||fence!==stationBuildingFence(view.read))return;
   const preview=result;reset();await model.send({kind:'editWidePlatform',query:preview.query,expectedCost:preview.cost});
  }
- $effect(()=>{void view.locale;void id;untrack(reset);});
- $effect(()=>{const current=stationBuildingFence(view.read),stop=blocked;untrack(()=>{if(fence&&fence!==current||stop)reset();});});
+ // Derived text stays stable across snapshots; direct view reads would reset every tick.
+ $effect(()=>{void text;void id;untrack(reset);});
+ $effect(()=>{const current=stationBuildingFence(view.read),stop=blocked,expired=result&&!currentQuote(view.read,result.query);untrack(()=>{if(fence&&(fence!==current||expired)||stop)reset();});});
  onDestroy(reset);
 </script>
 <fieldset class="platform-lanes" disabled={blocked}>

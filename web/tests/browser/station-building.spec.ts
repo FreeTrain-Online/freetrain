@@ -35,6 +35,46 @@ async function quote(p:Page,ja=false,x=25,y=25){
  await p.locator('.station-task form').getByRole('button',{name:ja?'配置を確認':'Check placement',exact:true}).click();
  await expect(p.getByRole('button',{name:ja?'駅舎の建設を確定':'Confirm station building',exact:true})).toBeEnabled();
 }
+test('station placement remains usable while the simulation runs',async({page})=>{
+ await page.goto('/');await ready(page);await empty(page);await ready(page);
+ await page.getByLabel('Game speed',{exact:true}).selectOption('0.125');
+ await page.getByRole('button',{name:'Run',exact:false}).first().click();
+ await task(page);await quote(page);
+ const quoted=(await state(page)).tick;
+ await expect.poll(async()=>BigInt((await state(page)).tick)-BigInt(quoted)).toBeGreaterThanOrEqual(2n);
+ const confirm=page.getByRole('button',{name:'Confirm station building',exact:true});
+ await expect(confirm).toBeEnabled();await confirm.click();
+ await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
+ expect((await state(page)).paused).toBe(false);
+});
+
+test('station placement and removal near completed city buildings preserve demand connections',async({page})=>{
+ await page.goto('/');await ready(page);
+ const initial=await state(page),seed=readFileSync('tests/fixtures/fixed-city-v11.json');
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:seed})).ok()).toBe(true);
+ await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(initial.worldEpoch);
+ await page.getByRole('button',{name:'Single step',exact:false}).click();
+ await expect.poll(async()=>(await state(page)).mixed.city.producers.length).toBe(1);
+ const before=await state(page),providerId=before.mixed.city.producers[0].ownerId;
+ await task(page);await quote(page,false,16,12);
+ await page.getByRole('button',{name:'Confirm station building',exact:true}).click();
+ await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.length).toBe(2);
+ const built=await state(page),station=built.mixed.stationGraph.buildings.find((b:any)=>b.location.x===16&&b.location.y===12);
+ expect(built.mixed.stationGraph.listeners.find((l:any)=>l.providerId===providerId).stations).toContain(station.id);
+ await page.getByRole('button',{name:'Remove',exact:true}).click();
+ await page.getByLabel('Voxel X',{exact:true}).fill('16');await page.getByLabel('Voxel Y',{exact:true}).fill('12');
+ await page.getByLabel('Removal level',{exact:true}).fill(String(station.location.z));
+ await page.locator('.remove-task form').getByRole('button',{name:'Preview removal',exact:true}).click();
+ await page.getByRole('button',{name:'Confirm removal',exact:true}).click();
+ await expect.poll(async()=>(await state(page)).mixed.stationGraph.buildings.length).toBe(1);
+ const removed=await state(page);
+ expect(removed.mixed.stationGraph.listeners.find((l:any)=>l.providerId===providerId).stations).not.toContain(station.id);
+ const saved=await bytes(page);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+removed.worldEpoch,{data:saved})).ok()).toBe(true);
+ await expect.poll(async()=>(await state(page)).worldEpoch).not.toBe(removed.worldEpoch);
+ expect((await state(page)).mixed).toEqual(removed.mixed);
+});
+
 for(const ja of [false,true])test(`playable station ${ja?'JA narrow touch':'EN desktop keyboard'} build name remove and exact save reopen with operator peer`,async({page,browser,baseURL})=>{
  test.setTimeout(120000);
  if(ja)await page.setViewportSize({width:430,height:860});
@@ -115,7 +155,7 @@ test('station quotes and name drafts fence peer edits, Observer, late previews, 
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);
   await expect(observer.getByRole('button',{name:'Stations',exact:true})).toBeDisabled();
   await task(peer);await quote(peer);const confirm=peer.getByRole('button',{name:'Confirm station building',exact:true});
-  await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(confirm).toBeDisabled();
+  await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(confirm).toBeEnabled();
   await quote(peer);await confirm.click();await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
   const b=(await state(page)).mixed.stationGraph.buildings[0];
   for(const p of [page,peer,observer]){await closePanel(p);await p.getByRole('button',{name:'Inspect',exact:true}).click();await pick(p,b);await expect(p.getByTestId('confirmed-name')).toHaveText(b.name);}
@@ -140,7 +180,7 @@ test('station quotes and name drafts fence peer edits, Observer, late previews, 
  }finally{await context.close();await observerContext.close();}
 });
 
-test('Remove tool fences station quotes by minute and cancels late station removal previews',async({page})=>{
+test('Remove tool retains station quotes across clock steps and cancels late removal previews',async({page})=>{
  await page.goto('/');await ready(page);await empty(page);await task(page);await quote(page);
  await page.getByRole('button',{name:'Confirm station building',exact:true}).click();
  await expect.poll(async()=>(await state(page)).mixed?.stationGraph?.buildings.length).toBe(1);
@@ -151,7 +191,7 @@ test('Remove tool fences station quotes by minute and cancels late station remov
  await page.getByLabel('Removal level',{exact:true}).fill(String(b.location.z));
  const check=page.locator('.remove-task form').getByRole('button',{name:'Preview removal',exact:true});await check.click();
  const confirm=page.getByRole('button',{name:'Confirm removal',exact:true});await expect(confirm).toBeEnabled();
- await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(confirm).toBeDisabled();
+ await page.getByRole('button',{name:'Single step',exact:false}).click();await expect(confirm).toBeEnabled();
  const saved=await bytes(page);
  let release!:()=>void;const held=new Promise<void>(r=>{release=r;});let seen=false;
  await page.route('**/api/station/building/preview?*',async r=>{const response=await r.fetch();seen=true;await held;await r.fulfill({response});});

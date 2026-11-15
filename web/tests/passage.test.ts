@@ -51,7 +51,7 @@ Deno.test('ghost simulates endpoint material retention promotion and neighbor wi
  assert.equal(passageGhost(s,preview)[0].recipeId,'system:brown-passage-6');
  assert.equal(passageGhost(s,{...preview,query:{...q,action:'remove'}})[0].recipeId,'system:thin-4');
 });
-Deno.test('passage requests fence epoch geometry minute content abort reconnect and disposal, with locale independent transport',async()=>{
+Deno.test('passage requests tolerate geometry and minute progress but fence epoch content abort reconnect and disposal',async()=>{
  const {createFixtureService}=await import('../src/lib/session-client.ts'),{createShellModel}=await import('../src/lib/shell-model.ts');
  const terrain=JSON.parse(await Deno.readTextFile(new URL('../../prototype/protocol/fixtures/snapshot-terrain.json',import.meta.url))) as Snapshot;
  for(const change of ['epoch','geometry','minute','content','abort','connection','dispose','locale']){
@@ -59,7 +59,7 @@ Deno.test('passage requests fence epoch geometry minute content abort reconnect 
   const model=createShellModel(()=>({...service.connect(),previewPassage:()=>new Promise(r=>complete=r)}),'en',1);
   try{
    for(let i=0;i<100&&model.state.connection!=='ready';i++)await new Promise(r=>setTimeout(r,1));
-   const controller=new AbortController(),q=passageQuery(terrain,{x:1,y:0,z:2},{x:2,y:0,z:2},'brown')!,result=model.previewPassage(q,controller.signal),rejected=change==='locale'?undefined:assert.rejects(result);
+   const controller=new AbortController(),q=passageQuery(terrain,{x:1,y:0,z:2},{x:2,y:0,z:2},'brown')!,result=model.previewPassage(q,controller.signal),rejected=['locale','geometry','minute'].includes(change)?undefined:assert.rejects(result);
    if(change==='epoch')service.publish({...terrain,worldEpoch:'999'});
    if(change==='geometry')service.publish({...terrain,terrain:{...terrain.terrain!,geometryRevision:'999'}});
    if(change==='minute')service.publish({...terrain,tick:String(BigInt(terrain.tick)+1n)});

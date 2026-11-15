@@ -88,9 +88,9 @@ public class FleetSessionTests
         Assert.Equal("notAuthorized",Assert.IsType<RejectedMessage>(await Send(h,new TradeFleetCommand(q,quote.Price),observer)).Code);
         Assert.Equal(bytes,await Save(h));
         Assert.IsType<AcceptedMessage>(await Send(h,new StepCommand()));
-        Assert.Throws<InvalidOperationException>(()=>h.PreviewFleetTrade(q));
-        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new TradeFleetCommand(q,quote.Price))).Code);
-        Assert.Null(h.Snapshot().Mixed);
+        Assert.Equal(quote.Price,h.PreviewFleetTrade(q).Price);
+        Assert.IsType<AcceptedMessage>(await Send(h,new TradeFleetCommand(q,quote.Price)));
+        Assert.NotNull(h.Snapshot().Mixed!.Fleet);
     }
     [Fact]
     public async Task Rename_is_revision_fenced_and_sale_quotes_remove_only_selected_unplaced_stock()

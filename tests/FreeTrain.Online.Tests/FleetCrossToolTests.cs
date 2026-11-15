@@ -109,11 +109,12 @@ public partial class FleetMovementTests
         Assert.True(quote.Legal,quote.Reason);
         Assert.Equal(before,await FleetSave(h));
         await FleetStep(h,2);var moved=await FleetSave(h);
-        ManagerRejected(await FleetSend(h,new EditRailwayCommand(query)),"staleRevision");
-        Assert.Equal(moved,await FleetSave(h));
+        if(infrastructure is "pole" or "speed") Assert.IsType<AcceptedMessage>(await FleetSend(h,new EditRailwayCommand(query)));
+        else {ManagerRejected(await FleetSend(h,new EditRailwayCommand(query)),"staleRevision");Assert.Equal(moved,await FleetSave(h));}
         query=query with {ExpectedGeometryRevision=h.Snapshot().Mixed!.GeometryRevision};
         var occupied=h.PreviewRailway(query);
-        if(infrastructure is "pole" or "speed") {
+        if(infrastructure == "speed") Assert.Equal("speedLimitOverlap",occupied.Reason);
+        else if(infrastructure == "pole") {
             Assert.True(occupied.Legal,occupied.Reason);Assert.Equal(0,occupied.Cost);
             Assert.IsType<AcceptedMessage>(await FleetSend(h,new EditRailwayCommand(query),FleetOperator));
         } else Assert.False(occupied.Legal);

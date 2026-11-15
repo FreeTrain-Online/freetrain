@@ -1,3 +1,4 @@
+import {currentQuote} from './quote-validity.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CornerTerrainQuery, Position } from '../generated/contracts.ts';
 import type { ShellModel } from './shell-model.ts';
@@ -26,14 +27,14 @@ export function createTerrainPainter(model:Pick<ShellModel,'state'|'previewCorne
   const position={...(anchor??t.position)};
   if(!space.containsHorizontal(position)){publish({status:'blocked',reason:'outside'});timer=setTimeout(dab,interval);return;}
   const stored=space.storage(position);position.z=read.terrain!.cells[stored.v*read.map.width+stored.h].ground;
-  const query:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:railwayRevision(read)!,
+  const query:CornerTerrainQuery={expectedWorldEpoch:read.worldEpoch,expectedMinute:read.tick,expectedGeometryRevision:railwayRevision(read)!,
    position,action:t.reverse?(action==='raise'?'lower':'raise'):action,offsetX:anchor?null:t.offsetX,offsetY:anchor?null:t.offsetY,stroke:null};
   busy=true;request=new AbortController();publish({status:'painting',reason:undefined});
   try{
    const preview=await model.previewCorner(query,request.signal);
    if(id!==generation||!state.active)return;
    const current=model.state;
-   if(!available()||current.pending||current.read?.worldEpoch!==query.expectedWorldEpoch||railwayRevision(current.read)!==query.expectedGeometryRevision)return stop('failed','staleRevision');
+   if(!available()||current.pending||!currentQuote(current.read,query))return stop('failed','staleRevision');
    if(!preview.legal){blockedTarget=key;if(!repeat)stop('blocked',preview.reason??'invalidInput');else publish({status:'blocked',reason:preview.reason??'invalidInput'});return;}
    // Releasing while the read-only preview was pending prevents this command.
    const accepted=await model.send({kind:'editCorner',query});

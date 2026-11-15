@@ -40,7 +40,7 @@ Deno.test('station removal resolves the actual identity and revision from every 
   const q=stationBuildingQuery(s,p,null,true)!;assert.equal(q.stationId,b.id);assert.equal(q.expectedStationRevision,b.revision);assert.deepEqual(q.position,p);
  }
  assert.equal(stationBuildingQuery(s,{x:0,y:0,z:0},null,true),undefined);
- assert.notEqual(stationBuildingFence(s),stationBuildingFence({...s,tick:String(BigInt(s.tick)+1n)}));
+ assert.equal(stationBuildingFence(s),stationBuildingFence({...s,tick:String(BigInt(s.tick)+1n)}));
  const q=stationBuildingQuery(s,b.location,b.definition)!;
  const p={query:q,legal:true,reason:null,cost:'100',positions:[b.location],losses:[]};assert.deepEqual(parseStationBuildingPreview(p),p);
  for(const bad of [{...p,positions:[]},{...p,positions:[b.location,b.location]},{...p,reason:'obstacle'},{...p,legal:false},{...p,cost:'-1'}])assert.throws(()=>parseStationBuildingPreview(bad));

@@ -156,7 +156,7 @@ public class WidePlatformLaneTests
         q=Query();Assert.True(h.PreviewWidePlatform(q).Legal);Assert.IsType<AcceptedMessage>(await Send(new EditWidePlatformCommand(q,0)));
         bytes=await Save();Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new EditWidePlatformCommand(q,0))).Code);Assert.Equal(bytes,await Save());
         q=Query() with {Action="removeLane"};Assert.True(h.PreviewWidePlatform(q).Legal);Assert.IsType<AcceptedMessage>(await Send(new StepCommand()));
-        bytes=await Save();Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(new EditWidePlatformCommand(q,0))).Code);Assert.Equal(bytes,await Save());
+        Assert.IsType<AcceptedMessage>(await Send(new EditWidePlatformCommand(q,0)));
     }
 
 }

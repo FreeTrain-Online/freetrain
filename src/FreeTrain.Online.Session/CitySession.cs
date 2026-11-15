@@ -14,8 +14,8 @@ public sealed partial class SessionHost
         var state=mixedState ?? throw new InvalidOperationException("operationUnavailable");
         if(state.World.City==null) throw new InvalidOperationException("operationUnavailable");
         if(query.ExpectedContentVersion!=ProtocolIdentity.MixedContent) throw new ArgumentException("invalidInput");
-        if(state.Revision!=query.ExpectedRevision || state.Clock.Time.AbsoluteMinute!=query.ExpectedMinute)
-            throw new InvalidOperationException("staleRevision");
+        ValidateQuoteRevision(query.ExpectedRevision,state.Revision);
+        ValidateQuoteMinute(query.ExpectedMinute);
         var owner=state.World.City.State.Structures.SingleOrDefault(s=>s.Id==query.OwnerId);
         if(owner==null || owner.Revision!=query.ExpectedOwnerRevision) throw new InvalidOperationException("staleRevision");
         return state;
@@ -26,12 +26,15 @@ public sealed partial class SessionHost
     {
         lock(gate)
         {
-            var state=CityState(query);
-            var structure=state.World.City!.Structure(query.OwnerId);
-            var canCancel=!structure.Construction.IsEmpty;
-            if(canCancel) MixedWire.ValidateTransition(state,CancelCityCandidate(state,query.OwnerId));
-            return new(query,canCancel,canCancel ? null : "operationUnavailable",0,
-                CityWire.Read(state.World.City)!.Structures.Single(s=>s.Id==query.OwnerId));
+            return BuildQuote<CityQuery, CityPreviewRead>(query, () =>
+            {
+                var state=CityState(query);
+                var structure=state.World.City!.Structure(query.OwnerId);
+                var canCancel=!structure.Construction.IsEmpty;
+                if(canCancel) MixedWire.ValidateTransition(state,CancelCityCandidate(state,query.OwnerId));
+                return new(query,canCancel,canCancel ? null : "operationUnavailable",0,
+                    CityWire.Read(state.World.City)!.Structures.Single(s=>s.Id==query.OwnerId));
+            }, query.ExpectedMinute);
         }
     }
     private static MixedSessionState CancelCityCandidate(MixedSessionState state,long ownerId)
@@ -43,12 +46,13 @@ public sealed partial class SessionHost
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewCity(command.Query));
             var before=CityState(command.Query);
             if(before.World.City!.Structure(command.Query.OwnerId).Construction.IsEmpty) return "operationUnavailable";
             var after=CancelCityCandidate(before,command.Query.OwnerId);
             MixedWire.ValidateTransition(before,after);
             mixedState=after;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch(InvalidOperationException ex) when(ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") {return ex.Message;}
         catch(Exception ex) when(ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException) {return "invalidInput";}

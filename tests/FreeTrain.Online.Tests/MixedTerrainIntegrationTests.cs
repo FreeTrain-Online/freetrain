@@ -97,14 +97,14 @@ public class MixedTerrainIntegrationTests
         Assert.Equal(beforeRandom,JsonSerializer.Serialize(current.Random.Capture()));Assert.False(current.ConstructionMode);Assert.NotEqual(original,await Save(h));
     }
     [Fact]
-    public async Task Railway_edits_fence_terrain_drafts_even_when_terrain_revision_has_not_changed()
+    public async Task Unrelated_railway_edits_allow_terrain_drafts_to_be_reviewed_again()
     {
         var w=CrossToolDependencyTests.Rail(RailwayHandler.Normal);using var h=Host(w);var q=Q(h);Assert.True(h.PreviewCorner(q).Legal);
         var s=h.Snapshot();var rail=new RailwayQuery(s.WorldEpoch,s.Mixed!.GeometryRevision,s.ContentVersion,new(P.X,P.Y,P.Z),new(P.X,P.Y,P.Z),"lay","source","pole");
         Assert.IsType<AcceptedMessage>(await Send(h,new EditRailwayCommand(rail)));
         var after=await Save(h);Assert.Equal(s.Terrain!.GeometryRevision,h.Snapshot().Terrain!.GeometryRevision);
-        Assert.Equal("staleRevision",Assert.Throws<InvalidOperationException>(()=>h.PreviewCorner(q)).Message);
-        Assert.Equal("staleRevision",Assert.IsType<RejectedMessage>(await Send(h,new EditCornerCommand(q))).Code);Assert.Equal(after,await Save(h));
+        Assert.True(h.PreviewCorner(q).Legal);
+        Assert.IsType<AcceptedMessage>(await Send(h,new EditCornerCommand(q)));Assert.NotEqual(after,await Save(h));
     }
 
     [Fact]

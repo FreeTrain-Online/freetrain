@@ -355,7 +355,8 @@ test('late previews, stale correction, Observer rejection and participant receip
   const first=target(page,[30,27],[34,27]);await expect.poll(()=>delayed).toBe(true);
   await target(page,[30,28],[34,28]);release();await first;await expect(page.getByTestId('rail-route')).toContainText('30, 28, 1 → 34, 28, 1');
   await peer.goto('/');await ready(peer);await peer.getByRole('button',{name:'Track',exact:true}).click();await target(peer,[30,30],[34,30]);await confirm(peer);
-  await expect(page.getByTestId('rail-status')).toContainText('world changed');await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
+  // The first construction promotes terrain to the mixed content profile.
+  await expect(page.getByRole('button',{name:'Confirm track change',exact:true})).toBeDisabled();
   await target(page,[30,28],[34,28]);await confirm(page);expect((await state(page)).mixed.accounts.transactions).toHaveLength(2);
   const current=await state(page),q={expectedWorldEpoch:current.worldEpoch,expectedGeometryRevision:current.mixed.geometryRevision,expectedContentVersion:current.contentVersion,from:{x:30,y:32,z:1},to:{x:34,y:32,z:1},action:'lay',routing:'closest'};
   expect((await wireCommand(browser,q,'observer-test')).code).toBe('notAuthorized');

@@ -12,7 +12,7 @@ public sealed partial class SessionHost
             query.Part is not ("passage" or "stairs") || query.Part == "stairs" && query.From != query.To ||
             query.Action is not ("place" or "remove") || query.Material is not ("concrete" or "brown" or "green")) throw new ArgumentException("invalidInput");
         var state = RailwayState(query.ExpectedWorldEpoch,query.ExpectedGeometryRevision,query.ExpectedContentVersion);
-        if (state.Clock.Time.AbsoluteMinute != query.ExpectedMinute) throw new InvalidOperationException("staleRevision");
+        ValidateQuoteMinute(query.ExpectedMinute);
         return state;
     }
     private static PassageConstructionPlan PlanPassage(MixedSessionState state, PassageQuery query) =>
@@ -24,34 +24,38 @@ public sealed partial class SessionHost
     {
         lock (gate)
         {
-            var state = PassageState(query);
-            var plan = PlanPassage(state,query);
-            var reason = plan.Reason;
-            if (reason == null)
+            return BuildQuote<PassageQuery, PassagePreviewRead>(query, () =>
             {
-                try { MixedWire.ValidateTransition(state,PassageConstruction.Commit(state,plan)); }
-                catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
-                { reason = "constructionOverflow"; }
-            }
-            static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
-            return new(query,reason == null,reason,0,
-                reason == null ? plan.Positions.Select(P).ToArray() : []);
+                var state = PassageState(query);
+                var plan = PlanPassage(state,query);
+                var reason = plan.Reason;
+                if (reason == null)
+                {
+                    try { MixedWire.ValidateTransition(state,PassageConstruction.Commit(state,plan)); }
+                    catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)
+                    { reason = "constructionOverflow"; }
+                }
+                static PositionRead P(Location p) => new(p.X,p.Y,p.Z);
+                return new(query,reason == null,reason,0,
+                    reason == null ? plan.Positions.Select(P).ToArray() : []);
+            }, query.ExpectedMinute);
         }
     }
     private string? CommitPassage(EditPassageCommand command)
     {
         try
         {
+            using var review = ReviewQuote(command.Query, () => PreviewPassage(command.Query));
             var before = PassageState(command.Query);
             var plan = PlanPassage(before,command.Query);
             if (!plan.Legal) return plan.Reason == "staleRevision" ? "staleRevision" : "invalidPlacement";
             if (command.ExpectedCost != 0) return "staleRevision";
             var after = PassageConstruction.Commit(before,plan);
             MixedWire.ValidateTransition(before,after);
-            if (ReferenceEquals(before,after)) return null;
+            if (ReferenceEquals(before,after)){ConsumeQuote(command.Query);return null;}
             mixedState = after;
             terrainState = null;
-            return null;
+            ConsumeQuote(command.Query); return null;
         }
         catch (InvalidOperationException ex) when (ex.Message is "staleEpoch" or "staleRevision" or "operationUnavailable") { return ex.Message; }
         catch (Exception ex) when (ex is ArgumentException or OverflowException or InvalidDataException or InvalidOperationException)

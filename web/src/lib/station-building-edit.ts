@@ -2,10 +2,11 @@ import type {Position,StationBuildingQuery} from '../generated/contracts.ts';
 import type {ReadState} from './session-client.ts';
 import type {RenderCatalog} from './content-recipes.ts';
 import {contentText,bundledLocalization} from './content-localization.ts';
-import {railwayFence,railwayRevision} from './railway-edit.ts';
+import {railwayRevision} from './railway-edit.ts';
+import {constructionFence} from './quote-validity.ts';
 import profile from '../generated/station-profile.json' with {type:'json'};
 export const stationDefinitions=profile.definitions;
-export const stationBuildingFence=(read?:ReadState)=>`${railwayFence(read)}/${read?.tick}`;
+export const stationBuildingFence=constructionFence;
 export function stationBuildingAt(read:ReadState,p:Position){
  return read.mixed?.stationGraph?.buildings.find(b=>{
   const d=stationDefinitions.find(d=>d.reference.recipeId===b.definition.recipeId);
