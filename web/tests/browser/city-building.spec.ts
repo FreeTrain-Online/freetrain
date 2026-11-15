@@ -103,3 +103,44 @@ test('P7-09 Observer, clock advancement, late response and locale fences preserv
   await expect.poll(async()=>(await state(observer)).mixed.city?.structures.length).toBe(1);
  }finally{await context.close();}
 });
+
+const apartment='{C7536844-7CD0-49e0-8982-2819F5792B32}';
+const apartmentDefinition=JSON.parse(readFileSync('src/generated/city-profile.json','utf8')).structures.find((d:any)=>d.reference.recipeId===apartment);
+for(const ja of [false,true])test(`P7-10 variable height ${ja?'JA narrow touch':'EN keyboard'} min max quotes natural scaled demand gray cut demolition peers and continuation`,async({page,browser,baseURL})=>{
+ test.setTimeout(180000);const t=texts[ja?1:0],locale=ja?'ja':'en';if(ja)await page.setViewportSize({width:430,height:860});
+ await page.addInitScript(ja=>localStorage.setItem('freetrain-online.locale',ja?'ja':'en'),ja);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ const context=await browser.newContext({baseURL}),peer=await context.newPage();
+ try{
+  await page.goto('/');await ready(page,locale);const initial=await state(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page,locale);
+  await page.getByRole('button',{name:t.stationTask,exact:true}).click();await page.locator(`[data-catalog-variant="${station.reference.recipeId}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
+  await page.getByLabel(t.stationX,{exact:true}).fill('12');await page.getByLabel(t.stationY,{exact:true}).fill('12');await page.locator('.station-task form').getByRole('button',{name:t.stationCheck,exact:true}).click();await page.getByRole('button',{name:t.stationConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(page)).mixed.stationGraph?.buildings.length).toBe(1);
+  expect((await peer.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await peer.goto('/');await ready(peer);
+  await page.getByRole('button',{name:t.cityTask,exact:true}).click();await page.locator(`[data-catalog-variant="${apartment}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
+  const height=page.getByLabel(t.cityHeight,{exact:true}),confirm=page.getByRole('button',{name:t.cityConfirm,exact:true});
+  await expect(height).toHaveAttribute('min','8');await expect(height).toHaveAttribute('max','20');await expect(height).toHaveAttribute('step','4');await expect(height).toHaveValue('8');
+  const original=await bytes(page);await quote(page,t);await expect(page.locator('canvas')).toHaveAttribute('data-city-ghost-cells','2');
+  await height.fill('20');await expect(confirm).toBeDisabled();expect(await bytes(page)).toEqual(original);
+  await quote(page,t);await expect(page.locator('canvas')).toHaveAttribute('data-city-ghost-cells','5');await expect(page.getByTestId('city-cost')).toContainText((BigInt(apartmentDefinition.unitPrice)*5n).toLocaleString(locale));
+  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-variable-${locale}-preview.png`});await confirm.click();
+  await expect.poll(async()=>(await state(peer)).mixed.city?.structures[0]?.height).toBe(5);expect((await state(page)).mixed.city.producers).toEqual([]);
+  const siteSave=await bytes(page),before=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+before.worldEpoch,{data:siteSave})).ok()).toBe(true);await ready(page,locale);expect(await bytes(page)).toEqual(siteSave);
+  await page.getByLabel(t.gameSpeed,{exact:true}).selectOption('2');await page.getByRole('button',{name:t.run,exact:false}).click();
+  await expect.poll(async()=>(await state(page)).mixed.city.producers.length,{timeout:120000}).toBe(1);await page.getByRole('button',{name:t.pause,exact:false}).click();
+  const completed=await state(page),building=completed.mixed.city.structures[0],provider=completed.mixed.stationGraph.listeners[0].provider;
+  expect(building.height).toBe(5);expect(building.construction).toEqual([]);expect(provider.input).toBe('city-variable');expect(provider.population.kind).toBe('MultiplierPopulation');expect(provider.population.factor).toBe(5);expect(provider.population.children[0].base).toBe(120);expect([provider.xySize,provider.zSize]).toEqual([1,5]);expect(provider.landValue).toBe(0);
+  // 120 residents × source completion-hour percentage × height; cap is 0*1*max(1,5/4)+10.
+  await openPanel(page,'stations',locale);await page.getByLabel(t.stationSelect,{exact:true}).selectOption(completed.mixed.stationGraph.buildings[0].id);await expect(page.getByTestId('station-demand')).toHaveText('10');await closePanel(page);
+  const saved=await bytes(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+completed.worldEpoch,{data:saved})).ok()).toBe(true);await ready(page,locale);expect(await bytes(page)).toEqual(saved);
+  await openPanel(page,'view',locale);await page.getByLabel(t.heightCut,{exact:true}).fill('2');await closePanel(page);
+  const pixel=await exposeMapPoint(page,await point(page,{x:16*(14-11+12)+16,y:8*(12-(14-11))-32+8}));
+  const rgba=await page.locator('canvas').evaluate((el,p)=>{const r=el.getBoundingClientRect();return [...(el as HTMLCanvasElement).getContext('2d')!.getImageData(Math.floor((p.x-r.x)*(el as HTMLCanvasElement).width/r.width),Math.floor((p.y-r.y)*(el as HTMLCanvasElement).height/r.height),1,1).data];},pixel);expect(rgba).toEqual([128,128,128,255]);
+  if(ja)await page.touchscreen.tap(pixel.x,pixel.y);else await page.mouse.click(pixel.x,pixel.y);await expect(page.getByTestId('city-progress')).toHaveText(t.cityComplete);
+  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-variable-${locale}-cut-inspector.png`});
+  await page.getByRole('button',{name:t.cityRemove,exact:true}).click();await page.getByRole('button',{name:t.confirmRemoval,exact:true}).click();await expect.poll(async()=>(await state(peer)).mixed.city.structures.length).toBe(0);expect((await state(page)).mixed.stationGraph.listeners).toEqual([]);
+  await page.getByRole('button',{name:t.cityTask,exact:true}).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();await page.getByLabel(t.cityHeight,{exact:true}).fill('8');await quote(page,t);await confirm.click();
+  await expect.poll(async()=>(await state(peer)).mixed.city?.structures[0]?.height).toBe(2);expect((await state(page)).mixed.city.structures[0].id).not.toBe(building.id);expect(errors).toEqual([]);
+ }finally{await context.close();}
+});

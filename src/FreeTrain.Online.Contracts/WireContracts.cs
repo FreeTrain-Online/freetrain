@@ -197,7 +197,8 @@ public sealed record RemoveTrackCommand(PositionRead Position, long ExpectedRevi
 // Exact station contribution identity includes its authored orientation.
 public sealed record FixedCityQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
     string ExpectedContentVersion, string Action, PositionRead Position, DefinitionRead? Definition,
-    long OwnerId, long ExpectedOwnerRevision);
+    long OwnerId, long ExpectedOwnerRevision,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] int Height = 0);
 public sealed record FixedCityPreviewRead(FixedCityQuery Query, bool Legal, string? Reason, long Cost,
     PositionRead[] Positions, RailwayLossRead[] Losses);
 public sealed record EditFixedCityCommand(FixedCityQuery Query, long ExpectedCost) : CommandPayload;

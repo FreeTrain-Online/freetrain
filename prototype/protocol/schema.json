@@ -7048,6 +7048,11 @@
         },
         "expectedOwnerRevision": {
           "$ref": "#/$defs/Counter"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
         }
       },
       "required": [

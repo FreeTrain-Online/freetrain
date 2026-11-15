@@ -78,3 +78,12 @@ test('every fixed footprint including invisible members paints and picks source 
  const r=await page.evaluate(async catalog=>{const {cityCutGallery}=await import('/__tests/city-rendering.js');return cityCutGallery(catalog);},catalog);
  expect(r.definitions).toBe(66);expect(r.members).toBeGreaterThan(150);save('city-cut-winter-night',r.png);
 });
+
+test('P7-10 all 55 variable definitions min max stacks match independent XML pixels alpha and gray cuts in eight appearances',async({page})=>{
+ test.setTimeout(240000);await harness(page);await page.goto('/');await ready(page);const reports=[];
+ for(const season of ['spring','summer','autumn','winter'])for(const night of [false,true]){
+  const r=await page.evaluate(async({catalog,season,night})=>{const {variableCityGallery}=await import('/__tests/city-rendering.js');return variableCityGallery(catalog,{season,night});},{catalog,season,night});
+  expect(r.definitions).toBe(55);expect(r.cases).toBe(110);expect(r.picks).toBe(r.pixels);save(`city-variable-${season}-${night?'night':'day'}`,r.png);reports.push({...r,png:undefined,season,night});
+ }
+ writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-variable-report.json`,JSON.stringify(reports,null,2));
+});

@@ -17,7 +17,9 @@
  const items=$derived(catalog?fixedCityCatalog(catalog,view.locale):[]);
  const definitionId=$derived(view.catalogSelections.city);
  const selected=$derived(items.find(d=>d.reference.recipeId===definitionId));
- let x=$state(0),y=$state(0),autoLevel=$state(true);
+ let x=$state(0),y=$state(0),autoLevel=$state(true),floors=$state(4);
+ const validHeight=$derived(Number.isSafeInteger(floors)&&floors%4===0&&!!selected&&floors>=selected.minimumHeight*4&&floors<=selected.maximumHeight*4);
+ $effect(()=>{floors=(selected?.minimumHeight??1)*4;});
  let detectCoordinates=true;
  let result=$state<FixedCityPreview>(),status=$state<'idle'|'checking'|'ready'|'failed'|'stale'|'missing'>('idle');
  let fence=$state<string>(),submitting=false,version=0,request:AbortController|undefined;
@@ -28,13 +30,13 @@
  function edit(){reset();}
  async function check(){
   reset();if(blocked||!view.read)return;
-  if(![x,y,level].every(Number.isSafeInteger)){status='failed';return;}
+  if(![x,y,level,floors].every(Number.isSafeInteger)||floors%4!==0||!selected){status='failed';return;}
   const read=view.read;
   if(autoLevel&&detectCoordinates&&read.terrain){
    const space=new WorldSpace(read.map.width,read.map.height,read.map.levels),p={x,y,z:0};
    if(space.containsHorizontal(p)){const cell=space.storage(p);level=read.terrain.cells[cell.v*space.horizontalSize+cell.h].ground;}
   }
-  const query=fixedCityQuery(read,{x,y,z:level},fixedCityDefinitions.find(d=>d.reference.recipeId===definitionId)!.reference);
+  const query=fixedCityQuery(read,{x,y,z:level},fixedCityDefinitions.find(d=>d.reference.recipeId===definitionId)!.reference,false,selected.kind==='variable'?floors/4:undefined);
   if(!query){status='missing';return;}
   fence=fixedCityFence(read);const id=version;request=new AbortController();status='checking';
   try{const p=await model.previewFixedCity(query,request.signal);if(id!==version||fence!==fixedCityFence(view.read)||blocked)return;result=p;status='ready';onpreview(p);}
@@ -47,7 +49,7 @@
   if(id!==version)return;reset();if(!accepted)status='stale';
  }
  // Derived text stays stable across snapshots; direct view reads would reset every tick.
- $effect(()=>{void text;void definitionId;untrack(reset);});
+ $effect(()=>{void text;void definitionId;void floors;untrack(reset);});
  $effect(()=>{const p=picked;if(p)untrack(()=>{reset();x=p.x;y=p.y;detectCoordinates=false;if(autoLevel)level=p.z;void check();});});
  $effect(()=>{const current=fixedCityFence(view.read);if(fence&&(fence!==current||result&&!currentQuote(view.read,result.query))&&!submitting){reset();status='stale';}if(view.connection!=='ready'||view.role==='observer')untrack(reset);});
  $effect(()=>()=>{version++;request?.abort();onpreview();});
@@ -59,7 +61,8 @@
  <fieldset disabled={view.pending}>
  <p data-testid="catalog-selection">{text.cityType}: {selected?.title}{#if selected?.orientation} · {selected.orientation}{/if}</p>
  <button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button>
- {#if selected}<p>{selected.description}</p><p>{text.stationaryDimensions}: {selected.sizeX} × {selected.sizeY} × {selected.minimumHeight} · {text.price}: ¥{BigInt(selected.unitPrice).toLocaleString(view.locale)}</p><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
+ {#if selected}<p>{selected.description}</p><p>{text.stationaryDimensions}: {selected.sizeX} × {selected.sizeY} × {selected.kind==='variable'?floors/4:selected.minimumHeight} · {text.price}: ¥{validHeight?(BigInt(selected.unitPrice)*BigInt(selected.kind==='variable'?floors/4:1)).toLocaleString(view.locale):'—'}</p><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
+ {#if selected?.kind==='variable'}<label>{text.cityHeight}<input aria-label={text.cityHeight} type="number" min={selected.minimumHeight*4} max={selected.maximumHeight*4} step="4" bind:value={floors} oninput={edit}/></label>{/if}
  <div class="form-actions"><label>X<input aria-label={text.cityX} type="number" step="1" bind:value={x} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>Y<input aria-label={text.cityY} type="number" step="1" bind:value={y} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>{text.cityLevel}<input aria-label={text.cityLevel} type="number" step="1" bind:value={level} oninput={()=>{autoLevel=false;edit();}}/></label></div>
  <label><input type="checkbox" bind:checked={autoLevel} onchange={()=>{detectCoordinates=true;edit();}}/>{text.railAutoLevel}</label>
  <button type="button" onclick={()=>{reset();onpick();}}>{text.cityPick}</button>

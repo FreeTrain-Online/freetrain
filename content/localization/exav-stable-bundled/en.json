@@ -652,6 +652,226 @@
       "text": "Small house",
       "status": "reviewed-with-feature",
       "review": "P7-09 fixed building catalog; translated from pinned Japanese meaning; historical English donor compared, with detached house correcting Single condo."
+    },
+    "org.kohsuke.freetrain.structure.c477/{442C7E12-A3BA-4c25-9129-C3803EA760BC}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{8495D468-B2EF-4816-9C2A-67D8D68FCBDA}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{1E3FC997-DD98-4b47-82E0-D1C5914B9537}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{615FF4AA-898E-466f-8004-1855F82C1B5B}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{9BF4DD25-050A-4633-BC8B-0B8B226FC5E8}/group": {
+      "text": "Office building with heliport",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{5E12C371-F928-40f4-B661-FFC2DC71750E}/group": {
+      "text": "Office building with heliport",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}/group": {
+      "text": "Shinjuku Mitsui Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{200CC5B5-6F63-4A49-99FF-537DC8EE3DC2}/group": {
+      "text": "Shinjuku Mitsui Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{6E3D2FBA-4A74-426C-88E3-4787E3946543}/group": {
+      "text": "Shinjuku Mitsui Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{488D9D06-46B1-45EA-8DCE-61B1041254A2}/group": {
+      "text": "Shinjuku Mitsui Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{5BD744B4-195B-4609-91A0-42B69A747349}/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-a/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-a/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{5BD744B4-195B-4609-91A0-42B69A747349}-a/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-a/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{C35B9F7A-7D69-4D1B-9B92-D05CBF4C20D7}-b/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{A9E3F58D-5DB9-4CEF-8BC1-26DDBDD356C1}-b/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{5BD744B4-195B-4609-91A0-42B69A747349}-b/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{409ECEB5-C9A9-4516-B96C-C87FB2B93F32}-b/group": {
+      "text": "Shinjuku Sumitomo Building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{1F81CA6C-4D44-418B-A242-A9E4104648D3}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{5FACC378-154D-4FAE-8BDE-3C2DA1BAB635}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{736F1D68-3796-43F7-8495-11AE63F86F8E}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{813736D4-63A5-44DE-884C-7B10CFAEA582}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{542C633F-5F59-495E-9CF2-9BB46980F9EA}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{346B2781-75A7-4EE3-BF36-9C8B212DD678}/name": {
+      "text": "Small mixed-use building",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{40CBC11A-36B2-40BB-9A2D-EAA48973C478}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{8495D468-B2EF-4816-9C2A-67D8D68F0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{1E3FC997-DD98-4b47-82E0-D1C5914B0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{615FF4AA-898E-466f-8004-1855F82C0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{40CBC11A-36B2-40BB-C477-EAA48973C478}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{8495D468-B2EF-4816-C477-67D8D68F0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{1E3FC997-DD98-4b47-C477-D1C5914B0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c477/{615FF4AA-898E-466f-C477-1855F82C0002}/group": {
+      "text": "Office building (A)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{4A00A798-AC00-437e-A888-D89BA53AE521}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{8CA77980-AF45-4ee6-9835-05AE2265DE02}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{B33B8F45-ABEE-4c88-AD85-F37B06D1C0FB}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{042F75D2-0C64-4e42-8A94-1F0245304F8B}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{A39D0D3D-DEE7-4492-9EBC-678D331F3A52}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{ABD65D7D-DBFB-41A1-838C-F633CE2BF928}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{AD743C11-C9A9-4E76-AD68-178CFA9F6E3E}/group": {
+      "text": "Office building (B)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{9ECE312F-DB6A-415a-880A-E62FCE9AEB00}/group": {
+      "text": "Office building (2×2)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{87F5416D-BEC0-4712-A6CB-B8E3E77EBB83}/group": {
+      "text": "Office building (2×2)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.c915/{01C78302-65B7-473B-9426-A1BAB8F413BB}/group": {
+      "text": "Office building (2×2)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{C7536844-7CD0-49e0-8982-2819F5792B32}/group": {
+      "text": "Apartment building (small)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{9716E5F8-E2CB-40f9-A9C8-5B599895F32D}/group": {
+      "text": "Apartment building (small)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{74915C78-348C-4696-8C19-75B9098FB79C}/group": {
+      "text": "Apartment building (small)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{9E4F3766-CC02-4854-89E9-9DAE9020CDBF}/group": {
+      "text": "Apartment building (small)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{985CAC71-11BD-44b7-917E-D6D455CE0143}/group": {
+      "text": "Apartment building (medium)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{4B6D764D-9DB3-490b-B969-CD2CC1B41893}/group": {
+      "text": "Apartment building (medium)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{712E0D9A-1A79-4fd5-A1A5-B08B3336F047}/group": {
+      "text": "Apartment building (large)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.miha/{C1BFC436-71D9-48ab-B43B-9F56D2D0777E}/group": {
+      "text": "Apartment building (large)",
+      "status": "reviewed-with-feature"
+    },
+    "org.kohsuke.freetrain.structure.pcb/{72AF542C-3251-43ad-9094-43E6FDDE9420}/group": {
+      "text": "Multistory parking garage",
+      "status": "reviewed-with-feature"
     }
   }
 }

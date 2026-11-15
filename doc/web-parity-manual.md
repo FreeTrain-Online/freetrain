@@ -727,3 +727,11 @@ DEV-D06 economics or moving buses. P8 retains full market/report/stadium events.
 | `settings` | MAN-M02, MAN-E03, MAN-A16, MAN-A20, EXAV-07 | P7-28 | 11 fields; Apply/Cancel/Save settings/Load settings; defaults, units, errors and authoritative revision. |
 | `valuation` | MAN-A20, MAN-E04, EXAV-15 | P7-03/P7-07/P7-25/P8 | P7 ownership/entity-value inputs and receipt inspection; P8 subsidiary market/history/report controls. |
 | `stadium-boundary` | MAN-M05, MAN-A20, EXAV-06, EXAV-15 | P7-03/P7-13/P8 | P8 stadium placement/properties; name/team/capacity, reinforce/PR, game schedule/history and results. |
+
+15 November 2026: [P7-10 variable-building delivery](web-parity-variable-city.md)
+binds `variable-buildings` (MAN-T10/MAN-W11/MAN-A14/MAN-A16/DEV-A07/DEV-P22)
+to all 55 bundled definitions, EN/JA four-floor height increments, exact selected
+stack/volume/cost review, natural construction, owner inspection/removal and actual
+height-multiplied station demand. Browser/domain/pixel evidence is scoped in that
+report. P7-12 full catalog reconciliation, P7-13 comprehensive provider refresh,
+P7-25–29 growth and native/optional/performance gates remain with their owners.

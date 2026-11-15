@@ -6,15 +6,15 @@ import {contentText,bundledLocalization} from './content-localization.ts';
 import {railwayRevision} from './railway-edit.ts';
 export {stationBuildingFence as fixedCityFence} from './station-building-edit.ts';
 // Exact authored identities carry their own footprint and baked orientation.
-export const fixedCityDefinitions=cityProfile.structures.filter(d=>d.kind==='fixed');
+export const fixedCityDefinitions=cityProfile.structures.filter(d=>d.kind==='fixed'||d.kind==='variable');
 export function fixedCityAt(read:ReadState,p:Position){return read.mixed?.city?.structures.find(b=>{
  const d=fixedCityDefinitions.find(d=>d.reference.recipeId===b.definition.recipeId);
  return d&&p.x>=b.location.x&&p.x<b.location.x+d.sizeX&&p.y>=b.location.y&&p.y<b.location.y+d.sizeY&&p.z>=b.location.z&&p.z<b.location.z+b.height;
 });}
-export function fixedCityQuery(read:ReadState,position:Position,definition:FixedCityQuery['definition'],remove=false):FixedCityQuery|undefined{
+export function fixedCityQuery(read:ReadState,position:Position,definition:FixedCityQuery['definition'],remove=false,height?:number):FixedCityQuery|undefined{
  const revision=railwayRevision(read);if(revision===undefined)return;
  const b=remove?fixedCityAt(read,position):undefined;if(remove&&!b)return;
- return {expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedMinute:read.tick,expectedContentVersion:read.contentVersion as FixedCityQuery['expectedContentVersion'],action:remove?'remove':'place',position,definition:remove?null:definition,ownerId:b?.id??'0',expectedOwnerRevision:b?.revision??'0'};
+ return {expectedWorldEpoch:read.worldEpoch,expectedGeometryRevision:revision,expectedMinute:read.tick,expectedContentVersion:read.contentVersion as FixedCityQuery['expectedContentVersion'],action:remove?'remove':'place',position,definition:remove?null:definition,ownerId:b?.id??'0',expectedOwnerRevision:b?.revision??'0',...(!remove&&height!==undefined?{height}:{})};
 }
 export function fixedCityCatalog(catalog:RenderCatalog,locale:string){return fixedCityDefinitions.filter(d=>!catalog.contributions!.find(c=>c.id===d.reference.contributionId)!.declaration.children.some(c=>c.tag==='playerCannotBuild')).map(d=>{
  const c=catalog.contributions!.find(c=>c.id===d.reference.contributionId)!;

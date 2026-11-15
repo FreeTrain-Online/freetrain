@@ -9,7 +9,7 @@ public sealed partial class SessionHost
     private MixedSessionState FixedCityState(FixedCityQuery q)
     {
         if(q.Position == null || q.ExpectedWorldEpoch<1 || q.ExpectedGeometryRevision<0 || q.ExpectedMinute<0 ||
-            q.OwnerId<0 || q.ExpectedOwnerRevision<0 || q.Action is not ("place" or "remove") ||
+            q.Height is <0 or >256 || q.Action=="remove" && q.Height!=0 || q.OwnerId<0 || q.ExpectedOwnerRevision<0 || q.Action is not ("place" or "remove") ||
             (q.Action=="place" ? q.Definition==null || q.OwnerId!=0 || q.ExpectedOwnerRevision!=0 : q.Definition!=null || q.OwnerId==0))
             throw new ArgumentException("invalidInput");
         var state=RailwayState(q.ExpectedWorldEpoch,q.ExpectedGeometryRevision,q.ExpectedContentVersion);
@@ -27,7 +27,10 @@ public sealed partial class SessionHost
             return FixedCityConstruction.PreviewRemoval(capture,p,q.OwnerId,q.ExpectedOwnerRevision);
         }
         var d=q.Definition!;
-        return FixedCityConstruction.Preview(capture,p,new(d.PackId,d.ContributionId,d.RecipeId));
+        var definition=new DefinitionReference(d.PackId,d.ContributionId,d.RecipeId);
+        if(s.World.City!.Profile.Structure(definition).Kind==CityStructureKind.Variable && q.Height==0)
+            throw new ArgumentException("Variable city height required.");
+        return FixedCityConstruction.Preview(capture,p,definition,selectedHeight:q.Height==0 ? null : q.Height);
     }
     private static long FixedCityCost(FixedCityPlan plan) => plan.Candidate.Construction.Accounts.Transactions.Skip(plan.Source.Construction.Accounts.Transactions.Length).Sum(t=>t.Expenditure);
     public FixedCityPreviewRead PreviewFixedCity(FixedCityQuery q)

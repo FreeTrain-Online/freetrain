@@ -194,10 +194,10 @@ public class FixedCityConstructionTests
         Assert.Single(next.World.City!.State.Structures);Assert.Equal(SaveCodec.Write(next),SaveCodec.Write(Reopen(next)));
     }
     [Fact]
-    public void Fixed_family_and_manual_versus_automatic_content_flags_are_enforced_without_effects()
+    public void Timed_families_and_manual_versus_automatic_content_flags_are_enforced_without_effects()
     {
         var s=Empty(false);var before=SaveCodec.Write(s);
-        foreach(var kind in new[]{CityStructureKind.Variable,CityStructureKind.Half})
+        foreach(var kind in new[]{CityStructureKind.Half})
             Assert.Throws<ArgumentException>(()=>FixedCityConstruction.Preview(Capture(s),P,City.Structures.First(d=>d.Kind==kind).Reference));
         var manual=City.Structures.First(d=>d.Kind==CityStructureKind.Fixed&&d.ComputerCannotBuild);
         Assert.NotNull(FixedCityConstruction.Preview(Capture(s),P,manual.Reference));

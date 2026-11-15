@@ -1433,6 +1433,7 @@ export interface FixedCityQuery {
   definition: Definition | null;
   ownerId: Counter;
   expectedOwnerRevision: Counter;
+  height?: number;
 }
 export interface Accepted {
   type: "accepted";

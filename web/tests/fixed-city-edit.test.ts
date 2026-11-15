@@ -10,11 +10,11 @@ Deno.test('fixed catalog binds authored dimensions, prices, localized names and 
   assert.equal(rows.length,items.length);assert(rows.length>20);
   for(const d of rows){
    const i=items.findIndex(v=>v.id===d.reference.recipeId);
-   assert(d.title.length);if(locale==='en')assert(!/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(d.title));assert.equal(items[i].price,Number(d.unitPrice));
+   assert(d.title.length);if(locale==='en')assert(!/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(d.title));assert.equal(items[i].price,Number(d.unitPrice)*(d.kind==='variable'?d.minimumHeight:1));
    assert.equal(items[i].id,d.reference.recipeId);
    assert(items[i].detail.includes(`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`));
-   const recipe=content.renderRecipes.find((r:any)=>r.id===d.reference.recipeId);assert.equal(recipe.handler,'fixed-3d');
-   assert.equal(recipe.frames.length,d.sizeX*d.sizeY*d.minimumHeight);
+   const recipe=content.renderRecipes.find((r:any)=>r.id===d.reference.recipeId);assert.equal(recipe.handler,d.kind==='variable'?'variable-height':'fixed-3d');
+   if(d.kind==='fixed')assert.equal(recipe.frames.length,d.sizeX*d.sizeY*d.minimumHeight);
   }
  }
 });
@@ -41,4 +41,15 @@ Deno.test('inspection follows natural fresh-owner completion but never demolitio
  assert.equal(completedFixedCityOwner(fixedCityInspection(before,site.id),{...after,worldEpoch:'999'},site.id),undefined);
  completed.construction=structuredClone(site.construction);assert.equal(completedFixedCityOwner(fixedCityInspection(before,site.id),after,site.id),undefined);
  after.mixed!.city!.structures=[];assert.equal(completedFixedCityOwner(fixedCityInspection(before,site.id),after,site.id),undefined);
+});
+
+Deno.test('variable selection retains exact height and removal resolves invisible upper occupied members',async()=>{
+ const {cityScene,addCity}=await import('./helpers/city-scene.ts');
+ const d=fixedCityDefinitions.find(d=>d.kind==='variable'&&d.sizeX===1&&d.sizeY===1)!;
+ const s=cityScene(),b=addCity(s,d,10,22,undefined,0,false,d.maximumHeight);
+ const query=fixedCityQuery(s,b.location,b.definition,false,d.maximumHeight)!;
+ assert.equal(query.height,d.maximumHeight);assert.deepEqual(parseFixedCityPreview({query,legal:true,reason:null,cost:d.unitPrice,positions:[b.location],losses:[]}).query,query);
+ const upper={...b.location,z:b.location.z+b.height-1};assert.equal(fixedCityAt(s,upper)?.id,b.id);
+ assert.equal(fixedCityQuery(s,upper,null,true)?.ownerId,b.id);assert.equal(fixedCityQuery(s,upper,null,true)?.height,undefined);
+ for(const height of [0,-1,257,1.5])assert.throws(()=>parseFixedCityPreview({query:{...query,height},legal:true,reason:null,cost:'1',positions:[b.location],losses:[]}));
 });

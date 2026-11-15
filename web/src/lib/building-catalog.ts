@@ -41,10 +41,10 @@ export function catalogItems(category: CatalogCategory, locale: Locale, content?
   if(category==='city'){
     const groups=new Map<string,CatalogItem>();
     for(const d of content?fixedCityCatalog(content,locale):[]){
-      const key=JSON.stringify([d.pluginId,d.title,[d.sizeX,d.sizeY].sort((a,b)=>a-b),d.minimumHeight,d.unitPrice]);
+      const key=JSON.stringify([d.pluginId,d.title,[d.sizeX,d.sizeY].sort((a,b)=>a-b),d.minimumHeight,d.maximumHeight,d.unitPrice]);
       let group=groups.get(key);if(!group){group={id:key,title:d.title,variants:[]};groups.set(key,group);}
       const label=String(group.variants.length+1);
-      group.variants.push({id:d.reference.recipeId,title:`${d.title} · ${label}`,label,detail:[d.orientation,`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`].filter(Boolean).join(' · '),price:Number(d.unitPrice)});
+      group.variants.push({id:d.reference.recipeId,title:`${d.title} · ${label}`,label,detail:[d.orientation,`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`].filter(Boolean).join(' · '),price:Number(d.unitPrice)*(d.kind==='variable'?d.minimumHeight:1)});
     }
     return [...groups.values()];
   }

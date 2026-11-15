@@ -114,17 +114,23 @@ export class RecipeImageCache {
 }
 export interface RecipeOptions { height?:number; angle?:number; slope?:number; selectors?:Record<string,number|boolean> }
 export interface Layer { entityId:string; recipeId:string; frame:Frame; position:Vec3 }
-export function instantiate(recipe:Recipe, entityId:string, position:Vec3, options:RecipeOptions={}):Layer[] {
-  let frames=recipe.frames;
-  if(recipe.handler==='variable-height') {
-    const min=Number(recipe.fields.minHeight),max=Number(recipe.fields.maxHeight),height=options.height??min;
+export function variableFrames(recipe:Recipe,height:number):Frame[] {
+    const min=Number(recipe.fields.minHeight),max=Number(recipe.fields.maxHeight);
     if(!Number.isInteger(height) || height<min || height>max) throw new Error('Invalid building height');
     const tops=Number(recipe.fields.topCount),bottoms=Number(recipe.fields.bottomCount);
-    frames=Array.from({length:height},(_,z)=>{
+    return Array.from({length:height},(_,z)=>{
       const prefix=z>=height-tops?`top/${height-z-1}/`:z<bottoms?`bottom/${z}/`:'middle/';
-      return recipe.frames.filter(f=>f.key.startsWith(prefix)).map(f=>({...f,cell:[f.cell[0],f.cell[1],z] as Vec3}));
+      const prefixes=[prefix];
+      if(recipe.fields.overlay&&z===bottoms-1){
+        if(prefix.startsWith('top/'))prefixes.unshift(`bottom/${z}/`);
+        else prefixes.push('middle/');
+      }
+      return prefixes.flatMap(p=>recipe.frames.filter(f=>f.key.startsWith(p)).map(f=>({...f,cell:[f.cell[0],f.cell[1],z] as Vec3})));
     }).flat();
-  }
+}
+export function instantiate(recipe:Recipe, entityId:string, position:Vec3, options:RecipeOptions={}):Layer[] {
+  let frames=recipe.frames;
+  if(recipe.handler==='variable-height')frames=variableFrames(recipe,options.height??Number(recipe.fields.minHeight));
   if(['train-car','reverse-train-car'].includes(recipe.handler)) {
     frames=frames.filter(f=>options.slope===undefined ? f.selector.angle===(options.angle??0) : f.selector.slope===options.slope);
   }

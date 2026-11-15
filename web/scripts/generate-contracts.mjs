@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { compile } from 'json-schema-to-typescript';
 import { readFile, writeFile } from 'node:fs/promises';
 const schema = JSON.parse(await readFile(new URL('../../prototype/protocol/schema.json', import.meta.url), 'utf8'));
@@ -150,3 +152,6 @@ const city={requiredPacks:terrain.requiredPacks,propertyDefinition:definition('s
  }),roads:cityContributions.filter(c=>c.type==='road').map(c=>definition(c.id))};
 const cityOutput=new URL('../src/generated/city-profile.json',import.meta.url),cityJson=JSON.stringify(city,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(cityOutput,'utf8')!==cityJson)throw new Error('Generated city profile is stale.');}else await writeFile(cityOutput,cityJson);
+
+// Portable source crop accommodations retain their own pinned sheet provenance.
+execFileSync('python3', [fileURLToPath(new URL('../../scripts/variable-city-art.py', import.meta.url)), ...(process.argv.includes('--check') ? ['--check'] : [])], {stdio:'inherit'});

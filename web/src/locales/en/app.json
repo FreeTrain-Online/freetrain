@@ -1019,5 +1019,6 @@
   "cityLegal": "Building footprint is available",
   "cityInvalid": "This building footprint is unavailable",
   "cityMissing": "Building is no longer available",
-  "cityCells": "Voxels"
+  "cityCells": "Voxels",
+  "cityHeight": "Building height (floors)"
 }

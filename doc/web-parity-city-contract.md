@@ -233,3 +233,11 @@ Progress inspection and cancel/demolish browser controls remain P7-07/09/12/27;
 there is no force-completion action. Actual listener attachment, family
 reclamation and integrated city save/authority retain their numbered owners.
 No catalog translation classification or source decision is changed.
+
+15 November 2026: [P7-10 variable-building delivery](web-parity-variable-city.md)
+binds `variable-buildings` (MAN-T10/MAN-W11/MAN-A14/MAN-A16/DEV-A07/DEV-P22)
+to all 55 bundled definitions, EN/JA four-floor height increments, exact selected
+stack/volume/cost review, natural construction, owner inspection/removal and actual
+height-multiplied station demand. Browser/domain/pixel evidence is scoped in that
+report. P7-12 full catalog reconciliation, P7-13 comprehensive provider refresh,
+P7-25–29 growth and native/optional/performance gates remain with their owners.

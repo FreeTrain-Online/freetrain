@@ -1019,5 +1019,6 @@
   "cityLegal": "建物を配置できます",
   "cityInvalid": "この場所には建物を配置できません",
   "cityMissing": "建物は利用できなくなりました",
-  "cityCells": "ボクセル数"
+  "cityCells": "ボクセル数",
+  "cityHeight": "建物の高さ（階）"
 }

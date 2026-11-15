@@ -1,3 +1,4 @@
+import {variableCityArt} from './variable-city-art.ts';
 import {passageGhost} from './passage-edit.ts';
 import {widePlatformGhost} from './wide-platform-edit.ts';
 import {thinPlatformGhost} from './thin-platform-edit.ts';
@@ -212,14 +213,14 @@ export class MapRenderer {
       this.canvas.dataset.cityGhostCells=String(options.cityPreview?.positions.length??0);
       this.canvas.dataset.stationGhostCells=String(ghost?.positions.length??0);
       const stationType=[...stationDefinitions,...fixedCityDefinitions.map(d=>({...d,height:d.minimumHeight}))].find(d=>d.reference.recipeId===station?.query.definition?.recipeId);
-      const stationCap=station&&stationType&&options.heightCut!==read.map.levels-1&&options.heightCut<station.query.position.z+stationType.height;
+      const stationCap=station&&stationType&&options.heightCut!==read.map.levels-1&&options.heightCut<station.query.position.z+(options.cityPreview?.query.height??stationType.height);
       const ghostKey=JSON.stringify([read.worldEpoch,read.requiredPacks,ghost,variant,options.heightCut]);
       if(ghostKey!==this.stationGhostKey){
         this.stationGhostKey=ghostKey;this.stationGhost=undefined;
         if(ghost?.legal&&!stationCap&&ghost.query.action==='place'&&this.renderCatalog){
-          const catalog=this.renderCatalog;
+          const catalog=variableCityArt(this.renderCatalog);
           const entries=platform?('from' in platform.query?passageGhost(read,platform as import('../generated/contracts.ts').PassagePreview):'secondLane' in platform.query?widePlatformGhost(platform.query,platform.positions):thinPlatformGhost(platform.query,platform.positions)):[{position:station!.query.position,recipeId:station!.query.definition!.recipeId}];
-          const layers=traversal(entries.flatMap(e=>{const recipe=catalog.renderRecipes.find(r=>r.id===e.recipeId);if(!recipe)throw new Error('Preview recipe unavailable');const p=e.position;return instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z]).map(l=>'stage' in e?{...l,frame:{...l.frame,stage:e.stage as number}}:l);})).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
+          const layers=traversal(entries.flatMap(e=>{const recipe=catalog.renderRecipes.find(r=>r.id===e.recipeId);if(!recipe)throw new Error('Preview recipe unavailable');const p=e.position;return instantiate(recipe,'station-preview',[p.x-Math.trunc((read.map.height-1)/2),p.y,p.z],{height:options.cityPreview?.query.height}).map(l=>'stage' in e?{...l,frame:{...l.frame,stage:e.stage as number}}:l);})).filter(l=>l.position[2]<=options.heightCut&&(options.heightCut!==read.map.levels-1||l.position[2]>=read.terrain!.waterLevel));
           void this.terrainCache.ready(catalog,layers,variant).then(ready=>{if(this.stationGhostKey===ghostKey){this.stationGhost=ready;this.invalidate();}}).catch(()=>{if(this.stationGhostKey===ghostKey)this.invalidate();});
         }
       }

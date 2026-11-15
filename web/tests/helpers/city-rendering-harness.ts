@@ -128,3 +128,41 @@ export async function cityCutGallery(catalog:RenderCatalog){
  }
  return {png:gallery.toDataURL(),definitions:66,members};
 }
+
+// Independent VarHeightBuildingContribution.getSprites + DefaultSpriteLoader.load2D
+// oracle, reading pinned XML rather than the production stack selector/crops.
+export async function variableCityGallery(catalog:RenderCatalog,variant:Variant){
+ const {cityProfile}=await import('../../src/lib/city-state.ts');
+ const definitions=cityProfile.structures.filter(d=>d.kind==='variable'),cache=new RecipeImageCache(),images=new Map<string,HTMLImageElement>();
+ const gallery=document.createElement('canvas');gallery.width=6*200;gallery.height=Math.ceil(definitions.length*2/6)*180;const contact=gallery.getContext('2d')!;
+ let cases=0,pixels=0,picks=0;
+ for(const d of definitions)for(const height of [d.minimumHeight,d.maximumHeight]){
+  const s=cityScene(),b=addCity(s,d,10,22,undefined,0,false,height),space=new WorldSpace(40,60,32),scene=await TerrainScene.prepare(s,catalog,cache,variant,31),ops=scene.operations.filter(o=>o.target.kind==='building');
+  const actual=new OffscreenCanvas(400,320),expected=new OffscreenCanvas(400,320),ctx=actual.getContext('2d')!,want=expected.getContext('2d')!,q=space.project(b.location),view={x:130-q.x,y:270-q.y,zoom:1};
+  scene.paintOperations(ctx as unknown as CanvasRenderingContext2D,view,400,320,ops);
+  const e=sourceReview.recipes.find(r=>r.contributionId===d.reference.contributionId)!.declaration,pictures=e.children.find(c=>c.tag==='pictures')!,bottoms=pictures.children.filter(c=>c.tag==='bottom'),tops=pictures.children.filter(c=>c.tag==='top'),middle=pictures.children.find(c=>c.tag==='middle')!;
+  const cells=[];for(let x=0;x<d.sizeX;x++)for(let y=0;y<d.sizeY;y++)for(let z=0;z<height;z++)cells.push({x,y,z});
+  cells.sort((a,c)=>{const p=space.storage({x:b.location.x+a.x,y:b.location.y+a.y,z:a.z}),q=space.storage({x:b.location.x+c.x,y:b.location.y+c.y,z:c.z});return p.v-q.v||p.h-q.h||p.z-q.z;});
+  const recipe=catalog.renderRecipes.find(r=>r.id===d.reference.recipeId)!;
+  for(const c of cells){
+   const prefix=c.z>=height-tops.length?`top/${height-c.z-1}/`:c.z<bottoms.length?`bottom/${c.z}/`:'middle/',node=c.z>=height-tops.length?tops[height-c.z-1]:c.z<bottoms.length?bottoms[c.z]:middle;
+   const a=node.attributes as Record<string,string>,[ox,oy]=a.origin.split(',').map(Number),h=Number(a.offset??(node===middle?16:d.sizeX*8)),max=Number(a.height??2147483647);
+   const f=recipe.frames.find(f=>f.key.startsWith(prefix)&&f.cell[0]===c.x&&f.cell[1]===c.y)!;if(f.status==='invisible')continue;
+   const url=catalog.surfaceSets[f.surfaceSet!][variantKey(variant)].image.url;
+   let image=images.get(url);if(!image){image=new Image();image.src=url;await image.decode();images.set(url,image);}
+   const p=space.project({x:b.location.x+c.x,y:b.location.y+c.y,z:b.location.z+c.z}),anchor=h+(c.y-c.x)*8;
+   const sx=ox+(c.x+c.y)*16,left=Math.max(0,sx),right=Math.min(image.width,sx+32),drawHeight=Math.min(max,anchor+16);
+   if(drawHeight>0&&right>left)want.drawImage(image,left,oy,right-left,drawHeight,view.x+p.x+left-sx,view.y+p.y-anchor,right-left,drawHeight);
+  }
+  const got=ctx.getImageData(0,0,400,320).data,target=want.getImageData(0,0,400,320).data;
+  for(let n=0;n<got.length;n++)if(got[n]!==target[n])throw new Error(`Variable crop pixel ${d.reference.recipeId}/${height}/${variantKey(variant)}/${n}`);
+  for(let y=0;y<320;y++)for(let x=0;x<400;x++){
+   const hit=scene.pickOperations({x:x+.5,y:y+.5},view,ops);if(!!hit!==(target[(y*400+x)*4+3]>0)||hit&&hit.id!==b.id)throw new Error('Variable alpha pick');picks++;
+  }
+  const cut=await TerrainScene.prepare(s,catalog,cache,variant,2),cuts=cut.operations.filter(o=>o.target.kind==='building');
+  if(cuts.length!==d.sizeX*d.sizeY||cuts.some(o=>!('color'in o)||o.color!=='#808080'))throw new Error('Variable gray base cut');
+  contact.fillStyle='#d8e5d9';contact.fillRect(cases%6*200,Math.floor(cases/6)*180,200,180);contact.drawImage(actual,cases%6*200,Math.floor(cases/6)*180,200,160);
+  contact.fillStyle='#17232b';contact.font='11px sans-serif';contact.fillText(`${cases+1}: ${d.sizeX}×${d.sizeY}×${height}`,cases%6*200+8,Math.floor(cases/6)*180+174);cases++;pixels+=400*320;
+ }
+ return {png:gallery.toDataURL(),definitions:definitions.length,cases,pixels,picks};
+}

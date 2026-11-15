@@ -12,10 +12,10 @@ export function cityScene(width=40,height=60):Snapshot {
  city.heat={horizontalSize:width,verticalSize:height,q:Array((width+2)*(height+2)).fill(0),back:Array((width+2)*(height+2)).fill(0),rho:Array((width+2)*(height+2)).fill(0)};
  s.mixed!.city=city;return s;
 }
-export function addCity(s:Snapshot,d=fixedDefinitions[0],h=10,v=22,stage?:number,ground=0,door=false):CityStructure {
+export function addCity(s:Snapshot,d=fixedDefinitions[0],h=10,v=22,stage?:number,ground=0,door=false,height=d.minimumHeight):CityStructure {
  const m=s.mixed!,id=m.nextEntityId,location=new WorldSpace(s.map.width,s.map.height,s.map.levels).location({h,v,z:2}),footprint=[];
  let nextOrder=BigInt(m.queue!.nextOrder);
- const b:CityStructure={id,revision:'0',definition:d.reference,location,height:d.minimumHeight,owned:stage===undefined,subsidiary:stage===undefined?{marketPrice:d.unitPrice,totalLandValue:'0',callback:null}:null,halves:[],construction:[],caller:'catalogplayer'};
+ const b:CityStructure={id,revision:'0',definition:d.reference,location,height,owned:stage===undefined,subsidiary:stage===undefined?{marketPrice:d.unitPrice,totalLandValue:'0',callback:null}:null,halves:[],construction:[],caller:'catalogplayer'};
  for(let x=0;x<d.sizeX;x++)for(let y=0;y<d.sizeY;y++)for(let z=0;z<b.height;z++){
   const offset={x,y,z};footprint.push({offset,transparent:false});
   if(stage!==undefined){const state=stage===4&&x===0&&y===0&&z===0?3:stage,callback=state<4?{registration:String(nextOrder),order:String(nextOrder++),dueMinute:String(BigInt(s.tick)+40n),handlerId:`city/construction/${id}/${x}/${y}/${z}`,interval:'0'}:null;
@@ -24,7 +24,7 @@ export function addCity(s:Snapshot,d=fixedDefinitions[0],h=10,v=22,stage?:number
  }
  m.queue!.nextOrder=String(nextOrder);
  m.queue!.pending.sort((a,b)=>Number(BigInt(a.dueMinute)-BigInt(b.dueMinute))||Number(BigInt(a.order)-BigInt(b.order)));
- s.entities!.push({id,revision:'0',definition:d.reference,anchor:location,footprint,owned:b.owned,silentlyReclaimable:false,value:stage===undefined?d.unitPrice:'0'});
+ s.entities!.push({id,revision:'0',definition:d.reference,anchor:location,footprint,owned:b.owned,silentlyReclaimable:false,value:stage===undefined?String(BigInt(d.unitPrice)*BigInt(d.kind==='variable'?height:1)):'0'});
  m.city!.structures.push(b);m.nextEntityId=String(BigInt(id)+1n);
  if(stage===undefined&&d.population)m.city!.producers.push({ownerId:id,initialDefinition:d.reference,initialHeight:b.height});
  return b;

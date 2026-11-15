@@ -1,0 +1,829 @@
+{
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "frames": [
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "top/0/0",
+      "originalRectangle": [
+        -32,
+        0,
+        32,
+        40
+      ],
+      "originalAnchor": [
+        0,
+        24
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "invisible"
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "top/0/1",
+      "originalRectangle": [
+        -16,
+        0,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        16
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "anchor": [
+        -16,
+        16
+      ],
+      "masks": {
+        "spring/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "spring/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "summer/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "summer/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "autumn/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "autumn/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "winter/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "winter/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67"
+      }
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "top/0/5",
+      "originalRectangle": [
+        -16,
+        0,
+        32,
+        48
+      ],
+      "originalAnchor": [
+        0,
+        32
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        0,
+        0,
+        16,
+        48
+      ],
+      "anchor": [
+        -16,
+        32
+      ],
+      "masks": {
+        "spring/day": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "spring/night": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "summer/day": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "summer/night": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "autumn/day": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "autumn/night": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "winter/day": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308",
+        "winter/night": "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308"
+      }
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "middle/0",
+      "originalRectangle": [
+        -32,
+        88,
+        32,
+        24
+      ],
+      "originalAnchor": [
+        0,
+        8
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "invisible"
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "middle/1",
+      "originalRectangle": [
+        -16,
+        88,
+        32,
+        16
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        0,
+        88,
+        16,
+        16
+      ],
+      "anchor": [
+        -16,
+        0
+      ],
+      "masks": {
+        "spring/day": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "spring/night": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "summer/day": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "summer/night": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "autumn/day": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "autumn/night": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "winter/day": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305",
+        "winter/night": "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305"
+      }
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "middle/4",
+      "originalRectangle": [
+        32,
+        88,
+        32,
+        -8
+      ],
+      "originalAnchor": [
+        0,
+        -24
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "invisible"
+    },
+    {
+      "recipe": "{D57200E0-8E73-4899-8EEC-0E9AC95C3D40}",
+      "key": "middle/5",
+      "originalRectangle": [
+        -16,
+        88,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        16
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        0,
+        88,
+        16,
+        32
+      ],
+      "anchor": [
+        -16,
+        16
+      ],
+      "masks": {
+        "spring/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "spring/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "summer/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "summer/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "autumn/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "autumn/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "winter/day": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67",
+        "winter/night": "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "top/0/23",
+      "originalRectangle": [
+        336,
+        0,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        16
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        336,
+        0,
+        17,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "masks": {
+        "spring/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "spring/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "summer/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "summer/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "autumn/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "autumn/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "winter/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "winter/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "top/0/28",
+      "originalRectangle": [
+        336,
+        0,
+        32,
+        48
+      ],
+      "originalAnchor": [
+        0,
+        32
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        336,
+        0,
+        17,
+        48
+      ],
+      "anchor": [
+        0,
+        32
+      ],
+      "masks": {
+        "spring/day": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "spring/night": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "summer/day": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "summer/night": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "autumn/day": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "autumn/night": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "winter/day": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9",
+        "winter/night": "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "top/0/29",
+      "originalRectangle": [
+        352,
+        0,
+        32,
+        40
+      ],
+      "originalAnchor": [
+        0,
+        24
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        352,
+        0,
+        1,
+        40
+      ],
+      "anchor": [
+        0,
+        24
+      ],
+      "masks": {
+        "spring/day": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "spring/night": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "summer/day": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "summer/night": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "autumn/day": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "autumn/night": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "winter/day": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277",
+        "winter/night": "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "middle/5",
+      "originalRectangle": [
+        288,
+        88,
+        32,
+        -8
+      ],
+      "originalAnchor": [
+        0,
+        -24
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "invisible"
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "middle/23",
+      "originalRectangle": [
+        336,
+        88,
+        32,
+        16
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        336,
+        88,
+        17,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "masks": {
+        "spring/day": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "spring/night": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "summer/day": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "summer/night": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "autumn/day": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "autumn/night": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "winter/day": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5",
+        "winter/night": "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "middle/28",
+      "originalRectangle": [
+        336,
+        88,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        16
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        336,
+        88,
+        17,
+        32
+      ],
+      "anchor": [
+        0,
+        16
+      ],
+      "masks": {
+        "spring/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "spring/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "summer/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "summer/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "autumn/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "autumn/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "winter/day": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4",
+        "winter/night": "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4"
+      }
+    },
+    {
+      "recipe": "{488D9D06-46B1-45EA-8DCE-61B1041254A2}",
+      "key": "middle/29",
+      "originalRectangle": [
+        352,
+        88,
+        32,
+        24
+      ],
+      "originalAnchor": [
+        0,
+        8
+      ],
+      "surfaces": {
+        "spring/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "spring/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "summer/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "summer/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "autumn/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "autumn/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee",
+        "winter/day": "030824e0644e4abb056ba849ca0f6e2cc478a716d8d310d3453b5415e59e7c84",
+        "winter/night": "6c8e0e1ad4476829ed356cafa9dde3941ad05dd6ff24f5f1678a08ba369e90ee"
+      },
+      "status": "ready",
+      "rectangle": [
+        352,
+        88,
+        1,
+        24
+      ],
+      "anchor": [
+        0,
+        8
+      ],
+      "masks": {
+        "spring/day": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "spring/night": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "summer/day": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "summer/night": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "autumn/day": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "autumn/night": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "winter/day": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b",
+        "winter/night": "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b"
+      }
+    }
+  ],
+  "masks": {
+    "daf1713bb1542fa14e7034bf1141d88f0a3bb36ffd376ff0eec1b1c9fa086e67": [
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000"
+    ],
+    "d5359e9fe5a3f3ccdcec06e9370fa45f13b7c59eb2739327db04a9c014f77308": [
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000"
+    ],
+    "ff28a992246b0521d9a250c6fc661320e41ffba7abaa911b6236eed97a552305": [
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000",
+      "0000000000000000"
+    ],
+    "19af1707887f35ec0dbf7162cab8fc50f125909dbb0930b097dabb00562edce4": [
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000"
+    ],
+    "a4ad8191cdc2795bae279e65c85f38406927373235c3b48a4026c4e124ac82b9": [
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000"
+    ],
+    "83b2cb33c47a76ca4feac7a64d126e11a598e4309279ab41381518e267db3277": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "ccb9055aaa6953453994456fb0134c95d84f755a02213ff92659f0726220bab5": [
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000",
+      "00000000000000000"
+    ],
+    "c239781a4966f313159d044aff0ac89819825fe1f55af08389e890e29c2d1f8b": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ]
+  }
+}

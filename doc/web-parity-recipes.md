@@ -183,6 +183,13 @@ sheets. Stair requests begin at X=388 beyond a 336-pixel-wide sheet; these three
 entries retain the EXAV-GAL-001 link. Matching artwork alone does not resolve
 these invalid requests.
 
+**15 November 2026 portable follow-up:** [P7-10](web-parity-variable-city.md)
+implements explicit bounded runtime accommodations for ASSET-CROP-01–14, with
+pinned original rectangles/anchors/sheet hashes, independent assembled pixels,
+all eight appearances and alpha picks. The original catalog remains diagnostic;
+canonical asset conversion and the separate farmland/stair dispositions retain
+POST-ASSETS-07 ownership. This does not close the full asset-format pass.
+
 **Completion evidence:** every ASSET-CROP entry has a reviewed correction or
 explicit accommodation; validate canonical bounds/anchors, all affected
 season/light variants, variable-height assemblies, directional context,
