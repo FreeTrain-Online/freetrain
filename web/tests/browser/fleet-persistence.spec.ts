@@ -6,6 +6,9 @@ const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&c
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
 test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{
+ // Allow CI headroom for four restore cycles, two peers and a real backend
+ // restart. Keep ordinary assertion waits bounded.
+ test.setTimeout(90_000);
  const input=browserFixture('outside');
  const initial=await snapshot(page),save=JSON.parse(readFileSync(input!,'utf8'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
@@ -20,7 +23,9 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
  }
  const latest=(i:number)=>messages[i].filter(m=>m.type==='snapshot'||m.type==='delta').at(-1);
  try{
-  await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
+  await test.step('Connect EN and JA peers',async()=>{
+   await page.goto('/');await peer.goto('/');await ready(page);await ready(peer,'ja');
+  });
   await page.locator('canvas').evaluate(el=>el.setAttribute('data-instance','outside-preserved'));
   const ids=save.mixed.fleet.trains[0].cars.map((c:any)=>c.id);
   // Captured inputs come from the continuously verified real trip. Outputs
@@ -30,7 +35,7 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
    {suffix:'.50',now:200,due:202,move:51,countdown:50,passengers:100,cash:'8601200'},
    {suffix:'.101',now:302,due:304,move:102,countdown:null,passengers:100,cash:'6911200'},
    {suffix:'.charged',now:199,due:200,move:1,countdown:50,passengers:100,cash:'10057200'},
-  ]){
+  ])await test.step(`Outside phase ${phase.suffix||'initial'}: advance and restore`,async()=>{
    if(phase.suffix){
     const current=await snapshot(page),data=readFileSync(input!+phase.suffix);
     expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data})).ok()).toBe(true);
@@ -67,21 +72,32 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
    expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+current.worldEpoch,{data:Buffer.from(JSON.stringify(saved))})).ok()).toBe(true);
    for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(current.worldEpoch)+1n));
    expect((await snapshot(peer)).mixed).toEqual(saved.mixed);
-  }
+  });
   const saved=await(await page.request.get('/api/saves/download')).json();
-  await peer.reload();await ready(peer,'ja');
-  expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
-  await expect(page.locator('canvas')).toHaveAttribute('data-instance','outside-preserved');expect(errors).toEqual([]);
-  await worldServer.restart!();
-  for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
-  await page.reload();await ready(page);await peer.reload();await ready(peer,'ja');
-  for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(saved.mixed);
-  await page.getByRole('button',{name:'Step',exact:false}).first().click();
-  for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('201');
-  const current=await snapshot(page);expect(current.mixed.fleet.trains[0].moveCount).toBe(1);expect(current.cash).toBe('10057200');
-  await page.getByRole('button',{name:'Step',exact:false}).first().click();
-  for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('202');
-  expect((await snapshot(peer)).mixed).toEqual((await snapshot(page)).mixed);expect(errors).toEqual([]);
+  await test.step('Reload JA peer from the saved world',async()=>{
+   const joins=messages[1].filter(m=>m.type==='join').length;
+   await peer.reload();await ready(peer,'ja');
+   await expect.poll(()=>messages[1].filter(m=>m.type==='join').length).toBe(joins+1);
+   expect(messages[1].filter(m=>m.type==='join').at(-1).snapshot.mixed).toEqual(saved.mixed);
+   await expect(page.locator('canvas')).toHaveAttribute('data-instance','outside-preserved');expect(errors).toEqual([]);
+  });
+  await test.step('Restart backend and rejoin both peers',async()=>{
+   // These assertions cover persistence through reload, so release live sessions
+   // before stopping the server instead of racing automatic reconnect attempts.
+   for(const p of [page,peer])await p.goto('about:blank');
+   await worldServer.restart!();
+   for(const p of [page,peer])expect((await p.request.post('/api/access',{data:{secret:''}})).ok()).toBe(true);
+   await page.goto('/');await ready(page);await peer.goto('/');await ready(peer,'ja');
+   for(const p of [page,peer])expect((await snapshot(p)).mixed).toEqual(saved.mixed);
+  });
+  await test.step('Continue the restored trip after restart',async()=>{
+   await page.getByRole('button',{name:'Step',exact:false}).first().click();
+   for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('201');
+   const current=await snapshot(page);expect(current.mixed.fleet.trains[0].moveCount).toBe(1);expect(current.cash).toBe('10057200');
+   await page.getByRole('button',{name:'Step',exact:false}).first().click();
+   for(const p of [page,peer])await expect.poll(async()=>(await snapshot(p)).tick).toBe('202');
+   expect((await snapshot(peer)).mixed).toEqual((await snapshot(page)).mixed);expect(errors).toEqual([]);
+  });
  }finally{await context.close();}
 });
 
