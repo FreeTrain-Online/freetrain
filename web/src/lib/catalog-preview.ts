@@ -1,4 +1,6 @@
-import { RecipeImageCache, instantiate, traversal } from './content-recipes.ts';
+import { RecipeImageCache, instantiate, traversal, type RenderCatalog } from './content-recipes.ts';
+import {variableCityArt} from './variable-city-art.ts';
+import {cityCatalogChoice,fixedCityDefinitions,type CityCatalogChoice} from './fixed-city-edit.ts';
 import { bundledCatalog } from './bundled-catalog.ts';
 import type { SignalDirection } from './building-catalog.ts';
 
@@ -29,16 +31,29 @@ export async function formationPreview(ids: readonly string[]): Promise<{src:str
   return {src:canvas.toDataURL(),width,height};
 }
 
-export function catalogPreview(id: string, direction?: SignalDirection): Promise<string> {
-  const key = JSON.stringify([id, direction ?? 0]);
+/** Use the same executable crop corrections and selected stack/half as the map. */
+export function catalogPreviewLayers(content:RenderCatalog,id:string,direction?:SignalDirection,choice?:CityCatalogChoice) {
+  content=variableCityArt(content);
+  const recipe=content.renderRecipes.find(recipe=>recipe.id===id);
+  if(!recipe)throw new Error('Catalog preview unavailable');
+  const d=fixedCityDefinitions.find(d=>d.reference.recipeId===id),selected=choice??(d?cityCatalogChoice(id):undefined);
+  const half=d?.kind==='half';
+  if(half&&!d.halfVariants.some(v=>v.direction===selected!.direction&&v.side===(selected!.side==='fore'?1:0)&&v.color===selected!.color))throw new Error('Unsupported half selection');
+  const layers=traversal(instantiate(recipe,id,[0,0,0],
+    half?{selectors:{direction:selected!.direction,side:selected!.side==='fore'?0:1,color:selected!.color}}:
+    d?.kind==='variable'?{height:selected!.height}:
+    ['train-car','reverse-train-car'].includes(recipe.handler)?{angle:4}:
+    direction===undefined?{}:{selectors:{direction}}));
+  if(!layers.length||layers.some(layer=>layer.frame.status!=='ready'))throw new Error('Catalog preview unavailable');
+  return layers;
+}
+export function catalogPreview(id: string, direction?: SignalDirection, choice?:CityCatalogChoice): Promise<string> {
+  const key = JSON.stringify([id, direction ?? 0,choice]);
   let pending = previews.get(key);
   if (!pending) {
     pending = (async () => {
-      const content = await bundledCatalog();
-      const recipe = content.renderRecipes.find(recipe => recipe.id === id);
-      if (!recipe) throw new Error('Catalog preview unavailable');
-      const layers = traversal(instantiate(recipe, id, [0, 0, 0], ['train-car','reverse-train-car'].includes(recipe.handler) ? { angle: 4 } : direction === undefined ? {} : { selectors: { direction } })).filter(layer => layer.frame.status === 'ready');
-      if (!layers.length) throw new Error('Catalog preview unavailable');
+      const content = variableCityArt(await bundledCatalog());
+      const layers = catalogPreviewLayers(content,id,direction,choice);
       const bounds = layers.map(({ position: [x, y, z], frame }) => ({
         x: 16 * (x + y) - frame.anchor![0], y: 8 * (y - x) - 16 * z - frame.anchor![1],
         w: frame.rectangle![2], h: frame.rectangle![3],

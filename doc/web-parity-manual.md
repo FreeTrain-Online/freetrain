@@ -290,7 +290,7 @@ positions are presentation references, not required browser coordinates.
 | MAN-T07 | Train purchase | Available rolling stock catalog, composition/quantity/cost and purchase. P5. |
 | MAN-T08 | Timetables | Independent controller/timetable manager and configuration. P5. |
 | MAN-T09 | Terrain manipulation | Terrain mode/options and map editing. P3. |
-| MAN-T10 | Building construction | Constructible catalog, variants and placement/removal; current browse-only catalog is partial. P7. |
+| MAN-T10 | Building construction | [P7-12](web-parity-city-catalog.md) delivers the 129-definition ordinary city catalog, variants, height/half selectors and placement/removal. Ground/roads and final P9 help retain their owners. |
 
 Manual §2.2 has seven historical menu families. Each retained entry needs a
 current source binding or explicit disposition even if it shares a destination.
@@ -735,3 +735,13 @@ stack/volume/cost review, natural construction, owner inspection/removal and act
 height-multiplied station demand. Browser/domain/pixel evidence is scoped in that
 report. P7-12 full catalog reconciliation, P7-13 comprehensive provider refresh,
 P7-25–29 growth and native/optional/performance gates remain with their owners.
+
+15 November 2026: [P7-12 complete ordinary building catalog](web-parity-city-catalog.md)
+binds the `catalog`, `fixed-buildings`, `variable-buildings` and `half-voxel`
+rows to all 129 registered definitions. MAN-T10/MAN-M02/MAN-A16/MAN-A20 and
+DEV-A07 consume EN/JA source category/subcategory filters, direct definition and
+author search, exact baked variants, supported heights and half selectors,
+synchronized art/footprint/cost review, local drafts and authoritative peer guards.
+The generic null child remains hidden; source-only builders and the 252-entry
+CategoryTree receive no playable generated-building credit. Color-test authoring
+remains P9, DEV-D06 proposals remain proposals, and later P7/P8/P9 gates stay open.

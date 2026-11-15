@@ -53,3 +53,40 @@ Deno.test('variable selection retains exact height and removal resolves invisibl
  assert.equal(fixedCityQuery(s,upper,null,true)?.ownerId,b.id);assert.equal(fixedCityQuery(s,upper,null,true)?.height,undefined);
  for(const height of [0,-1,257,1.5])assert.throws(()=>parseFixedCityPreview({query:{...query,height},legal:true,reason:null,cost:'1',positions:[b.location],losses:[]}));
 });
+
+Deno.test('P7-12 all 129 registered cards preserve source categories, identities, eligibility and complete selected art',async()=>{
+ const {catalogPreviewLayers}=await import('../src/lib/catalog-preview.ts');
+ const {cityCatalogChoice}=await import('../src/lib/fixed-city-edit.ts');
+ const {objectOrigin}=await import('../src/lib/object-provenance.ts');
+ const content=JSON.parse(await Deno.readTextFile(new URL('../public/content/bundled-v2/catalog.json',import.meta.url)));
+ assert.equal(fixedCityDefinitions.length,129);
+ assert.deepEqual(['fixed','variable','half'].map(k=>fixedCityDefinitions.filter(d=>d.kind===k).length),[66,55,8]);
+ for(const locale of ['en','ja'] as const){
+  const items=catalogItems('city',locale,content),variants=items.flatMap(i=>i.variants);
+  assert.equal(new Set(variants.map(v=>v.id)).size,129);
+  assert(!variants.some(v=>v.id.includes('null-contrib')));
+  for(const d of fixedCityDefinitions){
+   const row=variants.find(v=>v.id===d.reference.recipeId)!;
+   const source=content.contributions.find((c:any)=>c.id===d.reference.contributionId);
+   const field=(tag:string)=>source.declaration.children.find((n:any)=>n.tag===tag)?.text??'';
+   assert.equal(row.sourceGroup,field('group'));assert.equal(row.sourceSubgroup,field('subgroup'));
+   assert(row.search!.includes(d.reference.contributionId));
+   const origin=objectOrigin(content,row.id,locale)!;assert(origin.author);assert(row.search!.includes(origin.author));
+   assert(row.detail.includes(locale==='en'?(d.computerCannotBuild?'Manual placement only':'Eligible for automatic development'):(d.computerCannotBuild?'手動建設のみ':'自動発展の対象')));
+   const initial=cityCatalogChoice(row.id);
+   const choices=d.kind==='variable'?[{...initial,height:d.minimumHeight},{...initial,height:d.maximumHeight}]:d.kind==='half'?d.halfVariants.map(v=>({...initial,side:v.side===0?'back' as const:'fore' as const,direction:v.direction as 0|2|4|6,color:v.color})):[initial];
+   for(const choice of choices){
+    const layers=catalogPreviewLayers(content,row.id,undefined,choice);assert(layers.length);
+    assert(layers.every(l=>l.frame.status==='ready'));
+    if(d.kind==='variable'){
+     assert.equal(Math.max(...layers.map(l=>l.position[2])),choice.height-1);
+     const selected=catalogItems('city',locale,content,{[row.id]:choice}).flatMap(i=>i.variants).find(v=>v.id===row.id)!;
+     assert.equal(selected.price,Number(d.unitPrice)*choice.height);assert(selected.detail.includes(`${d.sizeX} × ${d.sizeY} × ${choice.height}`));
+    }
+    if(d.kind==='half'){assert.equal(layers.length,1);assert.equal(layers[0].frame.selector.side,choice.side==='fore'?0:1);assert.equal(layers[0].frame.selector.direction,choice.direction);}
+   }
+   if(d.kind==='variable')assert.throws(()=>catalogPreviewLayers(content,row.id,undefined,{...initial,height:d.maximumHeight+1}));
+   if(d.kind==='half')assert.throws(()=>catalogPreviewLayers(content,row.id,undefined,{...initial,color:99}));
+  }
+ }
+});

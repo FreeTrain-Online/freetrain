@@ -1,4 +1,5 @@
-import {fixedCityDefinitions,fixedCityCatalog} from './fixed-city-edit.ts';
+import {cityCatalogChoice,type CityCatalogChoice,fixedCityDefinitions,fixedCityCatalog} from './fixed-city-edit.ts';
+import {objectOrigin} from './object-provenance.ts';
 import { stationDefinitions, stationCatalog } from './station-building-edit.ts';
 import type { RenderCatalog } from './content-recipes.ts';
 import stationaryTypes from '../generated/stationary-types.json' with { type: 'json' };
@@ -30,21 +31,32 @@ export interface CatalogVariant {
   label: string;
   detail: string;
   price: number;
+  group?:string;
+  subgroup?:string;
+  sourceGroup?:string;
+  sourceSubgroup?:string;
+  search?:string;
 }
 export interface CatalogItem {
   id: string;
   title: string;
   variants: CatalogVariant[];
 }
-export function catalogItems(category: CatalogCategory, locale: Locale, content?: RenderCatalog): CatalogItem[] {
+export function catalogItems(category: CatalogCategory, locale: Locale, content?: RenderCatalog, choices:Record<string,CityCatalogChoice>={}): CatalogItem[] {
   const text = messages[locale];
   if(category==='city'){
     const groups=new Map<string,CatalogItem>();
     for(const d of content?fixedCityCatalog(content,locale):[]){
-      const key=JSON.stringify([d.pluginId,d.title,[d.sizeX,d.sizeY].sort((a,b)=>a-b),d.minimumHeight,d.maximumHeight,d.unitPrice]);
+      const key=JSON.stringify([d.pluginId,d.kind,d.sourceGroup,d.sourceSubgroup,d.title,[d.sizeX,d.sizeY].sort((a,b)=>a-b),d.minimumHeight,d.maximumHeight,d.unitPrice,d.computerCannotBuild]);
       let group=groups.get(key);if(!group){group={id:key,title:d.title,variants:[]};groups.set(key,group);}
-      const label=String(group.variants.length+1);
-      group.variants.push({id:d.reference.recipeId,title:`${d.title} · ${label}`,label,detail:[d.orientation,`${d.sizeX} × ${d.sizeY} × ${d.minimumHeight}`].filter(Boolean).join(' · '),price:Number(d.unitPrice)*(d.kind==='variable'?d.minimumHeight:1)});
+      const label=String(group.variants.length+1),choice=cityCatalogChoice(d.reference.recipeId,choices);
+      const height=d.kind==='variable'?choice.height:d.minimumHeight;
+      group.variants.push({id:d.reference.recipeId,title:`${d.title} · ${label}`,label,
+        group:d.group,subgroup:d.subgroup,sourceGroup:d.sourceGroup,sourceSubgroup:d.sourceSubgroup,
+        search:[d.reference.contributionId,d.reference.recipeId,d.pluginId,d.sourceGroup,d.sourceSubgroup,d.description,...Object.values(objectOrigin(content!,d.reference.recipeId,locale)??{})].join(' '),
+        detail:[d.group,d.subgroup,d.orientation,`${d.sizeX} × ${d.sizeY} × ${height}`,
+          text[d.computerCannotBuild?'cityManualOnly':'cityAutomaticEligible']].filter(Boolean).join(' · '),
+        price:Number(d.unitPrice)*(d.kind==='variable'?choice.height:1)});
     }
     return [...groups.values()];
   }

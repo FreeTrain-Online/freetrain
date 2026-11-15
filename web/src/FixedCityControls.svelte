@@ -5,7 +5,7 @@
  import {messages} from './lib/localization.ts';
  import {primaryAction} from './lib/primary-action.ts';
  import {bundledCatalog} from './lib/bundled-catalog.ts';
- import {fixedCityDefinitions,fixedCityCatalog,fixedCityQuery,fixedCityFence} from './lib/fixed-city-edit.ts';
+ import {cityCatalogChoice,fixedCityDefinitions,fixedCityCatalog,fixedCityQuery,fixedCityFence} from './lib/fixed-city-edit.ts';
  import {railwayReasons} from './lib/railway-edit.ts';
  import ObjectProvenance from './ObjectProvenance.svelte';
  import type {ShellModel,ShellState} from './lib/shell-model.ts';
@@ -17,9 +17,10 @@
  const items=$derived(catalog?fixedCityCatalog(catalog,view.locale):[]);
  const definitionId=$derived(view.catalogSelections.city);
  const selected=$derived(items.find(d=>d.reference.recipeId===definitionId));
- let x=$state(0),y=$state(0),autoLevel=$state(true),floors=$state(4),side=$state<'back'|'fore'>('back'),direction=$state<0|2|4|6>(0),color=$state(0),action=$state('place');
+ let x=$state(0),y=$state(0),autoLevel=$state(true),action=$state('place');
+ const choice=$derived(cityCatalogChoice(definitionId,view.cityChoices));
+ const floors=$derived(choice.height*4),side=$derived(choice.side),direction=$derived(choice.direction),color=$derived(choice.color);
  const validHeight=$derived(Number.isSafeInteger(floors)&&floors%4===0&&!!selected&&floors>=selected.minimumHeight*4&&floors<=selected.maximumHeight*4);
- $effect(()=>{floors=(selected?.minimumHeight??1)*4;});
  let detectCoordinates=true;
  let result=$state<FixedCityPreview>(),status=$state<'idle'|'checking'|'ready'|'failed'|'stale'|'missing'>('idle');
  let fence=$state<string>(),submitting=false,version=0,request:AbortController|undefined;
@@ -62,15 +63,15 @@
  <fieldset disabled={view.pending}>
  <p data-testid="catalog-selection">{text.cityType}: {selected?.title}{#if selected?.orientation} · {selected.orientation}{/if}</p>
  <button type="button" onclick={oncatalog}>{text.chooseFromCatalog}</button>
- {#if selected}<p>{selected.description}</p><p>{text.stationaryDimensions}: {selected.sizeX} × {selected.sizeY} × {selected.kind==='variable'?floors/4:selected.minimumHeight} · {text.price}: ¥{validHeight?(BigInt(selected.unitPrice)*BigInt(selected.kind==='variable'?floors/4:1)).toLocaleString(view.locale):'—'}</p><ObjectProvenance id={definitionId} locale={view.locale}/>{/if}
+ {#if selected}<p>{selected.description}</p><p>{text.stationaryDimensions}: {selected.sizeX} × {selected.sizeY} × {selected.kind==='variable'?floors/4:selected.minimumHeight} · {text.price}: ¥{validHeight?(BigInt(selected.unitPrice)*BigInt(selected.kind==='variable'?floors/4:1)).toLocaleString(view.locale):'—'}</p><ObjectProvenance id={definitionId} locale={view.locale}/><p>{[selected.group,selected.subgroup].filter(Boolean).join(' · ')} · {text[selected.computerCannotBuild?'cityManualOnly':'cityAutomaticEligible']}</p>{/if}
  {#if selected?.kind==='half'}
  <label>{text.cityHalfAction}<select aria-label={text.cityHalfAction} bind:value={action} onchange={edit}><option value="place">{text.cityHalfPlace}</option><option value="remove">{text.cityHalfRemove}</option></select></label>
- <label>{text.cityHalfSide}<select aria-label={text.cityHalfSide} bind:value={side} onchange={edit}><option value="back">{text.cityHalfBack}</option><option value="fore">{text.cityHalfFore}</option></select></label>
- <label>{text.cityHalfDirection}<select aria-label={text.cityHalfDirection} bind:value={direction} onchange={edit}>{#each [0,2,4,6].filter(n=>selected.halfVariants.some(v=>v.direction===n)) as n}<option value={n}>{text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[n/2]]}</option>{/each}</select></label>
- {#if new Set(selected.halfVariants.map(v=>v.color)).size>1}<label>{text.cityHalfColor}<input aria-label={text.cityHalfColor} type="number" min="0" max={Math.max(...selected.halfVariants.map(v=>v.color))} bind:value={color} oninput={edit}/></label>{/if}
+ <label>{text.cityHalfSide}<select aria-label={text.cityHalfSide} value={side} onchange={event=>model.setCityChoice(definitionId,{side:event.currentTarget.value as 'back'|'fore'})}><option value="back">{text.cityHalfBack}</option><option value="fore">{text.cityHalfFore}</option></select></label>
+ <label>{text.cityHalfDirection}<select aria-label={text.cityHalfDirection} value={direction} onchange={event=>model.setCityChoice(definitionId,{direction:Number(event.currentTarget.value) as 0|2|4|6})}>{#each [0,2,4,6].filter(n=>selected.halfVariants.some(v=>v.direction===n&&v.side===(side==='fore'?1:0)&&v.color===color)) as n}<option value={n}>{text[(['signalNorth','signalEast','signalSouth','signalWest'] as const)[n/2]]}</option>{/each}</select></label>
+ {#if new Set(selected.halfVariants.map(v=>v.color)).size>1}<label>{text.cityHalfColor}<select aria-label={text.cityHalfColor} value={color} onchange={event=>model.setCityChoice(definitionId,{color:Number(event.currentTarget.value)})}>{#each [...new Set(selected.halfVariants.filter(v=>v.direction===direction&&v.side===(side==='fore'?1:0)).map(v=>v.color))] as value}<option {value}>{value}</option>{/each}</select></label>{/if}
  <p class="hint">{text.cityHalfHelp}</p>
  {/if}
- {#if selected?.kind==='variable'}<label>{text.cityHeight}<input aria-label={text.cityHeight} type="number" min={selected.minimumHeight*4} max={selected.maximumHeight*4} step="4" bind:value={floors} oninput={edit}/></label>{/if}
+ {#if selected?.kind==='variable'}<label>{text.cityHeight}<input aria-label={text.cityHeight} type="number" min={selected.minimumHeight*4} max={selected.maximumHeight*4} step="4" value={floors} oninput={event=>model.setCityChoice(definitionId,{height:event.currentTarget.valueAsNumber/4})}/></label>{/if}
  <div class="form-actions"><label>X<input aria-label={text.cityX} type="number" step="1" bind:value={x} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>Y<input aria-label={text.cityY} type="number" step="1" bind:value={y} oninput={()=>{detectCoordinates=true;edit();}}/></label><label>{text.cityLevel}<input aria-label={text.cityLevel} type="number" step="1" bind:value={level} oninput={()=>{autoLevel=false;edit();}}/></label></div>
  <label><input type="checkbox" bind:checked={autoLevel} onchange={()=>{detectCoordinates=true;edit();}}/>{text.railAutoLevel}</label>
  <button type="button" onclick={()=>{reset();onpick();}}>{text.cityPick}</button>

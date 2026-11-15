@@ -65,7 +65,12 @@ public class FixedCitySessionTests
     [Fact]
     public void Playable_city_browser_seed_is_empty_source_clock_without_producers_or_completion_shortcut()
     {
-        var s=StationBuildingConstructionTests.Empty(now:1980);
+        // The catalog includes ten-voxel buildings. Keep the playable seed tall
+        // enough to quote every authored height above its two-voxel ground.
+        var terrain=new TerrainWorld(TerrainProfiles.Bundled,"City buildings",new(64,24,16),0,
+            Enumerable.Repeat(new TerrainCell(2),64*24),new(1,[]),[]);
+        var s=new MixedSessionState(new(MixedWorld.FromTerrain(RailwayProfiles.Bundled,terrain)),
+            TerrainProvenance.From(new EmptyWorldRequest(WorldCreationProfile.Id,terrain.Name,new(64,24,16),0)),clock:new(1980,0,[]));
         Assert.Empty(s.World.Spatial.Entities);Assert.Null(s.World.City);
         var bytes=SaveCodec.Write(s);
         Assert.Equal(bytes,SaveCodec.Write(SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!));

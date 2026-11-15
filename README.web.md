@@ -138,7 +138,7 @@ The [P5 handoff](doc/parity/speed-limit-handoff.json) records prior-head-locatio
 and numeric-speed boundaries; train-motion timing remains P5.
 
 [Building catalog](doc/web-building-catalog.md) is available from **Game → Building
-catalog**, with Signals and Railway accessories as its first categories. Browse
+catalog**, with City buildings, Signals, Railway accessories and Stations. Browse
 or search source-art cards independently, or open either building tool to show
 its category beside the map. Selecting a card replaces the former object dropdown;
 accessory variants are grouped into nine entries with inline variant buttons,
@@ -282,14 +282,18 @@ performance, remaining latency issues and detailed limits. Station measurements
 use explicitly controlled population supply; evolving city providers remain P7.
 
 City buildings are available from the map's **City buildings** tool (`C`). Choose
-an authored fixed-building variant from the catalog, pick a map position or enter
-coordinates, review the server's footprint and cost, then Confirm. Construction
-advances on source workdays during 09:00–17:59 with shared time. Inspect a site
+one of 129 authored fixed, variable-height or half-voxel definitions from the
+catalog, pick a map position or enter coordinates, review the server's footprint
+and cost, then Confirm. Fixed/variable construction advances on source workdays during 09:00–17:59 with shared time. Inspect a site
 for its actual stage progress; completed populated buildings supply nearby
 stations. Use **Remove** or the inspector's removal button to review demolition.
 English and Japanese controls, catalog text and source attribution are included.
-Variable-height and half-voxel families and automatic growth remain later P7 steps.
-See [P7-09 gameplay and verification](doc/web-parity-city-building.md).
+Variable buildings offer supported heights; half buildings offer Back/Front and
+cardinal direction choices. Cards retain source categories, authors and exact
+definition IDs; their artwork, dimensions and price follow the current choice.
+Search/filter state and per-definition choices survive browsing and peer updates.
+Manual-only definitions remain selectable. Automatic growth remains a later P7 step.
+See [P7-12 catalog workflows and verification](doc/web-parity-city-catalog.md).
 
 ## Parity source policy
 

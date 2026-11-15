@@ -1,7 +1,10 @@
-# Building catalog — 1 November 2026
+# Building catalog — 15 November 2026
 
-The catalog categories are **Signals** (two contributions), **Railway
-accessories** (54 stationary contributions), and **Stations** (35 authored building variants). Further categories can be added as
+The catalog categories are **City buildings** (129 definitions in 50 cards),
+**Signals** (two contributions), **Railway accessories** (54 stationary
+contributions), and **Stations** (35 authored building variants). City buildings
+include 66 fixed, 55 variable-height and eight half-voxel definitions.
+Further categories can be added as
 their workflows are delivered; this does not close the remaining P9 catalog gate.
 
 The UX takes cues from `freetrain-modern`'s `MainWindow.Catalog.cs`,
@@ -11,6 +14,22 @@ window associated with construction. The Svelte implementation adds independent
 browsing and a category switcher. It uses this repository's verified recipes,
 translation metadata and authoritative preview/confirm boundary.
 
+- **City buildings (C)** opens all registered ordinary building definitions. The
+  numbered choices select exact authored designs/orientations; they preserve each
+  definition's art, footprint and price. Only half-voxel buildings expose cardinal
+  direction and Back/Front controls. Variable buildings expose supported heights
+  in four-floor increments. These choices update the card artwork and task quote
+  together, and changing a choice invalidates confirmation. Each definition retains
+  its local choices across tool switches and peer updates.
+- City filters retain the original XML group/subgroup values and their reviewed
+  translations. Search includes names, source groups, descriptions, exact IDs,
+  plugin names and authors. Search and filters survive closing/reopening and
+  category changes. Eight definitions marked `computerCannotBuild` remain manually
+  constructible and display **Manual placement only**; the other 121 display
+  **Eligible for automatic development**. Actual automatic growth remains P7-25–29.
+- [P7-12 source dispositions and verification](web-parity-city-catalog.md) cover
+  hidden generic null content, unsupported generated/optional families, the source
+  category tree and P9's color-test workflow.
 - **Game → Building catalog** opens the catalog without activating a building
   operation. Changing categories or searching changes only local browsing state.
 - Selecting **Signals (F)** or **Railway accessories (A)** opens its category

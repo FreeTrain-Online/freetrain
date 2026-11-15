@@ -265,3 +265,22 @@ Deno.test('epoch replacement discards station drafts with an interruption notice
     assert(model.state.read!.stations[0].name === '中央駅');
   } finally { model.dispose(); }
 });
+
+Deno.test('P7-12 catalog choices and bilingual browsing survive incoming state and reject pending selection',async()=>{
+ const {fixedCityDefinitions}=await import('../src/lib/fixed-city-edit.ts');
+ const {service,model}=setup();
+ try{
+  await until(()=>model.state.connection==='ready');
+  const variable=fixedCityDefinitions.find(d=>d.kind==='variable')!,half=fixedCityDefinitions.find(d=>d.kind==='half')!;
+  model.selectCatalogItem('city',variable.reference.recipeId);model.setCityChoice(variable.reference.recipeId,{height:variable.maximumHeight});
+  model.setCityChoice(half.reference.recipeId,{side:'fore',direction:6});model.setCatalogQuery('city','古い民家');model.setCityCatalogFilter('半ボクセル建築','古い民家');
+  const choices=model.state.cityChoices,queries=model.state.catalogQueries;
+  model.setLocale('ja');service.publish(structuredClone(model.state.read) as Snapshot);
+  assert(model.state.cityChoices===choices&&model.state.catalogQueries===queries);
+  assert(model.state.cityCatalogFilter.subgroup==='古い民家');assert(model.state.catalogSelections.city===variable.reference.recipeId);
+  service.setBehavior('delayed');const pending=model.send({kind:'step'});
+  model.selectCatalogItem('city',half.reference.recipeId);model.setCityChoice(variable.reference.recipeId,{height:variable.minimumHeight});
+  assert(model.state.cityChoices===choices&&model.state.catalogSelections.city===variable.reference.recipeId);await pending;
+  model.selectCatalogItem('city','null-contrib-0:0');assert(model.state.catalogSelections.city===variable.reference.recipeId);
+ }finally{model.dispose();}
+});

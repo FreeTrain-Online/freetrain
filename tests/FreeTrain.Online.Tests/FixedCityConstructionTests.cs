@@ -46,6 +46,27 @@ public class FixedCityConstructionTests
             s.Provenance,clock:s.Clock.Capture(),random:s.Random.Capture(),revision:s.Revision);
     }
     [Fact]
+    public void Every_fixed_catalog_identity_including_eight_manual_only_entries_constructs_without_changing_preview_source()
+    {
+        var before=Empty(false);var bytes=SaveCodec.Write(before);var count=0;var manualOnly=0;
+        foreach(var d in City.Structures.Where(d=>d.Kind==CityStructureKind.Fixed))
+        {
+            var plan=FixedCityConstruction.Preview(Capture(before),P,d.Reference);
+            var after=FixedCityConstruction.Commit(before,plan);var site=Assert.Single(after.World.City!.State.Structures);
+            Assert.Equal(d.Reference,site.Definition);
+            Assert.Equal(d.SizeX*d.SizeY*d.MinimumHeight,site.Construction.Length);
+            Assert.Equal(d.UnitPrice,after.Construction.Accounts.Transactions[^1].Expenditure);
+            Assert.Equal(SaveCodec.Write(after),SaveCodec.Write(Reopen(after)));
+            if(d.ComputerCannotBuild)
+            {
+                Assert.Throws<ArgumentException>(()=>FixedCityConstruction.Preview(Capture(before),P,d.Reference,CityConstructionCaller.Automated));
+                manualOnly++;
+            }
+            count++;
+        }
+        Assert.Equal(66,count);Assert.Equal(8,manualOnly);Assert.Equal(bytes,SaveCodec.Write(before));
+    }
+    [Fact]
     public void Preview_retains_exact_candidate_without_booking_drawing_or_advertising_then_natural_completion_binds_real_demand()
     {
         var s=Empty();var bytes=SaveCodec.Write(s);var plan=FixedCityConstruction.Preview(Capture(s),P,House.Reference);

@@ -306,7 +306,7 @@
       </nav>
     {/if}
     {#if live && catalogOpen && !panel}
-      <BuildingCatalog locale={view.locale} category={catalogCategory} selections={view.catalogSelections} signalDirection={view.signalDirection} pending={view.pending || saveBusy || synchronizing} oncategory={value => { catalogCategory = value; }} onselect={chooseCatalogItem} onclose={closeCatalog}/>
+      <BuildingCatalog locale={view.locale} category={catalogCategory} selections={view.catalogSelections} signalDirection={view.signalDirection} cityChoices={view.cityChoices} queries={view.catalogQueries} cityFilter={view.cityCatalogFilter} onquery={(category,query)=>model.setCatalogQuery(category,query)} onfilter={(group,subgroup)=>model.setCityCatalogFilter(group,subgroup)} pending={view.pending || saveBusy || synchronizing} oncategory={value => { catalogCategory = value; }} onselect={chooseCatalogItem} onclose={closeCatalog}/>
     {/if}
     {#if live && panel && panel !== 'view'}
       {#snippet stationActions()}

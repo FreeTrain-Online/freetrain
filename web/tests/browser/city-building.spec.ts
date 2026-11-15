@@ -189,3 +189,81 @@ for(const ja of [false,true])test(`P7-11 half-building ${ja?'JA narrow touch':'E
   expect(errors).toEqual([]);
  }finally{await context.close();}
 });
+
+for(const ja of [false,true])test(`P7-12 complete catalog ${ja?'JA narrow':'EN'} all 129 identities art and authoritative quotes`,async({page})=>{
+ test.setTimeout(240000);const locale=ja?'ja':'en',t=texts[ja?1:0];
+ if(ja)await page.setViewportSize({width:430,height:860});await page.addInitScript(l=>localStorage.setItem('freetrain-online.locale',l),locale);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
+ await page.goto('/');await ready(page,locale);const initial=await state(page);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page,locale);
+ const before=await bytes(page);await page.getByRole('button',{name:t.cityTask,exact:true}).click();
+ const cat=page.locator('#building-catalog'),cards=cat.locator('[data-catalog-variant]'),search=cat.getByLabel(t.catalogSearch,{exact:true});
+ await expect(cards).toHaveCount(129);
+ const definitions=JSON.parse(readFileSync('src/generated/city-profile.json','utf8')).structures.filter((d:any)=>['fixed','variable','half'].includes(d.kind));
+ const ids=await cards.evaluateAll(buttons=>buttons.map(b=>b.getAttribute('data-catalog-variant')));
+ expect(new Set(ids)).toEqual(new Set(definitions.map((d:any)=>d.reference.recipeId)));
+ await page.getByLabel(t.cityX,{exact:true}).fill('14');await page.getByLabel(t.cityY,{exact:true}).fill('12');
+ const confirm=page.getByRole('button',{name:t.cityConfirm,exact:true}),check=page.locator('.city-task form').getByRole('button',{name:t.stationCheck,exact:true});
+ for(const [i,d] of definitions.entries()){
+  const id=d.reference.recipeId;
+  await cat.locator(`[data-catalog-variant="${id}"]`).click();
+  await expect(confirm).toBeDisabled();
+  const preview=cat.locator('.catalog-active .catalog-preview');await expect(preview).toHaveAttribute('data-preview-id',id);
+  const image=preview.locator('img');await expect(image).toHaveCount(1);await image.evaluate(el=>(el as HTMLImageElement).decode());
+  expect(await image.evaluate(el=>{const c=document.createElement('canvas');c.width=96;c.height=80;const ctx=c.getContext('2d')!;ctx.drawImage(el as HTMLImageElement,0,0);return ctx.getImageData(0,0,96,80).data.some((v,i)=>i%4===3&&v>0);})).toBe(true);
+  if(d.kind==='variable')await page.getByLabel(t.cityHeight,{exact:true}).fill(String((i%2?d.maximumHeight:d.minimumHeight)*4));
+  if(d.kind==='half'){await page.getByLabel(t.cityHalfSide,{exact:true}).selectOption(i%2?'fore':'back');await page.getByLabel(t.cityHalfDirection,{exact:true}).selectOption(String(i%4*2));}
+  const response=page.waitForResponse(r=>r.url().includes('/api/city/fixed/preview?'));await check.click();const quote=await(await response).json();
+  expect(quote.legal,`${id}: ${quote.reason}`).toBe(true);expect(quote.query.definition).toEqual(d.reference);
+  const height=d.kind==='variable'?(i%2?d.maximumHeight:d.minimumHeight):d.minimumHeight;
+  expect(quote.cost).toBe(String(BigInt(d.unitPrice)*BigInt(d.kind==='variable'?height:1)));
+  expect(quote.positions.length).toBe(d.kind==='half'?1:d.sizeX*d.sizeY*height);
+  if(d.kind==='variable'){expect(quote.query.height).toBe(height);await expect(preview).toHaveAttribute('data-height',String(height));}
+  if(d.kind==='half'){expect(quote.query.half).toEqual({side:i%2?'fore':'back',direction:i%4*2,color:0});await expect(preview).toHaveAttribute('data-side',i%2?'fore':'back');}
+  await expect(confirm).toBeEnabled();
+ }
+ const group=cat.getByLabel(t.citySourceGroup,{exact:true}),subgroup=cat.getByLabel(t.citySourceSubgroup,{exact:true});
+ await group.selectOption('半ボクセル建築');await subgroup.selectOption('古い民家');await expect(cards).toHaveCount(8);await expect(confirm).toBeEnabled();
+ await search.fill(ja?'切妻二階建て':'Two-story gabled');await expect(cards).toHaveCount(8);
+ await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();await page.getByRole('button',{name:t.chooseFromCatalog,exact:true}).click();
+ await expect(search).toHaveValue(ja?'切妻二階建て':'Two-story gabled');await expect(subgroup).toHaveValue('古い民家');await expect(confirm).toBeEnabled();
+ await search.fill('no-such-definition');await expect(cards).toHaveCount(0);await expect(cat.getByText(t.catalogNoResults,{exact:true})).toBeVisible();
+ await group.selectOption('*');await search.fill('');
+ const manual=definitions.find((d:any)=>d.computerCannotBuild);await search.fill(manual.reference.recipeId);await expect(cards).toHaveCount(2); // family contains both exact baked orientations
+ await cat.locator(`[data-catalog-variant="${manual.reference.recipeId}"]`).click();await expect(cat.locator('.catalog-active')).toContainText(t.cityManualOnly);
+ await search.fill('');
+ if(ja){await cat.getByRole('button',{name:t.expandPanel,exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+ await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/city-catalog-${locale}.png`});
+ expect(await bytes(page)).toEqual(before);expect(errors).toEqual([]);
+});
+
+test('P7-12 observer catalog and peer edits preserve local choices while rejecting affected quotes',async({page,browser,baseURL})=>{
+ test.setTimeout(90000);const t=texts[0];await page.goto('/');await ready(page);const initial=await state(page);
+ expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page);
+ const definitions=JSON.parse(readFileSync('src/generated/city-profile.json','utf8')).structures;
+ const variable=definitions.find((d:any)=>d.kind==='variable'&&d.sizeX===1&&d.sizeY===1&&d.maximumHeight>=4),half=definitions.find((d:any)=>d.kind==='half');
+ const operatorContext=await browser.newContext({baseURL}),viewerContext=await browser.newContext({baseURL}),operator=await operatorContext.newPage(),viewer=await viewerContext.newPage();
+ try{
+  expect((await operator.request.post('/api/access',{data:{secret:'operator-test'}})).ok()).toBe(true);await operator.goto('/');await ready(operator);
+  expect((await viewer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await viewer.goto('/');await ready(viewer);
+  await openPanel(viewer,'catalog');const viewerCatalog=viewer.locator('#building-catalog');await viewerCatalog.getByLabel(t.catalogCategory,{exact:true}).selectOption('city');
+  await expect(viewerCatalog.locator('[data-catalog-variant]')).toHaveCount(129);await viewerCatalog.locator(`[data-catalog-variant="${variable.reference.recipeId}"]`).click();
+  await expect(viewer.getByRole('button',{name:'Inspect',exact:true})).toHaveAttribute('aria-pressed','true');await expect(viewer.locator('.city-task')).toHaveCount(0);
+  await page.getByRole('button',{name:t.cityTask,exact:true}).click();const cat=page.locator('#building-catalog');await cat.locator(`[data-catalog-variant="${variable.reference.recipeId}"]`).click();
+  await page.getByLabel(t.cityHeight,{exact:true}).fill('12');await quote(page,t);const confirm=page.getByRole('button',{name:t.cityConfirm,exact:true});
+  const source=await cat.locator('.catalog-active img').getAttribute('src');await page.getByLabel(t.cityHeight,{exact:true}).fill('16');await expect(confirm).toBeDisabled();
+  await expect.poll(()=>cat.locator('.catalog-active img').getAttribute('src')).not.toBe(source);await quote(page,t);
+  await cat.getByLabel(t.catalogCategory,{exact:true}).selectOption('signal');await expect(confirm).toBeEnabled();await cat.getByLabel(t.catalogCategory,{exact:true}).selectOption('city');
+  await expect(page.getByLabel(t.cityHeight,{exact:true})).toHaveValue('16');await expect(confirm).toBeEnabled();
+  await operator.getByRole('button',{name:t.cityTask,exact:true}).click();await operator.locator(`[data-catalog-variant="${half.reference.recipeId}"]`).click();await quote(operator,t);await operator.getByRole('button',{name:t.cityConfirm,exact:true}).click();
+  await expect.poll(async()=>(await state(page)).mixed.city.structures.length).toBe(1);await expect(page.getByLabel(t.cityHeight,{exact:true})).toHaveValue('16');
+  // Site leases are authoritatively re-reviewed on confirmation; unrelated
+  // geometry and time updates intentionally retain an existing quote.
+  const afterPeer=await bytes(page);await confirm.click();await expect(confirm).toBeDisabled();
+  await expect(page.getByTestId('city-status')).toHaveText(t.railStale);expect(await bytes(page)).toEqual(afterPeer);
+  await expect(viewerCatalog.locator(`[data-catalog-variant="${variable.reference.recipeId}"]`)).toHaveAttribute('aria-pressed','true');
+  await cat.locator(`[data-catalog-variant="${half.reference.recipeId}"]`).click();await cat.locator(`[data-catalog-variant="${variable.reference.recipeId}"]`).click();
+  await expect(page.getByLabel(t.cityHeight,{exact:true})).toHaveValue('16');await quote(page,t,16);await confirm.click();
+  await expect.poll(async()=>(await state(operator)).mixed.city.structures.length).toBe(2);expect((await state(viewer)).mixed.city.structures.find((s:any)=>s.definition.recipeId===variable.reference.recipeId).height).toBe(4);
+ }finally{await operatorContext.close();await viewerContext.close();}
+});

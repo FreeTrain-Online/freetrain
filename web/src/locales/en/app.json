@@ -1029,5 +1029,11 @@
   "cityHalfFore": "Front half",
   "cityHalfDirection": "Front direction",
   "cityHalfColor": "Color",
-  "cityHalfHelp": "Opposite halves with a matching axis share one voxel. The first half is charged; adding the second is free. Partial removal keeps the original population. Removing the last half or whole building costs ¥300,000."
+  "cityHalfHelp": "Opposite halves with a matching axis share one voxel. The first half is charged; adding the second is free. Partial removal keeps the original population. Removing the last half or whole building costs ¥300,000.",
+  "citySourceGroup": "Source category",
+  "citySourceSubgroup": "Source subcategory",
+  "cityAllGroups": "All",
+  "cityUngrouped": "Not specified",
+  "cityManualOnly": "Manual placement only",
+  "cityAutomaticEligible": "Eligible for automatic development"
 }

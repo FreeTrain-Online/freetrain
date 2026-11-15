@@ -7,6 +7,12 @@ import {railwayRevision} from './railway-edit.ts';
 export {stationBuildingFence as fixedCityFence} from './station-building-edit.ts';
 // Exact authored identities carry their own footprint and baked orientation.
 export const fixedCityDefinitions=cityProfile.structures.filter(d=>['fixed','variable','half'].includes(d.kind));
+export interface CityCatalogChoice {height:number;side:'back'|'fore';direction:0|2|4|6;color:number}
+export function cityCatalogChoice(id:string,choices:Record<string,CityCatalogChoice>={}):CityCatalogChoice {
+ const d=fixedCityDefinitions.find(d=>d.reference.recipeId===id)!;
+ const v=d.halfVariants.find(v=>v.direction===0&&v.side===0)??d.halfVariants[0];
+ return choices[id]??{height:d.minimumHeight,side:v?.side===1?'fore':'back',direction:(v?.direction??0) as 0|2|4|6,color:v?.color??0};
+}
 export function fixedCityAt(read:ReadState,p:Position){return read.mixed?.city?.structures.find(b=>{
  const d=fixedCityDefinitions.find(d=>d.reference.recipeId===b.definition.recipeId);
  return d&&p.x>=b.location.x&&p.x<b.location.x+d.sizeX&&p.y>=b.location.y&&p.y<b.location.y+d.sizeY&&p.z>=b.location.z&&p.z<b.location.z+(d.kind==='half'?1:b.height);
@@ -19,7 +25,8 @@ export function fixedCityQuery(read:ReadState,position:Position,definition:Fixed
 export function fixedCityCatalog(catalog:RenderCatalog,locale:string){return fixedCityDefinitions.filter(d=>!catalog.contributions!.find(c=>c.id===d.reference.contributionId)!.declaration.children.some(c=>c.tag==='playerCannotBuild')).map(d=>{
  const c=catalog.contributions!.find(c=>c.id===d.reference.contributionId)!;
  const localized=(tag:string)=>contentText(bundledLocalization,catalog,c,tag,c.declaration.children.find(c=>c.tag===tag)?.text??'',locale);
- return {...d,pluginId:c.pluginId,title:localized('name')||localized('group'),description:localized('description'),orientation:localized('type')};
+ const sourceGroup=c.declaration.children.find(c=>c.tag==='group')?.text??'',sourceSubgroup=c.declaration.children.find(c=>c.tag==='subgroup')?.text??'';
+ return {...d,pluginId:c.pluginId,title:localized('name')||localized('group'),description:localized('description'),orientation:localized('type'),sourceGroup,sourceSubgroup,group:localized('group'),subgroup:localized('subgroup')};
 });}
 // Completion replaces the site identity. Follow only that one source lifecycle
 // handoff; deletion, rebuilding and replacement must not select another object.

@@ -1,4 +1,5 @@
 import {currentQuote} from './quote-validity.ts';
+import {cityCatalogChoice,type CityCatalogChoice} from './fixed-city-edit.ts';
 import type { CornerTerrainQuery } from '../generated/contracts.ts';
 import { railwayRevision } from './railway-edit.ts';
 import type { CommandPayload, Rejected, SpatialQuery } from '../generated/contracts.ts';
@@ -35,10 +36,13 @@ export interface ShellState {
   selectedBuilding: string;
   catalogSelections: Record<CatalogCategory, string>;
   signalDirection: SignalDirection;
+  cityChoices: Record<string,CityCatalogChoice>;
+  catalogQueries: Record<CatalogCategory,string>;
+  cityCatalogFilter: {group:string;subgroup:string};
 }
 const stations = (read?:ReadState) => read?.mixed?.stationGraph?.buildings ?? read?.stations ?? [];
 export function createShellModel(connect: () => SessionClient, locale: Locale, reconnectDelay = 200) {
-  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id, catalogSelections: { ...initialCatalogSelection }, signalDirection: 0 };
+  let state: ShellState = { locale, leaving: false, signedOut: false, anonymousAccess: false, draftDirty: false, draft: '', composing: false, pending: false, connection: 'loading', feedback: 'idle', behavior: 'normal', selectedBuilding: catalog[0].id, catalogSelections: { ...initialCatalogSelection }, signalDirection: 0, cityChoices:{},catalogQueries:{city:'',station:'',stationary:'',signal:''},cityCatalogFilter:{group:'*',subgroup:'*'} };
   let client: SessionClient | undefined;
   let unsubscribe: (() => void) | undefined;
   let unsubscribeStatus: (() => void) | undefined;
@@ -234,6 +238,12 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
     setComposing(composing: boolean) { update({ composing }); },
     setBehavior(behavior: FixtureBehavior) { update({ behavior }); },
     selectBuilding(selectedBuilding: string) { update({ selectedBuilding }); },
+    setCatalogQuery(category:CatalogCategory,query:string) { update({catalogQueries:{...state.catalogQueries,[category]:query}}); },
+    setCityCatalogFilter(group:string,subgroup='*') { update({cityCatalogFilter:{group,subgroup}}); },
+    setCityChoice(id:string,patch:Partial<CityCatalogChoice>) {
+      if(state.pending||!isCatalogItem('city',id))return;
+      update({cityChoices:{...state.cityChoices,[id]:{...cityCatalogChoice(id,state.cityChoices),...patch}}});
+    },
     selectCatalogItem(category: CatalogCategory, id: string, direction?: SignalDirection) {
       if (state.pending || !isCatalogItem(category, id) || direction !== undefined && (category !== 'signal' || !signalDirections.some(d => d.value === direction))) return;
       update({ catalogSelections: { ...state.catalogSelections, [category]: id }, ...(direction !== undefined ? { signalDirection: direction } : {}) });

@@ -1029,5 +1029,11 @@
   "cityHalfFore": "手前側",
   "cityHalfDirection": "正面の向き",
   "cityHalfColor": "色",
-  "cityHalfHelp": "同じ軸の奥側と手前側は1ボクセルを共有します。最初の建設のみ費用がかかり、追加は無料です。片側を撤去しても最初の人口は維持されます。最後の片側または建物全体の撤去費用は30万円です。"
+  "cityHalfHelp": "同じ軸の奥側と手前側は1ボクセルを共有します。最初の建設のみ費用がかかり、追加は無料です。片側を撤去しても最初の人口は維持されます。最後の片側または建物全体の撤去費用は30万円です。",
+  "citySourceGroup": "出典のカテゴリ",
+  "citySourceSubgroup": "出典のサブカテゴリ",
+  "cityAllGroups": "すべて",
+  "cityUngrouped": "指定なし",
+  "cityManualOnly": "手動建設のみ",
+  "cityAutomaticEligible": "自動発展の対象"
 }
