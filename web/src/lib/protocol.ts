@@ -334,3 +334,23 @@ export function parsePassagePreview(value:unknown):import('../generated/contract
  if(p.cost!=='0'||(p.legal?p.reason!==null||!path.length||JSON.stringify(path)!==JSON.stringify(p.positions):p.reason===null||p.positions.length!==0))throw new Error('Inconsistent passage preview');
  return p;
 }
+
+const validateLand=ajv.compile({...schema,$id:undefined,$ref:'#/$defs/LandPreview'});
+export function parseLandPreview(value:unknown):import('../generated/contracts.ts').LandPreview {
+ if(!validateLand(value))throw new Error('Invalid land preview');
+ const p=value as import('../generated/contracts.ts').LandPreview;
+ const key=(p:{x:number;y:number;z:number})=>`${p.x},${p.y},${p.z}`;
+ if(BigInt(p.amount)<0n || (p.legal?p.reason!==null:p.reason===null||p.amount!=='0') ||
+   new Set(p.cells.map(c=>key(c.position))).size!==p.cells.length || new Set(p.positions.map(key)).size!==p.positions.length ||
+   new Set(p.reclaimed.map(r=>r.ownerId)).size!==p.reclaimed.length || p.cells.length>4096 ||
+   p.cells.some(c=>BigInt(c.value)<0n||c.ownerId!==null&&BigInt(c.ownerId)<1n) ||
+   p.reclaimed.some(r=>BigInt(r.ownerId)<1n||BigInt(r.value)<0n||BigInt(r.removalCost)<0n))throw new Error('Inconsistent land preview');
+ const q=p.query,sx=Math.abs(q.end.x-q.anchor.x)+1,sy=Math.abs(q.end.y-q.anchor.y)+1;
+ if(p.cells.length&&(sx*sy!==p.cells.length||q.end.z!==q.anchor.z||p.cells.some((c,i)=>
+   c.position.x!==Math.min(q.anchor.x,q.end.x)+Math.floor(i/sy)||c.position.y!==Math.min(q.anchor.y,q.end.y)+i%sy||c.position.z!==q.anchor.z||
+   q.action==='buy'&&c.status==='sellable'||q.action==='sell'&&c.status==='buyable')))throw new Error('Inconsistent land traversal');
+ const eligible=p.cells.filter(c=>c.status===(q.action==='buy'?'buyable':'sellable'));
+ const total=eligible.reduce((n,c)=>n+BigInt(c.value),0n)+p.reclaimed.reduce((n,r)=>n+BigInt(r.value)+BigInt(r.removalCost),0n);
+ if(p.query.action==='inspect'?p.amount!=='0'||p.legal&&p.cells.length!==1:p.legal&&(!eligible.length||total!==BigInt(p.amount)))throw new Error('Inconsistent land amount');
+ return p;
+}

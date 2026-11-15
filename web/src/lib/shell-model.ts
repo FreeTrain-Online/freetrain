@@ -162,6 +162,13 @@ export function createShellModel(connect: () => SessionClient, locale: Locale, r
       if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale slope preview');
       return result;
     },
+    async previewLand(query:import('../generated/contracts.ts').LandQuery,signal:AbortSignal) {
+      const current=generation,active=client;
+      if(disposed||state.connection!=='ready'||!active?.previewLand)throw new Error('Unavailable');
+      const result=await active.previewLand(query,signal);
+      if(disposed||signal.aborted||current!==generation||client!==active||state.connection!=='ready'||!currentQuote(state.read,query))throw new Error('Stale city preview');
+      return result;
+    },
     async previewFixedCity(query:import('../generated/contracts.ts').FixedCityQuery,signal:AbortSignal) {
       const current=generation,active=client;
       if(disposed||state.connection!=='ready'||!active?.previewFixedCity)throw new Error('Unavailable');

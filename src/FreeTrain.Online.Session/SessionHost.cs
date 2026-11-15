@@ -458,6 +458,7 @@ public sealed partial class SessionHost : IDisposable
                             case EditCornerCommand edit when edit.Query != null: code = AuthoringTerrain.IsAction(edit.Query.Action)?CommitAuthoring(edit.Query):CommitCorner(edit.Query); break;
                             case EditRailwayCommand edit when edit.Query != null: code = CommitRailway(edit.Query); break;
                             case RenameStationCommand rename when rename.Name != null: code = RenameStationBuilding(rename); break;
+                            case TradeLandCommand trade when trade.Query != null: code = CommitLand(trade); break;
                             case EditFixedCityCommand edit when edit.Query != null: code = CommitFixedCity(edit); break;
                             case CancelCityConstructionCommand cancel when cancel.Query != null: code = CancelCityConstruction(cancel); break;
                             case EditStationBuildingCommand edit when edit.Query != null: code = CommitStationBuilding(edit); break;

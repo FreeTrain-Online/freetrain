@@ -15,7 +15,7 @@ public sealed partial class SessionHost
     private bool rebasingQuote, reviewingQuote;
     private static long QuoteEpoch<T>(T query) => query switch {
         FleetTradeQuery q => q.ExpectedWorldEpoch, FleetDeploymentQuery q => q.ExpectedWorldEpoch,
-        FixedCityQuery q => q.ExpectedWorldEpoch, CityQuery q => q.ExpectedWorldEpoch,
+        LandQuery q => q.ExpectedWorldEpoch, FixedCityQuery q => q.ExpectedWorldEpoch, CityQuery q => q.ExpectedWorldEpoch,
         StationBuildingQuery q => q.ExpectedWorldEpoch, PassageQuery q => q.ExpectedWorldEpoch,
         ThinPlatformQuery q => q.ExpectedWorldEpoch, WidePlatformQuery q => q.ExpectedWorldEpoch,
         RailwayQuery q => q.ExpectedWorldEpoch, SlopeQuery q => q.ExpectedWorldEpoch,
@@ -34,7 +34,7 @@ public sealed partial class SessionHost
             SlopePreviewRead p => p.Members.Select(c => c.Position).Concat(p.AddedPiers),
             CornerTerrainPreviewRead p => p.Changes.Select(c => c.Position),
             RemovalPreviewRead p => p.Positions,
-            FixedCityPreviewRead p => p.Positions, StationBuildingPreviewRead p => p.Positions,
+            LandPreviewRead p => p.Positions, FixedCityPreviewRead p => p.Positions, StationBuildingPreviewRead p => p.Positions,
             ThinPlatformPreviewRead p => p.Positions, WidePlatformPreviewRead p => p.Positions,
             PassagePreviewRead p => p.Positions, FleetDeploymentPreviewRead p => p.Cars.Select(c => c.Location),
             _ => []

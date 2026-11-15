@@ -155,3 +155,21 @@ if(process.argv.includes('--check')){if(await readFile(cityOutput,'utf8')!==city
 
 // Portable source crop accommodations retain their own pinned sheet provenance.
 execFileSync('python3', [fileURLToPath(new URL('../../scripts/variable-city-art.py', import.meta.url)), ...(process.argv.includes('--check') ? ['--check'] : [])], {stdio:'inherit'});
+
+// LandPropertyVoxel's exact 32x16 SimpleSprite, with verified alpha masks.
+const landAsset=catalog.assets.find(a=>a.path==='trunk/plugins/system/LandProperty.bmp');
+if(landAsset?.status!=='converted-surface'||landAsset.width!==32||landAsset.height!==16)throw new Error('Unavailable land property art');
+const landMasks={},landSets={},landFrameMasks={};
+for(const mode of ['day','night']){
+ const media=landAsset[mode],png=await readFile(new URL('../public'+media.url,import.meta.url));
+ if(createHash('sha256').update(png).digest('hex')!==media.sha256||png[24]!==8||png[25]!==6)throw new Error('Invalid property PNG');
+ const chunks=[];for(let pos=8;pos<png.length;){const n=png.readUInt32BE(pos);if(png.toString('ascii',pos+4,pos+8)==='IDAT')chunks.push(png.subarray(pos+8,pos+8+n));pos+=12+n;}
+ const raw=inflateSync(Buffer.concat(chunks)),stride=32*4+1;
+ if(raw.length!==16*stride)throw new Error('Invalid property pixels');
+ const rows=Array.from({length:16},(_,y)=>{if(raw[y*stride]!==0)throw new Error('Invalid property filter');return Array.from({length:32},(_,x)=>raw[y*stride+1+x*4+3]?'1':'0').join('');});
+ const mask=createHash('sha256').update(rows.join('\n')).digest('hex');landMasks[mask]=rows;
+ for(const season of ['spring','summer','autumn','winter']){const key=season+'/'+mode;landSets[key]={image:media,width:32,height:16,sourcePath:landAsset.path};landFrameMasks[key]=mask;}
+}
+const landArt={sourceRevision:catalog.source.revision,sets:landSets,masks:landMasks,frameMasks:landFrameMasks};
+const landArtPath=new URL('../src/generated/land-property-art.json',import.meta.url),landArtText=JSON.stringify(landArt,null,2)+'\n';
+if(process.argv.includes('--check')){if(await readFile(landArtPath,'utf8')!==landArtText)throw new Error('Stale property art');}else await writeFile(landArtPath,landArtText);

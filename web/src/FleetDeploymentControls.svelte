@@ -26,7 +26,12 @@
     if(quote&&!stale&&quote.query.action==='place'&&quote.query.tail?.x===x&&quote.query.tail.y===y&&quote.query.tail.z===z&&quote.query.reverse===reverse)return;
     if([x,y,z].every(Number.isInteger)&&z>=0&&z<read.map.levels)void preview(event?.currentTarget instanceof HTMLElement?event.currentTarget:undefined);
   }
-  function coordinateKey(e:KeyboardEvent){if(e.key==='Enter'&&!quote&&!e.isComposing&&e.keyCode!==229&&!e.repeat&&!e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();e.stopPropagation();updatePreview(e);}}
+  function coordinateKey(e:KeyboardEvent){
+    if(e.key==='Escape'&&!e.isComposing&&e.keyCode!==229&&cancelDraft()){
+      e.preventDefault();e.stopPropagation();return;
+    }
+    if(e.key==='Enter'&&!quote&&!e.isComposing&&e.keyCode!==229&&!e.repeat&&!e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();e.stopPropagation();updatePreview(e);}
+  }
   async function preview(source?:HTMLElement,action?:'reverse'){
     if(disabled||submitting||!train)return;
     launcher=source??(document.activeElement instanceof HTMLElement?document.activeElement:undefined);

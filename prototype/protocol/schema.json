@@ -92,6 +92,9 @@
     },
     {
       "$ref": "#/$defs/FixedCityPreview"
+    },
+    {
+      "$ref": "#/$defs/LandPreview"
     }
   ],
   "$defs": {
@@ -1459,6 +1462,26 @@
             "kind",
             "query",
             "expectedCost"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "tradeLand"
+            },
+            "query": {
+              "$ref": "#/$defs/LandQuery"
+            },
+            "expectedAmount": {
+              "$ref": "#/$defs/Money"
+            }
+          },
+          "required": [
+            "kind",
+            "query",
+            "expectedAmount"
           ]
         }
       ]
@@ -7185,6 +7208,169 @@
         "side",
         "direction",
         "color"
+      ]
+    },
+    "LandQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "expectedWorldEpoch": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedGeometryRevision": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedMinute": {
+          "$ref": "#/$defs/Counter"
+        },
+        "expectedContentVersion": {
+          "enum": [
+            "terrain-content-1",
+            "mixed-railway-content-1"
+          ]
+        },
+        "action": {
+          "enum": [
+            "buy",
+            "sell",
+            "inspect"
+          ]
+        },
+        "anchor": {
+          "$ref": "#/$defs/Position"
+        },
+        "end": {
+          "$ref": "#/$defs/Position"
+        }
+      },
+      "required": [
+        "expectedWorldEpoch",
+        "expectedGeometryRevision",
+        "expectedMinute",
+        "expectedContentVersion",
+        "action",
+        "anchor",
+        "end"
+      ]
+    },
+    "LandCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "status": {
+          "enum": [
+            "buyable",
+            "sellable",
+            "outside",
+            "underground",
+            "owned",
+            "protected",
+            "notProperty",
+            "vacant"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/Money"
+        },
+        "ownerId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Counter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "position",
+        "status",
+        "value",
+        "ownerId"
+      ]
+    },
+    "LandReclamation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownerId": {
+          "$ref": "#/$defs/Counter"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "value": {
+          "$ref": "#/$defs/Money"
+        },
+        "removalCost": {
+          "$ref": "#/$defs/Money"
+        }
+      },
+      "required": [
+        "ownerId",
+        "position",
+        "value",
+        "removalCost"
+      ]
+    },
+    "LandPreview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "$ref": "#/$defs/LandQuery"
+        },
+        "legal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amount": {
+          "$ref": "#/$defs/Money"
+        },
+        "cells": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/LandCell"
+          }
+        },
+        "reclaimed": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/LandReclamation"
+          }
+        },
+        "positions": {
+          "type": "array",
+          "maxItems": 32768,
+          "items": {
+            "$ref": "#/$defs/Position"
+          }
+        }
+      },
+      "required": [
+        "query",
+        "legal",
+        "reason",
+        "amount",
+        "cells",
+        "reclaimed",
+        "positions"
       ]
     }
   }

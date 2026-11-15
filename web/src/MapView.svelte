@@ -1,4 +1,5 @@
 <script lang="ts">
+ import LandControls from './LandControls.svelte';
  import FixedCityControls from './FixedCityControls.svelte';
   import {initialStationLabels,persistStationLabels} from './lib/station-labels.ts';
   import TrainInformation from './TrainInformation.svelte';
@@ -56,6 +57,7 @@
   let night = $state(false), winter = $state(false), recolor = $state(false);
   let preview = $state<Position>(), selectedPosition = $state<Position>();
   let railControls=$state<{cancelDraft:()=>boolean;usesAutomaticPick:()=>boolean;isRemoving?:()=>boolean;usesSlopePick?:()=>boolean;pickPosition?:(p:Position,append?:boolean)=>void;hoverPosition?:(p?:Position)=>void}>();
+  let landControls=$state<LandControls>(),landPicked=$state<Position>();
   let cityControls=$state<FixedCityControls>(),cityPicked=$state<Position>(),cityPreview=$state<import('./generated/contracts.ts').FixedCityPreview>();
   export async function removeCity(position:Position){if(tool!=='remove')activateTool('remove');await tick();removePicked={...position};}
   let stationControls=$state<StationControls>(),stationPicked=$state<Position>(),stationPreview=$state<import('./generated/contracts.ts').StationBuildingPreview>(),platformPreview=$state<import('./lib/wide-platform-edit.ts').StationAccessoryPreview>();
@@ -106,7 +108,7 @@
     drag = undefined;
   }
   function clearTarget() { draftVersion++; previewRequest?.abort(); previewRequest=undefined;geometry=undefined;geometryStatus='idle';rawPosition=undefined;targetRevision=undefined;selectedPosition=undefined;preview=undefined;uncertain=false;dirty=true; }
-  function cancelDraft() { untrack(()=>{cityControls?.cancelDraft();cityPicked=undefined;cityPreview=undefined;railControls?.cancelDraft();removeControls?.cancelDraft();stationControls?.cancelDraft();});stationPicked=undefined;stationPreview=undefined;platformPreview=undefined;removePicked=undefined;removalPath=[];railPicked=undefined;railPreview=undefined;slopePreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;cornerSelection=undefined;clearTarget();anchor=undefined;snapMode=0; }
+  function cancelDraft() { untrack(()=>{landControls?.cancelDraft();landPicked=undefined;cityControls?.cancelDraft();cityPicked=undefined;cityPreview=undefined;railControls?.cancelDraft();removeControls?.cancelDraft();stationControls?.cancelDraft();});stationPicked=undefined;stationPreview=undefined;platformPreview=undefined;removePicked=undefined;removalPath=[];railPicked=undefined;railPreview=undefined;slopePreview=undefined;railPoints=[];rectangleMode=false;terrainStrategy=undefined;rectangleEnd=undefined;terrainSites=undefined;untrack(()=>cornerGeneration++);cornerPicked=undefined;cornerSelection=undefined;clearTarget();anchor=undefined;snapMode=0; }
   async function chooseTarget(raw:Position) {
     clearTarget();rawPosition={...raw};
     const read=view.read;if(!read)return;
@@ -134,7 +136,8 @@
   export function resetInteraction() { cancelGesture(); cancelDraft(); }
   export function focusMap() { if (live) canvas.focus({ preventScroll: true }); }
   export function escape() {
-    if(tool==='city'&&cityControls?.cancelDraft()) {}
+    if(tool==='land'&&landControls?.cancelDraft()) {}
+    else if(tool==='city'&&cityControls?.cancelDraft()) {}
     else if(tool==='station'&&stationControls?.cancelDraft()) { /* Clear the quote first. */ }
     else if(railway&&tool==='remove'&&removeControls?.cancelDraft()) { /* First Escape clears the object. */ }
     else if(railway&&(tool==='build'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='speed'||tool==='stationary'||tool==='pole'||tool==='signal'||tool==='garage')&&railControls?.cancelDraft()) { /* First Escape clears the route. */ }
@@ -164,7 +167,7 @@
     const shortcut = tools.find(item=>item.shortcut.toLowerCase()===event.key.toLowerCase())?.id;
     if (shortcut) {
       event.preventDefault();
-      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !((shortcut === 'city'||shortcut === 'station'||shortcut === 'slope'||shortcut === 'bridge'||shortcut === 'girder'||shortcut === 'tunnel'||shortcut === 'speed'||shortcut === 'stationary'||shortcut === 'pole'||shortcut === 'signal'||shortcut === 'garage') && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
+      if (down && !event.repeat && shortcut !== tool && (shortcut === 'inspect' || !blocked) && !(shortcut === 'remove' && reference && !railway) && !((shortcut === 'land'||shortcut === 'city'||shortcut === 'station'||shortcut === 'slope'||shortcut === 'bridge'||shortcut === 'girder'||shortcut === 'tunnel'||shortcut === 'speed'||shortcut === 'stationary'||shortcut === 'pole'||shortcut === 'signal'||shortcut === 'garage') && !railway) && !(shortcut === 'terrain' && !terrain)) ontool(shortcut);
       return;
     }
   }
@@ -175,7 +178,7 @@
     focusMap();
     // A small world must remain reachable above the narrow tool sheet. Shift
     // only when opening the task; previews/confirmations preserve the camera.
-    if(narrow&&railway&&(tool==='city'||tool==='station'||tool==='build'||tool==='remove'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='speed'||tool==='stationary'||tool==='pole'||tool==='signal'||tool==='garage')){
+    if(narrow&&railway&&(tool==='land'||tool==='city'||tool==='station'||tool==='build'||tool==='remove'||tool==='slope'||tool==='bridge'||tool==='girder'||tool==='tunnel'||tool==='speed'||tool==='stationary'||tool==='pole'||tool==='signal'||tool==='garage')){
       const active=tool;
       void tick().then(()=>{
         const card=document.querySelector('.track-task');
@@ -255,6 +258,7 @@
     if(deploymentPicking&&!blocked){const location=renderer?.pickLocation(p,{kind:'railOrGround'});if(location)ondeploymentpick(location);}
     else if (tool === 'inspect') { onselect(renderer?.pick(p, camera.zoom)); }
     else if(tool==='terrain'&&!blocked&&!panel)pickCorner(event,false);
+    else if(railway&&tool==='land'&&!blocked&&!panel){landPicked=landControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:'ground'}):tileAt(p,railLevel,camera,width,height,space);}
     else if(railway&&tool==='city'&&!blocked&&!panel){cityPicked=cityControls?.usesAutomaticPick()?renderer?.pickLocation(p,{kind:'ground'}):tileAt(p,railLevel,camera,width,height,space);}
     else if(railway&&tool==='station'&&!blocked&&!panel){
       const selected=stationControls?.isRemoving()?renderer?.pick(p,camera.zoom):undefined;
@@ -431,7 +435,7 @@
 </div>
 {#if live}
   <div class="tool-strip" role="toolbar" aria-orientation={narrow ? 'horizontal' : 'vertical'} aria-label={text.mapTools} aria-describedby="mutation-help" use:toolbar={narrow ? 'horizontal' : 'vertical'}>
-    {#each tools.filter(item=>!['city','station','slope','bridge','girder','tunnel','garage','signal','pole','stationary','speed'].includes(item.id)||railway) as item}
+    {#each tools.filter(item=>!['land','city','station','slope','bridge','girder','tunnel','garage','signal','pole','stationary','speed'].includes(item.id)||railway) as item}
       {@const label=reference && item.id==='inspect' ? text.referenceInspect : railway && item.id==='build' ? text.trackTask : reference && item.id==='build' ? text.spatialTarget : text[item.label]}
       <button aria-label={label} title={`${label} (${item.shortcut})${item.id==='terrain'&&!terrain?` · ${text.terrainUnavailable}`:''}`} aria-keyshortcuts={item.shortcut} aria-describedby={item.id==='terrain'&&!terrain?'terrain-unavailable':undefined} aria-pressed={tool === item.id} disabled={item.id === 'terrain' && !terrain || item.id === 'remove' && reference && !railway || item.id !== 'inspect' && blocked} onclick={() => ontool(item.id)}>{#if item.icon==='station'}<StationToolIcon />{:else if item.icon==='rail'}<RailToolIcon />{:else if item.icon==='pole'}<RailToolIcon pole />{:else if item.icon==='garage'}<RailToolIcon garage />{:else if item.icon==='tunnel'}<RailToolIcon tunnel />{:else if item.icon==='girder'}<RailToolIcon girder />{:else if item.icon==='bridge'}<RailToolIcon bridge />{:else if item.icon==='slope'}<RailToolIcon slope />{:else}{item.icon}{/if}</button>
       {#if item.id === 'inspect'}
@@ -471,6 +475,9 @@
   {/if}
   {#if railway && tool === 'remove' && !panel}
     {#key cornerGeneration}<RemoveControls oncitypreview={p=>{cityPreview=p;dirty=true;}} onstationpreview={p=>{stationPreview=p;dirty=true;}} bind:this={removeControls} {model} {view} picked={removePicked} bind:level={removeLevel} {heightCut} onpreview={p=>{terrainSites=[...(p?.positions??[]).map(position=>({position,skipped:false})),...(p?.skipped??[]).map(s=>({position:s.position,skipped:true}))];removalPath=p?.path??[];dirty=true;}} onpoints={p=>{railPoints=p;dirty=true;}} onreset={()=>{removePicked=undefined;}} onreveal={()=>{heightCut=removeLevel;}}/>{/key}
+  {/if}
+  {#if railway && tool==='land' && !panel}
+    {#key cornerGeneration}<LandControls bind:this={landControls} {model} {view} picked={landPicked} bind:level={railLevel} {heightCut} onpreview={p=>{terrainSites=p?.cells.length?p.cells.map(c=>({position:c.position,skipped:!['buyable','sellable'].includes(c.status)})):p?.positions.map(position=>({position,skipped:false}));dirty=true;}} onpick={()=>{landPicked=undefined;focusMap();}} onreveal={()=>{heightCut=railLevel;}}/>{/key}
   {/if}
   {#if railway && tool==='city' && !panel}
     {#key cornerGeneration}<FixedCityControls bind:this={cityControls} {model} {view} picked={cityPicked} bind:level={railLevel} {heightCut} onpreview={p=>{cityPreview=p;dirty=true;}} onpick={()=>{cityPicked=undefined;focusMap();}} onreveal={()=>{heightCut=view.read!.map.levels-1;}} {oncatalog}/>{/key}

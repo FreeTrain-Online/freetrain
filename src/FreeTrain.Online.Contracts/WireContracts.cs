@@ -148,6 +148,7 @@ public sealed record SpatialPreviewRead(long WorldEpoch, long Revision, string R
 [JsonDerivedType(typeof(SetAuthoringModeCommand), "setAuthoringMode")]
 [JsonDerivedType(typeof(EditRailwayCommand), "editRailway")]
 [JsonDerivedType(typeof(CancelCityConstructionCommand), "cancelCityConstruction")]
+[JsonDerivedType(typeof(TradeLandCommand), "tradeLand")]
 [JsonDerivedType(typeof(EditFixedCityCommand), "editFixedCity")]
 [JsonDerivedType(typeof(EditStationBuildingCommand), "editStationBuilding")]
 [JsonDerivedType(typeof(EditPassageCommand), "editPassage")]

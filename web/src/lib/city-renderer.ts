@@ -1,4 +1,4 @@
-import {variableCityArt} from './variable-city-art.ts';
+import {landPropertyArt,landPropertyRecipe} from './land-property-art.ts';
 // Stable ExAV PThreeDimStructure.VoxelImpl.draw, Commercial.heightCutColor,
 // ConstructionSite.VoxelImpl.draw and QuarterViewDrawer. LGPL-2.1-or-later.
 import type {Definition,Position} from '../generated/contracts.ts';
@@ -7,7 +7,7 @@ import {WorldSpace,type Point} from './map-geometry.ts';
 import {instantiate,variableFrames,variantKey,type Layer,type RenderCatalog,type Variant} from './content-recipes.ts';
 import {cityProfile} from './city-state.ts';
 import {constructionParts} from './construction-renderer.ts';
-export interface CityTarget {kind:'building';id:string;position:Position;definition:Definition}
+export type CityTarget = {kind:'building';id:string;position:Position;definition:Definition} | {kind:'terrain';id:string;position:Position;surface:'ground'};
 export type CityOperation={target:CityTarget;layer:Layer;halfHeight?:number}|{target:CityTarget;points:Point[];color:string};
 const key=(p:Position)=>`${p.x},${p.y},${p.z}`;
 export class CityRenderPlan {
@@ -21,7 +21,7 @@ export class CityRenderPlan {
   private signatures=new Map<number,string>();
   private space:WorldSpace;
   constructor(read:ReadState,catalog:RenderCatalog,variant:Variant) {
-    catalog=variableCityArt(catalog);
+    catalog=landPropertyArt(catalog);
     const space=this.space=new WorldSpace(read.map.width,read.map.height,read.map.levels),recipes=new Map(catalog.renderRecipes.map(r=>[r.id,r]));
     const checked=(id:string)=>{
       const r=recipes.get(id);
@@ -69,6 +69,13 @@ export class CityRenderPlan {
           add({...recipe,handler:'fixed-3d',frames:frames.map(f=>({...f,cell:[0,0,0]}))});
         }
       }
+    }
+    for(const property of read.mixed?.city?.properties??[]){
+      const p=property.location,hv=space.storage(p),index=hv.v*space.horizontalSize+hv.h;
+      const target:CityTarget={kind:'terrain',id:property.id,position:p,surface:'ground'};
+      this.occupied.add(key(p));this.columnIndices.add(index);
+      const column=this.columns.get(index)??{operations:[],bases:[]};this.columns.set(index,column);
+      for(const layer of instantiate(checked(landPropertyRecipe),property.id,[p.x-space.centerX,p.y,p.z])){this.layers.push(layer);column.operations.push({target,layer});}
     }
     for(const [index,column] of this.columns)this.signatures.set(index,JSON.stringify([column,column.bases.map(t=>this.tops.get(t.id))]));
   }

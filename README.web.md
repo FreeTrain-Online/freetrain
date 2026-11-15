@@ -295,6 +295,13 @@ Search/filter state and per-definition choices survive browsing and peer updates
 Manual-only definitions remain selectable. Automatic growth remains a later P7 step.
 See [P7-12 catalog workflows and verification](doc/web-parity-city-catalog.md).
 
+Use **Land ownership** (`O`) to buy or sell a rectangle. Pick two corners or enter
+coordinates; the first corner must be on the ground and fixes the selection level.
+Review eligible/skipped cells, reclamation and the exact debit or credit before
+confirming. Selling pays current land value. Inspect a map location to see its
+current value and property status; these reads do not change the world.
+See [P7-15 land trading and verification](doc/web-parity-land-trading.md).
+
 ## Parity source policy
 
 The full-game parity target is stable **FreeTrain ExAV 2.1.1.12**, archive

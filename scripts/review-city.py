@@ -92,9 +92,10 @@ def validate(review, locale, source_root=None):
     require(review['policies'] == POLICIES, 'Unapproved semantic/runtime policy')
     require(index(review['inputs'], 'path', 'input').keys() == INPUTS, 'Input scope drift')
     for row in review['inputs']:
-        # P7-01's policy is historical evidence. P7-05 versions the current
-        # save/wire contract; keep the reviewed policy bytes and digest intact.
-        path = 'doc/parity/p7-01-runtime-policy.txt' if row['path'] == 'doc/web-parity-runtime-policy.md' else row['path']
+        # P7-01 inputs are historical evidence. Later slices extend the live
+        # runtime policy/handoff; retain the exact reviewed bytes and digests.
+        path = {'doc/web-parity-runtime-policy.md':'doc/parity/p7-01-runtime-policy.txt',
+                'doc/web-parity-p7-p8-station-handoff.md':'doc/parity/p7-01-station-handoff.txt'}.get(row['path'],row['path'])
         require(sha((ROOT / path).read_bytes()) == row['sha256'], 'Input hash drift: ' + row['path'])
     ledger = {r['baselinePath'].removeprefix('trunk/'): r for r in read('exav-ledger.json')['fileInventory']}
     sources = index(review['sourceReviews'], 'path', 'source')

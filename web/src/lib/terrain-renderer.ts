@@ -1,4 +1,4 @@
-import {variableCityArt} from './variable-city-art.ts';
+import {landPropertyArt} from './land-property-art.ts';
 import {CityRenderPlan,type CityTarget} from './city-renderer.ts';
 import { speedLimitCatalog } from './speed-limit-display.ts';
 import { terrainLookup, terrainChangedColumns } from './terrain-state.ts';
@@ -111,7 +111,7 @@ export class TerrainScene {
     if(read.mixed?.speedLimits)catalog=speedLimitCatalog(catalog);
     // Apply crop corrections after catalog extensions so downstream consumers
     // receive the same cached, provenance-checked catalog identity.
-    catalog=variableCityArt(catalog);
+    catalog=landPropertyArt(catalog);
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
     const stations=new StationRenderPlan(read,catalog,variant),city=new CityRenderPlan(read,catalog,variant);

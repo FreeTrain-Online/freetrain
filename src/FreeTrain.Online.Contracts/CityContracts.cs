@@ -23,3 +23,11 @@ public sealed record CityQuery(long ExpectedWorldEpoch, long ExpectedRevision, l
 public sealed record CityPreviewRead(CityQuery Query, bool CanCancel, string? Reason, long Cost, CityStructureRead Structure, CityPopulationRead? Population = null);
 public sealed record CityPopulationRead(int Residents, int Outgoing, int Incoming, int LandValue);
 public sealed record CancelCityConstructionCommand(CityQuery Query) : CommandPayload;
+
+public sealed record LandQuery(long ExpectedWorldEpoch, long ExpectedGeometryRevision, long ExpectedMinute,
+    string ExpectedContentVersion, string Action, PositionRead Anchor, PositionRead End);
+public sealed record LandCellRead(PositionRead Position, string Status, long Value, long? OwnerId);
+public sealed record LandReclamationRead(long OwnerId, PositionRead Position, long Value, long RemovalCost);
+public sealed record LandPreviewRead(LandQuery Query, bool Legal, string? Reason, long Amount,
+    LandCellRead[] Cells, LandReclamationRead[] Reclaimed, PositionRead[] Positions);
+public sealed record TradeLandCommand(LandQuery Query, long ExpectedAmount) : CommandPayload;

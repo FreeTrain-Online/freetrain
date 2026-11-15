@@ -184,7 +184,14 @@ test('Japanese narrow deployment keeps drafts and focus, discards late previews 
  await page.getByRole('button',{name:ja.cancel,exact:true}).click();await expect(page.locator('.deployment-controls').getByLabel('Z',{exact:true})).toBeFocused();expect(await save(page)).toEqual(before);
  let release!:()=>void;const held=new Promise<void>(r=>release=r);let requested=false;
  await page.route('**/api/fleet/deployment/preview?*',async route=>{const response=await route.fetch();requested=true;await held;try{await route.fulfill({response});}catch{/* Request was intentionally aborted. */}});
- await page.locator('.deployment-controls').getByLabel('Z',{exact:true}).press('Enter');await expect.poll(()=>requested).toBe(true);await page.keyboard.press('Escape');release();
+ const z=page.locator('.deployment-controls').getByLabel('Z',{exact:true});
+ try{
+  await z.press('Enter');await expect.poll(()=>requested).toBe(true);
+  await expect(z).toBeFocused();await z.press('Escape');
+  // Prove cancellation while the response is held, before zero cars can pass early.
+  await expect(page.getByRole('button',{name:ja.deploymentPick,exact:true})).toBeEnabled();
+  await expect(z).toBeFocused();
+ }finally{release();}
  await expect(page.getByTestId('deployment-car')).toHaveCount(0);await expect(page.locator('canvas')).toHaveAttribute('data-fleet-ghost-cars','0');expect(await save(page)).toEqual(before);
  const context=await browser.newContext({baseURL}),observer=await context.newPage();
  try{

@@ -118,7 +118,7 @@ public static class CityConstruction
         var after=Replace(before.Construction,state,world.Spatial.NextEntityId,booking,new(before.Clock.AbsoluteMinute),"cityConstructionRemoval",reclaimed:removed);
         return new(after,before.Clock with {Pending=before.Clock.Pending.Where(a=>!registrations.Contains(a.Registration)).ToImmutableArray()},before.Random);
     }
-    private static CityState Without(CityState state,IReadOnlySet<long> ids) => state with {
+    internal static CityState Without(CityState state,IReadOnlySet<long> ids) => state with {
         Structures=state.Structures.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
         Ground=state.Ground.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),
         Properties=state.Properties.Where(s=>!ids.Contains(s.Id)).ToImmutableArray(),

@@ -11,6 +11,10 @@ type FixtureFamily = {
 
 /** Every generated input and companion oracle has one producer and run-owned path. */
 export const fixtureFamilies = {
+  land: {
+    env:'FREETRAIN_LAND_OUTPUT',producers:['Land_browser_fixture_and_transport_use_actual_canonical_trade_successor','Relevant_heat_change_requires_renewed_review_while_unrelated_clock_change_keeps_quote'],
+    suffixes:['','.before.json','.snapshot.json','.delta.json','.changing'],consumers:['land-trading.spec.ts'],
+  },
   passengerFeedback: {
     env: 'FREETRAIN_PASSENGER_FEEDBACK_OUTPUT',
     producers: [

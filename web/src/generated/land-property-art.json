@@ -1,0 +1,115 @@
+{
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "sets": {
+    "spring/day": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.day.0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8.png",
+        "sha256": "0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "summer/day": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.day.0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8.png",
+        "sha256": "0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "autumn/day": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.day.0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8.png",
+        "sha256": "0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "winter/day": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.day.0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8.png",
+        "sha256": "0aa50f70429081775fe42b70def3dceb972a045b897753fda1bacfd938847ef8",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "spring/night": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.night.71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f.png",
+        "sha256": "71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "summer/night": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.night.71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f.png",
+        "sha256": "71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "autumn/night": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.night.71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f.png",
+        "sha256": "71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    },
+    "winter/night": {
+      "image": {
+        "url": "/content/bundled-v2/plugins/system/media/LandProperty.bmp.night.71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f.png",
+        "sha256": "71d134dc1ecfb794f0194f3da63ced8bbe9ce561e642a042ae8e47a939538e8f",
+        "bytes": 139
+      },
+      "width": 32,
+      "height": 16,
+      "sourcePath": "trunk/plugins/system/LandProperty.bmp"
+    }
+  },
+  "masks": {
+    "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5": [
+      "00000000000000000000000000000000",
+      "00000000000000111100000000000000",
+      "00000000000011111111000000000000",
+      "00000000001111111111110000000000",
+      "00000000111111111111111100000000",
+      "00000011111111111111111111000000",
+      "00001111111111111111111111110000",
+      "00111111111111111111111111111100",
+      "11111111111111111111111111111111",
+      "00111111111111111111111111111100",
+      "00001111111111111111111111110000",
+      "00000011111111111111111111000000",
+      "00000000111111111111111100000000",
+      "00000000001111111111110000000000",
+      "00000000000011111111000000000000",
+      "00000000000000111100000000000000"
+    ]
+  },
+  "frameMasks": {
+    "spring/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "summer/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "autumn/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "winter/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "spring/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "summer/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "autumn/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+    "winter/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5"
+  }
+}

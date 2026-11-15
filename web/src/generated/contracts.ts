@@ -30,7 +30,8 @@ export type GameDocument =
   | StationInformation
   | CityQuery
   | CityPreview
-  | FixedCityPreview;
+  | FixedCityPreview
+  | LandPreview;
 export type WireMessage =
   | Join
   | Command
@@ -294,6 +295,11 @@ export type CommandPayload =
       kind: "editFixedCity";
       query: FixedCityQuery;
       expectedCost: Money;
+    }
+  | {
+      kind: "tradeLand";
+      query: LandQuery;
+      expectedAmount: Money;
     };
 
 export interface Join {
@@ -1441,6 +1447,15 @@ export interface CityHalfSelection {
   direction: 0 | 2 | 4 | 6;
   color: number;
 }
+export interface LandQuery {
+  expectedWorldEpoch: Counter;
+  expectedGeometryRevision: Counter;
+  expectedMinute: Counter;
+  expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
+  action: "buy" | "sell" | "inspect";
+  anchor: Position;
+  end: Position;
+}
 export interface Accepted {
   type: "accepted";
   requestId: string;
@@ -1950,4 +1965,34 @@ export interface FixedCityPreview {
    * @maxItems 24576
    */
   losses: RailwayLoss[];
+}
+export interface LandPreview {
+  query: LandQuery;
+  legal: boolean;
+  reason: string | null;
+  amount: Money;
+  /**
+   * @maxItems 32768
+   */
+  cells: LandCell[];
+  /**
+   * @maxItems 32768
+   */
+  reclaimed: LandReclamation[];
+  /**
+   * @maxItems 32768
+   */
+  positions: Position[];
+}
+export interface LandCell {
+  position: Position;
+  status: "buyable" | "sellable" | "outside" | "underground" | "owned" | "protected" | "notProperty" | "vacant";
+  value: Money;
+  ownerId: Counter | null;
+}
+export interface LandReclamation {
+  ownerId: Counter;
+  position: Position;
+  value: Money;
+  removalCost: Money;
 }

@@ -127,11 +127,22 @@ public sealed class ConstructionAccounts
         return new(InitialCash,Settings,entries.ToImmutable(),cash,topUps,sequence);
     }
 
+    // Rectangle sales retain one source earn call (including zero) per cell.
+    // Intermediate successors are private; any later overflow abandons all.
+    public ConstructionAccounts EarnMany(IEnumerable<long> amounts, long worldRevision, GameTime time, string operation, AccountGenre genre)
+    {
+        var result=this;var subsequent=false;
+        foreach(var amount in amounts) {result=result.Earn(amount,worldRevision,time,operation,genre,subsequent);subsequent=true;}
+        return result;
+    }
     public ConstructionAccounts Earn(long amount, long worldRevision, GameTime time, string operation,
-        AccountGenre genre = AccountGenre.RailService)
+        AccountGenre genre = AccountGenre.RailService) => Earn(amount,worldRevision,time,operation,genre,false);
+
+    private ConstructionAccounts Earn(long amount, long worldRevision, GameTime time, string operation,
+        AccountGenre genre, bool allowSameRevision)
     {
         if (amount < 0 || !Enum.IsDefined(genre)) throw new ArgumentException("Invalid revenue.");
-        ValidateContext(worldRevision,time,operation,Transactions.IsEmpty ? null : Transactions[^1],allowSameRevision:false);
+        ValidateContext(worldRevision,time,operation,Transactions.IsEmpty ? null : Transactions[^1],allowSameRevision);
         var (cash, rescues) = Spend(Cash,-amount,Settings.BankruptcyIncrement);
         var entry = new AccountTransaction(NextSequence,worldRevision,time.AbsoluteMinute,operation,genre,0,rescues,cash,amount);
         return new(InitialCash,Settings,Transactions.Add(entry),cash,checked(TopUps+rescues),checked(NextSequence+1));
