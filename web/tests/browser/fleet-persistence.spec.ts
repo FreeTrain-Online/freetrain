@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {ready,closePanel} from './browser-helpers.ts';
@@ -5,8 +6,7 @@ const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&c
 const snapshot=async(page:Page)=>(await(await page.request.get(boot)).json()).snapshot;
 
 test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP reopen and restart',async({page,browser,baseURL,worldServer})=>{
- const input=process.env.FREETRAIN_OUTSIDE_FLEET_OUTPUT;
- test.skip(!input,'Set FREETRAIN_OUTSIDE_FLEET_OUTPUT to the gameplay-built FleetOutsideTests save.');
+ const input=browserFixture('outside');
  const initial=await snapshot(page),save=JSON.parse(readFileSync(input!,'utf8'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
@@ -86,8 +86,7 @@ test('P5-14 Outside exit exchange and return agree for EN/JA peers through HTTP 
 });
 
 test('P5-13 limited movement timing and 39-passenger costs agree for EN/JA peers through reopen',async({page,browser,baseURL})=>{
- const input=process.env.FREETRAIN_TIMING_FLEET_OUTPUT;
- test.skip(!input,'Set FREETRAIN_TIMING_FLEET_OUTPUT to the gameplay-built FleetTimingTests save.');
+ const input=browserFixture('timing');
  const save=JSON.parse(readFileSync(input!,'utf8')),initial=await snapshot(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage();
@@ -181,8 +180,7 @@ test('fleet Save10 two-peer load, scalar delta, rejected upload and reconnect re
 });
 
 test('production fleet transport moves one coherent consist for two browser peers and continues after HTTP reopen',async({page,browser,baseURL})=>{
- const input=process.env.FREETRAIN_MOVING_FLEET_OUTPUT;
- test.skip(!input,'Set FREETRAIN_MOVING_FLEET_OUTPUT to the gameplay-built FleetMovementTests save.');
+ const input=browserFixture('moving');
  const save=JSON.parse(readFileSync(input!,'utf8')),initial=await snapshot(page);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:Buffer.from(JSON.stringify(save))})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:'ja-JP'}),peer=await context.newPage(),errors:string[]=[],messages:any[][]=[[],[]];

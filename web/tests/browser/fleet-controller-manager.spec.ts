@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
@@ -7,7 +8,7 @@ const profile=JSON.parse(readFileSync('src/generated/fleet-profile.json','utf8')
 const evidence=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;
 async function setup(page:Page,locale='en'){
  const initial=await state(page);
- const input=readFileSync(process.env.FREETRAIN_CONTROLLER_FLEET_OUTPUT??'../tmp/p5-18-manager-fleet.json');
+ const input=readFileSync(browserFixture('controllers'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}
@@ -156,7 +157,7 @@ test('named controllers can be created and configured before buying a train',asy
 });
 for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and daily drafts synchronize, cancel and reopen`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en;
- const initial=await state(page),input=readFileSync('../tmp/p5-19-tat-fleet.json');
+ const initial=await state(page),input=readFileSync(browserFixture('tat'));
  const upload=await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input});expect(upload.ok(),await upload.text()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
@@ -204,7 +205,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} basic TAT junction and 
 });
 for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules edit masks, copies, order, peer conflicts and confirmed clear`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const initial=await state(page),input=readFileSync('../tmp/p5-20-tat-fleet.json');
+ const initial=await state(page),input=readFileSync(browserFixture('tat'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}
@@ -282,7 +283,7 @@ for(const locale of ['en','ja'] as const)test(`${locale} advanced ordered rules 
 
 for(const locale of ['en','ja'] as const)test(`${locale} TURNING actions edit, depart with exact car identities and survive checkpoint restart`,async({page,worldServer})=>{
  test.setTimeout(90000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const initial=await state(page),input=readFileSync('../tmp/p5-21-turning-fleet.json');
+ const initial=await state(page),input=readFileSync(browserFixture('turning'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);await page.setViewportSize({width:390,height:844});await page.evaluate(()=>document.documentElement.style.fontSize='150%');}

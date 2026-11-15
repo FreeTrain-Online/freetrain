@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
 import {sourcePixelCounts} from './pixel-helpers.ts';
@@ -22,7 +23,7 @@ async function pickSignal(page:Page,read:any){
 }
 for(const [locale,suffix] of [['en','three'],['ja','shunting']] as const)test(`${locale} real shared signal waits, scoped properties, peer snapshots and checkpoint continuation`,async({page,browser,baseURL,worldServer})=>{
  test.setTimeout(120000);const text=locale==='ja'?ja:en,errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));
- const initial=await state(page),input=readFileSync(`../tmp/p5-24-signal-fleet-${suffix}.json`);
+ const initial=await state(page),input=readFileSync(browserFixture('signals')+`-${suffix}.json`);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){

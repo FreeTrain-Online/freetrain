@@ -1,11 +1,11 @@
+import {browserFixture} from './generated-fixtures.ts';
 import { mkdtempSync,readFileSync,rmSync,truncateSync,writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect,test } from './fixtures.ts';
 import { canonicalState,closePanel,openPanel,ready } from './browser-helpers.ts';
-const fixture=process.env.FREETRAIN_MIXED_NETWORK_OUTPUT;
-if(!fixture)throw new Error('Use deno task test:browser:continuation to generate the required gameplay fixture.');
 for(const locale of ['en','ja'] as const)test(`complete P4 network slot 2, replacement, reconnect and recovery ${locale}`,async({page,browser})=>{
+ const fixture=browserFixture('mixed');
  test.setTimeout(120_000);await page.goto('/');await ready(page);
  const original=await(await page.request.get('/api/saves/download')).body(),network=readFileSync(fixture!);
  const text=JSON.parse(readFileSync(`src/locales/${locale}/app.json`,'utf8'));
@@ -25,6 +25,7 @@ for(const locale of ['en','ja'] as const)test(`complete P4 network slot 2, repla
   expect(readFileSync((await download.path())!)).toEqual(network);
   const epoch=(await canonicalState(page)).worldEpoch;
   await page.getByRole('button',{name:text.loadGame,exact:true}).click();await page.getByRole('button',{name:text.confirmLoad,exact:true}).click();
+  for(const p of [page,peer])await expect(p.locator('.world-canvas')).toHaveAttribute('data-world-epoch',String(BigInt(epoch)+1n));
   await ready(page,locale);
   await expect.poll(async()=>(await canonicalState(peer)).worldEpoch).not.toBe(epoch);expect(await saved()).toEqual(network);
   await openPanel(page,'session',locale);await page.getByRole('button',{name:text.reconnect,exact:true}).click();await ready(page,locale);

@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,openPanel,closePanel,ready} from './browser-helpers.ts';
 import {readFileSync,mkdirSync} from 'node:fs';
@@ -9,7 +10,7 @@ async function manager(page:Page,text=en,locale='en'){
  return page.locator('.fleet-group-manager');
 }
 async function setup(page:Page,locale='en'){
- const initial=await state(page),input=readFileSync(process.env.FREETRAIN_CONTROLLER_FLEET_OUTPUT??'../tmp/p5-18-manager-fleet.json');
+ const initial=await state(page),input=readFileSync(browserFixture('controllers'));
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:input})).ok()).toBe(true);
  await page.goto('/');await ready(page);
  if(locale==='ja'){await openPanel(page,'settings');await page.getByLabel('Language',{exact:true}).selectOption('ja');await closePanel(page);}

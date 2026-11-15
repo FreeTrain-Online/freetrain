@@ -1,34 +1,97 @@
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import type { FullConfig } from '@playwright/test';
+import {
+  configuredFixtures,
+  fixtureFamilies,
+  selectedFixtures,
+  type SelectedTest,
+  validateFixture,
+} from './generated-fixtures.ts';
 
-/** Generate current-format saves through the production C# scenarios. Never
- * depend on a developer's previous experiments in the ignored tmp directory. */
+/** Listing applies the same project, grep, shard, and file filters without setup. */
+function selectedTests(config: FullConfig): SelectedTest[] | undefined {
+  const command = config.argv.indexOf('test', 1);
+  if (command < 0) return;
+  const env = { ...process.env };
+  for (
+    const key of [
+      'PLAYWRIGHT_JSON_OUTPUT_FILE',
+      'PLAYWRIGHT_JSON_OUTPUT_DIR',
+      'PLAYWRIGHT_JSON_OUTPUT_NAME',
+    ]
+  ) delete env[key];
+  const report = JSON.parse(
+    execFileSync('deno', [
+      'run',
+      '-A',
+      'npm:@playwright/test@1.64.1',
+      'test',
+      ...config.argv.slice(command + 1),
+      '--list',
+      '--reporter=json',
+    ], {
+      env,
+      encoding: 'utf8',
+      maxBuffer: 16 * 1024 * 1024,
+    }),
+  );
+  const tests: SelectedTest[] = [];
+  type Suite = { specs?: SelectedTest[]; suites?: Suite[] };
+  function visit(suite: Suite) {
+    tests.push(...suite.specs ?? []);
+    for (const child of suite.suites ?? []) visit(child);
+  }
+  visit(report);
+  return tests;
+}
+
 export default function setup(config: FullConfig) {
-  if (!config.projects.some(project => project.name === 'canonical')) return;
+  const tests = selectedTests(config);
+  const selected = tests ? selectedFixtures(tests) : configuredFixtures(config.projects);
   const root = resolve(__dirname, '../../..');
-  const output = resolve(root, 'tmp');
-  mkdirSync(output, { recursive: true });
   const configuration = process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION ?? 'Release';
-  if (!['Debug', 'Release'].includes(configuration)) throw new Error('Invalid test server configuration');
-  execFileSync('dotnet', ['test', resolve(root, 'tests/FreeTrain.Online.Tests'),
-    '-c', configuration, '-p:RestoreLockedMode=true', '--filter', [
-      'Playable_city_browser_seed_is_empty_source_clock_without_producers_or_completion_shortcut',
-      'Manager_browser_input_is_source_built_deployed_stock',
-      'TAT_junction_manager_patches_copy_cleanup_geometry_fences_and_reopen_are_atomic',
-      'Turning_real_signal_composes_replacement_central_reverse_old_head_delay_and_one_callback',
-      'Rule_file_append_preserves_existing_order_bypasses_only_duplicate_guard_and_continues_after_save',
-      'Signal_real_shared_harbor',
-    ].map(name => `FullyQualifiedName~${name}`).join('|')], {
-    cwd: root, stdio: 'inherit', env: { ...process.env,
-      FREETRAIN_PLAYABLE_CITY_OUTPUT: resolve(output, 'p7-09-empty-city.json'),
-      FREETRAIN_CONTROLLER_FLEET_OUTPUT: process.env.FREETRAIN_CONTROLLER_FLEET_OUTPUT ?? resolve(output, 'p5-18-manager-fleet.json'),
-      FREETRAIN_TAT_FLEET_OUTPUT: resolve(output, 'p5-19-tat-fleet.json'),
-      FREETRAIN_TURNING_FLEET_OUTPUT: resolve(output, 'p5-21-turning-fleet.json'),
-      FREETRAIN_RULE_FILE_FLEET_OUTPUT: resolve(output, 'p5-23-rule-fleet.json'),
-      FREETRAIN_SIGNAL_FLEET_OUTPUT: resolve(output, 'p5-24-signal-fleet'),
-    },
-  });
-  copyFileSync(resolve(output, 'p5-19-tat-fleet.json'), resolve(output, 'p5-20-tat-fleet.json'));
+  if (!['Debug', 'Release'].includes(configuration)) {
+    throw new Error('Invalid test server configuration');
+  }
+  if (!selected.length) {
+    // Focused selections without generated inputs still need a current server.
+    execFileSync('dotnet', [
+      'build',
+      resolve(root, 'src/FreeTrain.Online.Server'),
+      '-c',
+      configuration,
+      '-p:RestoreLockedMode=true',
+    ], { cwd: root, stdio: 'inherit' });
+    return;
+  }
+  const output = mkdtempSync(join(tmpdir(), 'freetrain-browser-fixtures-'));
+  const cleanup = () => rmSync(output, { recursive: true, force: true });
+  try {
+    const env = { ...process.env };
+    // Unselected producer outputs must not write to inherited developer paths.
+    for (const family of Object.values(fixtureFamilies)) delete env[family.env];
+    for (const name of selected) {
+      const family = fixtureFamilies[name];
+      env[family.env] = process.env[family.env] = join(output, name + '.json');
+    }
+    console.log(`Generating browser fixtures: ${selected.join(', ')}`);
+    execFileSync('dotnet', [
+      'test',
+      resolve(root, 'tests/FreeTrain.Online.Tests'),
+      '-c',
+      configuration,
+      '-p:RestoreLockedMode=true',
+      '--filter',
+      [...new Set(selected.flatMap((name) => fixtureFamilies[name].producers))]
+        .map((name) => `FullyQualifiedName~${name}`).join('|'),
+    ], { cwd: root, stdio: 'inherit', env });
+    for (const name of selected) validateFixture(name, env[fixtureFamilies[name].env]!);
+    return cleanup;
+  } catch (error) {
+    cleanup();
+    throw error;
+  }
 }

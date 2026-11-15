@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint} from './browser-helpers.ts';
@@ -28,7 +29,7 @@ for(const ja of [false,true])test(`P7-09 playable populated building ${ja?'JA na
  const context=await browser.newContext({baseURL}),peer=await context.newPage();
  try{
   await page.goto('/');await ready(page,locale);
-  const initial=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync('../tmp/p7-09-empty-city.json')})).ok()).toBe(true);await ready(page,locale);
+  const initial=await state(page);expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page,locale);
   await page.getByRole('button',{name:t.stationTask,exact:true}).click();
   await page.locator(`[data-catalog-variant="${station.reference.recipeId}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();
   await page.getByLabel(t.stationX,{exact:true}).fill('12');await page.getByLabel(t.stationY,{exact:true}).fill('12');
@@ -78,7 +79,7 @@ test('P7-09 Observer, stale minute, late response and locale fences preserve cit
  await observer.routeWebSocket('**/api/session?*',route=>{server=route.connectToServer();server.onMessage(m=>{receipts.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
  try{
   await page.goto('/');await ready(page);const initial=await state(page);
-  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync('../tmp/p7-09-empty-city.json')})).ok()).toBe(true);await ready(page);
+  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('city'))})).ok()).toBe(true);await ready(page);
   expect((await observer.request.post('/api/access',{data:{secret:'observer-test'}})).ok()).toBe(true);await observer.goto('/');await ready(observer);
   await expect(observer.getByRole('button',{name:t.cityTask,exact:true})).toBeDisabled();
   await page.getByRole('button',{name:t.cityTask,exact:true}).click();await page.locator(`[data-catalog-variant="${house}"]`).click();await page.getByRole('button',{name:t.closeCatalog,exact:true}).click();

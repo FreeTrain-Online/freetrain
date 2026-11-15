@@ -33,6 +33,8 @@ const canonical = [
 export default defineConfig({
   testDir: './tests/browser',
   globalSetup: './tests/browser/global-setup.ts',
+  reporter: [['list'], ['./tests/browser/required-tests-reporter.ts']],
+  forbidOnly: !!process.env.CI,
   use: { viewport: { width: 1280, height: 900 }, trace: 'retain-on-failure' },
   // Each worker owns its backend, preview server and save directory (fixtures.ts).
   // Tests within a file remain sequential; each case starts a fresh backend.

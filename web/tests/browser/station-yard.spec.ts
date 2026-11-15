@@ -1,13 +1,13 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {readFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {ready} from './browser-helpers.ts';
 
-const output=process.env.FREETRAIN_YARD_FLEET_OUTPUT;
 const boot='/api/bootstrap?protocolVersion=11&contentVersion=terrain-content-1&contentVersion=mixed-railway-content-1';
 const snapshot=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 
 test('P6-19 constructed yard Simple wait and packed departure publish atomically to EN/JA peers through checkpoint restart',async({page,browser,baseURL,worldServer})=>{
- test.skip(!output,'Generate FREETRAIN_YARD_FLEET_OUTPUT with StationYardStopTests first.');
+ const output=browserFixture('yard');
  test.setTimeout(120000);
  const seed=JSON.parse(readFileSync(output!,'utf8'));
  const arrived=JSON.parse(readFileSync(output!+'.arrived.json','utf8'));

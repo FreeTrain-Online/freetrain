@@ -377,12 +377,16 @@ concurrency to four). Browser validation has the following commands:
 Tests are organized by behavior; the [browser test guide](web/tests/browser/README.md)
 maps functional suites and shows how to run an individual category.
 
-The default and extended configurations generate the controller, timetable,
-turning, rule-file and signal saves through their C# scenarios before starting
-browser workers. This requires the .NET SDK and restores locked test dependencies;
-previous files in `tmp/` are regenerated. Capacity benchmarks require separately
-prepared inputs and run through their dedicated `playwright.*capacity.config.ts`
-configurations, including `playwright.station-capacity.config.ts`.
+The default, extended and continuation configurations generate all selected
+fixture families through their C# scenarios before starting browser workers.
+Playwright's own listing applies file, project, grep and shard filters to select
+producers. Inputs and every companion oracle are validated in a unique temporary
+run directory and removed afterward; files left in `tmp/` are never reused.
+This requires the .NET SDK and restores locked test dependencies. Required tests
+fail setup if a producer or output is missing, and the default reporter rejects
+otherwise-green runs containing skipped tests. The same preflight runs in CI.
+Capacity benchmarks require separately prepared inputs and their dedicated
+`playwright.*capacity.config.ts` configurations, including station capacity.
 
 | Task (from `web/`) | Scope |
 | --- | --- |
@@ -391,7 +395,8 @@ configurations, including `playwright.station-capacity.config.ts`.
 | `deno task test:browser:extended` | Build/check and comprehensive regressions, including all recipe variants, full EN/JA and direction lifecycles, and large-world/performance cases |
 | `deno task test:browser:performance` | Build/check and only the publication/large-world regressions, using one worker |
 | `deno task test:browser:continuation` | Build/check, generate the gameplay network with .NET tests, and require both mixed-network browser continuations |
-| `deno task test:browser:all` | Extended validation followed by generated mixed-network continuation; builds the frontend once |
+| `deno task test:browser:station-continuation` | Build/check and all eight generated station continuation scenarios |
+| `deno task test:browser:all` | Extended validation (including fleet/station continuation) followed by generated mixed-network continuation; builds the frontend once; excludes optional-content and dedicated capacity suites |
 
 Use `test:browser` for routine development, including ordinary UI and gameplay
 changes. Its representative gallery exercises one recipe per handler/status
@@ -417,8 +422,8 @@ every object's appearance against an approved reference image or establish full
 visual fidelity. Asset hashes and recipe/mask structure are also checked by the
 unit tests; human visual acceptance remains separate.
 
-The continuation task requires an existing Release .NET test build. A missing
-fixture fails that task rather than silently skipping acceptance coverage.
+Continuation tasks use the same locked C# fixture preflight as the default run;
+no pre-existing test build or manually exported fixture variables are required.
 Optional-content and dedicated capacity configurations retain their own commands.
 
 ## Local development

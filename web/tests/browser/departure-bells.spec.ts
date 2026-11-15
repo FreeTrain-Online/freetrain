@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {test,expect,type Page} from './fixtures.ts';
@@ -5,14 +6,13 @@ import {ready,openPanel,closePanel} from './browser-helpers.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 
-const output=process.env.FREETRAIN_BELL_FLEET_OUTPUT;
 const boot='/api/bootstrap?protocolVersion=11&contentVersion=mixed-railway-content-1&contentVersion=terrain-content-1';
 const state=async(p:Page)=>(await(await p.request.get(boot)).json()).snapshot;
 function evidence(name:string,value:unknown){const directory=process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE!;mkdirSync(directory,{recursive:true});writeFileSync(join(directory,name),JSON.stringify(value,null,2)+'\n');}
 const plays=(p:Page)=>p.evaluate(()=>(window as any).__liveBellPlays as string[]);
 
 test('P6-20 selected forwarding bell plays once on gesture-enabled EN/JA peers; retries, reconnect, replacement and mute have no backlog',async({page,browser,baseURL,worldServer})=>{
- test.skip(!output,'Generate FREETRAIN_BELL_FLEET_OUTPUT with StationYardStopTests.');test.setTimeout(120000);
+ const output=browserFixture('bells');test.setTimeout(120000);
  const seed=JSON.parse(readFileSync(output!,'utf8')),expected=JSON.parse(readFileSync(output!+'.departed.json','utf8'));
  const context=await browser.newContext({baseURL,locale:'ja-JP',viewport:{width:430,height:860},isMobile:true,hasTouch:true});
  const peer=await context.newPage(),pages=[page,peer],messages:any[][]=[[],[]],clients:any[]=[],servers:any[]=[],errors:string[]=[];
@@ -95,7 +95,7 @@ test('P6-20 selected forwarding bell plays once on gesture-enabled EN/JA peers; 
 });
 
 test('P6-20 rejected real departure callback and ambiguous retry publish no event or audio',async({page})=>{
- test.skip(!output,'Generate FREETRAIN_BELL_FLEET_OUTPUT with StationYardStopTests.');
+ const output=browserFixture('bells');
  const seed=JSON.parse(readFileSync(output!+'.rejected.json','utf8')),messages:any[]=[];let server:any;
  await page.routeWebSocket('**/api/session?*',route=>{server=route.connectToServer();server.onMessage((m:any)=>{messages.push(JSON.parse(String(m)));route.send(m);});route.onMessage(m=>server.send(m));});
  await page.addInitScript(()=>{(window as any).__liveBellPlays=[];const original=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){(window as any).__liveBellPlays.push(new URL(this.src,location.href).pathname);return original.call(this);};});

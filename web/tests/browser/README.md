@@ -8,7 +8,7 @@ Tests are grouped by the behavior they protect.
 | `station-cross-tool.spec.ts` | P6-24 EN desktop/DPR1 and JA narrow touch/DPR2 station terrain protection, source-legal poles on occupied platform rail, passage quotes retained across pole edits and clock steps, cosmetic passage edits, lost acknowledgements, idempotent receipt retries, stale/Observer rejection, demo/live gating and retained canvas. Cold join holds station art and live state independently. |
 | `station-information.spec.ts` | P6-23 EN/JA keyboard/narrow touch sorted stable-ID list, picked information, actual demand/waiting and source averages, Pass/forwarding/current stop indices, peer rename drafts, local labels, midnight exact reopen, removal/disconnection and authenticated Observer query fences and timestamped live reads with delayed network responses |
 | `station-controller.spec.ts` | P6-22 EN/JA desktop/narrow touch picked station and multiple platform TAT keys, independent station settings, legacy companion preview/append/export, live inherited controller reassignment, real waits/pass-through, exact peers/save/checkpoint replay and peer host removal/rebuild/chained reconnection. Uses committed domain-generated `station-controller-v11.json`. |
-| `station-yard.spec.ts` | P6-19 constructed host/platform, real purchased stock, Simple wait and packed boarding/cost/occupancy publication, EN/JA Observer peer, duplicate receipt, exact reopen and process checkpoint restart. Generate `FREETRAIN_YARD_FLEET_OUTPUT` with `StationYardStopTests` first. |
+| `station-yard.spec.ts` | P6-19 constructed host/platform, real purchased stock, Simple wait and packed boarding/cost/occupancy publication, EN/JA Observer peer, duplicate receipt, exact reopen and process checkpoint restart. The selected run automatically generates and validates all three yard inputs through `StationYardStopTests`. |
 | `station-transport.spec.ts` | EN/JA peers, controlled providers, aligned hourly decay, midnight import/export/train-log rotation, relative platform upkeep, duplicate receipts, save/reopen and actual checkpoint process restart |
 | `thin-platform.spec.ts` | EN/JA slim roofed/unroofed ground/elevated/underground construction, exact roof-run ghosts and cuts, touch/map rail attachment, removal/restoration, peers, roles, stale/cancel/replacement fences and checkpoint restart |
 | `session-lifecycle.spec.ts` | Connection gate, sign-in, asset readiness, disconnect/rejoin, leave and revoked access |
@@ -20,12 +20,12 @@ Tests are grouped by the behavior they protect.
 | `shell.spec.ts` | Integrated inspector, clock and track confirmation/cancellation workflows |
 | `multiplayer.spec.ts` | Shared state, authority, sign-out and independent participant UI state |
 | `persistence.spec.ts` | Save availability, replacement confirmation and recovery |
-| `fleet-continuation.spec.ts` | EN/JA slot/download/rejected fleet uploads, reconnect, actual process checkpoint restart and exact uninterrupted-run oracle; set `FREETRAIN_FLEET_CONTINUATION_OUTPUT` when running the P5_27 unit matrix first. Optional `FREETRAIN_ONLINE_TEST_CONTAINER_IMAGE` repeats against a Linux runtime. |
+| `fleet-continuation.spec.ts` | EN/JA slot/download/rejected fleet uploads, reconnect, actual process checkpoint restart and exact uninterrupted-run oracle; the selected run automatically generates the P5-27 input and uninterrupted-run oracle. Optional `FREETRAIN_ONLINE_TEST_CONTAINER_IMAGE` repeats against a Linux runtime. |
 | `train-information.spec.ts` | Nested train information, local labels/framing/follow, Outside/reversal/withdrawal/sale lifecycle, seven color templates/pixel oracles, XML, retained drafts, shared apply, Observer peers and checkpoint reopen |
 | `fleet-controller-manager.spec.ts`, `fleet-groups.spec.ts` | Shared timetable controller/group editing, assignment, peer conflicts, durable reopen and absence of manual driving controls/packets |
 | `fleet-deployment.spec.ts` | Real EN/JA ramp purchase/deploy/run/inspect/withdraw/redeploy, map/keyboard footprint review, stale/cancel/replay, two peers, exact reopen and backend checkpoint restart; JA 390×844/200% text, late previews and Observer/draft guards |
 | `fleet-trading.spec.ts` | Real EN/JA purchase/rename/resale, exact quotes, stale/cancel/replay, two peers, Observer/unavailable states, draft/focus safety and 390×844/200% text |
-| `fleet-persistence.spec.ts` | Save10 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the moving case uses `FREETRAIN_MOVING_FLEET_OUTPUT` emitted by focused `FleetMovementTests` |
+| `fleet-persistence.spec.ts` | Save10 inventory/revenue, two-peer moving-consist art/picking/occupancy/booking publication, retained canvas/assets, exact HTTP reopen and reconnect; the selected run generates Outside, timing and moving inputs through focused `FleetMovementTests` |
 | `train-rendering.spec.ts` | All eight bundled car recipes against independent poses and actual PNG pixels/alpha picks in eight seasonal/light variants; infrastructure overlap contacts, hidden tunnel movement and local/full redraw identity |
 
 Construction and terrain suites retain their existing functional names.
@@ -43,6 +43,18 @@ a category against a current build with, for example:
 ```sh
 deno task test:browser:run station-editing.spec.ts
 ```
+
+`generated-fixtures.ts` records producer filters, consumers and every required
+companion file. Global setup discovers the selected cases with Playwright's own
+`--list` filters, generates only their fixture families in a fresh temporary
+directory, validates the outputs, and removes them after the run.
+Editor/test-server runs without CLI case filters prepare the families allowed
+by their configured projects instead. Generated
+`FREETRAIN_*_OUTPUT` paths are managed by setup; manual exports are unnecessary.
+Departure bell inputs come from `Generate_real_selected_bell_departure_fixtures`
+in `StationDepartureBellTests`. Missing outputs fail setup rather than skipping.
+The default required-tests reporter also fails otherwise-green skipped runs.
+Optional-content and capacity suites retain their explicit configurations.
 
 Layout, preference and map measurements are written beneath the current
 `FREETRAIN_ONLINE_BROWSER_EVIDENCE` directory in functional subdirectories.

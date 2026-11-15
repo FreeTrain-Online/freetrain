@@ -1,3 +1,4 @@
+import {browserFixture} from './generated-fixtures.ts';
 import {test,expect,type Page,type WebSocketRoute} from './fixtures.ts';
 import {canonicalState as state,closePanel,openPanel,ready} from './browser-helpers.ts';
 import {settled} from './layout-helpers.ts';
@@ -194,8 +195,7 @@ test('Japanese narrow deployment keeps drafts and focus, discards late previews 
 });
 
 for(const locale of ['en','ja'] as const)test(`P5-15 ${locale} equal-minute traffic and inspector operations stay coherent with a peer`,async({page,browser,baseURL,worldServer})=>{
- test.setTimeout(90000);const input=process.env.FREETRAIN_OPERATIONS_FLEET_OUTPUT;
- test.skip(!input,'Set FREETRAIN_OPERATIONS_FLEET_OUTPUT to the gameplay-built FleetOperationsTests save.');
+ test.setTimeout(90000);const input=browserFixture('operations');
  const text=locale==='ja'?ja:en,initial=await state(page),data=readFileSync(input!);
  expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data})).ok()).toBe(true);
  const context=await browser.newContext({baseURL,locale:locale==='en'?'ja-JP':'en-US'}),peer=await context.newPage();
@@ -225,10 +225,12 @@ for(const locale of ['en','ja'] as const)test(`P5-15 ${locale} equal-minute traf
   await closePanel(page);await pickRecoveryCar(page,s);
   await expect(page.getByTestId('train-car-id')).toHaveText(s.mixed.fleet.trains[0].cars[0].id);
   const reverse=page.getByRole('button',{name:text.fleetReverse,exact:true});await reverse.click();
-  await step();await expect(page.getByText(text.stockStale,{exact:true})).toBeVisible();
-  await expect(page.getByRole('button',{name:text.fleetReverseConfirm,exact:true})).toBeDisabled();
   await page.getByRole('button',{name:text.cancel,exact:true}).click();await expect(reverse).toBeFocused();
-  s=await state(page);await reverse.click();await page.getByRole('button',{name:text.fleetReverseConfirm,exact:true}).click();
+  await reverse.click();await step();
+  // A quiet minute keeps the reviewed reversal available without another quote.
+  await expect(page.getByText(text.stockStale,{exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:text.fleetReverseConfirm,exact:true})).toBeEnabled();
+  s=await state(page);await page.getByRole('button',{name:text.fleetReverseConfirm,exact:true}).click();
   await expect.poll(async()=>(await state(page)).mixed.fleet.trains[0].isReversed).toBe(true);
   let current=await state(page);expect(current.mixed.queue).toEqual(s.mixed.queue);expect(current.mixed.accounts).toEqual(s.mixed.accounts);
   await step();current=await state(page);
