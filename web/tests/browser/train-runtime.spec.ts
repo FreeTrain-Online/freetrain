@@ -107,7 +107,7 @@ test('running speed changes keep visible poses and settle after one refill in bo
    (window as any).speedMeasurement=new Promise(resolve=>{
     const c=document.querySelector('.world-canvas') as HTMLCanvasElement,start=performance.now();
     let previous=c.dataset.trainMotionPose??'',last=start,lastMoved=start,maxHold=0,maxJump=0,maxFrame=0,missing=0,frames=0;
-    let buffering=false,settled=false,refills=0;
+    let buffering=false,settled=false,refills=0;const anomalies:unknown[]=[];
     const frame=(now:number)=>{
      const pose=c.dataset.trainMotionPose??'';
      if(c.dataset.trainMotionPhase==='buffering') {
@@ -115,7 +115,7 @@ test('running speed changes keep visible poses and settle after one refill in bo
       buffering=true;settled=false;
      }else if(c.dataset.trainMotionPhase==='playing'&&buffering){buffering=false;settled=true;lastMoved=now;}
      const frameMs=now-last;maxFrame=Math.max(maxFrame,frameMs);last=now;
-     if(!pose||pose==='undefined')missing++;
+     if(!pose||pose==='undefined'){missing++;anomalies.push({time:now-start,phase:c.dataset.trainMotionPhase,presentation:c.dataset.presentation,movingCars:c.dataset.movingCars,revision:c.dataset.renderRevision});}
      else if(previous&&previous!=='undefined') {
       const a=JSON.parse(previous),b=JSON.parse(pose);
       // Compare travel per 60 Hz frame, accounting for runner scheduling gaps.
@@ -125,13 +125,14 @@ test('running speed changes keep visible poses and settle after one refill in bo
      else maxHold=Math.max(maxHold,now-lastMoved);
      previous=pose;frames++;
      if(now-start<4500)requestAnimationFrame(frame);
-     else resolve({frames,maxFrame,maxJump,maxHold,missing,refills,settled});
+     else resolve({frames,maxFrame,maxJump,maxHold,missing,refills,settled,anomalies});
     };requestAnimationFrame(frame);
    });
   });
   stalled=0;await speed.selectOption(rate);await expect(speed).toBeEnabled();
   const sample=await page.evaluate(()=>(window as any).speedMeasurement);
   report.push({rate,...sample});
+  await testInfo.attach(`speed-transition-${rate}.json`,{body:JSON.stringify({rate,...sample},null,2),contentType:'application/json'});
   expect(sample.refills).toBe(1);expect(sample.settled).toBe(true);
   expect(sample.missing).toBe(0);expect(sample.maxJump).toBeLessThan(.7);expect(sample.maxHold).toBeLessThan(100);
   expect(sample.frames).toBeGreaterThan(100);expect(sample.maxFrame).toBeLessThan(200);

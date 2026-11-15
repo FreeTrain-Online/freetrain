@@ -130,8 +130,8 @@ export class TrainMotionPlayer {
       const elapsed=now-this.startup.since;
       const filled=this.startup.publications===undefined||this.startup.publications>=2;
       // Let a queued delivery burst drain before treating its old packets as
-      // a slow server clock. Retained speed-change routes already have pacing.
-      const settled=this.startup.publications===undefined||now-this.startup.lastPublication>=32;
+      // a slow server clock, including when refilling a retained route.
+      const settled=now-this.startup.lastPublication>=32;
       if(elapsed>=startupMaximumMs||elapsed>=startupMinimumMs&&this.startup.measured&&filled&&settled) {
         // Re-time every confirmed step together, including genuine blocked
         // minutes. No queued route is consumed during the initial hold.

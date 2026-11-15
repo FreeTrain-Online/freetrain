@@ -104,12 +104,14 @@ export class TerrainScene {
     if(key!==this.viewKey){this.operations=r.build(h0,h1,v0,v1);this.viewKey=key;}
   }
   static async prepare(read:ReadState,catalog:RenderCatalog,cache:RecipeImageCache,variant:Variant,heightCut:number,previous?:TerrainScene):Promise<TerrainScene> {
-    catalog=variableCityArt(catalog);
     // Validation only reads its argument; retain the immutable transport view.
     if(!(isTerrainWorld(read)||isMixedWorld(read))||!validSnapshot(read as Snapshot))throw new Error('Unsupported terrain read');
     if(!Number.isInteger(heightCut)||heightCut<0)throw new Error('Invalid terrain height cut');
     if(catalog.packId!==read.requiredPacks[0].id||catalog.version!==read.requiredPacks[0].version)throw new Error('Terrain catalog mismatch');
     if(read.mixed?.speedLimits)catalog=speedLimitCatalog(catalog);
+    // Apply crop corrections after catalog extensions so downstream consumers
+    // receive the same cached, provenance-checked catalog identity.
+    catalog=variableCityArt(catalog);
     const t=read.terrain!,space=new WorldSpace(read.map.width,read.map.height,read.map.levels);
     const railway=read.mixed?new RailwayRenderPlan(read,catalog,variant):undefined;
     const stations=new StationRenderPlan(read,catalog,variant),city=new CityRenderPlan(read,catalog,variant);

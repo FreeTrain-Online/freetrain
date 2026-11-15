@@ -99,6 +99,26 @@ Deno.test('running speed changes preserve fractional poses and confirmed routes 
   assert(started);
  }
 });
+Deno.test('speed-change refills wait for delayed delivery bursts before calibrating retained travel',()=>{
+ const player=new TrainMotionPlayer(),a=initial();a.playbackRate=.25;player.update(a,0);
+ let state=advance(a,3);player.update(state,10);
+ const changed=410,pose=player.sample(changed);
+ state={...state,playbackRate:1};player.update(state,changed);
+ // The first delayed packet looks slow in isolation. The rest of its burst
+ // carries the intervening confirmed moves and the actual new clock pace.
+ state=advance(state);player.update(state,1010);
+ assert.deepEqual(player.sample(1010),pose);assert(player.buffering);
+ state=advance(state,5);player.update(state,1011);
+ assert.deepEqual(player.sample(1042),pose);assert(player.buffering);
+ const released=player.sample(1043);assert.equal(released.length,3);assert(Math.abs(released[0].progress-pose[0].progress)<1e-12);assert(!player.buffering);
+ let arrival=1111,lastY=pose[0].from.position.y-pose[0].progress;
+ for(let now=1053;now<7000;now+=10){
+  while(arrival<=now){state=advance(state);player.update(state,arrival);arrival+=100;}
+  const cars=player.sample(now);assert.equal(cars.length,3,'calibration overflowed or exhausted the retained queue');
+  const car=cars[0],y=car.from.position.y-car.progress;
+  assert(y<lastY,'playback held after the refill');assert(lastY-y<.3,'playback skipped confirmed travel');lastY=y;
+ }
+});
 Deno.test('rapid speed changes retain the held pose, and Pause cancels the pending refill',()=>{
  const player=new TrainMotionPlayer(),a=initial();a.playbackRate=1;player.update(a,0);
  let state=advance(a,3);player.update(state,10);const pose=player.sample(260);
@@ -304,10 +324,12 @@ Deno.test('changing speed during a genuine blocked interval preserves its remain
  if(rapid){slower={...slower,playbackRate:.125};player.update(slower,800);}
  const calibrated=rapid?2400:1500,minute=rapid?400:200;
  player.update({...slower,tick:String(BigInt(slower.tick)+4n)},calibrated);
- assert.equal(player.sample(calibrated)[0].progress,0);
- assert.equal(player.sample(calibrated+minute/2)[0].progress,0);
- assert.equal(player.sample(calibrated+minute*1.5)[0].progress,.25);
- assert.deepEqual(player.sample(calibrated+minute*3),[]);
+ // Release after the publication burst has drained, retaining the blocked wait.
+ const settled=calibrated+32;
+ assert.equal(player.sample(settled)[0].progress,0);
+ assert.equal(player.sample(settled+minute/2)[0].progress,0);
+ assert.equal(player.sample(settled+minute*1.5)[0].progress,.25);
+ assert.deepEqual(player.sample(settled+minute*3),[]);
  }
 });
 

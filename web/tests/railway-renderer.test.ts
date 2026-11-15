@@ -322,7 +322,7 @@ Deno.test('speed-limit source overlays retain exact origins, alpha picks, Traffi
  for(const speed of ['low','medium','fast'] as const){
   const s=flat(1,1),v=rail(s,0,0,1,4);s.mixed!.speedLimits={low:[],medium:[],fast:[]};s.mixed!.speedLimits[speed]=[v.position,v.position];const before=JSON.stringify(s);
   for(const season of ['spring','summer','autumn','winter'] as const)for(const night of [false,true]){
-   const scene=await TerrainScene.prepare(s,c,cache(c),{season,night},5),ops=railwayOps(scene),icon=speedIcons[speed];
+   const scene=await TerrainScene.prepare(s,catalog,cache(c),{season,night},5),ops=railwayOps(scene),icon=speedIcons[speed];
    assert.deepEqual(ops.map(o=>o.target.component),['rail','speedLimit']);const op=ops.at(-1)!;assert('layer' in op);
    assert.equal(op.target.id,v.ownerId);assert.equal(op.layer.recipeId,icon.id);assert.deepEqual(op.layer.frame.anchor,[0,0]);assert.deepEqual(op.layer.frame.rectangle,[0,0,25,13]);
    const surface=c.surfaceSets[op.layer.frame.surfaceSet!][`${season}/${night?'night':'day'}`];assert.equal(surface.image.url,icon.image.url);
