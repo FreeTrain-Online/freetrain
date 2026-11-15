@@ -324,6 +324,12 @@ def prepared_bitmap(path, raw):
                 i = y * width + x
                 if pixels[i] != key:
                     pixels[i] = colors[x // 32]
+    # The suburban Yoshinoya source has 11 stray near-magenta background pixels.
+    # Restore the exact color key before day/night conversion; keep archive bytes.
+    if path == 'trunk/plugins/org.kohsuke.freetrain.structure.eshi/yosinoya2.bmp':
+        for x, y in ((37, 15), (38, 15), (37, 16), (38, 16), (37, 17), (38, 17),
+                     (28, 18), (28, 19), (28, 21), (28, 22), (38, 40)):
+            pixels[y * width + x] = pixels[0]
     return width, height, pixels
 
 
@@ -418,6 +424,8 @@ def prepare(root=INPUT):
             width, height, pixels = prepared_bitmap(path, raw)
             if path in ('trunk/core/res/EmptyChip.bmp', 'trunk/core/res/EmptyChip_n.bmp'):
                 asset['adaptation'] = 'Web flat land/snow tiles: uniform #dbc383/#ffffff (authored night #373121/#404040); original alpha footprints preserved.'
+            if path == 'trunk/plugins/org.kohsuke.freetrain.structure.eshi/yosinoya2.bmp':
+                asset['adaptation'] = 'Restore 11 stray near-magenta background pixels to the exact #ff00ff transparency key; pinned source bytes preserved.'
             asset.update(width=width, height=height, status='converted-surface',
                          day=artifact(png(width, height, surface(pixels)), 'png', path, 'day'),
                          night=artifact(png(width, height, surface(pixels, True)), 'png', path, 'night'))

@@ -29,7 +29,7 @@ public sealed class BackendPerformanceTests(ITestOutputHelper output)
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { WriteIndented = true };
     private static readonly DateTimeOffset Now = new(2026, 11, 14, 12, 0, 0, TimeSpan.Zero);
     private sealed record ExpectedState(int Operations, string InitialSha256, string FinalSha256);
-    private sealed record Expectations(int SchemaVersion, Dictionary<string, ExpectedState> Cases);
+    private sealed record Expectations(int SchemaVersion, string CatalogHash, Dictionary<string, ExpectedState> Cases);
     private sealed record Measurement(string Name, int Operations, long AllocatedBytes, double ElapsedMs,
         string InitialSha256, string FinalSha256, Dictionary<string, long> Work)
     {
@@ -91,7 +91,12 @@ public sealed class BackendPerformanceTests(ITestOutputHelper output)
         }
         var path = Path.Combine(AppContext.BaseDirectory, "Performance", "backend-expectations.json");
         var expectations = JsonSerializer.Deserialize<Expectations>(File.ReadAllText(path), Json)!;
-        Assert.Equal(1, expectations.SchemaVersion);
+        Assert.Equal(2, expectations.SchemaVersion);
+        var catalogHash = PreparedContentCatalog.Bundled.CatalogHash;
+        Assert.True(string.Equals(expectations.CatalogHash, catalogHash, StringComparison.Ordinal),
+            $"Backend performance expectations target a different catalog. Expected {expectations.CatalogHash}; " +
+            $"loaded {catalogHash}. Review the content change and follow the refresh procedure in " +
+            "tests/fixtures/performance/README.md before updating the pinned save hashes.");
         var expected = expectations.Cases[result.Name];
         Assert.Equal(expected.Operations, result.Operations);
         Assert.Equal(expected.InitialSha256, result.InitialSha256);

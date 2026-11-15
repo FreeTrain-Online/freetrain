@@ -98,6 +98,27 @@ class PreparedInputs(unittest.TestCase):
         self.assertNotIn(b'freetrain_plugins', self.artifacts['catalog.json'])
         self.assertEqual(4, len(self.catalog['notices']))
 
+    def test_yoshinoya_background_artifacts_are_transparent_in_day_and_night(self):
+        path = 'trunk/plugins/org.kohsuke.freetrain.structure.eshi/yosinoya2.bmp'
+        raw = (bundled.INPUT / 'source' / path).read_bytes()
+        width, height, original = bitmap.decode(raw)
+        w, h, pixels = bundled.prepared_bitmap(path, raw)
+        self.assertEqual((48, 41), (w, h))
+        self.assertEqual((width, height), (w, h))
+        changed = {i for i, (before, after) in enumerate(zip(original, pixels)) if before != after}
+        # Independently identify the source's near-magenta contamination.
+        defects = {i for i, (r, g, b) in enumerate(original)
+                   if r > 200 and g < 100 and b > 200 and (r, g, b) != (255, 0, 255)}
+        self.assertEqual(11, len(defects))
+        self.assertEqual(defects, changed)
+        for night in (False, True):
+            before, after = bitmap.surface(original, night), bitmap.surface(pixels, night)
+            self.assertTrue(all(after[i][3] == 0 for i in defects))
+            self.assertTrue(all(before[i] == after[i] for i in range(len(pixels)) if i not in defects))
+            asset = next(a for a in self.catalog['assets'] if a['path'] == path)
+            mode = 'night' if night else 'day'
+            self.assertEqual(bitmap.png(w, h, after), self.artifacts[asset[mode]['url'][len(bundled.URL):]])
+
     def test_flat_ground_bitmaps_keep_transparency_and_other_tiles(self):
         for name, expected in [('EmptyChip.bmp', [(219, 195, 131), (255, 255, 255)]),
                                ('EmptyChip_n.bmp', [(55, 49, 33), (64, 64, 64)])]:

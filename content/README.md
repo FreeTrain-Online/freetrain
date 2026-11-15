@@ -30,6 +30,12 @@ python3 scripts/prepare-bundled-content.py
 python3 scripts/prepare-bundled-content.py --check
 ```
 
+After a catalog change, run `deno task --cwd web generate:contracts` to refresh
+the client profiles and bindings, which include the exact catalog hash. Rebind
+the stock localization and current protocol/browser fixtures after verifying
+their source fields still match, then run the web build and tests. Rebuild and
+restart the server with the matching catalog before reloading the client.
+
 Explicit refresh and source verification additionally require Git and an archive
 containing the pinned commit. There is no checkout discovery or download:
 
@@ -40,6 +46,10 @@ python3 scripts/prepare-bundled-content.py --source-root /path/to/freetrain-exav
 
 Edit reviewed inputs deliberately, then refresh and regenerate. Do not hand-edit
 generated catalogs/images or relabel P0 source records as implemented gameplay.
+The suburban Yoshinoya sheet (`yosinoya2.bmp`) has a scoped preparation correction:
+11 stray near-magenta background pixels become the exact transparency key before
+day/night conversion. The asset's `adaptation` records this change; pinned source
+bytes and hashes remain intact.
 Unknown, missing, conflicting or changed inputs fail preparation. Stale generated
 files are rejected by `--check` and removed only within the dedicated bundled
 output root during generation.

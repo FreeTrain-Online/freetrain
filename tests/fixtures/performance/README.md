@@ -106,6 +106,37 @@ The nine measured cases and a tenth retention test still enforce:
 These invariants run in the normal C# suite. Each benchmark sample also runs them
 and retains its test exit status in the report.
 
+## Refreshing expectations after a content change
+
+The expectations record the bundled `catalogHash` as well as complete save hashes.
+Saves embed this identity in required packs and content bindings, so a bitmap-only
+catalog change also changes every save hash. The harness reports a catalog
+mismatch before comparing save hashes, while still writing measurements for review.
+When the comparison runner overlays the head harness onto a base with a different
+catalog, that base also reports the mismatch; inspect its recorded measurements
+and test log rather than treating it as an optimization regression.
+
+To refresh expectations deliberately:
+
+1. Run the focused local command above with a new absolute measurement output
+   directory. Measurements are written even when the pinned checks fail.
+2. Review the content change and verify the saved-state differences. For an
+   identity-only change, use a disposable diagnostic copy of the harness to
+   substitute the previous catalog identity before hashing, and require all nine
+   initial/final hash pairs to match the previous expectations. Keep this
+   substitution out of the committed harness. If other state changed, review
+   those differences explicitly before accepting new expectations.
+3. Set `catalogHash` in `backend-expectations.json` to the value in
+   `src/FreeTrain.Online.Content/bundled-v2.sha256`, and copy each reviewed
+   measurement's `initialSha256` and `finalSha256` into its corresponding case.
+   Preserve the operation counts and full-save hash assertions.
+4. Rerun the focused tests and the full C# suite. Include the reason for the
+   refresh and the state-comparison evidence in the change description.
+
+The current pins were refreshed for commit `99c67d5a`'s bitmap alpha correction.
+Replacing only its new catalog identity with the preceding identity reproduced
+all 18 previous save hashes; the behavior and retention checks also passed.
+
 ## Interpretation
 
 `GC.GetAllocatedBytesForCurrentThread` brackets synchronous operations with no

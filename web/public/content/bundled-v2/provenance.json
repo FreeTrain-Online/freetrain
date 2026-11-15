@@ -10668,18 +10668,19 @@
         ],
         "individualImageAuthorStatus": "not independently verified; preserve declared evidence"
       },
+      "adaptation": "Restore 11 stray near-magenta background pixels to the exact #ff00ff transparency key; pinned source bytes preserved.",
       "width": 48,
       "height": 41,
       "status": "converted-surface",
       "day": {
-        "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.structure.eshi/media/yosinoya2.bmp.day.4b64cb0bb2b00602436419bc632f1e295f6c340a74584a886c7b050f67063a3f.png",
-        "sha256": "4b64cb0bb2b00602436419bc632f1e295f6c340a74584a886c7b050f67063a3f",
-        "bytes": 550
+        "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.structure.eshi/media/yosinoya2.bmp.day.b782258f05943c2a4386a6f63bf230f5645f4e9d12490ff4520433ec3215473b.png",
+        "sha256": "b782258f05943c2a4386a6f63bf230f5645f4e9d12490ff4520433ec3215473b",
+        "bytes": 515
       },
       "night": {
-        "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.structure.eshi/media/yosinoya2.bmp.night.41b4efcfb3fc7070344685bfea20e4924ce12dff7ed26d76c59a96485653279d.png",
-        "sha256": "41b4efcfb3fc7070344685bfea20e4924ce12dff7ed26d76c59a96485653279d",
-        "bytes": 503
+        "url": "/content/bundled-v2/plugins/org.kohsuke.freetrain.structure.eshi/media/yosinoya2.bmp.night.8beb40f2775722ad298e174596aad0f35f2feebc37291cb176c22bbdb41d2c97.png",
+        "sha256": "8beb40f2775722ad298e174596aad0f35f2feebc37291cb176c22bbdb41d2c97",
+        "bytes": 488
       }
     },
     {
