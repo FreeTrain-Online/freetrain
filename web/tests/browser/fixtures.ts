@@ -1,14 +1,17 @@
 import { test as base } from '@playwright/test';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { writeTimings } from './run-timings.ts';
+import { BrowserDiagnostics } from './diagnostics.ts';
+import { attachProcessEvidence, ProcessEvidence, processEvidenceDirectory, processLogOffsets } from './process-evidence.ts';
 
 export * from '@playwright/test';
 
 type WorldServer = { pid?: () => number | undefined; baseURL?: string; restart?: () => Promise<void>; reset?: () => Promise<void> };
+const managedProjects = ['canonical', 'prototype-regression', 'startup'];
 
 async function freePort(): Promise<number> {
   const server = createServer();
@@ -22,22 +25,29 @@ async function freePort(): Promise<number> {
   return address.port;
 }
 
-async function running(command: string, args: string[], env: NodeJS.ProcessEnv, url: string, cwd = process.cwd()) {
+async function running(evidence: ProcessEvidence, label: string, command: string, args: string[], env: NodeJS.ProcessEnv, url: string, cwd = process.cwd()) {
+  const logs = evidence.start(label, command);
   const child = spawn(command, args, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] });
   let output = '', error: Error | undefined;
   child.on('error', value => { error = value; });
   const capture = (bytes: Buffer) => { output = (output + bytes.toString()).slice(-8000); };
-  child.stdout!.on('data', capture); child.stderr!.on('data', capture);
+  child.stdout!.on('data', bytes => { capture(bytes); appendFileSync(logs.stdout, bytes); });
+  child.stderr!.on('data', bytes => { capture(bytes); appendFileSync(logs.stderr, bytes); });
+  child.on('exit', (code, signal) => logs.event('exit', { code, signal }));
   try {
     const deadline = Date.now() + 60_000;
     while (Date.now() < deadline) {
       if (error) throw error;
-      if (child.exitCode !== null) throw new Error(`Test server exited (${child.exitCode}): ${output}`);
-      try { if ((await fetch(url, { signal: AbortSignal.timeout(1000) })).ok) return child; } catch { /* Starting. */ }
+      if (child.exitCode !== null || child.signalCode !== null) throw new Error(`Test server exited (${child.signalCode ?? child.exitCode}): ${output}\nLogs: ${logs.stdout}, ${logs.stderr}`);
+      try { if ((await fetch(url, { signal: AbortSignal.timeout(1000) })).ok) { logs.event('ready', { pid: child.pid, url }); return child; } } catch { /* Starting. */ }
       await new Promise(resolve => setTimeout(resolve, 50));
     }
     throw new Error(`Test server did not become ready at ${url}: ${output}`);
-  } catch (error) { await stop(child); throw error; }
+  } catch (error) {
+    logs.event('startup-failed', { error: String(error) });
+    await stop(child);
+    throw new Error(`${String(error)}\nProcess evidence: ${logs.stdout}, ${logs.stderr}`, { cause: error });
+  }
 }
 
 async function stop(child: ChildProcess) {
@@ -48,11 +58,26 @@ async function stop(child: ChildProcess) {
   try { await exited; } finally { clearTimeout(force); }
 }
 
-export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer }>({
+export const test = base.extend<{ resetWorld: void; diagnostics: BrowserDiagnostics | undefined; processEvidence: void }, { worldServer: WorldServer }>({
+  diagnostics: [async ({ browser }, use, testInfo) => {
+    if (![...managedProjects, 'diagnostic-harness'].includes(testInfo.project.name)) { await use(undefined); return; }
+    const diagnostics = new BrowserDiagnostics(testInfo);
+    diagnostics.install(browser);
+    try { await use(diagnostics); } finally { await diagnostics.finish(); }
+  }, { auto: true }],
+  processEvidence: [async ({}, use, testInfo) => {
+    if (![...managedProjects, 'diagnostic-harness'].includes(testInfo.project.name)) { await use(); return; }
+    const directory = processEvidenceDirectory(testInfo.workerIndex);
+    const offsets = processLogOffsets(directory);
+    try { await use(); } finally {
+      try { await attachProcessEvidence(testInfo, directory, offsets); }
+      catch (error) { testInfo.annotations.push({ type: 'diagnostic-capture-error', description: String(error) }); }
+    }
+  }, { auto: true }],
   worldServer: [async ({}, use, workerInfo) => {
     const project = workerInfo.project.name;
     // Dedicated optional-content/capacity configurations continue to own servers.
-    if (!['canonical', 'prototype-regression', 'startup'].includes(project)) {
+    if (!managedProjects.includes(project)) {
       await use({}); return;
     }
     const configuration = process.env.FREETRAIN_ONLINE_TEST_SERVER_CONFIGURATION ?? 'Release';
@@ -64,6 +89,7 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
       ? Number(process.env.FREETRAIN_ONLINE_TEST_WEB_PORT) + offset : await freePort();
     const apiURL = `http://127.0.0.1:${port}`, baseURL = `http://127.0.0.1:${webPort}`;
     const directory = mkdtempSync(join(tmpdir(), 'freetrain-browser-worker-'));
+    const evidence = new ProcessEvidence(processEvidenceDirectory(workerInfo.workerIndex));
     const children: ChildProcess[] = [];
     const started = performance.now();
     let backendMs = 0, previewMs = 0;
@@ -91,7 +117,7 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
       // Reuse the exact web/restart assertions against a portable Linux runtime.
       // Mount current managed output read-only; each worker still owns its saves.
       const containerImage = process.env.FREETRAIN_ONLINE_TEST_CONTAINER_IMAGE;
-      const startBackend = () => containerImage ? running('docker', [
+      const startBackend = () => containerImage ? running(evidence, 'backend', 'docker', [
         'run', '--rm', '--init', '--ulimit', 'core=0', '-p', `127.0.0.1:${port}:8080`,
         '-e', 'FreeTrainOnline__OperatorSecret=fleet-container-test',
         '--mount', `type=bind,source=${resolve('..')},target=${resolve('..')},readonly`,
@@ -101,13 +127,13 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
           .flatMap(([key,value]) => ['-e', `${key}=${key === 'FreeTrainOnline__Saves__Directory' ? '/data/saves' : value}`]),
         '--entrypoint', 'dotnet', containerImage, backendArgs[0],
         ...(prototype ? ['--prototype-regression-harness'] : []), '--urls', 'http://0.0.0.0:8080',
-      ], process.env, `${apiURL}/health`) : running('dotnet', backendArgs, backendEnv,
+      ], process.env, `${apiURL}/health`) : running(evidence, 'backend', 'dotnet', backendArgs, backendEnv,
         `${apiURL}/health`, resolve('../src/FreeTrain.Online.Server'));
       const backendStarted = performance.now();
       children.push(await startBackend());
       backendMs = performance.now() - backendStarted;
       const previewStarted = performance.now();
-      children.push(await running('deno', ['run', '-A', 'npm:vite@8.3.4', ...(process.env.FREETRAIN_ONLINE_TEST_DEV_CLIENT==='1'?[]:['preview']), '--host', '127.0.0.1',
+      children.push(await running(evidence, 'preview', 'deno', ['run', '-A', 'npm:vite@8.3.4', ...(process.env.FREETRAIN_ONLINE_TEST_DEV_CLIENT==='1'?[]:['preview']), '--host', '127.0.0.1',
         '--port', String(webPort), '--strictPort'], { ...process.env, FREETRAIN_ONLINE_API_TARGET: apiURL }, baseURL));
       previewMs = performance.now() - previewStarted;
       writeTimings(`worker-${workerInfo.workerIndex}`, { project, backendMs, previewMs,
@@ -134,7 +160,8 @@ export const test = base.extend<{ resetWorld: void }, { worldServer: WorldServer
   baseURL: async ({ worldServer }, use, testInfo) => {
     await use(worldServer.baseURL ?? testInfo.project.use.baseURL);
   },
-  resetWorld: [async ({ worldServer }, use) => {
+  resetWorld: [async ({ diagnostics, processEvidence, worldServer }, use) => {
+    diagnostics?.record('world-reset');
     await worldServer.reset?.();
     await use();
   }, { auto: true }],

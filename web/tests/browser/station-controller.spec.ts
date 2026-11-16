@@ -2,6 +2,7 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {test,expect,type Page} from './fixtures.ts';
 import {canonicalState as state,ready,closePanel,openPanel,exposeMapPoint} from './browser-helpers.ts';
 import {fit} from './layout-helpers.ts';
+import {evidencePath} from './assertions.ts';
 const en=JSON.parse(readFileSync('src/locales/en/app.json','utf8'));
 const ja=JSON.parse(readFileSync('src/locales/ja/app.json','utf8'));
 const catalog=JSON.parse(readFileSync('public/content/bundled-v2/catalog.json','utf8'));
@@ -26,8 +27,10 @@ async function pick(page:Page,object:any,text:typeof en,touch:boolean,hasControl
  const point=await canvas.evaluate((el,q)=>{const r=el.getBoundingClientRect(),[x,y]=el.dataset.camera!.split(',').map(Number),z=Number(el.dataset.zoom);return {x:r.x+r.width/2+(q.x-x)*z,y:r.y+r.height/2+(q.y-y)*z};},q);
  const p=await exposeMapPoint(page,point);
  await page.evaluate(()=>new Promise<void>(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r()))));
- await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/pick-${object.id}.png`});
- writeFileSync(`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/pick-${object.id}.json`,JSON.stringify({object,q,p,camera:await canvas.getAttribute('data-camera')}));
+ const screenshot=evidencePath(test.info(),`pick-${object.id}`,'png');
+ await page.screenshot({path:screenshot});await test.info().attach(`pick-${object.id}`,{path:screenshot,contentType:'image/png'});
+ const details=evidencePath(test.info(),`pick-${object.id}`,'json');
+ writeFileSync(details,JSON.stringify({object,q,p,camera:await canvas.getAttribute('data-camera')}));await test.info().attach(`pick-${object.id}-details`,{path:details,contentType:'application/json'});
  if(touch)await page.touchscreen.tap(p.x,p.y);else await page.mouse.click(p.x,p.y);
  if(hasController)await expect(page.locator('.primary-panel .fleet-controller-manager')).toBeVisible();
 }
@@ -109,7 +112,7 @@ for(const locale of ['en','ja'] as const)test(`P6-22 ${locale} picked hosts shar
   s=await until(s=>s.mixed.fleet.trains[0].cars[0].state.location.x>39);
   expect(s.mixed.fleet.trains[0].passengers).toBe(loaded);expect(s.mixed.stationGraph.buildings.find((b:any)=>b.id===other.id).trains.today).toBe(0);
   dialog=await configure(host);await expect(dialog.getByLabel(text.controllerMinutes,{exact:true})).toHaveValue('40');await fit(page);
-  await page.screenshot({path:`${process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE}/station-controller-${locale}.png`});
+  const screenshot=evidencePath(test.info(),`station-controller-${locale}`,'png');await page.screenshot({path:screenshot});await test.info().attach('station-controller',{path:screenshot,contentType:'image/png'});
   // A peer removes the real host while a local settings draft is open. The
   // picked editor disappears; the controller retains its committed location.
   await dialog.getByLabel(text.controllerMinutes,{exact:true}).fill('90');

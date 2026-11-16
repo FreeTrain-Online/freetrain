@@ -27,12 +27,18 @@ export default defineConfig({
   testDir: './tests/browser',
   globalSetup: './tests/browser/global-setup.ts',
   outputDir: join(artifacts, 'test-results'),
-  reporter: [['list'], ['./tests/browser/required-tests-reporter.ts'], [
+  reporter: [['./tests/browser/bounded-reporter.ts'], [
+    './tests/browser/required-tests-reporter.ts',
+  ], [
     'json',
     { outputFile: join(artifacts, 'report.json') },
   ]],
   forbidOnly: !!process.env.CI,
-  use: { viewport: { width: 1280, height: 900 }, trace: 'retain-on-failure' },
+  use: {
+    viewport: { width: 1280, height: 900 },
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+  },
   // Each worker owns its backend, preview server and save directory (fixtures.ts).
   // Tests within a file remain sequential; each case starts a fresh backend.
   workers: 2,

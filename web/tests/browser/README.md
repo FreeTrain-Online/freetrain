@@ -95,3 +95,61 @@ then build the client and run that configuration. It measures legal purchased /
 deployed stock, local and injected 100ms RTT feedback, running/paused resources,
 peer join, named save and process restart. It does not run in the default browser
 projects. See [method, reproduction and qualifications](../../../doc/web-parity-fleet-capacity.md).
+
+### Failure evidence and bounded comparisons
+
+The default required configurations write `summary.json`, the complete Playwright
+`report.json`, and per-test evidence below the printed `Browser artifacts` root.
+Each failure gets at most 50 console lines, including source and attachment
+references. `errors/*` retains complete original errors and an attachment manifest;
+the JSON report retains the original errors too. Skipped required cases and passes
+that depend on retries still fail the run.
+
+`assertions.ts` exports `assertCanonicalState(actual, expected, context)`,
+`assertJSONSave(actualData, expectedData, context)`, and
+`assertSaveBytes(actualBytes, expectedBytes, context)`. Supply `{ phase, peer }`;
+state envelopes provide epoch/revision/tick, or pass those fields in the context
+when comparing a subtree. Compare after explicit convergence. These assertions
+throw immediately; repeatedly calling them inside a poll would create evidence
+for each unsuccessful poll. They inspect all values and retain array ordering.
+Only diagnostic samples are bounded. Full state values are attached as text,
+JSON saves as JSON, and exact save bytes as binary. Byte failures include SHA-256
+hashes and their first differing offset; structural JSON diagnosis never permits
+different bytes to pass. `evidencePath(test.info(), label, extension)` gives
+repeated screenshots/details distinct per-test names.
+
+Managed primary and peer pages record console/page errors, failed requests,
+HTTP error responses, socket closes, and protocol metadata. On failure,
+`browser-timeline.ndjson` holds the timeline, `recent-browser-events.json` keeps the
+last 200 events, and `protocol-payloads.ndjson` holds full intercepted frames (binary frames use base64).
+This is diagnostic evidence, not a canonical-state observer or proof of client
+application. Browser-side socket-close listeners also cover routed connections
+without changing their close forwarding. Successful cases discard these browser
+payload files. Playwright retains failed screenshots and traces for all contexts,
+including peer contexts closed in `finally` before the error reaches the runner.
+The recorder also closes peer contexts a spec leaves open before finishing its
+evidence, preventing their events from leaking into a subsequent test.
+
+`processes/worker-N/` retains backend and preview stdout/stderr in separate files
+for every process start/restart, plus a lifecycle timeline. Per-test `processes/`
+attachments contain log slices and `association.json` links to full worker logs.
+The reporter also associates logs when worker setup fails before test fixtures
+start. Run-owned originals retain worker teardown output. Optional/capacity
+configurations keep their own server and diagnostic settings; their migration
+belongs to increment 3 of the browser reliability checklist.
+
+To validate the diagnostics themselves, with Chromium installed and a current
+client/server build, run from `web/`:
+
+```sh
+deno task test:browser:diagnostics
+```
+
+This opt-in harness uses `unzip` to inspect traces. It lives outside required
+browser spec discovery. It checks twelve deliberate assertion failures across
+two independent runs with two workers, plus managed setup, failed restart,
+successful restart and teardown failures. It requires those child runs to fail
+with the intended errors and verifies bounded output, full errors, two-page
+screenshots/traces, process logs and distinct artifact paths. The parent command
+passes only when those checks pass and prints its `acceptance.json` path.
+Normal assertion/reporter regression checks run with `deno task test`.
