@@ -81,7 +81,7 @@
  {#if result}<p data-testid="platform-cost">{text.cornerCost}: ¥{BigInt(result.cost).toLocaleString(view.locale)} · {text.stationCells}: {result.positions.length}</p>
  {/if}
  {#if result?.positions.length}<button type="button" onclick={()=>onframe(result!.positions)}>{text.platformFrame}</button>{/if}
- <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text[action==='remove'?'confirmRemoval':wide?'platformWideConfirm':'platformConfirm']}</button><button disabled={view.pending} onclick={reset}>{text.cancelPreview}</button></div>
+ <div class="form-actions"><button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text[action==='remove'?'confirmRemoval':wide?'platformWideConfirm':'platformConfirm']}</button><button disabled={view.pending||(!result&&status!=='checking')} onclick={reset}>{text.cancelPreview}</button></div>
  </div>
 </section>
 

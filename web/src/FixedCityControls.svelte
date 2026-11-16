@@ -83,7 +83,7 @@
  {#if result}
  {#if result.losses.length}<details open><summary>{text.railLossDetails}</summary><ul>{#each result.losses as loss}<li>{text.railReclamationLoss}: {loss.ownerId} · {loss.position.x}, {loss.position.y}, {loss.position.z}</li>{/each}</ul></details>{/if}{/if}
  {#if level>heightCut}<button onclick={onreveal}>{text.revealPreview}</button>{/if}
- <div class="form-actions">{#if result}<p class="city-cost-review" data-testid="city-cost">{text.cornerCost}: ¥{BigInt(result.cost).toLocaleString(view.locale)} · {text.cityCells}: {result.positions.length}</p>{/if}<button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text.cityConfirm}</button><button disabled={view.pending} onclick={reset}>{text.cancelPreview}</button></div>
+ <div class="form-actions">{#if result}<p class="city-cost-review" data-testid="city-cost">{text.cornerCost}: ¥{BigInt(result.cost).toLocaleString(view.locale)} · {text.cityCells}: {result.positions.length}</p>{/if}<button class="primary" disabled={blocked||status!=='ready'||!result?.legal} onclick={commit}>{text.cityConfirm}</button><button disabled={view.pending||(!result&&status!=='checking')} onclick={reset}>{text.cancelPreview}</button></div>
 </section>
 
 <style>.city-cost-review {flex-basis:100%;margin:0 0 4px;}</style>

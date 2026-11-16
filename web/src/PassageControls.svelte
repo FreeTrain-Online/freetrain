@@ -67,7 +67,7 @@
  {#if level>heightCut}<button onclick={onreveal}>{text.revealPreview}</button>{/if}
  {#if result}<p data-testid="passage-cost">{text.cornerCost}: ¥{result.cost} · {text.stationCells}: {result.positions.length}</p>{/if}
  {#if result?.positions.length}<button type="button" onclick={()=>onframe(result!.positions)}>{text.passageFrame}</button>{/if}
- <div class="form-actions"><button class="primary" disabled={blocked||!result?.legal} onclick={commit}>{action==='remove'?text.confirmRemoval:part==='stairs'?text.stairConfirm:text.passageConfirm}</button><button disabled={view.pending} onclick={()=>{anchor=undefined;reset();}}>{text.cancelPreview}</button></div>
+ <div class="form-actions"><button class="primary" disabled={blocked||!result?.legal} onclick={commit}>{action==='remove'?text.confirmRemoval:part==='stairs'?text.stairConfirm:text.passageConfirm}</button><button disabled={view.pending||(!anchor&&!result&&!checking)} onclick={()=>{anchor=undefined;reset();}}>{text.cancelPreview}</button></div>
 </section>
 <style>
  fieldset > label {display:grid;gap:3px;margin-block:6px;}

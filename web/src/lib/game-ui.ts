@@ -146,14 +146,14 @@ export type ActionId = keyof typeof registry;
 
 
 export const tools = [
-  {id:'land',shortcut:'O',label:registry.land.labelKey,icon:'◇'},
-  {id:'city',shortcut:'C',label:registry.city.labelKey,icon:'▤'},
   { id: 'inspect', shortcut: 'I', label: registry.inspect.labelKey, icon: '↖' },
   { id: 'build', shortcut: 'T', label: registry.rail.labelKey, icon: 'rail' },
   { id: 'bridge', shortcut: 'B', label: registry.bridge.labelKey, icon: 'bridge' },
   { id: 'slope', shortcut: 'S', label: registry.slope.labelKey, icon: 'slope' },
   { id: 'girder', shortcut: 'V', label: registry.girder.labelKey, icon: 'girder' },
   { id: 'station', shortcut: 'J', label: registry.station.labelKey, icon: 'station' },
+  {id:'land',shortcut:'O',label:registry.land.labelKey,icon:'◇'},
+  {id:'city',shortcut:'C',label:registry.city.labelKey,icon:'▤'},
   { id: 'stationary', shortcut: 'A', label: registry.stationary.labelKey, icon: '▥' },
   { id: 'speed', shortcut: 'L', label: registry.speed.labelKey, icon: '◴' },
   { id: 'pole', shortcut: 'E', label: registry.pole.labelKey, icon: 'pole' },
