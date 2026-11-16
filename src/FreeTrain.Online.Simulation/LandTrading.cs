@@ -3,7 +3,7 @@
 using System.Collections.Immutable;
 namespace FreeTrain.Online.Simulation;
 
-public sealed record LandCell(Location Position, string Status, long Value, long? OwnerId);
+public sealed record LandCell(Location Position, string Status, long Value, long? OwnerId, DefinitionReference? Definition = null);
 public sealed record LandReclamation(SpatialEntity Owner, long RemovalCost);
 public sealed record LandTradePlan(CityCandidate Source, CityCandidate Candidate,
     ImmutableArray<LandCell> Cells, ImmutableArray<LandReclamation> Reclaimed, long Amount);

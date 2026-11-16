@@ -1,4 +1,4 @@
-import {cityOwners,validCitySuccessor} from './city-state.ts';
+import {cityProfile,cityOwners,validCitySuccessor} from './city-state.ts';
 import {retainUnchanged} from './immutable-sharing.ts';
 import {entitiesById} from './entity-index.ts';
 import {passagePath} from './passage-edit.ts';
@@ -349,6 +349,18 @@ export function parseLandPreview(value:unknown):import('../generated/contracts.t
  if(p.cells.length&&(sx*sy!==p.cells.length||q.end.z!==q.anchor.z||p.cells.some((c,i)=>
    c.position.x!==Math.min(q.anchor.x,q.end.x)+Math.floor(i/sy)||c.position.y!==Math.min(q.anchor.y,q.end.y)+i%sy||c.position.z!==q.anchor.z||
    q.action==='buy'&&c.status==='sellable'||q.action==='sell'&&c.status==='buyable')))throw new Error('Inconsistent land traversal');
+ if(q.action==='cover'||q.action==='removeCover'){
+  const d=cityProfile.ground.find(d=>d.reference.packId===q.definition?.packId&&d.reference.contributionId===q.definition?.contributionId&&d.reference.recipeId===q.definition?.recipeId);
+  if(q.action==='cover'?(!d||!['land-0d','random-land'].includes(d.handler)):!!q.definition)throw new Error('Invalid ground definition');
+  const allowed=q.action==='cover'?['placeable','outside','uneven','protected']:['removable','outside','uneven','notCover'];
+  if(p.cells.some(c=>!allowed.includes(c.status)||c.value!=='0'||(c.status==='placeable'?
+    !c.definition||!(d!.handler==='random-land'?d!.selections:[d!.reference]).some(r=>r.packId===c.definition!.packId&&r.contributionId===c.definition!.contributionId&&r.recipeId===c.definition!.recipeId):!!c.definition))||p.reclaimed.some(r=>r.removalCost!=='0')||
+   p.legal&&(q.action==='cover'?BigInt(p.amount)!==BigInt(d!.price)*BigInt(sx*sy):p.amount!=='0'||!p.cells.some(c=>c.status==='removable')))throw new Error('Invalid ground review');
+  return p;
+ }
+ if(q.definition)throw new Error('Unexpected ground definition');
+ const statuses=q.action==='buy'?['buyable','outside','underground','owned','protected']:q.action==='sell'?['sellable','outside','underground','notProperty']:['owned','vacant','protected'];
+ if(p.cells.some(c=>!statuses.includes(c.status)))throw new Error('Unexpected land classification');
  const eligible=p.cells.filter(c=>c.status===(q.action==='buy'?'buyable':'sellable'));
  const total=eligible.reduce((n,c)=>n+BigInt(c.value),0n)+p.reclaimed.reduce((n,r)=>n+BigInt(r.value)+BigInt(r.removalCost),0n);
  if(p.query.action==='inspect'?p.amount!=='0'||p.legal&&p.cells.length!==1:p.legal&&(!eligible.length||total!==BigInt(p.amount)))throw new Error('Inconsistent land amount');

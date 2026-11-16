@@ -81,6 +81,17 @@ public static class ObjectRemoval
 
     public static (MixedWorld? Candidate, string Kind, string? Reason) Mixed(MixedWorld world, Location p)
     {
+        if(world.City is {} city && city.State.Ground.SingleOrDefault(g=>g.Location==p) is {} ground &&
+            city.Profile.GroundDefinition(ground.Definition).Handler=="land-0d")
+        {
+            var groundIds=new HashSet<long>{ground.Id};
+            var graph=new CityGraph(city.Profile,CityConstruction.Without(city.State,groundIds));
+            var stations=world.Stations==null?null:StationBuildingLifecycle.Reclaimed(world.Stations,groundIds);
+            var entities=world.Spatial.Entities.Where(e=>e.Id!=ground.Id).ToImmutableArray();
+            var revisions=stations?.Identities.ToDictionary(i=>i.Id,i=>i.Revision) ?? [];
+            entities=entities.Select(e=>revisions.TryGetValue(e.Id,out var revision)?e with {Revision=revision}:e).ToImmutableArray();
+            return (world.Replace(world.Revision,world.Terrain,new(world.Spatial.NextEntityId,entities),world.Voxels,world.Slopes,stations:stations,city:graph),"groundCover",null);
+        }
         if (world.At(p) is not {} voxel)
         {
             var (terrain,kind,reason) = Terrain(world.Terrain,p,world.Spatial.NextEntityId);

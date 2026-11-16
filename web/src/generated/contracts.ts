@@ -1452,9 +1452,10 @@ export interface LandQuery {
   expectedGeometryRevision: Counter;
   expectedMinute: Counter;
   expectedContentVersion: "terrain-content-1" | "mixed-railway-content-1";
-  action: "buy" | "sell" | "inspect";
+  action: "buy" | "sell" | "inspect" | "cover" | "removeCover";
   anchor: Position;
   end: Position;
+  definition?: Definition | null;
 }
 export interface Accepted {
   type: "accepted";
@@ -1804,7 +1805,7 @@ export interface RemovalPreview {
   query: RemovalQuery;
   legal: boolean;
   reason: string | null;
-  objectKind: "terrain" | "forest" | "creek" | "terrace" | "slope" | "pier" | "railway" | "line";
+  objectKind: "terrain" | "forest" | "creek" | "terrace" | "slope" | "pier" | "railway" | "line" | "groundCover";
   /**
    * @maxItems 8192
    */
@@ -1986,9 +1987,22 @@ export interface LandPreview {
 }
 export interface LandCell {
   position: Position;
-  status: "buyable" | "sellable" | "outside" | "underground" | "owned" | "protected" | "notProperty" | "vacant";
+  status:
+    | "buyable"
+    | "sellable"
+    | "outside"
+    | "underground"
+    | "owned"
+    | "protected"
+    | "notProperty"
+    | "vacant"
+    | "placeable"
+    | "removable"
+    | "uneven"
+    | "notCover";
   value: Money;
   ownerId: Counter | null;
+  definition?: Definition;
 }
 export interface LandReclamation {
   ownerId: Counter;

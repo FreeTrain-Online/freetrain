@@ -30,7 +30,7 @@ public static class CityConstruction
 
     internal static MixedConstructionState Replace(MixedConstructionState before,CityState state,long nextId,
         ConstructionBooking booking,GameTime time,string operation, TerrainWorld? terrain = null,
-        StationGraph? stations = null, IReadOnlySet<long>? reclaimed = null, long? attach = null)
+        StationGraph? stations = null, IReadOnlySet<long>? reclaimed = null, long? attach = null, IEnumerable<long>? attachMany = null)
     {
         var world=before.World;
         var graph=new CityGraph(world.City!.Profile,state);
@@ -39,6 +39,15 @@ public static class CityConstruction
         var entities=world.Spatial.Entities.Where(e=>!world.City.IsSpatialOwner(e.Id) && !(reclaimed?.Contains(e.Id) ?? false))
             .Concat(graph.Identities.Select(i=>graph.SpatialOwner(i.Id))).OrderBy(e=>e.Id).ToImmutableArray();
         if(attach is {} id) stations=AttachProducer(world,graph,nextId,entities,stations,id);
+        foreach(var groundId in attachMany ?? []) stations=AttachProducer(world,graph,nextId,entities,stations,groundId);
+        // Several source listener operations remain ordered inside one publication.
+        // Publish one successor revision for each existing station they touched.
+        if(attachMany!=null && stations!=null && world.Stations!=null)
+        {
+            var original=world.Stations.Buildings.ToDictionary(b=>b.Id,b=>b.Revision);
+            stations=new(stations.Profile,stations.Buildings.Select(b=>original.TryGetValue(b.Id,out var revision) && b.Revision!=revision
+                ? b with {Revision=checked(revision+1)}:b),stations.Platforms,stations.Passages,stations.NextStationName,stations.NextPlatformName,stations.Listeners,stations.ListenerMemberships);
+        }
         var revisions=stations?.Identities.ToDictionary(i=>i.Id,i=>i.Revision) ?? [];
         entities=entities.Select(e=>revisions.TryGetValue(e.Id,out var revision) ? e with {Revision=revision} : e).ToImmutableArray();
         return before.Replace(world.Revision,terrain ?? world.Terrain,new(nextId,entities),world.Voxels,world.Slopes,
@@ -47,7 +56,7 @@ public static class CityConstruction
     private static StationGraph AttachProducer(MixedWorld world,CityGraph graph,long nextId,
         ImmutableArray<SpatialEntity> entities,StationGraph? stations,long id) => StationCatchment.Attach(
             stations ?? new(world.Profile.Stations ?? throw new ArgumentException("Station profile required."),[],[]),
-            id,graph.Provider(id,CityHeat.Value(world,graph.Structure(id).Location)),new(world.Terrain.Space,nextId,entities));
+            id,graph.Provider(id,CityHeat.Value(world,graph.SpatialOwner(id).Anchor)),new(world.Terrain.Space,nextId,entities));
     private static ScheduledAction Schedule(Clock clock,string handler,long delay)
     {
         var due=checked(clock.Time.AbsoluteMinute+delay);

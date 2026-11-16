@@ -41,8 +41,9 @@ protection; a selected rectangle cannot demolish or partly acquire them. The
 shared multi-cell/nested-fee vector tests the generic source traversal, rather
 than inventing a reclaimable bundled building. Actual multi-cell protected
 buildings and multi-cell buy/sell rectangles also have runtime coverage.
-Ground covers used in the fixture are explicit canonical inputs; their authoring
-remains P7-16–19. Acquiring property does not create population or a development
+Ground covers used in the fixture are explicit canonical inputs.
+[P7-16 now delivers static/mixed farmland authoring](web-parity-static-ground.md);
+forest/rice/creek authoring remains P7-17–19. Acquiring property does not create population or a development
 model. Automatic development remains P7-25–29 and P8 retains market/report UI.
 
 MAN-M05, MAN-O05, MAN-A16, MAN-A20 and EXAV-11's `land-trade` obligations bind the

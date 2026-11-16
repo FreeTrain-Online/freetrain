@@ -24,7 +24,7 @@
   let status=$state<'idle'|'checking'|'ready'|'failed'|'stale'|'terrain'>('idle');
   let fence=$state<string>(),submitting=$state(false);
   let version=0,request:AbortController|undefined;
-  const kinds={terrain:'terrain',forest:'removeForest',creek:'removeCreek',terrace:'removeTerraceObject',slope:'removeSlope',pier:'removePier',railway:'railway',line:'removeLine'} as const;
+  const kinds={terrain:'terrain',forest:'removeForest',creek:'removeCreek',terrace:'removeTerraceObject',slope:'removeSlope',pier:'removePier',railway:'railway',line:'removeLine',groundCover:'groundRemove'} as const;
   const reasons={...railwayReasons,terrainRequired:'removeTerrainHelp',noRailway:'removeNoRailway',nothingRemovable:'removeNothing',operationUnavailable:'removeUnavailable',stationNotFound:'stationNotFound',unavailableStationBinding:'railBinding'} as const;
   function reset(){version++;request?.abort();result=undefined;stationResult=undefined;cityResult=undefined;oncitypreview();fence=undefined;status='idle';onpreview();onstationpreview();}
   function points(){onpoints([...(hasA?[{position:{x:ax,y:ay,z:level},label:'A'}]:[]),...(mode==='line'&&hasB?[{position:{x:bx,y:by,z:level},label:'B'}]:[])]);}

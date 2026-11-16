@@ -3965,7 +3965,8 @@
             "slope",
             "pier",
             "railway",
-            "line"
+            "line",
+            "groundCover"
           ]
         },
         "positions": {
@@ -7233,7 +7234,9 @@
           "enum": [
             "buy",
             "sell",
-            "inspect"
+            "inspect",
+            "cover",
+            "removeCover"
           ]
         },
         "anchor": {
@@ -7241,6 +7244,16 @@
         },
         "end": {
           "$ref": "#/$defs/Position"
+        },
+        "definition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Definition"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -7269,7 +7282,11 @@
             "owned",
             "protected",
             "notProperty",
-            "vacant"
+            "vacant",
+            "placeable",
+            "removable",
+            "uneven",
+            "notCover"
           ]
         },
         "value": {
@@ -7284,6 +7301,9 @@
               "type": "null"
             }
           ]
+        },
+        "definition": {
+          "$ref": "#/$defs/Definition"
         }
       },
       "required": [

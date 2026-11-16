@@ -682,7 +682,7 @@ DEV-D06 economics or moving buses. P8 retains full market/report/stadium events.
 | `half-voxel` | MAN-T10, MAN-W11, MAN-A14, MAN-A16, DEV-A07, EXAV-13 | P7-11/P7-12 | Eight definitions; front/direction; fore/back placement side; supported colors; Place/Remove; paired owner inspection. |
 | `catalog` | MAN-T10, MAN-M02, MAN-A16, MAN-A20, DEV-A07, DEV-D06 | P7-12/P9 | Category/subcategory; direct definition search; supported direction/color/design/height; author information; category navigation. |
 | `construction` | MAN-T10, MAN-E12, DEV-A06, EXAV-13 | P7-04/P7-07/P7-27 | Progress inspection; cancel/demolish owner; no force-completion command. |
-| `ground` | MAN-M05, MAN-O05, MAN-A16, DEV-A07, EXAV-06, EXAV-11, EXAV-13 | P7-16/P7-17/P7-18/P7-19 | Static/farm/forest/rice/creek selector; rectangle or creek endpoints; authored variants; Place/Remove; cost review. |
+| `ground` | MAN-M05, MAN-O05, MAN-A16, DEV-A07, EXAV-06, EXAV-11, EXAV-13 | P7-16/P7-17/P7-18/P7-19 | [P7-16 delivered static/mixed farmland](web-parity-static-ground.md): Land task (`O`), 25 catalog choices, fixed-level rectangle, full-area cost review, Confirm/Cancel and real removal. Forest/rice/creek retain P7-17–19. |
 | `fences` | MAN-M05, MAN-A14, MAN-A16, EXAV-13 | P7-20 | Fence/remover definition; line boundary side; rectangle perimeter; segment/corner preview and removal. |
 | `roads` | MAN-M04, MAN-O04, MAN-E11, MAN-A14, MAN-A16, MAN-A20, DEV-P13, EXAV-11, EXAV-13 | P7-21/P7-22/P7-23 | Three bundled styles; hierarchy/description; preview pattern cycle0..2; Place/Remove; cardinal two-point route and cost. |
 | `road-extensions` | MAN-O04, MAN-E17, MAN-A20, DEV-D06 | P7-24/P9 | Safe empty accessory/dummy picker; optional supported definitions only; no moving bus command. |

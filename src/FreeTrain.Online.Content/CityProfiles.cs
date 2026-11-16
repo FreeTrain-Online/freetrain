@@ -62,7 +62,8 @@ public static class CityProfiles
             {
                 var grid=Text("grid","1,1").Split(',').Select(s=>int.Parse(s,CultureInfo.InvariantCulture)).ToArray();
                 if(grid.Length!=2) throw new ArgumentException("Invalid city grid.");
-                ground.Add(new(reference,recipe.Handler,price,grid[0],grid[1],pop,computer));
+                ground.Add(new(reference,recipe.Handler,price,grid[0],grid[1],pop,computer,
+                    recipe.Handler=="random-land" ? recipe.Data.GetProperty("fields").GetProperty("lands").EnumerateArray().Select(v=>new DefinitionReference(catalog.PackId,v.GetString()!,v.GetString()!)).ToImmutableArray() : []));
             }
         }
         return new(terrain.Packs,bindings,structures,roads,ground);

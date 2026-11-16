@@ -44,7 +44,7 @@ public sealed record CityRoadDefinition(DefinitionReference Reference, string St
     }
 }
 public sealed record CityGroundDefinition(DefinitionReference Reference, string Handler, long Price,
-    int GridX, int GridY, Population? Population, bool ComputerCannotBuild);
+    int GridX, int GridY, Population? Population, bool ComputerCannotBuild, ImmutableArray<DefinitionReference> Selections = default);
 
 public sealed class CityProfile
 {
@@ -90,6 +90,9 @@ public sealed class CityProfile
             Roads.Any(d=>source[d.Reference].SourceType!="road" || source[d.Reference].Handler!="road") ||
             Ground.Any(d=>source[d.Reference].SourceType!="land" || source[d.Reference].Handler!=d.Handler || source[d.Reference].ComputerCannotBuild!=d.ComputerCannotBuild))
             throw new ArgumentException("City definition/source binding mismatch.");
+        foreach(var d in Ground)
+            if(d.Handler=="random-land" ? d.Selections.IsDefaultOrEmpty || d.Selections.Any(r=>!Ground.Any(g=>g.Reference==r && g.Handler=="land-0d"))
+                : !d.Selections.IsDefaultOrEmpty) throw new ArgumentException("Invalid static land selection.");
         var physical=Structures.Select(d=>d.Reference).Concat(Roads.Select(d=>d.Reference)).Concat(Ground.Select(d=>d.Reference)).ToArray();
         if(physical.Distinct().Count()!=physical.Length) throw new ArgumentException("Duplicate city definition.");
         this.structures=Structures.ToFrozenDictionary(d=>d.Reference); this.ground=Ground.ToFrozenDictionary(d=>d.Reference);

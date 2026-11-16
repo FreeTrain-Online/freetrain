@@ -21,6 +21,7 @@ export function validateSpecOwnership(
 export const browserSpecs = {
   'canonical': [
     'land-trading.spec.ts',
+    'static-ground.spec.ts',
     'city-building.spec.ts',
     'city-transport.spec.ts',
     'city-heat.spec.ts',

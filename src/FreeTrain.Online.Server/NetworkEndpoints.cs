@@ -743,7 +743,7 @@ public static class NetworkEndpoints
         CancelCityConstructionCommand cancel => cancel.Query is {} city && city.ExpectedWorldEpoch>=1 && city.ExpectedRevision>=0 &&
             city.ExpectedMinute>=0 && city.OwnerId>=1 && city.ExpectedOwnerRevision>=0 && city.ExpectedContentVersion==ProtocolIdentity.MixedContent,
         TradeLandCommand trade => trade.Query is {Anchor:not null,End:not null} land && trade.ExpectedAmount>=0 &&
-            land.ExpectedWorldEpoch>=1 && land.ExpectedGeometryRevision>=0 && land.ExpectedMinute>=0 && land.Action is "buy" or "sell",
+            land.ExpectedWorldEpoch>=1 && land.ExpectedGeometryRevision>=0 && land.ExpectedMinute>=0 && land.Action is "buy" or "sell" or "cover" or "removeCover",
         EditFixedCityCommand edit => edit.Query != null && edit.Query.Position != null && edit.ExpectedCost >= 0 &&
             edit.Query.ExpectedWorldEpoch >= 0 && edit.Query.ExpectedGeometryRevision >= 0 && edit.Query.ExpectedMinute >= 0 &&
             edit.Query.ExpectedContentVersion is "terrain-content-1" or "mixed-railway-content-1" &&

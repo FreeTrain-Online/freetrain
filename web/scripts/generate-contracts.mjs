@@ -147,7 +147,7 @@ const city={requiredPacks:terrain.requiredPacks,propertyDefinition:definition('s
    halfVariants:kind==='half'?r.frames.map(f=>({...f.selector,side:1-f.selector.side})):[]};
  }),ground:cityContributions.filter(c=>c.type==='land').map(c=>{
   const e=c.declaration,r=catalog.renderRecipes.find(r=>r.id===c.id),grid=(child(e,'grid')?.text??'1,1').split(',').map(Number);
-  return {reference:definition(c.id),handler:r.handler,price:String(child(e,'price')?.text??'0'),gridX:grid[0],gridY:grid[1],
+  return {reference:definition(c.id),handler:r.handler,selections:r.handler==='random-land'?r.fields.lands.map(id=>definition(id)):[],price:String(child(e,'price')?.text??'0'),gridX:grid[0],gridY:grid[1],
    population:child(e,'population')?popNode(child(e,'population')):null,computerCannotBuild:!!child(e,'computerCannotBuild'),remover:c.implementation.name.endsWith('FenceRemover')};
  }),roads:cityContributions.filter(c=>c.type==='road').map(c=>definition(c.id))};
 const cityOutput=new URL('../src/generated/city-profile.json',import.meta.url),cityJson=JSON.stringify(city,null,2)+'\n';
@@ -173,3 +173,5 @@ for(const mode of ['day','night']){
 const landArt={sourceRevision:catalog.source.revision,sets:landSets,masks:landMasks,frameMasks:landFrameMasks};
 const landArtPath=new URL('../src/generated/land-property-art.json',import.meta.url),landArtText=JSON.stringify(landArt,null,2)+'\n';
 if(process.argv.includes('--check')){if(await readFile(landArtPath,'utf8')!==landArtText)throw new Error('Stale property art');}else await writeFile(landArtPath,landArtText);
+
+execFileSync('python3', [fileURLToPath(new URL('../../scripts/static-ground-art.py', import.meta.url)), ...(process.argv.includes('--check') ? ['--check'] : [])], {stdio:'inherit'});

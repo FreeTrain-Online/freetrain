@@ -137,3 +137,13 @@ all `MAN-O*` requirements have source/workflow links. Group inheritance, road
 membership, the static balance-sheet template and gesture differences have explicit
 dispositions. This updates the action-map status, not this comparison's runtime
 evidence or later acceptance gates.
+
+## P7-16 portable ground authoring — 16 November 2026
+
+[Static and mixed farmland](web-parity-static-ground.md) consumes MAN-M05,
+MAN-O05, MAN-A16, DEV-A07 and EXAV-06/11/13's `ground` action obligations.
+The EN/JA Land and ground cover task (`O`) provides 20 tiles and five authored
+mixes, rectangle/level selection, catalog art, exact full-area cost review and
+real removal. This is separate from buying/selling property or inspecting live
+land value. Enter confirms after review; Escape cancels. Source crop/remover
+dispositions and later forest/rice/creek owners remain explicit in the report.

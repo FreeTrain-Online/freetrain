@@ -1,5 +1,5 @@
+import {staticGroundArt} from './static-ground-art.ts';
 import { RecipeImageCache, instantiate, traversal, type RenderCatalog } from './content-recipes.ts';
-import {variableCityArt} from './variable-city-art.ts';
 import {cityCatalogChoice,fixedCityDefinitions,type CityCatalogChoice} from './fixed-city-edit.ts';
 import { bundledCatalog } from './bundled-catalog.ts';
 import type { SignalDirection } from './building-catalog.ts';
@@ -33,9 +33,13 @@ export async function formationPreview(ids: readonly string[]): Promise<{src:str
 
 /** Use the same executable crop corrections and selected stack/half as the map. */
 export function catalogPreviewLayers(content:RenderCatalog,id:string,direction?:SignalDirection,choice?:CityCatalogChoice) {
-  content=variableCityArt(content);
+  content=staticGroundArt(content);
   const recipe=content.renderRecipes.find(recipe=>recipe.id===id);
   if(!recipe)throw new Error('Catalog preview unavailable');
+  if(recipe.handler==='random-land'){
+    const ids=recipe.fields.lands as string[],width=Math.ceil(Math.sqrt(ids.length));
+    return traversal(ids.flatMap((id,i)=>{const r=content.renderRecipes.find(r=>r.id===id);if(r?.handler!=='land-0d')throw new Error('Mixed ground preview unavailable');return instantiate(r,id,[i%width,Math.floor(i/width),0]);}));
+  }
   const d=fixedCityDefinitions.find(d=>d.reference.recipeId===id),selected=choice??(d?cityCatalogChoice(id):undefined);
   const half=d?.kind==='half';
   if(half&&!d.halfVariants.some(v=>v.direction===selected!.direction&&v.side===(selected!.side==='fore'?1:0)&&v.color===selected!.color))throw new Error('Unsupported half selection');
@@ -52,7 +56,7 @@ export function catalogPreview(id: string, direction?: SignalDirection, choice?:
   let pending = previews.get(key);
   if (!pending) {
     pending = (async () => {
-      const content = variableCityArt(await bundledCatalog());
+      const content = staticGroundArt(await bundledCatalog());
       const layers = catalogPreviewLayers(content,id,direction,choice);
       const bounds = layers.map(({ position: [x, y, z], frame }) => ({
         x: 16 * (x + y) - frame.anchor![0], y: 8 * (y - x) - 16 * z - frame.anchor![1],

@@ -1,0 +1,241 @@
+{
+  "sourceRevision": "883cf7d81cf49db25ff38cd3a25d0f140afe31a0",
+  "frames": [
+    {
+      "recipe": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-0,4",
+      "key": "land/0",
+      "originalRectangle": [
+        0,
+        64,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "spring/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "summer/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "summer/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "autumn/day": "8ee48b5caf6e93e02a47bc703dbbe16b30b59a45bfabe87d53f7593e6452b8f7",
+        "autumn/night": "7b147267499321d4ce483b60cba866c5e94720138ae2f904e34121126999bd7d",
+        "winter/day": "1ac41e4894e46853164affd261b56f41ccf182166f9eb6e238b0181440264142",
+        "winter/night": "a6a999e77eb5c35ca442a36d59768b6e015b5d376f74c54cb9c2026398c3eaf3"
+      },
+      "status": "ready",
+      "rectangle": [
+        0,
+        64,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "masks": {
+        "spring/day": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "spring/night": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "summer/day": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "summer/night": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "autumn/day": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "autumn/night": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "winter/day": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1",
+        "winter/night": "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1"
+      }
+    },
+    {
+      "recipe": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-1,4",
+      "key": "land/0",
+      "originalRectangle": [
+        32,
+        64,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "spring/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "summer/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "summer/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "autumn/day": "8ee48b5caf6e93e02a47bc703dbbe16b30b59a45bfabe87d53f7593e6452b8f7",
+        "autumn/night": "7b147267499321d4ce483b60cba866c5e94720138ae2f904e34121126999bd7d",
+        "winter/day": "1ac41e4894e46853164affd261b56f41ccf182166f9eb6e238b0181440264142",
+        "winter/night": "a6a999e77eb5c35ca442a36d59768b6e015b5d376f74c54cb9c2026398c3eaf3"
+      },
+      "status": "ready",
+      "rectangle": [
+        32,
+        64,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "masks": {
+        "spring/day": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "spring/night": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "summer/day": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "summer/night": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "autumn/day": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "autumn/night": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "winter/day": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71",
+        "winter/night": "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71"
+      }
+    },
+    {
+      "recipe": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-2,4",
+      "key": "land/0",
+      "originalRectangle": [
+        64,
+        64,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "spring/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "summer/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "summer/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "autumn/day": "8ee48b5caf6e93e02a47bc703dbbe16b30b59a45bfabe87d53f7593e6452b8f7",
+        "autumn/night": "7b147267499321d4ce483b60cba866c5e94720138ae2f904e34121126999bd7d",
+        "winter/day": "1ac41e4894e46853164affd261b56f41ccf182166f9eb6e238b0181440264142",
+        "winter/night": "a6a999e77eb5c35ca442a36d59768b6e015b5d376f74c54cb9c2026398c3eaf3"
+      },
+      "status": "ready",
+      "rectangle": [
+        64,
+        64,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "masks": {
+        "spring/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "spring/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "summer/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "summer/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "autumn/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "autumn/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "winter/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "winter/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5"
+      }
+    },
+    {
+      "recipe": "{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4",
+      "key": "land/0",
+      "originalRectangle": [
+        96,
+        64,
+        32,
+        32
+      ],
+      "originalAnchor": [
+        0,
+        0
+      ],
+      "surfaces": {
+        "spring/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "spring/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "summer/day": "37f4b47730e90cad56e876189e093dbeaaad0d92763c9b632a7e05d710c3f35b",
+        "summer/night": "a313c945c13e35043f2ad96f1ae41baa0270742078baafe6b07e36858257c671",
+        "autumn/day": "8ee48b5caf6e93e02a47bc703dbbe16b30b59a45bfabe87d53f7593e6452b8f7",
+        "autumn/night": "7b147267499321d4ce483b60cba866c5e94720138ae2f904e34121126999bd7d",
+        "winter/day": "1ac41e4894e46853164affd261b56f41ccf182166f9eb6e238b0181440264142",
+        "winter/night": "a6a999e77eb5c35ca442a36d59768b6e015b5d376f74c54cb9c2026398c3eaf3"
+      },
+      "status": "ready",
+      "rectangle": [
+        96,
+        64,
+        32,
+        16
+      ],
+      "anchor": [
+        0,
+        0
+      ],
+      "masks": {
+        "spring/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "spring/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "summer/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "summer/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "autumn/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "autumn/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "winter/day": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5",
+        "winter/night": "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5"
+      }
+    }
+  ],
+  "masks": {
+    "ccc55af4e938eb7e321c4685fec7c71717741057b57f822492e8b06878cccbe1": [
+      "00000000000000000000000000000000",
+      "00000000000000001100000000000000",
+      "00000000000000111111000000000000",
+      "00000000000011111100110000000000",
+      "00000000001111111011111100000000",
+      "00000000111111000111110011000000",
+      "00000011111100111110011111100000",
+      "00001111110011111101111111001100",
+      "00111111001111110111111000111111",
+      "00111100111110011111110111111100",
+      "00000011111001111111001111110000",
+      "00000011110111111110111110000000",
+      "00000000011111100011111100000000",
+      "00000000001110011111110000000000",
+      "00000000000001111111000000000000",
+      "00000000000000111100000000000000"
+    ],
+    "688149531ca6ad31c413eadd2b78a3b6ae4b3889657727073ad9cd51d4701c71": [
+      "00000000000000000000000000000000",
+      "00000000000000111100000000000000",
+      "00000000000001111111000000000000",
+      "00000000001110011111110000000000",
+      "00000000011111100011111100000000",
+      "00000011110111111110111110000000",
+      "00000011111001111111001111110000",
+      "00111100111110011111110111111100",
+      "00111111001111110111111000111111",
+      "00001111110011111101111111001100",
+      "00000011111100111110011111100000",
+      "00000000111111000111110011000000",
+      "00000000001111111011111100000000",
+      "00000000000011111100110000000000",
+      "00000000000000111111000000000000",
+      "00000000000000001100000000000000"
+    ],
+    "b5ae377753b12e960132ee4df4169cec0652295f52bad8f009e7f71e2055bea5": [
+      "00000000000000000000000000000000",
+      "00000000000000111100000000000000",
+      "00000000000011111111000000000000",
+      "00000000001111111111110000000000",
+      "00000000111111111111111100000000",
+      "00000011111111111111111111000000",
+      "00001111111111111111111111110000",
+      "00111111111111111111111111111100",
+      "11111111111111111111111111111111",
+      "00111111111111111111111111111100",
+      "00001111111111111111111111110000",
+      "00000011111111111111111111000000",
+      "00000000111111111111111100000000",
+      "00000000001111111111110000000000",
+      "00000000000011111111000000000000",
+      "00000000000000111100000000000000"
+    ]
+  }
+}
