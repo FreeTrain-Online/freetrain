@@ -111,7 +111,7 @@ with changed/removed spatial owners, queue, station listeners and accounts. The
 merged graph and successor revisions validate before reveal; stale bases or a
 partial removal require resynchronization.
 
-Existing limits apply: 8MiB mixed component, 16MiB delta and 256MiB complete state;
+Current limits apply: 16MiB mixed component, 16MiB delta and 256MiB complete state;
 48KiB transfer chunks with total/count/length/hash checks. City owners and total
 construction cells are bounded by 8192, fences by 32768, and callbacks by the
 existing 65536 limit. Heat lengths must exactly match the admitted world's bordered

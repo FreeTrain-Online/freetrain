@@ -82,7 +82,7 @@ The portable admission bounds are1024 rules per location and8192 total per
 controller. Existing256-controller and8192-location limits stay in place.
 Codec preflight bounds nested arrays before typed restoration; graph, wire and
 browser semantic validation enforce context-specific masks/actions and total
-capacity. Existing8MiB mixed-state,16MiB delta and overall save/snapshot byte
+capacity. Current16MiB mixed-state,16MiB delta and overall save/snapshot byte
 admission still apply. Capacity does not promise that every maximum can coexist.
 
 `EditFleetRuleCommand` sends one rule or one indexed operation, never a whole

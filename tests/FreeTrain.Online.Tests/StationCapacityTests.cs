@@ -21,6 +21,7 @@ public class StationCapacityTests
             Assert.Equal(trains,r.GetProperty("trains").GetInt32());
             Assert.Equal(providers,r.GetProperty("providers").GetInt32());
             Assert.Equal(stations*3+trains,r.GetProperty("callbacks").GetInt32());
+            Assert.Equal(stations*3+trains+1,r.GetProperty("finalCallbacks").GetInt32());
             Assert.True(long.Parse(r.GetProperty("imports").GetString()!)>0);
             Assert.All(r.GetProperty("waiting").EnumerateArray(),v=>Assert.True(v.GetInt32()>=0));
             Assert.Equal(120,r.GetProperty("ticks").GetArrayLength());

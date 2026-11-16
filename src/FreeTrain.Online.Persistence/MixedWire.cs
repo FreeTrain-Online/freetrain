@@ -10,7 +10,9 @@ namespace FreeTrain.Online.Persistence;
 public static class MixedWire
 {
     private static readonly JsonSerializerOptions Json = WireJson.CreateOptions();
-    private const int MaximumMixedBytes = 8 * 1024 * 1024;
+    // A newly activated 1500x1090 heat field needs about 12.5 MiB before
+    // railway/fleet/station data. Transitions still enforce the full delta cap.
+    internal const int MaximumMixedBytes = 16 * 1024 * 1024;
     private const int MaximumDeltaBytes = 16 * 1024 * 1024;
     private sealed record ByteCount(long Value);
     private sealed record WorldBytes(long MixedWithoutAccounts, long Railway);

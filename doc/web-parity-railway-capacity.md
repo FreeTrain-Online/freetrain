@@ -45,7 +45,16 @@ legal constructed scene, not arbitrary railway overlap on the dense terrain.
 | 8,192 accounting entries | Durable journal, not a fresh allowance per command. Pending stationary completions reserve entries. Existing booking/construction boundary tests verify rejection without partial charges or IDs. No journal compaction is advertised. |
 | 8,192 route cells | Inclusive construction work bound, additionally constrained by actual H/V/Z bounds, placement legality, occupancy, available voxels, journal and bytes. This is not a promise of an 8,192-cell straight route inside a supported map. |
 | At most 1,024 complete ramps | Eight voxels each, only if every other constraint fits; not 1,024 ramps plus 8,192 other voxels. |
-| 8 MiB mixed payload / 16 MiB delta / 256 MiB canonical state | Admission and publication byte bounds apply in addition to counts. Speed lists, account records and support combinations can exhaust bytes before a count bound. |
+| 16 MiB mixed payload / 16 MiB delta / 256 MiB canonical state | Admission and publication byte bounds apply in addition to counts. Speed lists, account records and support combinations can exhaust bytes before a count bound. |
+
+The mixed payload ceiling increased from 8 to 16 MiB after P7-14 made passenger
+service activate heat on railway-only maps. The bordered Q/back/rho buffers on
+the supported 1500×1090 extent require about 12.5 MiB at activation. The complete
+delta must still fit 16 MiB, including its envelope and spatial changes; mixed
+admission alone does not guarantee every later transition fits. The extent
+regressions cover passenger service with exact 120-minute reopen continuation,
+and separately heat activation, deposits, diffusion and actual outbound encoding.
+This change does not qualify arbitrary dense heat fields or full-city capacity.
 
 These are current durable P4 limits and measured scenes, not an inferred maximum
 of ExAV or a full-city simulation guarantee. The existing P3 dense-edit miss is

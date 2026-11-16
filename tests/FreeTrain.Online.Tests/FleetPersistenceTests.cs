@@ -209,11 +209,13 @@ public class FleetPersistenceTests
         var provider=f.Profile.Providers.Single(p=>p.Kind==FleetControllerKind.Timetable);
         var harbors=System.Collections.Immutable.ImmutableArray.CreateRange(Enumerable.Range(0,8192)
             .Select(n=>new FleetHarborSetting(new(n,999,2),FleetHarborKind.Fixed,10,false)));
-        var extra=Enumerable.Range(0,16).Select(n=>new FleetController(w.Spatial.NextEntityId+n,0,"Timetable",provider.Kind,provider.Binding,harbors));
+        const int extraControllers=32; // Exceed the 16 MiB mixed-state ceiling.
+        var extra=Enumerable.Range(0,extraControllers).Select(n=>new FleetController(w.Spatial.NextEntityId+n,0,"Timetable",provider.Kind,provider.Binding,harbors));
         var fleet=new FleetGraph(f.Profile,f.RootGroupId,f.Trains,f.Groups,f.Controllers.Concat(extra));
-        var world=w.Replace(w.Revision,w.Terrain,new(w.Spatial.NextEntityId+16,w.Spatial.Entities),w.Voxels,w.Slopes,fleet:fleet);
+        var world=w.Replace(w.Revision,w.Terrain,new(w.Spatial.NextEntityId+extraControllers,w.Spatial.Entities),w.Voxels,w.Slopes,fleet:fleet);
         var candidate=new MixedConstructionState(world,s.Construction.Accounts);
         var proposed=s.Successor(s.Revision,candidate,s.ConstructionMode);
+        Assert.True(JsonByteCount.Count(MixedWire.Read(proposed),WireJson.CreateOptions(),ProtocolIdentity.MaximumStateBytes)>MixedWire.MaximumMixedBytes);
         Assert.Equal("saveTooLarge",Assert.Throws<InvalidDataException>(()=>SaveCodec.Write(proposed)).Message);
         var host=new FreeTrain.Online.Session.SessionHost(s,"owner",TerrainProfiles.Resolve,RailwayProfiles.Resolve);
         var before=Json(host.Snapshot());

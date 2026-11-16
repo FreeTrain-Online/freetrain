@@ -2,7 +2,9 @@ using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using FreeTrain.Online.Contracts;
+using FreeTrain.Online.Content;
 using FreeTrain.Online.Persistence;
+using FreeTrain.Online.Server;
 using FreeTrain.Online.Simulation;
 using Xunit;
 
@@ -22,6 +24,55 @@ public sealed class MixedAdmissionTests
         Assert.Equal(expected, sizes.Mixed);
         Assert.Equal(JsonSerializer.SerializeToUtf8Bytes(MixedWire.RailwayEntities(state.World), Json).LongLength, sizes.Railway);
         MixedWire.ValidateAdmission(state);
+    }
+
+    private static MixedSessionState Extent()
+    {
+        var request = new EmptyWorldRequest(WorldCreationProfile.Id,"Extent heat admission",new(1500,1090,45),2);
+        var terrain = TerrainWorld.Empty(request,TerrainProfiles.Bundled);
+        return new(new(MixedWorld.FromTerrain(RailwayProfiles.Bundled,terrain)),TerrainProvenance.From(request));
+    }
+
+    [Fact]
+    public void Extent_heat_activation_deposit_and_diffusion_fit_saves_snapshots_and_deltas()
+    {
+        var before = Extent();
+        var active = CityHeat.Enable(before);
+        Check(active);
+        Assert.True(MixedWire.AdmissionBytes(active).Mixed > 8 * 1024 * 1024);
+        CheckTransition(before,active);
+
+        var location = active.World.Terrain.Space.ToLocation(new(10,10,2));
+        var deposited = active.Successor(active.Revision,
+            new(CityHeat.Deposit(active.World,location,4),active.Construction.Accounts),false);
+        CheckTransition(active,deposited);
+
+        // Move to the saved timer boundary without simulating 599 empty minutes.
+        var timer = deposited.World.City!.State.HeatCallback!;
+        var clock = deposited.Clock.Capture() with { AbsoluteMinute = timer.DueMinute-1 };
+        var state = new MixedSessionState(deposited.Construction,deposited.Provenance,
+            clock:clock,random:deposited.Random.Capture(),revision:deposited.Revision);
+        var bytes = SaveCodec.Write(state);
+        var reopened = SaveCodec.ReadWorld(bytes,TerrainProfiles.Resolve,RailwayProfiles.Resolve).Mixed!;
+        Assert.Equal(bytes,SaveCodec.Write(reopened));
+        var previous = state.Freeze();
+        state.AdvanceOneMinute();reopened.AdvanceOneMinute();
+        Assert.Equal(timer.DueMinute,state.Clock.Time.AbsoluteMinute);
+        Assert.Equal(timer.DueMinute+timer.Interval,state.World.City!.State.HeatCallback!.DueMinute);
+        Assert.NotEqual(previous.World.City!.State.Heat.Q,state.World.City.State.Heat.Q);
+        Check(state);
+        CheckTransition(previous,state);
+        Assert.Equal(SaveCodec.Write(state),SaveCodec.Write(reopened));
+        var packet = StateTransfer.Serialize(MixedWire.Snapshot(state,1));
+        Assert.True(packet.Length <= ProtocolIdentity.MaximumStateBytes);
+        Assert.Equal(packet.Length,StateTransfer.Chunks(MixedWire.Snapshot(state,1),packet).Sum(c=>c.Data.Length));
+
+        static void CheckTransition(MixedSessionState from,MixedSessionState to)
+        {
+            MixedWire.ValidateTransition(from,to);
+            var delta = StateDifference.Between(MixedWire.Snapshot(from,1),MixedWire.Snapshot(to,1));
+            Assert.True(OutboundWire.Serialize(delta).Length <= OutboundWire.MaximumBytes);
+        }
     }
 
     [Theory]
@@ -106,7 +157,7 @@ public sealed class MixedAdmissionTests
     [Fact]
     public void Oversized_heat_is_rejected_after_a_smaller_heat_was_cached()
     {
-        var state = BackendPerformanceFixture.Open("large");
+        var state = CityHeat.Enable(Extent());
         Check(state);
         var world = state.World;
         var city = world.City!;
@@ -118,22 +169,21 @@ public sealed class MixedAdmissionTests
             world.Revision,world.SpeedLimits,world.Fleet,world.Stations,city);
         var changed = new MixedSessionState(new(world,state.Construction.Accounts),state.Provenance,
             clock: state.Clock.Capture(),random: state.Random.Capture(),revision: state.Revision);
-        Assert.True(JsonSerializer.SerializeToUtf8Bytes(FreshRead(changed),Json).Length > 8 * 1024 * 1024);
+        Assert.True(JsonSerializer.SerializeToUtf8Bytes(FreshRead(changed),Json).Length > MixedWire.MaximumMixedBytes);
         Assert.Equal("saveTooLarge",Assert.Throws<InvalidDataException>(() => MixedWire.ValidateAdmission(changed)).Message);
         Check(state);
     }
 
     [Fact]
-    public void Mixed_limit_accepts_exactly_eight_MiB_and_rejects_one_byte_more()
+    public void Mixed_limit_accepts_exactly_sixteen_MiB_and_rejects_one_byte_more()
     {
-        const int maximum = 8 * 1024 * 1024;
-        var state = BackendPerformanceFixture.Open("large");
+        const int maximum = 16 * 1024 * 1024;
+        Assert.Equal(maximum,MixedWire.MaximumMixedBytes);
+        var state = CityHeat.Enable(Extent());
         var original = state.World;
         var city = original.City!;
         var heat = city.State.Heat;
-        var accounts = state.Construction.Accounts.Capture();
-        accounts = accounts with { Transactions = accounts.Transactions.Select(t => t with { Operation = "x" }).ToImmutableArray() };
-        var single = accounts.Transactions.GroupBy(t => t.WorldRevision).First(group => group.Count() == 1).Single().Sequence;
+        var accounts = state.Construction.Accounts.Book(ConstructionBooking.Spend(0),1,new(0),"x").Capture();
         MixedSessionState With(float[] values, int padding)
         {
             var length = heat.Q.Length;
@@ -144,13 +194,12 @@ public sealed class MixedAdmissionTests
             };
             var changedCity = new CityGraph(city.Profile,city.State with { Heat = changedHeat });
             var world = new MixedWorld(original.Profile,original.Terrain,original.Spatial.Capture(),original.Voxels,
-                original.Slopes,original.Revision,original.SpeedLimits,original.Fleet,original.Stations,changedCity);
+                original.Slopes,1,original.SpeedLimits,original.Fleet,original.Stations,changedCity);
             var changedAccounts = ConstructionAccounts.Restore(accounts with {
-                Transactions = accounts.Transactions.Select(t => t.Sequence == single
-                    ? t with { Operation = new string('x',1+padding) } : t).ToImmutableArray()
+                Transactions = accounts.Transactions.Select(t => t with { Operation = new string('x',1+padding) }).ToImmutableArray()
             });
             return new(new(world,changedAccounts),state.Provenance,clock: state.Clock.Capture(),
-                random: state.Random.Capture(),revision: state.Revision);
+                random: state.Random.Capture(),revision: 1);
         }
         var values = new float[3*heat.Q.Length];
         var baseline = JsonSerializer.SerializeToUtf8Bytes(FreshRead(With(values,0)),Json).Length;

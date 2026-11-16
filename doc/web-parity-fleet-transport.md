@@ -63,7 +63,7 @@ records exactly match the top-level save `clock`. Canonical due/FIFO order,
 unique future one-shot actions, one per deployed train and pending construction
 cell, no action for Unplaced stock, and existing construction119-minute bounds
 validate before replacement. Queue capacity remains65,536. Harbor entries have
-an8,192-per-controller structural guard; existing mixed8MiB and save256MiB byte
+an8,192-per-controller structural guard; current mixed16MiB and save256MiB byte
 admission remain in force. These are portable guards, not source maxima or
 P5-28 moving-resource acceptance.
 

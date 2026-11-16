@@ -87,6 +87,8 @@ static class StationCapacity
             if(!SaveCodec.Write(s).SequenceEqual(SaveCodec.Write(reopened)))throw new Exception("Continuation differs at "+minute);
         }
         var graph=s.World.Stations!;
+        if(s.World.City?.State.HeatCallback is not {} heatTimer || heatTimer.HandlerId!=CityHandlers.Heat)
+            throw new Exception("Passenger service did not activate heat.");
         if(departures==0||!s.Construction.Accounts.Transactions.Any(t=>t.Operation=="stationUnload"&&t.Revenue>0))throw new Exception("No real passenger service.");
         File.WriteAllBytes(Path.Combine(directory,"world.json.expected"),SaveCodec.Write(s));
         var initial=Open(bytes);
@@ -97,7 +99,7 @@ static class StationCapacity
             fixtureSha256=Hash(File.ReadAllBytes(File.Exists("doc/parity/station-fixtures.json")?"doc/parity/station-fixtures.json":Path.Combine(AppContext.BaseDirectory,"Spatial/station-fixtures.json"))),definition=definition.Reference,stock=stock.Binding,
             carRecipes=initial.Fleet!.Trains[0].Cars.Select(c=>c.Definition),saveBytes=bytes.Length,
             packetBytes=StateTransfer.Serialize(MixedWire.Snapshot(initial,1)).Length,reopenMs,buildMs,attachMs,churnMs=churn,previewMs,editMs,ticks,
-            callbacks=initial.Clock.Capture().Pending.Length,departures,
+            callbacks=initial.Clock.Capture().Pending.Length,finalCallbacks=s.Clock.Capture().Pending.Length,departures,
             waiting=graph.Buildings.Select(b=>StationCatchment.Waiting(graph,b.Id,s.Clock.Time)),
             exports=graph.Buildings.Sum(b=>(long)b.Exports.Today),imports=graph.Buildings.Sum(b=>(long)b.Imports.Today),
             transactions=s.Construction.Accounts.Transactions.Length,managedRetainedBytes=GC.GetTotalMemory(true)};
@@ -110,7 +112,17 @@ static class StationCapacity
     {
         MixedWire.ValidateAdmission(s);
         var pending=s.Clock.Capture().Pending;
-        if(pending.Length!=rings*7||pending.Select(p=>p.HandlerId).Distinct().Count()!=pending.Length)throw new Exception("Callback identities/count differ.");
+        var stationTimers=StationLifecycle.Timers(s.World.Stations).ToArray();
+        var heat=s.World.City?.State.HeatCallback;
+        var expected=stationTimers.Select(t=>t.HandlerId)
+            .Concat(s.Fleet!.Trains.Select(t=>MixedSessionState.TrainHandler(t.Id)))
+            .Concat(heat is null ? [] : new[]{CityHandlers.Heat}).ToHashSet(StringComparer.Ordinal);
+        if(stationTimers.Length!=rings*6 || pending.Length!=expected.Count ||
+            !expected.SetEquals(pending.Select(p=>p.HandlerId)))throw new Exception("Callback identities/count differ.");
+        foreach(var timer in stationTimers.Concat(heat is null ? [] : new[]{heat}))
+            if(!pending.Contains(timer))throw new Exception("Callback schedule differs: "+timer.HandlerId);
+        if(s.World.City!=null && (heat is null || heat.HandlerId!=CityHandlers.Heat || heat.Interval<=0))
+            throw new Exception("Heat timer differs.");
         if(s.World.Stations!.Platforms.Any(p=>p.HostId==null))throw new Exception("Unhosted platform.");
         if(s.World.Voxels.Count(v=>v.Traffic?.Car!=null)!=rings*3)throw new Exception("Lost train occupancy.");
         foreach(var t in s.Fleet!.Trains)

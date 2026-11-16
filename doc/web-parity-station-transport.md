@@ -42,7 +42,7 @@ Portable admission bounds the combined building/platform/passage count, total
 yards and host edges to8192, providers to8192, local stations per provider to4,
 and total reverse memberships to32768. Save preflight checks nested/aggregate
 bounds before typed restoration; encode/restore/browser semantic checks agree.
-The existing8MiB mixed,16MiB delta and256MiB complete-state budgets remain.
+The current budgets are16MiB mixed,16MiB delta and256MiB complete state.
 Graph validation also checks exact content, footprints, host cycles, lane/rail
 membership, nonnegative finite logs, identity collisions and queue ownership.
 

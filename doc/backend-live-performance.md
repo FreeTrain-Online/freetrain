@@ -251,6 +251,12 @@ objects, escaped/Unicode text and finite float edge cases. It checks admission a
 8 MiB minus one byte, exactly 8 MiB and one byte above, inclusive counting-stream
 limits and collection of historical worlds, accounts and heat.
 
+Subsequent extent compatibility fix: the mixed-section ceiling is now 16 MiB,
+with its inclusive boundary regression updated accordingly. This admits the
+roughly 12.5 MiB initial heat buffers activated by passenger service on a
+1500×1090 map. Complete-state and 16 MiB delta limits remain unchanged; these
+historical performance samples do not qualify arbitrary larger city workloads.
+
 Three alternating local Release samples against clean `b0383e8c834c` passed all
 ten standard benchmark checks per process, with matching save hashes and operation
 counts. In the separate focused probe, large-map median warm admission fell from

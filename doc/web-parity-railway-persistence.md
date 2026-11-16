@@ -95,7 +95,9 @@ art/flags, backups, pier references, component slots and cash replay are validat
 on both sides. Neither disconnected rail nor zero-rail mixed terrain is rejected.
 
 Initial mixed admission is **8,192 railway voxels, 1,024 slope owners and 8,192
-journal entries**, with an additional **8 MiB complete mixed-component limit**.
+journal entries**, with an additional **16 MiB complete mixed-component limit**.
+The mixed-component limit increased from 8 MiB to admit passenger-triggered heat on
+the supported extent; see [current capacity limits](web-parity-railway-capacity.md).
 These are deliberate initial infrastructure bounds, not final P4/P8 city-capacity
 claims. Existing 256 MiB save/state, 48 KiB chunks, 16 MiB delta/socket and terrain
 structural limits remain. Admission includes actual railway owner/component bytes
