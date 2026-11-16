@@ -43,6 +43,7 @@
   let renderer: MapRenderer | undefined;
   const space = $derived(mapSpace(view.read?.map ?? demoScene.map));
   let camera: Camera = demoCamera(1280,900);
+  let toolActivation = 0;
   let narrowRailOffset=0;
   let zoomPercent = $state(100);
   let width = 0, height = 0, dirty = true, lastDpr = 0;
@@ -173,6 +174,7 @@
   }
   export function activateTool(next: Tool) {
     if (!live || (next !== 'inspect' && blocked)) return;
+    canvas.dataset.toolActivation = String(++toolActivation);
     if(narrowRailOffset){camera={...camera,y:camera.y-narrowRailOffset};narrowRailOffset=0;dirty=true;}
     resetInteraction(); tool = next === tool && next !== 'inspect' ? 'inspect' : next;
     focusMap();
@@ -358,6 +360,7 @@
   $effect(() => { void {...stationLabels};void {...trainLabels};dirty = true; });
   $effect(() => { void followingTrainId;void panel;void deploymentPreview; void heightCut; void drawPoles; void drawSpeedLimits; void night; void winter; void recolor; void selection; void preview; void cornerSelection; void rectangleEnd; void terrainSites; void removalPath; void cityPreview; void stationPreview;void platformPreview;void railPreview; void slopePreview; void railPoints; void anchor; void tool; dirty = true; });
   onMount(() => {
+    canvas.dataset.toolActivation = String(toolActivation);
     let active = true, frame = 0;
     let resumeMotion=false,lastFrame:number|undefined,lastMotionResume=-Infinity;
     let demoTime=0,lastDemoTick:number|undefined,lastDemoPaint=-Infinity;
@@ -398,6 +401,7 @@
             : { heightCut: demoScene.map.levels-1, level: 1, night: false, winter: false, recolor: false, shape: 'buffer', remove: false, demoTime });
           canvas.dataset.scene = liveScene ? 'live' : 'demo';
           canvas.dataset.followingTrain=followingTrainId??'';canvas.dataset.cameraState=JSON.stringify(camera);
+          canvas.dataset.renderedTool=tool;canvas.dataset.renderedToolActivation=String(toolActivation);
           // Terrain revisions keep the completed scene visible while preparing
           // its replacement. Initial reveal still waits for a complete image.
           if (liveScene) { if(ready)renderState='ready'; zoomPercent = Math.round(camera.zoom * 100); }

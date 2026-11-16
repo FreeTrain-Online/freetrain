@@ -14,6 +14,7 @@
   import { appName, messages, persistLocale, initialLocale } from './lib/localization.ts';
   import { createShellModel, catalog } from './lib/shell-model.ts';
   import { createRemoteSessionClient, leaveGame } from './lib/remote-session-client.ts';
+  import { installTestObservation } from './lib/test-observation.ts';
   import { createBrowserAudio } from './lib/browser-audio.ts';
   import DecisionModal from './DecisionModal.svelte';
   import { activatePrimary } from './lib/primary-action.ts';
@@ -242,6 +243,7 @@
   function uiFocus(event: FocusEvent) { if (!(event.target instanceof HTMLCanvasElement)) map?.suspendInput(); }
   $effect(() => { if (live) { void tick().then(() => map?.focusMap()); } });
   onMount(() => {
+    const stopObservation = installTestObservation(() => ({ connection: model.state.connection, state: model.state.read }));
     const unsubscribe = model.subscribe(next => { view = next; });
     const audioVisibility = () => { if (document.hidden) audio.cancel(); };
     document.addEventListener('visibilitychange', audioVisibility);
@@ -254,7 +256,7 @@
     };
     viewport(); window.addEventListener('resize', viewport); window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport);
     window.addEventListener('pagehide', pagehide); document.addEventListener('focusin', uiFocus);
-    return () => { document.removeEventListener('visibilitychange', audioVisibility); window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
+    return () => { stopObservation(); document.removeEventListener('visibilitychange', audioVisibility); window.removeEventListener('resize', viewport); window.visualViewport?.removeEventListener('scroll', viewport); window.visualViewport?.removeEventListener('resize', viewport); window.removeEventListener('pagehide', pagehide); document.removeEventListener('focusin', uiFocus); unsubscribe(); dispose(); };
   });
 </script>
 

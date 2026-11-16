@@ -3,24 +3,29 @@ import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, type Page, type WebSocketRoute } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import type { WireMessage } from '../../src/generated/contracts.ts';
+import type { SessionObservation } from './session-observation.ts';
+import { createObservation, canonicalJSON } from './session-runtime.ts';
+import { panMapBy, projectMapPoint, renderedCamera } from './map-picking.ts';
 const sprites = JSON.parse(readFileSync('src/generated/sprites.json', 'utf8')).sprites as Record<string, { height: number; offset: number; mask: string[] }>;
 export const bootstrap = async (page: Page) => (await (await page.request.get(compatibilityURL('/api/bootstrap', ['prototype-content-1']))).json()).snapshot;
-// Mixed publications carry the complete graph, but may reference unchanged heat
-// buffers from the immediately preceding publication. Resolve that reference for
-// browser assertions comparing a peer's wire history with a full HTTP snapshot.
-export function latestCanonicalPublication(messages:any[]) {
-  let previous:any;
-  for(const message of messages) {
-    if(!['join','snapshot','delta'].includes(message.type))continue;
-    let current=message.snapshot??message;
-    if(current.cityHeatBaseRevision!==undefined) {
-      expect(current.cityHeatBaseRevision).toBe(previous?.revision);
-      expect(previous?.mixed?.city?.heat).toBeTruthy();
-      current={...current,mixed:{...current.mixed,city:{...current.mixed.city,heat:previous.mixed.city.heat}}};
-    }
-    previous=current;
+const legacyPublications = new WeakMap<readonly WireMessage[], { count: number; observation: SessionObservation }>();
+/** Transitional adapter for increment 3 callers. Decode each event once using
+ * the shared observer, including ordered async chunk assembly. New specs use sessions. */
+export async function latestCanonicalPublication(messages: readonly WireMessage[]) {
+  let cached = legacyPublications.get(messages);
+  if (!cached) {
+    const observation = createObservation(true); observation.beginConnection();
+    cached = { count: 0, observation }; legacyPublications.set(messages, cached);
   }
-  return previous;
+  // A legacy history can span several sockets. Let a reconnect's join replace
+  // its generation before enqueueing the next frame from that same history.
+  for (; cached.count < messages.length; cached.count++) {
+    cached.observation.enqueue(messages[cached.count]);
+    await cached.observation.settled();
+  }
+  await cached.observation.settled();
+  const state = cached.observation.latest(); return state && canonicalJSON(state);
 }
 export async function canonicalState(page:Page) {
   const response=await(await page.request.get(compatibilityURL('/api/bootstrap', ['reference-spatial-content-2', 'terrain-content-1', 'mixed-railway-content-1']))).json();
@@ -73,10 +78,10 @@ export async function exposeMapPoint(page:Page,point:{x:number;y:number}) {
     throw new Error('Map has no clear point for touch input');
   },point);
   if(target.x===point.x&&target.y===point.y)return point;
-  const camera=await canvas.getAttribute('data-camera'),dx=point.x-target.x||.5;
-  await canvas.dispatchEvent('wheel',{deltaX:dx,deltaY:point.y-target.y,deltaMode:0});
-  await expect(canvas).not.toHaveAttribute('data-camera',camera!);
-  const result={x:point.x-dx,y:target.y};
+  const before=await renderedCamera(page);
+  const world=await canvas.evaluate((el,{point,camera})=>{const r=el.getBoundingClientRect();return {x:camera.x+(point.x-r.x-r.width/2)/camera.zoom,y:camera.y+(point.y-r.y-r.height/2)/camera.zoom};},{point,camera:before});
+  const camera=await panMapBy(page,{x:point.x-target.x,y:point.y-target.y});
+  const {point:result}=await projectMapPoint(page,world,camera);
   expect(await canvas.evaluate((el,p)=>document.elementFromPoint(p.x,p.y)===el,result)).toBe(true);
   return result;
 }

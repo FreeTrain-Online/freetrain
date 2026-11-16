@@ -29,7 +29,7 @@ for(const locale of ['en','ja'])test(`P7-14 ${locale} real city passenger feedba
  async function upload(bytes:Buffer){
   const s=await state(page),r=await page.request.post('/api/saves/upload?expectedWorldEpoch='+s.worldEpoch,{data:bytes});
   expect(r.ok(),await r.text()).toBe(true);await ready(page,locale);await ready(peer,other);
-  for(const i of [0,1])await expect.poll(()=>latest(i)?.worldEpoch).toBe(String(BigInt(s.worldEpoch)+1n));
+  for(const i of [0,1])await expect.poll(async()=>(await latest(i))?.worldEpoch).toBe(String(BigInt(s.worldEpoch)+1n));
   // The first terrain -> mixed upload changes the negotiated socket identity.
   // Wait for its new join before injecting commands on the connected socket.
   for(const i of [0,1])await expect.poll(()=>messages[i].filter(m=>m.type==='join').at(-1)?.contentVersion).toBe('mixed-railway-content-1');
@@ -48,7 +48,7 @@ for(const locale of ['en','ja'])test(`P7-14 ${locale} real city passenger feedba
    const baseline=bells(),receipt=await step(0,'feedback'+suffix);expect(receipt.type).toBe('accepted');
    expect(await save(page)).toEqual(expected);
    const canonical=(await state(page)).mixed;
-   for(const i of [0,1])await expect.poll(()=>latest(i)?.mixed).toEqual(canonical);
+   for(const i of [0,1])await expect.poll(async()=>(await latest(i))?.mixed).toEqual(canonical);
    expect(canonical.city.heat).toEqual(after.mixed.city.heat);
    const heat=canonical.city.heat;
    // 64x64 storage: station (23,13) => H2,V21; (36,13) => H9,V8.

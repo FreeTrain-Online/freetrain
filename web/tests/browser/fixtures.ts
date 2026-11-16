@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { writeTimings } from './run-timings.ts';
 import { BrowserDiagnostics } from './diagnostics.ts';
+import { SessionFixture } from './session.ts';
 import { attachProcessEvidence, ProcessEvidence, processEvidenceDirectory, processLogOffsets } from './process-evidence.ts';
 
 export * from '@playwright/test';
@@ -58,7 +59,8 @@ async function stop(child: ChildProcess) {
   try { await exited; } finally { clearTimeout(force); }
 }
 
-export const test = base.extend<{ resetWorld: void; diagnostics: BrowserDiagnostics | undefined; processEvidence: void }, { worldServer: WorldServer }>({
+export const test = base.extend<{ resetWorld: void; diagnostics: BrowserDiagnostics | undefined; processEvidence: void; sessions: SessionFixture }, { worldServer: WorldServer }>({
+  sessions: async ({}, use, testInfo) => { await use(new SessionFixture(testInfo)); },
   diagnostics: [async ({ browser }, use, testInfo) => {
     if (![...managedProjects, 'diagnostic-harness'].includes(testInfo.project.name)) { await use(undefined); return; }
     const diagnostics = new BrowserDiagnostics(testInfo);

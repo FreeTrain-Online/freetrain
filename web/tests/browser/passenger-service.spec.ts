@@ -54,7 +54,7 @@ for(const west of [false,true])test(`P6-21 ${west?'JA narrow touch westbound':'E
  }
  const latest=(i:number)=>latestCanonicalPublication(messages[i]);
  const bells=(i:number)=>messages[i].filter(m=>m.type==='departureBell');
- async function consistent(){const s=await state(page);for(const i of [0,1])await expect.poll(()=>latest(i)?.mixed).toEqual(s.mixed);return s;}
+ async function consistent(){const s=await state(page);for(const i of [0,1])await expect.poll(async()=>(await latest(i))?.mixed).toEqual(s.mixed);return s;}
  async function step(){
   const tick=BigInt((await state(page)).tick)+1n;
   await expect(page.locator('.transport .step')).toBeEnabled();
@@ -62,7 +62,7 @@ for(const west of [false,true])test(`P6-21 ${west?'JA narrow touch westbound':'E
    const menu=page.locator('.command-bar').getByRole('button',{name:'ゲーム ▾',exact:true});
    await menu.tap();await page.locator('#game-menu .overflow-step').tap();await menu.tap();
   }else await page.locator('.transport .step').click();
-  for(const i of [0,1])await expect.poll(()=>latest(i)?.tick).toBe(String(tick));
+  for(const i of [0,1])await expect.poll(async()=>(await latest(i))?.tick).toBe(String(tick));
   return consistent();
  }
  async function until(predicate:(s:any)=>boolean,limit=180){

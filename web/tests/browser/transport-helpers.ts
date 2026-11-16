@@ -1,5 +1,7 @@
-import { expect, type Page, type Response, type WebSocketRoute } from '@playwright/test';
-import type { Join, Snapshot, Delta, Command, WireMessage, Accepted, Rejected } from '../../src/generated/contracts.ts';
+import { expect, type Page, type Response } from '@playwright/test';
+import { test } from '@playwright/test';
+import { SessionFixture } from './session.ts';
+import type { Join } from '../../src/generated/contracts.ts';
 
 export const protocolVersion: Join['protocolVersion'] = 11;
 export function compatibilityURL(path: string, contentVersions: readonly string[]) {
@@ -56,26 +58,7 @@ export function previewResponse(page: Page, path: string): Promise<Response> {
 
 /** Intercept once per page, preserving the real server and client decoders. */
 export async function collectSession(page: Page) {
-  const messages: WireMessage[] = [];
-  let socket: WebSocketRoute | undefined;
-  await page.routeWebSocket('**/api/session?*', route => {
-    const server = route.connectToServer();
-    socket = server;
-    server.onMessage(message => { messages.push(JSON.parse(String(message))); route.send(message); });
-    route.onMessage(message => server.send(message));
-  });
-  return {
-    messages,
-    latest: () => { const m = messages.filter((m): m is Join | Snapshot | Delta => ['join', 'delta', 'snapshot'].includes(m.type)).at(-1); return m?.type === 'join' ? m.snapshot : m; },
-    async command(command: Command) {
-      if (!socket) throw new Error('Session is not connected');
-      const start = messages.length;
-      socket.send(JSON.stringify(command));
-      const receipt = () => messages.slice(start).find((m): m is Accepted | Rejected => (m.type === 'accepted' || m.type === 'rejected') && m.requestId === command.requestId);
-      await expect.poll(receipt).toBeTruthy();
-      return receipt()!;
-    },
-  };
+  return new SessionFixture(test.info()).observe(page);
 }
 
 export function delayedResponse() {

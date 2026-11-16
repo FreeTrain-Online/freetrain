@@ -5,6 +5,7 @@ import {
 } from './tests/browser/spec-ownership.ts';
 import { join, resolve } from 'node:path';
 import { defineConfig } from '@playwright/test';
+import { prepareSessionRuntime } from './tests/browser/session-runtime.ts';
 
 validateSpecOwnership(
   readdirSync(resolve(__dirname, 'tests/browser')).filter((file) =>
@@ -18,6 +19,7 @@ mkdirSync(artifactParent, { recursive: true });
 const artifacts = process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT ??
   mkdtempSync(join(artifactParent, 'browser-run-'));
 process.env.FREETRAIN_BROWSER_ARTIFACT_ROOT = resolve(artifacts);
+prepareSessionRuntime(resolve(artifacts));
 const evidence = process.env.FREETRAIN_ONLINE_BROWSER_EVIDENCE ??
   join(artifacts, 'evidence');
 mkdirSync(evidence, { recursive: true });
