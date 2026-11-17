@@ -69,9 +69,9 @@ public static class ObjectRemoval
             return (null,"terrain","terrainRequired");
         var kind = occupant.Kind == TerrainOccupantKind.Creek ? "creek" : "forest";
         // Forests are decorations on Mountain geometry. Keep non-flat corners,
-        // identity and ownership, and remove only the forest/value payload.
+        // identity, clear ownership, and remove the forest/value payload.
         (SpatialEntity Entity,TerrainOccupant Occupant)? retained = kind == "forest" && !occupant.Corners.Flat
-            ? (entity with {Revision=checked(entity.Revision+1),Value=0},occupant with {Forest=null}) : null;
+            ? (entity with {Revision=checked(entity.Revision+1),Value=0,Owned=false},occupant with {Forest=null}) : null;
         var candidate = new TerrainWorld(world,new Dictionary<int,TerrainCell>(),
             new Dictionary<Location,(SpatialEntity Entity,TerrainOccupant Occupant)?> {[p]=retained},
             Math.Max(world.Spatial.NextEntityId,nextEntityId ?? world.Spatial.NextEntityId),

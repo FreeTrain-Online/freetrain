@@ -20,7 +20,7 @@ for(const ja of [false,true])test(`P7-16 static farmland ${ja?'JA phone touch':'
   await page.goto('/');await ready(page,locale);const initial=await state(page);
   expect((await page.request.post('/api/saves/upload?expectedWorldEpoch='+initial.worldEpoch,{data:readFileSync(browserFixture('staticGround'))})).ok()).toBe(true);await ready(page,locale);
   await peer.goto('/');await ready(peer);await page.getByRole('button',{name:t.landTask,exact:true}).click();
-  await page.getByLabel(t.landAction,{exact:true}).selectOption('cover');const catalog=page.getByLabel(t.groundType,{exact:true});expect(await catalog.locator('option').count()).toBe(25);
+  await page.getByLabel(t.landAction,{exact:true}).selectOption('cover');const catalog=page.getByLabel(t.groundType,{exact:true});expect(await catalog.locator('option').count()).toBe(43);
   // The final-row portable crop must be usable on the map and in the catalog.
   await catalog.selectOption('{168C94A9-1D5B-4160-BBD8-21C830DCB752}-3,4');await expect(page.locator('.land-task .catalog-preview img')).toBeVisible();
   const original=await bytes(page);await quote(page,t);const confirm=page.getByRole('button',{name:t.groundConfirm,exact:true});await expect(confirm).toBeEnabled();

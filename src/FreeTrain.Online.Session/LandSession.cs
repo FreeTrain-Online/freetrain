@@ -14,7 +14,9 @@ public sealed partial class SessionHost
         ValidateQuoteMinute(q.ExpectedMinute);
         return CityHeat.Enable(state); // private candidate only; inspection never activates shared state
     }
-    private static LandTradePlan PlanLand(MixedSessionState state,LandQuery q) => q.Action is "cover" or "removeCover" ? StaticGroundConstruction.Preview(
+    private static LandTradePlan PlanLand(MixedSessionState state,LandQuery q) => q.Action=="cover" && q.Definition is {} forest &&
+        state.World.City!.Profile.GroundDefinition(new(forest.PackId,forest.ContributionId,forest.RecipeId)).Handler=="forest" ?
+        ForestConstruction.Preview(new(state.Construction,state.Clock.Capture(),state.Random.Capture()),new(q.Anchor.X,q.Anchor.Y,q.Anchor.Z),new(q.End.X,q.End.Y,q.End.Z),new(forest.PackId,forest.ContributionId,forest.RecipeId)) : q.Action is "cover" or "removeCover" ? StaticGroundConstruction.Preview(
         new(state.Construction,state.Clock.Capture(),state.Random.Capture()),new(q.Anchor.X,q.Anchor.Y,q.Anchor.Z),new(q.End.X,q.End.Y,q.End.Z),q.Action,
         q.Definition is {} d ? new(d.PackId,d.ContributionId,d.RecipeId):null) : LandTrading.Preview(
         new(state.Construction,state.Clock.Capture(),state.Random.Capture()),new(q.Anchor.X,q.Anchor.Y,q.Anchor.Z),new(q.End.X,q.End.Y,q.End.Z),q.Action);

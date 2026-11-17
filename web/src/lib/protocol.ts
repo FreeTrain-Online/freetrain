@@ -351,7 +351,7 @@ export function parseLandPreview(value:unknown):import('../generated/contracts.t
    q.action==='buy'&&c.status==='sellable'||q.action==='sell'&&c.status==='buyable')))throw new Error('Inconsistent land traversal');
  if(q.action==='cover'||q.action==='removeCover'){
   const d=cityProfile.ground.find(d=>d.reference.packId===q.definition?.packId&&d.reference.contributionId===q.definition?.contributionId&&d.reference.recipeId===q.definition?.recipeId);
-  if(q.action==='cover'?(!d||!['land-0d','random-land'].includes(d.handler)):!!q.definition)throw new Error('Invalid ground definition');
+  if(q.action==='cover'?(!d||!['land-0d','random-land','forest'].includes(d.handler)):!!q.definition)throw new Error('Invalid ground definition');
   const allowed=q.action==='cover'?['placeable','outside','uneven','protected']:['removable','outside','uneven','notCover'];
   if(p.cells.some(c=>!allowed.includes(c.status)||c.value!=='0'||(c.status==='placeable'?
     !c.definition||!(d!.handler==='random-land'?d!.selections:[d!.reference]).some(r=>r.packId===c.definition!.packId&&r.contributionId===c.definition!.contributionId&&r.recipeId===c.definition!.recipeId):!!c.definition))||p.reclaimed.some(r=>r.removalCost!=='0')||

@@ -134,7 +134,7 @@ public class ObjectRemovalTests
     }
 
     [Fact]
-    public void Forest_removal_preserves_nonflat_corners_identity_and_ownership()
+    public void Forest_removal_preserves_nonflat_corners_identity_and_clears_source_ownership()
     {
         var state=State();var w=state.World;var p=new Location(10,10,1);
         var geometry=w.Profile.Definitions.Single(d=>d.Reference.ContributionId==TerrainProfile.MountainId).Reference;
@@ -143,7 +143,7 @@ public class ObjectRemovalTests
         var o=new TerrainOccupant(1,TerrainOccupantKind.Mountain,new(1,2,3,4),new(forest.Reference,[new(10,8,0)]));
         var world=new TerrainWorld(w.Profile,w.Name,new(32,24,8),0,w.Cells,new(2,[e]),[o]);
         var (after,kind,reason)=ObjectRemoval.Terrain(world,p);Assert.Null(reason);Assert.Equal("forest",kind);
-        var kept=Assert.Single(after!.Spatial.Entities);Assert.Equal(e with{Revision=1,Value=0},kept);
+        var kept=Assert.Single(after!.Spatial.Entities);Assert.Equal(e with{Revision=1,Value=0,Owned=false},kept);
         var occupant=Assert.Single(after.Occupants);Assert.Equal(o.Corners,occupant.Corners);Assert.Null(occupant.Forest);
         Assert.Equal(world.Cells,after.Cells);Assert.Equal(2,after.Spatial.NextEntityId);Assert.Equal(0,after.RealizedTreeCount);
         Assert.Equal("terrainRequired",ObjectRemoval.Terrain(after,p).Reason);

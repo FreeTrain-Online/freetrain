@@ -20,20 +20,22 @@ public static class StaticGroundConstruction
             throw new ArgumentException("Ground selection capacity exceeded.");
         var random=d?.Handler=="random-land"?RandomStreams.Restore(before.Random):null;
         var cells=ImmutableArray.CreateBuilder<LandCell>();var reclaimed=ImmutableArray.CreateBuilder<LandReclamation>();
-        var removed=new HashSet<long>();var added=new List<CityGround>();var next=world.Spatial.NextEntityId;
+        var forestRemovals=new HashSet<Location>();var removed=new HashSet<long>();var added=new List<CityGround>();var next=world.Spatial.NextEntityId;
         for(long x=Math.Min(anchor.X,end.X);x<=Math.Max(anchor.X,end.X);x++)
         for(long y=Math.Min(anchor.Y,end.Y);y<=Math.Max(anchor.Y,end.Y);y++)
         {
             var p=new Location((int)x,(int)y,anchor.Z);var relation=world.Terrain.At(p).Relation;
             var owner=world.Spatial.At(p).Entity;
             var existing=graph.State.Ground.SingleOrDefault(g=>g.Id==owner?.Id);
+            var forest=world.Terrain.OccupantAt(p)?.Forest!=null;
             var status=relation==GroundRelation.Outside?"outside":relation!=GroundRelation.Ground?"uneven":
-                remove ? existing!=null && graph.Profile.GroundDefinition(existing.Definition).Handler=="land-0d"?"removable":"notCover":
+                remove ? (forest || existing!=null && graph.Profile.GroundDefinition(existing.Definition).Handler=="land-0d")?"removable":"notCover":
                 owner==null || owner.SilentlyReclaimable?"placeable":"protected";
             DefinitionReference? selected=null;
             if(status is "placeable" or "removable")
             {
-                if(owner!=null && removed.Add(owner.Id))
+                if(remove && forest)forestRemovals.Add(p);
+                else if(owner!=null && removed.Add(owner.Id))
                 {
                     if(!graph.IsSpatialOwner(owner.Id) && world.Terrain.OccupantAt(p)?.Kind!=TerrainOccupantKind.Creek)
                         throw new ArgumentException("Unavailable ground reclamation handler.");
@@ -51,6 +53,16 @@ public static class StaticGroundConstruction
         var terrain=world.Terrain;
         if(terrain.Spatial.Entities.Any(e=>removed.Contains(e.Id)))
             terrain=terrain.Replace(terrain.Revision,terrain.Cells,terrain.WaterLevel,new(terrain.Spatial.NextEntityId,terrain.Spatial.Entities.Where(e=>!removed.Contains(e.Id)).ToImmutableArray()),terrain.Occupants.Where(o=>!removed.Contains(o.EntityId)));
+        if(forestRemovals.Count>0)
+        {
+            var edits=new Dictionary<Location,(SpatialEntity Entity,TerrainOccupant Occupant)?>();long trees=terrain.RealizedTreeCount;
+            foreach(var p in forestRemovals)
+            {
+                var e=terrain.Spatial.At(p).Entity!;var o=terrain.OccupantAt(p)!;trees-=o.Forest!.Trees.Length;
+                edits[p]=o.Corners.Flat?null:(e with {Revision=checked(e.Revision+1),Value=0,Owned=false},o with {Forest=null});
+            }
+            terrain=new(terrain,new Dictionary<int,TerrainCell>(),edits,next,trees);
+        }
         var construction=CityConstruction.Replace(before.Construction,state,next,remove?ConstructionBooking.None:ConstructionBooking.Spend(amount,AccountGenre.Subsidiaries),
             new(before.Clock.AbsoluteMinute),remove?"staticGroundRemoval":"staticGroundConstruction",terrain:terrain,reclaimed:removed,
             attachMany:added.Where(g=>graph.Profile.GroundDefinition(g.Definition).Population!=null).Select(g=>g.Id));

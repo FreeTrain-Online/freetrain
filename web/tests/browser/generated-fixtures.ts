@@ -11,6 +11,7 @@ type FixtureFamily = {
 
 /** Every generated input and companion oracle has one producer and run-owned path. */
 export const fixtureFamilies = {
+  forest: {env:'FREETRAIN_FOREST_OUTPUT',producers:['Forest_browser_seed_and_real_successor_fixtures'],suffixes:['','.before.json','.snapshot.json','.delta.json','.removed.json','.removed.delta.json'],consumers:['forest.spec.ts']},
   staticGround: {env:'FREETRAIN_STATIC_GROUND_OUTPUT',producers:['Static_ground_browser_seed_and_real_successors_export_exact_providers_and_teardown'],suffixes:['','.before.json','.snapshot.json','.delta.json','.removed.json','.removed.delta.json'],consumers:['static-ground.spec.ts']},
   land: {
     env:'FREETRAIN_LAND_OUTPUT',producers:['Land_browser_fixture_and_transport_use_actual_canonical_trade_successor','Relevant_heat_change_requires_renewed_review_while_unrelated_clock_change_keeps_quote'],

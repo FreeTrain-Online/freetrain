@@ -1,3 +1,8 @@
+**P7-17 forest authoring — 17 November:** [P7-17 forest authoring](doc/web-parity-forest-authoring.md) adds all18 bundled
+forest treatments to Land and ground cover (`O`), with paid rectangle planting,
+owned slope replanting, EN/JA source-art previews and free forest removal.
+Forests retain realized scatter and source seasonal art without aging or growth.
+
 **Live performance — 14 November:** Protocol 11 sends unchanged city heat by
 reference, retains validated immutable world sections and limits terrain-mask
 invalidation to changed regions. Saves remain Save 11. Update server and client

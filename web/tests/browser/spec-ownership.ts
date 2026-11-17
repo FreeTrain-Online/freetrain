@@ -22,6 +22,7 @@ export const browserSpecs = {
   'canonical': [
     'land-trading.spec.ts',
     'static-ground.spec.ts',
+    'forest.spec.ts',
     'city-building.spec.ts',
     'city-transport.spec.ts',
     'city-heat.spec.ts',

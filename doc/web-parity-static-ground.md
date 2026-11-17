@@ -93,6 +93,7 @@ catalog choices, final-row art, actual providers, peer teardown, random-preview
 isolation, four committed mixed draws and exact reopening/restart. Existing
 EN/JA land-trade/current-value workflows retain their regression coverage.
 
-Forest authoring/evolution remains P7-17, rice P7-18, creek authoring P7-19,
+[Forest authoring P7-17](web-parity-forest-authoring.md) now extends the catalog to43
+choices and rectangle removal to forests. Rice remains P7-18, creek authoring P7-19,
 fences P7-20, development P7-25–29 and measured city capacity P7-32. Native,
 optional, full-city/performance and overall P7 acceptance retain their gates.

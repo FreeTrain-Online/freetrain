@@ -4,6 +4,7 @@ Tests are grouped by the behavior they protect.
 
 | Suite | Coverage |
 | --- | --- |
+| `forest.spec.ts` | P7-17 EN keyboard/JA phone touch paid planting, authored catalog treatments, cancellation, owned replanting, actual forest picks, peers, free removal and exact reopen/checkpoint restart. Uses focused `ForestConstructionTests` fixtures. |
 | `city-heat.spec.ts` | P7-06 EN/JA peers receive production Single heat diffusion, enforce Observer authority, replay receipts without duplicate effects, and preserve buffers/relative timer through save/reopen and checkpoint restart. |
 | `station-cross-tool.spec.ts` | P6-24 EN desktop/DPR1 and JA narrow touch/DPR2 station terrain protection, source-legal poles on occupied platform rail, passage quotes retained across pole edits and clock steps, cosmetic passage edits, lost acknowledgements, idempotent receipt retries, stale/Observer rejection, demo/live gating and retained canvas. Cold join holds station art and live state independently. |
 | `station-information.spec.ts` | P6-23 EN/JA keyboard/narrow touch sorted stable-ID list, picked information, actual demand/waiting and source averages, Pass/forwarding/current stop indices, peer rename drafts, local labels, midnight exact reopen, removal/disconnection and authenticated Observer query fences and timestamped live reads with delayed network responses |

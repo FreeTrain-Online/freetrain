@@ -36,7 +36,9 @@ public static class CityConstruction
         var graph=new CityGraph(world.City!.Profile,state);
         stations ??= world.Stations;
         if(reclaimed is {Count:>0} && stations!=null) stations=StationBuildingLifecycle.Reclaimed(stations,reclaimed);
-        var entities=world.Spatial.Entities.Where(e=>!world.City.IsSpatialOwner(e.Id) && !(reclaimed?.Contains(e.Id) ?? false))
+        var terrainIds=terrain==null?new HashSet<long>():world.Terrain.Spatial.Entities.Select(e=>e.Id).ToHashSet();
+        var entities=world.Spatial.Entities.Where(e=>!world.City.IsSpatialOwner(e.Id) && !terrainIds.Contains(e.Id) && !(reclaimed?.Contains(e.Id) ?? false))
+            .Concat(terrain?.Spatial.Entities ?? [])
             .Concat(graph.Identities.Select(i=>graph.SpatialOwner(i.Id))).OrderBy(e=>e.Id).ToImmutableArray();
         if(attach is {} id) stations=AttachProducer(world,graph,nextId,entities,stations,id);
         foreach(var groundId in attachMany ?? []) stations=AttachProducer(world,graph,nextId,entities,stations,groundId);

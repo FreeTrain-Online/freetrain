@@ -1074,9 +1074,10 @@
   "groundType": "Ground cover type",
   "groundFarmland": "Farmland",
   "groundUneven": "Different ground level",
-  "groundNotCover": "No static ground cover",
+  "groundNotCover": "No ground cover or forest",
   "groundHelp": "Choose farmland and two corners (O); Enter confirms after review, Escape cancels. Only reusable cells at the first corner’s ground level are filled, including owned property and ground cover. The source charges the full rectangle, including skipped cells. Farmland creates its authored population provider; ownership alone creates none. Removal clears static cover and its listeners without a fee. Appearance follows game season and day/night; the four final-row variants retain only existing source pixels. Mixed farmland draws once per eligible cell from its authored list; reviewing or cancelling consumes no shared random values.",
   "groundMixed": "Mixed farmland",
   "groundCheck": "Review ground cover",
-  "groundConfirm": "Confirm ground edit"
+  "groundConfirm": "Confirm ground edit",
+  "forestPlantHelp": "Forests use the selected species and ground treatment, including on existing slopes and owned forests. Every eligible cell draws its original tree scatter; a zero-tree result preserves its previous content. Planting charges ¥100 per selected cell, including skipped cells. Trees do not age or grow; appearance follows the game season. Remove ground cover also clears forests, retaining slopes and clearing forest ownership. Generated clustering remains unchanged."
 }

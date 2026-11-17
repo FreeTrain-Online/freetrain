@@ -1,5 +1,10 @@
 # P3-11 forests and cover — 29 October 2026
 
+[P7-17 paid forest authoring](web-parity-forest-authoring.md) now adds all18
+reviewed treatments to the Land task, with owned planting/replanting and source
+`removeTrees` ownership clearing. This report records the original P3 generation
+scope; its historical save/protocol versions are not current-format claims.
+
 Game → New world → Generated relief now offers forest cover presets, custom
 coverage, clustering, any mixture of the six bundled tree species, three source
 ground treatments, and a connected flat starting-area reservation. Controls,
